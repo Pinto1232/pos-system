@@ -1,0 +1,7 @@
+.pageContainer {
+    min-height: 100vh; 
+  }
+  
+  .contentContainer {
+    background-color: #fff;
+  }
