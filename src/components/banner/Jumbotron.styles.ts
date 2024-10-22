@@ -32,10 +32,17 @@ export const styles = {
       width: '980px',
       fontSize: '39px',
       marginTop: '80px',
+      '@media (max-width: 600px)': { 
+        fontSize: '28px',
+        marginTop: '40px',
+      },
     },
     subtitle: {
       textAlign: 'center',
       textShadow: '1px 1px 5px rgba(0, 0, 0, 0.5)',
-      fontSize: '20px'
+      fontSize: '20px',
+      '@media (max-width: 600px)': { 
+      fontSize: '16px',
+    },
     },
   };

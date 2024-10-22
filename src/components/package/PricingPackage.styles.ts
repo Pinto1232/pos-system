@@ -2,7 +2,8 @@ import { SxProps } from '@mui/material';
 
 export const pricingPackageStyles = {
   card: {
-    maxWidth: 275,
+    maxWidth: 267,
+    maxHeight: 375,
     margin: '8px',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -12,7 +13,7 @@ export const pricingPackageStyles = {
     display: 'flex',
     alignItems: 'center',
     backgroundColor: '#1F2937',
-    padding: '2px',
+    padding: '4px',
     borderRadius: '5px 5px 0 0',
   } as SxProps,
   titleText: {
