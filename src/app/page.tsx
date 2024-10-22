@@ -22,7 +22,7 @@ export default function Home() {
         <Jumbotron
           title="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
           subtitle=" Streamline Sales, Manage Inventory, and Grow with Confidence!"
-          backgroundImage="/assets/banner-pos.jpg"
+          backgroundImage="/assets/banner-pos.png"
         />
          <div className={styles.contentContainer}>
           <PricingPackagesList />

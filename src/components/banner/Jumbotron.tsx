@@ -15,11 +15,10 @@ const Jumbotron: React.FC<JumbotronProps> = ({
         <Image
           src={backgroundImage}
           alt="Jumbotron Background"
-           layout="responsive"
-           width={1920} // Example width
-     height={1080} // Example height
+          layout="fill"
           objectFit="cover"
           objectPosition="center"
+          priority
         />
       </Box>
       <Box sx={styles.content}>

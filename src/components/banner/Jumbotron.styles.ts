@@ -2,7 +2,7 @@ export const styles = {
     jumbotron: {
       position: 'relative',
       width: '100%',
-      height: '600px',
+      height: '670px',
       overflow: 'hidden',
     },
     imageContainer: {
@@ -23,6 +23,7 @@ export const styles = {
       height: '100%',
       color: '#fff',
       zIndex: 2,
+      marginTop: '8%',
    
     },
     title: {
@@ -30,8 +31,8 @@ export const styles = {
       textAlign: 'center',
       textShadow: '2px 2px 10px rgba(0, 0, 0, 0.5)',
       width: '980px',
-      fontSize: '39px',
-      marginTop: '80px',
+      fontSize: '30px',
+      marginTop: '5%',
       '@media (max-width: 600px)': { 
         fontSize: '28px',
         marginTop: '40px',

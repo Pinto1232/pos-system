@@ -4,6 +4,10 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { pricingPackageStyles } from "./PricingPackage.styles";
 import StyledButton from "@components/ui/StyledButton";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
+
+
 
 interface PricingPackageProps {
   title: string;
@@ -28,7 +32,7 @@ const PricingPackage: React.FC<PricingPackageProps> = ({
         {description.map((desc, index) => (
           <Box key={index} display="flex" alignItems="center">
             <CheckCircleIcon
-              sx={{ fontSize: "16px", color: "green", marginRight: "8px" }}
+              sx={{ fontSize: "16px", color: "#1F293", marginRight: "8px" }}
             />
             <Typography variant="body2" sx={pricingPackageStyles.description}>
               {desc}
@@ -42,7 +46,8 @@ const PricingPackage: React.FC<PricingPackageProps> = ({
           variant="contained"
           color="primary"
           onClick={onClick}
-          sx={{ backgroundColor: "#1E3A8A", color: "white", padding: "4px 30px" }}
+          icon={<ShoppingCartIcon />}
+          sx={{ backgroundColor: "#1E3A8A", color: "white", padding: "4px 40px" }}
         />
       </Box>
     </Card>
