@@ -5,15 +5,10 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { pricingPackageStyles } from "./PricingPackage.styles";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import StyledButton from "@components/ui/button/StyledButton";
+import { PricingPackageProps } from "./PricingPackage.types";
 
 
 
-
-interface PricingPackageProps {
-  title: string;
-  description: string[];
-  onClick: () => void;
-}
 
 const PricingPackage: React.FC<PricingPackageProps> = ({
   title,
