@@ -3,7 +3,7 @@ import { Card, CardContent, Box, Typography } from "@mui/material";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { pricingPackageStyles } from "./PricingPackage.styles";
-import StyledButton from "@components/ui/StyledButton";
+import StyledButton from "@components/ui/button/StyledButton";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 
