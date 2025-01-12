@@ -34,7 +34,7 @@ async function fetchPricingPackages(): Promise<PricingPackage[]> {
   return response.json();
 }
 
-export function useData(): UseQueryResult<PricingPackage[], Error> {
+export function usePricingPackage(): UseQueryResult<PricingPackage[], Error> {
   return useQuery({
     queryKey: ['pricingPackages'],
     queryFn: fetchPricingPackages,
