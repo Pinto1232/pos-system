@@ -1,15 +1,14 @@
-// src/pages/_app.tsx
-import React from 'react';
+// pages/_app.tsx
 import { AppProps } from 'next/app';
-import { Provider } from 'react-redux';
-import store from '@services/store/store';
+import { QueryClientProvider } from '@tanstack/react-query';
+import queryClient from '@/utils/queryClient'; // adjust path to match your setup
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <Component {...pageProps} />
-    </Provider>
+    </QueryClientProvider>
   );
-};
+}
 
 export default MyApp;

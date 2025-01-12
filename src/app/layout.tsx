@@ -1,6 +1,10 @@
+// app/layout.tsx (Server Component by default)
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+
+// 1. Import the Providers client component
+import { Providers } from "./providers"; // Adjust path if needed
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,13 +24,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        {/* 2. Wrap children in the Providers client component */}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

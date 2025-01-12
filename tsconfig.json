@@ -1,22 +1,31 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": false,
+    "target": "ES6",
+    "allowJs": true,
+    "checkJs": false,
     "skipLibCheck": false,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
+    "typeRoots": ["./types", "./node_modules/@types"],
     "module": "esnext",
-    "moduleResolution": "bundler",
+    // Important: switch "moduleResolution" from "bundler" to "node" for better compatibility
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
     "declaration": false,
     "forceConsistentCasingInFileNames": true,
+
+    // Keep baseUrl as "./src"
     "baseUrl": "./src",
+
+    // Because baseUrl is "./src", remove extra "src/" in each path. 
+    // E.g. "@hooks/*" -> "hooks/*" means "./src/hooks/*"
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["*"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
       "@services/*": ["services/*"],
@@ -26,6 +35,7 @@
       "@features/*": ["features/*"],
       "@store/*": ["store/*"]
     },
+
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "plugins": [
