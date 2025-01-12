@@ -6,7 +6,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import { usePricingPackage } from '@/hooks/PricingPackages/usePricingPackages'; 
+import { usePricingPackage } from '@/hooks/Api/PricingPackages/usePricingPackages'; 
 
 // Importing props and styles
 import { NavBarProps } from './NavBar.types';
