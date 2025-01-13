@@ -7,12 +7,10 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import StyledButton from "@components/ui/button/StyledButton";
 import { PricingPackageProps } from "./PricingPackage.types";
 
-
-
-
 const PricingPackage: React.FC<PricingPackageProps> = ({
   title,
   description,
+  price,
   onClick,
 }) => {
   return (
@@ -20,20 +18,19 @@ const PricingPackage: React.FC<PricingPackageProps> = ({
       <Box sx={pricingPackageStyles.titleBox}>
         <InsertDriveFileIcon sx={pricingPackageStyles.icon} />
         <Typography variant="h6" sx={pricingPackageStyles.titleText}>
-          {title}
+          {title}    R{price.toFixed(2)}
         </Typography>
       </Box>
       <CardContent>
         {description.map((desc, index) => (
-          <Box key={index} display="flex" alignItems="center">
-            <CheckCircleIcon
-              sx={{ fontSize: "16px", color: "#1F293", marginRight: "8px" }}
-            />
-            <Typography variant="body2" sx={pricingPackageStyles.description}>
+          <Box key={index} sx={pricingPackageStyles.descriptionBox}>
+            <CheckCircleIcon sx={pricingPackageStyles.descriptionIcon} />
+            <Typography variant="body2" sx={pricingPackageStyles.descriptionText}>
               {desc}
             </Typography>
           </Box>
         ))}
+
       </CardContent>
       <Box sx={pricingPackageStyles.buyButtonBox}>
         <StyledButton
