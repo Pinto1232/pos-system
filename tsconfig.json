@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "target": "ES6",
     "allowJs": true,
     "checkJs": false,
@@ -8,9 +12,11 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "typeRoots": ["./types", "./node_modules/@types"],
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ],
     "module": "esnext",
-    // Important: switch "moduleResolution" from "bundler" to "node" for better compatibility
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -18,24 +24,39 @@
     "incremental": true,
     "declaration": false,
     "forceConsistentCasingInFileNames": true,
-
     // Keep baseUrl as "./src"
     "baseUrl": "./src",
-
     // Because baseUrl is "./src", remove extra "src/" in each path. 
     // E.g. "@hooks/*" -> "hooks/*" means "./src/hooks/*"
     "paths": {
-      "@/*": ["*"],
-      "@components/*": ["components/*"],
-      "@hooks/*": ["hooks/*"],
-      "@services/*": ["services/*"],
-      "@styles/*": ["styles/*"],
-      "@types/*": ["types/*"],
-      "@utils/*": ["utils/*"],
-      "@features/*": ["features/*"],
-      "@store/*": ["store/*"]
+      "@/*": [
+        "*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@hooks/*": [
+        "hooks/*"
+      ],
+      "@services/*": [
+        "services/*"
+      ],
+      "@styles/*": [
+        "styles/*"
+      ],
+      "@types/*": [
+        "types/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
+      "@features/*": [
+        "features/*"
+      ],
+      "@store/*": [
+        "store/*"
+      ]
     },
-
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "plugins": [
@@ -44,6 +65,13 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
