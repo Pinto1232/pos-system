@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Box, Badge } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Typography, Badge, Paper } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -40,12 +40,13 @@ const MainHeader: React.FC<NavBarProps> = ({ testPeriod, onMenuClick }) => {
         </Typography>
 
         {/* Test Period */}
-        <Box sx={styles.testPeriodBox}>
+
+        <Paper elevation={12} sx={styles.testPeriodBox}>
           <AccessTimeIcon sx={styles.testPeriodIcon} />
           <Typography variant="body2" color="textPrimary">
-            Test Period: {testPeriod}
+            <span style={{ fontWeight: 'bold' }}>Testing Period:</span> {testPeriod}
           </Typography>
-        </Box>
+        </Paper>
 
         {/* Chat Icon */}
         <IconButton color="inherit">

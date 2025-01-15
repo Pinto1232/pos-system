@@ -11,7 +11,7 @@ const PricingPackagesList: React.FC = () => {
   const { data, error, isLoading } = usePricingPackage();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    //return <div>Loading...pinto</div>;
   }
 
   if (error) {

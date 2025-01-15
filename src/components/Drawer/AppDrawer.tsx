@@ -8,7 +8,9 @@ import {
   ListItemIcon,
   Box,
   Typography,
+  IconButton,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/navigation';
 import { fetchAppRoutes } from '@/services/fetchAppRoutes';
 import { Route } from '@/routes/appRoutes';
@@ -48,7 +50,6 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ open, onClose, userRole }) => {
     <Drawer
       anchor="left"
       open={open}
-      onClose={onClose}
       PaperProps={{
         sx: {
           backgroundColor: '#1e3a8a',
@@ -63,15 +64,29 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ open, onClose, userRole }) => {
       {/* Drawer Header */}
       <Box
         sx={{
-          padding: '16px',
+          padding: '13px',
           textAlign: 'center',
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
           backgroundColor: '#0c1b48',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold' }}>
           Pisval Tech
         </Typography>
+        <IconButton
+          onClick={onClose}
+          sx={{
+            color: '#fff',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
       </Box>
 
       {/* Navigation List */}
@@ -116,7 +131,7 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ open, onClose, userRole }) => {
           backgroundColor: '#1f2937',
         }}
       >
-        <Typography sx={{ fontSize: 12}}>Powered by Pisval Tech</Typography>
+        <Typography sx={{ fontSize: 12 }}>Powered by Pisval Tech</Typography>
       </Box>
     </Drawer>
   );

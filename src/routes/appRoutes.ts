@@ -53,11 +53,6 @@ export const appRoutes: Route[] = [
     path: '/campaigns',
   },
 
-  {
-    label: 'Time',
-    icon: CampaignIcon,
-    path: '/time',
-  },
   // Additional routes as needed
 ];
 

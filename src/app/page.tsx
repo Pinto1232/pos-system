@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import MainHeader from "@components/navbar/MainHeader";
 import Jumbotron from "@components/banner/Jumbotron";
 import PricingPackagesList from "@components/package/PricingPackagesList";

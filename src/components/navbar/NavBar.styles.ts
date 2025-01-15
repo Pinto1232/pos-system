@@ -15,7 +15,7 @@ export const styles = {
       marginRight: '15px',
     },
     testPeriodIcon: {
-      marginRight: 5,
+      marginRight: 1,
       color: '#1F2937',
     },
   };
