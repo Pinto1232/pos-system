@@ -13,6 +13,11 @@ export const styles = {
       borderRadius: '5px',
       padding: '2px 10px',
       marginRight: '15px',
+      '@media (max-width: 600px)': {
+        marginTop: '5px',
+        marginBottom: '10px',
+         
+      },
     },
     testPeriodIcon: {
       marginRight: 1,

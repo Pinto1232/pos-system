@@ -24,7 +24,14 @@ export const styles = {
       color: '#fff',
       zIndex: 2,
       marginTop: '8%',
-   
+      '@media (max-width: 600px)': {
+        marginTop: '5%',
+        padding: '0 10px',
+      },
+      '@media (max-width: 960px)': {
+        marginTop: '6%',
+        padding: '0 20px',
+      },
     },
     title: {
       fontWeight: 'bold',
@@ -33,17 +40,34 @@ export const styles = {
       width: '980px',
       fontSize: '30px',
       marginTop: '5%',
-      '@media (max-width: 600px)': { 
-        fontSize: '28px',
+      '@media (max-width: 960px)': {
+        fontSize: '26px',
+        width: '80%',
+      },
+      '@media (max-width: 600px)': {
+        fontSize: '24px',
         marginTop: '40px',
+        width: '90%',
+      },
+      '@media (max-width: 480px)': {
+        fontSize: '20px',
+        marginTop: '30px',
+        width: '95%',
       },
     },
     subtitle: {
       textAlign: 'center',
       textShadow: '1px 1px 5px rgba(0, 0, 0, 0.5)',
       fontSize: '20px',
-      '@media (max-width: 600px)': { 
-      fontSize: '16px',
-    },
+      '@media (max-width: 960px)': {
+        fontSize: '18px',
+      },
+      '@media (max-width: 600px)': {
+        fontSize: '16px',
+        display: 'none',
+      },
+      '@media (max-width: 480px)': {
+        fontSize: '14px',
+      },
     },
   };
