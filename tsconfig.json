@@ -24,10 +24,7 @@
     "incremental": true,
     "declaration": false,
     "forceConsistentCasingInFileNames": true,
-    // Keep baseUrl as "./src"
     "baseUrl": "./src",
-    // Because baseUrl is "./src", remove extra "src/" in each path. 
-    // E.g. "@hooks/*" -> "hooks/*" means "./src/hooks/*"
     "paths": {
       "@/*": [
         "*"
