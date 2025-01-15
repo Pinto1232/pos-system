@@ -1,4 +1,5 @@
 // pages/_app.tsx
+/* eslint-disable react/react-in-jsx-scope */
 import { AppProps } from 'next/app';
 import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '@/utils/queryClient'; // Adjust the path if necessary

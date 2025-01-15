@@ -1,4 +1,5 @@
-// app/providers.tsx (or any name you prefer)
+// app/providers.tsx 
+/* eslint-disable react/react-in-jsx-scope */
 "use client";
 
 import { ReactNode, useState } from "react";

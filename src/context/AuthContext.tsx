@@ -1,11 +1,14 @@
+"use client";
+
+
 // src/context/AuthContext.tsx
 import React, { createContext, ReactNode, useState, FC } from 'react';
 
 // Define o tipo do contexto
 interface AuthContextType {
-  user: string | null; // Representa o usuário autenticado
-  login: (user: string) => void; // Função para autenticar
-  logout: () => void; // Função para sair
+  user: string | null; 
+  login: (user: string) => void; 
+  logout: () => void; 
 }
 
 // Criação do contexto
@@ -13,7 +16,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // Tipo das props para o AuthProvider
 interface AuthProviderProps {
-  children: ReactNode; // Elementos filhos que o provider envolve
+  children: ReactNode; 
 }
 
 // AuthProvider: Provedor do contexto

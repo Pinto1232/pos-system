@@ -17,10 +17,7 @@ const PricingPackagesList: React.FC = () => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
-  console.log("Pricing Packages Data:", data);
-  console.log("Error:", error);
-
+  
    const handlePackageClick = (title: string) => {
    console.log(`You clicked the ${title} package`);
   };

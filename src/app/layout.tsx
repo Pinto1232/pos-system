@@ -1,11 +1,11 @@
-// app/layout.tsx (Server Component by default)
+// app/layout.tsx 
+/* eslint-disable react/react-in-jsx-scope */
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
 // 1. Import the Providers client component
-import { Providers } from "./providers"; // Adjust path if needed
-
+import { Providers } from "./providers"; 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",

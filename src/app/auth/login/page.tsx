@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { Typography, Link } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';

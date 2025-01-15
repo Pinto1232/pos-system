@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "echo $NEXT_PUBLIC_API_URL && echo $NEXT_PUBLIC_API_TOKEN && next build",

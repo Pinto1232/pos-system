@@ -64,7 +64,7 @@ const AppDrawer: React.FC<AppDrawerProps> = ({ open, onClose, userRole }) => {
       {/* Drawer Header */}
       <Box
         sx={{
-          padding: '13px',
+          padding: '12px',
           textAlign: 'center',
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
           backgroundColor: '#0c1b48',
