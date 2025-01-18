@@ -1,21 +1,20 @@
-import { Route, appRoutes } from '@/routes/appRoutes';
+import { Route, appRoutes, navigateBasedOnRule } from '@/routes/appRoutes';
 
 export const fetchAppRoutes = async (userRole: string): Promise<Route[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Example: Filter routes based on user role
-      const filteredRoutes = appRoutes.filter((route) => {
-        // Implement your role-based filtering logic here
-        // For instance, only admins can access the 'Admin Panel' route
-        if (route.label === 'Admin Panel' && userRole !== 'admin') {
-          return false;
-        }
-        return true;
-      });
-
-      resolve(filteredRoutes);
-    }, 1000);
+  // Simulate a network call if needed
+  const filteredRoutes = appRoutes.filter((route) => {
+    // Role-based filtering logic
+    if (route.label === 'Admin Panel' && userRole !== 'admin') {
+      return false;
+    }
+    return true;
   });
+
+  return filteredRoutes;
+};
+
+export const getNextRoute = (currentStep: string, action: string, id?: number): string => {
+  return navigateBasedOnRule(currentStep, action, id); // Centralized logic for navigation
 };
 
 export default fetchAppRoutes;

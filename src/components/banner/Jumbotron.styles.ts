@@ -4,6 +4,7 @@ export const styles = {
       width: '100%',
       height: '670px',
       overflow: 'hidden',
+      margin: 0,
     },
     imageContainer: {
       position: 'absolute',

@@ -1,11 +1,12 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 export interface PricingPackage {
-  id: number;
+  descriptionList: string[];
+    id: number;
   title: string;
   description: string;
-  icon: string;
   extraDescription: string;
+  icon: string;
   price: number;
   testPeriodDays: number;
 }

@@ -11,16 +11,21 @@ const Jumbotron: React.FC<JumbotronProps> = ({
 }) => {
   return (
     <Box sx={styles.jumbotron}>
-      <Box sx={styles.imageContainer}>
+      {/* Background Image */}
+      <Box sx={styles.imageContainer} style={{ position: "relative" }}>
         <Image
           src={backgroundImage}
           alt="Jumbotron Background"
-          layout="fill"
-          objectFit="cover"
-          objectPosition="center"
-          priority
+          fill
+          style={{
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+          priority={true} // Set to true if the image is above the fold
         />
       </Box>
+
+      {/* Content Section */}
       <Box sx={styles.content}>
         <Typography variant="h2" sx={styles.title}>
           {title}

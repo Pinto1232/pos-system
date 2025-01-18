@@ -4,7 +4,7 @@ import React from "react";
 import MainHeader from "@components/navbar/MainHeader";
 import Jumbotron from "@components/banner/Jumbotron";
 import PricingPackagesList from "@components/package/PricingPackagesList";
-import styles from './page.module.css';
+
 
 export default function Home() {
   const handleMenuClick = () => {
@@ -14,7 +14,7 @@ export default function Home() {
 
 
   return (
-    <div className={styles.pageContainer}>
+    <div >
       <main>
         <MainHeader
           testPeriod="12 days remaining"
@@ -25,7 +25,7 @@ export default function Home() {
           subtitle=" Streamline Sales, Manage Inventory, and Grow with Confidence!"
           backgroundImage="/assets/banner-pos.png"
         />
-         <div className={styles.contentContainer}>
+         <div >
           <PricingPackagesList />
         </div>
       </main>
