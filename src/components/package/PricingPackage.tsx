@@ -5,7 +5,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StyledButton from "@components/ui/button/StyledButton";
 import { PricingPackageProps } from "./PricingPackage.types";
 import { pricingPackageStyles } from "./PricingPackage.styles";
-import { navigateBasedOnRule } from "@/routes/appRoutes"; // Import the centralized navigation logic
+import { navigateBasedOnRule } from "@/routes/appRoutes";
 import { useRouter } from "next/navigation";
 
 const PricingPackage: React.FC<PricingPackageProps> = ({
@@ -17,8 +17,13 @@ const PricingPackage: React.FC<PricingPackageProps> = ({
   const router = useRouter();
 
   const handleBuyNowClick = () => {
-    const nextRoute = navigateBasedOnRule("1-PackageSelection", title, id); // Get the next route
-    router.push(nextRoute); // Navigate to the computed route
+    const nextRoute = navigateBasedOnRule("1-PackageSelection", title, id);
+    console.log(`Navigating to: ${nextRoute}`);
+    try {
+      router.push(nextRoute);
+    } catch (err: unknown) {
+      console.error("Navigation error:", err);
+    }
   };
 
   return (
@@ -43,7 +48,7 @@ const PricingPackage: React.FC<PricingPackageProps> = ({
           label="Buy now"
           variant="contained"
           color="primary"
-          onClick={handleBuyNowClick} // Trigger the click handler
+          onClick={handleBuyNowClick}
           icon={<ShoppingCartIcon />}
           sx={{ backgroundColor: "#1E3A8A", color: "white", padding: "4px 40px" }}
         />

@@ -5,11 +5,21 @@ import { Box, Typography } from "@mui/material";
 import PricingPackage from "./PricingPackage";
 import { pricingPackageStyles } from "./PricingPackage.styles";
 import { usePricingPackage } from "@/hooks/Api/PricingPackages/usePricingPackages";
+import { navigateBasedOnRule } from "@/routes/appRoutes";
 import { useRouter } from "next/navigation";
 
 const PricingPackagesList: React.FC = () => {
-  const { data, error, isLoading } = usePricingPackage();
   const router = useRouter();
+
+
+  const handlePackageClick = (id: string, title: string) => {
+    const nextRoute = navigateBasedOnRule("1-PackageSelection", title, parseInt(id));
+    console.log(`Navigating to: ${nextRoute}`);
+    router.push(nextRoute); // Use the router object to navigate
+  };
+
+  const { data, error, isLoading } = usePricingPackage();
+
 
   useEffect(() => {
     if (data) {
@@ -17,21 +27,6 @@ const PricingPackagesList: React.FC = () => {
     }
   }, [data]);
 
-  const handlePackageClick = (id: number, title: string) => {
-    switch (title) {
-      case "Custom":
-        router.push(`/app/subscription/customization/${id}`);
-        console.log("Navigating to:", `/app/subscription/customization/${id}`);
-
-        break;
-      case "Starter":
-        router.push(`/app/subscription/detail-revision/${id}`);
-        break;
-      default:
-        router.push(`/app/subscription/packages/${id}`);
-        break;
-    }
-  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -60,7 +55,7 @@ const PricingPackagesList: React.FC = () => {
               icon={pkg.icon}
               price={pkg.price}
               testPeriodDays={pkg.testPeriodDays}
-              onClick={() => handlePackageClick(pkg.id, pkg.title)}
+              onClick={() => handlePackageClick(pkg.id.toString(), pkg.title)}
             />
           ))}
       </Box>

@@ -10,53 +10,99 @@ import {
   Home as HomeIcon,
 } from '@mui/icons-material';
 
-// Centralized Rule-Based Navigation Logic
 export const navigateBasedOnRule = (currentStep: string, action: string, id?: number): string => {
+  // Ensure `id` is provided when required
+  if (!id && ["Custom", "Customize", "Starter", "Growth", "Enterprise", "Premium"].includes(action)) {
+    console.error("Error: ID is required for this action.");
+    return "/subscription/package-selection"; // Fallback route
+  }
+
   switch (currentStep) {
-    case '1-PackageSelection':
-      if (action === 'Starter') {
-        return `/app/subscription/detail-revision/${id}`;
-      } else if (action === 'Custom') {
-        return `/app/subscription/customization/${id}`;
+    case "1-PackageSelection":
+      // Redirect based on package selection
+      if (action === "Starter") {
+        console.log(`Redirecting to /subscription/starter-package/${id}`);
+        return `/subscription/starter-package/${id}`;
+      }
+      if (action === "Custom") {
+        console.log(`Redirecting to /subscription/custom-package/${id}`);
+        return `/subscription/custom-package/${id}`;
+      }
+      if (action === "Growth") {
+        console.log(`Redirecting to /subscription/growth/${id}`);
+        return `/subscription/growth/${id}`;
+      }
+      if (action === "Enterprise") {
+        console.log(`Redirecting to /subscription/enterprise/${id}`);
+        return `/subscription/enterprise/${id}`;
+      }
+      if (action === "Premium") {
+        console.log(`Redirecting to /subscription/premium/${id}`);
+        return `/subscription/premium/${id}`;
       }
       break;
 
-    case '2-CustomPackage':
-      if (action === 'Customize') {
-        return `/app/subscription/customization/${id}`;
-      } else if (action === 'Cancel') {
-        return '/app/subscription/custom-package';
+    case "2-CustomPackage":
+      // Handle customization from custom package
+      if (action === "Customize") {
+        console.log(`Redirecting to /subscription/customization/${id}`);
+        return `/subscription/customization/${id}`;
       }
       break;
 
-    case '1.0-StarterPackage':
-    case '2.0-Customization':
-      if (action === 'ReviewDetails') {
-        return `/app/subscription/detail-revision/${id}`;
+    case "1.0-StarterPackage":
+      // Handle transition from Starter Package to Detail Revision
+      if (action === "Review") {
+        console.log(`Redirecting to /subscription/detail-revision/${id}`);
+        return `/subscription/detail-revision/${id}`;
       }
       break;
 
-    case '3-DetailRevision':
-      if (action === 'Confirm') {
-        return `/app/subscription/product-detail/${id}`;
-      } else if (action === 'ChangePackage') {
-        return '/app/subscription/package-selection';
+    case "2.0-Customization":
+      // Handle transition from Customization to Detail Revision
+      if (action === "Review") {
+        console.log(`Redirecting to /subscription/detail-revision/${id}`);
+        return `/subscription/detail-revision/${id}`;
       }
       break;
 
-    case '4-ProductDetail':
-      if (action === 'Finalize') {
-        return '/app/subscription/completion';
+    case "3-DetailRevision":
+      // Handle transition from Detail Revision to Product Detail
+      if (action === "Confirm") {
+        console.log(`Redirecting to /subscription/product-detail/${id}`);
+        return `/subscription/product-detail/${id}`;
+      }
+      // Handle backtracking to Package Selection
+      if (action === "Back") {
+        console.log("Redirecting to /subscription/package-selection");
+        return "/subscription/package-selection";
+      }
+      break;
+
+    case "4-ProductDetail":
+      // Handle transition from Product Detail to Completion
+      if (action === "Finalize") {
+        console.log("Redirecting to /subscription/completion");
+        return "/subscription/completion";
       }
       break;
 
     default:
-      return '/app/subscription/package-selection';
+      // Fallback for unexpected cases
+      console.warn("Invalid step or action. Redirecting to /subscription/package-selection.");
+      return "/subscription/package-selection";
   }
 
-  // Fallback to a default path
-  return '/';
+  // Final fallback
+  console.warn("Unexpected case: Returning root fallback /");
+  return "/";
 };
+
+
+
+
+
+
 
 // Route interface definition
 export interface Route {
