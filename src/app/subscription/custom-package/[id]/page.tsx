@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation"; // Use next/navigation instead of next/router
+import StyledButton from "@/components/ui/button/StyledButton";
 
 const CustomPackage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -12,15 +13,23 @@ const CustomPackage = ({ params }: { params: { id: string } }) => {
   };
 
   const handleCancel = () => {
-    router.push(`/subscription/package-selection`); // Navigate back to package selection
+    router.push(`/subscription/package-selection`);
   };
 
   return (
     <div>
       <h1>Custom Package Details</h1>
       <p>Package ID: {id}</p>
-      <button onClick={handleCustomize}>Customize</button>
-      <button onClick={handleCancel}>Cancel</button>
+      <StyledButton
+        onClick={handleCustomize}
+        label="Customize"
+        sx={{ backgroundColor: "#1E3A8A", color: "white", margin: 1 }}
+      />
+      <StyledButton
+        onClick={handleCancel}
+        label={"Cancel"}
+        sx={{ backgroundColor: "#ff5555", color: "white"}}
+      />
     </div>
   );
 };

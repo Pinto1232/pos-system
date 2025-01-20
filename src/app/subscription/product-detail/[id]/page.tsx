@@ -1,12 +1,14 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/router";
+import { useParams, useRouter } from "next/navigation";
 
 const ProductDetail = () => {
-  const router = useRouter();
-  const { id } = router.query;
+  const params = useParams(); // Retrieve dynamic route parameters
+  const router = useRouter(); // Use Next.js navigation hook
+  const id = params?.id; // Safely get the "id" parameter
 
+  // Handle the "Finalize" button click
   const handleFinalize = () => {
     router.push(`/subscription/completion`);
   };
