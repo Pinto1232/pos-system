@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import Image from 'next/image';
+
 
 const StartPackage = () => {
   const router = useRouter();
@@ -37,9 +39,11 @@ const StartPackage = () => {
       <div className="bg-white shadow-lg rounded-lg max-w-md w-full p-6">
         {/* Header Section */}
         <header className="flex items-center space-x-4">
-          <img
+          <Image
             src={packageDetails.icon}
             alt={`${packageDetails.title} Icon`}
+            width={64} 
+            height={64} 
             className="w-16 h-16"
           />
           <div>
