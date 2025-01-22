@@ -14,7 +14,7 @@ import AppDrawer from '../Drawer/AppDrawer';
 
 const theme = createTheme();
 
-const MainHeader: React.FC<NavBarProps> = ({ testPeriod, onMenuClick }) => {
+const MainHeader: React.FC<NavBarProps> = ({ testPeriod, onMenuClick, children }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -90,6 +90,7 @@ const MainHeader: React.FC<NavBarProps> = ({ testPeriod, onMenuClick }) => {
             </>
           )}
         </Toolbar>
+        {children} {/* Render children */}
       </AppBar>
     </ThemeProvider>
   );

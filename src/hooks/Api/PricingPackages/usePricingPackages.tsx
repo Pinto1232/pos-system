@@ -12,8 +12,8 @@ export interface PricingPackage {
 }
 
 async function fetchPricingPackages(): Promise<PricingPackage[]> {
-  //console.log("API URL in fetchPricingPackages:", process.env.NEXT_PUBLIC_API_URL);
-  //console.log("API TOKEN in fetchPricingPackages:", process.env.NEXT_PUBLIC_API_TOKEN);
+  console.log("API URL in fetchPricingPackages:", process.env.NEXT_PUBLIC_API_URL);
+console.log("API TOKEN in fetchPricingPackages:", process.env.NEXT_PUBLIC_API_TOKEN);
 
   if (!process.env.NEXT_PUBLIC_API_URL || !process.env.NEXT_PUBLIC_API_TOKEN) {
     throw new Error("Missing API URL or API token in environment variables");
