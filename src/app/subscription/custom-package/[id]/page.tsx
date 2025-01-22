@@ -1,14 +1,18 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import StyledButton from "@/components/ui/button/StyledButton";
+import React from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import StyledButton from '@/components/ui/button/StyledButton';
+
+type Params = {
+  id: string;
+};
 
 export default function CustomPackage() {
+  const params = useParams() as Params;
   const router = useRouter();
 
-  // @ts-expect-error: router.query is not typed
-  const { id } = router.query; // Suppress the TypeScript error temporarily
+  const { id } = params;
 
   const handleCustomize = () => {
     router.push(`/subscription/customization/${id}`);
@@ -25,12 +29,12 @@ export default function CustomPackage() {
       <StyledButton
         onClick={handleCustomize}
         label="Customize"
-        sx={{ backgroundColor: "#1E3A8A", color: "white", margin: 1 }}
+        sx={{ backgroundColor: '#1E3A8A', color: 'white', margin: 1 }}
       />
       <StyledButton
         onClick={handleCancel}
         label="Cancel"
-        sx={{ backgroundColor: "#ff5555", color: "white" }}
+        sx={{ backgroundColor: '#ff5555', color: 'white' }}
       />
     </div>
   );
