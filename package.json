@@ -2,37 +2,42 @@
   "name": "pos-frontend",
   "version": "0.1.0",
   "private": true,
-  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "echo $NEXT_PUBLIC_API_URL && echo $NEXT_PUBLIC_API_TOKEN && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^6.1.4",
-    "@mui/material": "^6.3.1",
-    "@reduxjs/toolkit": "^2.3.0",
-    "@tanstack/react-query": "^5.64.1",
-    "axios": "^1.7.7",
+    "@mui/icons-material": "^6.4.2",
+    "@mui/material": "^6.4.2",
+    "@mui/system": "^6.4.2",
+    "@mui/utils": "^6.4.2",
+    "@react-keycloak/web": "^3.4.0",
+    "@reduxjs/toolkit": "^2.2.1",
+    "@tanstack/react-query": "^5.65.1",
+    "axios": "^1.7.2",
     "dotenv": "^16.4.7",
-    "next": "^15.1.4",
-    "next-auth": "^4.24.8",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-query": "^3.39.3",
+    "keycloak-js": "^26.1.0",
+    "next": "15.1.6",
+    "react": "19.0.0-rc-de68d2f4-20241204",
+    "react-dom": "19.0.0-rc-de68d2f4-20241204",
     "react-redux": "^9.1.2",
-    "swr": "^2.2.5",
-    "typescript": "^5.7.3"
+    "swr": "^2.3.0"
   },
   "devDependencies": {
-    "@types/node": "^20.17.12",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.14"
+    "@types/node": "^22.12.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^15.1.6",
+    "typescript": "^5.4.5"
+  },
+  "resolutions": {
+    "@types/react": "19.0.3",
+    "@types/react-dom": "19.0.3"
   }
 }

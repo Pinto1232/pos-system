@@ -1,66 +1,75 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
-import PricingPackage from "./PricingPackage";
-import { pricingPackageStyles } from "./PricingPackage.styles";
+import { Box, Button, Typography } from "@mui/material";
+import { pricingPackageStyles } from "@/components/package/PricingPackage.styles";
 import { usePricingPackage } from "@/hooks/Api/PricingPackages/usePricingPackages";
-import { navigateBasedOnRule } from "@/routes/appRoutes";
+import PricingPackage from "@/components/package/PricingPackage";
 import { useRouter } from "next/navigation";
-
+import { useKeycloak } from "@react-keycloak/web";
+import { PricingPackage as PricingPackageType } from "@/types/types.js";
 const PricingPackagesList: React.FC = () => {
   const router = useRouter();
-
-
-  const handlePackageClick = (id: string, title: string) => {
-    const nextRoute = navigateBasedOnRule("1-PackageSelection", title, parseInt(id));
-    console.log(`Navigating to: ${nextRoute}`);
-    router.push(nextRoute); // Use the router object to navigate
-  };
-
-  const { data, error, isLoading } = usePricingPackage();
-
+  const { keycloak, initialized } = useKeycloak();
 
   useEffect(() => {
-    if (data) {
-      console.log("Fetched pricing package data:", data);
+    if (initialized && !keycloak.authenticated) {
+      keycloak.login({ redirectUri: window.location.href });
     }
-  }, [data]);
+  }, [keycloak, initialized]);
 
+  const { data, error, isLoading } = usePricingPackage();
+  console.log("My data", data);
+
+  const handlePackageClick = (id: string, title: string) => {
+    if (!keycloak.authenticated) {
+      keycloak.login({ redirectUri: window.location.href });
+      return;
+    }
+    
+    const nextRoute = navigateBasedOnRule("1-PackageSelection", title, parseInt(id));
+    router.push(nextRoute);
+  };
+
+  if (!initialized) {
+    return <Box>Initializing authentication...</Box>;
+  }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Box>Loading packages...</Box>;
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <Box>
+        Error loading packages: {error.message}
+        <Button onClick={() => keycloak.login()}>Login</Button>
+      </Box>
+    );
   }
 
   return (
-    <div>
+    <Box>
       <Typography variant="h4" sx={pricingPackageStyles.heading}>
         Select Your Plan
       </Typography>
 
       <Box display="flex" justifyContent="center" alignItems="center" flexWrap="wrap">
-        {data &&
-          data.map((pkg) => (
-            <PricingPackage
-              key={pkg.id}
-              id={pkg.id}
-              title={pkg.title}
-              description={pkg.description}
-              descriptionList={pkg.descriptionList}
-              extraDescription={pkg.extraDescription}
-              icon={pkg.icon}
-              price={pkg.price}
-              testPeriodDays={pkg.testPeriodDays}
-              onClick={() => handlePackageClick(pkg.id.toString(), pkg.title)}
-            />
-          ))}
+        {data?.map((pkg: PricingPackageType) => ( // Add explicit type annotation
+          <PricingPackage
+            key={pkg.id}
+            {...pkg}
+            onClick={() => handlePackageClick(pkg.id.toString(), pkg.title)}
+          />
+        ))}
       </Box>
-    </div>
+    </Box>
   );
 };
+
+// Implement proper navigation logic
+function navigateBasedOnRule(step: string, title: string, id: number): string {
+  return `/package-selection/${id}?step=${encodeURIComponent(step)}&title=${encodeURIComponent(title)}`;
+}
 
 export default PricingPackagesList;

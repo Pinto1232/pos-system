@@ -3,6 +3,7 @@
 
 import React, { ReactNode } from 'react';
 import MainHeader from '@components/navbar/MainHeader';
+import { Box } from '@mui/material';
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <>
       <MainHeader testPeriod="12 days remaining" onMenuClick={handleMenuClick} />
-      <main>{children}</main>
+      <Box>{children}</Box>
     </>
   );
 };

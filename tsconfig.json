@@ -1,61 +1,37 @@
 {
   "compilerOptions": {
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
-    "target": "ES6",
-    "allowJs": true,
-    "checkJs": false,
-    "skipLibCheck": false,
+    "allowJs": false, // Disable JS in TS project
+    "skipLibCheck": true,
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "typeRoots": [
-      "./types",
-      "./node_modules/@types"
-    ],
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
-    "declaration": false,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "*"
+        "./src/*"
       ],
       "@components/*": [
-        "components/*"
-      ],
-      "@hooks/*": [
-        "hooks/*"
-      ],
-      "@services/*": [
-        "services/*"
-      ],
-      "@styles/*": [
-        "styles/*"
-      ],
-      "@types/*": [
-        "types/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ],
-      "@features/*": [
-        "features/*"
-      ],
-      "@store/*": [
-        "store/*"
+        "./src/components/*"
       ]
     },
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "types": ["node", "react", "react-dom", "next"],
+    "typeRoots": [
+      "node_modules/@types",
+      "./types"
+    ],
     "plugins": [
       {
         "name": "next"
@@ -66,7 +42,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"

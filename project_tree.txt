@@ -1,0 +1,137 @@
+.
+|-- public
+|   |-- assets
+|   |   |-- banner-pos.jpg
+|   |   `-- banner-pos.png
+|   `-- silent-check-sso.html
+|-- src
+|   |-- app
+|   |   |-- auth
+|   |   |   |-- login
+|   |   |   |   |-- head.tsx
+|   |   |   |   |-- login.style.ts
+|   |   |   |   `-- page.tsx
+|   |   |   |-- register
+|   |   |   |   |-- head.tsx
+|   |   |   |   `-- page.tsx
+|   |   |   `-- layout.tsx
+|   |   |-- dashboard
+|   |   |   `-- page.tsx
+|   |   |-- fonts
+|   |   |   |-- GeistMonoVF.woff
+|   |   |   `-- GeistVF.woff
+|   |   |-- styles
+|   |   |   |-- globals.css
+|   |   |   |-- layout.css.css
+|   |   |   `-- typography.css
+|   |   |-- subscription
+|   |   |   |-- completion
+|   |   |   |   `-- page.tsx
+|   |   |   |-- custom-package
+|   |   |   |   `-- [id]
+|   |   |   |       `-- page.tsx
+|   |   |   |-- customization
+|   |   |   |   `-- [id]
+|   |   |   |       `-- page.tsx
+|   |   |   |-- detail-revision
+|   |   |   |   `-- [id]
+|   |   |   |       `-- page.tsx
+|   |   |   |-- enterprise
+|   |   |   |   `-- [id]
+|   |   |   |       `-- page.tsx
+|   |   |   |-- growth
+|   |   |   |   `-- [id]
+|   |   |   |       `-- page.tsx
+|   |   |   |-- package-selection
+|   |   |   |   `-- page.tsx
+|   |   |   |-- premium
+|   |   |   |   `-- [id]
+|   |   |   |       `-- page.tsx
+|   |   |   |-- product-detail
+|   |   |   |   `-- [id]
+|   |   |   |       `-- page.tsx
+|   |   |   `-- starter-package
+|   |   |       `-- [id]
+|   |   |           `-- page.tsx
+|   |   |-- favicon.ico
+|   |   |-- globals.css
+|   |   |-- layout.tsx
+|   |   |-- page.tsx
+|   |   `-- providers.tsx
+|   |-- assets
+|   |   `-- styles
+|   |       |-- globals.css
+|   |       `-- theme.css
+|   |-- components
+|   |   |-- AuthenticationHeader
+|   |   |   `-- AuthenticationHeader.tsx
+|   |   |-- Drawer
+|   |   |   `-- AppDrawer.tsx
+|   |   |-- banner
+|   |   |   |-- Jumbotron.styles.ts
+|   |   |   |-- Jumbotron.tsx
+|   |   |   `-- Jumbotron.types.ts
+|   |   |-- globalLayout
+|   |   |   `-- Layout.tsx
+|   |   |-- navbar
+|   |   |   |-- MainHeader.tsx
+|   |   |   |-- NavBar.styles.ts
+|   |   |   `-- NavBar.types.ts
+|   |   |-- package
+|   |   |   |-- PricingPackage.styles.ts
+|   |   |   |-- PricingPackage.tsx
+|   |   |   |-- PricingPackage.types.ts
+|   |   |   `-- PricingPackagesList.tsx
+|   |   |-- subscription
+|   |   |   |-- Customization.tsx
+|   |   |   `-- DetailRevision.tsx
+|   |   `-- ui
+|   |       |-- button
+|   |       |   `-- StyledButton.tsx
+|   |       `-- checkbox
+|   |           `-- Checkbox.tsx
+|   |-- context
+|   |   `-- AuthContext.tsx
+|   |-- hooks
+|   |   |-- Api
+|   |   |   `-- PricingPackages
+|   |   |       |-- usePricingPackages.d.ts
+|   |   |       `-- usePricingPackages.tsx
+|   |   `-- useAuth
+|   |       `-- useAuth.ts
+|   |-- lib
+|   |   `-- keycloak.ts
+|   |-- pages
+|   |   `-- _app.tsx
+|   |-- routes
+|   |   `-- appRoutes.ts
+|   |-- services
+|   |   |-- auth
+|   |   |   |-- authSlice.d.ts
+|   |   |   `-- authSlice.js
+|   |   |-- next
+|   |   |   `-- cache.d.ts
+|   |   |-- store
+|   |   |   |-- store.d.ts
+|   |   |   |-- store.js
+|   |   |   |-- store.ts
+|   |   |   `-- types.ts
+|   |   `-- fetchAppRoutes.ts
+|   |-- types
+|   |   |-- global.d.ts
+|   |   |-- next.d.ts
+|   |   |-- react.d.ts
+|   |   `-- types.ts
+|   `-- utils
+|       `-- queryClient.ts
+|-- README.md
+|-- listStructure.js
+|-- next-env.d.ts
+|-- next.config.mjs
+|-- package-lock.json
+|-- package.json
+|-- project_tree.txt
+|-- tree_list.py
+`-- tsconfig.json
+
+56 directories, 78 files

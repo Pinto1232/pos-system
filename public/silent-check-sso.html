@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Silent Check SSO</title>
+    <script>
+      // Keycloak Silent Check Script
+      const init = () => {
+        window.addEventListener('message', (event) => {
+          if (event.data === 'frame-check') {
+            window.parent.postMessage('frame-loaded', '*');
+          }
+        }, false);
+      };
+
+      window.addEventListener('DOMContentLoaded', init);
+    </script>
+  </head>
+  <body>
+    <!-- Silent check iframe content -->
+  </body>
+</html>

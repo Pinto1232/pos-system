@@ -1,14 +1,9 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
-console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
-console.log('NEXT_PUBLIC_API_TOKEN:', process.env.NEXT_PUBLIC_API_TOKEN);
-
+// next.config.js
 const nextConfig = {
-  env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    NEXT_PUBLIC_API_TOKEN: process.env.NEXT_PUBLIC_API_TOKEN,
-  },
+  // Next.js 12+ automatically exposes .env variables prefixed with NEXT_PUBLIC_
+  // Remove manual env declaration to avoid conflicts
+  reactStrictMode: true,
+  swcMinify: true,
 };
 
 export default nextConfig;

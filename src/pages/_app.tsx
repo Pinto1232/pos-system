@@ -1,19 +1,26 @@
 // pages/_app.tsx
-/* eslint-disable react/react-in-jsx-scope */
-import { AppProps } from 'next/app';
-import { QueryClientProvider } from '@tanstack/react-query';
-import queryClient from '@/utils/queryClient'; // Adjust the path if necessary
-import { AuthProvider } from '@/context/AuthContext'; // Ensure the path is correct
+import React from 'react'; 
+import type { AppProps } from 'next/app';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from '@/context/AuthContext';
 import Layout from '@/components/globalLayout/Layout';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import theme from '@/styles/theme'; // Create this theme file
+
+// Create a client
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </AuthProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AuthProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
