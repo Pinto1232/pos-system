@@ -1,6 +1,6 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useKeycloak } from "@react-keycloak/web";
-import { PricingPackage } from "@/types";
+import { PricingPackage } from "@/types/types";
 
 export function usePricingPackage(): UseQueryResult<PricingPackage[], Error> {
   const { keycloak, initialized } = useKeycloak();
