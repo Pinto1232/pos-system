@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import apiClient from "../api/apiClient";
+import React, { useState } from "react";
+import apiClient from "../apiClient";
 
 export default function Login() {
   const [username, setUsername] = useState("");

@@ -1,30 +1,25 @@
 "use client";
-import { useEffect, useState } from "react";
-import apiClient from "../api/apiClient";
+import { usePricingPackages } from "@/hooks/usePricing";
 
-// ✅ Define User type
-type User = {
-  username: string;
-  email: string;
-  id: number; 
-};
+export default function DashboardPage() {
+  const { data: packages, isLoading, error } = usePricingPackages();
 
-export default function Dashboard() {
-  const [user, setUser] = useState<User | null>(null); 
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">Failed to fetch data</p>;
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await apiClient.get<User>("/users/me", {
-          headers: { Authorization: `Bearer ${sessionStorage.getItem("access_token")}` },
-        });
-        setUser(response.data);
-      } catch (error) {
-        console.error("Failed to fetch user data", error);
-      }
-    };
-    fetchUser();
-  }, []);
-
-  return <div>{user ? <h1>Welcome, {user.username}!</h1> : <p>Loading...</p>}</div>;
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-4">Pricing Packages</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {packages?.map((pkg) => (
+          <div key={pkg.Id} className="p-4 border rounded-lg shadow">
+            <h2 className="text-xl font-semibold">{pkg.Title}</h2>
+            <p>{pkg.ExtraDescription}</p>
+            <p className="font-bold">Price: ${pkg.Price}</p>
+            <p>Trial Period: {pkg.TestPeriodDays} days</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
