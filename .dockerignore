@@ -1,4 +1,4 @@
-# Ignore unnecessary files to speed up the build
+# Ignore build and dependency files
 bin/
 obj/
 node_modules/
@@ -6,6 +6,6 @@ node_modules/
 .idea/
 logs/
 *.log
-*.db
 *.mdf
 *.ldf
+*.db
