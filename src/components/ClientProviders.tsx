@@ -13,8 +13,8 @@ const queryClient = new QueryClient();
 export default function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <QueryClientProvider client={queryClient}> {/* ✅ Wrap QueryClientProvider first */}
-        <AuthProvider> {/* ✅ Now QueryClient is available inside AuthProvider */}
+      <QueryClientProvider client={queryClient}> 
+        <AuthProvider> 
           <ThemeProvider theme={theme}>
             <CssBaseline />
             {children}
