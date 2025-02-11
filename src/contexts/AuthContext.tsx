@@ -1,11 +1,13 @@
+// src/contexts/AuthContext.tsx
 'use client';
+
 import React, {
   createContext,
   useState,
   useEffect,
   ReactNode,
   useRef,
-  useCallback
+  useCallback,
 } from 'react';
 import { KeycloakInstance } from 'keycloak-js';
 import keycloakInstance from '@/auth/keycloak';
@@ -32,78 +34,68 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
   const keycloakRef = useRef<KeycloakInstance>(keycloakInstance);
 
-  // Main initialization effect
   useEffect(() => {
     const kc = keycloakRef.current;
-    let refreshInterval: NodeJS.Timeout;
+    let refreshInterval: NodeJS.Timeout | null = null;
 
     const initializeAuth = async () => {
       try {
         const authenticated = await kc.init({
           onLoad: 'login-required',
-          redirectUri: 'http://localhost:7005/',
+          redirectUri: process.env.NEXT_PUBLIC_REDIRECT_URI,
           checkLoginIframe: false,
           pkceMethod: 'S256',
           responseMode: 'query',
-          enableLogging: true
+          enableLogging: true,
         });
 
         if (authenticated) {
-          await handleSuccessfulAuth(kc);
+          if (kc.token) {
+            setToken(kc.token);
+            localStorage.setItem('accessToken', kc.token);
+          }
+          setInitialized(true);
+
+          // Start token refresh every minute
+          refreshInterval = setInterval(async () => {
+            try {
+              const refreshed = await kc.updateToken(70);
+              if (refreshed && kc.token) {
+                setToken(kc.token);
+                localStorage.setItem('accessToken', kc.token);
+              }
+            } catch (refreshError) {
+              console.error('Token refresh failed:', refreshError);
+              await kc.logout({
+                redirectUri: process.env.NEXT_PUBLIC_LOGOUT_REDIRECT,
+              });
+              setError('Session expired. Please login again.');
+            }
+          }, 60000);
         } else {
           await kc.login();
         }
       } catch (err) {
-        handleAuthError(err);
-      }
-    };
-
-    const handleSuccessfulAuth = async (kc: KeycloakInstance) => {
-      if (kc.token) {
-        setToken(kc.token);
-        localStorage.setItem('accessToken', kc.token);
+        const errorMessage =
+          err instanceof Error ? err.message : 'Unknown authentication error';
+        console.error('Authentication Error:', errorMessage);
+        setError(errorMessage);
+        localStorage.removeItem('accessToken');
         setInitialized(true);
-        startTokenRefresh(kc);
       }
     };
 
-    const startTokenRefresh = (kc: KeycloakInstance) => {
-      refreshInterval = setInterval(async () => {
-        try {
-          const refreshed = await kc.updateToken(70);
-          if (refreshed && kc.token) {
-            setToken(kc.token);
-            localStorage.setItem('accessToken', kc.token);
-          }
-        } catch (refreshError) {
-          console.error('Token refresh failed:', refreshError);
-          await kc.logout();
-          setError('Session expired. Please login again.');
-        }
-      }, 60000);
-    };
-
-    const handleAuthError = (error: unknown) => {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown authentication error';
-      console.error('Authentication Error:', errorMessage);
-      setError(errorMessage);
-      localStorage.removeItem('accessToken');
-      setInitialized(true);
-    };
-
-    if (!initialized) {
-      initializeAuth();
-    }
+    initializeAuth();
 
     return () => {
       if (refreshInterval) clearInterval(refreshInterval);
     };
-  }, [initialized]);
+  }, []);
 
   const login = useCallback(async () => {
     try {
       await keycloakRef.current.login({
-        redirectUri: 'http://localhost:3000/dashboard'
+        redirectUri: process.env.NEXT_PUBLIC_LOGIN_REDIRECT,
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';
@@ -114,7 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(async () => {
     try {
       await keycloakRef.current.logout({
-        redirectUri: 'http://localhost:3000/login'
+        redirectUri: process.env.NEXT_PUBLIC_LOGOUT_REDIRECT,
       });
       localStorage.removeItem('accessToken');
       setToken(null);
@@ -130,7 +122,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     login,
     logout,
     authenticated: !!token,
-    error
+    error,
   };
 
   if (error) {

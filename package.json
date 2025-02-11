@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/dotenv": "^8.2.3",
     "@types/next-auth": "^3.15.0",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -1,21 +1,67 @@
+// src/api/axiosClient.ts
+
 import axios from 'axios';
 
+// Create an Axios instance with base configurations
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:5000/api', 
-  withCredentials: true, 
+  // Assuming your API URL is defined as NEXT_PUBLIC_API_URL in your .env.local
+  baseURL: process.env.NEXT_PUBLIC_API_URL + '/api',
+  withCredentials: true,
+  timeout: 10000, // Timeout in milliseconds
 });
 
-
+// Request Interceptor: Attach Authorization Token
 axiosClient.interceptors.request.use(
   (config) => {
-     // store the token in localStorage once authenticated
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.error('Error retrieving access token:', error);
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('Request Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+// Response Interceptor: Handle API Errors
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (!error.response) {
+      console.error('Network Error or Server Unreachable:', error.message);
+      return Promise.reject(new Error('Network error. Please try again.'));
+    }
+
+    const { status, data } = error.response;
+
+    switch (status) {
+      case 400:
+        console.error('Bad Request:', data);
+        return Promise.reject(new Error(data?.message || 'Bad request.'));
+      case 401:
+        console.warn('Unauthorized: Token may be expired.');
+        localStorage.removeItem('accessToken');
+        return Promise.reject(new Error('Unauthorized. Please log in again.'));
+      case 403:
+        console.warn('Forbidden: You do not have permission to access this resource.');
+        return Promise.reject(new Error('Forbidden. You do not have access.'));
+      case 404:
+        console.warn('Not Found:', data);
+        return Promise.reject(new Error('Requested resource not found.'));
+      case 500:
+        console.error('Server Error:', data);
+        return Promise.reject(new Error('Internal server error. Try again later.'));
+      default:
+        console.error('API Error:', data);
+        return Promise.reject(new Error(data?.message || 'An unknown error occurred.'));
+    }
+  }
 );
 
 export default axiosClient;
