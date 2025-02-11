@@ -1,95 +1,148 @@
-"use client";
-import React, { createContext, useState, useEffect, ReactNode, useRef } from 'react';
+'use client';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useRef,
+  useCallback
+} from 'react';
 import { KeycloakInstance } from 'keycloak-js';
 import keycloakInstance from '@/auth/keycloak';
 
 export interface AuthContextProps {
-  keycloak: KeycloakInstance;
   token: string | null;
-  login: () => void;
-  logout: () => void;
+  login: () => Promise<void>;
+  logout: () => Promise<void>;
   authenticated: boolean;
+  error: string | null;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
-  keycloak: keycloakInstance,
   token: null,
-  login: () => {},
-  logout: () => {},
+  login: async () => {},
+  logout: async () => {},
   authenticated: false,
+  error: null,
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [initialized, setInitialized] = useState(false);
-  // Create a ref for the Keycloak instance (imported from a separate module)
+  const [error, setError] = useState<string | null>(null);
   const keycloakRef = useRef<KeycloakInstance>(keycloakInstance);
 
+  // Main initialization effect
   useEffect(() => {
     const kc = keycloakRef.current;
-    if (!initialized) {
-      kc
-        .init({
+    let refreshInterval: NodeJS.Timeout;
+
+    const initializeAuth = async () => {
+      try {
+        const authenticated = await kc.init({
           onLoad: 'login-required',
-          // Make sure this redirectUri matches what is configured in Keycloak for this client.
           redirectUri: 'http://localhost:7005/',
-        })
-        .then((authenticated) => {
-          if (authenticated) {
-            setToken(kc.token ?? null);
-            localStorage.setItem('accessToken', kc.token ?? '');
-          } else {
-            kc.login();
-          }
-          setInitialized(true);
-        })
-        .catch((err) => {
-          console.error("Keycloak initialization error", err);
+          checkLoginIframe: false,
+          pkceMethod: 'S256',
+          responseMode: 'query',
+          enableLogging: true
         });
 
-      // Refresh token periodically (every 60 seconds)
-      const refreshInterval = setInterval(() => {
-        kc
-          .updateToken(70)
-          .then((refreshed) => {
-            if (refreshed) {
-              setToken(kc.token ?? null);
-              localStorage.setItem('accessToken', kc.token ?? '');
-            }
-          })
-          .catch(() => {
-            console.error('Failed to refresh token');
-          });
-      }, 60000);
+        if (authenticated) {
+          await handleSuccessfulAuth(kc);
+        } else {
+          await kc.login();
+        }
+      } catch (err) {
+        handleAuthError(err);
+      }
+    };
 
-      return () => clearInterval(refreshInterval);
+    const handleSuccessfulAuth = async (kc: KeycloakInstance) => {
+      if (kc.token) {
+        setToken(kc.token);
+        localStorage.setItem('accessToken', kc.token);
+        setInitialized(true);
+        startTokenRefresh(kc);
+      }
+    };
+
+    const startTokenRefresh = (kc: KeycloakInstance) => {
+      refreshInterval = setInterval(async () => {
+        try {
+          const refreshed = await kc.updateToken(70);
+          if (refreshed && kc.token) {
+            setToken(kc.token);
+            localStorage.setItem('accessToken', kc.token);
+          }
+        } catch (refreshError) {
+          console.error('Token refresh failed:', refreshError);
+          await kc.logout();
+          setError('Session expired. Please login again.');
+        }
+      }, 60000);
+    };
+
+    const handleAuthError = (error: unknown) => {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown authentication error';
+      console.error('Authentication Error:', errorMessage);
+      setError(errorMessage);
+      localStorage.removeItem('accessToken');
+      setInitialized(true);
+    };
+
+    if (!initialized) {
+      initializeAuth();
     }
+
+    return () => {
+      if (refreshInterval) clearInterval(refreshInterval);
+    };
   }, [initialized]);
 
-  const login = () => {
-    keycloakRef.current.login();
+  const login = useCallback(async () => {
+    try {
+      await keycloakRef.current.login({
+        redirectUri: 'http://localhost:3000/dashboard'
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+      setError(errorMessage);
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await keycloakRef.current.logout({
+        redirectUri: 'http://localhost:3000/login'
+      });
+      localStorage.removeItem('accessToken');
+      setToken(null);
+      setInitialized(false);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Logout failed';
+      setError(errorMessage);
+    }
+  }, []);
+
+  const contextValue = {
+    token,
+    login,
+    logout,
+    authenticated: !!token,
+    error
   };
 
-  const logout = () => {
-    keycloakRef.current.logout();
-    localStorage.removeItem('accessToken');
-    setToken(null);
-  };
+  if (error) {
+    return <div className="auth-error">Authentication Error: {error}</div>;
+  }
 
   if (!initialized) {
-    return <div>Loading authentication...</div>;
+    return <div className="auth-loading">Initializing authentication...</div>;
   }
 
   return (
-    <AuthContext.Provider
-      value={{
-        keycloak: keycloakRef.current,
-        token,
-        login,
-        logout,
-        authenticated: !!token,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

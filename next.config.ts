@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    turbo: true, 
+    turbo: false,
   },
-  transpilePackages: ["next-auth"], 
+  transpilePackages: ["next-auth"],
 };
 
 export default nextConfig;
