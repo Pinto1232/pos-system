@@ -2,7 +2,7 @@
 
 import React from "react";
 import { QueryClient, QueryClientProvider, DefaultOptions } from "@tanstack/react-query";
-import { AuthProvider } from "@/contexts/AuthContext";
+import  AuthProvider  from "@/contexts/AuthContext";
 import { AxiosError } from "axios"; 
 
 

@@ -1,4 +1,3 @@
-// src/components/PricingPackages.tsx
 'use client';
 
 import React, { useContext, useEffect } from 'react';
@@ -16,7 +15,6 @@ interface PricingPackage {
   testPeriodDays: number;
 }
 
-// Function to fetch pricing packages (with pagination parameters)
 const fetchPricingPackages = async (pageNumber: number, pageSize: number) => {
   const response = await axiosClient.get(
     `/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`
@@ -25,7 +23,6 @@ const fetchPricingPackages = async (pageNumber: number, pageSize: number) => {
 };
 
 const PricingPackages = () => {
-  // Using the AuthContext ensures authentication is loaded before API calls
   useContext(AuthContext);
 
   const { data, error, isLoading } = useQuery({

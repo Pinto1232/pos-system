@@ -1,16 +1,11 @@
-// src/api/axiosClient.ts
-
 import axios from 'axios';
 
-// Create an Axios instance with base configurations
 const axiosClient = axios.create({
-  // Assuming your API URL is defined as NEXT_PUBLIC_API_URL in your .env.local
   baseURL: process.env.NEXT_PUBLIC_API_URL + '/api',
   withCredentials: true,
-  timeout: 10000, // Timeout in milliseconds
+  timeout: 10000, 
 });
 
-// Request Interceptor: Attach Authorization Token
 axiosClient.interceptors.request.use(
   (config) => {
     try {
@@ -29,7 +24,7 @@ axiosClient.interceptors.request.use(
   }
 );
 
-// Response Interceptor: Handle API Errors
+// Handle API Errors
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {

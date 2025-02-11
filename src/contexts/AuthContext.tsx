@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.tsx
 'use client';
 
 import React, {
@@ -28,7 +27,7 @@ export const AuthContext = createContext<AuthContextProps>({
   error: null,
 });
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
           setInitialized(true);
 
-          // Start token refresh every minute
+          // Start token refresh every minute using an arrow function
           refreshInterval = setInterval(async () => {
             try {
               const refreshed = await kc.updateToken(70);
@@ -139,3 +138,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
+export default AuthProvider;
