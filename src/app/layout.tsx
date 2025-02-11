@@ -1,33 +1,22 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+// This is a server component.
+import Providers from '@/components/Providers';
+import './globals.css';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+export const metadata = {
+  title: 'POS Frontend',
+  description: 'Your POS application',
+};
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-
-const queryClient = new QueryClient();
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <head>
-        <title>POS Frontend</title>
-      </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            {children}
-          </QueryClientProvider>
-        </AuthProvider>
+      <head>{/* Meta tags etc. */}</head>
+      <body>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

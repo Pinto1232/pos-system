@@ -1,10 +1,15 @@
-// src/auth/keycloak.ts
 import Keycloak from 'keycloak-js';
 
+console.log("Environment Variables in Keycloak Setup:");
+console.log("NEXT_PUBLIC_KEYCLOAK_URL:", process.env.NEXT_PUBLIC_KEYCLOAK_URL);
+console.log("NEXT_PUBLIC_KEYCLOAK_REALM:", process.env.NEXT_PUBLIC_KEYCLOAK_REALM);
+console.log("NEXT_PUBLIC_KEYCLOAK_CLIENT_ID:", process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID);
+
+// Directly use process.env without getEnv()
 const keycloak = new Keycloak({
-  url: 'http://localhost:8282/',
-  realm: 'pisval-pos-realm',
-  clientId: 'pos-backend',
+  url: process.env.NEXT_PUBLIC_KEYCLOAK_URL || "",
+  realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM || "",
+  clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || "",
 });
 
 export default keycloak;

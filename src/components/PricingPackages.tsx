@@ -1,4 +1,6 @@
-import React, { useContext } from 'react';
+'use client';
+
+import React, { useContext, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axiosClient from '@/api/axiosClient';
 import { AuthContext } from '@/contexts/AuthContext';
@@ -13,7 +15,6 @@ interface PricingPackage {
   testPeriodDays: number;
 }
 
-// Function to fetch pricing packages (with pagination parameters)
 const fetchPricingPackages = async (pageNumber: number, pageSize: number) => {
   const response = await axiosClient.get(
     `/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`
@@ -22,13 +23,18 @@ const fetchPricingPackages = async (pageNumber: number, pageSize: number) => {
 };
 
 const PricingPackages = () => {
-  useContext(AuthContext); 
-
+  useContext(AuthContext);
 
   const { data, error, isLoading } = useQuery({
     queryKey: ['pricingPackages'],
     queryFn: () => fetchPricingPackages(1, 10),
   });
+
+  useEffect(() => {
+    if (data) {
+      console.log('📦 Retrieved Pricing Packages:', data);
+    }
+  }, [data]);
 
   if (isLoading) {
     return <div>Loading pricing packages...</div>;

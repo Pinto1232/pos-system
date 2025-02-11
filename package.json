@@ -17,13 +17,14 @@
     "@tanstack/react-query-devtools": "^5.66.0",
     "axios": "^1.7.9",
     "keycloak-js": "^26.1.1",
-    "next": "15.1.6",
+    "next": "^15.1.6",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/dotenv": "^8.2.3",
     "@types/next-auth": "^3.15.0",
     "@types/node": "^20",
     "@types/react": "^19",
