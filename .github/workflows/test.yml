@@ -1,0 +1,30 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Frontend Tests
+        run: npm test
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Restore .NET Dependencies
+        run: dotnet restore
+
+      - name: Run Backend Tests
+        run: dotnet test
