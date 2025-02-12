@@ -9,7 +9,7 @@ console.log("NEXT_PUBLIC_KEYCLOAK_CLIENT_ID:", process.env.NEXT_PUBLIC_KEYCLOAK_
 const keycloak = new Keycloak({
   url: process.env.NEXT_PUBLIC_KEYCLOAK_URL || "",
   realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM || "",
-  clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || "",
+  clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || ""
 });
 
 export default keycloak;
