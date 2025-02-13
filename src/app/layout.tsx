@@ -1,4 +1,5 @@
 import Providers from '@/components/providers/Providers';
+import { LoginFormProvider } from '@/contexts/LoginFormContext';
 import './globals.css';
 import Layout from '@/layouts/Layout';
 
@@ -16,9 +17,11 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body>
-        <Providers>
-          <Layout>{children}</Layout>
-        </Providers>
+        <LoginFormProvider>
+          <Providers>
+            <Layout>{children}</Layout>
+          </Providers>
+        </LoginFormProvider>
       </body>
     </html>
   );

@@ -10,7 +10,6 @@ const Footer: React.FC = memo(() => {
   return (
     <footer className={styles.footer}>
       <Container maxWidth="lg">
-        {/* Top Section - Subscription */}
         <Box className={styles.subscription}>
           <Typography variant="h5" className={styles.heading}>
             SUBSCRIBE NOW TO
@@ -28,12 +27,9 @@ const Footer: React.FC = memo(() => {
           </Box>
         </Box>
 
-        {/* Divider */}
         <Box className={styles.divider} />
 
-        {/* Main Footer Content */}
         <Grid container spacing={4} className={styles.footerContent}>
-          {/* Company Section */}
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="h6" className={styles.sectionTitle}>Company</Typography>
             <ul className={styles.list}>
@@ -44,7 +40,6 @@ const Footer: React.FC = memo(() => {
             </ul>
           </Grid>
 
-          {/* Contact Section */}
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="h6" className={styles.sectionTitle}>Contact</Typography>
             <Typography className={styles.text}>Tel: +1 5263 2540 981</Typography>
@@ -53,7 +48,6 @@ const Footer: React.FC = memo(() => {
             <Typography className={styles.text}>Email: career@career.com</Typography>
           </Grid>
 
-          {/* Location Section */}
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="h6" className={styles.sectionTitle}>New York</Typography>
             <Typography className={styles.text}>361 Avisco Green St,</Typography>
@@ -61,7 +55,6 @@ const Footer: React.FC = memo(() => {
             <Typography className={styles.text}>90251, US</Typography>
           </Grid>
 
-          {/* Social Media Section */}
           <Grid item xs={12} sm={6} md={3} className={styles.socialContainer}>
             <Typography variant="h6" className={styles.sectionTitle}>Follow Us On</Typography>
             <SocialIcons />
@@ -69,7 +62,6 @@ const Footer: React.FC = memo(() => {
           </Grid>
         </Grid>
 
-        {/* Bottom Text */}
         <Typography variant="body2" className={styles.copyright}>
           © {new Date().getFullYear()} Posval Tech. All rights reserved.
         </Typography>
