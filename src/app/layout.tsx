@@ -4,7 +4,7 @@ import './globals.css';
 import Layout from '@/layouts/Layout';
 
 export const metadata = {
-  title: 'POS Frontend',
+  title: 'Pisval Tech POS ',
   description: 'Your POS application',
 };
 

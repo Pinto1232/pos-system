@@ -29,7 +29,7 @@
 }
 
 .input .MuiOutlinedInput-root {
-    background-color: #fff;
+    background-color: #52B788 !important; 
     flex: 1;
 }
 
