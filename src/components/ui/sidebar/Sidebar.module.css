@@ -49,7 +49,7 @@
 }
 
 .activeItem {
-  background-color: #F3F4F6 !important;
+  background-color: #52B788 !important;
 }
 
 .activeItem.reporting .MuiListItemText-root {
@@ -72,7 +72,7 @@
   align-items: center;
   padding: 12px;
   margin: 6px 8px 0;
-  background-color: #64748B;
+  background-color: #52B788;
   border-radius: 8px;
   cursor: pointer;
   gap: 12px;
