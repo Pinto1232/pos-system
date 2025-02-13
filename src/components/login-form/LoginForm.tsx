@@ -9,10 +9,12 @@ import {
     FormControlLabel,
     Link,
     Divider,
+    IconButton,
 } from "@mui/material";
 import Input from "../ui/input/Input";
 import Image from "next/image";
 import Button from "@mui/material/Button";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface LoginFormProps {
     title?: string;
@@ -22,6 +24,7 @@ interface LoginFormProps {
     buttonText?: string;
     onSubmit?: (email: string, password: string) => void;
     showSocialLogin?: boolean;
+    onClose?: () => void; 
 }
 
 const LoginForm: React.FC<LoginFormProps> = memo(
@@ -33,6 +36,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
         buttonText = "Login",
         onSubmit,
         showSocialLogin = true,
+        onClose, 
     }) => {
         const handleLogin = (event: React.FormEvent) => {
             event.preventDefault();
@@ -46,7 +50,14 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
         return (
             <Box className={styles.formContainer}>
+                <Box>
+                {onClose && (
+                    <IconButton className={styles.closeButton} onClick={onClose}>
+                        <CloseIcon />
+                    </IconButton>
+                )}
                 <Box className={styles.logoContainer}>
+               
                     <Image
                         src="/logo.png"
                         alt=""
@@ -79,7 +90,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                                 />
                             }
                         >
-                            Continue with Google
+                            Google
                         </Button>
                         <Button
                             className={styles.facebookButton}
@@ -92,7 +103,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                                 />
                             }
                         >
-                            Continue with Facebook
+                            Facebook
                         </Button>
                     </Box>
                 )}
@@ -102,14 +113,14 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 </Divider>
 
                 <form onSubmit={handleLogin}>
-                    <Box mb={2}>
+                    <Box mb={1}>
                         <Input
                             name="email"
                             label={emailPlaceholder}
                         />
                     </Box>
 
-                    <Box mb={2}>
+                    <Box mb={1}>
                         <Input
                             name="password"
                             label={passwordPlaceholder}
@@ -137,6 +148,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                         {buttonText}
                     </Button>
                 </form>
+                </Box>
             </Box>
         );
     }

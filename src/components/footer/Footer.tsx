@@ -63,7 +63,7 @@ const Footer: React.FC = memo(() => {
         </Grid>
 
         <Typography variant="body2" className={styles.copyright}>
-          © {new Date().getFullYear()} Posval Tech. All rights reserved.
+          © {new Date().getFullYear()} Pisval Tech. All rights reserved.
         </Typography>
       </Container>
     </footer>
