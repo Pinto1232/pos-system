@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
 import styles from "./page.module.css";
-import PricingPackages from "@/components/PricingPackages";
+import PricingPackagesContainer from "@/components/pricing-packages/PricingPackagesContainer";
 
 export default function Home() {
   return (
     <div className={styles.page}>
       <Box>
-        <PricingPackages />
+        <PricingPackagesContainer />
       </Box>
     </div>
   );
