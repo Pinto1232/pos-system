@@ -1,0 +1,29 @@
+.navbar {
+    background-color: #e8e8e8;
+    padding: 0 16px;
+  }
+  
+  .brand {
+    flex-grow: 1;
+    margin-left: 8px;
+  }
+  
+  .testPeriodBox {
+    display: flex;
+    align-items: center;
+    background-color: #e5e7eb;
+    color: #1F2937;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-right: 16px;
+  }
+  
+  .icon {
+    font-size: 18px;
+    margin-right: 6px;
+  }
+  
+  .drawer {
+    width: 250px;
+  }
+  

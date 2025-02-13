@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Providers from '@/components/Providers';
+import Providers from '@/components/providers/Providers';
 
 test('Providers dummy test', () => {
   const { container } = render(<Providers><div>Test</div></Providers>);
