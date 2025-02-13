@@ -2,8 +2,9 @@
 
 import React, { memo } from "react";
 import styles from "./Footer.module.css";
-import { Container, Typography, Box, Link, Grid, TextField, Button } from "@mui/material";
+import { Container, Typography, Box, Link, Grid, TextField } from "@mui/material";
 import SocialIcons from "@/components/ui/socialIcons/SocialIcons";
+import { Button } from "../ui/button/Button";
 
 const Footer: React.FC = memo(() => {
   return (
@@ -23,9 +24,7 @@ const Footer: React.FC = memo(() => {
               className={styles.input}
               InputProps={{ sx: { borderRadius: '4px', height: '40px' } }}
             />
-            <Button variant="contained" className={styles.sendButton}>
-              SUBSCRIBE
-            </Button>
+            <Button  className={styles.sendButton}>SUBSCRIBE</Button>
           </Box>
         </Box>
 

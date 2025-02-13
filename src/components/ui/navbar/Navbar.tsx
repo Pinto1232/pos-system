@@ -17,23 +17,19 @@ const Navbar: React.FC<NavbarProps> = memo(({ title, testPeriod }) => {
   return (
     <AppBar position="static" className={styles.navbar}>
       <Toolbar>
-        {/* Hamburger Menu */}
         <IconButton edge="start" color="inherit" onClick={toggleSidebar}>
           <MenuIcon />
         </IconButton>
 
-        {/* Brand Name */}
         <Typography variant="h6" className={styles.brand}>
           {title}
         </Typography>
 
-        {/* Test Period Notification */}
         <Box className={styles.testPeriodBox}>
           <TimeIcon className={styles.icon} />
           <Typography variant="body2">Test Period: {testPeriod} days remaining</Typography>
         </Box>
 
-        {/* Chat & Notifications Icons */}
         <IconButton color="inherit">
           <ChatIcon />
         </IconButton>
