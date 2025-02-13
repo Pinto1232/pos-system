@@ -1,9 +1,9 @@
 "use client";
 
-import { memo } from "react";
+import { memo, JSX } from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse, Avatar, Box, Typography, Badge, Paper, IconButton } from "@mui/material";
-import { ExpandLess, ExpandMore, Notifications, Settings, Support, Close } from "@mui/icons-material";
-import { FiSearch } from "react-icons/fi"; // Import the search icon from react-icons
+import { ExpandLess, ExpandMore, Notifications, Settings, Support, Close, Home, Dashboard, Layers, Assignment } from "@mui/icons-material";
+import { FiSearch } from "react-icons/fi";
 import { useSidebar } from "@/contexts/SidebarContext";
 import styles from "./Sidebar.module.css";
 
@@ -15,30 +15,39 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) => {
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
+  const icons: { [key: string]: JSX.Element } = {
+    home: <Home />,
+    dashboard: <Dashboard />,
+    projects: <Layers />,
+    tasks: <Assignment />,
+    reporting: <Dashboard />
+  };
+
   return (
     <Drawer anchor="left" open={isSidebarOpen} onClose={toggleSidebar} className={styles.sidebar}>
       <Paper className={styles.sidebarContainer}>
         <Box className={styles.sidebarHeader}>
           <Avatar src="/logo.svg" alt="Logo" className={styles.logo} />
-          <Typography variant="h6" className={styles.title}>Untitled UI</Typography>
+          <Typography variant="h6" className={styles.title}>Pisval Tech POS</Typography>
           <IconButton onClick={toggleSidebar} className={styles.closeIcon}>
             <Close />
           </IconButton>
         </Box>
 
         <Box className={styles.searchBox}>
-          <FiSearch className={styles.searchIcon} /> {/* Use the search icon from react-icons */}
+          <FiSearch className={styles.searchIcon} />
           <Typography variant="body2" className={styles.searchText}>Search</Typography>
         </Box>
 
         <List className={styles.list}>
-          {['home', 'dashboard', 'projects', 'tasks', 'reporting'].map((item) => (
+          {['home', 'dashboard', 'projects', 'tasks', 'reporting'].map((item: string) => (
             <ListItem
               key={item}
               onClick={() => handleItemClick(item)}
-              className={`${styles.listItem} ${activeItem === item ? styles.activeItem : ''}`}
+              className={`${styles.listItem} ${activeItem === item ? `${styles.activeItem} ${item === 'reporting' ? 'reporting' : ''}` : ''}`}
             >
               <ListItemIcon className={styles.listItemIcon}>
+                {icons[item]}
               </ListItemIcon>
               <ListItemText
                 primary={item.charAt(0).toUpperCase() + item.slice(1)}
@@ -55,7 +64,7 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
               {['Overview', 'Notifications', 'Analytics', 'Reports'].map((subItem) => (
                 <ListItem
                   key={subItem}
-                  className={styles.nestedItem}
+                  className={`${styles.nestedItem} ${styles.listItem}`}
                 >
                   <ListItemText
                     primary={subItem}
