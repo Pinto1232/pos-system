@@ -27,6 +27,7 @@ const PricingPackagesContainer: React.FC = () => {
     queryKey: ["pricingPackages"],
     queryFn: () => fetchPricingPackages(1, 10),
   });
+  
 
   useEffect(() => {
     if (data) {

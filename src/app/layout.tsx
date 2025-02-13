@@ -1,10 +1,9 @@
-// This is a server component.
 import Providers from '@/components/providers/Providers';
 import './globals.css';
 import Layout from '@/layouts/Layout';
 
 export const metadata = {
-  title: 'POS Frontend',
+  title: 'Pisval Tech POS',
   description: 'Your POS application',
 };
 
@@ -15,10 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>{/* Meta tags etc. */}</head>
+      <head></head>
       <body>
-      <Providers>
-          <Layout>{children}</Layout> 
+        <Providers>
+          <Layout>{children}</Layout>
         </Providers>
       </body>
     </html>

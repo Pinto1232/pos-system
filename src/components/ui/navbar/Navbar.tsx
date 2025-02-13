@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import { AppBar, Toolbar, IconButton, Box, Typography } from "@mui/material";
-import { Menu as MenuIcon, Notifications as NotificationsIcon, ChatBubbleOutline as ChatIcon, AccessTime as TimeIcon } from "@mui/icons-material";
+import { Menu as MenuIcon, Notifications as NotificationsIcon, ChatBubbleOutline as ChatIcon, AccessTime as TimeIcon, Login as LoginIcon } from "@mui/icons-material";
 import { useSidebar } from "@/contexts/SidebarContext";
 import styles from "./Navbar.module.css";
 
@@ -17,29 +17,29 @@ const Navbar: React.FC<NavbarProps> = memo(({ title, testPeriod }) => {
   return (
     <AppBar position="static" className={styles.navbar}>
       <Toolbar>
-        {/* Hamburger Menu */}
         <IconButton edge="start" color="inherit" onClick={toggleSidebar}>
           <MenuIcon />
         </IconButton>
 
-        {/* Brand Name */}
         <Typography variant="h6" className={styles.brand}>
           {title}
         </Typography>
 
-        {/* Test Period Notification */}
         <Box className={styles.testPeriodBox}>
           <TimeIcon className={styles.icon} />
           <Typography variant="body2">Test Period: {testPeriod} days remaining</Typography>
         </Box>
 
-        {/* Chat & Notifications Icons */}
         <IconButton color="inherit">
           <ChatIcon />
         </IconButton>
-
+        
         <IconButton color="inherit">
           <NotificationsIcon />
+        </IconButton>
+
+        <IconButton color="inherit">
+          <LoginIcon />
         </IconButton>
       </Toolbar>
     </AppBar>
