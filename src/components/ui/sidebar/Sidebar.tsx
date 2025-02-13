@@ -32,7 +32,7 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
         </Box>
 
         <List className={styles.list}>
-          {['home', 'dashboard', 'projects', 'tasks', 'reporting', 'users'].map((item) => (
+          {['home', 'dashboard', 'projects', 'tasks', 'reporting'].map((item) => (
             <ListItem
               key={item}
               onClick={() => handleItemClick(item)}

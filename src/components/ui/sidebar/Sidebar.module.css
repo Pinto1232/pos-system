@@ -5,11 +5,11 @@
 }
 
 .sidebarContainer {
-  background-color: #1E3A8A !important;
+  background-color: #F3F4F6 !important;
   height: 100%;
   padding: 12px;
   border-radius: 0 !important;
-  color: white !important;
+  color: #000 !important;
 }
 
 .sidebarHeader {
@@ -58,6 +58,8 @@
   background-color: #F8FAFC;
   border-radius: 8px;
   cursor: pointer;
+  gap: 12px;
+  margin-top: 100px;
 }
 
 .nestedItem {
