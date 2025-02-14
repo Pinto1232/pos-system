@@ -1,0 +1,33 @@
+.enterpriseLayout {
+  padding: 20px;
+  width: 650px;
+  max-width: 100%;
+  background-color: #fff;
+}
+
+.enterpriseTitle  {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.enterprisePackageDetails  {
+  margin-bottom: 15px;
+  color: #666;
+}
+
+.enterprisePackagePrice {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #333;
+}
+
+.enterpriseCheckoutButton  {
+  background-color: #3182ce;
+  color: white;
+  width: 100%;
+  padding: 10px 0;
+  font-weight: bold;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}

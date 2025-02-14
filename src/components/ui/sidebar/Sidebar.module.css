@@ -23,10 +23,10 @@
 }
 
 .closeIcon {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  color: #64748B;
+  position: relative;
+  right: 0px;
+  top: 0px;
+  color: #ffff!important;
 }
 
 .searchBox {
