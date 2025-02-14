@@ -7,6 +7,8 @@ import { PackageSelectionProvider } from "@/contexts/PackageSelectionContext";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+
+  
   return (
     <PackageSelectionProvider>
       <SidebarProvider>

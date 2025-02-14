@@ -1,29 +1,30 @@
+/* StarterPackageLayout.module.css */
 .starterLayout {
   padding: 20px;
-  width: 500px !important;
+  width: 1200px;
   max-width: 100%;
   background-color: #fff;
 }
 
-.title {
+.starterTitle {  /* Changed from .title */
   margin-bottom: 10px;
   font-weight: bold;
 }
 
-.packageDetails {
+.starterPackageDetails {  /* Changed from .packageDetails */
   margin-bottom: 15px;
   color: #666;
 }
 
-.packagePrice {
+.starterPrice {  /* Changed from .packagePrice */
   margin-bottom: 20px;
   font-size: 18px;
   color: #333;
 }
 
-.checkoutButton {
-  background-color: #3182ce !important;
-  color: white !important;
+.starterCheckoutButton {  /* Changed from .checkoutButton */
+  background-color: #3182ce!important;
+  color: white!important;
   width: 100%;
   padding: 10px 0;
   font-weight: bold;

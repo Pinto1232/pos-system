@@ -13,7 +13,7 @@ interface EnterprisePackageLayoutProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type: "starter" | "growth" | "enterprise" | "custom";
+    type: "starter" | "growth" | "enterprise" | "custom" | "premium";
   };
 }
 

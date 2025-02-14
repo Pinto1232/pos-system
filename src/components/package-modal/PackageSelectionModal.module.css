@@ -1,82 +1,10 @@
-/* 🔲 BASE MODAL STYLES */
 .modal {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 600px; /* Ensure a fixed width */
-  max-width: 90%; /* Ensure responsiveness */
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999; 
+  outline: none;
 }
 
-.modalContent {
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 
-/* Ensure modal backdrop covers the entire screen */
-.MuiBackdrop-root {
-  background: rgba(0, 0, 0, 0.6) !important;
-}
-  
-  /* 🔵 STARTER PACKAGE */
-  .starterModal {
-    width: 500px;
-    background: #f0f8ff;
-    border-top: 5px solid #2b6cb0;
-  }
-  
-  /* 🟢 GROWTH PACKAGE */
-  .growthModal {
-    width: 600px;
-    background: #f0fff4;
-    border-top: 5px solid #2f855a;
-  }
-  
-  /* 🟣 ENTERPRISE PACKAGE */
-  .enterpriseModal {
-    width: 650px;
-    background: #f8f0ff;
-    border-top: 5px solid #553c9a;
-  }
-  
-  /* 🔴 CUSTOM PACKAGE */
-  .customLayout {
-    padding: 20px;
-    width: 1200px!important;
-    max-width: 100%;
-    background-color: #fff;
-  }
-  
-  .title {
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
-  
-  .packageDetails {
-    margin-bottom: 15px;
-    color: #666;
-  }
-  
-  .packagePrice {
-    margin-bottom: 20px;
-    font-size: 18px;
-    color: #333;
-  }
-  
-  
-  /* 🔘 COMMON BUTTON STYLES */
-  .cancelButton {
-    background-color: #ccc !important;
-    color: black !important;
-    margin-top: 15px;
-  }
   

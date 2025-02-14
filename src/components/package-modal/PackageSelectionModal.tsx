@@ -9,6 +9,7 @@ import CustomPackageLayout from "@/components/package-modal/layouts/custom-packa
 import StarterPackageLayout from "@/components/package-modal/layouts/starter-package-layout/StarterPackageLayout";
 import GrowthPackageLayout from "@/components/package-modal/layouts/growth-package-layout/GrowthPackageLayout";
 import EnterprisePackageLayout from "@/components/package-modal/layouts/enterprise-package-layout/EnterprisePackageLayout";
+import PremiumPackageLayout from "./layouts/premium-package-layout/PremiumPackageLayout";
 
 const PackageSelectionModal: React.FC = () => {
   const { selectedPackage, isModalOpen, closeModal } = usePackageSelection();
@@ -25,14 +26,18 @@ const PackageSelectionModal: React.FC = () => {
         return <GrowthPackageLayout selectedPackage={selectedPackage} />;
       case "enterprise":
         return <EnterprisePackageLayout selectedPackage={selectedPackage} />;
+      case "premium":
+        return <PremiumPackageLayout selectedPackage={selectedPackage} />;
       default:
-        console.warn("Unknown package type:", selectedPackage.type);
-        return null;
+        return assertUnreachable(selectedPackage.type);
     }
   };
 
-  console.log('🪟 Modal open state:', isModalOpen);
-  console.log('📦 Selected package:', selectedPackage?.type);
+  const assertUnreachable = (x: never): never => {
+    throw new Error("Unexpected value: " + x);
+  };
+
+  console.log('Selected Package:', selectedPackage);
 
   return (
     <Modal open={isModalOpen} onClose={closeModal}>

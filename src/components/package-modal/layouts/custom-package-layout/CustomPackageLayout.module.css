@@ -1,29 +1,29 @@
 .customLayout {
   padding: 20px;
-  width: 1200px !important;
+  width: 1200px ;
   max-width: 100%;
   background-color: #fff;
 }
 
-.title {
+.customTitle  {
   margin-bottom: 10px;
   font-weight: bold;
 }
 
-.packageDetails {
+.customPackageDetails  {
   margin-bottom: 15px;
   color: #666;
 }
 
-.packagePrice {
+.customPrice  {
   margin-bottom: 20px;
   font-size: 18px;
   color: #333;
 }
 
-.checkoutButton {
-  background-color: #3182ce !important;
-  color: white !important;
+.customCheckoutButton  {
+  background-color: #3182ce;
+  color: white;
   width: 100%;
   padding: 10px 0;
   font-weight: bold;

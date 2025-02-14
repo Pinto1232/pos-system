@@ -1,8 +1,9 @@
+// PackageSelectionContext.tsx
 "use client";
 
 import React, { createContext, useContext, useState } from "react";
 
-interface PackageData {
+export type Package = {
   id: number;
   title: string;
   description: string;
@@ -10,32 +11,28 @@ interface PackageData {
   extraDescription: string;
   price: number;
   testPeriodDays: number;
-  type: "starter" | "growth" | "enterprise" | "custom";
-}
-
-interface PackageSelectionContextProps {
-  selectedPackage: PackageData | null;
-  isModalOpen: boolean;
-  selectPackage: (pkg: PackageData) => void;
-  closeModal: () => void;
-}
-
-const PackageSelectionContext = createContext<PackageSelectionContextProps | undefined>(undefined);
-
-export const usePackageSelection = () => {
-  const context = useContext(PackageSelectionContext);
-  if (!context) {
-    throw new Error("usePackageSelection must be used within a PackageSelectionProvider");
-  }
-  return context;
+  type: "starter" | "growth" | "enterprise" | "custom" | "premium"; // Added premium
 };
 
+type PackageSelectionContextType = {
+  selectedPackage: Package | null;
+  isModalOpen: boolean;
+  selectPackage: (pkg: Package) => void;
+  closeModal: () => void;
+};
+
+const PackageSelectionContext = createContext<PackageSelectionContextType>({
+  selectedPackage: null,
+  isModalOpen: false,
+  selectPackage: () => {},
+  closeModal: () => {},
+});
+
 export const PackageSelectionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [selectedPackage, setSelectedPackage] = useState<PackageData | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const selectPackage = (pkg: PackageData) => {
-    console.log('🏷️ Package selected:', pkg.type);
+  const selectPackage = (pkg: Package) => {
     setSelectedPackage(pkg);
     setIsModalOpen(true);
   };
@@ -46,8 +43,12 @@ export const PackageSelectionProvider: React.FC<{ children: React.ReactNode }> =
   };
 
   return (
-    <PackageSelectionContext.Provider value={{ selectedPackage, isModalOpen, selectPackage, closeModal }}>
+    <PackageSelectionContext.Provider
+      value={{ selectedPackage, isModalOpen, selectPackage, closeModal }}
+    >
       {children}
     </PackageSelectionContext.Provider>
   );
 };
+
+export const usePackageSelection = () => useContext(PackageSelectionContext);

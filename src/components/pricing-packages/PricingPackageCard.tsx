@@ -5,7 +5,7 @@ import styles from "@/components/pricing-packages/PricingPackages.module.css";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card/Card";
 import { Button } from "@/components/ui/button/Button";
 import Image from "next/image";
-//import { usePackageSelection } from "@/contexts/PackageSelectionContext";
+
 
 interface PricingPackageProps {
   packageData: {
@@ -16,14 +16,13 @@ interface PricingPackageProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type: "starter" | "growth" | "enterprise" | "custom";
+    type: "starter" | "growth" | "enterprise" | "custom" | "premium"; 
   };
   onBuyNow: () => void;
 }
 
 const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, onBuyNow  }) => {
-  //const { selectPackage } = usePackageSelection();
-
+ 
   return (
     <Card className={styles.card}>
       <CardHeader className={styles.header}>

@@ -13,7 +13,7 @@ interface CustomPackageLayoutProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type: "starter" | "growth" | "enterprise" | "custom";
+    type: "starter" | "growth" | "enterprise" | "custom" | "premium";
   };
 }
 
@@ -22,7 +22,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({ selectedPacka
   console.log('Custom Package Layout:', selectedPackage); 
   return (
     <div className={styles.customLayout}>
-      <Typography variant="h5" className={styles.title}>
+      <Typography variant="h5" className={styles.Customtitle}>
         {selectedPackage.title}
       </Typography>
       <Typography className={styles.packageDetails}>
