@@ -43,7 +43,6 @@ const PricingPackagesContainer: React.FC = () => {
   if (isLoading) return <div className={styles.loading}>Loading pricing packages...</div>;
   if (error) return <div className={styles.error}>Error loading pricing packages</div>;
 
-  // Map packages to ensure each one has a defined 'type'
   const packages: PricingPackage[] = data?.data.map((pkg: { type?: string; packageType?: string }) => ({
     ...pkg,
     type: pkg.type || pkg.packageType || "starter", 
