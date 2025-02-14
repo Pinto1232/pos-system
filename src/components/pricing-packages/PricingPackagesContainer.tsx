@@ -6,6 +6,8 @@ import axiosClient from "@/api/axiosClient";
 
 import styles from "./PricingPackages.module.css";
 import PricingPackageCard from "./PricingPackageCard";
+import PackageSelectionModal from "@/components/package-modal/PackageSelectionModal";
+import { usePackageSelection } from "@/contexts/PackageSelectionContext";
 
 interface PricingPackage {
   id: number;
@@ -15,6 +17,7 @@ interface PricingPackage {
   extraDescription: string;
   price: number;
   testPeriodDays: number;
+  type: "starter" | "growth" | "enterprise" | "custom";
 }
 
 const fetchPricingPackages = async (pageNumber: number, pageSize: number) => {
@@ -27,7 +30,8 @@ const PricingPackagesContainer: React.FC = () => {
     queryKey: ["pricingPackages"],
     queryFn: () => fetchPricingPackages(1, 10),
   });
-  
+
+  const { selectPackage } = usePackageSelection();
 
   useEffect(() => {
     if (data) {
@@ -41,8 +45,10 @@ const PricingPackagesContainer: React.FC = () => {
   return (
     <div className={styles.container}>
       {data?.data.map((pkg: PricingPackage) => (
-        <PricingPackageCard key={pkg.id} packageData={pkg} />
+        <PricingPackageCard key={pkg.id} packageData={pkg} onBuyNow={() => selectPackage(pkg)} />
       ))}
+
+      <PackageSelectionModal />
     </div>
   );
 };
