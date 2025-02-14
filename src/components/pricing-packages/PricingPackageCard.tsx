@@ -5,7 +5,7 @@ import styles from "@/components/pricing-packages/PricingPackages.module.css";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card/Card";
 import { Button } from "@/components/ui/button/Button";
 import Image from "next/image";
-import { usePackageSelection } from "@/contexts/PackageSelectionContext";
+//import { usePackageSelection } from "@/contexts/PackageSelectionContext";
 
 interface PricingPackageProps {
   packageData: {
@@ -21,8 +21,8 @@ interface PricingPackageProps {
   onBuyNow: () => void;
 }
 
-const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData }) => {
-  const { selectPackage } = usePackageSelection();
+const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, onBuyNow  }) => {
+  //const { selectPackage } = usePackageSelection();
 
   return (
     <Card className={styles.card}>
@@ -51,7 +51,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData })
       </div>
 
       <CardFooter className={styles.footer}>
-        <Button className={styles.button} onClick={() => selectPackage(packageData)}>Buy now</Button>
+      <Button className={styles.button} onClick={onBuyNow}>Buy now</Button> 
       </CardFooter>
     </Card>
   );

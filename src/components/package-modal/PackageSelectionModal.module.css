@@ -1,81 +1,82 @@
+/* 🔲 BASE MODAL STYLES */
 .modal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; /* Ensure a fixed width */
+  max-width: 90%; /* Ensure responsiveness */
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999; 
+}
+
+.modalContent {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ensure modal backdrop covers the entire screen */
+.MuiBackdrop-root {
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+  
+  /* 🔵 STARTER PACKAGE */
+  .starterModal {
+    width: 500px;
+    background: #f0f8ff;
+    border-top: 5px solid #2b6cb0;
+  }
+  
+  /* 🟢 GROWTH PACKAGE */
+  .growthModal {
+    width: 600px;
+    background: #f0fff4;
+    border-top: 5px solid #2f855a;
+  }
+  
+  /* 🟣 ENTERPRISE PACKAGE */
+  .enterpriseModal {
+    width: 650px;
+    background: #f8f0ff;
+    border-top: 5px solid #553c9a;
+  }
+  
+  /* 🔴 CUSTOM PACKAGE */
+  .customLayout {
     padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    width: 400px;
-    max-width: 90%;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.starter {
-    border-top: 5px solid #2d3748;
-}
-
-.growth {
-    border-top: 5px solid #3182ce;
-}
-
-.enterprise {
-    border-top: 5px solid #dd6b20;
-}
-
-.custom {
-    border-top: 5px solid #e53e3e;
-}
-
-.title {
-    font-size: 20px;
+    width: 1200px!important;
+    max-width: 100%;
+    background-color: #fff;
+  }
+  
+  .title {
+    margin-bottom: 10px;
     font-weight: bold;
-    margin-bottom: 12px;
-}
-
-.packageTitle {
+  }
+  
+  .packageDetails {
+    margin-bottom: 15px;
+    color: #666;
+  }
+  
+  .packagePrice {
+    margin-bottom: 20px;
     font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.packageDetails {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 12px;
-}
-
-.packagePrice {
-    font-size: 18px;
-    font-weight: bold;
-    color: #1a202c;
-    margin-bottom: 16px;
-}
-
-.customInstructions {
-    font-size: 14px;
-    color: #e53e3e;
-    margin-bottom: 16px;
-}
-
-.checkoutButton {
-    background-color: #3182ce !important;
-    color: white !important;
-    width: 100%;
-    padding: 10px 0;
-    font-weight: bold;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    cursor: pointer;
-}
-
-.cancelButton {
+    color: #333;
+  }
+  
+  
+  /* 🔘 COMMON BUTTON STYLES */
+  .cancelButton {
     background-color: #ccc !important;
     color: black !important;
-    width: 100%;
-    padding: 10px 0;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-}
+    margin-top: 15px;
+  }
+  

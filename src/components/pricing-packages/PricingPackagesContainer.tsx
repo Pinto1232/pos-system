@@ -6,7 +6,6 @@ import axiosClient from "@/api/axiosClient";
 
 import styles from "./PricingPackages.module.css";
 import PricingPackageCard from "./PricingPackageCard";
-import PackageSelectionModal from "@/components/package-modal/PackageSelectionModal";
 import { usePackageSelection } from "@/contexts/PackageSelectionContext";
 
 interface PricingPackage {
@@ -21,7 +20,9 @@ interface PricingPackage {
 }
 
 const fetchPricingPackages = async (pageNumber: number, pageSize: number) => {
-  const response = await axiosClient.get(`/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+  const response = await axiosClient.get(
+    `/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`
+  );
   return response.data;
 };
 
@@ -42,13 +43,21 @@ const PricingPackagesContainer: React.FC = () => {
   if (isLoading) return <div className={styles.loading}>Loading pricing packages...</div>;
   if (error) return <div className={styles.error}>Error loading pricing packages</div>;
 
+  // Map packages to ensure each one has a defined 'type'
+  const packages: PricingPackage[] = data?.data.map((pkg: any) => ({
+    ...pkg,
+    type: pkg.type || pkg.packageType || "starter", 
+  }));
+
   return (
     <div className={styles.container}>
-      {data?.data.map((pkg: PricingPackage) => (
-        <PricingPackageCard key={pkg.id} packageData={pkg} onBuyNow={() => selectPackage(pkg)} />
+      {packages.map((pkg: PricingPackage) => (
+        <PricingPackageCard
+          key={pkg.id}
+          packageData={pkg}
+          onBuyNow={() => selectPackage(pkg)}
+        />
       ))}
-
-      <PackageSelectionModal />
     </div>
   );
 };

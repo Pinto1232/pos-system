@@ -1,12 +1,15 @@
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 interface PackageData {
   id: number;
   title: string;
   description: string;
+  icon: string;
+  extraDescription: string;
   price: number;
+  testPeriodDays: number;
   type: "starter" | "growth" | "enterprise" | "custom";
 }
 
@@ -19,17 +22,26 @@ interface PackageSelectionContextProps {
 
 const PackageSelectionContext = createContext<PackageSelectionContextProps | undefined>(undefined);
 
-export const PackageSelectionProvider = ({ children }: { children: ReactNode }) => {
+export const usePackageSelection = () => {
+  const context = useContext(PackageSelectionContext);
+  if (!context) {
+    throw new Error("usePackageSelection must be used within a PackageSelectionProvider");
+  }
+  return context;
+};
+
+export const PackageSelectionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [selectedPackage, setSelectedPackage] = useState<PackageData | null>(null);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const selectPackage = (pkg: PackageData) => {
+    console.log('🏷️ Package selected:', pkg.type);
     setSelectedPackage(pkg);
-    setModalOpen(true);
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setModalOpen(false);
+    setIsModalOpen(false);
     setSelectedPackage(null);
   };
 
@@ -38,10 +50,4 @@ export const PackageSelectionProvider = ({ children }: { children: ReactNode }) 
       {children}
     </PackageSelectionContext.Provider>
   );
-};
-
-export const usePackageSelection = () => {
-  const context = useContext(PackageSelectionContext);
-  if (!context) throw new Error("usePackageSelection must be used within a PackageSelectionProvider");
-  return context;
 };
