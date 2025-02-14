@@ -1,4 +1,3 @@
-/* StarterPackageLayout.module.css */
 .starterLayout {
   padding: 20px;
   width: 1200px;
@@ -6,23 +5,23 @@
   background-color: #fff;
 }
 
-.starterTitle {  /* Changed from .title */
+.starterTitle {
   margin-bottom: 10px;
   font-weight: bold;
 }
 
-.starterPackageDetails {  /* Changed from .packageDetails */
+.starterPackageDetails {
   margin-bottom: 15px;
   color: #666;
 }
 
-.starterPrice {  /* Changed from .packagePrice */
+.starterPrice {
   margin-bottom: 20px;
   font-size: 18px;
   color: #333;
 }
 
-.starterCheckoutButton {  /* Changed from .checkoutButton */
+.starterCheckoutButton {
   background-color: #3182ce!important;
   color: white!important;
   width: 100%;
