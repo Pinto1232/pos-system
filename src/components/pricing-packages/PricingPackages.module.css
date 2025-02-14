@@ -45,9 +45,10 @@
     font-size: 1.5rem;
     flex-wrap: nowrap;
     font-weight: 600;
-    color: #ffff;
+    color: #000;
     margin: 0;
 }
+
 
 .content {
     padding: 24px;

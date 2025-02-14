@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Typography, Button } from "@mui/material";
-import styles from "@/components/package-modal/PackageSelectionModal.module.css";
+import styles from "./EnterprisePackageLayout.module.css";
 
 interface EnterprisePackageLayoutProps {
   selectedPackage: {
