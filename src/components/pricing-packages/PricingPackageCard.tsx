@@ -4,7 +4,7 @@ import React, { memo } from "react";
 import styles from "@/components/pricing-packages/PricingPackages.module.css";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card/Card";
 import { Button } from "@/components/ui/button/Button";
-import Image from "next/image";
+import iconMap from "@/utils/icons";
 
 
 interface PricingPackageProps {
@@ -16,26 +16,25 @@ interface PricingPackageProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type: "starter" | "growth" | "enterprise" | "custom" | "premium"; 
+    type: "starter" | "growth" | "enterprise" | "custom" | "premium";
   };
   onBuyNow: () => void;
 }
 
-const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, onBuyNow  }) => {
- 
+const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, onBuyNow }) => {
+  const IconComponent = iconMap[packageData.icon] || iconMap["MUI:DefaultIcon"];
+
+  console.log("Package icon:", packageData.icon);
+  console.log("Resolved Icon Component:", IconComponent);
+
   return (
     <Card className={styles.card}>
       <CardHeader className={styles.header}>
-        <Image 
-          src={`/${packageData.icon}`}
-          alt={`${packageData.title} Icon`} 
-          className={styles.icon} 
-          width={64} 
-          height={64} 
-        />
+        {IconComponent && React.createElement(IconComponent, { className: styles.icon, fontSize: "large" })}
+
         <h2 className={styles.title}>{packageData.title}</h2>
       </CardHeader>
-      
+
       <CardContent className={styles.content}>
         <ul>
           {packageData.description.split(". ").map((desc, index) => (
@@ -50,7 +49,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, o
       </div>
 
       <CardFooter className={styles.footer}>
-      <Button className={styles.button} onClick={onBuyNow}>Buy now</Button> 
+        <Button className={styles.button} onClick={onBuyNow}>Buy now</Button>
       </CardFooter>
     </Card>
   );
