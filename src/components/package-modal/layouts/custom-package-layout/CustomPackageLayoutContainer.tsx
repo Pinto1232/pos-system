@@ -1,0 +1,211 @@
+"use client";
+
+import React, { useState, useEffect, useCallback } from "react";
+import axiosClient from "@/api/axiosClient";
+import CustomPackageLayout from "./CustomPackageLayout";
+import {
+    Package,
+    Feature,
+    AddOn,
+    UsagePricing,
+    FeaturesResponse,
+    PackageSelectionRequest,
+    PriceCalculationRequest,
+    PriceCalculationResponse,
+} from "./types";
+
+interface CustomPackageLayoutContainerProps {
+    selectedPackage: Package;
+}
+
+const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> = ({
+    selectedPackage,
+}) => {
+    const [currentStep, setCurrentStep] = useState(0);
+    const [steps, setSteps] = useState<string[]>([]);
+    const [features, setFeatures] = useState<Feature[]>([]);
+    const [addOns, setAddOns] = useState<AddOn[]>([]);
+    const [usagePricing, setUsagePricing] = useState<UsagePricing[]>([]);
+    const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
+    const [selectedAddOns, setSelectedAddOns] = useState<AddOn[]>([]);
+    const [usageQuantities, setUsageQuantities] = useState<Record<number, number>>({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [calculatedPrice, setCalculatedPrice] = useState<number>(selectedPackage.price);
+
+    const defaultStepsCustom = React.useMemo(() => [
+        "Package Details",
+        "Select Core Features",
+        "Choose Add-Ons",
+        "Configure Usage",
+        "Review & Confirm",
+    ], []);
+
+    const defaultStepsNonCustom = React.useMemo(() => [
+        "Package Details",
+        "Review & Confirm",
+    ], []);
+
+    const buildSteps = useCallback(() => {
+        const builtSteps = selectedPackage.isCustomizable ? [...defaultStepsCustom] : [...defaultStepsNonCustom];
+        console.log("Built steps:", builtSteps);
+        return builtSteps;
+    }, [selectedPackage.isCustomizable, defaultStepsCustom, defaultStepsNonCustom]);
+
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const response = await axiosClient.get<FeaturesResponse>(
+                    "PricingPackages/custom/features"
+                );
+                console.log("Fetched config response:", response.data);
+
+                // Process response data
+                const coreFeatures = response.data.coreFeatures || [];
+                const addOnsData = response.data.addOns || [];
+                const usageData = response.data.usageBasedPricing || [];
+
+                // Update state
+                setFeatures(coreFeatures);
+                setAddOns(addOnsData);
+                setUsagePricing(usageData);
+                const initialUsageQuantities = usageData.reduce((acc, curr) => ({
+                    ...acc,
+                    [curr.id]: curr.defaultValue,
+                }), {} as Record<number, number>);
+                setUsageQuantities(initialUsageQuantities);
+                console.log("Initial usage quantities:", initialUsageQuantities);
+
+                // Initialize steps
+                const newSteps = buildSteps();
+                setSteps(newSteps);
+                setCurrentStep(0);
+                console.log("Initialized steps:", newSteps);
+            } catch (error) {
+                console.error("Failed to load package config:", error);
+                const newSteps = buildSteps();
+                setSteps(newSteps);
+                setCurrentStep(0);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        setIsLoading(true);
+        if (selectedPackage.isCustomizable) {
+            fetchConfig();
+        } else {
+            const newSteps = buildSteps();
+            setSteps(newSteps);
+            setIsLoading(false);
+            setCurrentStep(0);
+            console.log("Non-customizable package. Steps set to:", newSteps);
+        }
+    }, [selectedPackage, buildSteps]);
+
+    // Dynamic Price Calculation Effect
+    useEffect(() => {
+        if (selectedPackage.isCustomizable) {
+            const calculatePrice = async () => {
+                const requestBody: PriceCalculationRequest = {
+                    packageId: selectedPackage.id,
+                    selectedFeatures: selectedFeatures.map((f) => f.id),
+                    selectedAddOns: selectedAddOns.map((a) => a.id),
+                    usageLimits: usageQuantities,
+                };
+
+                console.log("Calculating price with request body:", requestBody);
+
+                try {
+                    const response = await axiosClient.post<PriceCalculationResponse>(
+                        "PricingPackages/custom/calculate-price",
+                        requestBody
+                    );
+                    console.log("Price calculation response:", response.data);
+                    setCalculatedPrice(response.data.totalPrice);
+                } catch (error) {
+                    console.error("Failed to calculate price:", error);
+                }
+            };
+
+            calculatePrice();
+        }
+    }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
+
+    const handleNext = useCallback(() => {
+        setCurrentStep((prev) => {
+            const nextStep = Math.min(prev + 1, steps.length - 1);
+            console.log(`Navigating from step ${prev} to step ${nextStep}`);
+            return nextStep;
+        });
+    }, [steps.length]);
+
+    const handleBack = useCallback(() => {
+        setCurrentStep((prev) => {
+            const prevStep = Math.max(prev - 1, 0);
+            console.log(`Navigating back from step ${prev} to step ${prevStep}`);
+            return prevStep;
+        });
+    }, []);
+
+    const handleSave = useCallback(async () => {
+        const request: PackageSelectionRequest = {
+            packageId: selectedPackage.id,
+            ...(selectedPackage.isCustomizable && {
+                features: selectedFeatures.map((f) => f.id),
+                addOns: selectedAddOns.map((a) => a.id),
+                usage: usageQuantities,
+            }),
+        };
+        console.log("Saving package configuration with request:", request);
+
+        try {
+            await axiosClient.post("/PricingPackages/custom/select", request);
+            console.log("Package saved successfully!");
+            alert("Package saved successfully!");
+        } catch (error) {
+            console.error("Save failed:", error);
+            alert("Error saving package!");
+        }
+    }, [selectedPackage, selectedFeatures, selectedAddOns, usageQuantities]);
+
+    if (isLoading)
+        return <div className="loading">Loading package configuration...</div>;
+
+    return (
+        <CustomPackageLayout
+            isCustomizable={selectedPackage.isCustomizable}
+            currentStep={currentStep}
+            steps={steps}
+            features={features}
+            addOns={addOns}
+            usagePricing={usagePricing}
+            selectedFeatures={selectedFeatures}
+            selectedAddOns={selectedAddOns}
+            usageQuantities={usageQuantities}
+            basePrice={selectedPackage.price}
+            calculatedPrice={calculatedPrice}
+            packageDetails={{
+                title: selectedPackage.title,
+                description: selectedPackage.description,
+                testPeriod: selectedPackage.testPeriodDays,
+            }}
+            onNext={handleNext}
+            onBack={handleBack}
+            onSave={handleSave}
+            onFeatureToggle={(features) => {
+                console.log("Toggling features:", features);
+                setSelectedFeatures(features);
+            }}
+            onAddOnToggle={(addOns) => {
+                console.log("Toggling add-ons:", addOns);
+                setSelectedAddOns(addOns);
+            }}
+            onUsageChange={(quantities) => {
+                console.log("Updating usage quantities:", quantities);
+                setUsageQuantities(quantities);
+            }}
+        />
+    );
+};
+
+export default CustomPackageLayoutContainer;
