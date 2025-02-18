@@ -16,6 +16,8 @@ axiosClient.interceptors.request.use(
     } catch (error) {
       console.error('Error retrieving access token:', error);
     }
+    console.log('Request URL:', config.url); // Debug: log the request URL
+    console.log('Request headers:', config.headers); // Debug: log the headers
     return config;
   },
   (error) => {
@@ -23,6 +25,7 @@ axiosClient.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 
 // Handle API Errors
 axiosClient.interceptors.response.use(
