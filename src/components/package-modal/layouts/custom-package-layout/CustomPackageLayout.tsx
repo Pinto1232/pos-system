@@ -304,7 +304,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                             Next
                         </Button>
                     ) : (
-                        <Button variant="contained" color="success" onClick={onSave}>
+                        <Button variant="contained"  onClick={onSave}>
                             Confirm & Save
                         </Button>
                     )}
