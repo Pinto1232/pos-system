@@ -171,31 +171,31 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     }, [currentStep, steps.length, selectedPackage, selectedFeatures, selectedAddOns, usageQuantities, validateCurrentStep]);
 
     const handleModalConfirm = (isSignup: boolean) => {
-        setIsModalOpen(false);
-      
-        const keycloakAuthUrl = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/auth`;
-        const clientId = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID;
-        // Use the environment variable directly (let URLSearchParams handle encoding)
-        const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || `${window.location.origin}/after-auth`;
-      
-        const authParams = new URLSearchParams({
-          client_id: clientId || "",
-          redirect_uri: redirectUri,
-          response_type: "code",
-          scope: "openid",
-          state: "xyz123",
-        });
-      
-        if (isSignup) {
-          // Use kc_idp_hint=register instead of kc_action
-          authParams.append("kc_idp_hint", "register");
-        }
-      
-        const fullRedirectUrl = `${keycloakAuthUrl}?${authParams.toString()}`;
-        console.log("Redirecting user to:", fullRedirectUrl);
-        window.location.href = fullRedirectUrl;
-      };
-      
+  setIsModalOpen(false);
+
+  const keycloakAuthUrl = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/auth`;
+  const clientId = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID;
+  // Use the environment variable directly (let URLSearchParams handle encoding)
+  const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || `${window.location.origin}/after-auth`;
+
+  const authParams = new URLSearchParams({
+    client_id: clientId || "",
+    redirect_uri: redirectUri,
+    response_type: "code",
+    scope: "openid",
+    state: "xyz123",
+  });
+
+  if (isSignup) {
+    // Use kc_idp_hint=register instead of kc_action
+    authParams.append("kc_idp_hint", "register");
+  }
+
+  const fullRedirectUrl = `${keycloakAuthUrl}?${authParams.toString()}`;
+  console.log("Redirecting user to:", fullRedirectUrl);
+  window.location.href = fullRedirectUrl;
+};
+
 
     // Dynamic Price Calculation Effect
     useEffect(() => {

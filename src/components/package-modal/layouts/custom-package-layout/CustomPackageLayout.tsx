@@ -14,7 +14,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import InfoIcon from "@mui/icons-material/Info"; // Import the InfoIcon
+import InfoIcon from "@mui/icons-material/Info";
 import styles from "./CustomPackageLayout.module.css";
 import { Feature, AddOn, UsagePricing } from "./types";
 
