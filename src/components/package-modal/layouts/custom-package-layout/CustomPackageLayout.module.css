@@ -1,7 +1,7 @@
 .container {
   padding: 2rem;
   margin: 2rem auto;
-  max-width: 800px;
+  max-width: 890px;
   background: white;
   border-radius: 12px;
   height: 480px;
@@ -9,8 +9,66 @@
 }
 
 .details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   text-align: center;
   padding: 2rem;
+  margin-top: -2em;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+}
+
+.featureItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  transition: background-color 0.3s ease;
+  flex: 1 1 calc(50% - 1rem); /* Adjust the width of the items */
+}
+
+.featureItem:hover {
+  background-color: #e2e8f0;
+}
+
+.selectedFeature {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.featureDescriptionContainer {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.infoIcon {
+  margin-right: 0.5rem;
+  color: #64748b;
+}
+
+.featureDescription {
+  margin-top: 0.5rem;
+  color: #64748b;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .stepContent {
@@ -19,11 +77,26 @@
 }
 
 .usageItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
   padding: 1rem;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  margin-bottom: 1rem;
+  background-color: #ffffff;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  flex: 1 1 calc(50% - 1rem); /* Adjust the width of the items */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.usageItem:hover {
   background-color: #f8fafc;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.textField {
+  margin-top: 0.5rem;
 }
 
 .controls {
@@ -73,4 +146,19 @@
   justify-content: space-between;
   gap: 1rem;
   border-radius: 0 0 12px 12px;
+}
+
+.featuresContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sectionHeader {
+  margin-bottom: 1rem;
+}
+
+.sectionDescription {
+  color: #64748b;
+  margin-top: 0.5rem;
 }

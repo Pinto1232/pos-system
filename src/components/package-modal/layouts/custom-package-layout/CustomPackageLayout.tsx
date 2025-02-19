@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   CardContent,
-  Grid,
   Stepper,
   Step,
   StepLabel,
@@ -15,6 +14,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { motion } from "framer-motion";
+import InfoIcon from "@mui/icons-material/Info"; // Import the InfoIcon
 import styles from "./CustomPackageLayout.module.css";
 import { Feature, AddOn, UsagePricing } from "./types";
 
@@ -116,104 +116,122 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       case "Package Details":
         return (
           <div className={styles.details}>
-            <Typography variant="h4">{packageDetails.title}</Typography>
-            <Typography variant="body1">{packageDetails.description}</Typography>
-            <Typography variant="h6">
-              {isCustomizable
-                ? `Base Price: $${basePrice}/mo`
-                : `Price: $${calculatedPrice}/mo`}
-            </Typography>
-            <Typography variant="body2">
-              Test Period: {packageDetails.testPeriod} days
-            </Typography>
+            <div className={styles.detailItem}>
+              <Typography variant="h4">{packageDetails.title}</Typography>
+            </div>
+            <div className={styles.detailItem}>
+              <Typography variant="body1">{packageDetails.description}</Typography>
+            </div>
+            <div className={styles.detailItem}>
+              <Typography variant="h6">
+                {isCustomizable
+                  ? `Base Price: $${basePrice}/mo`
+                  : `Price: $${calculatedPrice}/mo`}
+              </Typography>
+            </div>
+            <div className={styles.detailItem}>
+              <Typography variant="body2">
+                Test Period: {packageDetails.testPeriod} days
+              </Typography>
+            </div>
           </div>
         );
 
       case "Select Core Features":
         return (
-          <Grid container spacing={2}>
+          <div className={styles.featuresContainer}>
             {features.length > 0 ? (
               features.map(feature => {
                 const isSelected = selectedFeatures.some(f => f.id === feature.id);
                 return (
-                  <Grid item xs={12} sm={6} key={feature.id}>
-                    <div className={styles.featureItem}>
-                      <Button
-                        fullWidth
-                        variant={isSelected ? "contained" : "outlined"}
-                        onClick={() => handleFeatureToggle(feature)}
-                      >
-                        {feature.name} (+${feature.basePrice})
-                      </Button>
-                      {isSelected && (
+                  <div key={feature.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}>
+                    <Button
+                      fullWidth
+                      variant={isSelected ? "contained" : "outlined"}
+                      onClick={() => handleFeatureToggle(feature)}
+                    >
+                      {feature.name.replace(/[^a-zA-Z0-9 ]/g, "")} (${feature.basePrice})
+                    </Button>
+                    {isSelected && (
+                      <div className={styles.featureDescriptionContainer}>
+                        <InfoIcon className={styles.infoIcon} />
                         <Typography
                           variant="body2"
                           className={styles.featureDescription}
                         >
                           {feature.description}
                         </Typography>
-                      )}
-                    </div>
-                  </Grid>
+                      </div>
+                    )}
+                  </div>
                 );
               })
             ) : (
-              <Grid item xs={12}>
-                <div className={styles.emptyState}>
-                  <Typography variant="h6">No features available</Typography>
-                  <Button variant="outlined" onClick={onNext}>
-                    Continue
-                  </Button>
-                </div>
-              </Grid>
+              <div className={styles.emptyState}>
+                <Typography variant="h6">No features available</Typography>
+                <Button variant="outlined" onClick={onNext}>
+                  Continue
+                </Button>
+              </div>
             )}
-          </Grid>
+          </div>
         );
 
       case "Choose Add-Ons":
         return (
-          <Grid container spacing={2}>
+          <div className={styles.featuresContainer}>
+            <div className={styles.sectionHeader}>
+              <Typography variant="h5">Choose Add-Ons</Typography>
+              <Typography variant="body2" className={styles.sectionDescription}>
+                Select additional features to enhance your package. Each add-on comes with its own pricing.
+              </Typography>
+            </div>
             {addOns.length > 0 ? (
               addOns.map(addOn => {
                 const isSelected = selectedAddOns.some(a => a.id === addOn.id);
                 return (
-                  <Grid item xs={12} sm={6} key={addOn.id}>
-                    <div className={styles.addOnItem}>
-                      <Button
-                        fullWidth
-                        variant={isSelected ? "contained" : "outlined"}
-                        onClick={() => handleAddOnToggle(addOn)}
-                      >
-                        {addOn.name} (+${addOn.price})
-                      </Button>
-                      {isSelected && (
+                  <div key={addOn.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}>
+                    <Button
+                      fullWidth
+                      variant={isSelected ? "contained" : "outlined"}
+                      onClick={() => handleAddOnToggle(addOn)}
+                    >
+                      {addOn.name.replace(/[^a-zA-Z0-9 ]/g, "")} (${addOn.price})
+                    </Button>
+                    {isSelected && (
+                      <div className={styles.featureDescriptionContainer}>
+                        <InfoIcon className={styles.infoIcon} />
                         <Typography
                           variant="body2"
-                          className={styles.addOnDescription}
+                          className={styles.featureDescription}
                         >
                           {addOn.description}
                         </Typography>
-                      )}
-                    </div>
-                  </Grid>
+                      </div>
+                    )}
+                  </div>
                 );
               })
             ) : (
-              <Grid item xs={12}>
-                <div className={styles.emptyState}>
-                  <Typography variant="h6">No add-ons available</Typography>
-                  <Button variant="outlined" onClick={onNext}>
-                    Continue
-                  </Button>
-                </div>
-              </Grid>
+              <div className={styles.emptyState}>
+                <Typography variant="h6">No add-ons available</Typography>
+                <Button variant="outlined" onClick={onNext}>
+                  Continue
+                </Button>
+              </div>
             )}
-          </Grid>
+          </div>
         );
 
       case "Configure Usage":
         return (
-          <Grid container spacing={2}>
+          <div className={styles.featuresContainer}>
+            <div className={styles.sectionHeader}>
+              <Typography variant="h5">Configure Usage</Typography>
+              <Typography variant="body2" className={styles.sectionDescription}>
+                Adjust the usage metrics to fit your business needs. Ensure the values are within the allowed range.
+              </Typography>
+            </div>
             {usagePricing.length > 0 ? (
               usagePricing.map(usage => {
                 const currentValue = usageQuantities[usage.id] ?? usage.defaultValue;
@@ -222,40 +240,37 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     ? `Value must be between ${usage.minValue} and ${usage.maxValue}`
                     : "";
                 return (
-                  <Grid item xs={12} sm={6} key={usage.id}>
-                    <div className={styles.usageItem}>
-                      <Typography variant="subtitle1" gutterBottom>
-                        {usage.name} (${usage.pricePerUnit}/{usage.unit})
-                      </Typography>
-                      <TextField
-                        type="number"
-                        value={currentValue}
-                        onChange={(e) => handleUsageUpdate(usage.id, e.target.value)}
-                        error={!!usageError}
-                        helperText={usageError}
-                        InputProps={{
-                          inputProps: {
-                            min: usage.minValue,
-                            max: usage.maxValue,
-                          },
-                        }}
-                        fullWidth
-                      />
-                    </div>
-                  </Grid>
+                  <div key={usage.id} className={styles.usageItem}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      {usage.name} (${usage.pricePerUnit}/{usage.unit})
+                    </Typography>
+                    <TextField
+                      type="number"
+                      value={currentValue}
+                      onChange={(e) => handleUsageUpdate(usage.id, e.target.value)}
+                      error={!!usageError}
+                      helperText={usageError}
+                      InputProps={{
+                        inputProps: {
+                          min: usage.minValue,
+                          max: usage.maxValue,
+                        },
+                      }}
+                      fullWidth
+                      className={styles.textField}
+                    />
+                  </div>
                 );
               })
             ) : (
-              <Grid item xs={12}>
-                <div className={styles.emptyState}>
-                  <Typography variant="h6">No usage metrics to configure</Typography>
-                  <Button variant="outlined" onClick={onNext}>
-                    Continue
-                  </Button>
-                </div>
-              </Grid>
+              <div className={styles.emptyState}>
+                <Typography variant="h6">No usage metrics to configure</Typography>
+                <Button variant="outlined" onClick={onNext}>
+                  Continue
+                </Button>
+              </div>
             )}
-          </Grid>
+          </div>
         );
 
       case "Review & Confirm":
