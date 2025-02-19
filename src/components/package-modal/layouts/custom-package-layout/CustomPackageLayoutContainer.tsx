@@ -62,12 +62,10 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 );
                 console.log("Fetched config response:", response.data);
 
-                // Process response data
                 const coreFeatures = response.data.coreFeatures || [];
                 const addOnsData = response.data.addOns || [];
                 const usageData = response.data.usageBasedPricing || [];
 
-                // Update state
                 setFeatures(coreFeatures);
                 setAddOns(addOnsData);
                 setUsagePricing(usageData);
@@ -78,7 +76,6 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 setUsageQuantities(initialUsageQuantities);
                 console.log("Initial usage quantities:", initialUsageQuantities);
 
-                // Initialize steps
                 const newSteps = buildSteps();
                 setSteps(newSteps);
                 setCurrentStep(0);
@@ -104,6 +101,73 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
             console.log("Non-customizable package. Steps set to:", newSteps);
         }
     }, [selectedPackage, buildSteps]);
+
+    // Wrap validation in useCallback to stabilize its reference.
+    const validateCurrentStep = useCallback((): boolean => {
+        const currentLabel = steps[currentStep]?.trim() || "";
+        if (currentLabel === "Select Core Features") {
+            const requiredMissing = features.some(
+                (feature) => feature.isRequired && !selectedFeatures.some(f => f.id === feature.id)
+            );
+            if (requiredMissing) {
+                alert("Please select all required features.");
+                return false;
+            }
+        }
+        if (currentLabel === "Configure Usage") {
+            for (const usage of usagePricing) {
+                const value = usageQuantities[usage.id] ?? usage.defaultValue;
+                if (value < usage.minValue || value > usage.maxValue) {
+                    alert(`For ${usage.name}, please enter a value between ${usage.minValue} and ${usage.maxValue}.`);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }, [steps, currentStep, features, selectedFeatures, usageQuantities, usagePricing]);
+
+    const handleNext = useCallback(() => {
+        if (!validateCurrentStep()) return;
+        setCurrentStep((prev) => {
+            const nextStep = Math.min(prev + 1, steps.length - 1);
+            console.log(`Navigating from step ${prev} to step ${nextStep}`);
+            return nextStep;
+        });
+    }, [steps, validateCurrentStep]);
+
+    const handleBack = useCallback(() => {
+        setCurrentStep((prev) => {
+            const prevStep = Math.max(prev - 1, 0);
+            console.log(`Navigating back from step ${prev} to step ${prevStep}`);
+            return prevStep;
+        });
+    }, []);
+
+    const handleSave = useCallback(async () => {
+        if (currentStep !== steps.length - 1) return;
+        if (!validateCurrentStep()) return;
+
+        const request: PackageSelectionRequest = {
+            packageId: selectedPackage.id,
+            ...(selectedPackage.isCustomizable && {
+                features: selectedFeatures.map((f) => f.id),
+                addOns: selectedAddOns.map((a) => a.id),
+                usage: usageQuantities,
+            }),
+        };
+        console.log("Saving package configuration with request:", request);
+
+        try {
+            await axiosClient.post("PricingPackages/custom/select", request);
+            console.log("Package saved successfully!");
+            setModalMessage("Package saved successfully!");
+            setIsModalOpen(true);
+        } catch (error) {
+            console.error("Save failed:", error);
+            setModalMessage("Error saving package!");
+            setIsModalOpen(true);
+        }
+    }, [currentStep, steps.length, selectedPackage, selectedFeatures, selectedAddOns, usageQuantities, validateCurrentStep]);
 
     // Dynamic Price Calculation Effect
     useEffect(() => {
@@ -133,45 +197,6 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
             calculatePrice();
         }
     }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
-
-    const handleNext = useCallback(() => {
-        setCurrentStep((prev) => {
-            const nextStep = Math.min(prev + 1, steps.length - 1);
-            console.log(`Navigating from step ${prev} to step ${nextStep}`);
-            return nextStep;
-        });
-    }, [steps.length]);
-
-    const handleBack = useCallback(() => {
-        setCurrentStep((prev) => {
-            const prevStep = Math.max(prev - 1, 0);
-            console.log(`Navigating back from step ${prev} to step ${prevStep}`);
-            return prevStep;
-        });
-    }, []);
-
-    const handleSave = useCallback(async () => {
-        const request: PackageSelectionRequest = {
-            packageId: selectedPackage.id,
-            ...(selectedPackage.isCustomizable && {
-                features: selectedFeatures.map((f) => f.id),
-                addOns: selectedAddOns.map((a) => a.id),
-                usage: usageQuantities,
-            }),
-        };
-        console.log("Saving package configuration with request:", request);
-
-        try {
-            await axiosClient.post("/PricingPackages/custom/select", request);
-            console.log("Package saved successfully!");
-            setModalMessage("Package saved successfully!");
-            setIsModalOpen(true);
-        } catch (error) {
-            console.error("Save failed:", error);
-            setModalMessage("Error saving package!");
-            setIsModalOpen(true);
-        }
-    }, [selectedPackage, selectedFeatures, selectedAddOns, usageQuantities]);
 
     if (isLoading)
         return <div className="loading">Loading package configuration...</div>;
@@ -220,7 +245,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 textColor="#333"
                 headingSize="1.75rem"
                 width="600px"
-                height="400px"
+                height="200px"
                 bgColor="#f0f0f0"
                 showCloseIcon={true}
             >

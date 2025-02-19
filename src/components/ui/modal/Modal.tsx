@@ -48,7 +48,6 @@ const Modal: React.FC<ModalProps> = ({
       )}
       <DialogContent style={{ color: textColor }}>{children}</DialogContent>
       <DialogActions>
-        <Button onClick={onClose} style={{ color: textColor }}>Close</Button>
         {onConfirm && <Button onClick={onConfirm} variant="contained" color="primary">{confirmText}</Button>}
       </DialogActions>
     </Dialog>

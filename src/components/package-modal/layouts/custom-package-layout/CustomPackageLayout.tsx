@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Card,
@@ -12,6 +12,7 @@ import {
   TextField,
   Typography,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import styles from "./CustomPackageLayout.module.css";
@@ -62,6 +63,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   onAddOnToggle,
   onUsageChange,
 }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleNext = () => {
+    setLoading(true);
+    onNext();
+    setLoading(false);
+  };
+
   const handleFeatureToggle = (feature: Feature) => {
     const newFeatures = selectedFeatures.some(f => f.id === feature.id)
       ? selectedFeatures.filter(f => f.id !== feature.id)
@@ -83,14 +92,25 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     });
   };
 
+  const handleSave = () => {
+    console.log("Package data saved:", {
+      selectedFeatures,
+      selectedAddOns,
+      usageQuantities,
+      calculatedPrice,
+    });
+    onSave();
+  };
+
   const getStepContent = () => {
     const currentLabel = steps[currentStep]?.trim() || "";
 
-    if (!currentLabel) return (
-      <Typography variant="body1">
-        Loading step configuration...
-      </Typography>
-    );
+    if (!currentLabel)
+      return (
+        <Typography variant="body1">
+          Loading step configuration...
+        </Typography>
+      );
 
     switch (currentLabel) {
       case "Package Details":
@@ -150,72 +170,81 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
           </Grid>
         );
 
-        case "Choose Add-Ons":
-          return (
-            <Grid container spacing={2}>
-              {addOns.length > 0 ? (
-                addOns.map(addOn => {
-                  const isSelected = selectedAddOns.some(a => a.id === addOn.id);
-                  return (
-                    <Grid item xs={12} sm={6} key={addOn.id}>
-                      <div className={styles.addOnItem}>
-                        <Button
-                          fullWidth
-                          variant={isSelected ? "contained" : "outlined"}
-                          onClick={() => handleAddOnToggle(addOn)}
+      case "Choose Add-Ons":
+        return (
+          <Grid container spacing={2}>
+            {addOns.length > 0 ? (
+              addOns.map(addOn => {
+                const isSelected = selectedAddOns.some(a => a.id === addOn.id);
+                return (
+                  <Grid item xs={12} sm={6} key={addOn.id}>
+                    <div className={styles.addOnItem}>
+                      <Button
+                        fullWidth
+                        variant={isSelected ? "contained" : "outlined"}
+                        onClick={() => handleAddOnToggle(addOn)}
+                      >
+                        {addOn.name} (+${addOn.price})
+                      </Button>
+                      {isSelected && (
+                        <Typography
+                          variant="body2"
+                          className={styles.addOnDescription}
                         >
-                          {addOn.name} (+${addOn.price})
-                        </Button>
-                        {isSelected && (
-                          <Typography
-                            variant="body2"
-                            className={styles.addOnDescription}
-                          >
-                            {addOn.description}
-                          </Typography>
-                        )}
-                      </div>
-                    </Grid>
-                  );
-                })
-              ) : (
-                <Grid item xs={12}>
-                  <div className={styles.emptyState}>
-                    <Typography variant="h6">No add-ons available</Typography>
-                    <Button variant="outlined" onClick={onNext}>
-                      Continue
-                    </Button>
-                  </div>
-                </Grid>
-              )}
-            </Grid>
-          );
-        
+                          {addOn.description}
+                        </Typography>
+                      )}
+                    </div>
+                  </Grid>
+                );
+              })
+            ) : (
+              <Grid item xs={12}>
+                <div className={styles.emptyState}>
+                  <Typography variant="h6">No add-ons available</Typography>
+                  <Button variant="outlined" onClick={onNext}>
+                    Continue
+                  </Button>
+                </div>
+              </Grid>
+            )}
+          </Grid>
+        );
+
       case "Configure Usage":
         return (
           <Grid container spacing={2}>
             {usagePricing.length > 0 ? (
-              usagePricing.map(usage => (
-                <Grid item xs={12} sm={6} key={usage.id}>
-                  <div className={styles.usageItem}>
-                    <Typography variant="subtitle1" gutterBottom>
-                      {usage.name} (${usage.pricePerUnit}/{usage.unit})
-                    </Typography>
-                    <TextField
-                      type="number"
-                      value={usageQuantities[usage.id] || usage.defaultValue}
-                      onChange={(e) => handleUsageUpdate(usage.id, e.target.value)}
-                      InputProps={{
-                        inputProps: {
-                          min: usage.minValue,
-                          max: usage.maxValue
-                        }
-                      }}
-                      fullWidth
-                    />
-                  </div>
-                </Grid>
-              ))
+              usagePricing.map(usage => {
+                const currentValue = usageQuantities[usage.id] ?? usage.defaultValue;
+                const usageError =
+                  currentValue < usage.minValue || currentValue > usage.maxValue
+                    ? `Value must be between ${usage.minValue} and ${usage.maxValue}`
+                    : "";
+                return (
+                  <Grid item xs={12} sm={6} key={usage.id}>
+                    <div className={styles.usageItem}>
+                      <Typography variant="subtitle1" gutterBottom>
+                        {usage.name} (${usage.pricePerUnit}/{usage.unit})
+                      </Typography>
+                      <TextField
+                        type="number"
+                        value={currentValue}
+                        onChange={(e) => handleUsageUpdate(usage.id, e.target.value)}
+                        error={!!usageError}
+                        helperText={usageError}
+                        InputProps={{
+                          inputProps: {
+                            min: usage.minValue,
+                            max: usage.maxValue,
+                          },
+                        }}
+                        fullWidth
+                      />
+                    </div>
+                  </Grid>
+                );
+              })
             ) : (
               <Grid item xs={12}>
                 <div className={styles.emptyState}>
@@ -277,6 +306,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 )}
               </>
             )}
+            <div className={styles.buttonContainer}>
+              <Button variant="outlined" onClick={onBack}>
+                Back
+              </Button>
+              <Button variant="contained" onClick={handleSave}>
+                Confirm & Save
+              </Button>
+            </div>
           </div>
         );
 
@@ -295,9 +332,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         <Stepper activeStep={currentStep} alternativeLabel>
           {steps.map((label, index) => (
             <Step key={index}>
-              <StepLabel>
-                {label || `Step ${index + 1}`}
-              </StepLabel>
+              <StepLabel>{label || `Step ${index + 1}`}</StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -311,22 +346,20 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
           {getStepContent()}
         </motion.div>
 
-        <Box className={styles.controls}>
-          {currentStep > 0 && (
-            <Button variant="outlined" onClick={onBack}>
-              Back
-            </Button>
-          )}
-          {currentStep < steps.length - 1 ? (
-            <Button variant="contained" onClick={onNext}>
-              Next
-            </Button>
-          ) : (
-            <Button variant="contained" onClick={onSave}>
-              Confirm & Save
-            </Button>
-          )}
-        </Box>
+        {currentStep !== steps.length - 1 && (
+          <Box className={styles.controls}>
+            {currentStep > 0 && (
+              <Button variant="outlined" onClick={onBack}>
+                Back
+              </Button>
+            )}
+            {currentStep < steps.length - 1 && (
+              <Button variant="contained" onClick={handleNext} disabled={loading}>
+                {loading ? <CircularProgress size={24} /> : "Next"}
+              </Button>
+            )}
+          </Box>
+        )}
       </CardContent>
     </Card>
   );
