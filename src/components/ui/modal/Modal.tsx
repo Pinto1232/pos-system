@@ -1,0 +1,58 @@
+import React from "react";
+import { Dialog, DialogContent, DialogActions, Button, Typography, IconButton } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import styles from "./Modal.module.css";
+
+interface ModalProps {
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+  children: React.ReactNode;
+  onConfirm?: () => void;
+  confirmText?: string;
+  textColor?: string;
+  headingSize?: string;
+  width?: string;
+  height?: string;
+  bgColor?: string;
+  showCloseIcon?: boolean;
+}
+
+const Modal: React.FC<ModalProps> = ({
+  open,
+  onClose,
+  title,
+  children,
+  onConfirm,
+  confirmText = "Confirm",
+  textColor = "#000",
+  headingSize = "1.5rem",
+  width = "500px",
+  height = "auto",
+  bgColor = "#fff",
+  showCloseIcon = true,
+}) => {
+  return (
+    <Dialog open={open} onClose={onClose} PaperProps={{ style: { width, height, backgroundColor: bgColor } }}>
+      {title && (
+        <div className={styles.modalHeader}>
+          <Typography variant="h6" style={{ fontSize: headingSize, color: textColor }}>
+            {title}
+          </Typography>
+          {showCloseIcon && (
+            <IconButton onClick={onClose} className={styles.closeButton}>
+              <CloseIcon />
+            </IconButton>
+          )}
+        </div>
+      )}
+      <DialogContent style={{ color: textColor }}>{children}</DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} style={{ color: textColor }}>Close</Button>
+        {onConfirm && <Button onClick={onConfirm} variant="contained" color="primary">{confirmText}</Button>}
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default Modal;

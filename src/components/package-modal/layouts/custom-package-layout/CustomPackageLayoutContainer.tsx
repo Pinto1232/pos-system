@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axiosClient from "@/api/axiosClient";
 import CustomPackageLayout from "./CustomPackageLayout";
+import Modal from "@/components/ui/modal/Modal";
 import {
     Package,
     Feature,
@@ -31,6 +32,8 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     const [usageQuantities, setUsageQuantities] = useState<Record<number, number>>({});
     const [isLoading, setIsLoading] = useState(true);
     const [calculatedPrice, setCalculatedPrice] = useState<number>(selectedPackage.price);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
 
     const defaultStepsCustom = React.useMemo(() => [
         "Package Details",
@@ -161,10 +164,12 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         try {
             await axiosClient.post("/PricingPackages/custom/select", request);
             console.log("Package saved successfully!");
-            alert("Package saved successfully!");
+            setModalMessage("Package saved successfully!");
+            setIsModalOpen(true);
         } catch (error) {
             console.error("Save failed:", error);
-            alert("Error saving package!");
+            setModalMessage("Error saving package!");
+            setIsModalOpen(true);
         }
     }, [selectedPackage, selectedFeatures, selectedAddOns, usageQuantities]);
 
@@ -172,39 +177,56 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         return <div className="loading">Loading package configuration...</div>;
 
     return (
-        <CustomPackageLayout
-            isCustomizable={selectedPackage.isCustomizable}
-            currentStep={currentStep}
-            steps={steps}
-            features={features}
-            addOns={addOns}
-            usagePricing={usagePricing}
-            selectedFeatures={selectedFeatures}
-            selectedAddOns={selectedAddOns}
-            usageQuantities={usageQuantities}
-            basePrice={selectedPackage.price}
-            calculatedPrice={calculatedPrice}
-            packageDetails={{
-                title: selectedPackage.title,
-                description: selectedPackage.description,
-                testPeriod: selectedPackage.testPeriodDays,
-            }}
-            onNext={handleNext}
-            onBack={handleBack}
-            onSave={handleSave}
-            onFeatureToggle={(features) => {
-                console.log("Toggling features:", features);
-                setSelectedFeatures(features);
-            }}
-            onAddOnToggle={(addOns) => {
-                console.log("Toggling add-ons:", addOns);
-                setSelectedAddOns(addOns);
-            }}
-            onUsageChange={(quantities) => {
-                console.log("Updating usage quantities:", quantities);
-                setUsageQuantities(quantities);
-            }}
-        />
+        <>
+            <CustomPackageLayout
+                isCustomizable={selectedPackage.isCustomizable}
+                currentStep={currentStep}
+                steps={steps}
+                features={features}
+                addOns={addOns}
+                usagePricing={usagePricing}
+                selectedFeatures={selectedFeatures}
+                selectedAddOns={selectedAddOns}
+                usageQuantities={usageQuantities}
+                basePrice={selectedPackage.price}
+                calculatedPrice={calculatedPrice}
+                packageDetails={{
+                    title: selectedPackage.title,
+                    description: selectedPackage.description,
+                    testPeriod: selectedPackage.testPeriodDays,
+                }}
+                onNext={handleNext}
+                onBack={handleBack}
+                onSave={handleSave}
+                onFeatureToggle={(features) => {
+                    console.log("Toggling features:", features);
+                    setSelectedFeatures(features);
+                }}
+                onAddOnToggle={(addOns) => {
+                    console.log("Toggling add-ons:", addOns);
+                    setSelectedAddOns(addOns);
+                }}
+                onUsageChange={(quantities) => {
+                    console.log("Updating usage quantities:", quantities);
+                    setUsageQuantities(quantities);
+                }}
+            />
+            <Modal
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title="Package Save Status"
+                onConfirm={() => setIsModalOpen(false)}
+                confirmText="OK"
+                textColor="#333"
+                headingSize="1.75rem"
+                width="600px"
+                height="400px"
+                bgColor="#f0f0f0"
+                showCloseIcon={true}
+            >
+                <div>{modalMessage}</div>
+            </Modal>
+        </>
     );
 };
 
