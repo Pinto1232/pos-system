@@ -4,6 +4,7 @@
   max-width: 800px;
   background: white;
   border-radius: 12px;
+  height: 480px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -28,14 +29,19 @@
 .controls {
   display: flex;
   justify-content: space-between;
-  margin-top: 2rem;
+  margin-top: -9rem;
   gap: 1rem;
+  background-color: #1c2331; /* Added background color */
+  padding: 1rem; /* Added padding */
+  border-radius: 0 0 12px 12px; /* Match the container's border radius */
 }
 
 .review {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .priceSummary {
@@ -57,4 +63,14 @@
   padding: 2rem;
   font-size: 1.2rem;
   color: #64748b;
+}
+
+.buttonContainer {
+  width: 100%;
+  background-color: #1c2331;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 0 0 12px 12px;
 }
