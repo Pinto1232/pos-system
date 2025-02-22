@@ -104,9 +104,9 @@
   justify-content: space-between;
   margin-top: -9rem;
   gap: 1rem;
-  background-color: #1c2331; /* Added background color */
-  padding: 1rem; /* Added padding */
-  border-radius: 0 0 12px 12px; /* Match the container's border radius */
+  background-color: #1c2331; 
+  padding: 1rem; 
+  border-radius: 0 0 12px 12px; 
 }
 
 .review {
