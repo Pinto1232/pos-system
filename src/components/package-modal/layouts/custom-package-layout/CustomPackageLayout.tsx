@@ -283,7 +283,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               </Typography>
               {isCustomizable && (
                 <Typography variant="body2">
-                  (Base: ${basePrice} + Customizations: ${calculatedPrice - basePrice})
+                  (Base: ${basePrice.toFixed(2)} + Customizations: ${(calculatedPrice - basePrice).toFixed(2)})
                 </Typography>
               )}
             </div>
