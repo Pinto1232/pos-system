@@ -10,13 +10,11 @@ const customJestConfig = {
   transform: {
     '^.+\\.[jt]sx?$': ['@swc/jest'],
   },
+  // Remove the leading slash in the pattern
   transformIgnorePatterns: [
-    "node_modules/(?!(keycloak-js)/)"
+    'node_modules/(?!(keycloak-js)/)',
   ],
-  // Optionally, if mocking keycloak-js instead:
-  // moduleNameMapper: {
-  //   '^keycloak-js$': '<rootDir>/__mocks__/keycloak-js.js'
-  // },
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
   testPathIgnorePatterns: ['<rootDir>/e2e/'],
 };
 
