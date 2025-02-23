@@ -10,9 +10,13 @@ const customJestConfig = {
   transform: {
     '^.+\\.[jt]sx?$': ['@swc/jest'],
   },
- 
-  transformIgnorePatterns: ['/node_modules/(?!(keycloak-js)/)'],
-
+  transformIgnorePatterns: [
+    "node_modules/(?!(keycloak-js)/)"
+  ],
+  // Optionally, if mocking keycloak-js instead:
+  // moduleNameMapper: {
+  //   '^keycloak-js$': '<rootDir>/__mocks__/keycloak-js.js'
+  // },
   testPathIgnorePatterns: ['<rootDir>/e2e/'],
 };
 
