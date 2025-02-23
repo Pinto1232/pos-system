@@ -4,7 +4,7 @@ dotenv.config();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    turbo: false,
+    turbo: {},
   },
   transpilePackages: ["next-auth"],
   env: {

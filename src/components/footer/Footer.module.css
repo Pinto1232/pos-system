@@ -25,11 +25,30 @@
     gap: 12px;
     width: 450px;
     max-width: 100%;
+    color: #ffffff !important;
+}
+
+.input {
+    border: 1px solid #fff !important;
+    color: #ffffff !important;
+    border-radius: 6px;
 }
 
 .input .MuiOutlinedInput-root {
-    background-color: #52B788 !important; 
+    color: #ffffff !important;
     flex: 1;
+}
+
+.input .MuiOutlinedInput-root .MuiOutlinedInput-input {
+    color: #ffffff !important; /* Ensure the input text color is white */
+}
+
+.input .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #ffffff !important; /* Ensure the input border color is white */
+}
+
+.input .MuiInputBase-input {
+    color: #ffffff !important; /* Ensure the input text color is white */
 }
 
 .sendButton {

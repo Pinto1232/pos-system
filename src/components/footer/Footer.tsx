@@ -21,9 +21,15 @@ const Footer: React.FC = memo(() => {
               variant="outlined" 
               placeholder="Your email" 
               className={styles.input}
-              InputProps={{ sx: { borderRadius: '4px', height: '40px' } }}
+              InputProps={{ 
+                classes: { 
+                  root: styles.input, 
+                  notchedOutline: styles.input 
+                },
+                sx: { borderRadius: '4px', height: '40px' } 
+              }}
             />
-            <Button  className={styles.sendButton}>SUBSCRIBE</Button>
+            <Button className={styles.sendButton}>SUBSCRIBE</Button>
           </Box>
         </Box>
 
