@@ -8,15 +8,28 @@ const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom',
   transform: {
-    '^.+\\.[jt]sx?$': ['@swc/jest'],
+    '^.+\\.(t|j)sx?$': [
+      '@swc/jest',
+      {
+        jsc: {
+          transform: {
+            react: {
+              runtime: 'automatic'
+            }
+          }
+        },
+        // Add this module config
+        module: {
+          type: 'commonjs'
+        }
+      }
+    ],
   },
   transformIgnorePatterns: [
-    "node_modules/(?!(keycloak-js)/)"
+    // Corrected pattern
+    '/node_modules/(?!keycloak-js)'
   ],
-  // Optionally, if mocking keycloak-js instead:
-  // moduleNameMapper: {
-  //   '^keycloak-js$': '<rootDir>/__mocks__/keycloak-js.js'
-  // },
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
   testPathIgnorePatterns: ['<rootDir>/e2e/'],
 };
 
