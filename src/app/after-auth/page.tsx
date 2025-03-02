@@ -2,8 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axiosClient from "@/api/axiosClient"; // Ensure this is set up to call your backend
-
+import { axiosClient } from "@/api/axiosClient"; 
 const AfterAuth = () => {
   const router = useRouter();
 
@@ -21,11 +20,8 @@ const AfterAuth = () => {
 
       if (code) {
         try {
-          // Call your backend endpoint to exchange the code for an access token.
-          // Your backend should use the code to get tokens from Keycloak.
           const response = await axiosClient.post("/auth/keycloak/callback", { code });
           const { accessToken } = response.data;
-          // Store the access token (or session info) for later API calls.
           localStorage.setItem("accessToken", accessToken);
           router.replace("/dashboard");
         } catch (err) {

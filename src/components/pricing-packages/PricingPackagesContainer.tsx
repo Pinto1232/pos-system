@@ -2,10 +2,11 @@
 
 import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axiosClient from "@/api/axiosClient";
+import { useAxiosClient } from "@/api/axiosClient";
 import styles from "./PricingPackages.module.css";
 import PricingPackageCard from "./PricingPackageCard";
 import { usePackageSelection, type Package } from "@/contexts/PackageSelectionContext";
+import { AxiosInstance } from "axios";
 
 type ApiResponse = {
   data: Array<{
@@ -21,7 +22,7 @@ type ApiResponse = {
   }>;
 };
 
-const fetchPricingPackages = async (pageNumber: number, pageSize: number): Promise<ApiResponse> => {
+const fetchPricingPackages = async (axiosClient: AxiosInstance, pageNumber: number, pageSize: number): Promise<ApiResponse> => {
   const response = await axiosClient.get(
     `/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`
   );
@@ -34,9 +35,10 @@ const isPackageType = (type: string): type is Package['type'] => {
 };
 
 const PricingPackagesContainer: React.FC = () => {
+  const { axiosClient } = useAxiosClient();
   const { data, error, isLoading } = useQuery({
     queryKey: ["pricingPackages"],
-    queryFn: () => fetchPricingPackages(1, 10),
+    queryFn: () => fetchPricingPackages(axiosClient, 1, 10),
   });
 
   const { selectPackage } = usePackageSelection();

@@ -24,9 +24,6 @@ interface PricingPackageProps {
 const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, onBuyNow }) => {
   const IconComponent = iconMap[packageData.icon] || iconMap["MUI:DefaultIcon"];
 
-  console.log("Package icon:", packageData.icon);
-  console.log("Resolved Icon Component:", IconComponent);
-
   return (
     <Card className={styles.card}>
       <CardHeader className={styles.header}>
