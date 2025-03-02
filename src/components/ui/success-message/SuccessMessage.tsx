@@ -12,7 +12,7 @@ interface SuccessMessageProps {
     open: boolean;
     onClose: () => void;
     message?: string;
-    onConfirm: () => void;
+    onConfirm: (isSignup: boolean) => void;
     onReturn: () => void;
 }
 
@@ -58,7 +58,7 @@ const SuccessMessage: React.FC<SuccessMessageProps> = memo(
                         <Button
                             variant="contained"
                             style={{ backgroundColor: "#1e3a8a" }}
-                            onClick={onConfirm}
+                            onClick={() => onConfirm(false)} //Here is the fix
                             startIcon={<DoneIcon />}
                         >
                             Confirm

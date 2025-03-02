@@ -281,7 +281,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 open={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 message={modalMessage}
-                onConfirm={() => handleModalConfirm(false)}
+                onConfirm={handleModalConfirm} 
                 onReturn={handleReturnToPackage}
             />
         </>
