@@ -3,57 +3,37 @@ import { Dialog, DialogContent, DialogActions, Button, Typography, IconButton } 
 import CloseIcon from '@mui/icons-material/Close';
 import styles from "./Modal.module.css";
 
-interface ModalProps {
+interface SuccessMessageProps {
   open: boolean;
   onClose: () => void;
-  title?: string;
-  children?: React.ReactNode;
-  onConfirm?: () => void;
-  confirmText?: string;
-  textColor?: string;
-  headingSize?: string;
-  width?: string;
-  height?: string;
-  bgColor?: string;
-  showCloseIcon?: boolean;
+  message: string;
+  onConfirm: () => void;
 }
 
-const Modal: React.FC<ModalProps> = memo(({
+const SuccessMessage: React.FC<SuccessMessageProps> = memo(({
   open,
   onClose,
-  title,
-  children,
+  message,
   onConfirm,
-  confirmText = "Confirm",
-  textColor = "#000",
-  headingSize = "1.5rem",
-  width = "500px",
-  height = "auto",
-  bgColor = "#fff",
-  showCloseIcon = true,
 }) => {
   return (
-    <Dialog open={open} onClose={onClose} PaperProps={{ style: { width, height, backgroundColor: bgColor } }}>
-      {title && (
-        <div className={styles.modalHeader}>
-          <Typography variant="h6" style={{ fontSize: headingSize, color: textColor }}>
-            {title}
-          </Typography>
-          {showCloseIcon && (
-            <IconButton onClick={onClose} className={styles.closeButton}>
-              <CloseIcon />
-            </IconButton>
-          )}
-        </div>
-      )}
-      <DialogContent style={{ color: textColor }}>{children}</DialogContent>
+    <Dialog open={open} onClose={onClose} PaperProps={{ style: { width: "600px", height: "200px", backgroundColor: "#f0f0f0" } }}>
+      <div className={styles.modalHeader}>
+        <Typography variant="h6" style={{ fontSize: "1.75rem", color: "#333" }}>
+          Package Save Status
+        </Typography>
+        <IconButton onClick={onClose} className={styles.closeButton}>
+          <CloseIcon />
+        </IconButton>
+      </div>
+      <DialogContent style={{ color: "#333" }}>{message}</DialogContent>
       <DialogActions>
-        {onConfirm && <Button onClick={onConfirm} variant="contained" color="primary">{confirmText}</Button>}
+        <Button onClick={onConfirm} variant="contained" color="primary">Confirm</Button>
       </DialogActions>
     </Dialog>
   );
 });
 
-Modal.displayName = "Modal";
+SuccessMessage.displayName = "SuccessMessage";
 
-export default Modal;
+export default SuccessMessage;

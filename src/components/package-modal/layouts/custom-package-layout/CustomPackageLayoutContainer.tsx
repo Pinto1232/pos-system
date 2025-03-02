@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { axiosClient } from "@/api/axiosClient";
 import CustomPackageLayout from "./CustomPackageLayout";
-import Modal from "@/components/ui/modal/Modal";
+import SuccessMessage from "@/components/ui/success-message/SuccessMessage";
 import {
     Package,
     Feature,
@@ -14,7 +14,6 @@ import {
     PriceCalculationRequest,
     PriceCalculationResponse,
 } from "./types";
-import { Button } from "@/components/ui/button/Button";
 import { debounce } from 'lodash';
 
 interface CustomPackageLayoutContainerProps {
@@ -179,32 +178,33 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     }, [currentStep, steps.length, selectedPackage, selectedFeatures, selectedAddOns, usageQuantities, validateCurrentStep, calculatedPrice]);
 
     const handleModalConfirm = (isSignup: boolean) => {
-  setIsModalOpen(false);
+        setIsModalOpen(false);
 
-  const keycloakAuthUrl = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/auth`;
-  const clientId = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID;
-  const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || `${window.location.origin}/after-auth`;
+        const keycloakAuthUrl = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/auth`;
+        const clientId = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID;
+        const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || `${window.location.origin}/after-auth`;
 
-  const authParams = new URLSearchParams({
-    client_id: clientId || "",
-    redirect_uri: redirectUri,
-    response_type: "code",
-    scope: "openid",
-    state: "xyz123",
-  });
+        const authParams = new URLSearchParams({
+            client_id: clientId || "",
+            redirect_uri: redirectUri,
+            response_type: "code",
+            scope: "openid",
+            state: "xyz123",
+        });
 
-  if (isSignup) {
-    // Use kc_idp_hint=register instead of kc_action
-    authParams.append("kc_idp_hint", "register");
-  }
+        if (isSignup) {
+            authParams.append("kc_idp_hint", "register");
+        }
 
-  const fullRedirectUrl = `${keycloakAuthUrl}?${authParams.toString()}`;
-  console.log("Redirecting user to:", fullRedirectUrl);
-  window.location.href = fullRedirectUrl;
-};
+        const fullRedirectUrl = `${keycloakAuthUrl}?${authParams.toString()}`;
+        console.log("Redirecting user to:", fullRedirectUrl);
+        window.location.href = fullRedirectUrl;
+    };
 
+    const handleReturnToPackage = () => {
+        setIsModalOpen(false);
+    };
 
-    // Dynamic Price Calculation Effect
     useEffect(() => {
         if (selectedPackage.isCustomizable) {
             const calculatePrice = debounce(async () => {
@@ -242,62 +242,48 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
 
     return (
         <>
-            <CustomPackageLayout
-                isCustomizable={selectedPackage.isCustomizable}
-                currentStep={currentStep}
-                steps={steps}
-                features={features}
-                addOns={addOns}
-                usagePricing={usagePricing}
-                selectedFeatures={selectedFeatures}
-                selectedAddOns={selectedAddOns}
-                usageQuantities={usageQuantities}
-                basePrice={selectedPackage.price}
-                calculatedPrice={calculatedPrice}
-                packageDetails={{
-                    title: selectedPackage.title,
-                    description: selectedPackage.description,
-                    testPeriod: selectedPackage.testPeriodDays,
-                }}
-                onNext={handleNext}
-                onBack={handleBack}
-                onSave={handleSave}
-                onFeatureToggle={(features) => {
-                    console.log("Toggling features:", features);
-                    setSelectedFeatures(features);
-                }}
-                onAddOnToggle={(addOns) => {
-                    console.log("Toggling add-ons:", addOns);
-                    setSelectedAddOns(addOns);
-                }}
-                onUsageChange={(quantities) => {
-                    console.log("Updating usage quantities:", quantities);
-                    setUsageQuantities(quantities);
-                }}
-            />
-            <Modal
+            {!isModalOpen && (
+                <CustomPackageLayout
+                    isCustomizable={selectedPackage.isCustomizable}
+                    currentStep={currentStep}
+                    steps={steps}
+                    features={features}
+                    addOns={addOns}
+                    usagePricing={usagePricing}
+                    selectedFeatures={selectedFeatures}
+                    selectedAddOns={selectedAddOns}
+                    usageQuantities={usageQuantities}
+                    basePrice={selectedPackage.price}
+                    calculatedPrice={calculatedPrice}
+                    packageDetails={{
+                        title: selectedPackage.title,
+                        description: selectedPackage.description,
+                        testPeriod: selectedPackage.testPeriodDays,
+                    }}
+                    onNext={handleNext}
+                    onBack={handleBack}
+                    onSave={handleSave}
+                    onFeatureToggle={(features) => {
+                        console.log("Toggling features:", features);
+                        setSelectedFeatures(features);
+                    }}
+                    onAddOnToggle={(addOns) => {
+                        console.log("Toggling add-ons:", addOns);
+                        setSelectedAddOns(addOns);
+                    }}
+                    onUsageChange={(quantities) => {
+                        console.log("Updating usage quantities:", quantities);
+                        setUsageQuantities(quantities);
+                    }}
+                />
+            )}
+            <SuccessMessage
                 open={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title="Package Save Status"
-                textColor="#333"
-                headingSize="1.75rem"
-                width="600px"
-                height="200px"
-                bgColor="#f0f0f0"
-                showCloseIcon={true}
-            >
-                <>
-                    <div>{modalMessage}</div>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
-                        <Button onClick={() => handleModalConfirm(false)}>
-                            Login
-                        </Button>
-                        <Button onClick={() => handleModalConfirm(true)}>
-                            Sign Up
-                        </Button>
-                    </div>
-                </>
-            </Modal>
+                message={modalMessage}
+                onConfirm={() => handleModalConfirm(false)}
+                onReturn={handleReturnToPackage}
+            />
         </>
     );
 };
