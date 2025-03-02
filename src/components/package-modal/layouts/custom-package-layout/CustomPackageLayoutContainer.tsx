@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import axiosClient from "@/api/axiosClient";
+import { axiosClient } from "@/api/axiosClient";
 import CustomPackageLayout from "./CustomPackageLayout";
 import Modal from "@/components/ui/modal/Modal";
 import {
@@ -15,6 +15,7 @@ import {
     PriceCalculationResponse,
 } from "./types";
 import { Button } from "@/components/ui/button/Button";
+import { debounce } from 'lodash';
 
 interface CustomPackageLayoutContainerProps {
     selectedPackage: Package;
@@ -70,7 +71,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 setFeatures(coreFeatures);
                 setAddOns(addOnsData);
                 setUsagePricing(usageData);
-                const initialUsageQuantities = usageData.reduce((acc, curr) => ({
+                const initialUsageQuantities = usageData.reduce((acc: Record<number, number>, curr: UsagePricing) => ({
                     ...acc,
                     [curr.id]: curr.defaultValue,
                 }), {} as Record<number, number>);
@@ -161,21 +162,27 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         try {
             await axiosClient.post("PricingPackages/custom/select", request);
             console.log("Package saved successfully!");
+            console.log("Form data:", {
+                selectedFeatures,
+                selectedAddOns,
+                usageQuantities,
+                calculatedPrice,
+            });
             setModalMessage("Package saved successfully!");
-            setIsModalOpen(true);
         } catch (error) {
             console.error("Save failed:", error);
             setModalMessage("Error saving package!");
+        } finally {
+            setIsLoading(false);
             setIsModalOpen(true);
         }
-    }, [currentStep, steps.length, selectedPackage, selectedFeatures, selectedAddOns, usageQuantities, validateCurrentStep]);
+    }, [currentStep, steps.length, selectedPackage, selectedFeatures, selectedAddOns, usageQuantities, validateCurrentStep, calculatedPrice]);
 
     const handleModalConfirm = (isSignup: boolean) => {
   setIsModalOpen(false);
 
   const keycloakAuthUrl = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/auth`;
   const clientId = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID;
-  // Use the environment variable directly (let URLSearchParams handle encoding)
   const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || `${window.location.origin}/after-auth`;
 
   const authParams = new URLSearchParams({
@@ -200,7 +207,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     // Dynamic Price Calculation Effect
     useEffect(() => {
         if (selectedPackage.isCustomizable) {
-            const calculatePrice = async () => {
+            const calculatePrice = debounce(async () => {
                 const requestBody: PriceCalculationRequest = {
                     packageId: selectedPackage.id,
                     selectedFeatures: selectedFeatures.map((f) => f.id),
@@ -220,9 +227,13 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 } catch (error) {
                     console.error("Failed to calculate price:", error);
                 }
-            };
+            }, 300); // Debounce for 300ms
 
             calculatePrice();
+
+            return () => {
+                calculatePrice.cancel();
+            };
         }
     }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
 
@@ -275,15 +286,17 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 bgColor="#f0f0f0"
                 showCloseIcon={true}
             >
-                <div>{modalMessage}</div>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
-                    <Button onClick={() => handleModalConfirm(false)}>
-                        Login
-                    </Button>
-                    <Button onClick={() => handleModalConfirm(true)}>
-                        Sign Up
-                    </Button>
-                </div>
+                <>
+                    <div>{modalMessage}</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
+                        <Button onClick={() => handleModalConfirm(false)}>
+                            Login
+                        </Button>
+                        <Button onClick={() => handleModalConfirm(true)}>
+                            Sign Up
+                        </Button>
+                    </div>
+                </>
             </Modal>
         </>
     );
