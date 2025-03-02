@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo, Suspense } from "react";
 import { Modal, Box } from "@mui/material";
 import styles from "./PackageSelectionModal.module.css";
 import { usePackageSelection } from "@/contexts/PackageSelectionContext";
@@ -13,7 +13,7 @@ import GrowthPackageLayout from "@/components/package-modal/layouts/growth-packa
 import EnterprisePackageLayout from "@/components/package-modal/layouts/enterprise-package-layout/EnterprisePackageLayout";
 import PremiumPackageLayout from "./layouts/premium-package-layout/PremiumPackageLayout";
 
-const PackageSelectionModal: React.FC = () => {
+const PackageSelectionModal: React.FC = memo(() => {
   const { selectedPackage, isModalOpen, closeModal } = usePackageSelection();
 
   if (!selectedPackage) return null;
@@ -55,6 +55,14 @@ const PackageSelectionModal: React.FC = () => {
       </Box>
     </Modal>
   );
-};
+});
 
-export default PackageSelectionModal;
+PackageSelectionModal.displayName = "PackageSelectionModal";
+
+const LazyPackageSelectionModal = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <PackageSelectionModal />
+  </Suspense>
+);
+
+export default LazyPackageSelectionModal;

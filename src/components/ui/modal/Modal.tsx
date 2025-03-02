@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, Suspense, useState } from "react";
 import { Dialog, DialogContent, DialogActions, Button, Typography, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import styles from "./Modal.module.css";
@@ -18,7 +18,7 @@ interface ModalProps {
   showCloseIcon?: boolean;
 }
 
-const Modal: React.FC<ModalProps> = ({
+const Modal: React.FC<ModalProps> = memo(({
   open,
   onClose,
   title,
@@ -52,6 +52,28 @@ const Modal: React.FC<ModalProps> = ({
       </DialogActions>
     </Dialog>
   );
+});
+
+Modal.displayName = "Modal";
+
+const LazyModal = () => {
+  const [open, setOpen] = useState(true);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        title="Sample Title"
+      >
+        <div>Modal Content</div>
+      </Modal>
+    </Suspense>
+  );
 };
 
-export default Modal;
+export default LazyModal;

@@ -1,6 +1,7 @@
 "use client";
 
-import { memo, JSX } from "react";
+import React, { memo, Suspense } from "react";
+import { JSX } from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse, Avatar, Box, Typography, Badge, Paper, IconButton } from "@mui/material";
 import { ExpandLess, ExpandMore, Notifications, Settings, Support, Close, Home, Dashboard, Layers, Assignment } from "@mui/icons-material";
 import { FiSearch } from "react-icons/fi";
@@ -115,4 +116,14 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
 });
 
 Sidebar.displayName = "Sidebar";
-export default Sidebar;
+
+const LazySidebar = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <Sidebar
+      activeItem="home"
+      handleItemClick={() => {}}
+    />
+  </Suspense>
+);
+
+export default LazySidebar;

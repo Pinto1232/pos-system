@@ -1,12 +1,14 @@
-import React from "react";
+"use client";
+
+import React, { Suspense, useEffect, useState } from "react";
 import styles from "./Jumbotron.module.css";
 
 interface JumbotronProps {
   heading: string;
   subheading: string;
   backgroundImage: string;
-  overlayColor?: string; // e.g. "rgba(0,0,0,0.5)" or "linear-gradient(...)"
-  height?: string; // e.g. "400px" or "100vh"
+  overlayColor?: string; 
+  height?: string;
 }
 
 const JumbotronComponent: React.FC<JumbotronProps> = ({
@@ -14,21 +16,29 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
   subheading,
   backgroundImage,
   overlayColor = "rgba(0, 0, 0, 0.5)",
-  height = "500px", // default height
+  height = "500px", 
 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = backgroundImage;
+    img.onload = () => setImageLoaded(true);
+  }, [backgroundImage]);
+
   return (
     <div
       className={styles.jumbotronContainer}
       style={{
-        backgroundImage: `
+        backgroundImage: imageLoaded ? `
           ${overlayColor},
           url(${backgroundImage})
-        `,
+        ` : overlayColor,
         height: height, 
         backgroundBlendMode: 'overlay', 
-        backgroundSize: 'cover', // Ensure the image covers the entire container
-        backgroundPosition: 'center', // Center the image
-        backgroundRepeat: 'no-repeat', // Prevent the image from repeating
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center', 
+        backgroundRepeat: 'no-repeat', 
       }}
     >
       <div className={styles.content}>
@@ -39,7 +49,12 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
   );
 };
 
-// ✅ Wrap the presentational component with React.memo
 const Jumbotron = React.memo(JumbotronComponent);
 
-export default Jumbotron;
+const LazyJumbotron = (props: JumbotronProps) => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <Jumbotron {...props} />
+  </Suspense>
+);
+
+export default LazyJumbotron;

@@ -1,6 +1,6 @@
 // src/layouts/Layout.tsx
 import FooterContainer from "@/components/footer/FooterContainer";
-import JumbotronContainer from "@/components/jumbotron/JumbotronContainer";
+import LazyJumbotron from "@/components/jumbotron/Jumbotron";
 import PackageSelectionModal from "@/components/package-modal/PackageSelectionModal";
 import NavbarContainer from "@/components/ui/navbar/NavbarContainer";
 import SidebarContainer from "@/components/ui/sidebar/SidebarContainer";
@@ -12,7 +12,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <PackageSelectionProvider>
       <SidebarProvider>
         <NavbarContainer />
-        <JumbotronContainer
+        <LazyJumbotron
           heading="Point of Sale System"
           subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
           backgroundImage="/pos_banner.jpg"
@@ -20,7 +20,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         />
         <SidebarContainer />
         <main>{children}</main>
-        {/* Render the modal here once */}
         <PackageSelectionModal />
         <FooterContainer />
       </SidebarProvider>

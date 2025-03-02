@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import React, { memo, Suspense } from "react";
 import { AppBar, Toolbar, IconButton, Box, Typography } from "@mui/material";
 import { Menu as MenuIcon, Notifications as NotificationsIcon, ChatBubbleOutline as ChatIcon, AccessTime as TimeIcon, Login as LoginIcon } from "@mui/icons-material";
 import { useSidebar } from "@/contexts/SidebarContext";
@@ -17,7 +17,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title, testPeriod }) => {
   const { toggleLoginForm } = useLoginForm();
 
   return (
-    <AppBar position="static" className={styles.navbar}>
+    <AppBar position="sticky" className={styles.navbar}>
       <Toolbar>
         <IconButton edge="start" color="inherit" onClick={toggleSidebar}>
           <MenuIcon />
@@ -49,4 +49,14 @@ const Navbar: React.FC<NavbarProps> = memo(({ title, testPeriod }) => {
 });
 
 Navbar.displayName = "Navbar";
-export default Navbar;
+
+const LazyNavbar = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <Navbar
+      title="Sample Title"
+      testPeriod={30}
+    />
+  </Suspense>
+);
+
+export default LazyNavbar;

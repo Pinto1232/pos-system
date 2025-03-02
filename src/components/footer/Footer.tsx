@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo } from "react";
+import React, { memo, Suspense } from "react";
 import styles from "./Footer.module.css";
 import { Container, Typography, Box, Link, Grid, TextField } from "@mui/material";
 import SocialIcons from "@/components/ui/socialIcons/SocialIcons";
@@ -77,4 +77,11 @@ const Footer: React.FC = memo(() => {
 });
 
 Footer.displayName = "Footer";
-export default Footer;
+
+const LazyFooter = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <Footer />
+  </Suspense>
+);
+
+export default LazyFooter;

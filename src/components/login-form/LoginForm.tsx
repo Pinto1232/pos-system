@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo } from "react";
+import React, { memo, Suspense } from "react";
 import styles from "./LoginForm.module.css";
 import {
     Box,
@@ -155,4 +155,11 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 );
 
 LoginForm.displayName = "LoginForm";
-export default LoginForm;
+
+const LazyLoginForm = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <LoginForm />
+  </Suspense>
+);
+
+export default LazyLoginForm;

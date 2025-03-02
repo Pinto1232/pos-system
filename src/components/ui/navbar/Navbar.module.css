@@ -1,14 +1,16 @@
 .navbar {
-    background-color: #e8e8e8;
+    background-color: #1e3a8a;
     padding: 0 16px;
-  }
-  
-  .brand {
+    position: sticky;
+    top: 0;
+}
+
+.brand {
     flex-grow: 1;
     margin-left: 8px;
-  }
-  
-  .testPeriodBox {
+}
+
+.testPeriodBox {
     display: flex;
     align-items: center;
     background-color: #e5e7eb;
@@ -16,14 +18,13 @@
     padding: 4px 10px;
     border-radius: 4px;
     margin-right: 16px;
-  }
-  
-  .icon {
+}
+
+.icon {
     font-size: 18px;
     margin-right: 6px;
-  }
-  
-  .drawer {
+}
+
+.drawer {
     width: 250px;
-  }
-  
+}
