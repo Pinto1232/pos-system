@@ -6,7 +6,6 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card/
 import { Button } from "@/components/ui/button/Button";
 import iconMap from "@/utils/icons";
 
-
 interface PricingPackageProps {
   packageData: {
     id: number;
@@ -35,7 +34,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, o
       <CardContent className={styles.content}>
         <ul>
           {packageData.description.split(". ").map((desc, index) => (
-            <li key={index}>{desc}</li>
+            <li key={index}>{desc.replace(/[^a-zA-Z0-9\s]/g, " ")}</li>
           ))}
         </ul>
       </CardContent>

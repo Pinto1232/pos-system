@@ -70,7 +70,7 @@
     align-items: center;
     gap: 8px;
     color: #64748b;
-    font-size: 0.875rem;
+    font-size: 14;
 }
 
 .content li::before {
