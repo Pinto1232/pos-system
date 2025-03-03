@@ -227,7 +227,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 } catch (error) {
                     console.error("Failed to calculate price:", error);
                 }
-            }, 300); // Debounce for 300ms
+            }, 300); 
 
             calculatePrice();
 
