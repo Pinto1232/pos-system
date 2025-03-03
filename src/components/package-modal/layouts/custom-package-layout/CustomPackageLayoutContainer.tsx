@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { axiosClient } from "@/api/axiosClient";
 import CustomPackageLayout from "./CustomPackageLayout";
 import SuccessMessage from "@/components/ui/success-message/SuccessMessage";
+import WaveLoading from "@/components/ui/WaveLoading/WaveLoading";
 import {
     Package,
     Feature,
@@ -15,9 +16,6 @@ import {
     PriceCalculationResponse,
 } from "./types";
 import { debounce } from 'lodash';
-import { motion } from "framer-motion";
-import { FaCog } from "react-icons/fa";
-import styles from "./CustomPackageLayoutContainer.module.css";
 
 interface CustomPackageLayoutContainerProps {
     selectedPackage: Package;
@@ -257,17 +255,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
 
     if (isLoading)
-        return (
-            <motion.div
-                className={styles.loading}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-            >
-                <div>Loading package configuration...</div>
-                <FaCog className={styles.loadingIcon} />
-            </motion.div>
-        );
+        return <WaveLoading />;
 
     return (
         <>
