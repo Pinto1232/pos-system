@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Grid, Box, Typography, Button } from "@mui/material";
+import { Grid, Box, Typography, Button, Checkbox, FormControlLabel } from "@mui/material";
 import iconMap from "../../../../utils/icons";
 import SuccessMessage from "../../../ui/success-message/SuccessMessage";
 import styles from "./StarterPackageLayout.module.css";
@@ -16,20 +16,34 @@ interface StarterPackageLayoutProps {
     price: number;
     testPeriodDays: number;
     type: "starter" | "growth" | "enterprise" | "custom" | "premium";
+    currency?: string;
+    multiCurrencyPrices?: string;
   };
 }
+
+const currencySymbols: Record<string, string> = {
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  // Add more currency symbols as needed
+};
 
 const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
   selectedPackage,
 }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || "USD");
 
-  const IconComponent = iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
+  const IconComponent =
+    iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
   const handleSelectedStarterPackage = async () => {
     setLoading(true);
-    console.log("Selected package", selectedPackage);
+    console.log("Selected package", {
+      ...selectedPackage,
+      currency: currentCurrency,
+    });
 
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -52,9 +66,20 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
     setSuccess(false);
   };
 
+  const handleCurrencyChange = (currency: string) => {
+    setCurrentCurrency(currency);
+  };
+
+  // Parse multiCurrencyPrices and cast it to a known type
+  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
+    ? (JSON.parse(selectedPackage.multiCurrencyPrices) as Record<string, number>)
+    : null;
+
+  const displayPrice = currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
+  const currencySymbol = currencySymbols[currentCurrency] || "$";
+
   return (
     <Box className={styles.container}>
-      
       {success && (
         <SuccessMessage
           open={success}
@@ -75,7 +100,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body1" className={styles.description}>
-                {selectedPackage.description.replace(/[^\w\s.,!?]/g, '')}
+                {selectedPackage.description.replace(/[^\w\s.,!?]/g, "")}
               </Typography>
 
               <Typography variant="body2" className={styles.description}>
@@ -83,20 +108,43 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
               </Typography>
 
               <Box className={styles.premiumBox}>
-                <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
-                  YOUR TOTAL PREMIUMS
+                <Typography
+                  variant="subtitle2"
+                  className={styles.premiumBoxLabel}
+                >
+                  YOUR TOTAL PREMIUMS ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.premiumBoxAmount}>
-                  ${selectedPackage.price}/mo
+                  {currencySymbol}{displayPrice}/mo
                 </Typography>
               </Box>
 
-              <Typography
-                variant="subtitle2"
-                className={styles.testPeriod}
-              >
+              {/* Display Multi-Currency Prices if available */}
+              {multiCurrency && (
+                <Box className={styles.multiCurrencyBox}>
+                  <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
+                    Prices in other currencies:
+                  </Typography>
+                  {Object.entries(multiCurrency).map(([currency, price]) => (
+                    <FormControlLabel
+                      key={currency}
+                      control={
+                        <Checkbox
+                          checked={currentCurrency === currency}
+                          onChange={() => handleCurrencyChange(currency)}
+                        />
+                      }
+                      label={`${currency}: ${currencySymbols[currency] || "$"}${price}`}
+                      className={styles.multiCurrencyItem}
+                    />
+                  ))}
+                </Box>
+              )}
+
+              <Typography variant="subtitle2" className={styles.testPeriod}>
                 Test Period: {selectedPackage.testPeriodDays} days
               </Typography>
+
             </Box>
           </Grid>
 
@@ -115,7 +163,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: ${selectedPackage.price}
+                Monthly Price: {currencySymbol}{displayPrice}
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
