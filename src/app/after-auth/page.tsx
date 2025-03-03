@@ -8,9 +8,9 @@ const AfterAuth = () => {
 
   useEffect(() => {
     const exchangeCodeForToken = async () => {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
-      const error = params.get("error");
+      const searchParams = new URLSearchParams(window.location.search);
+      const code = searchParams.get("code");
+      const error = searchParams.get("error");
 
       if (error) {
         console.error("Authentication error:", error);
