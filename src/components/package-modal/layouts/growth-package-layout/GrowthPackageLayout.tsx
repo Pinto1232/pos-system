@@ -128,7 +128,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
                 fullWidth
                 onClick={handleSelectedGrowthPackage}
               >
-                Upgrade Now
+                Continue
               </Button>
             </Box>
           </Grid>

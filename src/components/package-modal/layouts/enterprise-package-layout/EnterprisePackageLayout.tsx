@@ -128,7 +128,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                 fullWidth
                 onClick={handleSelectedEnterprisePackage}
               >
-                Contact Sales
+                Continue
               </Button>
             </Box>
           </Grid>
