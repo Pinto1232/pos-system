@@ -1,33 +1,92 @@
-.starterLayout {
-  padding: 20px;
-  width: 1200px;
-  max-width: 100%;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px;
+  position: relative;
+  border-radius: 6;
+  background-color: #ffffff; 
+}
+
+
+.leftColumn {
   background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px;
+  max-height: 400px; 
+  overflow-y: auto; 
 }
 
-.starterTitle {
-  margin-bottom: 10px;
+.rightColumn {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.heading {
+  margin-bottom: 16px;
   font-weight: bold;
-}
-
-.starterPackageDetails {
-  margin-bottom: 15px;
-  color: #666;
-}
-
-.starterPrice {
-  margin-bottom: 20px;
-  font-size: 18px;
   color: #333;
 }
 
-.starterCheckoutButton {
-  background-color: #3182ce!important;
-  color: white!important;
-  width: 100%;
-  padding: 10px 0;
-  font-weight: bold;
+.packageIcon {
+  width: 35px!important; 
+  height: 35px!important; 
+  object-fit: cover;
   border-radius: 6px;
+  margin-bottom: 6px;
+  font-weight: 900;
+  background: #1976d2;
+  color: #ffffff;
+  border: 2px solid #1976d2;
+  border-radius: 50%;
+  padding: 4px;
+}
+
+.description {
+  margin-bottom: 16px;
+  color: #666;
+  font-size: 14px!important;
+}
+
+.premiumBox {
+  border: 2px solid #1976d2;
+  margin-top: 16px;
+  border-radius: 6px;
+  padding: 5px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.premiumBoxLabel {
+  font-size: 0.9rem;
+  color: #666;
+  display: block;
   margin-bottom: 8px;
-  cursor: pointer;
+}
+
+.premiumBoxAmount {
+  color: #333;
+  font-weight: bold;
+}
+
+.testPeriod {
+  color: #666;
+}
+
+.summaryItem {
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.continueButton {
+  background-color: #1976d2;
+  color: #ffffff;
+  margin-top: 20px !important;
+  font-weight: bold !important;
+  text-transform: none !important;
+  border-radius: 6px !important;
+  padding: 12px 0 !important;
 }
