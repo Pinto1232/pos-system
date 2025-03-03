@@ -15,6 +15,9 @@ import {
     PriceCalculationResponse,
 } from "./types";
 import { debounce } from 'lodash';
+import { motion } from "framer-motion";
+import { FaCog } from "react-icons/fa";
+import styles from "./CustomPackageLayoutContainer.module.css";
 
 interface CustomPackageLayoutContainerProps {
     selectedPackage: Package;
@@ -147,35 +150,51 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     const handleSave = useCallback(async () => {
         if (currentStep !== steps.length - 1) return;
         if (!validateCurrentStep()) return;
-
+      
+        // Immediately show the modal with a "Saving..." message and set loading state.
+        setModalMessage("Saving package...");
+        setIsModalOpen(true);
+        setIsLoading(true);
+      
         const request: PackageSelectionRequest = {
-            packageId: selectedPackage.id,
-            ...(selectedPackage.isCustomizable && {
-                features: selectedFeatures.map((f) => f.id),
-                addOns: selectedAddOns.map((a) => a.id),
-                usage: usageQuantities,
-            }),
+          packageId: selectedPackage.id,
+          ...(selectedPackage.isCustomizable && {
+            features: selectedFeatures.map((f) => f.id),
+            addOns: selectedAddOns.map((a) => a.id),
+            usage: usageQuantities,
+          }),
         };
+      
         console.log("Saving package configuration with request:", request);
-
+      
         try {
-            await axiosClient.post("PricingPackages/custom/select", request);
-            console.log("Package saved successfully!");
-            console.log("Form data:", {
-                selectedFeatures,
-                selectedAddOns,
-                usageQuantities,
-                calculatedPrice,
-            });
-            setModalMessage("Package saved successfully!");
+          await axiosClient.post("PricingPackages/custom/select", request);
+          console.log("Package saved successfully!");
+          console.log("Form data:", {
+            selectedFeatures,
+            selectedAddOns,
+            usageQuantities,
+            calculatedPrice,
+          });
+          setModalMessage("Package saved successfully!");
         } catch (error) {
-            console.error("Save failed:", error);
-            setModalMessage("Error saving package!");
+          console.error("Save failed:", error);
+          setModalMessage("Error saving package!");
         } finally {
-            setIsLoading(false);
-            setIsModalOpen(true);
+          // Turn off loading; modal stays open to display the final message.
+          setIsLoading(false);
         }
-    }, [currentStep, steps.length, selectedPackage, selectedFeatures, selectedAddOns, usageQuantities, validateCurrentStep, calculatedPrice]);
+      }, [
+        currentStep,
+        steps.length,
+        selectedPackage,
+        selectedFeatures,
+        selectedAddOns,
+        usageQuantities,
+        validateCurrentStep,
+        calculatedPrice,
+      ]);
+      
 
     const handleModalConfirm = (isSignup: boolean) => {
         setIsModalOpen(false);
@@ -227,7 +246,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 } catch (error) {
                     console.error("Failed to calculate price:", error);
                 }
-            }, 300); 
+            }, 300);
 
             calculatePrice();
 
@@ -238,7 +257,17 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
 
     if (isLoading)
-        return <div className="loading">Loading package configuration...</div>;
+        return (
+            <motion.div
+                className={styles.loading}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+            >
+                <div>Loading package configuration...</div>
+                <FaCog className={styles.loadingIcon} />
+            </motion.div>
+        );
 
     return (
         <>
@@ -281,7 +310,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 open={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 message={modalMessage}
-                onConfirm={handleModalConfirm} 
+                onConfirm={handleModalConfirm}
                 onReturn={handleReturnToPackage}
             />
         </>
