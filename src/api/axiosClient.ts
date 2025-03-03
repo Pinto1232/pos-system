@@ -42,7 +42,7 @@ const useAxiosClient = () => {
       axiosClient.interceptors.response.use(
         async (response) => {
           if (spinnerContext) {
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 500));
             spinnerContext.setLoading(false); 
           }
           return response;
