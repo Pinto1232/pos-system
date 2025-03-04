@@ -7,7 +7,6 @@
   background-color: #ffffff; 
 }
 
-
 .leftColumn {
   background-color: #fff;
   border: 1px solid #ddd;
@@ -15,6 +14,12 @@
   padding: 20px;
   max-height: 400px; 
   overflow-y: auto; 
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+}
+
+.leftColumn::-webkit-scrollbar {
+  display: none;
 }
 
 .rightColumn {
@@ -26,9 +31,10 @@
 }
 
 .heading {
-  margin-bottom: 16px;
-  font-weight: bold;
-  color: #333;
+  margin-bottom: 19px;
+  font-weight: bolder!important;
+  color: #000000;
+  font-size: 1.5rem!important;
 }
 
 .packageIcon {
@@ -74,6 +80,7 @@
 
 .testPeriod {
   color: #666;
+  margin-top: 9px!important;
 }
 
 .summaryItem {
@@ -90,3 +97,29 @@
   border-radius: 6px !important;
   padding: 12px 0 !important;
 }
+
+.multiCurrencyBox {
+  margin-top: 16px;
+  padding: 6px;
+  border-radius: 6px;
+  background-color: #f4f4f489;
+}
+
+.multiCurrencyLabel {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: bold !important;
+  font-size: 15px!important;
+  text-transform: capitalize;
+}
+
+.multiCurrencyItem {
+  margin-right: 16px;
+  color: #333;
+}
+
+.multiCurrencyPrice{
+  font-size: 13px!important;
+}
+

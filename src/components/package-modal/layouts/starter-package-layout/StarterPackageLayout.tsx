@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Grid, Box, Typography, Button, Checkbox, FormControlLabel } from "@mui/material";
+import { Grid, Box, Typography, Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import iconMap from "../../../../utils/icons";
 import SuccessMessage from "../../../ui/success-message/SuccessMessage";
 import styles from "./StarterPackageLayout.module.css";
@@ -25,6 +25,7 @@ const currencySymbols: Record<string, string> = {
   USD: "$",
   EUR: "€",
   GBP: "£",
+  Kz: "Kz",
   // Add more currency symbols as needed
 };
 
@@ -76,7 +77,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
     : null;
 
   const displayPrice = currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
-  const currencySymbol = currencySymbols[currentCurrency] || "$";
+  const currencySymbol = currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
 
   return (
     <Box className={styles.container}>
@@ -112,10 +113,10 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
                   variant="subtitle2"
                   className={styles.premiumBoxLabel}
                 >
-                  YOUR TOTAL PREMIUMS ({currentCurrency})
+                  YOUR TOTAL In ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.premiumBoxAmount}>
-                  {currencySymbol}{displayPrice}/mo
+                  <b>{currencySymbol}{displayPrice}</b>/mo
                 </Typography>
               </Box>
 
@@ -125,24 +126,26 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
                   <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
                     Prices in other currencies:
                   </Typography>
-                  {Object.entries(multiCurrency).map(([currency, price]) => (
-                    <FormControlLabel
-                      key={currency}
-                      control={
-                        <Checkbox
-                          checked={currentCurrency === currency}
-                          onChange={() => handleCurrencyChange(currency)}
-                        />
-                      }
-                      label={`${currency}: ${currencySymbols[currency] || "$"}${price}`}
-                      className={styles.multiCurrencyItem}
-                    />
-                  ))}
+                  <FormGroup row>
+                    {Object.entries(multiCurrency).map(([currency, price]) => (
+                      <FormControlLabel
+                        key={currency}
+                        control={
+                          <Checkbox
+                            checked={currentCurrency === currency}
+                            onChange={() => handleCurrencyChange(currency)}
+                          />
+                        }
+                        label={<b className={styles.multiCurrencyPrice}>{currency}: {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}{price}</b>}
+                        className={styles.multiCurrencyItem}
+                      />
+                    ))}
+                  </FormGroup>
                 </Box>
               )}
 
               <Typography variant="subtitle2" className={styles.testPeriod}>
-                Test Period: {selectedPackage.testPeriodDays} days
+                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
 
             </Box>
@@ -155,19 +158,19 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Package Type: {selectedPackage.type}
+                Package Type: <b>{selectedPackage.type}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Package ID: {selectedPackage.id}
+                Package ID: <b>{selectedPackage.id}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: {currencySymbol}{displayPrice}
+                Monthly Price: <b>{currencySymbol}{displayPrice}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period: {selectedPackage.testPeriodDays} days
+                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
 
               <Button
