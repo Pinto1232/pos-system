@@ -13,6 +13,7 @@ import {
 import iconMap from "../../../../utils/icons";
 import SuccessMessage from "../../../ui/success-message/SuccessMessage";
 import styles from "./PremiumPackageLayout.module.css";
+import LazyLoginForm from "@/components/login-form/LoginForm";
 
 interface PremiumPackageLayoutProps {
   selectedPackage: {
@@ -42,6 +43,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
   );
@@ -65,6 +67,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
+    setShowLoginForm(true)
   };
 
   const handleReturnSuccessMessage = () => {
@@ -99,7 +102,8 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {!loading && !success && (
+      {showLoginForm && <LazyLoginForm />}
+       {!loading && !success && !showLoginForm &&  (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>

@@ -13,6 +13,7 @@ import {
 import iconMap from "../../../../utils/icons";
 import SuccessMessage from "../../../ui/success-message/SuccessMessage";
 import styles from "./EnterprisePackageLayout.module.css";
+import LazyLoginForm from "@/components/login-form/LoginForm";
 
 interface EnterprisePackageLayoutProps {
   selectedPackage: {
@@ -42,6 +43,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
   );
@@ -68,6 +70,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
+    setShowLoginForm(true)
   };
 
   const handleReturnSuccessMessage = () => {
@@ -85,7 +88,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
     ? (JSON.parse(selectedPackage.multiCurrencyPrices) as Record<string, number>)
     : null;
 
-  // Determine the display price based on the selected currency, if available.
+
   const displayPrice =
     currentCurrency && multiCurrency
       ? multiCurrency[currentCurrency]
@@ -103,7 +106,8 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {!loading && !success && (
+      {showLoginForm && <LazyLoginForm />}
+      {!loading && !success && !showLoginForm && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>

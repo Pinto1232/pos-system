@@ -13,6 +13,7 @@ import {
 import iconMap from "../../../../utils/icons";
 import SuccessMessage from "../../../ui/success-message/SuccessMessage";
 import styles from "./GrowthPackageLayout.module.css";
+import LazyLoginForm from "@/components/login-form/LoginForm";
 
 interface GrowthPackageLayoutProps {
   selectedPackage: {
@@ -42,6 +43,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
   );
@@ -51,9 +53,13 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
 
   const handleSelectedGrowthPackage = async () => {
     setLoading(true);
-    console.log("Selected package", { ...selectedPackage, currency: currentCurrency });
+    console.log("Selected package", { 
+      ...selectedPackage, 
+      currency: currentCurrency 
+    });
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
+
     setLoading(false);
     setSuccess(true);
   };
@@ -65,6 +71,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
+    setShowLoginForm(true)
   };
 
   const handleReturnSuccessMessage = () => {
@@ -76,7 +83,8 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
     setCurrentCurrency(currency);
   };
 
-  // Parse multiCurrencyPrices and cast it to a known type
+  
+  
   const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
     ? (JSON.parse(selectedPackage.multiCurrencyPrices) as Record<string, number>)
     : null;
@@ -96,7 +104,8 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {!loading && !success && (
+       {showLoginForm && <LazyLoginForm />}
+      {!loading && !success && !showLoginForm && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>

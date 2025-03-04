@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Grid, Box, Typography, Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import iconMap from "../../../../utils/icons";
 import SuccessMessage from "../../../ui/success-message/SuccessMessage";
+import LazyLoginForm from "../../../login-form/LoginForm";
 import styles from "./StarterPackageLayout.module.css";
 
 interface StarterPackageLayoutProps {
@@ -34,6 +35,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || "USD");
 
   const IconComponent =
@@ -60,6 +62,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
+    setShowLoginForm(true);
   };
 
   const handleReturnSuccessMessage = () => {
@@ -89,7 +92,8 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {!loading && !success && (
+      {showLoginForm && <LazyLoginForm />}
+      {!loading && !success && !showLoginForm && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>

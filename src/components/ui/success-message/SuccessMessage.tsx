@@ -42,7 +42,7 @@ const SuccessMessage: React.FC<SuccessMessageProps> = memo(
                     {/* Message Text */}
                     <Typography className={styles.successText}>
                         {message ||
-                            "Your action was successful. Please proceed or contact support if you have any questions."}
+                            "Your action was successful. Please login now"}
                     </Typography>
 
                     {/* Confirm Button */}
@@ -58,7 +58,7 @@ const SuccessMessage: React.FC<SuccessMessageProps> = memo(
                         <Button
                             variant="contained"
                             style={{ backgroundColor: "#1e3a8a" }}
-                            onClick={() => onConfirm(false)} //Here is the fix
+                            onClick={() => onConfirm(true)}
                             startIcon={<DoneIcon />}
                         >
                             Confirm
