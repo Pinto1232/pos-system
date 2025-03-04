@@ -117,7 +117,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
               </Typography>
               <Box className={styles.premiumBox}>
                 <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
-                  YOUR TOTAL PREMIUMS (in {currentCurrency})
+                  YOUR TOTAL IN ( {currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.premiumBoxAmount}>
                   <b>{currencySymbol}{displayPrice}</b>/mo

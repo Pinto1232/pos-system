@@ -122,6 +122,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
 
               {/* Display Multi-Currency Prices if available */}
               {multiCurrency && (
+                console.log(multiCurrency),
                 <Box className={styles.multiCurrencyBox}>
                   <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
                     Prices in other currencies:
