@@ -149,43 +149,43 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     const handleSave = useCallback(async () => {
         if (currentStep !== steps.length - 1) return;
         if (!validateCurrentStep()) return;
-      
+
         // Immediately show the modal with a "Saving..." message and set loading state.
         setModalMessage("Saving package...");
         setIsModalOpen(true);
         setIsLoading(true);
-      
+
         const request: PackageSelectionRequest = {
-          packageId: selectedPackage.id,
-          ...(selectedPackage.isCustomizable && {
-            features: selectedFeatures.map((f) => f.id),
-            addOns: selectedAddOns.map((a) => a.id),
-            usage: usageQuantities,
-          }),
+            packageId: selectedPackage.id,
+            ...(selectedPackage.isCustomizable && {
+                features: selectedFeatures.map((f) => f.id),
+                addOns: selectedAddOns.map((a) => a.id),
+                usage: usageQuantities,
+            }),
         };
-      
+
         console.log("Saving package configuration with request:", request);
-      
+
         try {
-          await axiosClient.post("PricingPackages/custom/select", request);
-          console.log("Package saved successfully!");
-          console.log("Form data:", {
-            selectedFeatures,
-            selectedAddOns,
-            usageQuantities,
-            calculatedPrice,
-            selectedCurrency,
-            multiCurrencyPrices: JSON.parse(selectedPackage.multiCurrencyPrices)[selectedCurrency],
-          });
-          setModalMessage("Package saved successfully!");
+            await axiosClient.post("PricingPackages/custom/select", request);
+            console.log("Package saved successfully!");
+            console.log("Form data:", {
+                selectedFeatures,
+                selectedAddOns,
+                usageQuantities,
+                calculatedPrice,
+                selectedCurrency,
+                multiCurrencyPrices: JSON.parse(selectedPackage.multiCurrencyPrices)[selectedCurrency],
+            });
+            setModalMessage("Package saved successfully!");
         } catch (error) {
-          console.error("Save failed:", error);
-          setModalMessage("Error saving package!");
+            console.error("Save failed:", error);
+            setModalMessage("Error saving package!");
         } finally {
-          // Turn off loading; modal stays open to display the final message.
-          setIsLoading(false);
+            // Turn off loading; modal stays open to display the final message.
+            setIsLoading(false);
         }
-      }, [
+    }, [
         currentStep,
         steps.length,
         selectedPackage,
@@ -195,7 +195,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         validateCurrentStep,
         calculatedPrice,
         selectedCurrency,
-      ]);
+    ]);
 
     const handleModalConfirm = (isSignup: boolean) => {
         setIsModalOpen(false);

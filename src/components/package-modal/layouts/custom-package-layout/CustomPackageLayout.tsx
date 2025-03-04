@@ -148,7 +148,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   : `Price: ${selectedCurrency} ${displayPrice}/mo`}
               </Typography>
             </Box>
-          
+
             <Box className={styles.currencyContainer}>
               <Typography variant="body2" className={styles.currencyLabel}>
                 <b>Prices in other currencies:</b>
@@ -174,7 +174,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               </Box>
             </Box>
 
-              <Box className={styles.testPeriodItem}>
+            <Box className={styles.testPeriodItem}>
               <Typography variant="body2">
                 Test Period: {packageDetails.testPeriod} days
               </Typography>
@@ -328,11 +328,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Typography variant="h5">Final Review</Typography>
             <Box className={styles.priceSummary}>
               <Typography variant="h6">
-                Total Price: {selectedCurrency} {calculatedPrice}/mo 
+                Total Price: {selectedCurrency} {calculatedPrice}/mo
               </Typography>
               {isCustomizable && (
                 <Typography variant="body2">
-                  (Base: {selectedCurrency} {basePrice.toFixed(2)} + Customizations: {selectedCurrency} {(calculatedPrice - basePrice).toFixed(2)}) 
+                  (Base: {selectedCurrency} {basePrice.toFixed(2)} + Customizations: {selectedCurrency} {(calculatedPrice - basePrice).toFixed(2)})
                 </Typography>
               )}
             </Box>

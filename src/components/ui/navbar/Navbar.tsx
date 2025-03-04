@@ -35,7 +35,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title, testPeriod }) => {
         <IconButton color="inherit">
           <ChatIcon />
         </IconButton>
-        
+
         <IconButton color="inherit">
           <NotificationsIcon />
         </IconButton>
