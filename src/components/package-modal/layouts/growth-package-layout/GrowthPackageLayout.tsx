@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { Grid, Box, Typography, Button } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Typography,
+  Button,
+  Checkbox,
+  FormGroup,
+  FormControlLabel
+} from "@mui/material";
 import iconMap from "../../../../utils/icons";
 import SuccessMessage from "../../../ui/success-message/SuccessMessage";
 import styles from "./GrowthPackageLayout.module.css";
@@ -16,24 +24,36 @@ interface GrowthPackageLayoutProps {
     price: number;
     testPeriodDays: number;
     type: "starter" | "growth" | "enterprise" | "custom" | "premium";
+    currency?: string;
+    multiCurrencyPrices?: string;
   };
 }
+
+const currencySymbols: Record<string, string> = {
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  Kz: "Kz",
+  // Add more currency symbols as needed
+};
 
 const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   selectedPackage,
 }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [currentCurrency, setCurrentCurrency] = useState<string>(
+    selectedPackage.currency || "USD"
+  );
 
-  const IconComponent = iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
+  const IconComponent =
+    iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
   const handleSelectedGrowthPackage = async () => {
     setLoading(true);
-    console.log("Selected package", selectedPackage);
-
+    console.log("Selected package", { ...selectedPackage, currency: currentCurrency });
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
     setLoading(false);
     setSuccess(true);
   };
@@ -52,9 +72,22 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
     setSuccess(false);
   };
 
+  const handleCurrencyChange = (currency: string) => {
+    setCurrentCurrency(currency);
+  };
+
+  // Parse multiCurrencyPrices and cast it to a known type
+  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
+    ? (JSON.parse(selectedPackage.multiCurrencyPrices) as Record<string, number>)
+    : null;
+
+  const displayPrice =
+    currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
+  const currencySymbol =
+    currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
+
   return (
     <Box className={styles.container}>
-      
       {success && (
         <SuccessMessage
           open={success}
@@ -75,7 +108,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body1" className={styles.description}>
-                {selectedPackage.description.replace(/[^\w\s.,!?]/g, '')}
+                {selectedPackage.description.replace(/[^\w\s.,!?]/g, "")}
               </Typography>
 
               <Typography variant="body2" className={styles.description}>
@@ -84,18 +117,43 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
 
               <Box className={styles.growthBox}>
                 <Typography variant="subtitle2" className={styles.growthBoxLabel}>
-                  YOUR TOTAL PREMIUMS
+                  YOUR TOTAL IN ( {currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.growthBoxAmount}>
-                  ${selectedPackage.price}/mo
+                  <b>{currencySymbol}{displayPrice}</b>/mo
                 </Typography>
               </Box>
 
-              <Typography
-                variant="subtitle2"
-                className={styles.testPeriod}
-              >
-                Test Period: {selectedPackage.testPeriodDays} days
+              {/* Multi-Currency Selection */}
+              {multiCurrency && (
+                <Box className={styles.multiCurrencyBox}>
+                  <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
+                    Prices in other currencies:
+                  </Typography>
+                  <FormGroup row>
+                    {Object.entries(multiCurrency).map(([currency, price]) => (
+                      <FormControlLabel
+                        key={currency}
+                        control={
+                          <Checkbox
+                            checked={currentCurrency === currency}
+                            onChange={() => handleCurrencyChange(currency)}
+                          />
+                        }
+                        label={
+                          <b className={styles.multiCurrencyPrice}>
+                            {currency}: {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}{price}
+                          </b>
+                        }
+                        className={styles.multiCurrencyItem}
+                      />
+                    ))}
+                  </FormGroup>
+                </Box>
+              )}
+
+              <Typography variant="subtitle2" className={styles.testPeriod}>
+                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
             </Box>
           </Grid>
@@ -107,19 +165,19 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Package Type: {selectedPackage.type}
+                Package Type: <b>{selectedPackage.type}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Package ID: {selectedPackage.id}
+                Package ID: <b>{selectedPackage.id}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: ${selectedPackage.price}
+                Monthly Price: <b>{currencySymbol}{displayPrice}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period: {selectedPackage.testPeriodDays} days
+                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
 
               <Button
