@@ -36,6 +36,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     const [calculatedPrice, setCalculatedPrice] = useState<number>(selectedPackage.price);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
+    const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
 
     const defaultStepsCustom = React.useMemo(() => [
         "Package Details",
@@ -173,6 +174,8 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
             selectedAddOns,
             usageQuantities,
             calculatedPrice,
+            selectedCurrency,
+            multiCurrencyPrices: JSON.parse(selectedPackage.multiCurrencyPrices)[selectedCurrency],
           });
           setModalMessage("Package saved successfully!");
         } catch (error) {
@@ -191,8 +194,8 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         usageQuantities,
         validateCurrentStep,
         calculatedPrice,
+        selectedCurrency,
       ]);
-      
 
     const handleModalConfirm = (isSignup: boolean) => {
         setIsModalOpen(false);
@@ -277,6 +280,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                         description: selectedPackage.description,
                         testPeriod: selectedPackage.testPeriodDays,
                     }}
+                    selectedPackage={selectedPackage}
                     onNext={handleNext}
                     onBack={handleBack}
                     onSave={handleSave}
@@ -292,6 +296,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                         console.log("Updating usage quantities:", quantities);
                         setUsageQuantities(quantities);
                     }}
+                    setSelectedCurrency={setSelectedCurrency}
                 />
             )}
             <SuccessMessage

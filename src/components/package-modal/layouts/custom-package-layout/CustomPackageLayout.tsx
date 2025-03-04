@@ -12,11 +12,13 @@ import {
   Typography,
   Box,
   CircularProgress,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import InfoIcon from "@mui/icons-material/Info";
 import styles from "./CustomPackageLayout.module.css";
-import { Feature, AddOn, UsagePricing } from "./types";
+import { Feature, AddOn, UsagePricing, Package } from "./types";
 
 interface CustomPackageLayoutProps {
   isCustomizable: boolean;
@@ -35,12 +37,14 @@ interface CustomPackageLayoutProps {
     description: string;
     testPeriod: number;
   };
+  selectedPackage: Package;
   onNext: () => void;
   onBack: () => void;
   onSave: () => void;
   onFeatureToggle: (features: Feature[]) => void;
   onAddOnToggle: (addOns: AddOn[]) => void;
   onUsageChange: (quantities: Record<number, number>) => void;
+  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
@@ -56,14 +60,17 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   basePrice,
   calculatedPrice,
   packageDetails,
+  selectedPackage,
   onNext,
   onBack,
   onSave,
   onFeatureToggle,
   onAddOnToggle,
   onUsageChange,
+  setSelectedCurrency,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrencyState] = useState<string>("USD");
 
   const handleNext = () => {
     setLoading(true);
@@ -114,46 +121,86 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
     switch (currentLabel) {
       case "Package Details":
+        const multiCurrencyPrices = JSON.parse(selectedPackage.multiCurrencyPrices);
+        const displayPrice = multiCurrencyPrices[selectedCurrency] || basePrice;
+        const formattedDescription = packageDetails.description
+          .replace(/([a-z])([A-Z])/g, '$1 $2')
+          .replace(/business needs/g, 'business needs.');
         return (
-          <div className={styles.details}>
-            <div className={styles.detailItem}>
+          <Box className={styles.packageDetails} sx={{ maxHeight: '600px', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <style>
+              {`
+                .${styles.packageDetails}::-webkit-scrollbar {
+                  display: none;
+                }
+              `}
+            </style>
+            <Box className={styles.detailItem}>
               <Typography variant="h4">{packageDetails.title}</Typography>
-            </div>
-            <div className={styles.detailItem}>
-              <Typography variant="body1">{packageDetails.description}</Typography>
-            </div>
-            <div className={styles.detailItem}>
+            </Box>
+            <Box className={styles.detailItem}>
+              <Typography variant="body1">{formattedDescription}</Typography>
+            </Box>
+            <Box className={styles.detailItem}>
               <Typography variant="h6">
                 {isCustomizable
-                  ? `Base Price: $${basePrice}/mo`
-                  : `Price: $${calculatedPrice}/mo`}
+                  ? `Base Price: ${selectedCurrency} ${displayPrice}/mo`
+                  : `Price: ${selectedCurrency} ${displayPrice}/mo`}
               </Typography>
-            </div>
-            <div className={styles.detailItem}>
+            </Box>
+          
+            <Box className={styles.currencyContainer}>
+              <Typography variant="body2" className={styles.currencyLabel}>
+                <b>Prices in other currencies:</b>
+              </Typography>
+              <Box className={styles.currencyOptions}>
+                {Object.entries(multiCurrencyPrices).map(([currency, price]) => (
+                  <Box key={currency} className={styles.currencyItem}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedCurrency === currency}
+                          onChange={() => {
+                            setSelectedCurrency(currency);
+                            setSelectedCurrencyState(currency);
+                          }}
+                        />
+                      }
+                      label={`${currency}: ${price}`}
+                      className={styles.currencyItemPrice}
+                    />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+
+              <Box className={styles.testPeriodItem}>
               <Typography variant="body2">
                 Test Period: {packageDetails.testPeriod} days
               </Typography>
-            </div>
-          </div>
+            </Box>
+
+          </Box>
         );
 
       case "Select Core Features":
         return (
-          <div className={styles.featuresContainer}>
+          <Box className={styles.featuresContainer}>
             {features.length > 0 ? (
               features.map(feature => {
                 const isSelected = selectedFeatures.some(f => f.id === feature.id);
+                const featurePrice = feature.multiCurrencyPrices ? feature.multiCurrencyPrices[selectedCurrency] : feature.basePrice;
                 return (
-                  <div key={feature.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}>
+                  <Box key={feature.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}>
                     <Button
                       fullWidth
                       variant={isSelected ? "contained" : "outlined"}
                       onClick={() => handleFeatureToggle(feature)}
                     >
-                      {feature.name.replace(/[^a-zA-Z0-9 ]/g, "")} (${feature.basePrice})
+                      {feature.name.replace(/[^a-zA-Z0-9 ]/g, "")} ({selectedCurrency} {featurePrice})
                     </Button>
                     {isSelected && (
-                      <div className={styles.featureDescriptionContainer}>
+                      <Box className={styles.featureDescriptionContainer}>
                         <InfoIcon className={styles.infoIcon} />
                         <Typography
                           variant="body2"
@@ -161,45 +208,46 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         >
                           {feature.description}
                         </Typography>
-                      </div>
+                      </Box>
                     )}
-                  </div>
+                  </Box>
                 );
               })
             ) : (
-              <div className={styles.emptyState}>
+              <Box className={styles.emptyState}>
                 <Typography variant="h6">No features available</Typography>
                 <Button variant="outlined" onClick={onNext}>
                   Continue
                 </Button>
-              </div>
+              </Box>
             )}
-          </div>
+          </Box>
         );
 
       case "Choose Add-Ons":
         return (
-          <div className={styles.featuresContainer}>
-            <div className={styles.sectionHeader}>
+          <Box className={styles.featuresContainer}>
+            <Box className={styles.sectionHeader}>
               <Typography variant="h5">Choose Add-Ons</Typography>
               <Typography variant="body2" className={styles.sectionDescription}>
                 Select additional features to enhance your package. Each add-on comes with its own pricing.
               </Typography>
-            </div>
+            </Box>
             {addOns.length > 0 ? (
               addOns.map(addOn => {
                 const isSelected = selectedAddOns.some(a => a.id === addOn.id);
+                const addOnPrice = addOn.multiCurrencyPrices ? addOn.multiCurrencyPrices[selectedCurrency] : addOn.price;
                 return (
-                  <div key={addOn.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}>
+                  <Box key={addOn.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}>
                     <Button
                       fullWidth
                       variant={isSelected ? "contained" : "outlined"}
                       onClick={() => handleAddOnToggle(addOn)}
                     >
-                      {addOn.name.replace(/[^a-zA-Z0-9 ]/g, "")} (${addOn.price})
+                      {addOn.name.replace(/[^a-zA-Z0-9 ]/g, "")} ({selectedCurrency} {addOnPrice})
                     </Button>
                     {isSelected && (
-                      <div className={styles.featureDescriptionContainer}>
+                      <Box className={styles.featureDescriptionContainer}>
                         <InfoIcon className={styles.infoIcon} />
                         <Typography
                           variant="body2"
@@ -207,42 +255,43 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         >
                           {addOn.description}
                         </Typography>
-                      </div>
+                      </Box>
                     )}
-                  </div>
+                  </Box>
                 );
               })
             ) : (
-              <div className={styles.emptyState}>
+              <Box className={styles.emptyState}>
                 <Typography variant="h6">No add-ons available</Typography>
                 <Button variant="outlined" onClick={onNext}>
                   Continue
                 </Button>
-              </div>
+              </Box>
             )}
-          </div>
+          </Box>
         );
 
       case "Configure Usage":
         return (
-          <div className={styles.featuresContainer}>
-            <div className={styles.sectionHeader}>
+          <Box className={styles.featuresContainer}>
+            <Box className={styles.sectionHeader}>
               <Typography variant="h5">Configure Usage</Typography>
               <Typography variant="body2" className={styles.sectionDescription}>
                 Adjust the usage metrics to fit your business needs. Ensure the values are within the allowed range.
               </Typography>
-            </div>
+            </Box>
             {usagePricing.length > 0 ? (
               usagePricing.map(usage => {
                 const currentValue = usageQuantities[usage.id] ?? usage.defaultValue;
+                const usagePrice = usage.multiCurrencyPrices ? usage.multiCurrencyPrices[selectedCurrency] : usage.pricePerUnit;
                 const usageError =
                   currentValue < usage.minValue || currentValue > usage.maxValue
                     ? `Value must be between ${usage.minValue} and ${usage.maxValue}`
                     : "";
                 return (
-                  <div key={usage.id} className={styles.usageItem}>
+                  <Box key={usage.id} className={styles.usageItem}>
                     <Typography variant="subtitle1" gutterBottom>
-                      {usage.name} (${usage.pricePerUnit}/{usage.unit})
+                      {usage.name} ({selectedCurrency} {usagePrice}/{usage.unit})
                     </Typography>
                     <TextField
                       type="number"
@@ -259,77 +308,77 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       fullWidth
                       className={styles.textField}
                     />
-                  </div>
+                  </Box>
                 );
               })
             ) : (
-              <div className={styles.emptyState}>
+              <Box className={styles.emptyState}>
                 <Typography variant="h6">No usage metrics to configure</Typography>
                 <Button variant="outlined" onClick={onNext}>
                   Continue
                 </Button>
-              </div>
+              </Box>
             )}
-          </div>
+          </Box>
         );
 
       case "Review & Confirm":
         return (
-          <div className={styles.review}>
+          <Box className={styles.review} >
             <Typography variant="h5">Final Review</Typography>
-            <div className={styles.priceSummary}>
+            <Box className={styles.priceSummary}>
               <Typography variant="h6">
-                Total Price: ${calculatedPrice}/mo
+                Total Price: {selectedCurrency} {calculatedPrice}/mo 
               </Typography>
               {isCustomizable && (
                 <Typography variant="body2">
-                  (Base: ${basePrice.toFixed(2)} + Customizations: ${(calculatedPrice - basePrice).toFixed(2)})
+                  (Base: {selectedCurrency} {basePrice.toFixed(2)} + Customizations: {selectedCurrency} {(calculatedPrice - basePrice).toFixed(2)}) 
                 </Typography>
               )}
-            </div>
+            </Box>
             {isCustomizable && (
               <>
                 {selectedFeatures.length > 0 && (
-                  <div className={styles.section}>
+                  <Box className={styles.section}>
                     <Typography variant="subtitle1">Selected Features:</Typography>
                     {selectedFeatures.map(f => (
                       <Typography key={f.id}>
-                        {f.name} (+${f.basePrice})
+                        {f.name} ({selectedCurrency} {f.basePrice})
                       </Typography>
                     ))}
-                  </div>
+                  </Box>
                 )}
                 {selectedAddOns.length > 0 && (
-                  <div className={styles.section}>
+                  <Box className={styles.section}>
                     <Typography variant="subtitle1">Selected Add-Ons:</Typography>
                     {selectedAddOns.map(a => (
                       <Typography key={a.id}>
-                        {a.name} (+${a.price})
+                        {a.name} ({selectedCurrency} {a.price})
                       </Typography>
                     ))}
-                  </div>
+                  </Box>
                 )}
                 {usagePricing.length > 0 && (
-                  <div className={styles.section}>
+                  <Box className={styles.section}>
                     <Typography variant="subtitle1">Usage Limits:</Typography>
                     {usagePricing.map(u => (
                       <Typography key={u.id}>
                         {u.name}: {usageQuantities[u.id]} {u.unit}
                       </Typography>
                     ))}
-                  </div>
+                  </Box>
                 )}
               </>
             )}
-            <div className={styles.buttonContainer}>
+            <Box className={styles.buttonContainer}>
               <Button variant="outlined" onClick={onBack}>
                 Back
               </Button>
               <Button variant="contained" onClick={handleSave}>
                 Confirm & Save
               </Button>
-            </div>
-          </div>
+            </Box>
+          </Box>
         );
 
       default:
