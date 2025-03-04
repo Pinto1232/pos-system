@@ -53,7 +53,7 @@ Navbar.displayName = "Navbar";
 const LazyNavbar = () => (
   <Suspense fallback={<div>Loading...</div>}>
     <Navbar
-      title="Pisval Tech POS System"
+      title="Pisval Tech POS"
       testPeriod={30}
     />
   </Suspense>
