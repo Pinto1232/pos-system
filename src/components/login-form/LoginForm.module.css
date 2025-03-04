@@ -21,7 +21,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
 }
 
 .logoImage {
@@ -36,9 +36,10 @@
 
 .heading {
   font-weight: 900;
-  font-size: 15px;
+  font-size: 15px!important;
+  text-transform: uppercase;
   color: #1A202C;
-  margin-bottom: 8px;
+  margin-bottom: 10px!important;
   text-transform: capitalize;
 }
 
@@ -59,25 +60,40 @@
 }
 
 .googleButton {
-  border-color: #E2E8F0 !important;
+  border: 1px solid #E2E8F0 !important;
   color: #1A202C !important;
   text-transform: none !important;
   padding: 10px 16px !important;
   border-radius: 8px !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.googleButton:hover {
+  background-color: #f1f1f1 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
 }
 
 .facebookButton {
-  border-color: '1px solid #E2E8F0 '!important ;
+  border: 1px solid #E2E8F0 !important;
   color: #1A202C !important;
   text-transform: none !important;
   padding: 10px 16px !important;
   border-radius: 8px !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.facebookButton:hover {
+  background-color: #f1f1f1 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
 }
 
 .separator {
   color: #718096;
   font-size: 0.500rem;
-
 }
 
 .separator::before,
