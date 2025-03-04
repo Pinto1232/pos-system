@@ -100,3 +100,28 @@
   margin-top: 20px !important;
   text-transform: none !important;
 }
+
+/* Multi-Currency Box Styles */
+.multiCurrencyBox {
+  margin-top: 16px;
+  padding: 6px;
+  border-radius: 6px;
+  background-color: #f4f4f489;
+}
+
+.multiCurrencyLabel {
+  font-size: 15px !important;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: bold !important;
+  text-transform: capitalize;
+}
+
+.multiCurrencyItem {
+  margin-right: 16px;
+  color: #333;
+}
+
+.multiCurrencyPrice {
+  font-size: 13px !important;
+}
