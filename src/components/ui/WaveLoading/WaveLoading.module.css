@@ -13,6 +13,7 @@
   margin-top: 1rem;
   font-size: 2rem;
   animation: spin 1s linear infinite;
+  color:#1976d2 ;
 }
 
 @keyframes wave {
