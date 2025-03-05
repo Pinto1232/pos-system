@@ -1,6 +1,7 @@
 "use client";
 
 import React, { memo, Suspense } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./LoginForm.module.css";
 import {
     Box,
@@ -37,6 +38,8 @@ const LoginForm: React.FC<LoginFormProps> = memo(
         showSocialLogin = true,
         onClose,
     }) => {
+        const router = useRouter();
+
         const handleLogin = async (event: React.FormEvent) => {
             event.preventDefault();
             const form = event.target as HTMLFormElement;
@@ -51,6 +54,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 const { access_token } = response.data;
                 localStorage.setItem('accessToken', access_token);
                 console.log('Login successful:', response.data);
+                router.push('/dashboard'); // Redirect to the dashboard page
             } catch (error) {
                 console.error('Login failed:', error);
             }

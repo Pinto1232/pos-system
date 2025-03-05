@@ -48,7 +48,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           enableLogging: true,
         });
 
-        console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI); // Log the redirect URI
+        console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI); 
 
         if (authenticated) {
           if (kc.token) {
@@ -80,7 +80,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         const errorMessage =
           err instanceof Error ? err.message : 'Unknown authentication error';
         console.error('Authentication Error:', errorMessage);
-        console.error('Error details:', err); // Log the full error object for more details
+        console.error('Error details:', err); 
         setError(errorMessage);
         localStorage.removeItem('accessToken');
         setInitialized(true);
