@@ -138,7 +138,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               `}
             </style>
             <Box className={styles.detailItem}>
-              <Typography variant="h4">{packageDetails.title}</Typography>
+              <Typography variant="h5">{packageDetails.title}</Typography>
             </Box>
             <Box className={styles.detailItem}>
               <Typography variant="body1">{formattedDescription}</Typography>
@@ -218,28 +218,34 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                                   onChange={() => handleFeatureToggle(feature)}
                                 />
                               }
-                              label={`${feature.name} (${selectedCurrency} ${featurePrice})`}
+                              label={
+                                <Box display="flex" alignItems="center">
+                                  {`${feature.name} (${selectedCurrency} ${featurePrice})`}
+                                  {isSelected && (
+                                    <Typography variant="body2" className={styles.featureDescription} sx={{ marginLeft: 1 }}>
+                                      Module Selected <FaCheck />
+                                    </Typography>
+                                  )}
+                                </Box>
+                              }
                             />
                             {isSelected && (
-                              <Typography variant="body2" className={styles.featureDescription}>Module Selected <FaCheck /></Typography>
+                              <Box className={styles.featureDescriptionContainer}>
+                                <InfoIcon className={styles.infoIcon} />
+                                <Typography
+                                  variant="body2"
+                                  className={styles.featureDescription}
+                                >
+                                  {feature.description}
+                                </Typography>
+                              </Box>
                             )}
                           </Box>
-                          <Box sx={{ width: '369px', mt: 1 }}>
+                          <Box sx={{ width: '379px', mt: 1 }}>
                             <Divider />
                           </Box>
                         </Box>
 
-                        {isSelected && (
-                          <Box className={styles.featureDescriptionContainer}>
-                            <InfoIcon className={styles.infoIcon} />
-                            <Typography
-                              variant="body2"
-                              className={styles.featureDescription}
-                            >
-                              {feature.description}
-                            </Typography>
-                          </Box>
-                        )}
                       </Box>
                     );
                   })
@@ -256,7 +262,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Box>  <Typography variant="h6" className={styles.title}>
               Purchase Summary
             </Typography>
-            <Typography variant="body2" className={styles.sectionDescription}>
+              <Typography variant="body2" className={styles.sectionDescription}>
                 Brief summary of your purchase.
               </Typography>
               <Box className={styles.purchaseSummaryContainer}>

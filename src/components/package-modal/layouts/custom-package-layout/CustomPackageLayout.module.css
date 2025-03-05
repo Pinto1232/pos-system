@@ -64,7 +64,8 @@
 
 .featureDescription {
   margin-top: 0.5rem;
-  color: #64748b;
+  color: #3b82f6;
+  font-size: 14px;
 }
 
 .emptyState {
@@ -251,7 +252,7 @@
   border-radius: 4px;
   font-family: 'Roboto', sans-serif;
   margin-top: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 0px rgba(0, 0, 0, 0.1);
 }
 
 .title {
@@ -261,19 +262,20 @@
 .billingItem {
   display: flex;
   justify-content: space-between;
-  background-color: #D9D9D9;
-  border-radius: 2px;
+  background-color: #3b82f6;
+  color: #fff;
+  border-radius: 3px;
   padding: 9px;
   margin-bottom: 8px;
 }
 
 .itemLabel {
   font-weight: 500;
-  font-size: 14px!important;
+  font-size: 15px!important;
 }
 
 .itemPrice {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .divider {
