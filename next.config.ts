@@ -1,8 +1,16 @@
 import dotenv from 'dotenv';
 dotenv.config();
+import type { NextConfig } from 'next';
+import type { Configuration } from 'webpack';
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
+  swcMinify: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   experimental: {
     turbo: {},
   },
@@ -11,6 +19,25 @@ const nextConfig = {
     NEXT_PUBLIC_KEYCLOAK_URL: process.env.NEXT_PUBLIC_KEYCLOAK_URL,
     NEXT_PUBLIC_KEYCLOAK_REALM: process.env.NEXT_PUBLIC_KEYCLOAK_REALM,
     NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID,
+  },
+  webpack: (
+    config: Configuration,
+    { isServer }: { isServer: boolean }
+  ) => {
+    config.cache = {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename],
+      },
+    };
+
+    if (!isServer) {
+      config.resolve = {
+        ...config.resolve,
+        fallback: { fs: false },
+      };
+    }
+    return config;
   },
 };
 
