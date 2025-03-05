@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Card,
@@ -74,6 +74,17 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [selectedCurrency, setSelectedCurrencyState] = useState<string>("USD");
+  const [totalFeaturePrice, setTotalFeaturePrice] = useState<number>(0);
+
+  useEffect(() => {
+    const total = selectedFeatures.reduce((sum, feature) => {
+      const featurePrice = feature.multiCurrencyPrices
+        ? feature.multiCurrencyPrices[selectedCurrency]
+        : feature.basePrice;
+      return sum + featurePrice;
+    }, 0);
+    setTotalFeaturePrice(total);
+  }, [selectedFeatures, selectedCurrency]);
 
   const handleNext = () => {
     setLoading(true);
@@ -266,16 +277,21 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 Brief summary of your purchase.
               </Typography>
               <Box className={styles.purchaseSummaryContainer}>
-                <Box className={styles.billingItem}>
-                  <Typography className={styles.itemLabel}>Billing Module</Typography>
-                  <Typography className={styles.itemPrice}>$2,000.00</Typography>
-                </Box>
-                <Box className={styles.billingItem}>
-                  <Typography className={styles.itemLabel}>Billing Module</Typography>
-                  <Typography className={styles.itemPrice}>$2,000.00</Typography>
-                </Box>
-
-                <Divider className={styles.divider} />
+                {selectedFeatures.map((feature, index) => {
+                  const featurePrice = feature.multiCurrencyPrices
+                    ? feature.multiCurrencyPrices[selectedCurrency]
+                    : feature.basePrice;
+                  return (
+                    <Box
+                      key={feature.id}
+                      className={styles.billingItem}
+                      sx={{ backgroundColor: index % 2 === 0 ? '#3b82f65e' : '#ffffff' }}
+                    >
+                      <Typography className={styles.itemLabel}>{feature.name}</Typography>
+                      <Typography className={styles.itemPrice}>{`${selectedCurrency} ${featurePrice}`}</Typography>
+                    </Box>
+                  );
+                })}
 
                 <Box className={styles.userAgreement}>
                   <FormControlLabel
@@ -295,7 +311,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     Total
                   </Typography>
                   <Typography variant="subtitle1" className={styles.totalPrice}>
-                    $2.000,00
+                    {`${selectedCurrency} ${totalFeaturePrice}`}
                   </Typography>
                 </Box>
               </Box>
@@ -319,7 +335,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 return (
                   <Box key={addOn.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}>
                     <Button
-                      fullWidth
+                      className={styles.addOnsfeatureButton}
                       variant={isSelected ? "contained" : "outlined"}
                       onClick={() => handleAddOnToggle(addOn)}
                     >

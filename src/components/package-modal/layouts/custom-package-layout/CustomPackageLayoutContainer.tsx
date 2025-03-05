@@ -5,6 +5,8 @@ import { axiosClient } from "@/api/axiosClient";
 import CustomPackageLayout from "./CustomPackageLayout";
 import SuccessMessage from "@/components/ui/success-message/SuccessMessage";
 import WaveLoading from "@/components/ui/WaveLoading/WaveLoading";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 import {
     Package,
@@ -23,6 +25,13 @@ interface CustomPackageLayoutContainerProps {
     selectedPackage: Package;
 }
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref,
+) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> = ({
     selectedPackage,
 }) => {
@@ -39,8 +48,9 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
     const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
-    
-    // NEW: State to control if LoginForm should be shown.
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+
     const [showLoginForm, setShowLoginForm] = useState(false);
 
     const defaultStepsCustom = React.useMemo(() => [
@@ -117,7 +127,8 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 (feature) => feature.isRequired && !selectedFeatures.some(f => f.id === feature.id)
             );
             if (requiredMissing) {
-                alert("Please select all required features.");
+                setSnackbarMessage("Please select all required features.");
+                setSnackbarOpen(true);
                 return false;
             }
         }
@@ -125,7 +136,8 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
             for (const usage of usagePricing) {
                 const value = usageQuantities[usage.id] ?? usage.defaultValue;
                 if (value < usage.minValue || value > usage.maxValue) {
-                    alert(`For ${usage.name}, please enter a value between ${usage.minValue} and ${usage.maxValue}.`);
+                    setSnackbarMessage(`For ${usage.name}, please enter a value between ${usage.minValue} and ${usage.maxValue}.`);
+                    setSnackbarOpen(true);
                     return false;
                 }
             }
@@ -199,10 +211,8 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         selectedCurrency,
     ]);
 
-    // Modified handleModalConfirm: Instead of redirecting, set showLoginForm to true.
     const handleModalConfirm = () => {
         setIsModalOpen(false);
-        // Instead of redirecting to Keycloak auth, we now show the LoginForm.
         setShowLoginForm(true);
     };
 
@@ -244,7 +254,6 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
 
     if (isLoading) return <WaveLoading />;
 
-    // NEW: If showLoginForm is true, render the LoginForm.
     if (showLoginForm) {
         return <LazyLoginForm />;
     }
@@ -295,6 +304,11 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 onConfirm={handleModalConfirm}
                 onReturn={handleReturnToPackage}
             />
+            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
+                <Alert onClose={() => setSnackbarOpen(false)} severity="warning">
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </>
     );
 };
