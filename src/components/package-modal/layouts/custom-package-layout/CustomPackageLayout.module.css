@@ -1,9 +1,11 @@
 .container {
+  display: flex;
+  justify-content: space-between;
   padding: 2rem;
   margin: 2rem auto;
-  max-width: 980px;
+  max-width: 1200px;
   background: #ffffff;
-  margin-top: -3rem;
+  margin-top: -2rem;
   border-radius: 10px;
   margin-bottom: 4rem;
 }
@@ -37,23 +39,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.2rem;
-  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  background-color: #f8f9fc;
   transition: background-color 0.3s ease;
   font-weight: 600;
   font-size: 16px;
 }
 
-
-.featureItem:hover {
-  background-color: #e2e8f0;
+.selectedFeature {
+  padding: 6px;
 }
 
-.selectedFeature {
-  background-color: #d1e7dd;
-  border-color: #badbcc;
+.purchaseSummary {
+  flex-wrap: nowrap!important;
 }
 
 .featureDescriptionContainer {

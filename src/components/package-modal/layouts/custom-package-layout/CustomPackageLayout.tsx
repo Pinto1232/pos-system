@@ -14,6 +14,7 @@ import {
   CircularProgress,
   Checkbox,
   FormControlLabel,
+  Divider,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import InfoIcon from "@mui/icons-material/Info";
@@ -187,7 +188,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       case "Select Core Features":
         return (
           <Box className={styles.container}>
-            <Typography variant="h5" className={styles.sectionHeader}>
+            <Box>
+            <Typography variant="h6" className={styles.sectionHeader}>
               Select Core Features
             </Typography>
             <Typography variant="body2" className={styles.sectionDescription}>
@@ -222,6 +224,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                             <Typography variant="body2" className={styles.featureDescription}>Module Selected <FaCheck /></Typography>
                           )}
                         </Box>
+                        <Box sx={{ width: '369px', mt: 1 }}>
+                          <Divider />
+                        </Box>
                       </Box>
 
                       {isSelected && (
@@ -240,10 +245,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 })
               ) : (
                 <Box className={styles.emptyState}>
-                  <Typography variant="h6">No features available</Typography>
+                  <Typography variant="h5">No features available</Typography>
                   <Button variant="outlined">Continue</Button>
                 </Box>
               )}
+            </Box>
+            </Box>
+            <Box>
+              <Typography variant="h6" className={styles.purchaseSummary}>Purchase Summary</Typography>
             </Box>
           </Box>
         );
