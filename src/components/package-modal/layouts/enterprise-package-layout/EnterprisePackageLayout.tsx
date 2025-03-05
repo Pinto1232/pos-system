@@ -113,7 +113,12 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
       {!loading && !success && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn}>
+            <Box className={styles.leftColumn} sx={{ 
+              maxHeight: '600px', 
+              overflowY: 'auto', 
+              scrollbarWidth: 'none',
+               msOverflowStyle: 'none' 
+               }}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}

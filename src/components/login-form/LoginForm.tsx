@@ -10,11 +10,11 @@ import {
     Link,
     Divider,
     IconButton,
-    Button,
     TextField
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
+import { Button } from "../ui/button/Button";
 
 interface LoginFormProps {
     title?: string;
@@ -73,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                                 className={styles.googleButton}
                                 startIcon={
                                     <Image
-                                        src="/google-icon.svg"
+                                        src="/google.png"
                                         alt=""
                                         width={20}
                                         height={20}
@@ -86,7 +86,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                                 className={styles.facebookButton}
                                 startIcon={
                                     <Image
-                                        src="/facebook-icon.svg"
+                                        src="/facebook.png"
                                         alt=""
                                         width={20}
                                         height={20}

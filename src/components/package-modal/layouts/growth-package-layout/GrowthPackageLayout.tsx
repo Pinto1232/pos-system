@@ -53,9 +53,9 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
 
   const handleSelectedGrowthPackage = async () => {
     setLoading(true);
-    console.log("Selected package", { 
-      ...selectedPackage, 
-      currency: currentCurrency 
+    console.log("Selected package", {
+      ...selectedPackage,
+      currency: currentCurrency
     });
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -97,7 +97,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   }
 
   return (
-    <Box className={styles.container}>
+    <Box className={styles.container} >
       {success && (
         <SuccessMessage
           open={success}
@@ -107,9 +107,15 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
         />
       )}
       {!loading && !success && (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} >
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn}>
+            <Box className={styles.leftColumn} sx={{ 
+              maxHeight: '600px', 
+              overflowY: 'auto', 
+              scrollbarWidth: 'none',
+               msOverflowStyle: 'none' 
+               }}
+               >
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}

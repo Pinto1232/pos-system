@@ -79,7 +79,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
     setCurrentCurrency(currency);
   };
 
-  // Parse multi-currency prices if provided
+
   const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
     ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
@@ -91,7 +91,6 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
   const currencySymbol =
     currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
 
-  // Early return: if showLoginForm is true, render LazyLoginForm only
   if (showLoginForm) {
     return <LazyLoginForm />;
   }
@@ -109,7 +108,12 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
       {(!loading && !success) && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn}>
+            <Box className={styles.leftColumn} sx={{ 
+              maxHeight: '600px', 
+              overflowY: 'auto', 
+              scrollbarWidth: 'none',
+               msOverflowStyle: 'none' 
+               }}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
