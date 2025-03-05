@@ -262,9 +262,9 @@
 .billingItem {
   display: flex;
   justify-content: space-between;
-  background-color: #3b82f6;
-  color: #fff;
-  border-radius: 3px;
+  background-color: #3b82f65e;
+  color: #000000;
+  border-radius: 2px;
   padding: 9px;
   margin-bottom: 8px;
 }
@@ -275,7 +275,7 @@
 }
 
 .itemPrice {
-  font-weight: 600;
+  font-weight: 900!important;
 }
 
 .divider {

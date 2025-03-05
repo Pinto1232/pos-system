@@ -223,7 +223,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                                   {`${feature.name} (${selectedCurrency} ${featurePrice})`}
                                   {isSelected && (
                                     <Typography variant="body2" className={styles.featureDescription} sx={{ marginLeft: 1 }}>
-                                      Module Selected <FaCheck />
+                                      <FaCheck />
                                     </Typography>
                                   )}
                                 </Box>
