@@ -15,6 +15,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import { Button } from "../ui/button/Button";
+import axios from 'axios';
 
 interface LoginFormProps {
     title?: string;
@@ -36,13 +37,22 @@ const LoginForm: React.FC<LoginFormProps> = memo(
         showSocialLogin = true,
         onClose,
     }) => {
-        const handleLogin = (event: React.FormEvent) => {
+        const handleLogin = async (event: React.FormEvent) => {
             event.preventDefault();
             const form = event.target as HTMLFormElement;
             const email = (form.elements.namedItem('email') as HTMLInputElement).value;
             const password = (form.elements.namedItem('password') as HTMLInputElement).value;
             if (onSubmit) {
                 onSubmit(email, password);
+            }
+
+            try {
+                const response = await axios.post('http://localhost:5107/api/auth/login', { email, password });
+                const { access_token } = response.data;
+                localStorage.setItem('accessToken', access_token);
+                console.log('Login successful:', response.data);
+            } catch (error) {
+                console.error('Login failed:', error);
             }
         };
 
@@ -106,6 +116,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                         <Box mb={1}>
                             <TextField
                                 id="standard-email"
+                                name="email"
                                 label="email"
                                 variant="standard"
                                 fullWidth
@@ -115,6 +126,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                         <Box mb={1}>
                             <TextField
                                 id="standard-password"
+                                name="password"
                                 label="password"
                                 variant="standard"
                                 fullWidth
