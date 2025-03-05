@@ -79,6 +79,7 @@
 }
 
 .stepContent {
+  width: 845px;
   min-height: 400px;
   padding: 2rem 0;
 }
@@ -250,3 +251,72 @@
   text-align: start;
 }
 
+
+
+
+
+
+
+
+
+.purchaseSummaryContainer {
+  width: 300px;               /* adjust as needed */
+  background-color: #f9f9f9;  /* light background */
+  padding: 16px;
+  border-radius: 4px;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Title */
+.title {
+  margin-bottom: 16px;
+}
+
+/* Billing items */
+.billingItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.itemLabel {
+  font-weight: 500;
+}
+
+.itemPrice {
+  font-weight: 500;
+}
+
+/* Divider */
+.divider {
+  margin: 16px 0;
+}
+
+/* User agreement section */
+.userAgreement {
+  margin-bottom: 16px;
+}
+
+.userAgreementText {
+  margin-top: 4px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Total row */
+.totalContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #ccc;
+}
+
+.totalLabel {
+  font-weight: bold;
+}
+
+.totalPrice {
+  font-weight: bold;
+}

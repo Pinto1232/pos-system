@@ -189,70 +189,107 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         return (
           <Box className={styles.container}>
             <Box>
-            <Typography variant="h6" className={styles.sectionHeader}>
-              Select Core Features
-            </Typography>
-            <Typography variant="body2" className={styles.sectionDescription}>
-              Select the modules and features that best meet your needs.
-            </Typography>
-            <Box className={styles.featuresContainer}>
-              {features.length > 0 ? (
-                features.map((feature) => {
-                  const isSelected = selectedFeatures.some((f) => f.id === feature.id);
-                  const featurePrice = feature.multiCurrencyPrices
-                    ? feature.multiCurrencyPrices[selectedCurrency]
-                    : feature.basePrice;
-                  return (
-                    <Box
-                      key={feature.id}
-                      className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}
-                    >
-                      <Box>
-                        <Typography className={styles.featureName}>Create Custom Plan</Typography>
-                        <Typography variant="body2" className={styles.featureDescription}>Select the modules and features.</Typography>
+              <Typography variant="h6" className={styles.sectionHeader}>
+                Select Core Features
+              </Typography>
+              <Typography variant="body2" className={styles.sectionDescription}>
+                Select the modules and features that best meet your needs.
+              </Typography>
+              <Box className={styles.featuresContainer}>
+                {features.length > 0 ? (
+                  features.map((feature) => {
+                    const isSelected = selectedFeatures.some((f) => f.id === feature.id);
+                    const featurePrice = feature.multiCurrencyPrices
+                      ? feature.multiCurrencyPrices[selectedCurrency]
+                      : feature.basePrice;
+                    return (
+                      <Box
+                        key={feature.id}
+                        className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}
+                      >
                         <Box>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={isSelected}
-                                onChange={() => handleFeatureToggle(feature)}
-                              />
-                            }
-                            label={`${feature.name} (${selectedCurrency} ${featurePrice})`}
-                          />
-                          {isSelected && (
-                            <Typography variant="body2" className={styles.featureDescription}>Module Selected <FaCheck /></Typography>
-                          )}
+                          <Typography className={styles.featureName}>Create Custom Plan</Typography>
+                          <Typography variant="body2" className={styles.featureDescription}>Select the modules and features.</Typography>
+                          <Box>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={isSelected}
+                                  onChange={() => handleFeatureToggle(feature)}
+                                />
+                              }
+                              label={`${feature.name} (${selectedCurrency} ${featurePrice})`}
+                            />
+                            {isSelected && (
+                              <Typography variant="body2" className={styles.featureDescription}>Module Selected <FaCheck /></Typography>
+                            )}
+                          </Box>
+                          <Box sx={{ width: '369px', mt: 1 }}>
+                            <Divider />
+                          </Box>
                         </Box>
-                        <Box sx={{ width: '369px', mt: 1 }}>
-                          <Divider />
-                        </Box>
-                      </Box>
 
-                      {isSelected && (
-                        <Box className={styles.featureDescriptionContainer}>
-                          <InfoIcon className={styles.infoIcon} />
-                          <Typography
-                            variant="body2"
-                            className={styles.featureDescription}
-                          >
-                            {feature.description}
-                          </Typography>
-                        </Box>
-                      )}
-                    </Box>
-                  );
-                })
-              ) : (
-                <Box className={styles.emptyState}>
-                  <Typography variant="h5">No features available</Typography>
-                  <Button variant="outlined">Continue</Button>
+                        {isSelected && (
+                          <Box className={styles.featureDescriptionContainer}>
+                            <InfoIcon className={styles.infoIcon} />
+                            <Typography
+                              variant="body2"
+                              className={styles.featureDescription}
+                            >
+                              {feature.description}
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    );
+                  })
+                ) : (
+                  <Box className={styles.emptyState}>
+                    <Typography variant="h5">No features available</Typography>
+                    <Button variant="outlined">Continue</Button>
+                  </Box>
+                )}
+              </Box>
+            </Box>
+
+
+            <Box>  <Typography variant="h6" className={styles.title}>
+              Purchase Summary
+            </Typography>
+              <Box className={styles.purchaseSummaryContainer}>
+                {/* Repeated billing items */}
+                <Box className={styles.billingItem}>
+                  <Typography className={styles.itemLabel}>Billing Module</Typography>
+                  <Typography className={styles.itemPrice}>$2,000.00</Typography>
                 </Box>
-              )}
-            </Box>
-            </Box>
-            <Box>
-              <Typography variant="h6" className={styles.purchaseSummary}>Purchase Summary</Typography>
+                <Box className={styles.billingItem}>
+                  <Typography className={styles.itemLabel}>Billing Module</Typography>
+                  <Typography className={styles.itemPrice}>$2,000.00</Typography>
+                </Box>
+
+                <Divider className={styles.divider} />
+
+                {/* User Agreement section */}
+                <Box className={styles.userAgreement}>
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="User Agreement"
+                  />
+                  <Typography variant="body2" className={styles.userAgreementText}>
+                    Before proceeding to payment, please read and sign, agreeing to the User Agreement
+                  </Typography>
+                </Box>
+
+                {/* Total */}
+                <Box className={styles.totalContainer}>
+                  <Typography variant="subtitle1" className={styles.totalLabel}>
+                    Total
+                  </Typography>
+                  <Typography variant="subtitle1" className={styles.totalPrice}>
+                    R2.000,00
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
           </Box>
         );
