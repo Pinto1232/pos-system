@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, Suspense } from "react";
+import React, { memo, Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./LoginForm.module.css";
 import {
@@ -11,7 +11,8 @@ import {
     Link,
     Divider,
     IconButton,
-    TextField
+    TextField,
+    Alert
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
@@ -39,9 +40,12 @@ const LoginForm: React.FC<LoginFormProps> = memo(
         onClose,
     }) => {
         const router = useRouter();
+        const [error, setError] = useState<string | null>(null);
+        const [isFadingOut, setIsFadingOut] = useState(false);
 
         const handleLogin = async (event: React.FormEvent) => {
             event.preventDefault();
+            setIsFadingOut(true); // Start fade-out effect immediately
             const form = event.target as HTMLFormElement;
             const email = (form.elements.namedItem('email') as HTMLInputElement).value;
             const password = (form.elements.namedItem('password') as HTMLInputElement).value;
@@ -54,14 +58,18 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 const { access_token } = response.data;
                 localStorage.setItem('accessToken', access_token);
                 console.log('Login successful:', response.data);
-                router.push('/dashboard'); // Redirect to the dashboard page
+                setTimeout(() => {
+                    router.push('/dashboard'); 
+                }, 700); 
             } catch (error) {
                 console.error('Login failed:', error);
+                setError('Login failed. Please check your credentials and try again.');
+                setIsFadingOut(false);
             }
         };
 
         return (
-            <Box className={styles.LoginContainer}>
+            <Box className={`${styles.LoginContainer} ${isFadingOut ? styles.fadeOut : ''}`}>
                 <Box className={styles.formBox}>
                     {onClose && (
                         <IconButton className={styles.closeButton} onClick={onClose}>
@@ -115,6 +123,8 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                     <Divider textAlign="center" sx={{ mb: 4 }} >
                         <span>or continue with email</span>
                     </Divider>
+
+                    {error && <Alert severity="error">{error}</Alert>}
 
                     <form onSubmit={handleLogin} style={{ marginTop: '-30px' }}>
                         <Box mb={1}>
