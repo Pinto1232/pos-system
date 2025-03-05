@@ -188,7 +188,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
       case "Select Core Features":
         return (
-          <Box className={styles.container}>
+          <Box className={styles.container} sx={{ maxHeight: '600px', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <Box >
               <Typography variant="h6" className={styles.sectionHeader}>
                 Select Core Features
