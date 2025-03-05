@@ -152,6 +152,12 @@
   color: #64748b;
 }
 
+.featureName {
+  font-weight: 800!important;
+  font-size: 20px;
+}
+
+
 .buttonContainer {
   width: 100%;
   padding: 1rem;
@@ -159,6 +165,7 @@
   gap: 1rem;
   border-radius: 0 0 12px 12px;
 }
+
 
 .featuresContainer {
   display: flex;

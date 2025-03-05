@@ -206,7 +206,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}
                     >
                       <Box>
-                        <Typography>Create Custom Plan</Typography>
+                        <Typography className={styles.featureName}>Create Custom Plan</Typography>
+                        <Typography variant="body2" className={styles.featureDescription}>Select the modules and features.</Typography>
                         <Box>
                           <FormControlLabel
                             control={
@@ -217,7 +218,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                             }
                             label={`${feature.name} (${selectedCurrency} ${featurePrice})`}
                           />
-                          <Typography>Module Selected <FaCheck /></Typography>
+                          {isSelected && (
+                            <Typography variant="body2" className={styles.featureDescription}>Module Selected <FaCheck /></Typography>
+                          )}
                         </Box>
                       </Box>
 
