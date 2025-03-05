@@ -70,7 +70,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
-    setShowLoginForm(true)
+    setShowLoginForm(true);
   };
 
   const handleReturnSuccessMessage = () => {
@@ -82,12 +82,11 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
     setCurrentCurrency(currency);
   };
 
-  // Parse multiCurrencyPrices and cast it to a known type
+  // Parse multiCurrencyPrices if provided
   const multiCurrency: Record<string, number> | null = selectedPackage
     .multiCurrencyPrices
-    ? (JSON.parse(selectedPackage.multiCurrencyPrices) as Record<string, number>)
+    ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
-
 
   const displayPrice =
     currentCurrency && multiCurrency
@@ -95,6 +94,11 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
       : selectedPackage.price;
   const currencySymbol =
     currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
+
+  // Early return: render LazyLoginForm only when showLoginForm is true
+  if (showLoginForm) {
+    return <LazyLoginForm />;
+  }
 
   return (
     <Box className={styles.container}>
@@ -106,11 +110,15 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {showLoginForm && <LazyLoginForm />}
-      {!loading && !success && !showLoginForm && (
+      {!loading && !success && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn}>
+            <Box className={styles.leftColumn} sx={{ 
+              maxHeight: '600px', 
+              overflowY: 'auto', 
+              scrollbarWidth: 'none',
+               msOverflowStyle: 'none' 
+               }}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
@@ -128,7 +136,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                   variant="subtitle2"
                   className={styles.enterpriseBoxLabel}
                 >
-                  YOUR TOTAL IN ( {currentCurrency})
+                  YOUR TOTAL IN ( {currentCurrency} )
                 </Typography>
                 <Typography variant="h4" className={styles.enterpriseBoxAmount}>
                   <b>{currencySymbol}{displayPrice}</b>/mo
@@ -153,7 +161,9 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency}: {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}{price}
+                            {currency}:{" "}
+                            {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}
+                            {price}
                           </b>
                         }
                         className={styles.multiCurrencyItem}

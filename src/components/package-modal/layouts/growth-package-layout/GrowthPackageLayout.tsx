@@ -53,13 +53,12 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
 
   const handleSelectedGrowthPackage = async () => {
     setLoading(true);
-    console.log("Selected package", { 
-      ...selectedPackage, 
-      currency: currentCurrency 
+    console.log("Selected package", {
+      ...selectedPackage,
+      currency: currentCurrency
     });
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
     setLoading(false);
     setSuccess(true);
   };
@@ -71,7 +70,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
-    setShowLoginForm(true)
+    setShowLoginForm(true);
   };
 
   const handleReturnSuccessMessage = () => {
@@ -83,10 +82,8 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
     setCurrentCurrency(currency);
   };
 
-  
-  
   const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
-    ? (JSON.parse(selectedPackage.multiCurrencyPrices) as Record<string, number>)
+    ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
 
   const displayPrice =
@@ -94,8 +91,13 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   const currencySymbol =
     currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
 
+  // Early return: if showLoginForm is true, render LazyLoginForm only
+  if (showLoginForm) {
+    return <LazyLoginForm />;
+  }
+
   return (
-    <Box className={styles.container}>
+    <Box className={styles.container} >
       {success && (
         <SuccessMessage
           open={success}
@@ -104,11 +106,16 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-       {showLoginForm && <LazyLoginForm />}
-      {!loading && !success && !showLoginForm && (
-        <Grid container spacing={2}>
+      {!loading && !success && (
+        <Grid container spacing={2} >
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn}>
+            <Box className={styles.leftColumn} sx={{ 
+              maxHeight: '600px', 
+              overflowY: 'auto', 
+              scrollbarWidth: 'none',
+               msOverflowStyle: 'none' 
+               }}
+               >
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
