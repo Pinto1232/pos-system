@@ -1,4 +1,6 @@
-// src/layouts/Layout.tsx
+"use client";
+
+import { usePathname } from "next/navigation";
 import FooterContainer from "@/components/footer/FooterContainer";
 import LazyJumbotron from "@/components/jumbotron/Jumbotron";
 import PackageSelectionModal from "@/components/package-modal/PackageSelectionModal";
@@ -9,21 +11,26 @@ import { SidebarProvider } from "@/contexts/SidebarContext";
 import { SpinnerProvider } from "@/contexts/SpinnerContext";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const pathname = usePathname();
+  const isDashboard = pathname === "/dashboard";
+
   return (
     <SpinnerProvider>
       <PackageSelectionProvider>
         <SidebarProvider>
-          <NavbarContainer />
-          <LazyJumbotron
-            heading="Point of Sale System"
-            subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
-            backgroundImage="/pos_banner.jpg"
-            overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))" 
-          />
-          <SidebarContainer />
+          {!isDashboard && <NavbarContainer />}
+          {!isDashboard && (
+            <LazyJumbotron
+              heading="Point of Sale System"
+              subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
+              backgroundImage="/pos_banner.jpg"
+              overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
+            />
+          )}
+          {!isDashboard && <SidebarContainer />}
           <main>{children}</main>
           <PackageSelectionModal />
-          <FooterContainer />
+          {!isDashboard && <FooterContainer />}
         </SidebarProvider>
       </PackageSelectionProvider>
     </SpinnerProvider>
