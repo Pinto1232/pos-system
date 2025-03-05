@@ -267,7 +267,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 Brief summary of your purchase.
               </Typography>
               <Box className={styles.purchaseSummaryContainer}>
-                {/* Repeated billing items */}
                 <Box className={styles.billingItem}>
                   <Typography className={styles.itemLabel}>Billing Module</Typography>
                   <Typography className={styles.itemPrice}>$2,000.00</Typography>
@@ -279,7 +278,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
                 <Divider className={styles.divider} />
 
-                {/* User Agreement section */}
                 <Box className={styles.userAgreement}>
                   <FormControlLabel
                     control={<Checkbox />}
@@ -293,7 +291,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   </Typography>
                 </Box>
 
-                {/* Total */}
                 <Box className={styles.totalContainer}>
                   <Typography variant="subtitle1" className={styles.totalLabel}>
                     Total
