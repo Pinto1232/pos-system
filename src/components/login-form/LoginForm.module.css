@@ -1,11 +1,19 @@
 /* LoginForm.module.css */
-.formContainer {
+.LoginContainer {
   position: relative;
   text-align: center;
   padding: 0;
   margin: 0 auto;
   max-width: 400px;
   overflow: visible;
+  background-color: transparent!important;
+}
+
+.formBox{
+  background-color: #ffffff;
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .closeButton {

@@ -5,6 +5,7 @@ import { axiosClient } from "@/api/axiosClient";
 import CustomPackageLayout from "./CustomPackageLayout";
 import SuccessMessage from "@/components/ui/success-message/SuccessMessage";
 import WaveLoading from "@/components/ui/WaveLoading/WaveLoading";
+
 import {
     Package,
     Feature,
@@ -16,6 +17,7 @@ import {
     PriceCalculationResponse,
 } from "./types";
 import { debounce } from 'lodash';
+import LazyLoginForm from "@/components/login-form/LoginForm";
 
 interface CustomPackageLayoutContainerProps {
     selectedPackage: Package;
@@ -37,6 +39,9 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
     const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
+    
+    // NEW: State to control if LoginForm should be shown.
+    const [showLoginForm, setShowLoginForm] = useState(false);
 
     const defaultStepsCustom = React.useMemo(() => [
         "Package Details",
@@ -105,7 +110,6 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         }
     }, [selectedPackage, buildSteps]);
 
-    // Wrap validation in useCallback to stabilize its reference.
     const validateCurrentStep = useCallback((): boolean => {
         const currentLabel = steps[currentStep]?.trim() || "";
         if (currentLabel === "Select Core Features") {
@@ -150,7 +154,6 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         if (currentStep !== steps.length - 1) return;
         if (!validateCurrentStep()) return;
 
-        // Immediately show the modal with a "Saving..." message and set loading state.
         setModalMessage("Saving package...");
         setIsModalOpen(true);
         setIsLoading(true);
@@ -182,7 +185,6 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
             console.error("Save failed:", error);
             setModalMessage("Error saving package!");
         } finally {
-            // Turn off loading; modal stays open to display the final message.
             setIsLoading(false);
         }
     }, [
@@ -197,28 +199,11 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         selectedCurrency,
     ]);
 
-    const handleModalConfirm = (isSignup: boolean) => {
+    // Modified handleModalConfirm: Instead of redirecting, set showLoginForm to true.
+    const handleModalConfirm = () => {
         setIsModalOpen(false);
-
-        const keycloakAuthUrl = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/auth`;
-        const clientId = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID;
-        const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || `${window.location.origin}/after-auth`;
-
-        const authParams = new URLSearchParams({
-            client_id: clientId || "",
-            redirect_uri: redirectUri,
-            response_type: "code",
-            scope: "openid",
-            state: "xyz123",
-        });
-
-        if (isSignup) {
-            authParams.append("kc_idp_hint", "register");
-        }
-
-        const fullRedirectUrl = `${keycloakAuthUrl}?${authParams.toString()}`;
-        console.log("Redirecting user to:", fullRedirectUrl);
-        window.location.href = fullRedirectUrl;
+        // Instead of redirecting to Keycloak auth, we now show the LoginForm.
+        setShowLoginForm(true);
     };
 
     const handleReturnToPackage = () => {
@@ -257,8 +242,12 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         }
     }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
 
-    if (isLoading)
-        return <WaveLoading />;
+    if (isLoading) return <WaveLoading />;
+
+    // NEW: If showLoginForm is true, render the LoginForm.
+    if (showLoginForm) {
+        return <LazyLoginForm />;
+    }
 
     return (
         <>

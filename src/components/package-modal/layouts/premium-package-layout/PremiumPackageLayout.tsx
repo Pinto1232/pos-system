@@ -67,7 +67,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
-    setShowLoginForm(true)
+    setShowLoginForm(true);
   };
 
   const handleReturnSuccessMessage = () => {
@@ -79,18 +79,22 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
     setCurrentCurrency(currency);
   };
 
-  // Parse the multiCurrencyPrices JSON and cast to a known type
+  // Parse multi-currency prices if provided
   const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
-    ? (JSON.parse(selectedPackage.multiCurrencyPrices) as Record<string, number>)
+    ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
 
-  // Determine the display price based on the selected currency (if available)
   const displayPrice =
     currentCurrency && multiCurrency && multiCurrency[currentCurrency] !== undefined
       ? multiCurrency[currentCurrency]
       : selectedPackage.price;
   const currencySymbol =
     currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
+
+  // Early return: if showLoginForm is true, render LazyLoginForm only
+  if (showLoginForm) {
+    return <LazyLoginForm />;
+  }
 
   return (
     <Box className={styles.container}>
@@ -102,8 +106,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {showLoginForm && <LazyLoginForm />}
-       {!loading && !success && !showLoginForm &&  (
+      {(!loading && !success) && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
@@ -121,14 +124,16 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
               </Typography>
               <Box className={styles.premiumBox}>
                 <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
-                  YOUR TOTAL IN ( {currentCurrency})
+                  YOUR TOTAL IN ( {currentCurrency} )
                 </Typography>
                 <Typography variant="h4" className={styles.premiumBoxAmount}>
-                  <b>{currencySymbol}{displayPrice}</b>/mo
+                  <b>
+                    {currencySymbol}
+                    {displayPrice}
+                  </b>
+                  /mo
                 </Typography>
               </Box>
-
-              {/* Multi-Currency Selection */}
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
                   <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
@@ -146,7 +151,9 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency}: {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}{price}
+                            {currency}:{" "}
+                            {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}
+                            {price}
                           </b>
                         }
                         className={styles.multiCurrencyItem}
@@ -155,7 +162,6 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                   </FormGroup>
                 </Box>
               )}
-
               <Typography variant="subtitle2" className={styles.testPeriod}>
                 Test Period: {selectedPackage.testPeriodDays} days
               </Typography>
@@ -173,7 +179,8 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                 Package ID: {selectedPackage.id}
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: {currencySymbol}{displayPrice}
+                Monthly Price: {currencySymbol}
+                {displayPrice}
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
                 Test Period: {selectedPackage.testPeriodDays} days

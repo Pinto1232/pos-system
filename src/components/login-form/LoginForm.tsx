@@ -47,8 +47,8 @@ const LoginForm: React.FC<LoginFormProps> = memo(
         };
 
         return (
-            <Box className={styles.formContainer}>
-                <Box>
+            <Box className={styles.LoginContainer}>
+                <Box className={styles.formBox}>
                     {onClose && (
                         <IconButton className={styles.closeButton} onClick={onClose}>
                             <CloseIcon />

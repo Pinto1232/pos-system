@@ -59,7 +59,6 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
     });
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
     setLoading(false);
     setSuccess(true);
   };
@@ -71,7 +70,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
-    setShowLoginForm(true)
+    setShowLoginForm(true);
   };
 
   const handleReturnSuccessMessage = () => {
@@ -83,16 +82,19 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
     setCurrentCurrency(currency);
   };
 
-  
-  
   const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
-    ? (JSON.parse(selectedPackage.multiCurrencyPrices) as Record<string, number>)
+    ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
 
   const displayPrice =
     currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
   const currencySymbol =
     currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
+
+  // Early return: if showLoginForm is true, render LazyLoginForm only
+  if (showLoginForm) {
+    return <LazyLoginForm />;
+  }
 
   return (
     <Box className={styles.container}>
@@ -104,8 +106,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-       {showLoginForm && <LazyLoginForm />}
-      {!loading && !success && !showLoginForm && (
+      {!loading && !success && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
