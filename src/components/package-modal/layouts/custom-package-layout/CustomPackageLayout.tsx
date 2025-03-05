@@ -21,6 +21,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import styles from "./CustomPackageLayout.module.css";
 import { Feature, AddOn, UsagePricing, Package } from "./types";
 import { FaCheck } from "react-icons/fa";
+import Link from "next/link";
 
 interface CustomPackageLayoutProps {
   isCustomizable: boolean;
@@ -285,7 +286,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     label="User Agreement"
                   />
                   <Typography variant="body2" className={styles.userAgreementText}>
-                    Before proceeding to payment, please read and sign, agreeing to the User Agreement
+                    Before proceeding to payment, please read and sign, agreeing to the {''}  
+                    <Link href="/path/to/user-agreement" className={styles.userAgreementLink} >
+                        User agreement
+                    </Link>
                   </Typography>
                 </Box>
 
@@ -295,7 +299,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     Total
                   </Typography>
                   <Typography variant="subtitle1" className={styles.totalPrice}>
-                    R2.000,00
+                    $2.000,00
                   </Typography>
                 </Box>
               </Box>

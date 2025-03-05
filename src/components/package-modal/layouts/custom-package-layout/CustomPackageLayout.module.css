@@ -306,5 +306,11 @@
 }
 
 .totalPrice {
-  font-weight: bold;
+  font-weight: 900!important;
+}
+
+.userAgreementLink {
+  font-weight: 900!important;
+  font-size: 12px;
+  text-decoration: underline;
 }
