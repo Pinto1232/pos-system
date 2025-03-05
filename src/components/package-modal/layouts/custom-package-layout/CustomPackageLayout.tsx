@@ -256,6 +256,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Box>  <Typography variant="h6" className={styles.title}>
               Purchase Summary
             </Typography>
+            <Typography variant="body2" className={styles.sectionDescription}>
+                Brief summary of your purchase.
+              </Typography>
               <Box className={styles.purchaseSummaryContainer}>
                 {/* Repeated billing items */}
                 <Box className={styles.billingItem}>
