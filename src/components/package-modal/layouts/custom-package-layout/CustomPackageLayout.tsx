@@ -19,6 +19,7 @@ import { motion } from "framer-motion";
 import InfoIcon from "@mui/icons-material/Info";
 import styles from "./CustomPackageLayout.module.css";
 import { Feature, AddOn, UsagePricing, Package } from "./types";
+import { FaCheck } from "react-icons/fa";
 
 interface CustomPackageLayoutProps {
   isCustomizable: boolean;
@@ -185,42 +186,62 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
       case "Select Core Features":
         return (
-          <Box className={styles.featuresContainer}>
-            {features.length > 0 ? (
-              features.map(feature => {
-                const isSelected = selectedFeatures.some(f => f.id === feature.id);
-                const featurePrice = feature.multiCurrencyPrices ? feature.multiCurrencyPrices[selectedCurrency] : feature.basePrice;
-                return (
-                  <Box key={feature.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}>
-                    <Button
-                      fullWidth
-                      variant={isSelected ? "contained" : "outlined"}
-                      onClick={() => handleFeatureToggle(feature)}
+          <Box className={styles.container}>
+            <Typography variant="h5" className={styles.sectionHeader}>
+              Select Core Features
+            </Typography>
+            <Typography variant="body2" className={styles.sectionDescription}>
+              Select the modules and features that best meet your needs.
+            </Typography>
+            <Box className={styles.featuresContainer}>
+              {features.length > 0 ? (
+                features.map((feature) => {
+                  const isSelected = selectedFeatures.some((f) => f.id === feature.id);
+                  const featurePrice = feature.multiCurrencyPrices
+                    ? feature.multiCurrencyPrices[selectedCurrency]
+                    : feature.basePrice;
+                  return (
+                    <Box
+                      key={feature.id}
+                      className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""}`}
                     >
-                      {feature.name.replace(/[^a-zA-Z0-9 ]/g, "")} ({selectedCurrency} {featurePrice})
-                    </Button>
-                    {isSelected && (
-                      <Box className={styles.featureDescriptionContainer}>
-                        <InfoIcon className={styles.infoIcon} />
-                        <Typography
-                          variant="body2"
-                          className={styles.featureDescription}
-                        >
-                          {feature.description}
-                        </Typography>
+                      <Box>
+                        <Typography>Create Custom Plan</Typography>
+                        <Box>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={isSelected}
+                                onChange={() => handleFeatureToggle(feature)}
+                              />
+                            }
+                            label={`${feature.name} (${selectedCurrency} ${featurePrice})`}
+                          />
+                          <Typography>Module Selected <FaCheck /></Typography>
+                        </Box>
                       </Box>
-                    )}
-                  </Box>
-                );
-              })
-            ) : (
-              <Box className={styles.emptyState}>
-                <Typography variant="h6">No features available</Typography>
-                <Button variant="outlined" onClick={onNext}>
-                  Continue
-                </Button>
-              </Box>
-            )}
+
+                      {isSelected && (
+                        <Box className={styles.featureDescriptionContainer}>
+                          <InfoIcon className={styles.infoIcon} />
+                          <Typography
+                            variant="body2"
+                            className={styles.featureDescription}
+                          >
+                            {feature.description}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+                  );
+                })
+              ) : (
+                <Box className={styles.emptyState}>
+                  <Typography variant="h6">No features available</Typography>
+                  <Button variant="outlined">Continue</Button>
+                </Box>
+              )}
+            </Box>
           </Box>
         );
 
@@ -325,7 +346,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       case "Review & Confirm":
         return (
           <Box className={styles.review} >
-            <Typography variant="h5">Final Review</Typography>
+            <Typography variant="h5">Your Order Summary</Typography>
             <Box className={styles.priceSummary}>
               <Typography variant="h6">
                 Total Price: {selectedCurrency} {calculatedPrice}/mo
