@@ -111,7 +111,7 @@
 
 .controls {
   display: flex;
-  margin-top: -7rem;
+  margin-top: -2rem;
   gap: 1rem;
   padding: 2rem; 
   border-radius: 0 0 12px 12px; 
@@ -154,10 +154,8 @@
 
 .buttonContainer {
   width: 100%;
-  background-color: #1c2331;
   padding: 1rem;
   display: flex;
-  justify-content: space-between;
   gap: 1rem;
   border-radius: 0 0 12px 12px;
 }
