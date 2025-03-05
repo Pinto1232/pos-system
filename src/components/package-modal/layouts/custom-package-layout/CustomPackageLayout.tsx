@@ -189,7 +189,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       case "Select Core Features":
         return (
           <Box className={styles.container}>
-            <Box>
+            <Box >
               <Typography variant="h6" className={styles.sectionHeader}>
                 Select Core Features
               </Typography>
@@ -259,7 +259,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               </Box>
             </Box>
 
-
             <Box>  <Typography variant="h6" className={styles.title}>
               Purchase Summary
             </Typography>
@@ -284,9 +283,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     label="User Agreement"
                   />
                   <Typography variant="body2" className={styles.userAgreementText}>
-                    Before proceeding to payment, please read and sign, agreeing to the {''}  
+                    Before proceeding to payment, please read and sign, agreeing to the {''}
                     <Link href="/path/to/user-agreement" className={styles.userAgreementLink} >
-                        User agreement
+                      User agreement
                     </Link>
                   </Typography>
                 </Box>
