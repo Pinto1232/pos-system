@@ -153,10 +153,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               <Typography variant="h5">{packageDetails.title}</Typography>
             </Box>
             <Box className={styles.detailItem}>
-              <Typography variant="body1">{formattedDescription}</Typography>
+              <Typography variant="body2" sx={{ mb: 1 }}>{formattedDescription}</Typography>
             </Box>
             <Box className={styles.detailItem}>
-              <Typography variant="h6">
+              <Typography variant="h6" sx={{ mb: 1 }}>
                 {isCustomizable
                   ? `Base Price: ${selectedCurrency} ${displayPrice}/mo`
                   : `Price: ${selectedCurrency} ${displayPrice}/mo`}
@@ -508,12 +508,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         {currentStep !== steps.length - 1 && (
           <Box className={styles.controls}>
             {currentStep > 0 && (
-              <Button variant="outlined" onClick={onBack}>
+              <Button className={styles.btnControls} variant="outlined" onClick={onBack}>
                 Back
               </Button>
             )}
             {currentStep < steps.length - 1 && (
-              <Button variant="contained" onClick={handleNext} disabled={loading}>
+              <Button className={styles.btnControls}  variant="contained" onClick={handleNext} disabled={loading}>
                 {loading ? <CircularProgress size={24} /> : "Next"}
               </Button>
             )}
