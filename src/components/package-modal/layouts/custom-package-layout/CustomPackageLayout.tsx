@@ -16,6 +16,10 @@ import {
   FormControlLabel,
   Divider,
   Grid,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import InfoIcon from "@mui/icons-material/Info";
@@ -23,6 +27,9 @@ import styles from "./CustomPackageLayout.module.css";
 import { Feature, AddOn, UsagePricing, Package } from "./types";
 import { FaCheck } from "react-icons/fa";
 import Link from "next/link";
+
+const countries = ["USA", "Canada", "UK", "Australia"];
+const states = ["California", "Texas", "New York", "Florida"];
 
 interface CustomPackageLayoutProps {
   isCustomizable: boolean;
@@ -539,7 +546,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
           <>
             <Grid container spacing={5}>
               <Grid item xs={12} md={7}>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }} gutterBottom>
                   Enter Your Detail
                 </Typography>
 
@@ -552,19 +559,37 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   }}
                 >
                   <Box sx={{ display: "flex", gap: 2 }}>
-                    <TextField label="First Name" fullWidth />
-                    <TextField label="Last Name" fullWidth />
+                    <TextField label="First Name" fullWidth required />
+                    <TextField label="Last Name" fullWidth required />
                   </Box>
-                  <TextField label="Email" fullWidth />
-                  <TextField label="Phone Number" fullWidth />
-                  <TextField label="Address" fullWidth />
+                  <TextField label="Email" fullWidth required />
+                  <TextField label="Phone Number" fullWidth required />
+                  <TextField label="Address" fullWidth required />
 
                   <Box sx={{ display: "flex", gap: 2 }}>
-                    <TextField label="Country" fullWidth />
-                    <TextField label="State / Province / Region" fullWidth />
+                    <FormControl fullWidth required>
+                      <InputLabel>Country</InputLabel>
+                      <Select label="Country" defaultValue="">
+                        {countries.map((country) => (
+                          <MenuItem key={country} value={country}>
+                            {country}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <FormControl fullWidth>
+                      <InputLabel>State / Province / Region</InputLabel>
+                      <Select label="State / Province / Region" defaultValue="">
+                        {states.map((state) => (
+                          <MenuItem key={state} value={state}>
+                            {state}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Box>
                   <Box sx={{ display: "flex", gap: 2 }}>
-                    <TextField label="City" fullWidth />
+                    <TextField label="City" fullWidth required />
                     <TextField label="Postal / Zip Code" fullWidth />
                   </Box>
                 </Box>
@@ -572,10 +597,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
               <Grid item xs={12} md={5}>
                 <>
-                <Typography variant="h6" sx={{ mb: 3 }}> Order Summary</Typography>
+                <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold' }}> Order Summary</Typography>
                   <Box className={styles.review}>
                     <Box className={styles.priceSummary}>
-                      <Typography variant="h6">
+                      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                         Total Price: {formatPrice(selectedCurrency, calculatedPrice)}/mo
                       </Typography>
                       {isCustomizable && (
