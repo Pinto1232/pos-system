@@ -15,6 +15,7 @@ import {
   Checkbox,
   FormControlLabel,
   Divider,
+  Grid,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import InfoIcon from "@mui/icons-material/Info";
@@ -139,7 +140,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   };
 
   const formatPrice = (currency: string, price: number) => {
-    return currency === "Kz" ? `${price}${currency}` : `${getCurrencySymbol(currency)} ${price}`;
+    const roundedPrice = Math.round(price);
+    return currency === "Kz" ? `${roundedPrice}${currency}` : `${getCurrencySymbol(currency)} ${roundedPrice}`;
   };
 
   const getStepContent = () => {
@@ -294,9 +296,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     return (
                       <Box
                         key={feature.id}
-                        className={`${styles.featureItem} ${
-                          isSelected ? styles.selectedFeature : ""
-                        }`}
+                        className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""
+                          }`}
                       >
                         <Box>
                           <Typography className={styles.featureName}>
@@ -444,9 +445,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 return (
                   <Box
                     key={addOn.id}
-                    className={`${styles.featureItem} ${
-                      isSelected ? styles.selectedFeature : ""
-                    }`}
+                    className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""
+                      }`}
                   >
                     <Button
                       className={styles.addOnsfeatureButton}
@@ -537,70 +537,108 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       case "Review & Confirm":
         return (
           <>
-            <Box className={styles.review}>
-              <Typography variant="h5">Your Order Summary</Typography>
-              <Box className={styles.priceSummary}>
-                <Typography variant="h6">
-                  Total Price: {formatPrice(selectedCurrency, calculatedPrice)}/mo
+            <Grid container spacing={5}>
+              <Grid item xs={12} md={7}>
+                <Typography variant="h6" gutterBottom>
+                  Enter Your Detail
                 </Typography>
-                {isCustomizable && (
-                  <Typography variant="body2">
-                    (Base: {formatPrice(selectedCurrency, basePrice)} + Customizations:{" "}
-                    {formatPrice(selectedCurrency, calculatedPrice - basePrice)})
-                  </Typography>
-                )}
-              </Box>
-              {isCustomizable && (
+
+                <Box component="form" noValidate autoComplete="off"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    mt: 3.5
+                  }}
+                >
+                  <Box sx={{ display: "flex", gap: 2 }}>
+                    <TextField label="First Name" fullWidth />
+                    <TextField label="Last Name" fullWidth />
+                  </Box>
+                  <TextField label="Email" fullWidth />
+                  <TextField label="Phone Number" fullWidth />
+                  <TextField label="Address" fullWidth />
+
+                  <Box sx={{ display: "flex", gap: 2 }}>
+                    <TextField label="Country" fullWidth />
+                    <TextField label="State / Province / Region" fullWidth />
+                  </Box>
+                  <Box sx={{ display: "flex", gap: 2 }}>
+                    <TextField label="City" fullWidth />
+                    <TextField label="Postal / Zip Code" fullWidth />
+                  </Box>
+                </Box>
+              </Grid>
+
+              <Grid item xs={12} md={5}>
                 <>
-                  {selectedFeatures.length > 0 && (
-                    <Box className={styles.section}>
-                      <Typography variant="subtitle1">Selected Features:</Typography>
-                      {selectedFeatures.map((f) => (
-                        <Typography key={f.id}>
-                          {f.name} ({formatPrice(selectedCurrency, f.basePrice)})
+                <Typography variant="h6" sx={{ mb: 3 }}> Order Summary</Typography>
+                  <Box className={styles.review}>
+                    <Box className={styles.priceSummary}>
+                      <Typography variant="h6">
+                        Total Price: {formatPrice(selectedCurrency, calculatedPrice)}/mo
+                      </Typography>
+                      {isCustomizable && (
+                        <Typography variant="body2">
+                          (Base: {formatPrice(selectedCurrency, basePrice)} + Customizations:{" "}
+                          {formatPrice(selectedCurrency, calculatedPrice - basePrice)})
                         </Typography>
-                      ))}
+                      )}
                     </Box>
-                  )}
-                  {selectedAddOns.length > 0 && (
-                    <Box className={styles.section}>
-                      <Typography variant="subtitle1">Selected Add-Ons:</Typography>
-                      {selectedAddOns.map((a) => (
-                        <Typography key={a.id}>
-                          {a.name} ({formatPrice(selectedCurrency, a.price)})
-                        </Typography>
-                      ))}
-                    </Box>
-                  )}
-                  {usagePricing.length > 0 && (
-                    <Box className={styles.section}>
-                      <Typography variant="subtitle1">Usage Limits:</Typography>
-                      {usagePricing.map((u) => (
-                        <Typography key={u.id}>
-                          {u.name}: {usageQuantities[u.id]} {u.unit}
-                        </Typography>
-                      ))}
-                    </Box>
-                  )}
+                    {isCustomizable && (
+                      <>
+                        {selectedFeatures.length > 0 && (
+                          <Box className={styles.section}>
+                            <Typography variant="subtitle1">Selected Features:</Typography>
+                            {selectedFeatures.map((f) => (
+                              <Typography key={f.id}>
+                                {f.name} ({formatPrice(selectedCurrency, f.basePrice)})
+                              </Typography>
+                            ))}
+                          </Box>
+                        )}
+                        {selectedAddOns.length > 0 && (
+                          <Box className={styles.section}>
+                            <Typography variant="subtitle1">Selected Add-Ons:</Typography>
+                            {selectedAddOns.map((a) => (
+                              <Typography key={a.id}>
+                                {a.name} ({formatPrice(selectedCurrency, a.price)})
+                              </Typography>
+                            ))}
+                          </Box>
+                        )}
+                        {usagePricing.length > 0 && (
+                          <Box className={styles.section}>
+                            <Typography variant="subtitle1">Usage Limits:</Typography>
+                            {usagePricing.map((u) => (
+                              <Typography key={u.id}>
+                                {u.name}: {usageQuantities[u.id]} {u.unit}
+                              </Typography>
+                            ))}
+                          </Box>
+                        )}
+                      </>
+                    )}
+                  </Box>
+                  <Box className={styles.buttonContainer}>
+                    <Button
+                      variant="outlined"
+                      className={styles.btnControlsBack}
+                      onClick={onBack}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      variant="contained"
+                      className={styles.btnControlsNext}
+                      onClick={handleSave}
+                    >
+                      Confirm & Save
+                    </Button>
+                  </Box>
                 </>
-              )}
-            </Box>
-            <Box className={styles.buttonContainer}>
-              <Button
-                variant="outlined"
-                className={styles.btnControlsBack}
-                onClick={onBack}
-              >
-                Back
-              </Button>
-              <Button
-                variant="contained"
-                className={styles.btnControlsNext}
-                onClick={handleSave}
-              >
-                Confirm & Save
-              </Button>
-            </Box>
+              </Grid>
+            </Grid>
           </>
         );
 
