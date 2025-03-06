@@ -1,11 +1,11 @@
 .container {
   display: flex;
   justify-content: space-between;
-  padding: 2rem;
+  padding: 1.3rem;
   margin: 2rem auto;
   max-width: 1200px;
   background: #ffffff;
-  margin-top: -2rem;
+  margin-top: 2rem;
   border-radius: 10px;
   margin-bottom: 4rem;
 }
@@ -48,7 +48,7 @@
 }
 
 .purchaseSummary {
-  flex-wrap: nowrap!important;
+  flex-wrap: nowrap !important;
 }
 
 .featureDescriptionContainer {
@@ -115,14 +115,20 @@
 
 .controls {
   display: flex;
-  margin-top: -2rem;
+  margin-top: 1rem;
   gap: 1rem;
-  padding: 2rem; 
-  border-radius: 0 0 12px 12px; 
+  padding: 2rem;
+  border-radius: 0 0 12px 12px;
 }
 
-.btnControls {
+.btnControlsBack {
   width: 150px;
+  margin-left: -1.0rem!important;
+}
+
+.btnControlsNext {
+  width: 150px;
+  background-color: #1E3A8A !important;
 }
 
 .review {
@@ -161,7 +167,7 @@
 }
 
 .featureName {
-  font-weight: 800!important;
+  font-weight: 800 !important;
   font-size: 20px;
 }
 
@@ -282,11 +288,11 @@
 
 .itemLabel {
   font-weight: 500;
-  font-size: 14px!important;
+  font-size: 14px !important;
 }
 
 .itemPrice {
-  font-weight: 900!important;
+  font-weight: 900 !important;
 }
 
 .divider {
@@ -317,17 +323,16 @@
 }
 
 .totalPrice {
-  font-weight: 900!important;
+  font-weight: 900 !important;
 }
 
 .userAgreementLink {
-  font-weight: 900!important;
+  font-weight: 900 !important;
   font-size: 10px;
   color: #000000bc;
   text-decoration: underline;
 }
 
-.addOnsfeatureButton{
-  min-width: 450px!important;
+.addOnsfeatureButton {
+  min-width: 450px !important;
 }
-
