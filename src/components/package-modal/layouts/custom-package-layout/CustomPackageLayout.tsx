@@ -127,6 +127,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     switch (currency) {
       case "USD":
         return "$";
+      case "EUR":
+        return "€";
+      case "GBP":
+        return "£";
+      case "Kz":
+        return "Kz";
       // Add more cases for other currencies if needed
       default:
         return currency;
@@ -190,7 +196,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                           }}
                         />
                       }
-                      label={`${currency}: ${price}`}
+                      label={currency === "Kz" ? `${price}${currency}` : `${getCurrencySymbol(currency)} ${price}`}
                       className={styles.currencyItemPrice}
                     />
                   </Box>
