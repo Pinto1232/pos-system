@@ -123,6 +123,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     onSave();
   };
 
+  const getCurrencySymbol = (currency: string) => {
+    switch (currency) {
+      case "USD":
+        return "$";
+      // Add more cases for other currencies if needed
+      default:
+        return currency;
+    }
+  };
+
   const getStepContent = () => {
     const currentLabel = steps[currentStep]?.trim() || "";
 
@@ -158,8 +168,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Box className={styles.detailItem}>
               <Typography variant="h6" sx={{ mb: 1 }}>
                 {isCustomizable
-                  ? `Base Price: ${selectedCurrency} ${displayPrice}/mo`
-                  : `Price: ${selectedCurrency} ${displayPrice}/mo`}
+                  ? `Base Price: ${getCurrencySymbol(selectedCurrency)} ${displayPrice}/mo`
+                  : `Price: ${getCurrencySymbol(selectedCurrency)} ${displayPrice}/mo`}
               </Typography>
             </Box>
 
@@ -232,7 +242,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                               }
                               label={
                                 <Box display="flex" alignItems="center">
-                                  {`${feature.name} (${selectedCurrency} ${featurePrice})`}
+                                  {`${feature.name} (${getCurrencySymbol(selectedCurrency)} ${featurePrice})`}
                                   {isSelected && (
                                     <Typography variant="body2" className={styles.featureDescription} sx={{ marginLeft: 1 }}>
                                       <FaCheck />
@@ -277,21 +287,28 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 Brief summary of your purchase.
               </Typography>
               <Box className={styles.purchaseSummaryContainer}>
-                {selectedFeatures.map((feature, index) => {
-                  const featurePrice = feature.multiCurrencyPrices
-                    ? feature.multiCurrencyPrices[selectedCurrency]
-                    : feature.basePrice;
-                  return (
-                    <Box
-                      key={feature.id}
-                      className={styles.billingItem}
-                      sx={{ backgroundColor: index % 2 === 0 ? '#3b82f65e' : '#ffffff' }}
-                    >
-                      <Typography className={styles.itemLabel}>{feature.name}</Typography>
-                      <Typography className={styles.itemPrice}>{`${selectedCurrency} ${featurePrice}`}</Typography>
-                    </Box>
-                  );
-                })}
+                {selectedFeatures.length > 0 ? (
+                  selectedFeatures.map((feature, index) => {
+                    const featurePrice = feature.multiCurrencyPrices
+                      ? feature.multiCurrencyPrices[selectedCurrency]
+                      : feature.basePrice;
+                    return (
+                      <Box
+                        key={feature.id}
+                        className={styles.billingItem}
+                        sx={{ backgroundColor: index % 2 === 0 ? '#3b82f65e' : '#ffffff' }}
+                      >
+                        <Typography className={styles.itemLabel}>{feature.name}</Typography>
+                        <Typography className={styles.itemPrice}>{`${getCurrencySymbol(selectedCurrency)} ${featurePrice}`}</Typography>
+                      </Box>
+                    );
+                  })
+                ) : (
+                  <Box className={styles.billingItem} sx={{ backgroundColor: '#3b82f65e' }}>
+                    <Typography className={styles.itemLabel}>Billing Module</Typography>
+                    <Typography className={styles.itemPrice}>$0.00</Typography>
+                  </Box>
+                )}
 
                 <Box className={styles.userAgreement}>
                   <FormControlLabel
@@ -311,7 +328,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     Total
                   </Typography>
                   <Typography variant="subtitle1" className={styles.totalPrice}>
-                    {`${selectedCurrency} ${totalFeaturePrice}`}
+                    {`${getCurrencySymbol(selectedCurrency)} ${totalFeaturePrice}`}
                   </Typography>
                 </Box>
               </Box>
@@ -339,7 +356,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       variant={isSelected ? "contained" : "outlined"}
                       onClick={() => handleAddOnToggle(addOn)}
                     >
-                      {addOn.name.replace(/[^a-zA-Z0-9 ]/g, "")} ({selectedCurrency} {addOnPrice})
+                      {addOn.name.replace(/[^a-zA-Z0-9 ]/g, "")} ({getCurrencySymbol(selectedCurrency)} {addOnPrice})
                     </Button>
                     {isSelected && (
                       <Box className={styles.featureDescriptionContainer}>
@@ -386,7 +403,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 return (
                   <Box key={usage.id} className={styles.usageItem}>
                     <Typography variant="subtitle1" gutterBottom>
-                      {usage.name} ({selectedCurrency} {usagePrice}/{usage.unit})
+                      {usage.name} ({getCurrencySymbol(selectedCurrency)} {usagePrice}/{usage.unit})
                     </Typography>
                     <TextField
                       type="number"
@@ -423,11 +440,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Typography variant="h5">Your Order Summary</Typography>
             <Box className={styles.priceSummary}>
               <Typography variant="h6">
-                Total Price: {selectedCurrency} {calculatedPrice}/mo
+                Total Price: {getCurrencySymbol(selectedCurrency)} {calculatedPrice}/mo
               </Typography>
               {isCustomizable && (
                 <Typography variant="body2">
-                  (Base: {selectedCurrency} {basePrice.toFixed(2)} + Customizations: {selectedCurrency} {(calculatedPrice - basePrice).toFixed(2)})
+                  (Base: {getCurrencySymbol(selectedCurrency)} {basePrice.toFixed(2)} + Customizations: {getCurrencySymbol(selectedCurrency)} {(calculatedPrice - basePrice).toFixed(2)})
                 </Typography>
               )}
             </Box>
@@ -438,7 +455,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     <Typography variant="subtitle1">Selected Features:</Typography>
                     {selectedFeatures.map(f => (
                       <Typography key={f.id}>
-                        {f.name} ({selectedCurrency} {f.basePrice})
+                        {f.name} ({getCurrencySymbol(selectedCurrency)} {f.basePrice})
                       </Typography>
                     ))}
                   </Box>
@@ -448,7 +465,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     <Typography variant="subtitle1">Selected Add-Ons:</Typography>
                     {selectedAddOns.map(a => (
                       <Typography key={a.id}>
-                        {a.name} ({selectedCurrency} {a.price})
+                        {a.name} ({getCurrencySymbol(selectedCurrency)} {a.price})
                       </Typography>
                     ))}
                   </Box>
