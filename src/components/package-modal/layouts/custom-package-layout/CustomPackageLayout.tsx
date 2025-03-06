@@ -21,42 +21,16 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
 import { motion } from "framer-motion";
 import InfoIcon from "@mui/icons-material/Info";
 import styles from "./CustomPackageLayout.module.css";
-import { Feature, AddOn, UsagePricing, Package } from "./types";
+import { Feature, AddOn, CustomPackageLayoutProps } from "./types";
 import { FaCheck } from "react-icons/fa";
 import Link from "next/link";
 
 const countries = ["USA", "Canada", "UK", "Australia"];
 const states = ["California", "Texas", "New York", "Florida"];
-
-interface CustomPackageLayoutProps {
-  isCustomizable: boolean;
-  currentStep: number;
-  steps: string[];
-  features: Feature[];
-  addOns: AddOn[];
-  usagePricing: UsagePricing[];
-  selectedFeatures: Feature[];
-  selectedAddOns: AddOn[];
-  usageQuantities: Record<number, number>;
-  basePrice: number;
-  calculatedPrice: number;
-  packageDetails: {
-    title: string;
-    description: string;
-    testPeriod: number;
-  };
-  selectedPackage: Package;
-  onNext: () => void;
-  onBack: () => void;
-  onSave: () => void;
-  onFeatureToggle: (features: Feature[]) => void;
-  onAddOnToggle: (addOns: AddOn[]) => void;
-  onUsageChange: (quantities: Record<number, number>) => void;
-  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
-}
 
 const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   isCustomizable,
@@ -81,8 +55,22 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   setSelectedCurrency,
 }) => {
   const [loading, setLoading] = useState(false);
+  // Local currency state (used only in this component)
   const [selectedCurrency, setSelectedCurrencyState] = useState<string>("USD");
   const [totalFeaturePrice, setTotalFeaturePrice] = useState<number>(0);
+
+  // Form state for the "Review & Confirm" step
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    country: "",
+    state: "",
+    city: "",
+    zipCode: "",
+  });
 
   useEffect(() => {
     const total = selectedFeatures.reduce((sum, feature) => {
@@ -101,15 +89,15 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   };
 
   const handleFeatureToggle = (feature: Feature) => {
-    const newFeatures = selectedFeatures.some(f => f.id === feature.id)
-      ? selectedFeatures.filter(f => f.id !== feature.id)
+    const newFeatures = selectedFeatures.some((f) => f.id === feature.id)
+      ? selectedFeatures.filter((f) => f.id !== feature.id)
       : [...selectedFeatures, feature];
     onFeatureToggle(newFeatures);
   };
 
   const handleAddOnToggle = (addOn: AddOn) => {
-    const newAddOns = selectedAddOns.some(a => a.id === addOn.id)
-      ? selectedAddOns.filter(a => a.id !== addOn.id)
+    const newAddOns = selectedAddOns.some((a) => a.id === addOn.id)
+      ? selectedAddOns.filter((a) => a.id !== addOn.id)
       : [...selectedAddOns, addOn];
     onAddOnToggle(newAddOns);
   };
@@ -121,14 +109,40 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     });
   };
 
+  // Separate handler for TextField inputs
+  const handleTextFieldChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    console.log(`TextField change: ${name} = ${value}`);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Separate handler for Select inputs using MUI's SelectChangeEvent
+  const handleSelectChange = (e: SelectChangeEvent<string>) => {
+    const { name, value } = e.target;
+    console.log(`Select change: ${name} = ${value}`);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // When the Confirm button is clicked, build the full data (including formData) and pass it upward
   const handleSave = () => {
-    console.log("Package data saved:", {
+    const fullData = {
       selectedFeatures,
       selectedAddOns,
       usageQuantities,
       calculatedPrice,
-    });
-    onSave();
+      selectedCurrency,
+      formData,
+    };
+    console.log("Package data saved:", fullData);
+    onSave(fullData);
   };
 
   const getCurrencySymbol = (currency: string) => {
@@ -148,7 +162,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
   const formatPrice = (currency: string, price: number) => {
     const roundedPrice = Math.round(price);
-    return currency === "Kz" ? `${roundedPrice}${currency}` : `${getCurrencySymbol(currency)} ${roundedPrice}`;
+    return currency === "Kz"
+      ? `${roundedPrice}${currency}`
+      : `${getCurrencySymbol(currency)} ${roundedPrice}`;
   };
 
   const getStepContent = () => {
@@ -167,16 +183,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         const multiCurrencyPrices = JSON.parse(selectedPackage.multiCurrencyPrices);
         const displayPrice = multiCurrencyPrices[selectedCurrency] || basePrice;
         const formattedDescription = packageDetails.description
-          .replace(/([a-z])([A-Z])/g, '$1 $2')
-          .replace(/business needs/g, 'business needs.');
+          .replace(/([a-z])([A-Z])/g, "$1 $2")
+          .replace(/business needs/g, "business needs.");
         return (
           <Box
             className={styles.packageDetails}
             sx={{
-              maxHeight: '600px',
-              overflowY: 'auto',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
+              maxHeight: "600px",
+              overflowY: "auto",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
             }}
           >
             <style>
@@ -199,7 +215,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 {isCustomizable ? (
                   <>
                     Base Price:{" "}
-                    <span style={{ fontWeight: 'bold' }}>
+                    <span style={{ fontWeight: "bold" }}>
                       {formatPrice(selectedCurrency, displayPrice)}
                     </span>
                     /pm
@@ -207,7 +223,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 ) : (
                   <>
                     Price:{" "}
-                    <span style={{ fontWeight: 'bold' }}>
+                    <span style={{ fontWeight: "bold" }}>
                       {formatPrice(selectedCurrency, displayPrice)}
                     </span>
                     /pm
@@ -215,7 +231,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 )}
               </Typography>
             </Box>
-
             <Box className={styles.currencyContainer}>
               <Typography variant="body2" className={styles.currencyLabel}>
                 <b>Prices in other currencies:</b>
@@ -244,13 +259,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 ))}
               </Box>
             </Box>
-
             <Box className={styles.testPeriodItem}>
               <Typography variant="body2">
                 Test Period: {packageDetails.testPeriod} days
               </Typography>
             </Box>
-
             {/* Unique Next/Back controls for "Package Details" */}
             <Box className={styles.controls}>
               <Button
@@ -272,16 +285,15 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             </Box>
           </Box>
         );
-
       case "Select Core Features":
         return (
           <Box
             className={styles.container}
             sx={{
-              maxHeight: '600px',
-              overflowY: 'auto',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
+              maxHeight: "600px",
+              overflowY: "auto",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
             }}
           >
             <Box>
@@ -303,8 +315,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     return (
                       <Box
                         key={feature.id}
-                        className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""
-                          }`}
+                        className={`${styles.featureItem} ${
+                          isSelected ? styles.selectedFeature : ""
+                        }`}
                       >
                         <Box>
                           <Typography className={styles.featureName}>
@@ -354,7 +367,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                               </Box>
                             )}
                           </Box>
-                          <Box sx={{ width: '379px', mt: 1 }}>
+                          <Box sx={{ width: "379px", mt: 1 }}>
                             <Divider />
                           </Box>
                         </Box>
@@ -369,7 +382,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 )}
               </Box>
             </Box>
-
             <Box>
               <Typography variant="h6" className={styles.title}>
                 Purchase Summary
@@ -388,7 +400,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         key={feature.id}
                         className={styles.billingItem}
                         sx={{
-                          backgroundColor: index % 2 === 0 ? '#3b82f65e' : '#ffffff'
+                          backgroundColor:
+                            index % 2 === 0 ? "#3b82f65e" : "#ffffff",
                         }}
                       >
                         <Typography className={styles.itemLabel}>
@@ -403,28 +416,43 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 ) : (
                   <Box
                     className={styles.billingItem}
-                    sx={{ backgroundColor: '#3b82f65e' }}
+                    sx={{ backgroundColor: "#3b82f65e" }}
                   >
-                    <Typography className={styles.itemLabel}>Billing Module</Typography>
+                    <Typography className={styles.itemLabel}>
+                      Billing Module
+                    </Typography>
                     <Typography className={styles.itemPrice}>$0.00</Typography>
                   </Box>
                 )}
-
                 <Box className={styles.userAgreement}>
-                  <FormControlLabel control={<Checkbox />} label="User Agreement" />
-                  <Typography variant="body2" className={styles.userAgreementText}>
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="User Agreement"
+                  />
+                  <Typography
+                    variant="body2"
+                    className={styles.userAgreementText}
+                  >
                     Before proceeding to payment, please read and sign, agreeing to the{" "}
-                    <Link href="/path/to/user-agreement" className={styles.userAgreementLink}>
+                    <Link
+                      href="/path/to/user-agreement"
+                      className={styles.userAgreementLink}
+                    >
                       User agreement
                     </Link>
                   </Typography>
                 </Box>
-
                 <Box className={styles.totalContainer}>
-                  <Typography variant="subtitle1" className={styles.totalLabel}>
+                  <Typography
+                    variant="subtitle1"
+                    className={styles.totalLabel}
+                  >
                     Total
                   </Typography>
-                  <Typography variant="subtitle1" className={styles.totalPrice}>
+                  <Typography
+                    variant="subtitle1"
+                    className={styles.totalPrice}
+                  >
                     {formatPrice(selectedCurrency, totalFeaturePrice)}
                   </Typography>
                 </Box>
@@ -432,7 +460,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             </Box>
           </Box>
         );
-
       case "Choose Add-Ons":
         return (
           <Box className={styles.featuresContainer}>
@@ -452,8 +479,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 return (
                   <Box
                     key={addOn.id}
-                    className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""
-                      }`}
+                    className={`${styles.featureItem} ${
+                      isSelected ? styles.selectedFeature : ""
+                    }`}
                   >
                     <Button
                       className={styles.addOnsfeatureButton}
@@ -466,7 +494,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     {isSelected && (
                       <Box className={styles.featureDescriptionContainer}>
                         <InfoIcon className={styles.infoIcon} />
-                        <Typography variant="body2" className={styles.featureDescription}>
+                        <Typography
+                          variant="body2"
+                          className={styles.featureDescription}
+                        >
                           {addOn.description}
                         </Typography>
                       </Box>
@@ -484,7 +515,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             )}
           </Box>
         );
-
       case "Configure Usage":
         return (
           <Box className={styles.featuresContainer}>
@@ -540,36 +570,76 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             )}
           </Box>
         );
-
       case "Review & Confirm":
         return (
           <>
             <Grid container spacing={5}>
               <Grid item xs={12} md={7}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }} gutterBottom>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }} gutterBottom>
                   Enter Your Detail
                 </Typography>
-
-                <Box component="form" noValidate autoComplete="off"
+                <Box
+                  component="form"
+                  noValidate
+                  autoComplete="off"
                   sx={{
                     display: "flex",
                     flexDirection: "column",
                     gap: 2,
-                    mt: 3.5
+                    mt: 3.5,
                   }}
                 >
                   <Box sx={{ display: "flex", gap: 2 }}>
-                    <TextField label="First Name" fullWidth required />
-                    <TextField label="Last Name" fullWidth required />
+                    <TextField
+                      label="First Name"
+                      name="firstName"
+                      fullWidth
+                      required
+                      value={formData.firstName}
+                      onChange={handleTextFieldChange}
+                    />
+                    <TextField
+                      label="Last Name"
+                      name="lastName"
+                      fullWidth
+                      required
+                      value={formData.lastName}
+                      onChange={handleTextFieldChange}
+                    />
                   </Box>
-                  <TextField label="Email" fullWidth required />
-                  <TextField label="Phone Number" fullWidth required />
-                  <TextField label="Address" fullWidth required />
-
+                  <TextField
+                    label="Email"
+                    name="email"
+                    fullWidth
+                    required
+                    value={formData.email}
+                    onChange={handleTextFieldChange}
+                  />
+                  <TextField
+                    label="Phone Number"
+                    name="phone"
+                    fullWidth
+                    required
+                    value={formData.phone}
+                    onChange={handleTextFieldChange}
+                  />
+                  <TextField
+                    label="Address"
+                    name="address"
+                    fullWidth
+                    required
+                    value={formData.address}
+                    onChange={handleTextFieldChange}
+                  />
                   <Box sx={{ display: "flex", gap: 2 }}>
                     <FormControl fullWidth required>
                       <InputLabel>Country</InputLabel>
-                      <Select label="Country" defaultValue="">
+                      <Select
+                        label="Country"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleSelectChange}
+                      >
                         {countries.map((country) => (
                           <MenuItem key={country} value={country}>
                             {country}
@@ -579,7 +649,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     </FormControl>
                     <FormControl fullWidth>
                       <InputLabel>State / Province / Region</InputLabel>
-                      <Select label="State / Province / Region" defaultValue="">
+                      <Select
+                        label="State / Province / Region"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleSelectChange}
+                      >
                         {states.map((state) => (
                           <MenuItem key={state} value={state}>
                             {state}
@@ -589,18 +664,32 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     </FormControl>
                   </Box>
                   <Box sx={{ display: "flex", gap: 2 }}>
-                    <TextField label="City" fullWidth required />
-                    <TextField label="Postal / Zip Code" fullWidth />
+                    <TextField
+                      label="City"
+                      name="city"
+                      fullWidth
+                      required
+                      value={formData.city}
+                      onChange={handleTextFieldChange}
+                    />
+                    <TextField
+                      label="Postal / Zip Code"
+                      name="zipCode"
+                      fullWidth
+                      value={formData.zipCode}
+                      onChange={handleTextFieldChange}
+                    />
                   </Box>
                 </Box>
               </Grid>
-
               <Grid item xs={12} md={5}>
                 <>
-                <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold' }}> Order Summary</Typography>
+                  <Typography variant="h6" sx={{ mb: 3, fontWeight: "bold" }}>
+                    Order Summary
+                  </Typography>
                   <Box className={styles.review}>
                     <Box className={styles.priceSummary}>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                         Total Price: {formatPrice(selectedCurrency, calculatedPrice)}/mo
                       </Typography>
                       {isCustomizable && (
@@ -614,7 +703,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <>
                         {selectedFeatures.length > 0 && (
                           <Box className={styles.section}>
-                            <Typography variant="subtitle1">Selected Features:</Typography>
+                            <Typography variant="subtitle1">
+                              Selected Features:
+                            </Typography>
                             {selectedFeatures.map((f) => (
                               <Typography key={f.id}>
                                 {f.name} ({formatPrice(selectedCurrency, f.basePrice)})
@@ -624,7 +715,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         )}
                         {selectedAddOns.length > 0 && (
                           <Box className={styles.section}>
-                            <Typography variant="subtitle1">Selected Add-Ons:</Typography>
+                            <Typography variant="subtitle1">
+                              Selected Add-Ons:
+                            </Typography>
                             {selectedAddOns.map((a) => (
                               <Typography key={a.id}>
                                 {a.name} ({formatPrice(selectedCurrency, a.price)})
@@ -634,7 +727,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         )}
                         {usagePricing.length > 0 && (
                           <Box className={styles.section}>
-                            <Typography variant="subtitle1">Usage Limits:</Typography>
+                            <Typography variant="subtitle1">
+                              Usage Limits:
+                            </Typography>
                             {usagePricing.map((u) => (
                               <Typography key={u.id}>
                                 {u.name}: {usageQuantities[u.id]} {u.unit}
@@ -658,7 +753,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       className={styles.btnControlsNext}
                       onClick={handleSave}
                     >
-                      Confirm & Save
+                      Confirm
                     </Button>
                   </Box>
                 </>
@@ -666,7 +761,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             </Grid>
           </>
         );
-
       default:
         return (
           <Typography variant="body1">
@@ -686,7 +780,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             </Step>
           ))}
         </Stepper>
-
         <motion.div
           key={currentStep}
           initial={{ opacity: 0, y: 20 }}
@@ -695,7 +788,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         >
           {getStepContent()}
         </motion.div>
-
         {currentStep !== steps.length - 1 && currentStep !== 0 && (
           <Box className={styles.controls}>
             {currentStep > 0 && (

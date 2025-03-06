@@ -11,7 +11,7 @@ export interface Package {
   selectedFeatures?: number[] | null;
   selectedAddOns?: number[] | null;
   selectedUsageBasedPricing?: UsagePricing[] | null;
-  multiCurrencyPrices: string; // Add this property
+  multiCurrencyPrices: string;
 }
 
 export interface Feature {
@@ -20,7 +20,7 @@ export interface Feature {
   description: string;
   basePrice: number;
   isRequired: boolean;
-  multiCurrencyPrices?: Record<string, number>; // Add this property
+  multiCurrencyPrices?: Record<string, number>;
 }
 
 export interface AddOn {
@@ -28,7 +28,7 @@ export interface AddOn {
   name: string;
   description: string;
   price: number;
-  multiCurrencyPrices?: Record<string, number>; // Add this property
+  multiCurrencyPrices?: Record<string, number>;
 }
 
 export interface UsagePricing {
@@ -40,7 +40,7 @@ export interface UsagePricing {
   maxValue: number;
   pricePerUnit: number;
   defaultValue: number;
-  multiCurrencyPrices?: Record<string, number>; 
+  multiCurrencyPrices?: Record<string, number>;
 }
 
 export interface FeaturesResponse {
@@ -65,4 +65,49 @@ export interface PackageSelectionRequest {
   features?: number[];
   addOns?: number[];
   usage?: Record<number, number>;
+}
+
+// Update onSave to accept a data object including formData
+export interface CustomPackageLayoutProps {
+  isCustomizable: boolean;
+  currentStep: number;
+  steps: string[];
+  features: Feature[];
+  addOns: AddOn[];
+  usagePricing: UsagePricing[];
+  selectedFeatures: Feature[];
+  selectedAddOns: AddOn[];
+  usageQuantities: Record<number, number>;
+  basePrice: number;
+  calculatedPrice: number;
+  packageDetails: {
+    title: string;
+    description: string;
+    testPeriod: number;
+  };
+  selectedPackage: Package;
+  onNext: () => void;
+  onBack: () => void;
+  onSave: (data: {
+    selectedFeatures: Feature[];
+    selectedAddOns: AddOn[];
+    usageQuantities: Record<number, number>;
+    calculatedPrice: number;
+    selectedCurrency: string;
+    formData: {
+      firstName: string;
+      lastName: string;
+      email: string;
+      phone: string;
+      address: string;
+      country: string;
+      state: string;
+      city: string;
+      zipCode: string;
+    };
+  }) => void;
+  onFeatureToggle: (features: Feature[]) => void;
+  onAddOnToggle: (addOns: AddOn[]) => void;
+  onUsageChange: (quantities: Record<number, number>) => void;
+  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
