@@ -3,19 +3,19 @@ import { SpinnerContextProps, SpinnerContext } from '@/contexts/SpinnerContext';
 import { useContext, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-const axiosClient = axios.create({
+const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL + '/api',
   withCredentials: true,
   timeout: 10000, 
 });
 
-const useAxiosClient = () => {
+const useApiClient = () => {
   const spinnerContext = useContext(SpinnerContext);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const setupInterceptors = (spinnerContext: SpinnerContextProps | undefined) => {
-      axiosClient.interceptors.request.use(
+      apiClient.interceptors.request.use(
         (config) => {
           try {
             const token = localStorage.getItem('accessToken');
@@ -39,7 +39,7 @@ const useAxiosClient = () => {
         }
       );
 
-      axiosClient.interceptors.response.use(
+      apiClient.interceptors.response.use(
         async (response) => {
           if (spinnerContext) {
             await new Promise(resolve => setTimeout(resolve, 500));
@@ -92,7 +92,7 @@ const useAxiosClient = () => {
     return useQuery({
       queryKey: [queryKey],
       queryFn: async () => {
-        const { data } = await axiosClient.get(url);
+        const { data } = await apiClient.get(url);
         return data;
       }
     });
@@ -101,7 +101,7 @@ const useAxiosClient = () => {
   const usePostData = (url: string) => {
     return useMutation({
       mutationFn: async (postData: Record<string, unknown>) => {
-        const { data } = await axiosClient.post(url, postData);
+        const { data } = await apiClient.post(url, postData);
         return data;
       },
       onSuccess: () => {
@@ -111,10 +111,10 @@ const useAxiosClient = () => {
   };
 
   return { 
-    axiosClient, 
+    apiClient, 
     useFetchData, 
     usePostData 
   };
 };
 
-export { axiosClient, useAxiosClient };
+export { apiClient, useApiClient };

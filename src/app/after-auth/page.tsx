@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { axiosClient } from "@/api/axiosClient"; 
+import { apiClient  } from "@/api/axiosClient"; 
 const AfterAuth = () => {
   const router = useRouter();
 
@@ -20,7 +20,7 @@ const AfterAuth = () => {
 
       if (code) {
         try {
-          const response = await axiosClient.post("/auth/keycloak/callback", { code });
+          const response = await apiClient .post("/auth/keycloak/callback", { code });
           const { accessToken } = response.data;
           localStorage.setItem("accessToken", accessToken);
           router.replace("/dashboard");

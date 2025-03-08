@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { axiosClient } from "@/api/axiosClient";
+import { apiClient, } from "@/api/axiosClient";
 import CustomPackageLayout from "./CustomPackageLayout";
 import SuccessMessage from "@/components/ui/success-message/SuccessMessage";
 import WaveLoading from "@/components/ui/WaveLoading/WaveLoading";
@@ -65,7 +65,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     useEffect(() => {
         const fetchConfig = async () => {
             try {
-                const response = await axiosClient.get<FeaturesResponse>(
+                const response = await apiClient.get<FeaturesResponse>(
                     "PricingPackages/custom/features"
                 );
                 console.log("Fetched config response:", response.data);
@@ -170,7 +170,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         console.log("Saving package configuration with request:", request);
 
         try {
-            await axiosClient.post("PricingPackages/custom/select", request);
+            await apiClient.post("PricingPackages/custom/select", request);
             console.log("Package saved successfully!");
             console.log("Form data:", {
                 selectedFeatures,
@@ -199,10 +199,8 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         selectedCurrency,
     ]);
 
-    // Modified handleModalConfirm: Instead of redirecting, set showLoginForm to true.
     const handleModalConfirm = () => {
         setIsModalOpen(false);
-        // Instead of redirecting to Keycloak auth, we now show the LoginForm.
         setShowLoginForm(true);
     };
 
@@ -223,7 +221,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
                 console.log("Calculating price with request body:", requestBody);
 
                 try {
-                    const response = await axiosClient.post<PriceCalculationResponse>(
+                    const response = await apiClient.post<PriceCalculationResponse>(
                         "PricingPackages/custom/calculate-price",
                         requestBody
                     );
