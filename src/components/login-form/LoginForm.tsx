@@ -12,6 +12,7 @@ import {
     Divider,
     IconButton,
     TextField,
+    Snackbar,
     Alert
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -42,6 +43,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
         const router = useRouter();
         const [error, setError] = useState<string | null>(null);
         const [isFadingOut, setIsFadingOut] = useState(false);
+        const [snackbarOpen, setSnackbarOpen] = useState(false);
 
         const handleLogin = async (event: React.FormEvent) => {
             event.preventDefault();
@@ -64,111 +66,123 @@ const LoginForm: React.FC<LoginFormProps> = memo(
             } catch (error) {
                 console.error('Login failed:', error);
                 setError('Login failed. Please check your credentials and try again.');
+                setSnackbarOpen(true);
                 setIsFadingOut(false);
             }
         };
 
         return (
-            <Box className={`${styles.LoginContainer} ${isFadingOut ? styles.fadeOut : ''}`}>
-                <Box className={styles.formBox}>
-                    {onClose && (
-                        <IconButton className={styles.closeButton} onClick={onClose}>
-                            <CloseIcon />
-                        </IconButton>
-                    )}
-                    <Box className={styles.logoContainer}>
-                        <Typography variant="h5" className={styles.logoText}>
-                            Pisval Tech POS
+            <>
+                <Box className={`${styles.LoginContainer} ${isFadingOut ? styles.fadeOut : ''}`}>
+                    <Box className={styles.formBox}>
+                        {onClose && (
+                            <IconButton className={styles.closeButton} onClick={onClose}>
+                                <CloseIcon />
+                            </IconButton>
+                        )}
+                        <Box className={styles.logoContainer}>
+                            <Typography variant="h5" className={styles.logoText}>
+                                Pisval Tech POS
+                            </Typography>
+                        </Box>
+
+                        <Typography variant="h6" className={styles.heading}>
+                            {title}
                         </Typography>
+                        <Typography variant="body1" className={styles.subtext}>
+                            {subtitle}
+                        </Typography>
+
+                        {showSocialLogin && (
+                            <Box className={styles.socialButtons}>
+                                <Button
+                                    className={styles.googleButton}
+                                    startIcon={
+                                        <Image
+                                            src="/google.png"
+                                            alt=""
+                                            width={20}
+                                            height={20}
+                                        />
+                                    }
+                                >
+                                    Google
+                                </Button>
+                                <Button
+                                    className={styles.facebookButton}
+                                    startIcon={
+                                        <Image
+                                            src="/facebook.png"
+                                            alt=""
+                                            width={20}
+                                            height={20}
+                                        />
+                                    }
+                                >
+                                    Facebook
+                                </Button>
+                            </Box>
+                        )}
+
+                        <Divider textAlign="center" sx={{ mb: 4 }} >
+                            <span>or continue with email</span>
+                        </Divider>
+
+                        <form onSubmit={handleLogin} style={{ marginTop: '-30px' }}>
+                            <Box mb={1}>
+                                <TextField
+                                    id="standard-email"
+                                    name="email"
+                                    label="email"
+                                    variant="standard"
+                                    fullWidth
+                                />
+                            </Box>
+
+                            <Box mb={1}>
+                                <TextField
+                                    id="standard-password"
+                                    name="password"
+                                    label="password"
+                                    variant="standard"
+                                    fullWidth
+                                />
+                            </Box>
+
+                            <Box className={styles.options}>
+                                <FormControlLabel
+                                    control={<Checkbox className={styles.checkbox} />}
+                                    label="Remember me"
+                                    className={styles.rememberMe}
+                                />
+                                <Link href="#" className={styles.forgotPassword}>
+                                    Forgot Password?
+                                </Link>
+                            </Box>
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                fullWidth
+                                className={styles.loginButton}
+                            >
+                                {buttonText}
+                            </Button>
+                        </form>
                     </Box>
-
-                    <Typography variant="h6" className={styles.heading}>
-                        {title}
-                    </Typography>
-                    <Typography variant="body1" className={styles.subtext}>
-                        {subtitle}
-                    </Typography>
-
-                    {showSocialLogin && (
-                        <Box className={styles.socialButtons}>
-                            <Button
-                                className={styles.googleButton}
-                                startIcon={
-                                    <Image
-                                        src="/google.png"
-                                        alt=""
-                                        width={20}
-                                        height={20}
-                                    />
-                                }
-                            >
-                                Google
-                            </Button>
-                            <Button
-                                className={styles.facebookButton}
-                                startIcon={
-                                    <Image
-                                        src="/facebook.png"
-                                        alt=""
-                                        width={20}
-                                        height={20}
-                                    />
-                                }
-                            >
-                                Facebook
-                            </Button>
-                        </Box>
-                    )}
-
-                    <Divider textAlign="center" sx={{ mb: 4 }} >
-                        <span>or continue with email</span>
-                    </Divider>
-
-                    {error && <Alert severity="error">{error}</Alert>}
-
-                    <form onSubmit={handleLogin} style={{ marginTop: '-30px' }}>
-                        <Box mb={1}>
-                            <TextField
-                                id="standard-email"
-                                name="email"
-                                label="email"
-                                variant="standard"
-                                fullWidth
-                            />
-                        </Box>
-
-                        <Box mb={1}>
-                            <TextField
-                                id="standard-password"
-                                name="password"
-                                label="password"
-                                variant="standard"
-                                fullWidth
-                            />
-                        </Box>
-
-                        <Box className={styles.options}>
-                            <FormControlLabel
-                                control={<Checkbox className={styles.checkbox} />}
-                                label="Remember me"
-                                className={styles.rememberMe}
-                            />
-                            <Link href="#" className={styles.forgotPassword}>
-                                Forgot Password?
-                            </Link>
-                        </Box>
-
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            fullWidth
-                            className={styles.loginButton}
-                        >
-                            {buttonText}
-                        </Button>
-                    </form>
                 </Box>
-            </Box>
+                <Snackbar
+                    open={snackbarOpen}
+                    autoHideDuration={6000}
+                    onClose={() => setSnackbarOpen(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    sx={{ width: '466px', bottom: '20px' }}
+                >
+                    <Alert onClose={() => setSnackbarOpen(false)} severity="error" sx={{ width: '100%' }}>
+                        {error}
+                    </Alert>
+                </Snackbar>
+            </>
         );
     }
 );

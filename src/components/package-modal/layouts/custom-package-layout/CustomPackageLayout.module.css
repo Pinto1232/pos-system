@@ -1,11 +1,13 @@
 .container {
-  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 1.3rem;
   margin: 2rem auto;
-  max-width: 890px;
-  background: white;
-  border-radius: 12px;
-  height: 480px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  background: #ffffff;
+  margin-top: 2rem;
+  border-radius: 10px;
+  margin-bottom: 4rem;
 }
 
 .details {
@@ -15,8 +17,6 @@
   text-align: center;
   padding: 2rem;
 }
-
-
 
 .detailItem {
   display: flex;
@@ -35,24 +35,20 @@
 
 .featureItem {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: start;
-  padding: 1rem;
-  border: 1px solid #e2e8f0;
+  align-items: center;
+  justify-content: space-between;
   border-radius: 8px;
-  background-color: #f8fafc;
   transition: background-color 0.3s ease;
-  flex: 1 1 calc(50% - 1rem);
-}
-
-.featureItem:hover {
-  background-color: #e2e8f0;
+  font-weight: 600;
+  font-size: 16px;
 }
 
 .selectedFeature {
-  background-color: #d1e7dd;
-  border-color: #badbcc;
+  padding: 6px;
+}
+
+.purchaseSummary {
+  flex-wrap: nowrap !important;
 }
 
 .featureDescriptionContainer {
@@ -68,7 +64,8 @@
 
 .featureDescription {
   margin-top: 0.5rem;
-  color: #64748b;
+  color: #3b82f6;
+  font-size: 14px;
 }
 
 .emptyState {
@@ -81,8 +78,16 @@
 }
 
 .stepContent {
+  width: 845px;
   min-height: 400px;
   padding: 2rem 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.stepContent::-webkit-scrollbar {
+  display: none;
 }
 
 .usageItem {
@@ -110,40 +115,48 @@
 
 .controls {
   display: flex;
+  align-items: center;
+  justify-content: baseline;
   justify-content: space-between;
-  margin-top: -7rem;
+  margin-top: 1rem;
   gap: 1rem;
-  background-color: #1c2331; 
-  padding: 1rem; 
-  border-radius: 0 0 12px 12px; 
+  padding: 2rem;
+  border-radius: 0 0 12px 12px;
+}
+
+.btnControlsBack {
+  width: 155px;
+  margin-left: -1.0rem!important;
+}
+
+.btnControlsNext {
+  width: 155px;
+  background-color: #1E3A8A !important;
 }
 
 .review {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  max-height: 300px;
+  gap: 0.5rem;
+  max-height: 550px;
   overflow-y: auto;
-  scrollbar-width: none; /* For Firefox */
-  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .review::-webkit-scrollbar {
-  display: none; /* For Chrome, Safari, and Opera */
+  display: none;
 }
 
 .priceSummary {
   background-color: #f1f5f9;
   padding: 1.5rem;
-  border-radius: 8px;
   text-align: start;
 }
 
 .section {
   background-color: #f8fafc;
   padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
 }
 
 .loading {
@@ -153,19 +166,23 @@
   color: #64748b;
 }
 
+.featureName {
+  font-weight: 800 !important;
+  font-size: 20px;
+}
+
 .buttonContainer {
   width: 100%;
-  background-color: #1c2331;
   padding: 1rem;
   display: flex;
-  justify-content: space-between;
   gap: 1rem;
   border-radius: 0 0 12px 12px;
 }
 
 .featuresContainer {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  margin-top: 0.5rem;
   gap: 1rem;
 }
 
@@ -209,14 +226,12 @@
   flex-direction: column;
   align-items: start;
   gap: 0.5rem;
-  padding: 14px;
+  padding: 40px;
   border-radius: 8px;
   background-color: #f8fafc;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
-
-
 
 .currencyLabel {
   font-weight: 500;
@@ -241,10 +256,83 @@
   font-size: 14px;
 }
 
-
 .testPeriodItem {
   display: flex;
   align-items: flex-start;
   text-align: start;
 }
 
+.purchaseSummaryContainer {
+  width: 300px;
+  background-color: #f9f9f9;
+  padding: 16px;
+  border-radius: 4px;
+  font-family: 'Roboto', sans-serif;
+  margin-top: 1rem;
+  box-shadow: 0 1px 0px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  margin-bottom: 16px;
+}
+
+.billingItem {
+  display: flex;
+  justify-content: space-between;
+  background-color: #3b82f65e;
+  color: #000000;
+  border-radius: 2px;
+  padding: 9px;
+  margin-bottom: 8px;
+}
+
+.itemLabel {
+  font-weight: 500;
+  font-size: 14px !important;
+}
+
+.itemPrice {
+  font-weight: 900 !important;
+}
+
+.divider {
+  margin: 16px 0;
+}
+
+.userAgreement {
+  margin-bottom: 16px;
+}
+
+.userAgreementText {
+  margin-top: 4px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.totalContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #ccc;
+}
+
+.totalLabel {
+  font-weight: bold;
+}
+
+.totalPrice {
+  font-weight: 900 !important;
+}
+
+.userAgreementLink {
+  font-weight: 900 !important;
+  font-size: 10px;
+  color: #000000bc;
+  text-decoration: underline;
+}
+
+.addOnsfeatureButton {
+  min-width: 450px !important;
+}
