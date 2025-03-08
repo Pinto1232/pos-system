@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useAxiosClient } from "@/api/axiosClient";
+import { useApiClient } from "@/api/axiosClient"; // Corrected import
 import styles from "./PricingPackages.module.css";
 import PricingPackageCard from "./PricingPackageCard";
 import { usePackageSelection, type Package } from "@/contexts/PackageSelectionContext";
@@ -35,10 +35,10 @@ const isPackageType = (type: string): type is Package['type'] => {
 };
 
 const PricingPackagesContainer: React.FC = () => {
-  const { axiosClient } = useAxiosClient();
+  const { apiClient } = useApiClient(); 
   const { data, error, isLoading } = useQuery({
     queryKey: ["pricingPackages"],
-    queryFn: () => fetchPricingPackages(axiosClient, 1, 10),
+    queryFn: () => fetchPricingPackages(apiClient, 1, 10),
   });
 
   const { selectPackage } = usePackageSelection();

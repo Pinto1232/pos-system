@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { axiosClient } from "@/api/axiosClient";
+import { apiClient, } from "@/api/axiosClient";
 import CustomPackageLayout from "./CustomPackageLayout";
 import SuccessMessage from "@/components/ui/success-message/SuccessMessage";
 import WaveLoading from "@/components/ui/WaveLoading/WaveLoading";
@@ -70,13 +70,13 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     return builtSteps;
   }, [selectedPackage.isCustomizable, defaultStepsCustom, defaultStepsNonCustom]);
 
-  useEffect(() => {
-    const fetchConfig = async () => {
-      try {
-        const response = await axiosClient.get<FeaturesResponse>(
-          "PricingPackages/custom/features"
-        );
-        console.log("Fetched config response:", response.data);
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const response = await apiClient.get<FeaturesResponse>(
+                    "PricingPackages/custom/features"
+                );
+                console.log("Fetched config response:", response.data);
 
         const coreFeatures = response.data.coreFeatures || [];
         const addOnsData = response.data.addOns || [];
@@ -199,7 +199,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     console.log("Form data captured:", data.formData);
 
     try {
-      await axiosClient.post("PricingPackages/custom/select", request);
+      await apiClient .post("PricingPackages/custom/select", request);
       console.log("Package saved successfully!");
       setModalMessage("Package saved successfully!");
     } catch (error) {
@@ -232,7 +232,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         console.log("Calculating price with request body:", requestBody);
 
         try {
-          const response = await axiosClient.post<PriceCalculationResponse>(
+          const response = await apiClient.post<PriceCalculationResponse>(
             "PricingPackages/custom/calculate-price",
             requestBody
           );
