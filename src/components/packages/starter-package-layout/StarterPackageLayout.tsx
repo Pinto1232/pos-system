@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { Grid, Box, Typography, Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import iconMap from "../../../../utils/icons";
-import SuccessMessage from "../../../ui/success-message/SuccessMessage";
-import LazyLoginForm from "../../../login-form/LoginForm";
+import iconMap from "../../../utils/icons";
+import SuccessMessage from "../../ui/success-message/SuccessMessage";
+import LazyLoginForm from "../../login-form/LoginForm";
 import styles from "./StarterPackageLayout.module.css";
 import { useTestPeriod } from "@/contexts/TestPeriodContext";
 

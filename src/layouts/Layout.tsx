@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import FooterContainer from "@/components/footer/FooterContainer";
 import LazyJumbotron from "@/components/jumbotron/Jumbotron";
-import PackageSelectionModal from "@/components/package-modal/PackageSelectionModal";
+import PackageSelectionModal from "@/components/packages/PackageSelectionModal";
 import NavbarContainer from "@/components/ui/navbar/NavbarContainer";
 import SidebarContainer from "@/components/ui/sidebar/SidebarContainer";
 import { PackageSelectionProvider } from "@/contexts/PackageSelectionContext";

@@ -8,15 +8,15 @@ import {
   Button,
   Checkbox,
   FormGroup,
-  FormControlLabel
+  FormControlLabel,
 } from "@mui/material";
-import iconMap from "../../../../utils/icons";
-import SuccessMessage from "../../../ui/success-message/SuccessMessage";
-import styles from "./GrowthPackageLayout.module.css";
+import iconMap from "../../../utils/icons";
+import SuccessMessage from "../../ui/success-message/SuccessMessage";
+import styles from "./PremiumPackageLayout.module.css";
 import LazyLoginForm from "@/components/login-form/LoginForm";
-import { useTestPeriod } from "@/contexts/TestPeriodContext"; 
+import { useTestPeriod } from "@/contexts/TestPeriodContext";
 
-interface GrowthPackageLayoutProps {
+interface PremiumPackageLayoutProps {
   selectedPackage: {
     id: number;
     title: string;
@@ -38,13 +38,13 @@ const currencySymbols: Record<string, string> = {
   Kz: "Kz",
 };
 
-const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
+const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
   selectedPackage,
 }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const { setTestPeriod } = useTestPeriod(); 
+  const { setTestPeriod } = useTestPeriod();
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
   );
@@ -52,12 +52,9 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   const IconComponent =
     iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
-  const handleSelectedGrowthPackage = async () => {
+  const handleSelectedPremiumPackage = async () => {
     setLoading(true);
-    console.log("Selected package", {
-      ...selectedPackage,
-      currency: currentCurrency
-    });
+    console.log("Selected package", { ...selectedPackage, currency: currentCurrency });
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
@@ -84,22 +81,24 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
     setCurrentCurrency(currency);
   };
 
+
   const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
     ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
 
   const displayPrice =
-    currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
+    currentCurrency && multiCurrency && multiCurrency[currentCurrency] !== undefined
+      ? multiCurrency[currentCurrency]
+      : selectedPackage.price;
   const currencySymbol =
     currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
 
-  // Early return: if showLoginForm is true, render LazyLoginForm only
   if (showLoginForm) {
     return <LazyLoginForm />;
   }
 
   return (
-    <Box className={styles.container} >
+    <Box className={styles.container}>
       {success && (
         <SuccessMessage
           open={success}
@@ -108,41 +107,35 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {!loading && !success && (
-        <Grid container spacing={2} >
+      {(!loading && !success) && (
+        <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn} sx={{
-              maxHeight: '600px',
-              overflowY: 'auto',
+            <Box className={styles.leftColumn} sx={{ 
+              maxHeight: '600px', 
+              overflowY: 'auto', 
               scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
-            }}
-            >
+               msOverflowStyle: 'none' 
+               }}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
               <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
-
               <Typography variant="body1" className={styles.description}>
                 {selectedPackage.description.replace(/[^\w\s.,!?]/g, "")}
               </Typography>
-
               <Typography variant="body2" className={styles.description}>
                 {selectedPackage.extraDescription}
               </Typography>
-
-              <Box className={styles.growthBox}>
-                <Typography variant="subtitle2" className={styles.growthBoxLabel}>
-                  YOUR TOTAL IN ( {currentCurrency})
+              <Box className={styles.premiumBox}>
+                <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
+                  YOUR TOTAL IN ( {currentCurrency} )
                 </Typography>
-                <Typography variant="h4" className={styles.growthBoxAmount}>
+                <Typography variant="h4" className={styles.premiumBoxAmount}>
                   <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
-
-              {/* Multi-Currency Selection */}
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
                   <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
@@ -169,40 +162,34 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
                   </FormGroup>
                 </Box>
               )}
-
               <Typography variant="subtitle2" className={styles.testPeriod}>
-                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
+                Test Period: {selectedPackage.testPeriodDays} days
               </Typography>
             </Box>
           </Grid>
-
           <Grid item xs={12} md={4}>
             <Box className={styles.rightColumn}>
               <Typography variant="h6" className={styles.heading}>
                 Package summary
               </Typography>
-
               <Typography variant="body2" className={styles.summaryItem}>
-                Package Type: <b>{selectedPackage.type}</b>
+                Package Type: {selectedPackage.type}
               </Typography>
-
               <Typography variant="body2" className={styles.summaryItem}>
-                Package ID: <b>{selectedPackage.id}</b>
+                Package ID: {selectedPackage.id}
               </Typography>
-
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: <b>{currencySymbol}{displayPrice}</b>
+                Monthly Price: {currencySymbol}
+                {displayPrice}
               </Typography>
-
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
+                Test Period: {selectedPackage.testPeriodDays} days
               </Typography>
-
               <Button
                 variant="contained"
                 className={styles.continueButton}
                 fullWidth
-                onClick={handleSelectedGrowthPackage}
+                onClick={handleSelectedPremiumPackage}
               >
                 Continue
               </Button>
@@ -214,4 +201,4 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   );
 };
 
-export default GrowthPackageLayout;
+export default PremiumPackageLayout;
