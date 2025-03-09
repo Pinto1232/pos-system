@@ -131,11 +131,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                   YOUR TOTAL IN ( {currentCurrency} )
                 </Typography>
                 <Typography variant="h4" className={styles.premiumBoxAmount}>
-                  <b>
-                    {currencySymbol}
-                    {displayPrice}
-                  </b>
-                  /mo
+                  <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
               {multiCurrency && (
@@ -155,9 +151,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency}:{" "}
-                            {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}
-                            {price}
+                            {currency === "Kz" ? `${price}Kz` : `${currencySymbols[currency] || "$"}${price}`}
                           </b>
                         }
                         className={styles.multiCurrencyItem}

@@ -113,12 +113,12 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
       {!loading && !success && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn} sx={{ 
-              maxHeight: '600px', 
-              overflowY: 'auto', 
+            <Box className={styles.leftColumn} sx={{
+              maxHeight: '600px',
+              overflowY: 'auto',
               scrollbarWidth: 'none',
-               msOverflowStyle: 'none' 
-               }}>
+              msOverflowStyle: 'none'
+            }}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
@@ -139,7 +139,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                   YOUR TOTAL IN ( {currentCurrency} )
                 </Typography>
                 <Typography variant="h4" className={styles.enterpriseBoxAmount}>
-                  <b>{currencySymbol}{displayPrice}</b>/mo
+                  <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
 
@@ -161,9 +161,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency}:{" "}
-                            {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}
-                            {price}
+                            {currency === "Kz" ? `${price}Kz` : `${currencySymbols[currency] || "$"}${price}`}
                           </b>
                         }
                         className={styles.multiCurrencyItem}

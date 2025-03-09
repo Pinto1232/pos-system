@@ -25,7 +25,7 @@ const currencySymbols: Record<string, string> = {
   USD: "$",
   EUR: "€",
   GBP: "£",
-  Kz: "Kz",
+  Kz: "Kz", // Ensure Kz symbol is included
   // Add more currency symbols as needed
 };
 
@@ -76,9 +76,9 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
 
   const displayPrice =
     currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
-  const currencySymbol = currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
+  const currencySymbol = currencySymbols[currentCurrency] || "$";
 
-  // Early return: render LazyLoginForm if showLoginForm is true
+ 
   if (showLoginForm) {
     return <LazyLoginForm />;
   }
@@ -114,7 +114,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
                   YOUR TOTAL In ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.premiumBoxAmount}>
-                  <b>{currencySymbol}{displayPrice}</b>/mo
+                  <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
               {multiCurrency && (
@@ -134,7 +134,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency}: {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}{price}
+                            {currency === "Kz" ? `${price}Kz` : `${currencySymbols[currency] || "$"}${price}`}
                           </b>
                         }
                         className={styles.multiCurrencyItem}
@@ -161,7 +161,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
                 Package ID: <b>{selectedPackage.id}</b>
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: <b>{currencySymbol}{displayPrice}</b>
+                Monthly Price: <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
                 Test Period: <b>{selectedPackage.testPeriodDays} days</b>

@@ -7,9 +7,13 @@ import { useSidebar } from "@/contexts/SidebarContext";
 import { useLoginForm } from "@/contexts/LoginFormContext";
 import styles from "./Navbar.module.css";
 
-interface NavbarProps {
+export interface NavbarProps {
   title: string;
   testPeriod: number;
+  // Optionally, if you plan to use these props inside Navbar, add them here:
+  menuItems?: string[];
+  isDrawerOpen?: boolean;
+  toggleDrawer?: (open: boolean) => () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = memo(({ title, testPeriod }) => {
@@ -29,7 +33,9 @@ const Navbar: React.FC<NavbarProps> = memo(({ title, testPeriod }) => {
 
         <Box className={styles.testPeriodBox}>
           <TimeIcon className={styles.icon} />
-          <Typography variant="body2">Test Period: {testPeriod} days remaining</Typography>
+          <Typography variant="body2">
+            Test Period: {testPeriod} days remaining
+          </Typography>
         </Box>
 
         <IconButton color="inherit">
@@ -49,13 +55,12 @@ const Navbar: React.FC<NavbarProps> = memo(({ title, testPeriod }) => {
 });
 
 Navbar.displayName = "Navbar";
+export { Navbar };
 
-const LazyNavbar = () => (
+
+const LazyNavbar: React.FC<NavbarProps> = (props) => (
   <Suspense fallback={<div>Loading...</div>}>
-    <Navbar
-      title="Pisval Tech POS"
-      testPeriod={30}
-    />
+    <Navbar {...props} />
   </Suspense>
 );
 

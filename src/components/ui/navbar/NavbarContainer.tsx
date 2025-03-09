@@ -1,23 +1,30 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import Navbar from "@/components/ui/navbar/Navbar";
+import React, { useState } from "react";
+// Import the memoized Navbar instead of the default LazyNavbar
+import { Navbar } from "@/components/ui/navbar/Navbar";
+import Drawer from "@mui/material/Drawer";
 
-const NavbarContainer = () => {
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+const NavbarContainer: React.FC = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const toggleDrawer = useCallback((open: boolean) => () => {
-    setDrawerOpen(open);
-  }, []);
+  const toggleDrawer = (open: boolean) => () => {
+    setIsDrawerOpen(open);
+  };
 
   return (
-    <Navbar
-      title="Pisval Tech"
-      testPeriod={12}
-      menuItems={["Dashboard", "Settings", "Support", "Logout"]}
-      isDrawerOpen={isDrawerOpen}
-      toggleDrawer={toggleDrawer}
-    />
+    <>
+      <Navbar
+        title="Pisval Tech POS"
+        testPeriod={30}
+        menuItems={["Home", "About", "Contact"]}
+        isDrawerOpen={isDrawerOpen}
+        toggleDrawer={toggleDrawer}
+      />
+      <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
+        {/* Drawer content */}
+      </Drawer>
+    </>
   );
 };
 

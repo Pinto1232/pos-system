@@ -109,13 +109,13 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
       {!loading && !success && (
         <Grid container spacing={2} >
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn} sx={{ 
-              maxHeight: '600px', 
-              overflowY: 'auto', 
+            <Box className={styles.leftColumn} sx={{
+              maxHeight: '600px',
+              overflowY: 'auto',
               scrollbarWidth: 'none',
-               msOverflowStyle: 'none' 
-               }}
-               >
+              msOverflowStyle: 'none'
+            }}
+            >
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
@@ -136,7 +136,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
                   YOUR TOTAL IN ( {currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.growthBoxAmount}>
-                  <b>{currencySymbol}{displayPrice}</b>/mo
+                  <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
 
@@ -158,7 +158,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency}: {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}{price}
+                            {currency === "Kz" ? `${price}Kz` : `${currencySymbols[currency] || "$"}${price}`}
                           </b>
                         }
                         className={styles.multiCurrencyItem}
