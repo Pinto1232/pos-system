@@ -14,6 +14,7 @@ import iconMap from "../../../../utils/icons";
 import SuccessMessage from "../../../ui/success-message/SuccessMessage";
 import styles from "./GrowthPackageLayout.module.css";
 import LazyLoginForm from "@/components/login-form/LoginForm";
+import { useTestPeriod } from "@/contexts/TestPeriodContext"; 
 
 interface GrowthPackageLayoutProps {
   selectedPackage: {
@@ -35,7 +36,6 @@ const currencySymbols: Record<string, string> = {
   EUR: "€",
   GBP: "£",
   Kz: "Kz",
-  // Add more currency symbols as needed
 };
 
 const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
@@ -44,6 +44,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const { setTestPeriod } = useTestPeriod(); 
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
   );
@@ -71,6 +72,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
     console.log("Confirmed", isSignup);
     setSuccess(false);
     setShowLoginForm(true);
+    setTestPeriod(selectedPackage.testPeriodDays);
   };
 
   const handleReturnSuccessMessage = () => {

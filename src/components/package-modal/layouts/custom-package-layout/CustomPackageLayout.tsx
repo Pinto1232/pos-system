@@ -55,11 +55,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   setSelectedCurrency,
 }) => {
   const [loading, setLoading] = useState(false);
-  // Local currency state (used only in this component)
   const [selectedCurrency, setSelectedCurrencyState] = useState<string>("USD");
   const [totalFeaturePrice, setTotalFeaturePrice] = useState<number>(0);
-
-  // Form state for the "Review & Confirm" step
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -109,7 +106,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     });
   };
 
-  // Separate handler for TextField inputs
+  
   const handleTextFieldChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -121,7 +118,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     }));
   };
 
-  // Separate handler for Select inputs using MUI's SelectChangeEvent
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
     console.log(`Select change: ${name} = ${value}`);
@@ -131,7 +127,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     }));
   };
 
-  // When the Confirm button is clicked, build the full data (including formData) and pass it upward
+
   const handleSave = () => {
     const fullData = {
       selectedFeatures,

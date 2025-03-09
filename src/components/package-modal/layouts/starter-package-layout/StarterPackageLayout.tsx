@@ -5,6 +5,7 @@ import iconMap from "../../../../utils/icons";
 import SuccessMessage from "../../../ui/success-message/SuccessMessage";
 import LazyLoginForm from "../../../login-form/LoginForm";
 import styles from "./StarterPackageLayout.module.css";
+import { useTestPeriod } from "@/contexts/TestPeriodContext";
 
 interface StarterPackageLayoutProps {
   selectedPackage: {
@@ -25,8 +26,7 @@ const currencySymbols: Record<string, string> = {
   USD: "$",
   EUR: "€",
   GBP: "£",
-  Kz: "Kz", // Ensure Kz symbol is included
-  // Add more currency symbols as needed
+  Kz: "Kz", 
 };
 
 const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPackage }) => {
@@ -34,6 +34,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || "USD");
+  const { setTestPeriod } = useTestPeriod();
 
   const IconComponent = iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
@@ -59,6 +60,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
     console.log("Confirmed", isSignup);
     setSuccess(false);
     setShowLoginForm(true);
+    setTestPeriod(selectedPackage.testPeriodDays);
   };
 
   const handleReturnSuccessMessage = () => {
