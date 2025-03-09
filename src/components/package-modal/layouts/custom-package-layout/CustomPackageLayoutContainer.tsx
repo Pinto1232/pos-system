@@ -290,7 +290,6 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
             console.log("Updating usage quantities:", quantities);
             setUsageQuantities(quantities);
           }}
-          // Pass a dummy function since the layout manages currency locally
           setSelectedCurrency={() => {}}
         />
       )}

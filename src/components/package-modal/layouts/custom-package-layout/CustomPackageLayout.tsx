@@ -26,6 +26,7 @@ import { motion } from "framer-motion";
 import InfoIcon from "@mui/icons-material/Info";
 import styles from "./CustomPackageLayout.module.css";
 import { Feature, AddOn, CustomPackageLayoutProps } from "./types";
+import { useTestPeriod } from "@/contexts/TestPeriodContext";
 import { FaCheck } from "react-icons/fa";
 import Link from "next/link";
 
@@ -56,6 +57,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [selectedCurrency, setSelectedCurrencyState] = useState<string>("USD");
+  const { setTestPeriod } = useTestPeriod();
   const [totalFeaturePrice, setTotalFeaturePrice] = useState<number>(0);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -106,7 +108,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     });
   };
 
-  
+
   const handleTextFieldChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -138,6 +140,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       formData,
     };
     console.log("Package data saved:", fullData);
+    setTestPeriod(selectedPackage.testPeriodDays);
     onSave(fullData);
   };
 
@@ -311,9 +314,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     return (
                       <Box
                         key={feature.id}
-                        className={`${styles.featureItem} ${
-                          isSelected ? styles.selectedFeature : ""
-                        }`}
+                        className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""
+                          }`}
                       >
                         <Box>
                           <Typography className={styles.featureName}>
@@ -475,9 +477,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 return (
                   <Box
                     key={addOn.id}
-                    className={`${styles.featureItem} ${
-                      isSelected ? styles.selectedFeature : ""
-                    }`}
+                    className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""
+                      }`}
                   >
                     <Button
                       className={styles.addOnsfeatureButton}
