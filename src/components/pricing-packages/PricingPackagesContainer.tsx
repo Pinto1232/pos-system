@@ -2,27 +2,14 @@
 
 import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useApiClient } from "@/api/axiosClient"; // Corrected import
+import { useApiClient } from "@/api/axiosClient"; 
 import styles from "./PricingPackages.module.css";
 import PricingPackageCard from "./PricingPackageCard";
 import { usePackageSelection, type Package } from "@/contexts/PackageSelectionContext";
 import { AxiosInstance } from "axios";
+import { PricePackages } from "@/components/pricing-packages/types";
 
-type ApiResponse = {
-  data: Array<{
-    id: number;
-    title: string;
-    description: string;
-    icon: string;
-    extraDescription: string;
-    price: number;
-    testPeriodDays: number;
-    type?: string;
-    packageType?: string;
-  }>;
-};
-
-const fetchPricingPackages = async (axiosClient: AxiosInstance, pageNumber: number, pageSize: number): Promise<ApiResponse> => {
+const fetchPricingPackages = async (axiosClient: AxiosInstance, pageNumber: number, pageSize: number): Promise<PricePackages> => {
   const response = await axiosClient.get(
     `/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`
   );
