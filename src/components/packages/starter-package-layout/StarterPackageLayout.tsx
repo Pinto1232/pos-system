@@ -1,21 +1,13 @@
 "use client";
-
 import React, { useState } from "react";
-import {
-  Grid,
-  Box,
-  Typography,
-  Button,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-} from "@mui/material";
-import iconMap from "../../../../utils/icons";
-import SuccessMessage from "../../../ui/success-message/SuccessMessage";
-import styles from "./EnterprisePackageLayout.module.css";
-import LazyLoginForm from "@/components/login-form/LoginForm";
+import { Grid, Box, Typography, Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import iconMap from "../../../utils/icons";
+import SuccessMessage from "../../ui/success-message/SuccessMessage";
+import LazyLoginForm from "../../login-form/LoginForm";
+import styles from "./StarterPackageLayout.module.css";
+import { useTestPeriod } from "@/contexts/TestPeriodContext";
 
-interface EnterprisePackageLayoutProps {
+interface StarterPackageLayoutProps {
   selectedPackage: {
     id: number;
     title: string;
@@ -34,31 +26,28 @@ const currencySymbols: Record<string, string> = {
   USD: "$",
   EUR: "€",
   GBP: "£",
-  Kz: "Kz",
-  // Add more currency symbols as needed
+  Kz: "Kz", 
 };
 
-const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
-  selectedPackage,
-}) => {
+const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPackage }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const [currentCurrency, setCurrentCurrency] = useState<string>(
-    selectedPackage.currency || "USD"
-  );
+  const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || "USD");
+  const { setTestPeriod } = useTestPeriod();
 
-  const IconComponent =
-    iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
+  const IconComponent = iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
-  const handleSelectedEnterprisePackage = async () => {
+  const handleSelectedStarterPackage = async () => {
     setLoading(true);
     console.log("Selected package", {
       ...selectedPackage,
       currency: currentCurrency,
     });
+
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
+
     setLoading(false);
     setSuccess(true);
   };
@@ -71,6 +60,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
     console.log("Confirmed", isSignup);
     setSuccess(false);
     setShowLoginForm(true);
+    setTestPeriod(selectedPackage.testPeriodDays);
   };
 
   const handleReturnSuccessMessage = () => {
@@ -82,20 +72,15 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
     setCurrentCurrency(currency);
   };
 
-  // Parse multiCurrencyPrices if provided
-  const multiCurrency: Record<string, number> | null = selectedPackage
-    .multiCurrencyPrices
+  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
     ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
 
   const displayPrice =
-    currentCurrency && multiCurrency
-      ? multiCurrency[currentCurrency]
-      : selectedPackage.price;
-  const currencySymbol =
-    currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
+    currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
+  const currencySymbol = currencySymbols[currentCurrency] || "$";
 
-  // Early return: render LazyLoginForm only when showLoginForm is true
+ 
   if (showLoginForm) {
     return <LazyLoginForm />;
   }
@@ -113,12 +98,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
       {!loading && !success && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn} sx={{ 
-              maxHeight: '600px', 
-              overflowY: 'auto', 
-              scrollbarWidth: 'none',
-               msOverflowStyle: 'none' 
-               }}>
+            <Box className={styles.leftColumn}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
@@ -131,19 +111,14 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
               <Typography variant="body2" className={styles.description}>
                 {selectedPackage.extraDescription}
               </Typography>
-              <Box className={styles.enterpriseBox}>
-                <Typography
-                  variant="subtitle2"
-                  className={styles.enterpriseBoxLabel}
-                >
-                  YOUR TOTAL IN ( {currentCurrency} )
+              <Box className={styles.premiumBox}>
+                <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
+                  YOUR TOTAL In ({currentCurrency})
                 </Typography>
-                <Typography variant="h4" className={styles.enterpriseBoxAmount}>
-                  <b>{currencySymbol}{displayPrice}</b>/mo
+                <Typography variant="h4" className={styles.premiumBoxAmount}>
+                  <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
-
-              {/* Multi-Currency Selection */}
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
                   <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
@@ -161,9 +136,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency}:{" "}
-                            {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}
-                            {price}
+                            {currency === "Kz" ? `${price}Kz` : `${currencySymbols[currency] || "$"}${price}`}
                           </b>
                         }
                         className={styles.multiCurrencyItem}
@@ -172,9 +145,8 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                   </FormGroup>
                 </Box>
               )}
-
               <Typography variant="subtitle2" className={styles.testPeriod}>
-                Test Period: {selectedPackage.testPeriodDays} days
+                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
             </Box>
           </Grid>
@@ -185,22 +157,22 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                 Package summary
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Package Type: {selectedPackage.type}
+                Package Type: <b>{selectedPackage.type}</b>
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Package ID: {selectedPackage.id}
+                Package ID: <b>{selectedPackage.id}</b>
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: {currencySymbol}{displayPrice}
+                Monthly Price: <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period: {selectedPackage.testPeriodDays} days
+                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
               <Button
                 variant="contained"
                 className={styles.continueButton}
                 fullWidth
-                onClick={handleSelectedEnterprisePackage}
+                onClick={handleSelectedStarterPackage}
               >
                 Continue
               </Button>
@@ -212,4 +184,4 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
   );
 };
 
-export default EnterprisePackageLayout;
+export default StarterPackageLayout;

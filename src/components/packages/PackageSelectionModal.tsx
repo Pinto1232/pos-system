@@ -6,12 +6,12 @@ import styles from "./PackageSelectionModal.module.css";
 import { usePackageSelection } from "@/contexts/PackageSelectionContext";
 
 // Import the container component instead of the layout directly
-import { Package as CustomPackage } from "@/components/package-modal/layouts/custom-package-layout/types";
-import CustomPackageLayoutContainer from "@/components/package-modal/layouts/custom-package-layout/CustomPackageLayoutContainer";
-import StarterPackageLayout from "@/components/package-modal/layouts/starter-package-layout/StarterPackageLayout";
-import GrowthPackageLayout from "@/components/package-modal/layouts/growth-package-layout/GrowthPackageLayout";
-import EnterprisePackageLayout from "@/components/package-modal/layouts/enterprise-package-layout/EnterprisePackageLayout";
-import PremiumPackageLayout from "./layouts/premium-package-layout/PremiumPackageLayout";
+import { Package as CustomPackage } from "@/components/packages/custom-package-layout/types";
+import CustomPackageLayoutContainer from "@/components/packages/custom-package-layout/CustomPackageLayoutContainer";
+import StarterPackageLayout from "@/components/packages/starter-package-layout/StarterPackageLayout";
+import GrowthPackageLayout from "@/components/packages/growth-package-layout/GrowthPackageLayout";
+import EnterprisePackageLayout from "@/components/packages/enterprise-package-layout/EnterprisePackageLayout";
+import PremiumPackageLayout from "./premium-package-layout/PremiumPackageLayout";
 
 const PackageSelectionModal: React.FC = memo(() => {
   const { selectedPackage, isModalOpen, closeModal } = usePackageSelection();

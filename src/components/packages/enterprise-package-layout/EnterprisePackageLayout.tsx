@@ -10,13 +10,13 @@ import {
   FormGroup,
   FormControlLabel,
 } from "@mui/material";
-import iconMap from "../../../../utils/icons";
-import SuccessMessage from "../../../ui/success-message/SuccessMessage";
-import styles from "./PremiumPackageLayout.module.css";
+import iconMap from "../../../utils/icons";
+import SuccessMessage from "../../ui/success-message/SuccessMessage";
+import styles from "./EnterprisePackageLayout.module.css";
 import LazyLoginForm from "@/components/login-form/LoginForm";
 import { useTestPeriod } from "@/contexts/TestPeriodContext";
 
-interface PremiumPackageLayoutProps {
+interface EnterprisePackageLayoutProps {
   selectedPackage: {
     id: number;
     title: string;
@@ -38,13 +38,13 @@ const currencySymbols: Record<string, string> = {
   Kz: "Kz",
 };
 
-const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
+const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
   selectedPackage,
 }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const { setTestPeriod } = useTestPeriod();
+  const { setTestPeriod } = useTestPeriod(); 
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
   );
@@ -52,9 +52,12 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
   const IconComponent =
     iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
-  const handleSelectedPremiumPackage = async () => {
+  const handleSelectedEnterprisePackage = async () => {
     setLoading(true);
-    console.log("Selected package", { ...selectedPackage, currency: currentCurrency });
+    console.log("Selected package", {
+      ...selectedPackage,
+      currency: currentCurrency,
+    });
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
@@ -81,13 +84,14 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
     setCurrentCurrency(currency);
   };
 
-
-  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
+  // Parse multiCurrencyPrices if provided
+  const multiCurrency: Record<string, number> | null = selectedPackage
+    .multiCurrencyPrices
     ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
 
   const displayPrice =
-    currentCurrency && multiCurrency && multiCurrency[currentCurrency] !== undefined
+    currentCurrency && multiCurrency
       ? multiCurrency[currentCurrency]
       : selectedPackage.price;
   const currencySymbol =
@@ -107,15 +111,15 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {(!loading && !success) && (
+      {!loading && !success && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn} sx={{ 
-              maxHeight: '600px', 
-              overflowY: 'auto', 
+            <Box className={styles.leftColumn} sx={{
+              maxHeight: '600px',
+              overflowY: 'auto',
               scrollbarWidth: 'none',
-               msOverflowStyle: 'none' 
-               }}>
+              msOverflowStyle: 'none'
+            }}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
@@ -128,14 +132,19 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
               <Typography variant="body2" className={styles.description}>
                 {selectedPackage.extraDescription}
               </Typography>
-              <Box className={styles.premiumBox}>
-                <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
+              <Box className={styles.enterpriseBox}>
+                <Typography
+                  variant="subtitle2"
+                  className={styles.enterpriseBoxLabel}
+                >
                   YOUR TOTAL IN ( {currentCurrency} )
                 </Typography>
-                <Typography variant="h4" className={styles.premiumBoxAmount}>
+                <Typography variant="h4" className={styles.enterpriseBoxAmount}>
                   <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
+
+              {/* Multi-Currency Selection */}
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
                   <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
@@ -162,11 +171,13 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                   </FormGroup>
                 </Box>
               )}
+
               <Typography variant="subtitle2" className={styles.testPeriod}>
                 Test Period: {selectedPackage.testPeriodDays} days
               </Typography>
             </Box>
           </Grid>
+
           <Grid item xs={12} md={4}>
             <Box className={styles.rightColumn}>
               <Typography variant="h6" className={styles.heading}>
@@ -179,8 +190,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                 Package ID: {selectedPackage.id}
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: {currencySymbol}
-                {displayPrice}
+                Monthly Price: {currencySymbol}{displayPrice}
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
                 Test Period: {selectedPackage.testPeriodDays} days
@@ -189,7 +199,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                 variant="contained"
                 className={styles.continueButton}
                 fullWidth
-                onClick={handleSelectedPremiumPackage}
+                onClick={handleSelectedEnterprisePackage}
               >
                 Continue
               </Button>
@@ -201,4 +211,4 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
   );
 };
 
-export default PremiumPackageLayout;
+export default EnterprisePackageLayout;

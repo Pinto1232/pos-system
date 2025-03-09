@@ -160,7 +160,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     });
   }, []);
 
-  // onSave in the container now receives the full data (including formData) from the layout
+
   const handleSave = useCallback(async (data: {
     selectedFeatures: Feature[];
     selectedAddOns: AddOn[];
@@ -290,7 +290,6 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
             console.log("Updating usage quantities:", quantities);
             setUsageQuantities(quantities);
           }}
-          // Pass a dummy function since the layout manages currency locally
           setSelectedCurrency={() => {}}
         />
       )}

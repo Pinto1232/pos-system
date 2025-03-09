@@ -1,12 +1,22 @@
 "use client";
-import React, { useState } from "react";
-import { Grid, Box, Typography, Button, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import iconMap from "../../../../utils/icons";
-import SuccessMessage from "../../../ui/success-message/SuccessMessage";
-import LazyLoginForm from "../../../login-form/LoginForm";
-import styles from "./StarterPackageLayout.module.css";
 
-interface StarterPackageLayoutProps {
+import React, { useState } from "react";
+import {
+  Grid,
+  Box,
+  Typography,
+  Button,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+} from "@mui/material";
+import iconMap from "../../../utils/icons";
+import SuccessMessage from "../../ui/success-message/SuccessMessage";
+import styles from "./PremiumPackageLayout.module.css";
+import LazyLoginForm from "@/components/login-form/LoginForm";
+import { useTestPeriod } from "@/contexts/TestPeriodContext";
+
+interface PremiumPackageLayoutProps {
   selectedPackage: {
     id: number;
     title: string;
@@ -26,27 +36,27 @@ const currencySymbols: Record<string, string> = {
   EUR: "€",
   GBP: "£",
   Kz: "Kz",
-  // Add more currency symbols as needed
 };
 
-const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPackage }) => {
+const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
+  selectedPackage,
+}) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || "USD");
+  const { setTestPeriod } = useTestPeriod();
+  const [currentCurrency, setCurrentCurrency] = useState<string>(
+    selectedPackage.currency || "USD"
+  );
 
-  const IconComponent = iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
+  const IconComponent =
+    iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
-  const handleSelectedStarterPackage = async () => {
+  const handleSelectedPremiumPackage = async () => {
     setLoading(true);
-    console.log("Selected package", {
-      ...selectedPackage,
-      currency: currentCurrency,
-    });
-
+    console.log("Selected package", { ...selectedPackage, currency: currentCurrency });
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
     setLoading(false);
     setSuccess(true);
   };
@@ -59,6 +69,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
     console.log("Confirmed", isSignup);
     setSuccess(false);
     setShowLoginForm(true);
+    setTestPeriod(selectedPackage.testPeriodDays);
   };
 
   const handleReturnSuccessMessage = () => {
@@ -70,15 +81,18 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
     setCurrentCurrency(currency);
   };
 
+
   const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
     ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
 
   const displayPrice =
-    currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
-  const currencySymbol = currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
+    currentCurrency && multiCurrency && multiCurrency[currentCurrency] !== undefined
+      ? multiCurrency[currentCurrency]
+      : selectedPackage.price;
+  const currencySymbol =
+    currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
 
-  // Early return: render LazyLoginForm if showLoginForm is true
   if (showLoginForm) {
     return <LazyLoginForm />;
   }
@@ -93,10 +107,15 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {!loading && !success && (
+      {(!loading && !success) && (
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn}>
+            <Box className={styles.leftColumn} sx={{ 
+              maxHeight: '600px', 
+              overflowY: 'auto', 
+              scrollbarWidth: 'none',
+               msOverflowStyle: 'none' 
+               }}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
@@ -111,10 +130,10 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
               </Typography>
               <Box className={styles.premiumBox}>
                 <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
-                  YOUR TOTAL In ({currentCurrency})
+                  YOUR TOTAL IN ( {currentCurrency} )
                 </Typography>
                 <Typography variant="h4" className={styles.premiumBoxAmount}>
-                  <b>{currencySymbol}{displayPrice}</b>/mo
+                  <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
               {multiCurrency && (
@@ -134,7 +153,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency}: {currency === "Kz" ? "" : (currencySymbols[currency] || "$")}{price}
+                            {currency === "Kz" ? `${price}Kz` : `${currencySymbols[currency] || "$"}${price}`}
                           </b>
                         }
                         className={styles.multiCurrencyItem}
@@ -144,33 +163,33 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
                 </Box>
               )}
               <Typography variant="subtitle2" className={styles.testPeriod}>
-                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
+                Test Period: {selectedPackage.testPeriodDays} days
               </Typography>
             </Box>
           </Grid>
-
           <Grid item xs={12} md={4}>
             <Box className={styles.rightColumn}>
               <Typography variant="h6" className={styles.heading}>
                 Package summary
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Package Type: <b>{selectedPackage.type}</b>
+                Package Type: {selectedPackage.type}
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Package ID: <b>{selectedPackage.id}</b>
+                Package ID: {selectedPackage.id}
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: <b>{currencySymbol}{displayPrice}</b>
+                Monthly Price: {currencySymbol}
+                {displayPrice}
               </Typography>
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
+                Test Period: {selectedPackage.testPeriodDays} days
               </Typography>
               <Button
                 variant="contained"
                 className={styles.continueButton}
                 fullWidth
-                onClick={handleSelectedStarterPackage}
+                onClick={handleSelectedPremiumPackage}
               >
                 Continue
               </Button>
@@ -182,4 +201,4 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
   );
 };
 
-export default StarterPackageLayout;
+export default PremiumPackageLayout;

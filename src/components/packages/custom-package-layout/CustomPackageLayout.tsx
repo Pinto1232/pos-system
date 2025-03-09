@@ -26,6 +26,7 @@ import { motion } from "framer-motion";
 import InfoIcon from "@mui/icons-material/Info";
 import styles from "./CustomPackageLayout.module.css";
 import { Feature, AddOn, CustomPackageLayoutProps } from "./types";
+import { useTestPeriod } from "@/contexts/TestPeriodContext";
 import { FaCheck } from "react-icons/fa";
 import Link from "next/link";
 
@@ -55,11 +56,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   setSelectedCurrency,
 }) => {
   const [loading, setLoading] = useState(false);
-  // Local currency state (used only in this component)
   const [selectedCurrency, setSelectedCurrencyState] = useState<string>("USD");
+  const { setTestPeriod } = useTestPeriod();
   const [totalFeaturePrice, setTotalFeaturePrice] = useState<number>(0);
-
-  // Form state for the "Review & Confirm" step
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -109,7 +108,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     });
   };
 
-  // Separate handler for TextField inputs
+
   const handleTextFieldChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -121,7 +120,6 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     }));
   };
 
-  // Separate handler for Select inputs using MUI's SelectChangeEvent
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
     console.log(`Select change: ${name} = ${value}`);
@@ -131,7 +129,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     }));
   };
 
-  // When the Confirm button is clicked, build the full data (including formData) and pass it upward
+
   const handleSave = () => {
     const fullData = {
       selectedFeatures,
@@ -142,6 +140,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       formData,
     };
     console.log("Package data saved:", fullData);
+    setTestPeriod(selectedPackage.testPeriodDays);
     onSave(fullData);
   };
 
@@ -315,9 +314,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     return (
                       <Box
                         key={feature.id}
-                        className={`${styles.featureItem} ${
-                          isSelected ? styles.selectedFeature : ""
-                        }`}
+                        className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""
+                          }`}
                       >
                         <Box>
                           <Typography className={styles.featureName}>
@@ -479,9 +477,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 return (
                   <Box
                     key={addOn.id}
-                    className={`${styles.featureItem} ${
-                      isSelected ? styles.selectedFeature : ""
-                    }`}
+                    className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ""
+                      }`}
                   >
                     <Button
                       className={styles.addOnsfeatureButton}
