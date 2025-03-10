@@ -27,7 +27,7 @@
 .checkoutContent {
   flex: 1;
   min-width: 500px;
-  min-height: 55vh;
+  min-height: 45vh;
   background-color: #fff;
   color: #000;
   padding: 2rem;
