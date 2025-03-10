@@ -3,10 +3,9 @@
   justify-content: space-between;
   background-color: #f3f4f6; 
   padding: 4rem;
-  min-width: 100vw;
-  min-height: 100vh;
+  min-width: 90vw;
   margin: 0 auto;
-  gap: 2rem; 
+  gap: 1rem; 
 }
 
 .checkoutLeft {
@@ -52,7 +51,7 @@
 }
 
 .paymentDetails {
-  background-color: #f3f4f6;
+  background-color: #f4f4f489;
   margin-top: 10px;
   color: #000;
   padding: 1rem;

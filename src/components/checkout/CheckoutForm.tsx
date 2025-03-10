@@ -7,6 +7,11 @@ import {
     Typography,
     Button,
     Divider,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormControl,
+  
 } from "@mui/material";
 import { FaCreditCard, FaRegCreditCard, FaCalendarAlt } from 'react-icons/fa';
 import styles from "./CheckoutForm.module.css";
@@ -102,24 +107,51 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     <Typography variant="body2" className={styles.total}>
                         Gift card and coupon: $100.00
                     </Typography>
-                    <Typography variant="h5" className={styles.total}>
-                        Grand Total: $100.00
-                    </Typography>
+                  
                     <Divider className={styles.divider} />
                     <Box className={styles.paymentDetails}>
-                        <Typography variant="body2" className={styles.total}>
-                            <FaCreditCard style={{ marginRight: '8px' }} />
-                            <strong>Payment Method:</strong> Credit Card
-                        </Typography>
-                        <Typography variant="body2" className={styles.total}>
-                            <FaRegCreditCard style={{ marginRight: '8px' }} />
-                            <strong>Card Number:</strong> **** **** **** 1234
-                        </Typography>
-                        <Typography variant="body2" className={styles.total}>
-                            <FaCalendarAlt style={{ marginRight: '8px' }} />
-                            <strong>Expiry Date:</strong> 12/2024
-                        </Typography>
-
+                        <FormControl component="fieldset">
+                        <Typography variant="h6" className={styles.total}>
+                        Choose Your Payment Method
+                    </Typography>
+                            <RadioGroup
+                                aria-label="payment-method"
+                                name="paymentMethod"
+                                value={formData.paymentMethod || ""}
+                                onChange={handleSelectChange}
+                            >
+                                <FormControlLabel
+                                    value="creditCard"
+                                    control={<Radio />}
+                                    label={
+                                        <Box display="flex" alignItems="center">
+                                            <FaCreditCard style={{ marginRight: '8px' }} />
+                                            Credit Card
+                                        </Box>
+                                    }
+                                />
+                                <FormControlLabel
+                                    value="cardNumber"
+                                    control={<Radio />}
+                                    label={
+                                        <Box display="flex" alignItems="center">
+                                            <FaRegCreditCard style={{ marginRight: '8px' }} />
+                                            Card Number: **** **** **** 1234
+                                        </Box>
+                                    }
+                                />
+                                <FormControlLabel
+                                    value="expiryDate"
+                                    control={<Radio />}
+                                    label={
+                                        <Box display="flex" alignItems="center">
+                                            <FaCalendarAlt style={{ marginRight: '8px' }} />
+                                            Expiry Date: 12/2024
+                                        </Box>
+                                    }
+                                />
+                            </RadioGroup>
+                        </FormControl>
                         <Button
                             type="submit"
                             variant="contained"
