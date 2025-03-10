@@ -4,17 +4,8 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import CheckoutForm from "./CheckoutForm";
 import { CheckoutField, OrderSummaryItem } from "./CheckoutFormInterfaces";
 
-/**
- * Container component that handles all business logic
- * (state, event handlers, etc.) and passes data/handlers
- * to the presentation component.
- */
+
 const CheckoutContainer: React.FC = () => {
-  /**
-   * Define the fields for the form.
-   * You can add or remove fields to make the component
-   * fully reusable.
-   */
   const checkoutFields: CheckoutField[] = [
     {
       label: "First Name",

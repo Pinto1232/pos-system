@@ -4,8 +4,6 @@ import React, { memo, Suspense } from "react";
 import { Modal, Box } from "@mui/material";
 import styles from "./PackageSelectionModal.module.css";
 import { usePackageSelection } from "@/contexts/PackageSelectionContext";
-
-// Import the container component instead of the layout directly
 import { Package as CustomPackage } from "@/components/packages/custom-package-layout/types";
 import CustomPackageLayoutContainer from "@/components/packages/custom-package-layout/CustomPackageLayoutContainer";
 import StarterPackageLayout from "@/components/packages/starter-package-layout/StarterPackageLayout";

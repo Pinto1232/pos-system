@@ -1,29 +1,73 @@
 .checkoutContainer {
-    display: flex;
-    gap: 2rem;
-    justify-content: space-between;
-    background-color: #f5f5f5;
-    padding: 2rem;
-  }
-  
-  .checkoutLeft {
-    flex: 1;
-    background-color: #fff;
-    padding: 1rem;
-  }
-  
-  .checkoutRight {
-    flex: 1;
-    background-color: #fff;
-    padding: 1rem;
-  }
-  
-  .formGroup {
-    margin-bottom: 1rem;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  background-color: #f3f4f6; 
+  padding: 4rem;
+  width: 90vw;
+  margin: 0 auto;
+  gap: 1rem; 
+}
+
+.checkoutLeft {
+  flex: 2;
+  max-width: 1300px;
+  background-color: #fff; 
+  padding: 2.2rem;
+  height: 70vh;
+}
+
+.checkoutRight {
+  flex: 1;
+  min-width: 500px;
+  background-color: #fff;
+  padding: 2rem; 
+}
+
+.checkoutContent {
+  flex: 1;
+  min-width: 500px;
+  min-height: 45vh;
+  background-color: #fff;
+  color: #000;
+  padding: 2rem;
+  margin-top: -0.1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 2rem!important;
+}
+
+.orderSummary {
+  margin-top: 1rem;
+}
+
+.summaryItem {
+  font-size: 16px;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.paymentDetails {
+  background-color: #f4f4f489;
+  margin-top: 10px;
+  color: #000;
+  padding: 1rem;
+  min-height: 50vh;
+}
+
+.checkoutButton {
+  width: 100%;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+.divider {
+  width: 100%;
+  margin-bottom: 16px!important;
+ margin-top: 16px!important;
+}
+
+
