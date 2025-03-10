@@ -5,6 +5,7 @@ export interface CheckoutField {
     name: string;
     type?: string;
     required?: boolean;
+    options?: string[]; // Add options property for select fields
 }
 
 export interface OrderSummaryItem {

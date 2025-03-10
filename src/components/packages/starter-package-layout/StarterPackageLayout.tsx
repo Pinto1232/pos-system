@@ -4,8 +4,10 @@ import { Grid, Box, Typography, Button, Checkbox, FormControlLabel, FormGroup } 
 import iconMap from "../../../utils/icons";
 import SuccessMessage from "../../ui/success-message/SuccessMessage";
 import LazyLoginForm from "../../login-form/LoginForm";
+import CheckoutForm from "../../checkout/CheckoutForm"; // Import CheckoutForm
 import styles from "./StarterPackageLayout.module.css";
 import { useTestPeriod } from "@/contexts/TestPeriodContext";
+import { CheckoutField, OrderSummaryItem } from "../../checkout/CheckoutFormInterfaces"; // Import interfaces
 
 interface StarterPackageLayoutProps {
   selectedPackage: {
@@ -33,6 +35,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showCheckoutForm, setShowCheckoutForm] = useState(false); // Add state for showing CheckoutForm
   const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || "USD");
   const { setTestPeriod } = useTestPeriod();
 
@@ -59,7 +62,8 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
-    setShowLoginForm(true);
+    setShowCheckoutForm(true); 
+    setShowLoginForm(false);
     setTestPeriod(selectedPackage.testPeriodDays);
   };
 
@@ -80,9 +84,55 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
     currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
   const currencySymbol = currencySymbols[currentCurrency] || "$";
 
- 
+  const checkoutFields: CheckoutField[] = [
+    { label: "First Name", name: "firstName", type: "text", required: true },
+    { label: "Last Name", name: "lastName", type: "text", required: true },
+    { label: "Email", name: "email", type: "email", required: true },
+    { label: "Phone Number", name: "phone", type: "text", required: true },
+    { label: "Address", name: "address", type: "text", required: true },
+    { label: "Country", name: "country", type: "select", required: true, options: ["USA", "Canada", "UK"] },
+    { label: "State / Province / Region", name: "state", type: "select", required: true, options: ["California", "Texas", "New York"] },
+    { label: "City", name: "city", type: "text", required: true },
+    { label: "Postal / Zip Code", name: "postal", type: "text", required: true },
+  ];
+
+  const orderSummaryItems: OrderSummaryItem[] = [
+    { label: "Package", value: selectedPackage.title },
+    { label: "Price", value: `${currencySymbol}${displayPrice}` },
+    { label: "Test Period", value: `${selectedPackage.testPeriodDays} days` },
+  ];
+
+  const [formData, setFormData] = useState<Record<string, string>>({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form submitted:", formData);
+  };
+
   if (showLoginForm) {
     return <LazyLoginForm />;
+  }
+
+  if (showCheckoutForm) {
+    return (
+      <CheckoutForm
+        title="Enter Your Details"
+        checkoutFields={checkoutFields}
+        orderSummaryTitle="Order Summary"
+        orderSummaryItems={orderSummaryItems}
+        formData={formData}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+      />
+    );
   }
 
   return (
