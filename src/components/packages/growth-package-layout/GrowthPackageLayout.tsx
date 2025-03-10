@@ -109,7 +109,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
         />
       )}
       {!loading && !success && (
-        <Grid container spacing={2} >
+        <Grid container spacing={2} className={styles.gridContainer} >
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn} sx={{
               maxHeight: '600px',

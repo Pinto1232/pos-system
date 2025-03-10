@@ -1,24 +1,21 @@
-/* Overall container */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 50px;
   position: relative;
-  border-radius: 6px;
-  background-color: #ffffff;
+  border-radius: 6;
+  background-color: transparent; 
 }
 
-/* Left column styling */
-.leftColumn {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 20px;
-  max-height: 400px;
-  overflow-y: auto;
+.gridContainer{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px;
+  position: relative;
+  border-radius: 6;
+  background-color: #ffffff; 
 }
 
-/* Right column styling */
 .rightColumn {
   background-color: #ffffff;
   border: 1px solid #ddd;
@@ -27,14 +24,12 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Heading styles */
 .heading {
   margin-bottom: 16px;
   font-weight: bold;
   color: #333;
 }
 
-/* Package Icon */
 .packageIcon {
   width: 35px !important;
   height: 35px !important;
@@ -49,14 +44,12 @@
   padding: 4px;
 }
 
-/* Description styles */
 .description {
   margin-bottom: 16px;
   color: #666;
   font-size: 14px !important;
 }
 
-/* Enterprise price box */
 .enterpriseBox {
   border: 2px solid #3182ce;
   margin-top: 16px;
@@ -78,18 +71,15 @@
   font-weight: bold;
 }
 
-/* Test period */
 .testPeriod {
   color: #666;
 }
 
-/* Summary items */
 .summaryItem {
   margin-bottom: 8px;
   color: #666;
 }
 
-/* Continue button */
 .continueButton {
   background-color: #3182ce !important;
   color: white !important;
@@ -101,7 +91,7 @@
   text-transform: none !important;
 }
 
-/* Multi-Currency Box Styles */
+
 .multiCurrencyBox {
   margin-top: 16px;
   padding: 6px;

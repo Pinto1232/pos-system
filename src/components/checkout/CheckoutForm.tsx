@@ -99,21 +99,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 <Divider className={styles.divider} />
                 <Box className={styles.checkoutContent}>
                     <Typography variant="h6" className={styles.total}>
-                        Transactions: $100.00
+                        Choose Your Payment Method
                     </Typography>
-                    <Typography variant="body2" className={styles.total}>
-                        Discount  points: $100.00
-                    </Typography>
-                    <Typography variant="body2" className={styles.total}>
-                        Gift card and coupon: $100.00
-                    </Typography>
-
                     <Divider className={styles.divider} />
                     <Box className={styles.paymentDetails}>
                         <FormControl component="fieldset">
-                            <Typography variant="h6" className={styles.total}>
-                                Choose Your Payment Method
-                            </Typography>
                             <RadioGroup
                                 aria-label="payment-method"
                                 name="paymentMethod"

@@ -1,11 +1,19 @@
-/* Overall container */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 50px;
   position: relative;
-  border-radius: 6px;
-  background-color: #ffffff;
+  border-radius: 6;
+  background-color: transparent; 
+}
+
+.gridContainer{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 50px;
+  position: relative;
+  border-radius: 6;
+  background-color: #ffffff; 
 }
 
 /* Left column styling */

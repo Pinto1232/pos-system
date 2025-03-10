@@ -146,7 +146,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
         />
       )}
       {!loading && !success && (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
               {selectedPackage.icon && (
