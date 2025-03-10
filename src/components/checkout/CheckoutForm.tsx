@@ -11,7 +11,6 @@ import {
     RadioGroup,
     FormControlLabel,
     FormControl,
-  
 } from "@mui/material";
 import { FaCreditCard, FaRegCreditCard, FaCalendarAlt } from 'react-icons/fa';
 import styles from "./CheckoutForm.module.css";
@@ -74,6 +73,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                             onChange={onChange}
                                             label={field.label}
                                             fullWidth
+                                            className={field.name.toLowerCase() === "address" ? styles.addressTextfield : ""}
                                         />
                                     )}
                                 </Grid>
@@ -107,13 +107,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     <Typography variant="body2" className={styles.total}>
                         Gift card and coupon: $100.00
                     </Typography>
-                  
+
                     <Divider className={styles.divider} />
                     <Box className={styles.paymentDetails}>
                         <FormControl component="fieldset">
-                        <Typography variant="h6" className={styles.total}>
-                        Choose Your Payment Method
-                    </Typography>
+                            <Typography variant="h6" className={styles.total}>
+                                Choose Your Payment Method
+                            </Typography>
                             <RadioGroup
                                 aria-label="payment-method"
                                 name="paymentMethod"
