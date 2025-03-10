@@ -119,16 +119,18 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                             <FaCalendarAlt style={{ marginRight: '8px' }} />
                             <strong>Expiry Date:</strong> 12/2024
                         </Typography>
+
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            className={styles.checkoutButton}
+                            onClick={onSubmit}
+                        >
+                            Checkout
+                        </Button>
                     </Box>
                 </Box>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    className={styles.checkoutButton}
-                    onClick={onSubmit}
-                >
-                    Checkout
-                </Button>
+
             </Box>
         </Box>
     );
