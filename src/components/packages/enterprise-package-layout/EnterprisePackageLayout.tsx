@@ -15,6 +15,7 @@ import SuccessMessage from "../../ui/success-message/SuccessMessage";
 import styles from "./EnterprisePackageLayout.module.css";
 import LazyLoginForm from "@/components/login-form/LoginForm";
 import { useTestPeriod } from "@/contexts/TestPeriodContext";
+import { useSpinner } from "@/contexts/SpinnerContext";
 
 interface EnterprisePackageLayoutProps {
   selectedPackage: {
@@ -45,6 +46,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod(); 
+  const { setLoading: setSpinnerLoading } = useSpinner();
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
   );
@@ -53,6 +55,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
     iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
   const handleSelectedEnterprisePackage = async () => {
+    setSpinnerLoading(true);
     setLoading(true);
     console.log("Selected package", {
       ...selectedPackage,
@@ -61,6 +64,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
+    setSpinnerLoading(false);
     setSuccess(true);
   };
 

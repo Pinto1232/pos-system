@@ -15,6 +15,7 @@ import SuccessMessage from "../../ui/success-message/SuccessMessage";
 import styles from "./GrowthPackageLayout.module.css";
 import LazyLoginForm from "@/components/login-form/LoginForm";
 import { useTestPeriod } from "@/contexts/TestPeriodContext"; 
+import { useSpinner } from "@/contexts/SpinnerContext";
 
 interface GrowthPackageLayoutProps {
   selectedPackage: {
@@ -45,6 +46,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod(); 
+  const { setLoading: setSpinnerLoading } = useSpinner();
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
   );
@@ -53,14 +55,17 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
     iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
   const handleSelectedGrowthPackage = async () => {
+    setSpinnerLoading(true);
     setLoading(true);
     console.log("Selected package", {
       ...selectedPackage,
       currency: currentCurrency
     });
-    // Simulate backend call
+    // Simulate backend 
+   
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
+    setSpinnerLoading(false);
     setSuccess(true);
   };
 

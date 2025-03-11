@@ -8,6 +8,7 @@ import CheckoutForm from "../../checkout/CheckoutForm"; // Import CheckoutForm
 import styles from "./StarterPackageLayout.module.css";
 import { useTestPeriod } from "@/contexts/TestPeriodContext";
 import { CheckoutField, OrderSummaryItem } from "../../checkout/CheckoutFormInterfaces"; // Import interfaces
+import { useSpinner } from "@/contexts/SpinnerContext"; // Import useSpinner
 
 interface StarterPackageLayoutProps {
   selectedPackage: {
@@ -35,13 +36,15 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const [showCheckoutForm, setShowCheckoutForm] = useState(false); // Add state for showing CheckoutForm
+  const [showCheckoutForm, setShowCheckoutForm] = useState(false)
   const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || "USD");
   const { setTestPeriod } = useTestPeriod();
+  const { setLoading: setSpinnerLoading } = useSpinner(); // Use SpinnerContext
 
   const IconComponent = iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
   const handleSelectedStarterPackage = async () => {
+    setSpinnerLoading(true); // Show spinner
     setLoading(true);
     console.log("Selected package", {
       ...selectedPackage,
@@ -51,6 +54,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
     // Simulate backend call
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
+    setSpinnerLoading(false); // Hide spinner
     setLoading(false);
     setSuccess(true);
   };

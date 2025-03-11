@@ -4,7 +4,6 @@ import React, { createContext, useState, ReactNode, useContext } from 'react';
 import './Spinner.css'; 
 import ErrorModal from '@/components/ui/errorModal/ErrorModal';
 
-
 export interface SpinnerContextProps {
   loading: boolean;
   setLoading: (loading: boolean) => void;
