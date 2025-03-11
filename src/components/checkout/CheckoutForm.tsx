@@ -119,12 +119,12 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                         <Box display="flex" alignItems="center">
                                             <FaPaypal style={{ marginRight: 8}} />
                                             PayPal
-                                            <Box component="span" sx={{ marginLeft: "auto" }}>
+                                            <Box component="span" sx={{ marginLeft: 30 }}>
                                                 <Image
-                                                    src="/visa-mastercard.png"
+                                                    src="/visa.jpg"
                                                     alt="Visa & Mastercard"
-                                                    width={50}
-                                                    height={30}
+                                                    width={85}
+                                                    height={35}
                                                 />
                                             </Box>
                                         </Box>
@@ -172,7 +172,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                             </RadioGroup>
                         </FormControl>
 
-                        {/* Credit Card Input Fields (Only Show if Selected) */}
                         {formData.paymentMethod === "creditCard" && (
                             <Box sx={{ marginTop: 2 }}>
                                 <TextField
@@ -182,6 +181,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                     value={formData.nameOnCard}
                                     onChange={onChange}
                                     margin="normal"
+                                    sx={{ backgroundColor: "#ffffff" }}
                                 />
                                 <TextField
                                     fullWidth
@@ -191,6 +191,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                     value={formData.cardNumber}
                                     onChange={onChange}
                                     margin="normal"
+                                    sx={{ backgroundColor: "#ffffff" }}
                                 />
 
                                 {/* Expiration Date & CCV */}
@@ -203,6 +204,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                         value={formData.expiryMonth}
                                         onChange={onChange}
                                         margin="normal"
+                                        sx={{ backgroundColor: "#ffffff" }}
                                     >
                                         {["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].map((month) => (
                                             <MenuItem key={month} value={month}>
@@ -219,6 +221,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                         value={formData.expiryYear}
                                         onChange={onChange}
                                         margin="normal"
+                                        sx={{ backgroundColor: "#ffffff" }}
                                     >
                                         {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
                                             <MenuItem key={year} value={year}>
@@ -235,6 +238,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                         value={formData.ccv}
                                         onChange={onChange}
                                         margin="normal"
+                                        sx={{ backgroundColor: "#ffffff" }}
                                     />
                                 </Box>
                             </Box>

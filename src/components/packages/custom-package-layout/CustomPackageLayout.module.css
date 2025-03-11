@@ -1,13 +1,10 @@
 .container {
   display: flex;
   justify-content: space-between;
-  padding: 1.3rem;
-  margin: 2rem auto;
-  max-width: 1200px;
+  padding: 30px;
+  max-width: 959px;
   background: #ffffff;
-  margin-top: 2rem;
   border-radius: 10px;
-  margin-bottom: 4rem;
 }
 
 .details {
