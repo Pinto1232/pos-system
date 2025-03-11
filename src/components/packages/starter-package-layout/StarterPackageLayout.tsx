@@ -39,7 +39,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
   const [showCheckoutForm, setShowCheckoutForm] = useState(false)
   const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || "USD");
   const { setTestPeriod } = useTestPeriod();
-  const { setLoading: setSpinnerLoading } = useSpinner(); // Use SpinnerContext
+  const { setLoading: setSpinnerLoading } = useSpinner(); 
 
   const IconComponent = iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
