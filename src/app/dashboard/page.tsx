@@ -1,5 +1,6 @@
 "use client";
 
+import DashboardContainer from "@/components/dashboard-layout/DashboardContainer";
 import React, { useEffect } from "react";
 
 const Dashboard = () => {
@@ -9,8 +10,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Welcome to Your Dashboard</h1>
-      <p>This is your protected area after authentication.</p>
+      <DashboardContainer />
     </div>
   );
 };
