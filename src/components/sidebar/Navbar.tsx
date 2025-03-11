@@ -1,6 +1,6 @@
 import React from "react";
 import { AppBar, Box, Toolbar, IconButton, Typography } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"; // Import ChevronLeftIcon
 
 interface NavbarProps {
   drawerWidth: number;
@@ -15,7 +15,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
       sx={{
         width: { sm: `calc(100% - ${drawerWidth}px)` },
         ml: { sm: `${drawerWidth}px` },
-        backgroundColor: backgroundColor || "default", // Apply background color
+        backgroundColor: backgroundColor || "default", 
       }}
     >
       <Toolbar>
@@ -26,7 +26,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
           onClick={onDrawerToggle}
           sx={{ mr: 2 }}
         >
-          <MenuIcon />
+          <ChevronLeftIcon />
         </IconButton>
         <Box sx={{ ml: "auto" }}>
           <Typography variant="body1" sx={{ cursor: "pointer" }}>
