@@ -12,9 +12,10 @@ import {
     FormControlLabel,
     FormControl,
 } from "@mui/material";
-import { FaCreditCard, FaRegCreditCard, FaCalendarAlt } from 'react-icons/fa';
+import { FaPaypal, FaCreditCard, FaStripe } from "react-icons/fa";
 import styles from "./CheckoutForm.module.css";
 import { CheckoutFormProps } from "./CheckoutFormInterfaces";
+import Image from "next/image";
 
 const CheckoutForm: React.FC<CheckoutFormProps> = ({
     title,
@@ -32,7 +33,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
     return (
         <Box className={styles.checkoutContainer}>
             {/* LEFT SIDE: FORM */}
-            <Box >
+            <Box>
                 <Typography variant="h5" className={styles.title}>
                     {title}
                 </Typography>
@@ -84,7 +85,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
             </Box>
 
             {/* RIGHT SIDE: ORDER SUMMARY */}
-            <Box >
+            <Box>
                 <Typography variant="h5" className={styles.title}>
                     {orderSummaryTitle}
                 </Typography>
@@ -110,38 +111,139 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                 value={formData.paymentMethod || ""}
                                 onChange={handleSelectChange}
                             >
+                                {/* PayPal */}
+                                <FormControlLabel
+                                    value="paypal"
+                                    control={<Radio />}
+                                    label={
+                                        <Box display="flex" alignItems="center">
+                                            <FaPaypal style={{ marginRight: 8}} />
+                                            PayPal
+                                            <Box component="span" sx={{ marginLeft: 30 }}>
+                                                <Image
+                                                    src="/visa.jpg"
+                                                    alt="Visa & Mastercard"
+                                                    width={85}
+                                                    height={35}
+                                                />
+                                            </Box>
+                                        </Box>
+                                    }
+                                />
+
+                                {/* Stripe */}
+                                <FormControlLabel
+                                    value="stripe"
+                                    control={<Radio />}
+                                    label={
+                                        <Box display="flex" alignItems="center">
+                                            <FaStripe style={{
+                                                marginRight: 8,
+                                                color: "#6772E5",
+                                                fontSize: "3.1rem",
+                                            }}
+                                            />                                    
+                                        </Box>
+                                    }
+                                />
+
+                                {/* PayFast */}
+                                <FormControlLabel
+                                    value="payfast"
+                                    control={<Radio />}
+                                    label={
+                                        <Box display="flex" alignItems="center">
+                                            PayFast
+                                        </Box>
+                                    }
+                                />
+
+                                {/* Credit Card */}
                                 <FormControlLabel
                                     value="creditCard"
                                     control={<Radio />}
                                     label={
                                         <Box display="flex" alignItems="center">
-                                            <FaCreditCard style={{ marginRight: '8px' }} />
+                                            <FaCreditCard style={{ marginRight: 8 }} />
                                             Credit Card
-                                        </Box>
-                                    }
-                                />
-                                <FormControlLabel
-                                    value="cardNumber"
-                                    control={<Radio />}
-                                    label={
-                                        <Box display="flex" alignItems="center">
-                                            <FaRegCreditCard style={{ marginRight: '8px' }} />
-                                            Card Number: **** **** **** 1234
-                                        </Box>
-                                    }
-                                />
-                                <FormControlLabel
-                                    value="expiryDate"
-                                    control={<Radio />}
-                                    label={
-                                        <Box display="flex" alignItems="center">
-                                            <FaCalendarAlt style={{ marginRight: '8px' }} />
-                                            Expiry Date: 12/2024
                                         </Box>
                                     }
                                 />
                             </RadioGroup>
                         </FormControl>
+
+                        {formData.paymentMethod === "creditCard" && (
+                            <Box sx={{ marginTop: 2 }}>
+                                <TextField
+                                    fullWidth
+                                    label="Name on the card"
+                                    name="nameOnCard"
+                                    value={formData.nameOnCard}
+                                    onChange={onChange}
+                                    margin="normal"
+                                    sx={{ backgroundColor: "#ffffff" }}
+                                />
+                                <TextField
+                                    fullWidth
+                                    label="Card Number"
+                                    name="cardNumber"
+                                    type="text"
+                                    value={formData.cardNumber}
+                                    onChange={onChange}
+                                    margin="normal"
+                                    sx={{ backgroundColor: "#ffffff" }}
+                                />
+
+                                {/* Expiration Date & CCV */}
+                                <Box display="flex" gap={2}>
+                                    <TextField
+                                        select
+                                        fullWidth
+                                        label="Month"
+                                        name="expiryMonth"
+                                        value={formData.expiryMonth}
+                                        onChange={onChange}
+                                        margin="normal"
+                                        sx={{ backgroundColor: "#ffffff" }}
+                                    >
+                                        {["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].map((month) => (
+                                            <MenuItem key={month} value={month}>
+                                                {month}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+
+                                    <TextField
+                                        select
+                                        fullWidth
+                                        label="Year"
+                                        name="expiryYear"
+                                        value={formData.expiryYear}
+                                        onChange={onChange}
+                                        margin="normal"
+                                        sx={{ backgroundColor: "#ffffff" }}
+                                    >
+                                        {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
+                                            <MenuItem key={year} value={year}>
+                                                {year}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+
+                                    <TextField
+                                        fullWidth
+                                        label="CCV"
+                                        name="ccv"
+                                        type="password"
+                                        value={formData.ccv}
+                                        onChange={onChange}
+                                        margin="normal"
+                                        sx={{ backgroundColor: "#ffffff" }}
+                                    />
+                                </Box>
+                            </Box>
+                        )}
+
                         <Button
                             type="submit"
                             variant="contained"
@@ -152,7 +254,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         </Button>
                     </Box>
                 </Box>
-
             </Box>
         </Box>
     );
