@@ -76,12 +76,11 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen, onDrawerTo
                     </ListItem>
                     <Collapse in={openCategory} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
-                        <ListItem component="li" sx={{ pl: 4 }}>
-                          <ListItemText primary="Sub-item 1" />
-                        </ListItem>
-                        <ListItem component="li" sx={{ pl: 4 }}>
-                          <ListItemText primary="Sub-item 2" />
-                        </ListItem>
+                        {item.subLinks?.map((subItem, subIndex) => (
+                          <ListItem key={subIndex} component="li" sx={{ pl: 4 }}>
+                            <ListItemText primary={subItem.label} />
+                          </ListItem>
+                        ))}
                       </List>
                     </Collapse>
                   </>
@@ -145,12 +144,11 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen, onDrawerTo
                     </ListItem>
                     <Collapse in={openCategory} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
-                        <ListItem component="li" sx={{ pl: 4 }}>
-                          <ListItemText primary="Sub-item 1" />
-                        </ListItem>
-                        <ListItem component="li" sx={{ pl: 4 }}>
-                          <ListItemText primary="Sub-item 2" />
-                        </ListItem>
+                        {item.subLinks?.map((subItem, subIndex) => (
+                          <ListItem key={subIndex} component="li" sx={{ pl: 4 }}>
+                            <ListItemText primary={subItem.label} />
+                          </ListItem>
+                        ))}
                       </List>
                     </Collapse>
                   </>

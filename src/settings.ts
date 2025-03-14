@@ -6,17 +6,21 @@ import ReportsIcon from "@mui/icons-material/Assessment";
 import { HomeRepairServiceTwoTone } from "@mui/icons-material";
 
 export const navItems = [
-    { 
-        label: "Home",
-        icon: HomeRepairServiceTwoTone, 
-      },
+  { 
+    label: "Home",
+    icon: HomeRepairServiceTwoTone, 
+  },
   { 
     label: "Inventory",
     icon: InventoryIcon 
   },
   { 
     label: "Category",
-    icon: CategoryIcon 
+    icon: CategoryIcon,
+    subLinks: [
+      { label: "Sub-item 1" },
+      { label: "Sub-item 2" }
+    ]
   },
   { 
     label: "Brand",

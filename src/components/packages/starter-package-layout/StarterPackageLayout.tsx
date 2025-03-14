@@ -134,7 +134,10 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
         orderSummaryItems={orderSummaryItems}
         formData={formData}
         onChange={handleChange}
-        onSubmit={handleSubmit}
+        onSubmit={(e) => {
+          handleSubmit(e);
+          console.log("Checkout form data:", formData);
+        }}
       />
     );
   }
