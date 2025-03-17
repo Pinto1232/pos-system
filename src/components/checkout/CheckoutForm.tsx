@@ -32,7 +32,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
 
     return (
         <Box className={styles.checkoutContainer}>
-            {/* LEFT SIDE: FORM */}
             <Box>
                 <Typography variant="h5" className={styles.title}>
                     {title}
@@ -84,7 +83,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 </form>
             </Box>
 
-            {/* RIGHT SIDE: ORDER SUMMARY */}
             <Box>
                 <Typography variant="h5" className={styles.title}>
                     {orderSummaryTitle}
@@ -248,7 +246,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                             type="submit"
                             variant="contained"
                             className={styles.checkoutButton}
-                            onClick={onSubmit}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                console.log("Checkout button clicked. Form data:", formData); 
+                                onSubmit(e);
+                            }}
                         >
                             Checkout
                         </Button>

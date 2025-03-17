@@ -1,0 +1,12 @@
+.dashboardContainer {
+    display: flex;
+    min-height: 100vh;
+    font-family: sans-serif;
+  }
+  
+  .mainSection {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  

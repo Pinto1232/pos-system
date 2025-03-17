@@ -1,16 +1,31 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import DashboardContainer from "@/components/dashboard-layout/DashboardContainer";
+import Navbar from "@/components/sidebar/Navbar";
+import Sidebar from "@/components/sidebar/Sidebar";
 
 const Dashboard = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const drawerWidth = 240; // Sidebar width
+
+  const handleDrawerToggle = () => {
+    setIsDrawerOpen((prev) => !prev); 
+  };
+
   useEffect(() => {
     console.log("User redirected to dashboard successfully.");
   }, []);
 
   return (
     <div>
-      <h1>Welcome to Your Dashboard</h1>
-      <p>This is your protected area after authentication.</p>
+      <Navbar
+        drawerWidth={drawerWidth}
+        onDrawerToggle={handleDrawerToggle}
+        backgroundColor="#173A79"
+      />
+      <Sidebar drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen} />
+      <DashboardContainer />
     </div>
   );
 };
