@@ -3,6 +3,8 @@ import Link from "next/link"; // Import Link from Next.js
 import { AppBar, Box, Toolbar, IconButton, Typography } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"; // Import ChevronLeftIcon
 import { navbarLinks } from "../../settings"; // Import navbarLinks
+import { FaRegBell } from "react-icons/fa";
+import { FiUser } from "react-icons/fi";
 
 interface NavbarProps {
   drawerWidth: number;
@@ -39,9 +41,15 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
             </Link>
           ))}
         </Box>
-        <Box sx={{ ml: "auto" }}>
+        <Box sx={{ ml: "auto", display: "flex", gap: 2 }}>
           <Typography variant="body1" sx={{ cursor: "pointer" }}>
-            Logout
+            <FaRegBell />
+          </Typography>
+          <Typography variant="body1" sx={{ cursor: "pointer" }}>
+            <FiUser />
+          </Typography>
+          <Typography variant="body1" sx={{ cursor: "pointer" }}>
+            Profile
           </Typography>
         </Box>
       </Toolbar>
