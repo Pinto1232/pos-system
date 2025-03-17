@@ -60,3 +60,11 @@ export const sidebarItems = [
     icon: SettingsIcon,
   },
 ];
+
+export const navbarLinks = [
+  { label: "Inventary", href: "/" },
+  { label: "Category", href: "/category" },
+  { label: "Brand", href: "/brand" },
+  { label: "Discount", href: "/discount" },
+  { label: "Stock", href: "/stock" },
+];

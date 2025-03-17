@@ -1,6 +1,8 @@
 import React from "react";
+import Link from "next/link"; // Import Link from Next.js
 import { AppBar, Box, Toolbar, IconButton, Typography } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"; // Import ChevronLeftIcon
+import { navbarLinks } from "../../settings"; // Import navbarLinks
 
 interface NavbarProps {
   drawerWidth: number;
@@ -15,7 +17,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
       sx={{
         width: { sm: `calc(100% - ${drawerWidth}px)` },
         ml: { sm: `${drawerWidth}px` },
-        backgroundColor: backgroundColor || "default", 
+        backgroundColor: backgroundColor || "default",
       }}
     >
       <Toolbar>
@@ -28,6 +30,15 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
         >
           <ChevronLeftIcon />
         </IconButton>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          {navbarLinks.map((link) => (
+            <Link key={link.label} href={link.href} passHref>
+              <Typography variant="body1" sx={{ cursor: "pointer", color: "inherit" }}>
+                {link.label}
+              </Typography>
+            </Link>
+          ))}
+        </Box>
         <Box sx={{ ml: "auto" }}>
           <Typography variant="body1" sx={{ cursor: "pointer" }}>
             Logout
