@@ -5,167 +5,111 @@ import {
   List,
   ListItem,
   ListItemText,
-  IconButton,
   ListItemIcon,
-  Typography,
   Collapse,
+  Typography,
 } from "@mui/material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { navItems } from "@/settings";
+import { sidebarItems } from "@/settings";
 import Image from "next/image";
 
 interface SidebarProps {
   drawerWidth: number;
   isDrawerOpen: boolean;
-  onDrawerToggle: () => void;
-  backgroundColor?: string;
-  textColor?: string;
-  iconColor?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen, onDrawerToggle, backgroundColor, textColor, iconColor }) => {
-  const [isImageError, setIsImageError] = useState(false);
-  const [openCategory, setOpenCategory] = useState(false);
+const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen }) => {
+  const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
 
-  const handleCategoryClick = () => {
-    setOpenCategory(!openCategory);
+  const handleToggle = (label: string) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
   };
 
-  return (
-    <>
-      <Drawer
-        variant="permanent"
-        sx={{
-          display: { xs: "none", sm: "block" },
-          width: isDrawerOpen ? drawerWidth : 60,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: isDrawerOpen ? drawerWidth : 60,
-            boxSizing: "border-box",
-            backgroundColor: backgroundColor || "default",
-            color: textColor || "inherit",
-          },
-        }}
-        open
-      >
-        <Box sx={{ overflow: "auto" }}>
-          {/* Logo */}
-          <Box sx={{ display: 'flex', alignItems: 'start', justifyContent: 'start', py: 2 }}>
-            {!isImageError ? (
-              <Image src="/path/to/logo.png" alt="Logo" width={40} height={40} onError={() => setIsImageError(true)} />
-            ) : (
-              <Typography variant="h4" px={2}>Pisval POS</Typography>
-            )}
-          </Box>
-          <List>
-            {navItems.map((item, index) => (
-              <React.Fragment key={index}>
-                {item.label === "Category" ? (
-                  <>
-                    <ListItem onClick={handleCategoryClick} sx={{ py: 1, display: 'flex', alignItems: 'center' }} component="li">
-                      <ListItemIcon sx={{ color: iconColor || "inherit", minWidth: 'auto', mr: 0.5 }}>
-                        <item.icon />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={isDrawerOpen ? item.label : ""}
-                        sx={{ textAlign: "center", color: textColor || "inherit", ml: 0.5 }}
-                      />
-                      {openCategory ? <ExpandLess /> : <ExpandMore />}
-                    </ListItem>
-                    <Collapse in={openCategory} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        {item.subLinks?.map((subItem, subIndex) => (
-                          <ListItem key={subIndex} component="li" sx={{ pl: 4 }}>
-                            <ListItemText primary={subItem.label} />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Collapse>
-                  </>
-                ) : (
-                  <ListItem key={index} sx={{ py: 1, display: 'flex', alignItems: 'center' }} component="li">
-                    <ListItemIcon sx={{ color: iconColor || "inherit", minWidth: 'auto', mr: 0.5 }}>
-                      <item.icon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={isDrawerOpen ? item.label : ""}
-                      sx={{ textAlign: "center", color: textColor || "inherit", ml: 0.5 }}
-                    />
-                  </ListItem>
-                )}
-              </React.Fragment>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
+  if (!isDrawerOpen) {
+    return null;
+  }
 
-      <Drawer
-        variant="temporary"
-        open={isDrawerOpen}
-        onClose={onDrawerToggle}
-        sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: drawerWidth,
-            backgroundColor: backgroundColor || "default",
-            color: textColor || "inherit",
-          },
-        }}
-        ModalProps={{
-          keepMounted: true,
-        }}
-      >
-        <Box sx={{ overflow: "auto" }}>
-          <IconButton onClick={onDrawerToggle} sx={{ color: iconColor || "inherit" }}>
-            <ChevronLeftIcon />
-          </IconButton>
-          {/* Logo */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 2 }}>
-            {!isImageError ? (
-              <Image src="/path/to/logo.png" alt="Logo" width={40} height={40} onError={() => setIsImageError(true)} />
-            ) : (
-              <Typography variant="h6">Pisval POS</Typography>
-            )}
-          </Box>
-          <List>
-            {navItems.map((item, index) => (
-              <React.Fragment key={index}>
-                {item.label === "Category" ? (
-                  <>
-                    <ListItem onClick={handleCategoryClick} sx={{ py: 1, display: 'flex', alignItems: 'center' }} component="li">
-                      <ListItemIcon sx={{ color: iconColor || "inherit", minWidth: 'auto', mr: 0.5 }}>
-                        <item.icon />
-                      </ListItemIcon>
-                      <ListItemText primary={item.label} sx={{ color: textColor || "inherit", ml: 0.5 }} />
-                      {openCategory ? <ExpandLess /> : <ExpandMore />}
+  return (
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        "& .MuiDrawer-paper": {
+          width: drawerWidth,
+          boxSizing: "border-box",
+          backgroundColor: "#173A79",
+          color: "#fff",
+        },
+      }}
+      open
+    >
+      <Box sx={{ textAlign: "center", p: 2 }}>
+        <Image
+          src="/Pisval_Logo.jpg"
+          alt="Logo"
+          width={80}
+          height={80}
+          style={{ borderRadius: "50%" }}
+        />
+        <Typography variant="h6" sx={{
+          color: "#000",
+          background: '#fff',
+          borderRadius: '6px',
+          mt: 2,
+          p: 0.2,
+          fontWeight: 'semibold',
+        }}>
+          Pinto Manuel
+        </Typography>
+      </Box>
+      <List>
+        {sidebarItems.map((item) => (
+          <React.Fragment key={item.label}>
+            <ListItem
+              onClick={() => item.expandable && handleToggle(item.label)}
+              sx={{
+                cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#52B788",
+                },
+              }}
+            >
+              <ListItemIcon sx={{ color: "#fff" }}>
+                <item.icon />
+              </ListItemIcon>
+              <ListItemText primary={item.label} sx={{ color: "#fff" }} />
+              {item.expandable &&
+                (expandedItems[item.label] ? <ExpandLess /> : <ExpandMore />)}
+            </ListItem>
+            {item.expandable && item.subItems && (
+              <Collapse in={expandedItems[item.label]} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {item.subItems.map((subItem) => (
+                    <ListItem
+                      key={subItem.label}
+                      sx={{
+                        pl: 4,
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#52B788",
+                        },
+                      }}
+                    >
+                      <ListItemText primary={subItem.label} sx={{ color: "#fff" }} />
                     </ListItem>
-                    <Collapse in={openCategory} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        {item.subLinks?.map((subItem, subIndex) => (
-                          <ListItem key={subIndex} component="li" sx={{ pl: 4 }}>
-                            <ListItemText primary={subItem.label} />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Collapse>
-                  </>
-                ) : (
-                  <ListItem key={index} sx={{ py: 1, display: 'flex', alignItems: 'center' }} component="li">
-                    <ListItemIcon sx={{ color: iconColor || "inherit", minWidth: 'auto', mr: 0.5 }}>
-                      <item.icon />
-                    </ListItemIcon>
-                    <ListItemText primary={item.label} sx={{ color: textColor || "inherit", ml: 0.5 }} />
-                  </ListItem>
-                )}
-              </React.Fragment>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
-    </>
+                  ))}
+                </List>
+              </Collapse>
+            )}
+          </React.Fragment>
+        ))}
+      </List>
+    </Drawer>
   );
 };
 

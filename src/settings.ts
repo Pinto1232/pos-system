@@ -1,37 +1,62 @@
+import HomeIcon from "@mui/icons-material/Home";
 import InventoryIcon from "@mui/icons-material/Inventory";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CategoryIcon from "@mui/icons-material/Category";
-import BrandIcon from "@mui/icons-material/BrandingWatermark";
-import ProductsIcon from "@mui/icons-material/ShoppingCart";
-import ReportsIcon from "@mui/icons-material/Assessment";
-import { HomeRepairServiceTwoTone } from "@mui/icons-material";
+import LocalDrinkIcon from "@mui/icons-material/LocalDrink";
+import FastfoodIcon from "@mui/icons-material/Fastfood";
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import SettingsIcon from "@mui/icons-material/Settings";
 
-export const navItems = [
-  { 
+export const sidebarItems = [
+  {
     label: "Home",
-    icon: HomeRepairServiceTwoTone, 
+    icon: HomeIcon,
   },
-  { 
+  {
     label: "Inventory",
-    icon: InventoryIcon 
+    icon: InventoryIcon,
+    expandable: true,
+    subItems: [
+      { label: "Products" },
+    ],
   },
-  { 
-    label: "Category",
+  {
+    label: "Product Sold",
+    icon: ShoppingCartIcon,
+  },
+  {
+    label: "Dairy & Eggs",
+    icon: LocalDrinkIcon,
+  },
+  {
+    label: "Beverages",
+    icon: FastfoodIcon,
+  },
+  {
+    label: "Cookies & Snacks",
     icon: CategoryIcon,
-    subLinks: [
-      { label: "Sub-item 1" },
-      { label: "Sub-item 2" }
-    ]
   },
-  { 
-    label: "Brand",
-    icon: BrandIcon 
+  {
+    label: "Clean & Hygiene",
+    icon: CleaningServicesIcon,
   },
-  { 
-    label: "Products",
-    icon: ProductsIcon 
+  {
+    label: "Miscellaneous",
+    icon: MiscellaneousServicesIcon,
   },
-  { 
-    label: "Reports",
-    icon: ReportsIcon 
+  {
+    label: "Saved Orders (0)",
+    icon: ReceiptIcon,
+    expandable: true,
+    subItems: [
+      { label: "Overview" },
+      { label: "Recurring Sales" },
+    ],
+  },
+  {
+    label: "Settings",
+    icon: SettingsIcon,
   },
 ];
