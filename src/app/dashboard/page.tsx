@@ -7,7 +7,7 @@ import Sidebar from "@/components/sidebar/Sidebar";
 
 const Dashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
-  const drawerWidth = 240; // Sidebar width
+  const drawerWidth = 240;
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen((prev) => !prev); 
@@ -29,6 +29,7 @@ const Dashboard = () => {
         isDrawerOpen={isDrawerOpen}
         onDrawerToggle={handleDrawerToggle}
       />
+
       <DashboardContainer />
     </div>
   );

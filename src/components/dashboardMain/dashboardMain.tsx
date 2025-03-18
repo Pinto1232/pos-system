@@ -1,15 +1,13 @@
-import React from 'react';
-import styles from './dashboardMain.module.css';
-import { DashboardMainProps } from './type';
+import React from "react";
+import styles from "./dashboardMain.module.css";
+import ProductTableContainer from "../productTable/ProductTableContainer";
 
-const DashboardMain: React.FC<DashboardMainProps> = ({ title, content, footerText }) => {
-    return (
-        <div className={styles.container}>
-            <div className={styles.header}>{title}</div>
-            <div className={styles.content}>{content}</div>
-            {footerText && <div className={styles.footer}>{footerText}</div>}
-        </div>
-    );
+export const DashboardMain: React.FC = () => {
+  return (
+    <div className={styles.container}>
+      <ProductTableContainer />
+    </div>
+  );
 };
 
 export default DashboardMain;
