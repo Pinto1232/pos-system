@@ -20,6 +20,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { FiUpload } from "react-icons/fi";
+import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material"; // Add this import
 
 interface Product {
     barcode: string;
@@ -53,15 +54,15 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
         <Box p={3} width="100%" >
             {/* Search & Actions */}
             <Box display="flex" alignItems="center" gap={2} mb={3}>
-                <Paper component="form" sx={{ display: "flex", alignItems: "center", flex: 1, mr: 1 }}>
-                    <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Search..." />
+                <Paper component="form" sx={{ display: "flex", alignItems: "center", flex: 1, mr: 1, color: "#1E3A8A" }}>
+                    <InputBase sx={{ ml: 1, flex: 1, color: "#1E3A8A", fontSize: 14 }} placeholder="Search..." />
                     <IconButton type="button">
-                        <SearchIcon />
+                        <SearchIcon sx={{ color: "#1E3A8A" }} />
                     </IconButton>
                 </Paper>
 
-                <Button variant="outlined" sx={{ flex: 1 }}>Deduction Amount</Button>
-                <Button variant="outlined" startIcon={<AddIcon />} sx={{ flex: 1 }}>Total Sum</Button>
+                <Button variant="outlined" sx={{ flex: 1, color: "#1E3A8A" }}>Deduction Amount</Button>
+                <Button variant="outlined" startIcon={<AddIcon />} sx={{ flex: 1, color: "#1E3A8A" }}>Total Sum</Button>
                 <Button variant="contained" sx={{ backgroundColor: "#1F2937", flex: 1 }} startIcon={<AddIcon />}>Deduction calculation</Button>
             </Box>
 
@@ -82,19 +83,20 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                     <TableHead sx={{ backgroundColor: "#F9FAFB" }}>
                         <TableRow>
                             <TableCell><Checkbox /></TableCell>
-                            <TableCell>Bar code</TableCell>
-                            <TableCell>No</TableCell>
-                            <TableCell>Product name</TableCell>
-                            <TableCell>Stock</TableCell>
-                            <TableCell>Sale Price</TableCell>
-                            <TableCell>Discount</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold", fontSize: 16 }}>Bar code</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>No</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>Product name</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold" ,  fontSize: 16 }}>Stock</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>Sale Price</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>Discount</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>Edit</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {products.map((item, index) => (
                             <TableRow key={index}>
                                 <TableCell>
-                                    <Avatar src={item.avatar} alt={item.name}>{item.name.charAt(0)}</Avatar> {/* Display avatar */}
+                                    <Avatar src={item.avatar} alt={item.name}>{item.name.charAt(0)}</Avatar>
                                 </TableCell>
                                 <TableCell>{item.barcode}</TableCell>
                                 <TableCell>{item.no}</TableCell>
@@ -102,6 +104,14 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                                 <TableCell>{getStockChip(item.stock)}</TableCell>
                                 <TableCell>{item.price}</TableCell>
                                 <TableCell>{item.discount}</TableCell>
+                                <TableCell>
+                                    <IconButton color="primary">
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton color="error">
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
