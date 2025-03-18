@@ -15,6 +15,7 @@ import {
     Typography,
     Chip,
     Avatar,
+    Switch, // Add this import
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -34,6 +35,7 @@ interface Product {
 
 interface ProductTableProps {
     products: Product[];
+    onDiscountToggle: (index: number, newValue: string) => void; // Add callback for toggling discount
 }
 
 const getStockChip = (status: string) => {
@@ -49,20 +51,20 @@ const getStockChip = (status: string) => {
     }
 };
 
-const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
+const ProductTable: React.FC<ProductTableProps> = ({ products, onDiscountToggle }) => {
     return (
-        <Box p={3} width="100%" >
+        <Box p={3} width="100%">
             {/* Search & Actions */}
             <Box display="flex" alignItems="center" gap={2} mb={3}>
-                <Paper component="form" sx={{ display: "flex", alignItems: "center", flex: 1, mr: 1, color: "#1E3A8A" }}>
+                <Paper elevation={0} component="form" sx={{ display: "flex", alignItems: "center", flex: 1, mr: 1, color: "#1E3A8A" }}>
                     <InputBase sx={{ ml: 1, flex: 1, color: "#1E3A8A", fontSize: 14 }} placeholder="Search..." />
                     <IconButton type="button">
                         <SearchIcon sx={{ color: "#1E3A8A" }} />
                     </IconButton>
                 </Paper>
 
-                <Button variant="outlined" sx={{ flex: 1, color: "#1E3A8A" }}>Deduction Amount</Button>
-                <Button variant="outlined" startIcon={<AddIcon />} sx={{ flex: 1, color: "#1E3A8A" }}>Total Sum</Button>
+                <Button variant="outlined" sx={{ flex: 1, color: "#1E3A8A", border: '1px solid #1E3A8A', fontWeight: "bold" }}>Deduction Amount</Button>
+                <Button variant="outlined" startIcon={<AddIcon />} sx={{ flex: 1, color: "#1E3A8A", border: '1px solid #1E3A8A', fontWeight: "bold" }}>Total Sum</Button>
                 <Button variant="contained" sx={{ backgroundColor: "#1F2937", flex: 1 }} startIcon={<AddIcon />}>Deduction calculation</Button>
             </Box>
 
@@ -84,32 +86,51 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                         <TableRow>
                             <TableCell><Checkbox /></TableCell>
                             <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold", fontSize: 16 }}>Bar code</TableCell>
-                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>No</TableCell>
-                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>Product name</TableCell>
-                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold" ,  fontSize: 16 }}>Stock</TableCell>
-                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>Sale Price</TableCell>
-                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>Discount</TableCell>
-                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold",  fontSize: 16  }}>Edit</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold", fontSize: 16 }}>No</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold", fontSize: 16 }}>Product name</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold", fontSize: 16 }}>Stock</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold", fontSize: 16 }}>Sale Price</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold", fontSize: 16 }}>Discount</TableCell>
+                            <TableCell sx={{ color: "#1E3A8A", fontWeight: "bold", fontSize: 16 }}>Edit</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {products.map((item, index) => (
-                            <TableRow key={index}>
-                                <TableCell>
+                            <TableRow
+                                key={index}
+                                sx={{
+                                    "&:hover": {
+                                        backgroundColor: "#f1f5f952",
+                                        cursor: "pointer",
+                                    },
+                                }}
+                            >
+                                <TableCell sx={{ "&:hover": { color: "#1E3A8A" } }}>
                                     <Avatar src={item.avatar} alt={item.name}>{item.name.charAt(0)}</Avatar>
                                 </TableCell>
-                                <TableCell>{item.barcode}</TableCell>
-                                <TableCell>{item.no}</TableCell>
-                                <TableCell>{item.name}</TableCell>
-                                <TableCell>{getStockChip(item.stock)}</TableCell>
-                                <TableCell>{item.price}</TableCell>
-                                <TableCell>{item.discount}</TableCell>
+                                <TableCell sx={{ "&:hover": { color: "#1E3A8A" } }}>{item.barcode}</TableCell>
+                                <TableCell sx={{ "&:hover": { color: "#1E3A8A" } }}>{item.no}</TableCell>
+                                <TableCell sx={{ "&:hover": { color: "#1E3A8A" } }}>{item.name}</TableCell>
+                                <TableCell sx={{ "&:hover": { color: "#1E3A8A" } }}>{getStockChip(item.stock)}</TableCell>
+                                <TableCell sx={{ "&:hover": { color: "#1E3A8A" } }}>{item.price}</TableCell>
+                                <TableCell>
+                                    <Box display="flex" alignItems="center" gap={1}>
+                                        <Switch
+                                            checked={item.discount === "Yes"}
+                                            onChange={() => onDiscountToggle(index, item.discount === "Yes" ? "No" : "Yes")}
+                                            color="primary"
+                                        />
+                                        <Typography variant="body2" sx={{ color: item.discount === "Yes" ? "#3EB15D" : "#F44336" }}>
+                                            {item.discount}
+                                        </Typography>
+                                    </Box>
+                                </TableCell>
                                 <TableCell>
                                     <IconButton color="primary">
-                                        <EditIcon />
+                                        <EditIcon sx={{ color: "#1E3A8A" }} />
                                     </IconButton>
                                     <IconButton color="error">
-                                        <DeleteIcon />
+                                        <DeleteIcon sx={{ color: "#F44336" }} />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
