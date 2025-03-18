@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import Sidebar from "@/components/sidebar/Sidebar";
 import Navbar from "@/components/sidebar/Navbar";
 
-const drawerWidth = 300; // Increased width
+const drawerWidth = 300; 
 
 interface DashboardLayoutProps {
   isDrawerOpen: boolean;
@@ -33,8 +33,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ isDrawerOpen, onDrawe
           flexGrow: 1,
           display: "flex",
           flexDirection: "column",
-          mt: 8, // Adjust for the height of the AppBar
-          ml: { sm: isDrawerOpen ? `${drawerWidth}px` : '60px' }, // Adjust for Mini variant
+          mt: 8, 
+          ml: { sm: isDrawerOpen ? `${drawerWidth}px` : '60px' }, 
         }}
       >
         {/* Top Navbar */}
