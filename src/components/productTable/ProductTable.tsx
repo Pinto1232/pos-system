@@ -21,7 +21,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { FiUpload } from "react-icons/fi";
-import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material"; 
+import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import { AiOutlineProduct } from "react-icons/ai";
 
 interface Product {
@@ -31,12 +31,12 @@ interface Product {
     stock: string;
     price: string;
     discount: string;
-    avatar: string; 
+    avatar: string;
 }
 
 interface ProductTableProps {
     products: Product[];
-    onDiscountToggle: (index: number, newValue: string) => void; 
+    onDiscountToggle: (index: number, newValue: string) => void;
 }
 
 const getStockChip = (status: string) => {
@@ -57,21 +57,64 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onDiscountToggle 
         <Box p={3} width="100%">
             {/* Search & Actions */}
             <Box display="flex" alignItems="center" gap={2} mb={3}>
-                <Paper elevation={0} component="form" sx={{ display: "flex", alignItems: "center", flex: 1, mr: 1, color: "#1E3A8A" }}>
-                    <InputBase sx={{ ml: 1, flex: 1, color: "#1E3A8A", fontSize: 14 }} placeholder="Search..." />
+                <Paper elevation={0} component="form" sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    flex: 1,
+                    mr: 1,
+                    color: "#1E3A8A"
+                }}
+                >
+                    <InputBase sx={{
+                        ml: 1,
+                        flex: 1,
+                        color: "#1E3A8A",
+                        fontSize: 14
+                    }} placeholder="Search..." />
                     <IconButton type="button">
-                        <SearchIcon sx={{ color: "#1E3A8A" }} />
+                        <SearchIcon sx={{
+                            color: "#1E3A8A"
+                        }}
+                        />
                     </IconButton>
                 </Paper>
 
-                <Button variant="outlined" sx={{ flex: 1, color: "#1E3A8A", border: '1px solid #1E3A8A', fontWeight: "bold" }}>Deduction Amount</Button>
-                <Button variant="outlined" startIcon={<AddIcon />} sx={{ flex: 1, color: "#1E3A8A", border: '1px solid #1E3A8A', fontWeight: "bold" }}>Total Sum</Button>
-                <Button variant="contained" sx={{ backgroundColor: "#1F2937", flex: 1 }} startIcon={<AddIcon />}>Deduction calculation</Button>
+                <Button variant="outlined" sx={{
+                    flex: 1,
+                    color: "#1E3A8A",
+                    border: '1px solid #1E3A8A',
+                    fontWeight: "bold"
+                }}>
+                    Deduction Amount
+                </Button>
+                <Button variant="outlined" startIcon={<AddIcon />}
+                    sx={{
+                        flex: 1,
+                        color: "#1E3A8A",
+                        border: '1px solid #1E3A8A',
+                        fontWeight: "bold"
+                    }}>
+                    Total Sum
+                </Button>
+                <Button variant="contained" sx={{
+                    backgroundColor: "#1F2937",
+                    flex: 1
+                }} startIcon={<AddIcon />}>
+                    Deduction calculation
+                </Button>
             </Box>
 
             {/* Export */}
-            <Box display="flex" justifyContent="space-between" alignItems='center' justifyItems='center' mb={2} sx={{ bgcolor: '#ffff', p: 2 }}>
-                <Button startIcon={<AiOutlineProduct  />} sx={{ textTransform: "none", color: "#1E3A8A", fontWeight: "bold" }}>
+            <Box display="flex"
+                justifyContent="space-between"
+                alignItems='center'
+                justifyItems='center'
+                mb={2} sx={{
+                    bgcolor: '#ffff',
+                    p: 2
+                }}
+            >
+                <Button startIcon={<AiOutlineProduct />} sx={{ textTransform: "none", color: "#1E3A8A", fontWeight: "bold" }}>
                     Products
                 </Button>
                 <Button startIcon={<FiUpload />} sx={{ textTransform: "none", color: "#1E3A8A", fontWeight: "bold" }}>
