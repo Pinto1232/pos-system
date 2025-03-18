@@ -15,13 +15,14 @@ import {
     Typography,
     Chip,
     Avatar,
-    Switch, // Add this import
+    Switch,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { FiUpload } from "react-icons/fi";
-import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material"; // Add this import
+import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material"; 
+import { AiOutlineProduct } from "react-icons/ai";
 
 interface Product {
     barcode: string;
@@ -30,12 +31,12 @@ interface Product {
     stock: string;
     price: string;
     discount: string;
-    avatar: string; // Added avatar property
+    avatar: string; 
 }
 
 interface ProductTableProps {
     products: Product[];
-    onDiscountToggle: (index: number, newValue: string) => void; // Add callback for toggling discount
+    onDiscountToggle: (index: number, newValue: string) => void; 
 }
 
 const getStockChip = (status: string) => {
@@ -70,9 +71,9 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onDiscountToggle 
 
             {/* Export */}
             <Box display="flex" justifyContent="space-between" alignItems='center' justifyItems='center' mb={2} sx={{ bgcolor: '#ffff', p: 2 }}>
-                <Box>
-                    <Typography variant="h6" fontWeight="bold" mb={2} sx={{ color: "#1E3A8A" }}>Products</Typography>
-                </Box>
+                <Button startIcon={<AiOutlineProduct  />} sx={{ textTransform: "none", color: "#1E3A8A", fontWeight: "bold" }}>
+                    Products
+                </Button>
                 <Button startIcon={<FiUpload />} sx={{ textTransform: "none", color: "#1E3A8A", fontWeight: "bold" }}>
                     Export Product
                 </Button>
