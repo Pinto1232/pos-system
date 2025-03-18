@@ -68,7 +68,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                 <Box>
                     <Typography variant="h6" fontWeight="bold" mb={2} sx={{ color: "#1E3A8A" }}>Products</Typography>
                 </Box>
-                <Button startIcon={<FiUpload  />} sx={{ textTransform: "none", color: "#1E3A8A", fontWeight: "bold" }}>
+                <Button startIcon={<FiUpload />} sx={{ textTransform: "none", color: "#1E3A8A", fontWeight: "bold" }}>
                     Export Product
                 </Button>
             </Box>
