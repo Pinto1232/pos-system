@@ -24,7 +24,11 @@ const Dashboard = () => {
         onDrawerToggle={handleDrawerToggle}
         backgroundColor="#173A79"
       />
-      <Sidebar drawerWidth={drawerWidth} isDrawerOpen={isDrawerOpen} />
+      <Sidebar
+        drawerWidth={drawerWidth}
+        isDrawerOpen={isDrawerOpen}
+        onDrawerToggle={handleDrawerToggle}
+      />
       <DashboardContainer />
     </div>
   );
