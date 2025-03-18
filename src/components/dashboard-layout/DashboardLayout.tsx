@@ -8,10 +8,10 @@ const drawerWidth = 300; // Increased width
 interface DashboardLayoutProps {
   isDrawerOpen: boolean;
   onDrawerToggle: () => void;
-  backgroundColor?: string; // Add backgroundColor prop
-  textColor?: string; // Add textColor prop
-  iconColor?: string; // Add iconColor prop
-  navbarBgColor?: string; // Add navbarBgColor prop
+  backgroundColor?: string; 
+  textColor?: string; 
+  iconColor?: string; 
+  navbarBgColor?: string; 
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ isDrawerOpen, onDrawerToggle, backgroundColor, textColor, iconColor, navbarBgColor }) => {
@@ -22,9 +22,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ isDrawerOpen, onDrawe
         drawerWidth={drawerWidth}
         isDrawerOpen={isDrawerOpen}
         onDrawerToggle={onDrawerToggle}
-        backgroundColor={backgroundColor} // Pass backgroundColor prop
-        textColor={textColor} // Pass textColor prop
-        iconColor={iconColor} // Pass iconColor prop
+        backgroundColor={backgroundColor}
+        textColor={textColor}
+        iconColor={iconColor} 
       />
       {/* Main Section */}
       <Box
