@@ -55,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
               padding: "5px",
               cursor: "pointer",
               fontSize: "2.3rem",
-            }}/>
+            }} />
           </Typography>
           <Typography variant="body1" sx={{ cursor: "pointer" }}>
             <FiUser style={{

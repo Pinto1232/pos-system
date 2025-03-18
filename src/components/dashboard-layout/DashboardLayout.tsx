@@ -26,7 +26,7 @@ const DashboardLayout:
 
     return (
       <Box sx={{ display: "flex", minHeight: "100vh" }}>
-        {/* Sidebar (MUI Drawer) */}
+        {/* Sidebar */}
         <Sidebar
           drawerWidth={drawerWidth}
           isDrawerOpen={isDrawerOpen}
