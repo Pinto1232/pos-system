@@ -14,6 +14,7 @@ import {
     TableRow,
     Typography,
     Chip,
+    Avatar,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -27,6 +28,7 @@ interface Product {
     stock: string;
     price: string;
     discount: string;
+    avatar: string; // Added avatar property
 }
 
 interface ProductTableProps {
@@ -91,7 +93,9 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                     <TableBody>
                         {products.map((item, index) => (
                             <TableRow key={index}>
-                                <TableCell><Checkbox /></TableCell>
+                                <TableCell>
+                                    <Avatar src={item.avatar} alt={item.name}>{item.name.charAt(0)}</Avatar> {/* Display avatar */}
+                                </TableCell>
                                 <TableCell>{item.barcode}</TableCell>
                                 <TableCell>{item.no}</TableCell>
                                 <TableCell>{item.name}</TableCell>
