@@ -12,11 +12,22 @@ const nextConfig: NextConfig = {
   experimental: {
     turbo: {},
   },
-  transpilePackages: ["next-auth"],
-  env: {
-    NEXT_PUBLIC_KEYCLOAK_URL: process.env.NEXT_PUBLIC_KEYCLOAK_URL,
-    NEXT_PUBLIC_KEYCLOAK_REALM: process.env.NEXT_PUBLIC_KEYCLOAK_REALM,
-    NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID,
+  transpilePackages: ['next-auth'],
+  // Enable SWC minifier for faster production builds
+  swcMinify: true,
+  // Disable production source maps if you don't need them
+  productionBrowserSourceMaps: false,
+  // Webpack configuration to enable persistent caching
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.cache = {
+        type: 'filesystem',
+        buildDependencies: {
+          config: [__filename],
+        },
+      };
+    }
+    return config;
   },
 };
 

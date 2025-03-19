@@ -19,9 +19,9 @@ const DashboardContainer = () => {
       isDrawerOpen={isDrawerOpen}
       onDrawerToggle={handleDrawerToggle}
       backgroundColor="#1E3A8A" 
-      textColor="#FFFFFF" // Set the desired text color
-      iconColor="#FFFFFF" // Set the desired icon color
-      navbarBgColor="#1F2937" // Set the desired Navbar background color
+      textColor="#FFFFFF" 
+      iconColor="#FFFFFF"
+      navbarBgColor="#1F2937" 
     />
   );
 };

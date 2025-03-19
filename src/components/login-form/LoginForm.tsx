@@ -66,7 +66,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                     setIsFadingOut(false); 
                     setIsLoggedIn(true); 
                     router.push('/dashboard');
-                }, 200);
+                }, 100);
             } catch (error) {
                 console.error('Login failed:', error);
                 setError('Login failed. Please check your credentials and try again.');

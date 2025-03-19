@@ -14,9 +14,13 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { sidebarItems } from "@/settings";
 import Image from "next/image";
 
-interface SidebarProps {
+export interface SidebarProps {
   drawerWidth: number;
   isDrawerOpen: boolean;
+  onDrawerToggle: () => void; 
+  backgroundColor?: string;
+  textColor?: string;
+  iconColor?: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen }) => {
