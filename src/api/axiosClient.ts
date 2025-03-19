@@ -110,10 +110,22 @@ const useApiClient = () => {
     });
   };
 
+  const useUpdateCustomization = (customization: Record<string, unknown>) => {
+    return useQuery({
+      queryKey: ["updateCustomization", customization],
+      queryFn: async () => {
+        const { data } = await apiClient.post('/UserCustomization', customization);
+        queryClient.invalidateQueries();
+        return data;
+      }
+    });
+  };
+
   return { 
     apiClient, 
     useFetchData, 
-    usePostData 
+    usePostData, 
+    useUpdateCustomization 
   };
 };
 

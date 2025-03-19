@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     turbo: {},
   },
   transpilePackages: ['next-auth'],
-  // Enable SWC minifier for faster production builds
+  // Enable SWC minifier for faster production 
   swcMinify: true,
   // Disable production source maps if you don't need them
   productionBrowserSourceMaps: false,
