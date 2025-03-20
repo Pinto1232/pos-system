@@ -1,3 +1,4 @@
+// src/components/sidebar/Sidebar.tsx
 import React, { useState } from "react";
 import {
   Drawer,
@@ -17,13 +18,24 @@ import Image from "next/image";
 export interface SidebarProps {
   drawerWidth: number;
   isDrawerOpen: boolean;
-  onDrawerToggle: () => void; 
+  onDrawerToggle: () => void;
+  onSettingsClick?: () => void;
   backgroundColor?: string;
   textColor?: string;
   iconColor?: string;
+  logoUrl?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  drawerWidth,
+  isDrawerOpen,
+  //onDrawerToggle,
+  onSettingsClick,
+  backgroundColor = "#173A79",
+  textColor = "#fff",
+  iconColor = "#fff",
+  logoUrl = "/Pisval_Logo.jpg",
+}) => {
   const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
 
   const handleToggle = (label: string) => {
@@ -46,28 +58,31 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen }) => {
         "& .MuiDrawer-paper": {
           width: drawerWidth,
           boxSizing: "border-box",
-          backgroundColor: "#173A79",
-          color: "#fff",
+          backgroundColor: backgroundColor,
+          color: textColor,
         },
       }}
       open
     >
       <Box sx={{ textAlign: "center", p: 2 }}>
         <Image
-          src="/Pisval_Logo.jpg"
+          src={logoUrl}
           alt="Logo"
           width={80}
           height={80}
           style={{ borderRadius: "50%" }}
         />
-        <Typography variant="h6" sx={{
-          color: "#000",
-          background: '#fff',
-          borderRadius: '6px',
-          mt: 2,
-          p: 0.2,
-          fontWeight: 'semibold',
-        }}>
+        <Typography
+          variant="h6"
+          sx={{
+            color: textColor,
+            background: "#fff",
+            borderRadius: "6px",
+            mt: 2,
+            p: 0.2,
+            fontWeight: "semibold",
+          }}
+        >
           Pinto Manuel
         </Typography>
       </Box>
@@ -75,7 +90,13 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen }) => {
         {sidebarItems.map((item) => (
           <React.Fragment key={item.label}>
             <ListItem
-              onClick={() => item.expandable && handleToggle(item.label)}
+              onClick={() => {
+                if (item.label === "Settings" && onSettingsClick) {
+                  onSettingsClick();
+                } else if (item.expandable) {
+                  handleToggle(item.label);
+                }
+              }}
               sx={{
                 cursor: "pointer",
                 "&:hover": {
@@ -83,10 +104,10 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen }) => {
                 },
               }}
             >
-              <ListItemIcon sx={{ color: "#fff" }}>
+              <ListItemIcon sx={{ color: iconColor }}>
                 <item.icon />
               </ListItemIcon>
-              <ListItemText primary={item.label} sx={{ color: "#fff" }} />
+              <ListItemText primary={item.label} sx={{ color: textColor }} />
               {item.expandable &&
                 (expandedItems[item.label] ? <ExpandLess /> : <ExpandMore />)}
             </ListItem>
@@ -104,7 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerWidth, isDrawerOpen }) => {
                         },
                       }}
                     >
-                      <ListItemText primary={subItem.label} sx={{ color: "#fff" }} />
+                      <ListItemText primary={subItem.label} sx={{ color: textColor }} />
                     </ListItem>
                   ))}
                 </List>

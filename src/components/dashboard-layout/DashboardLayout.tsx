@@ -1,62 +1,102 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import Sidebar from "@/components/sidebar/Sidebar";
 import Navbar from "@/components/sidebar/Navbar";
 import DashboardMainContainer from "../dashboardMain/dashboardMainContainer";
+import SettingsModal from "@/SettingsModal";
+import { useQuery } from "@tanstack/react-query";
+import { apiClient } from "@/api/axiosClient";
 
-const drawerWidth = 300;
+export interface UserCustomization {
+  id: number;
+  userId: string;
+  sidebarColor: string;
+  logoUrl: string;
+  navbarColor: string;
+}
+
+const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
+  // Use the configured apiClient to fetch from the correct backend URL.
+  const response = await apiClient.get(`/UserCustomization/${userId}`);
+  return response.data;
+};
 
 interface DashboardLayoutProps {
   isDrawerOpen: boolean;
   onDrawerToggle: () => void;
-  backgroundColor?: string;
-  textColor?: string;
-  iconColor?: string;
-  navbarBgColor?: string;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({
-  isDrawerOpen,
-  onDrawerToggle,
-  backgroundColor,
-  textColor,
-  iconColor,
-  navbarBgColor
-}) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ isDrawerOpen, onDrawerToggle }) => {
+  const userId = "1"; // Replace with dynamic user ID as needed
+
+  // Fetch initial customization data.
+  const { data } = useQuery<UserCustomization, Error>({
+    queryKey: ["userCustomization", userId],
+    queryFn: () => fetchCustomization(userId),
+  });
+
+  const [customization, setCustomization] = useState<UserCustomization | null>(null);
+  const [openSettingsModal, setOpenSettingsModal] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      setCustomization(data);
+    }
+  }, [data]);
+
+  const handleSettingsClick = () => {
+    setOpenSettingsModal(true);
+  };
+
+  const handleCloseSettings = () => {
+    setOpenSettingsModal(false);
+  };
+
+  // When customization doesn't exist, fallback defaults remain.
+  const sidebarBackground = customization?.sidebarColor || "#173A79";
+  const logoUrl = customization?.logoUrl || "/Pisval_Logo.jpg";
+  const navbarBg = customization?.navbarColor || "#000000";
+
+  const handleCustomizationUpdated = (updated: UserCustomization) => {
+    setCustomization(updated);
+  };
+
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: '#F3F4F6' }}>
-      {/* SIDEBAR (fixed width) */}
+    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#F3F4F6" }}>
       <Sidebar
-        drawerWidth={drawerWidth}
+        drawerWidth={300}
         isDrawerOpen={isDrawerOpen}
         onDrawerToggle={onDrawerToggle}
-        backgroundColor={backgroundColor}
-        textColor={textColor}
-        iconColor={iconColor}
+        backgroundColor={sidebarBackground}
+        textColor="#fff"
+        iconColor="#fff"
+        onSettingsClick={handleSettingsClick}
+        logoUrl={logoUrl}
       />
-
-      {/* MAIN AREA */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           display: "flex",
           flexDirection: "column",
-          width: "100%"
+          width: "100%",
         }}
       >
-        {/* NAVBAR (top) */}
         <Navbar
-          drawerWidth={isDrawerOpen ? drawerWidth : 60}
+          drawerWidth={isDrawerOpen ? 300 : 60}
           onDrawerToggle={onDrawerToggle}
-          backgroundColor={navbarBgColor}
+          backgroundColor={navbarBg}
         />
-
-        {/* DASHBOARD CONTENT (below navbar) */}
         <Box sx={{ p: 2 }}>
           <DashboardMainContainer />
         </Box>
       </Box>
+      <SettingsModal
+        open={openSettingsModal}
+        onClose={handleCloseSettings}
+        userId={userId}
+        onCustomizationUpdated={handleCustomizationUpdated}
+      />
     </Box>
   );
 };

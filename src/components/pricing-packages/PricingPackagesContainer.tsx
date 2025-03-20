@@ -11,6 +11,7 @@ import { PricePackages } from "@/components/pricing-packages/types";
 
 
 
+
 const PricingPackagesContainer: React.FC = () => {
   const { apiClient } = useApiClient();
   const { data, error, isLoading } = useQuery({
@@ -39,6 +40,7 @@ const PricingPackagesContainer: React.FC = () => {
       console.log("📦 Retrieved Pricing Packages:", data);
     }
   }, [data]);
+  
 
   if (isLoading) return <div className={styles.loading}>Loading pricing packages...</div>;
   if (error) return <div className={styles.error}>Error loading pricing packages</div>;

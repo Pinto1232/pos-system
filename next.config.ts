@@ -13,11 +13,8 @@ const nextConfig: NextConfig = {
     turbo: {},
   },
   transpilePackages: ['next-auth'],
-  // Enable SWC minifier for faster production 
   swcMinify: true,
-  // Disable production source maps if you don't need them
   productionBrowserSourceMaps: false,
-  // Webpack configuration to enable persistent caching
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.cache = {
@@ -28,6 +25,9 @@ const nextConfig: NextConfig = {
       };
     }
     return config;
+  },
+  images: {
+    domains: ['example.com'], // allow images from example.com
   },
 };
 

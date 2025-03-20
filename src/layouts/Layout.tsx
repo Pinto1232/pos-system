@@ -10,12 +10,16 @@ import { PackageSelectionProvider } from "@/contexts/PackageSelectionContext";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import { SpinnerProvider } from "@/contexts/SpinnerContext";
 import { TestPeriodProvider } from "@/contexts/TestPeriodContext";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+
+const queryClient = new QueryClient();
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const isDashboard = pathname === "/dashboard";
 
   return (
+    <QueryClientProvider client={queryClient}>
     <SpinnerProvider>
       <PackageSelectionProvider>
         <SidebarProvider>
@@ -37,6 +41,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </SidebarProvider>
       </PackageSelectionProvider>
     </SpinnerProvider>
+    </QueryClientProvider>
   );
 };
 
