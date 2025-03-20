@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   isDrawerOpen,
   //onDrawerToggle,
   onSettingsClick,
-  backgroundColor = "#173A79",
+  backgroundColor = "#173a79",
   textColor = "#fff",
   iconColor = "#fff",
   logoUrl = "/Pisval_Logo.jpg",
@@ -75,8 +75,8 @@ const Sidebar: React.FC<SidebarProps> = ({
         <Typography
           variant="h6"
           sx={{
-            color: textColor,
-            background: "#fff",
+            color: "#000",
+            background: "#ffffff",
             borderRadius: "6px",
             mt: 2,
             p: 0.2,

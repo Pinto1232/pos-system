@@ -15,7 +15,7 @@ import { apiClient, useUpdateCustomization } from "@/api/axiosClient";
 import Image from "next/image";
 import { MdRestore } from "react-icons/md";
 import { SketchPicker, ColorResult } from "react-color"; 
-import { FaPaintBrush } from "react-icons/fa"; // Import the paintbrush icon
+import { FaPaintBrush } from "react-icons/fa";
 
 export interface UserCustomization {
     id: number;
@@ -113,8 +113,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
     return (
         <Dialog open={open} onClose={onClose} sx={{ "& .MuiDialog-paper": { borderRadius: 8, padding: 2 } }}>
-            <DialogTitle sx={{ fontSize: "1.5rem", fontWeight: "bold", textAlign: "center" }}>
-                Update Customization Settings
+            <DialogTitle sx={{ fontSize: "1.2rem", fontWeight: "bold", textAlign: "center" }}>
+                 Customization Settings
             </DialogTitle>
             <DialogContent dividers sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {isLoading && <Typography>Loading customization...</Typography>}
