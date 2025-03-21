@@ -80,6 +80,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             mt: 2,
             p: 0.2,
             fontWeight: "semibold",
+            textAlign: "center", // Center the text horizontally
+            display: "flex",     // Flexbox for centering
+            justifyContent: "center", // Center horizontally
+            alignItems: "center", // Center vertically
           }}
         >
           Pinto Manuel

@@ -1,0 +1,50 @@
+.sliderContainer {
+    max-width: 1200px; /* adjust as needed */
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  
+  /* Each "slide" box */
+  .slideItem {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    padding: 2rem;
+    margin: 0 10px; /* space between slides */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+  }
+  
+  .iconWrapper {
+    margin-bottom: 1rem;
+  }
+  
+  .icon {
+    width: 48px; /* adjust icon size as needed */
+    height: auto;
+  }
+  
+  .title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .description {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+  }
+  
+  /* Slick overrides: center the dots, etc. */
+  .slick-dots {
+    bottom: -30px;
+  }
+  .slick-dots li button:before {
+    font-size: 10px;
+    color: #bbb;
+  }
+  .slick-dots li.slick-active button:before {
+    color: #333;
+  }
+  
