@@ -1,4 +1,3 @@
-// src/components/sidebar/Sidebar.tsx
 import React, { useState } from "react";
 import {
   Drawer,

@@ -1,4 +1,3 @@
-// src/components/settings/SettingsModal.tsx
 import React, { useEffect, useState } from "react";
 import {
     Dialog,
@@ -32,7 +31,6 @@ interface SettingsModalProps {
     onCustomizationUpdated: (updated: UserCustomization) => void;
 }
 
-// Default values if the user hasn't customized yet.
 const DEFAULT_SIDEBAR_COLOR = "#173A79";
 const DEFAULT_LOGO_URL = "/Pisval_Logo.jpg";
 const DEFAULT_NAVBAR_COLOR = "#000000";
