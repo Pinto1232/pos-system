@@ -1,18 +1,23 @@
 .sliderContainer {
-    max-width: 1200px; /* adjust as needed */
+    max-width: 1200px; 
     margin: 0 auto;
     padding: 40px 20px;
   }
   
-  /* Each "slide" box */
+
   .slideItem {
     background: #fff;
-    border: 1px solid #ddd;
+    border: 1px solid #3b82f6;
     border-radius: 8px;
     text-align: center;
-    padding: 2rem;
-    margin: 0 10px; /* space between slides */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+    padding: 2.3rem;
+    margin: 0 20px;
+    width: 300px; 
+    height: 290px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   
   .iconWrapper {
@@ -20,14 +25,18 @@
   }
   
   .icon {
-    width: 48px; /* adjust icon size as needed */
+    width: 48px; 
+    font-size: 1.8rem;
     height: auto;
+    color: #3b82f6;
   }
   
   .title {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     margin-bottom: 0.5rem;
     font-weight: 600;
+    color: #000;
+    text-transform: capitalize;
   }
   
   .description {
@@ -36,7 +45,7 @@
     line-height: 1.5;
   }
   
-  /* Slick overrides: center the dots, etc. */
+
   .slick-dots {
     bottom: -30px;
   }
@@ -47,4 +56,3 @@
   .slick-dots li.slick-active button:before {
     color: #333;
   }
-  
