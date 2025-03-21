@@ -12,7 +12,7 @@ const Footer: React.FC = memo(() => {
       <Container maxWidth="lg">
         <Box className={styles.subscription}>
           <Typography variant="h5" className={styles.heading}>
-            SUBSCRIBE NOW TO
+            SUBSCRIBE NOW 
             <br />
             FOR UPDATES AND EXCLUSIVE OFFERS!
           </Typography>

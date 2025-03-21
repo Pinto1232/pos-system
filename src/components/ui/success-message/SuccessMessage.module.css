@@ -25,12 +25,6 @@
   justify-content: center;
 }
 
-.closeButton {
-  position: absolute !important;
-  top: 10px;
-  right: 10px;
-  color: #666666;
-}
 
 .successIconContainer {
   width: 80px;
@@ -41,11 +35,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+
+  animation: popIn 0.5s ease-in-out forwards;
 }
 
 .successIcon {
   color: #ffffff;
   font-size: 40px !important;
+}
+
+.closeButton {
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
+  color: #666666;
 }
 
 .successTitle {
@@ -66,16 +70,36 @@
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-top: 20px; /* Add margin on top of the buttons */
+  margin-top: 20px;
 }
+
 
 @keyframes fadeIn {
   from {
     transform: translateY(-30px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1);
     opacity: 1;
   }
 }

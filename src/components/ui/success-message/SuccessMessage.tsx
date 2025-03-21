@@ -22,21 +22,23 @@ const SuccessMessage: React.FC<SuccessMessageProps> = memo(
 
         return (
             <div className={styles.successMessageOverlay}>
-                {/* Modal Container */}
                 <div className={styles.successMessageContainer}>
                     <IconButton className={styles.closeButton} onClick={onClose}>
                         <CloseIcon />
                     </IconButton>
+
+                    {/* The container with the animation */}
                     <div className={styles.successIconContainer}>
                         <CheckCircleIcon className={styles.successIcon} />
                     </div>
+
                     <Typography variant="h5" className={styles.successTitle}>
                         Success
                     </Typography>
                     <Typography className={styles.successText}>
-                        {message ||
-                            "Your action was successful. Please login now"}
+                        {message || "Your action was successful. Please login now"}
                     </Typography>
+
                     <div className={styles.successMessageActions}>
                         <Button
                             variant="contained"
