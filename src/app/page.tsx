@@ -13,7 +13,7 @@ export default function Home() {
         </Box>
         <PricingPackagesContainer />
         <HeroContainer />
-         <FeaturesSlider />
+        <FeaturesSlider />
       </Box>
     </div>
   );

@@ -21,10 +21,9 @@ function Hero({
   return (
     <Box className={styles.heroContainer__wrapper}>
       <Box className={styles.heroContainer}>
-        {/* LEFT TEXT */}
         <Box className={styles.heroTextSection}>
           <Typography sx={{ color: '#000' }} variant="h1">
-            {heading} {/* Render JSX directly */}
+            {heading} 
           </Typography>
           <Typography variant="subtitle1" className={styles.heroSubheading}>
             {subheading}
@@ -40,7 +39,6 @@ function Hero({
           </Box>
         </Box>
 
-        {/* RIGHT IMAGE SECTION */}
         <Box className={styles.heroImageSection}>
           <Image src={ladyImage} alt="Smiling lady" className={styles.heroLadyImage} width={450} height={450} />
         </Box>

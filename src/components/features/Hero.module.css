@@ -53,6 +53,7 @@
   .heroBtnPrimary {
     background-color: #3b82f6!important;
     color: #fff;
+    font-weight: bold!important;
     border: none;
     padding: 0.8rem 1.8rem;
     border-radius: 5px;
@@ -61,10 +62,11 @@
   }
   
   .heroLinkSecondary {
-    color: #333;
+    color: #1c2331!important;
     text-decoration: none;
     font-size: 1rem;
     transition: color 0.3s ease;
+    margin-left: 20px !important;
   }
   
   .heroLinkSecondary:hover {
