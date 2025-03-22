@@ -44,7 +44,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, o
 
       <div className={styles.priceSection}>
         <div className={styles.trial}>{packageData.testPeriodDays} days free trial</div>
-        <div className={styles.price}>{currency} {convertedPrice}/mo</div>
+        <div className={styles.price}>{currency} {convertedPrice}/pm</div>
       </div>
 
       <CardFooter className={styles.footer}>
