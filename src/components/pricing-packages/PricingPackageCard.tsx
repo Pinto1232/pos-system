@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useEffect } from "react";
+import React, { memo } from "react";
 import styles from "@/components/pricing-packages/PricingPackages.module.css";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card/Card";
 import { Button } from "@/components/ui/button/Button";
@@ -16,29 +16,16 @@ interface PricingPackageProps {
     price: number;
     testPeriodDays: number;
     type: "starter" | "growth" | "enterprise" | "custom" | "premium";
-    // The backend sets this based on geolocation.
-    currency?: string;
   };
   onBuyNow: () => void;
+  currency: string;
+  rate: number;
 }
 
-const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, onBuyNow }) => {
+const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, onBuyNow, currency, rate }) => {
   const IconComponent = iconMap[packageData.icon] || iconMap["MUI:DefaultIcon"];
 
-  // If no currency is provided, fallback to a simple dollar formatting.
-  const formattedPrice = packageData.currency
-    ? new Intl.NumberFormat(undefined, {
-        style: "currency",
-        currency: packageData.currency,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(packageData.price)
-    : `$${packageData.price}`;
-
-  useEffect(() => {
-    console.log("PricingPackageCard props:", packageData);
-    console.log("Formatted price:", formattedPrice);
-  }, [packageData, formattedPrice]);
+  const convertedPrice = (packageData.price * rate).toFixed(2);
 
   return (
     <Card className={styles.card}>
@@ -57,7 +44,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, o
 
       <div className={styles.priceSection}>
         <div className={styles.trial}>{packageData.testPeriodDays} days free trial</div>
-        <div className={styles.price}>{formattedPrice}/mo</div>
+        <div className={styles.price}>{currency} {convertedPrice}/mo</div>
       </div>
 
       <CardFooter className={styles.footer}>

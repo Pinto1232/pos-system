@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "@/api/axiosClient";
 import styles from "./PricingPackages.module.css";
@@ -8,39 +8,36 @@ import PricingPackageCard from "./PricingPackageCard";
 import { usePackageSelection, type Package } from "@/contexts/PackageSelectionContext";
 import { AxiosInstance } from "axios";
 import { PricePackages } from "@/components/pricing-packages/types";
-
-
-
+import { fetchCurrencyAndRate } from "@/utils/currencyUtils";
 
 const PricingPackagesContainer: React.FC = () => {
   const { apiClient } = useApiClient();
+  const { selectPackage } = usePackageSelection();
+  const [currencyInfo, setCurrencyInfo] = useState<{ currency: string; rate: number }>({ currency: "USD", rate: 1 });
+
+  const fetchPricingPackages = async (
+    axiosClient: AxiosInstance,
+    pageNumber: number,
+    pageSize: number
+  ): Promise<PricePackages> => {
+    const response = await axiosClient.get(`/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+    return response.data;
+  };
+
   const { data, error, isLoading } = useQuery({
     queryKey: ["pricingPackages"],
     queryFn: () => fetchPricingPackages(apiClient, 1, 10),
   });
 
-  const { selectPackage } = usePackageSelection();
-  const fetchPricingPackages = async (
-    axiosClient: AxiosInstance,
-    pageNumber: number,
-    pageSize: number): Promise<PricePackages> => {
-    const response = await axiosClient.get(
-      `/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`
-    );
-    return response.data;
-  };
-
-  // Type guard for package types
-  const isPackageType = (type: string): type is Package['type'] => {
-    return ["starter", "growth", "enterprise", "custom", "premium"].includes(type);
-  };
-
   useEffect(() => {
+    fetchCurrencyAndRate().then(setCurrencyInfo).catch(() => setCurrencyInfo({ currency: "USD", rate: 1 }));
+  }, []);
+
+    useEffect(() => {
     if (data) {
       console.log("📦 Retrieved Pricing Packages:", data);
     }
   }, [data]);
-  
 
   if (isLoading) return <div className={styles.loading}>Loading pricing packages...</div>;
   if (error) return <div className={styles.error}>Error loading pricing packages</div>;
@@ -49,7 +46,7 @@ const PricingPackagesContainer: React.FC = () => {
     const type = pkg.type || pkg.packageType || "starter";
     return {
       ...pkg,
-      type: isPackageType(type) ? type : "starter"
+      type: ["starter", "growth", "enterprise", "custom", "premium"].includes(type) ? type : "starter"
     } as Package;
   });
 
@@ -60,6 +57,8 @@ const PricingPackagesContainer: React.FC = () => {
           key={pkg.id}
           packageData={pkg}
           onBuyNow={() => selectPackage(pkg)}
+          currency={currencyInfo.currency}
+          rate={currencyInfo.rate}
         />
       ))}
     </div>
