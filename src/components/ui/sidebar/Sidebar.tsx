@@ -1,7 +1,6 @@
 "use client";
 
-import React, { memo, Suspense } from "react";
-import { JSX } from "react";
+import React, { memo } from "react";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse, Avatar, Box, Typography, Badge, Paper, IconButton } from "@mui/material";
 import { ExpandLess, ExpandMore, Notifications, Settings, Support, Close, Home, Dashboard, Layers, Assignment } from "@mui/icons-material";
 import { FiSearch } from "react-icons/fi";
@@ -16,7 +15,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) => {
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
-  const icons: { [key: string]: JSX.Element } = {
+  const icons: { [key: string]: React.ReactNode } = {
     home: <Home />,
     dashboard: <Dashboard />,
     projects: <Layers />,
@@ -63,10 +62,7 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
           <Collapse in={activeItem === "reporting"} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {['Overview', 'Notifications', 'Analytics', 'Reports'].map((subItem) => (
-                <ListItem
-                  key={subItem}
-                  className={`${styles.nestedItem} ${styles.listItem}`}
-                >
+                <ListItem key={subItem} className={`${styles.nestedItem} ${styles.listItem}`}>
                   <ListItemText
                     primary={subItem}
                     primaryTypographyProps={{
@@ -81,10 +77,7 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
           <Box className={styles.divider} />
 
           {['notifications', 'support'].map((item) => (
-            <ListItem
-              key={item}
-              className={styles.listItem}
-            >
+            <ListItem key={item} className={styles.listItem}>
               <ListItemIcon className={styles.listItemIcon}>
                 {item === 'notifications' ? (
                   <Badge badgeContent={4} color="primary" className={styles.badge}>
@@ -116,14 +109,4 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
 });
 
 Sidebar.displayName = "Sidebar";
-
-const LazySidebar = () => (
-  <Suspense fallback={<div>Loading...</div>}>
-    <Sidebar
-      activeItem="home"
-      handleItemClick={() => {}}
-    />
-  </Suspense>
-);
-
-export default LazySidebar;
+export default Sidebar;
