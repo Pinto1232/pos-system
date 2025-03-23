@@ -16,7 +16,6 @@ export interface UserCustomization {
 }
 
 const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
-  // Use the configured apiClient to fetch from the correct backend URL.
   const response = await apiClient.get(`/UserCustomization/${userId}`);
   return response.data;
 };
@@ -24,13 +23,23 @@ const fetchCustomization = async (userId: string): Promise<UserCustomization> =>
 interface DashboardLayoutProps {
   isDrawerOpen: boolean;
   onDrawerToggle: () => void;
+  backgroundColor?: string;
+  textColor?: string;
+  iconColor?: string;
+  navbarBgColor?: string;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ isDrawerOpen, onDrawerToggle }) => {
-  const userId = "1"; // Replace with dynamic user ID as needed
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({
+  isDrawerOpen,
+  onDrawerToggle,
+  backgroundColor,
+  textColor = "#fff",
+  iconColor = "#fff",
+  navbarBgColor,
+}) => {
+  const userId = "1";
 
-  // Fetch initial customization data.
-  const { data } = useQuery<UserCustomization, Error>({
+  const { data, isSuccess } = useQuery<UserCustomization, Error>({
     queryKey: ["userCustomization", userId],
     queryFn: () => fetchCustomization(userId),
   });
@@ -39,10 +48,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ isDrawerOpen, onDrawe
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
 
   useEffect(() => {
-    if (data) {
+    if (isSuccess && data) {
       setCustomization(data);
     }
-  }, [data]);
+  }, [isSuccess, data]);
 
   const handleSettingsClick = () => {
     setOpenSettingsModal(true);
@@ -52,10 +61,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ isDrawerOpen, onDrawe
     setOpenSettingsModal(false);
   };
 
-  // When customization doesn't exist, fallback defaults remain.
-  const sidebarBackground = customization?.sidebarColor || "#173A79";
+  const sidebarBackground = customization?.sidebarColor || backgroundColor || "#173A79";
   const logoUrl = customization?.logoUrl || "/Pisval_Logo.jpg";
-  const navbarBg = customization?.navbarColor || "#000000";
+  const navbarBg = customization?.navbarColor || navbarBgColor || "#000000";
 
   const handleCustomizationUpdated = (updated: UserCustomization) => {
     setCustomization(updated);
@@ -68,8 +76,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ isDrawerOpen, onDrawe
         isDrawerOpen={isDrawerOpen}
         onDrawerToggle={onDrawerToggle}
         backgroundColor={sidebarBackground}
-        textColor="#fff"
-        iconColor="#fff"
+        textColor={textColor}
+        iconColor={iconColor}
         onSettingsClick={handleSettingsClick}
         logoUrl={logoUrl}
       />
