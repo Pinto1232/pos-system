@@ -47,7 +47,7 @@ export const sidebarItems = [
     icon: MiscellaneousServicesIcon,
   },
   {
-    label: "Saved Orders (0)",
+    label: "Invoices",
     icon: ReceiptIcon,
     expandable: true,
     subItems: [
