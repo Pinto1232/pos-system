@@ -11,13 +11,14 @@ import {
 } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { sidebarItems } from "@/settings";
 import Image from "next/image";
+import { sidebarItems } from "@/settings";
 
 export interface SidebarProps {
   drawerWidth: number;
   isDrawerOpen: boolean;
   onDrawerToggle: () => void;
+  onSectionSelect: (section: string) => void; // NEW
   onSettingsClick?: () => void;
   backgroundColor?: string;
   textColor?: string;
@@ -28,7 +29,7 @@ export interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({
   drawerWidth,
   isDrawerOpen,
-  //onDrawerToggle,
+  onSectionSelect,
   onSettingsClick,
   backgroundColor = "#173a79",
   textColor = "#fff",
@@ -44,9 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     }));
   };
 
-  if (!isDrawerOpen) {
-    return null;
-  }
+  if (!isDrawerOpen) return null;
 
   return (
     <Drawer
@@ -57,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         "& .MuiDrawer-paper": {
           width: drawerWidth,
           boxSizing: "border-box",
-          backgroundColor: backgroundColor,
+          backgroundColor,
           color: textColor,
         },
       }}
@@ -80,15 +79,16 @@ const Sidebar: React.FC<SidebarProps> = ({
             mt: 2,
             p: 0.2,
             fontWeight: "semibold",
-            textAlign: "center", // Center the text horizontally
-            display: "flex",     // Flexbox for centering
-            justifyContent: "center", // Center horizontally
-            alignItems: "center", // Center vertically
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           Pinto Manuel
         </Typography>
       </Box>
+
       <List>
         {sidebarItems.map((item) => (
           <React.Fragment key={item.label}>
@@ -98,13 +98,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                   onSettingsClick();
                 } else if (item.expandable) {
                   handleToggle(item.label);
+                } else {
+                  onSectionSelect(item.label);
                 }
               }}
               sx={{
                 cursor: "pointer",
-                "&:hover": {
-                  backgroundColor: "#52B788",
-                },
+                "&:hover": { backgroundColor: "#52B788" },
               }}
             >
               <ListItemIcon sx={{ color: iconColor }}>
@@ -114,6 +114,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               {item.expandable &&
                 (expandedItems[item.label] ? <ExpandLess /> : <ExpandMore />)}
             </ListItem>
+
             {item.expandable && item.subItems && (
               <Collapse in={expandedItems[item.label]} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
@@ -123,10 +124,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                       sx={{
                         pl: 4,
                         cursor: "pointer",
-                        "&:hover": {
-                          backgroundColor: "#52B788",
-                        },
+                        "&:hover": { backgroundColor: "#52B788" },
                       }}
+                      onClick={() => onSectionSelect(subItem.label)} // Trigger activeSection update
                     >
                       <ListItemText primary={subItem.label} sx={{ color: textColor }} />
                     </ListItem>

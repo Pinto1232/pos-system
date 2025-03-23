@@ -3,16 +3,25 @@ import styles from "./dashboardMain.module.css";
 import ProductTableContainer from "../productTable/ProductTableContainer";
 import { Box } from "@mui/material";
 
-export const DashboardMain: React.FC = () => {
+interface DashboardMainProps {
+  activeSection: string;
+}
+
+const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
   return (
     <div className={styles.container}>
-      <Box>
-        {/* Dashboard */}
-      </Box>
-      <Box>
-        {/* Products */}
-        <ProductTableContainer />
-      </Box>
+      {activeSection === "dashboard" && (
+        <Box>
+          <h1>Dashboard</h1>
+        </Box>
+      )}
+
+      {activeSection === "Products" && (
+        <Box>
+          {/* Render Products Table */}
+          <ProductTableContainer />
+        </Box>
+      )}
     </div>
   );
 };

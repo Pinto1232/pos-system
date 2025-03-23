@@ -11,7 +11,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 
 export const sidebarItems = [
   {
-    label: "Home",
+    label: "dashboard",
     icon: HomeIcon,
   },
   {
