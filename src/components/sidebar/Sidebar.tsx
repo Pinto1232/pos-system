@@ -18,7 +18,7 @@ export interface SidebarProps {
   drawerWidth: number;
   isDrawerOpen: boolean;
   onDrawerToggle: () => void;
-  onSectionSelect: (section: string) => void; // NEW
+  onSectionSelect: (section: string) => void; 
   onSettingsClick?: () => void;
   backgroundColor?: string;
   textColor?: string;
