@@ -17,13 +17,13 @@ import { sidebarItems } from "@/settings";
 export interface SidebarProps {
   drawerWidth: number;
   isDrawerOpen: boolean;
-  onDrawerToggle: () => void;
-  onSectionSelect: (section: string) => void; 
+  onSectionSelect: (section: string) => void;
   onSettingsClick?: () => void;
   backgroundColor?: string;
   textColor?: string;
   iconColor?: string;
   logoUrl?: string;
+  handleItemClick: (section: string) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -35,14 +35,40 @@ const Sidebar: React.FC<SidebarProps> = ({
   textColor = "#fff",
   iconColor = "#fff",
   logoUrl = "/Pisval_Logo.jpg",
+  handleItemClick = () => {},
 }) => {
   const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
+  const [activeItemState, setActiveItemState] = useState<string>("");
 
   const handleToggle = (label: string) => {
-    setExpandedItems((prev) => ({
-      ...prev,
-      [label]: !prev[label],
-    }));
+    setExpandedItems((prev) => {
+      const newState = Object.keys(prev).reduce((acc, key) => {
+        acc[key] = key === label ? !prev[key] : false;
+        return acc;
+      }, {} as { [key: string]: boolean });
+
+      if (!(label in prev)) {
+        newState[label] = true;
+      }
+
+      return newState;
+    });
+  };
+
+  const handleItemClickInternal = (label: string, parentLabel?: string) => {
+    setActiveItemState(label);
+
+    setExpandedItems((prev) => {
+      if (parentLabel) {
+        return { ...prev, [parentLabel]: true };
+      }
+      return {};
+    });
+
+    setTimeout(() => {
+      handleItemClick(label);
+      onSectionSelect(label);
+    }, 0);
   };
 
   if (!isDrawerOpen) return null;
@@ -99,12 +125,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                 } else if (item.expandable) {
                   handleToggle(item.label);
                 } else {
-                  onSectionSelect(item.label);
+                  handleItemClickInternal(item.label);
                 }
               }}
               sx={{
                 cursor: "pointer",
-                "&:hover": { backgroundColor: "#52B788" },
+                backgroundColor: activeItemState === item.label ? "#34D399" : "inherit",
+                "&:hover": { backgroundColor: "" },
               }}
             >
               <ListItemIcon sx={{ color: iconColor }}>
@@ -124,11 +151,16 @@ const Sidebar: React.FC<SidebarProps> = ({
                       sx={{
                         pl: 4,
                         cursor: "pointer",
-                        "&:hover": { backgroundColor: "#52B788" },
+                        backgroundColor:
+                          activeItemState === subItem.label ? "#34D399" : "inherit",
+                        "&:hover": { backgroundColor: " " },
                       }}
-                      onClick={() => onSectionSelect(subItem.label)} // Trigger activeSection update
+                      onClick={() => handleItemClickInternal(subItem.label, item.label)}
                     >
-                      <ListItemText primary={subItem.label} sx={{ color: textColor }} />
+                      <ListItemText
+                        primary={subItem.label}
+                        sx={{ color: textColor }}
+                      />
                     </ListItem>
                   ))}
                 </List>

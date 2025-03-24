@@ -5,7 +5,7 @@ import FooterContainer from "@/components/footer/FooterContainer";
 import LazyJumbotron from "@/components/jumbotron/Jumbotron";
 import PackageSelectionModal from "@/components/packages/PackageSelectionModal";
 import NavbarContainer from "@/components/ui/navbar/NavbarContainer";
-import SidebarContainer from "@/components/ui/sidebar/SidebarContainer";
+import SidebarContainer from "@/components/ui/sidebar/homeSidebarContainer";
 import { PackageSelectionProvider } from "@/contexts/PackageSelectionContext";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import { SpinnerProvider } from "@/contexts/SpinnerContext";

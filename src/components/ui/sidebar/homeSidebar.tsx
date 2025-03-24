@@ -7,10 +7,20 @@ import { FiSearch } from "react-icons/fi";
 import { useSidebar } from "@/contexts/SidebarContext";
 import styles from "./Sidebar.module.css";
 
-interface SidebarProps {
+export interface SidebarProps {
+  drawerWidth: number;
+  isDrawerOpen: boolean;
+  onDrawerToggle?: () => void; // Mark as optional
+  onSectionSelect: (section: string) => void;
+  onSettingsClick?: () => void;
+  backgroundColor?: string;
+  textColor?: string;
+  iconColor?: string;
+  logoUrl?: string;
   activeItem: string;
-  handleItemClick: (item: string) => void;
+  handleItemClick: (section: string) => void;
 }
+
 
 const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) => {
   const { isSidebarOpen, toggleSidebar } = useSidebar();
