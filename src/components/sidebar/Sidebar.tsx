@@ -153,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <ListItem
                       key={subItem.label}
                       sx={{
-                        pl: 4,
+                        pl: 11,
                         cursor: "pointer",
                         backgroundColor:
                           activeItemState === subItem.label ? "#34D399" : "inherit",
