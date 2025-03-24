@@ -14,6 +14,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Image from "next/image";
 import { sidebarItems } from "@/settings";
 import { useSpinner } from "@/contexts/SpinnerContext";
+import ChevronRight from "@mui/icons-material/ChevronRight";
 
 export interface SidebarProps {
   drawerWidth: number;
@@ -36,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   textColor = "#fff",
   iconColor = "#fff",
   logoUrl = "/Pisval_Logo.jpg",
-  handleItemClick = () => {},
+  handleItemClick = () => { },
 }) => {
   const { setLoading } = useSpinner();
   const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
@@ -142,6 +143,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <item.icon />
               </ListItemIcon>
               <ListItemText primary={item.label} sx={{ color: textColor }} />
+              {activeItemState === item.label && (
+                <ChevronRight sx={{ color: textColor }} />
+              )}
               {item.expandable &&
                 (expandedItems[item.label] ? <ExpandLess /> : <ExpandMore />)}
             </ListItem>
@@ -165,6 +169,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                         primary={subItem.label}
                         sx={{ color: textColor }}
                       />
+                      {activeItemState === subItem.label && (
+                        <ChevronRight sx={{ color: textColor }} />
+                      )}
                     </ListItem>
                   ))}
                 </List>
