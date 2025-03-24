@@ -13,6 +13,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Image from "next/image";
 import { sidebarItems } from "@/settings";
+import { useSpinner } from "@/contexts/SpinnerContext";
 
 export interface SidebarProps {
   drawerWidth: number;
@@ -37,6 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   logoUrl = "/Pisval_Logo.jpg",
   handleItemClick = () => {},
 }) => {
+  const { setLoading } = useSpinner();
   const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
   const [activeItemState, setActiveItemState] = useState<string>("");
 
@@ -56,6 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleItemClickInternal = (label: string, parentLabel?: string) => {
+    setLoading(true); // Show spinner
     setActiveItemState(label);
 
     setExpandedItems((prev) => {
@@ -68,7 +71,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     setTimeout(() => {
       handleItemClick(label);
       onSectionSelect(label);
-    }, 0);
+      setLoading(false); // Hide spinner after content is loaded
+    }, 500); // Simulate a delay for loading
   };
 
   if (!isDrawerOpen) return null;
