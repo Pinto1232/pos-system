@@ -28,6 +28,8 @@ const Dashboard = () => {
         drawerWidth={drawerWidth}
         isDrawerOpen={isDrawerOpen}
         onDrawerToggle={handleDrawerToggle}
+        onSectionSelect={(section) => console.log(`Section selected: ${section}`)}
+        handleItemClick={(item) => console.log(`Item clicked: ${item}`)}
       />
 
       <DashboardContainer />

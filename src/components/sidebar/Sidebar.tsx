@@ -26,6 +26,7 @@ export interface SidebarProps {
   iconColor?: string;
   logoUrl?: string;
   handleItemClick: (section: string) => void;
+  onDrawerToggle?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -59,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleItemClickInternal = (label: string, parentLabel?: string) => {
-    setLoading(true); // Show spinner
+    setLoading(true);
     setActiveItemState(label);
 
     setExpandedItems((prev) => {
@@ -72,8 +73,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     setTimeout(() => {
       handleItemClick(label);
       onSectionSelect(label);
-      setLoading(false); // Hide spinner after content is loaded
-    }, 500); // Simulate a delay for loading
+      setLoading(false);
+    }, 500);
   };
 
   if (!isDrawerOpen) return null;
