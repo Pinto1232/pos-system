@@ -17,7 +17,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
 
   return (
     <div className={styles.container}>
-      {activeSection === "dashboard" && (
+      {activeSection === "Home" && (
         <Box>
           <h1>Dashboard</h1>
         </Box>
