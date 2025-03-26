@@ -8,8 +8,8 @@ export const StyledSearchBar = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
   padding: theme.spacing(1, 2),
   margin: theme.spacing(2, 3),
-  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", // subtle shadow
-  width: "100%", // or set a fixed width if desired
+  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+  width: "100%",
 }));
 
 export const StyledInput = styled(InputBase)(({ theme }) => ({

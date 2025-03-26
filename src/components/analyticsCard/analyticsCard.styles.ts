@@ -10,8 +10,8 @@ export const StyledCard = styled(Card)(({ theme }) => ({
   "&:hover": {
     background: "linear-gradient(135deg, #8EC5FC 0%, #E0C3FC 100%)",
   },
-  width: 380,
-  height: 240,
+  width: 370,
+  height: 255,
   cursor: "pointer",
 }));
 

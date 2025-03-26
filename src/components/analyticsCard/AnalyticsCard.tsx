@@ -23,7 +23,7 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
 
     return (
         <StyledCard>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: -1 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: -1, }}>
                 <CircleNumber>{circleText}</CircleNumber>
                 <Percentage>
                     <span>{percentage.replace("%", "")}</span>
