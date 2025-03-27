@@ -18,4 +18,5 @@ export interface FullOverviewCardProps {
   totalBalance?: string;
   cost?: string;
   receipts?: string;
+  BankCardRowDetail?: string;
 }

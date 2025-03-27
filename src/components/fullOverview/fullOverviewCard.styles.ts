@@ -94,12 +94,20 @@ export const BankCardContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
+  width: "300px",
 }));
 
 export const BankCardRow = styled(Box)({
   display: "flex",
+  flexDirection: "column",
+  marginTop: 8,
+  alignItems: "start",
+});
+export const BankCardRowDetail = styled(Box)({
+  display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  marginBottom: 4,
 });
 
 export const BankCardNumber = styled(Typography)({

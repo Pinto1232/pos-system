@@ -5,34 +5,31 @@ import FullOverviewCard from "./FullOverviewCard";
 import { FullOverviewCardProps } from "./fullOverviewCard.types";
 
 const FullOverviewContainer: React.FC = () => {
-  // Example data for your 3 cards
   const cardsData: FullOverviewCardProps[] = [
     {
-      variant: "overview", // Explicitly typed as 'overview'
+      variant: "overview",
       topLeftLabel: "Notification",
-      topRightIcon: "ℹ", // or any single character / icon
+      topRightIcon: "ℹ",
       title: "Full Overview",
       subTitle: "Sales Overview & Analytics Sales Overview & Analytics",
       details: [],
       price: "R300.00",
       ctaText: "Check more",
-      imageUrl:
-        "/card.jpg",
+      imageUrl: "/card.jpg",
     },
     {
-      variant: "overview", // Explicitly typed as 'overview'
+      variant: "overview",
       topLeftLabel: "FullOverview",
-      topRightIcon: "📁", // another small icon
+      topRightIcon: "📁",
       title: "Full Overview",
       subTitle: "Sales Overview & Analytics Sales Overview & Analytics",
       details: [],
       price: "R300.00",
       ctaText: "Check more",
-      imageUrl:
-        "/card.jpg",
+      imageUrl: "/card.jpg",
     },
     {
-      variant: "bankCard", // Explicitly typed as 'bankCard'
+      variant: "bankCard",
       title: "Your Card",
       ctaText: "Add Card",
       bankName: "Afrik Bank",
@@ -43,12 +40,12 @@ const FullOverviewContainer: React.FC = () => {
       totalBalance: "R240.00",
       cost: "R239.00",
       receipts: "R239.00",
+      BankCardRowDetail: "R1.00",
     },
   ];
 
   return (
     <Box sx={{ p: 3 }}>
-      {/* Top Bar */}
       <Box
         sx={{
           display: "flex",
@@ -57,15 +54,17 @@ const FullOverviewContainer: React.FC = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: "bold", color: "#000" }}>
+        <Typography variant="h5" sx={{
+          fontWeight: "bold",
+          color: "#000"
+        }}
+        >
           Full Overview
         </Typography>
         <IconButton>
           <ViewModuleIcon />
         </IconButton>
       </Box>
-
-      {/* Cards in a 3-column grid */}
       <Grid container spacing={3}>
         {cardsData.map((item, idx) => (
           <Grid item xs={12} sm={6} md={4} key={idx}>
