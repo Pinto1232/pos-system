@@ -119,8 +119,8 @@ export const InfoLines = styled(Box)(({ theme }) => ({
 }));
 
 export const BankCardContainer = styled(Box)(({ theme }) => ({
-  background: "linear-gradient(135deg, #1E3A8A, #3B82F6)",
-  backgroundImage: "radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.1) 0%, transparent 20%), radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.1) 0%, transparent 20%)",
+  background: "linear-gradient(105deg, #000, #3B82F6)",
+  
   color: "#fff",
   borderRadius: 16,
   padding: theme.spacing(3),
