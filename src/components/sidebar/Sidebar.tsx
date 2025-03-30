@@ -79,19 +79,16 @@ const Sidebar: React.FC<SidebarProps> = ({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [localDrawerOpen, setLocalDrawerOpen] = useState(isDrawerOpen);
 
-  // Sync local state with prop
   useEffect(() => {
     setLocalDrawerOpen(isDrawerOpen);
   }, [isDrawerOpen]);
 
-  // Handle drawer toggle
   const handleDrawerToggle = () => {
     const newState = !localDrawerOpen;
     setLocalDrawerOpen(newState);
     onDrawerToggle();
   };
 
-  // Handle drawer close (for small screens)
   const handleDrawerClose = () => {
     if (isSmallScreen) {
       setLocalDrawerOpen(false);
@@ -130,24 +127,20 @@ const Sidebar: React.FC<SidebarProps> = ({
       onSectionSelect(label);
       setLoading(false);
 
-      // Close drawer on item click for small screens
       if (isSmallScreen) {
         handleDrawerClose();
       }
     }, 500);
   };
 
-  // Show toggle button on small screens even when drawer is closed
   if (isSmallScreen && !localDrawerOpen) {
     return <MenuToggleButton onClick={handleDrawerToggle} isOpen={false} />;
   }
 
-  // Don't render anything if drawer is closed on large screens
   if (!isSmallScreen && !localDrawerOpen) return null;
 
   return (
     <>
-      {/* Toggle button for small screens */}
       {isSmallScreen && (
         <MenuToggleButton onClick={handleDrawerToggle} isOpen={true} />
       )}
@@ -157,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         open={localDrawerOpen}
         onClose={handleDrawerClose}
         ModalProps={{
-          keepMounted: true, // Better mobile performance
+          keepMounted: true,
         }}
         sx={{
           width: drawerWidth,
@@ -169,6 +162,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             color: textColor,
             height: '100%',
             overflowY: 'auto',
+            scrollbarWidth: 'none', // Firefox
+            msOverflowStyle: 'none', // IE and Edge
+            '&::-webkit-scrollbar': {
+              display: 'none', // Chrome, Safari, and Opera
+            },
           },
           display: { xs: 'block', sm: 'block', md: 'block' },
         }}
@@ -219,7 +217,17 @@ const Sidebar: React.FC<SidebarProps> = ({
                   "&:hover": { backgroundColor: "" },
                 }}
               >
-                <ListItemIcon sx={{ color: iconColor }}>
+                <ListItemIcon sx={{
+                  color: iconColor,
+                  minWidth: '40px',
+                  '& > *': {
+                    width: '24px',
+                    height: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }
+                }}>
                   <item.icon />
                 </ListItemIcon>
                 <ListItemText primary={item.label} sx={{ color: textColor }} />
