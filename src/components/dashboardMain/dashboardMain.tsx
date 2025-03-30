@@ -32,7 +32,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection = "Dashboar
         </Box>
       )}
 
-      {sectionToRender === "Products" && (
+      {sectionToRender === "Products List" && (
         <Box>
           <ProductTableContainer />
         </Box>

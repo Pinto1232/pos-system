@@ -1,9 +1,11 @@
 import HomeIcon from "@mui/icons-material/Home";
 import { MdProductionQuantityLimits } from "react-icons/md";
+import { RiCustomerService2Fill } from "react-icons/ri";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { FaChartLine } from "react-icons/fa6";
 import { FaCreditCard } from "react-icons/fa6";
+import { TbReorder } from "react-icons/tb";
 
 
 export const sidebarItems = [
@@ -17,11 +19,8 @@ export const sidebarItems = [
     expandable: true,
     subItems: [
       { 
-        label: "Products",
+        label: "Products List",
       },
-      { 
-        label: "Product List",
-       },
        { 
         label: "Add/Edit Product",
        },
@@ -73,7 +72,7 @@ export const sidebarItems = [
   },
   {
     label: "Orders",
-    icon: FaChartLine,
+    icon: TbReorder ,
     expandable: true,
     subItems: [
       { 
@@ -92,7 +91,7 @@ export const sidebarItems = [
   },
   {
     label: "Customers",
-    icon: FaChartLine,
+    icon: RiCustomerService2Fill ,
     expandable: true,
     subItems: [
       { 
@@ -279,35 +278,9 @@ export const sidebarItems = [
     ],
   },
    {
-    label: "System Settings",
+    label: "Settings",
     icon: SettingsIcon,
-    expandable: true,
-    subItems: [
-      { 
-        label: "General Settings",
-       },
-       { 
-        label: "Business Information",
-       },
-       { 
-        label: "Tax & VAT Configuration",
-       },
-       { 
-        label: "Currency & Regional Settings",
-       },
-       {
-        label: "User & Role Management"
-       },
-       {
-        label: "Email & Notification Settings"
-       },
-       {
-        label: "System Backup & Restore"
-       },
-       {
-        label: "API & Third-Party Integrations",
-       },
-    ], 
+    expandable: false,
   },
 ];
 
