@@ -1,4 +1,3 @@
-// src/components/hero/HeroContainer.tsx
 import React from "react";
 import Hero from "./Hero";
 import styles from "./Hero.module.css";

@@ -1,50 +1,272 @@
 import HomeIcon from "@mui/icons-material/Home";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import CategoryIcon from "@mui/icons-material/Category";
-import LocalDrinkIcon from "@mui/icons-material/LocalDrink";
-import FastfoodIcon from "@mui/icons-material/Fastfood";
-import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
-import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
+import { MdProductionQuantityLimits } from "react-icons/md";
+import { RiCustomerService2Fill } from "react-icons/ri";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import SettingsIcon from "@mui/icons-material/Settings";
+import { FaChartLine } from "react-icons/fa6";
+import { FaCreditCard } from "react-icons/fa6";
+import { TbReorder } from "react-icons/tb";
+
 
 export const sidebarItems = [
   {
-    label: "Home",
+    label: "Dashboard",
     icon: HomeIcon,
   },
   {
-    label: "Inventory",
-    icon: InventoryIcon,
+    label: "Products & Inventory",
+    icon: MdProductionQuantityLimits ,
     expandable: true,
     subItems: [
-      { label: "Products" },
+      { 
+        label: "Products List",
+      },
+       { 
+        label: "Add/Edit Product",
+       },
+       { 
+        label: "Product Categories",
+       },
+       {
+        label: "Stock Levels & Alerts",
+       },
+       {
+        label: "Low Stock Warnings",
+       },
+       {
+        label: "Bulk Import/Export",
+       },
+       {
+        label: "Inventory Adjustments",
+       },
+       {
+        label: "Product Expiry Tracking"
+       }
     ],
   },
   {
-    label: "Product Sold",
-    icon: ShoppingCartIcon,
+    label: "Sales",
+    icon: FaCreditCard,
+    expandable: true,
+    subItems: [
+      { 
+        label: "New Sales",
+       },
+       { 
+        label: "Sales History",
+       },
+       { 
+        label: "Invoices & Receipts",
+       },
+       { 
+        label: "Returns & Refunds",
+       },
+       { 
+        label: "Discounts & Promotions",
+       },
+       {
+        label: "Loyalty & Reward Points"
+       },
+       
+    ], 
   },
   {
-    label: "Dairy & Eggs",
-    icon: LocalDrinkIcon,
+    label: "Orders",
+    icon: TbReorder ,
+    expandable: true,
+    subItems: [
+      { 
+        label: "Pending Orders",
+       },
+       { 
+        label: "Completed Orders",
+       },
+       { 
+        label: "Cancelled Orders",
+       },
+       { 
+        label: "Pre-Orders",
+       },
+    ], 
   },
   {
-    label: "Beverages",
-    icon: FastfoodIcon,
+    label: "Customers",
+    icon: RiCustomerService2Fill ,
+    expandable: true,
+    subItems: [
+      { 
+        label: "Customer List",
+       },
+       { 
+        label: "Add/Edit Customer",
+       },
+       { 
+        label: "Customer Groups",
+       },
+       { 
+        label: "Customer Purchase History",
+       },
+       {
+        label: "Loyalty Program"
+       },
+       {
+        label: "Customer Feedback & Reviews"
+       },
+       {
+        label: "Debt & Credit Management"
+       },
+    ], 
+  },
+
+  {
+    label: "Suppliers & Purchases",
+    icon: FaChartLine,
+    expandable: true,
+    subItems: [
+      { 
+        label: "Supplier List",
+       },
+       { 
+        label: "Add/Edit Supplier",
+       },
+       { 
+        label: "Purchase Orders",
+       },
+       { 
+        label: "Pending Deliveries",
+       },
+       {
+        label: "Stock Replenishment Requests"
+       },
+       {
+        label: "Supplier Payments & Invoices"
+       },
+    ], 
   },
   {
-    label: "Cookies & Snacks",
-    icon: CategoryIcon,
+    label: "Employees & Cashiers",
+    icon: FaChartLine,
+    expandable: true,
+    subItems: [
+      { 
+        label: "Employee List",
+       },
+       { 
+        label: "Roles & Permissions",
+       },
+       { 
+        label: "Cashier Sessions",
+       },
+       { 
+        label: "Shift Management",
+       },
+       {
+        label: "Attendance Tracking"
+       },
+       {
+        label: "Activity Logs"
+       },
+    ], 
   },
   {
-    label: "Clean & Hygiene",
-    icon: CleaningServicesIcon,
+    label: "Reports & Analytics",
+    icon: FaChartLine,
+    expandable: true,
+    subItems: [
+      { 
+        label: "Sales Reports",
+       },
+       { 
+        label: "Top-Selling Products Report",
+       },
+       { 
+        label: "Profit & Loss Report",
+       },
+       { 
+        label: "Stock Movement Report",
+       },
+       {
+        label: "Employee Performance Report"
+       },
+       {
+        label: "Customer Purchase Trends Report"
+       },
+       {
+        label: "Tax & Compliance Reports"
+       },
+       {
+        label: "Payment Method Breakdown"
+       },
+    ], 
   },
   {
-    label: "Miscellaneous",
-    icon: MiscellaneousServicesIcon,
+    label: "Payments",
+    icon: FaChartLine,
+    expandable: true,
+    subItems: [
+      { 
+        label: "Accepted Payment Methods ",
+       },
+       { 
+        label: "Transaction History",
+       },
+       { 
+        label: "Pending Payments",
+       },
+       { 
+        label: "Refund Processing",
+       },
+       {
+        label: "Cash Managementt"
+       },
+       {
+        label: "Customer Purchase Trends Report"
+       },
+    ], 
+  },
+  {
+    label: "Expenses & Accounting",
+    icon: FaChartLine,
+    expandable: true,
+    subItems: [
+      { 
+        label: "Expense Tracking",
+       },
+       { 
+        label: "Recurring Expenses",
+       },
+       { 
+        label: "Cash Flow Overview",
+       },
+       { 
+        label: "Supplier Payments",
+       },
+       {
+        label: "Cash Managementt",
+       },
+       {
+        label: "Tax Calculations"
+       },
+    ], 
+  },
+  {
+    label: "Promotions & Discounts",
+    icon: FaChartLine,
+    expandable: true,
+    subItems: [
+      { 
+        label: "Create New Discount",
+       },
+       { 
+        label: "Active Promotions",
+       },
+       { 
+        label: "Coupon & Voucher Management",
+       },
+       { 
+        label: "Seasonal & Flash Sales",
+       },
+    ], 
   },
   {
     label: "Invoices",
@@ -55,9 +277,10 @@ export const sidebarItems = [
       { label: "Recurring Sales" },
     ],
   },
-  {
+   {
     label: "Settings",
     icon: SettingsIcon,
+    expandable: false,
   },
 ];
 

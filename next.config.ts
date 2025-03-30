@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
-    domains: ['example.com'], // allow images from example.com
+    domains: ['example.com', 'images.unsplash.com'], 
   },
 };
 

@@ -8,12 +8,15 @@ import {
     Typography,
     TextField,
     Box,
+    List,
+    ListItemButton,
+    ListItemText,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient, useUpdateCustomization } from "@/api/axiosClient";
 import Image from "next/image";
 import { MdRestore } from "react-icons/md";
-import { SketchPicker, ColorResult } from "react-color"; 
+import { SketchPicker, ColorResult } from "react-color";
 import { FaPaintBrush } from "react-icons/fa";
 
 export interface UserCustomization {
@@ -24,12 +27,27 @@ export interface UserCustomization {
     navbarColor: string;
 }
 
+interface SettingsItem {
+    label: string;
+}
+
 interface SettingsModalProps {
     open: boolean;
     onClose: () => void;
     userId: string;
     onCustomizationUpdated: (updated: UserCustomization) => void;
 }
+
+const settingsItems: SettingsItem[] = [
+    { label: "General Settings" },
+    { label: "Business Information" },
+    { label: "Tax & VAT Configuration" },
+    { label: "Currency & Regional Settings" },
+    { label: "User & Role Management" },
+    { label: "Email & Notification Settings" },
+    { label: "System Backup & Restore" },
+    { label: "API & Third-Party Integrations" },
+];
 
 const DEFAULT_SIDEBAR_COLOR = "#173A79";
 const DEFAULT_LOGO_URL = "/Pisval_Logo.jpg";
@@ -52,12 +70,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         enabled: open,
     });
 
-    // Local state for form fields.
     const [sidebarColor, setSidebarColor] = useState("");
     const [navbarColor, setNavbarColor] = useState("");
     const [logoPreview, setLogoPreview] = useState("");
     const [showSidebarColorPicker, setShowSidebarColorPicker] = useState(false);
     const [showNavbarColorPicker, setShowNavbarColorPicker] = useState(false);
+    const [selectedSetting, setSelectedSetting] = useState("General Settings");
 
     useEffect(() => {
         if (data) {
@@ -65,14 +83,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             setNavbarColor(data.navbarColor);
             setLogoPreview(data.logoUrl);
         } else {
-            // If no data, set defaults.
+
             setSidebarColor(DEFAULT_SIDEBAR_COLOR);
             setNavbarColor(DEFAULT_NAVBAR_COLOR);
             setLogoPreview(DEFAULT_LOGO_URL);
         }
     }, [data, open]);
 
-    // Handle file input change for logo.
     const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
@@ -82,7 +99,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         }
     };
 
-    // Use update customization mutation.
     const updateCustomizationMutation = useUpdateCustomization();
 
     const handleSave = () => {
@@ -102,22 +118,18 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         );
     };
 
-    // Reset form fields to default values.
+
     const handleReset = () => {
         setSidebarColor(DEFAULT_SIDEBAR_COLOR);
         setNavbarColor(DEFAULT_NAVBAR_COLOR);
         setLogoPreview(DEFAULT_LOGO_URL);
     };
 
-    return (
-        <Dialog open={open} onClose={onClose} sx={{ "& .MuiDialog-paper": { borderRadius: 8, padding: 2 } }}>
-            <DialogTitle sx={{ fontSize: "1.2rem", fontWeight: "bold", textAlign: "center" }}>
-                 Customization Settings
-            </DialogTitle>
-            <DialogContent dividers sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                {isLoading && <Typography>Loading customization...</Typography>}
-                {error && <Typography color="error">{error.message}</Typography>}
-                {data && (
+    // Render content based on selected setting
+    const renderSettingContent = () => {
+        switch (selectedSetting) {
+            case "General Settings":
+                return (
                     <>
                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
                             {logoPreview && (
@@ -170,7 +182,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                             fontSize: "1.5rem",
                                             marginLeft: "8px",
                                         }}
-                                        onClick={() => setShowSidebarColorPicker((prev) => !prev)} // Toggle visibility
+                                        onClick={() => setShowSidebarColorPicker((prev) => !prev)}
                                     />
                                 ),
                             }}
@@ -179,7 +191,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                             <Box sx={{ position: "absolute", zIndex: 2 }}>
                                 <SketchPicker
                                     color={sidebarColor}
-                                    onChange={(color: ColorResult) => setSidebarColor(color.hex)} // Explicitly type 'color'
+                                    onChange={(color: ColorResult) => setSidebarColor(color.hex)}
                                 />
                             </Box>
                         )}
@@ -199,7 +211,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                             fontSize: "1.5rem",
                                             marginLeft: "8px",
                                         }}
-                                        onClick={() => setShowNavbarColorPicker((prev) => !prev)} // Toggle visibility
+                                        onClick={() => setShowNavbarColorPicker((prev) => !prev)}
                                     />
                                 ),
                             }}
@@ -208,12 +220,76 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                             <Box sx={{ position: "absolute", zIndex: 2 }}>
                                 <SketchPicker
                                     color={navbarColor}
-                                    onChange={(color: ColorResult) => setNavbarColor(color.hex)} // Explicitly type 'color'
+                                    onChange={(color: ColorResult) => setNavbarColor(color.hex)}
                                 />
                             </Box>
                         )}
                     </>
-                )}
+                );
+            case "Business Information":
+                return <Typography>Business Information settings will be available soon.</Typography>;
+            case "Tax & VAT Configuration":
+                return <Typography>Tax & VAT Configuration settings will be available soon.</Typography>;
+            case "Currency & Regional Settings":
+                return <Typography>Currency & Regional Settings will be available soon.</Typography>;
+            case "User & Role Management":
+                return <Typography>User & Role Management settings will be available soon.</Typography>;
+            case "Email & Notification Settings":
+                return <Typography>Email & Notification Settings will be available soon.</Typography>;
+            case "System Backup & Restore":
+                return <Typography>System Backup & Restore options will be available soon.</Typography>;
+            case "API & Third-Party Integrations":
+                return <Typography>API & Third-Party Integrations settings will be available soon.</Typography>;
+            default:
+                return <Typography>Select a setting from the sidebar.</Typography>;
+        }
+    };
+
+    return (
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth="md"
+            fullWidth
+            sx={{ "& .MuiDialog-paper": { borderRadius: 8, padding: 2 } }}
+        >
+            <DialogTitle sx={{ fontSize: "1.2rem", fontWeight: "bold", textAlign: "center" }}>
+                Settings
+            </DialogTitle>
+            <DialogContent dividers sx={{ display: "flex", padding: 0 }}>
+                {/* Settings Sidebar */}
+                <Box sx={{
+                    width: "250px",
+                    borderRight: "1px solid #e0e0e0",
+                    overflowY: "auto",
+                    bgcolor: "#f5f5f5"
+                }}>
+                    <List component="nav" aria-label="settings categories">
+                        {settingsItems.map((item) => (
+                            <ListItemButton
+                                key={item.label}
+                                onClick={() => setSelectedSetting(item.label)}
+                                selected={selectedSetting === item.label}
+                                sx={{
+                                    borderLeft: selectedSetting === item.label ? "4px solid #173A79" : "4px solid transparent",
+                                    bgcolor: selectedSetting === item.label ? "rgba(23, 58, 121, 0.08)" : "transparent",
+                                    "&:hover": {
+                                        bgcolor: "rgba(23, 58, 121, 0.04)",
+                                    }
+                                }}
+                            >
+                                <ListItemText primary={item.label} />
+                            </ListItemButton>
+                        ))}
+                    </List>
+                </Box>
+
+                {/* Settings Content */}
+                <Box sx={{ flexGrow: 1, p: 3, display: "flex", flexDirection: "column", gap: 2 }}>
+                    {isLoading && <Typography>Loading customization...</Typography>}
+                    {error && <Typography color="error">{error.message}</Typography>}
+                    {data && renderSettingContent()}
+                </Box>
             </DialogContent>
             <DialogActions sx={{ justifyContent: "space-between", padding: "16px 24px" }}>
                 <Button onClick={onClose} sx={{ textTransform: "none" }}>

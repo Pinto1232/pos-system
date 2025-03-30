@@ -3,29 +3,37 @@ import styles from "./dashboardMain.module.css";
 import ProductTableContainer from "../productTable/ProductTableContainer";
 import { Box } from "@mui/material";
 import { useSpinner } from "@/contexts/SpinnerContext";
+import AnalyticsCardContainer from "../analyticsCard/AnalyticsCardContainer";
+import SearchBarContainer from "../searchBar/SearchBarContainer";
+import FullOverviewContainer from "../fullOverview/FullOverviewContainer";
+import TransactionsContainer from "../transactionTable/TransactionsContainer";
 
 interface DashboardMainProps {
   activeSection: string;
 }
 
-const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
+const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection = "Dashboard" }) => {
   const { setLoading } = useSpinner();
 
   useEffect(() => {
-    setLoading(false); 
+    setLoading(false);
   }, [activeSection, setLoading]);
+
+  const sectionToRender = activeSection || "Dashboard";
 
   return (
     <div className={styles.container}>
-      {activeSection === "Home" && (
+      {sectionToRender === "Dashboard" && (
         <Box>
-          <h1>Dashboard</h1>
+          <SearchBarContainer />
+          <AnalyticsCardContainer />
+          <FullOverviewContainer />
+          <TransactionsContainer />
         </Box>
       )}
 
-      {activeSection === "Products" && (
+      {sectionToRender === "Products List" && (
         <Box>
-          {/* Render Products Table */}
           <ProductTableContainer />
         </Box>
       )}
