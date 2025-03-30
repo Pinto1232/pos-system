@@ -3,9 +3,9 @@ import { MdProductionQuantityLimits } from "react-icons/md";
 import { RiCustomerService2Fill } from "react-icons/ri";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { FaChartLine } from "react-icons/fa6";
-import { FaCreditCard } from "react-icons/fa6";
-import { TbReorder } from "react-icons/tb";
+import { FaChartLine, FaCreditCard, FaMoneyBillWave, FaUsers, FaPercent } from "react-icons/fa6";
+import { TbReorder, TbTruckDelivery } from "react-icons/tb";
+import { BiReceipt } from "react-icons/bi";
 
 
 export const sidebarItems = [
@@ -120,7 +120,7 @@ export const sidebarItems = [
 
   {
     label: "Suppliers & Purchases",
-    icon: FaChartLine,
+    icon: TbTruckDelivery,
     expandable: true,
     subItems: [
       { 
@@ -145,7 +145,7 @@ export const sidebarItems = [
   },
   {
     label: "Employees & Cashiers",
-    icon: FaChartLine,
+    icon: FaUsers,
     expandable: true,
     subItems: [
       { 
@@ -201,7 +201,7 @@ export const sidebarItems = [
   },
   {
     label: "Payments",
-    icon: FaChartLine,
+    icon: FaMoneyBillWave,
     expandable: true,
     subItems: [
       { 
@@ -226,7 +226,7 @@ export const sidebarItems = [
   },
   {
     label: "Expenses & Accounting",
-    icon: FaChartLine,
+    icon: BiReceipt,
     expandable: true,
     subItems: [
       { 
@@ -251,7 +251,7 @@ export const sidebarItems = [
   },
   {
     label: "Promotions & Discounts",
-    icon: FaChartLine,
+    icon: FaPercent,
     expandable: true,
     subItems: [
       { 

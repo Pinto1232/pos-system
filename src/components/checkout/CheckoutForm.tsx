@@ -115,14 +115,21 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                     control={<Radio />}
                                     label={
                                         <Box display="flex" alignItems="center">
-                                            <FaPaypal style={{ marginRight: 8}} />
+                                            <FaPaypal style={{ marginRight: 8 }} />
                                             PayPal
                                             <Box component="span" sx={{ marginLeft: 30 }}>
                                                 <Image
                                                     src="/visa.jpg"
-                                                    alt="Visa & Mastercard"
+                                                    alt="Visa"
                                                     width={85}
                                                     height={35}
+                                                />
+                                                <Image
+                                                    src="/card.jpg"
+                                                    alt="Card"
+                                                    width={85}
+                                                    height={35}
+                                                    style={{ marginLeft: 8 }}
                                                 />
                                             </Box>
                                         </Box>
@@ -140,7 +147,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                                 color: "#6772E5",
                                                 fontSize: "3.1rem",
                                             }}
-                                            />                                    
+                                            />
                                         </Box>
                                     }
                                 />
@@ -248,7 +255,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                             className={styles.checkoutButton}
                             onClick={(e) => {
                                 e.preventDefault();
-                                console.log("Checkout button clicked. Form data:", formData); 
+                                console.log("Checkout button clicked. Form data:", formData);
                                 onSubmit(e);
                             }}
                         >

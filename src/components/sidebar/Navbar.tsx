@@ -17,9 +17,10 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
     <AppBar
       position="fixed"
       sx={{
-        width: { sm: `calc(100% - ${drawerWidth}px)` },
-        ml: { sm: `${drawerWidth}px` },
+        width: `calc(100% - ${drawerWidth}px)`,
+        ml: `${drawerWidth}px`,
         backgroundColor: backgroundColor || "default",
+        transition: 'margin-left 0.3s ease, width 0.3s ease',
       }}
     >
       <Toolbar>

@@ -3,62 +3,16 @@ import {
   Drawer,
   Box,
   List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Collapse,
   Typography,
   useMediaQuery,
   useTheme,
-  IconButton,
 } from "@mui/material";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import { sidebarItems } from "@/settings";
 import { useSpinner } from "@/contexts/SpinnerContext";
-import ChevronRight from "@mui/icons-material/ChevronRight";
-
-// Hamburger menu button component that appears on small screens
-const MenuToggleButton: React.FC<{ onClick: () => void; isOpen: boolean }> = ({
-  onClick,
-  isOpen
-}) => (
-  <IconButton
-    color="inherit"
-    aria-label="toggle drawer"
-    onClick={onClick}
-    sx={{
-      position: 'fixed',
-      top: 10,
-      left: isOpen ? 'auto' : 10,
-      zIndex: 1200,
-      bgcolor: '#173a79',
-      color: '#fff',
-      '&:hover': {
-        bgcolor: '#2a4d8a',
-      },
-      boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
-    }}
-  >
-    {isOpen ? <CloseIcon /> : <MenuIcon />}
-  </IconButton>
-);
-
-export interface SidebarProps {
-  drawerWidth: number;
-  isDrawerOpen: boolean;
-  onSectionSelect: (section: string) => void;
-  onSettingsClick?: () => void;
-  backgroundColor?: string;
-  textColor?: string;
-  iconColor?: string;
-  logoUrl?: string;
-  handleItemClick: (section: string) => void;
-  onDrawerToggle?: () => void;
-}
+import { SidebarProps } from "./types";
+import MenuToggleButton from "./MenuToggleButton";
+import SidebarItem from "./SidebarItem";
 
 const Sidebar: React.FC<SidebarProps> = ({
   drawerWidth,
@@ -153,15 +107,17 @@ const Sidebar: React.FC<SidebarProps> = ({
           keepMounted: true,
         }}
         sx={{
-          width: drawerWidth,
+          width: localDrawerOpen ? drawerWidth : 60,
           flexShrink: 0,
+          transition: 'width 0.3s ease',
           "& .MuiDrawer-paper": {
-            width: drawerWidth,
+            width: localDrawerOpen ? drawerWidth : 60,
             boxSizing: "border-box",
             backgroundColor,
             color: textColor,
             height: '100%',
             overflowY: 'auto',
+            transition: 'width 0.3s ease',
             scrollbarWidth: 'none', // Firefox
             msOverflowStyle: 'none', // IE and Edge
             '&::-webkit-scrollbar': {
@@ -200,72 +156,17 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <List>
           {sidebarItems.map((item) => (
-            <React.Fragment key={item.label}>
-              <ListItem
-                onClick={() => {
-                  if (item.label === "Settings" && onSettingsClick) {
-                    onSettingsClick();
-                  } else if (item.expandable) {
-                    handleToggle(item.label);
-                  } else {
-                    handleItemClickInternal(item.label);
-                  }
-                }}
-                sx={{
-                  cursor: "pointer",
-                  backgroundColor: activeItemState === item.label ? "#34D399" : "inherit",
-                  "&:hover": { backgroundColor: "" },
-                }}
-              >
-                <ListItemIcon sx={{
-                  color: iconColor,
-                  minWidth: '40px',
-                  '& > *': {
-                    width: '24px',
-                    height: '24px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }
-                }}>
-                  <item.icon />
-                </ListItemIcon>
-                <ListItemText primary={item.label} sx={{ color: textColor }} />
-                {activeItemState === item.label && (
-                  <ChevronRight sx={{ color: textColor }} />
-                )}
-                {item.expandable &&
-                  (expandedItems[item.label] ? <ExpandLess /> : <ExpandMore />)}
-              </ListItem>
-
-              {item.expandable && item.subItems && (
-                <Collapse in={expandedItems[item.label]} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {item.subItems.map((subItem) => (
-                      <ListItem
-                        key={subItem.label}
-                        sx={{
-                          pl: 11,
-                          cursor: "pointer",
-                          backgroundColor:
-                            activeItemState === subItem.label ? "#34D399" : "inherit",
-                          "&:hover": { backgroundColor: " " },
-                        }}
-                        onClick={() => handleItemClickInternal(subItem.label, item.label)}
-                      >
-                        <ListItemText
-                          primary={subItem.label}
-                          sx={{ color: textColor }}
-                        />
-                        {activeItemState === subItem.label && (
-                          <ChevronRight sx={{ color: textColor }} />
-                        )}
-                      </ListItem>
-                    ))}
-                  </List>
-                </Collapse>
-              )}
-            </React.Fragment>
+            <SidebarItem
+              key={item.label}
+              item={item}
+              isActive={activeItemState === item.label}
+              isExpanded={!!expandedItems[item.label]}
+              iconColor={iconColor}
+              textColor={textColor}
+              onToggle={handleToggle}
+              onItemClick={handleItemClickInternal}
+              onSettingsClick={onSettingsClick}
+            />
           ))}
         </List>
       </Drawer>
