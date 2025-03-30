@@ -52,6 +52,7 @@ const FullOverviewContainer: React.FC = () => {
           justifyContent: "space-between",
           alignItems: "center",
           mb: 3,
+          mt: -3,
         }}
       >
         <Typography variant="h5" sx={{

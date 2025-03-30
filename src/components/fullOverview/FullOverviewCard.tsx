@@ -13,7 +13,7 @@ import {
   BankCardContainer,
   BankCardRow,
   BankCardNumber,
-  BankCardRowDetail, // Ensure this is a valid styled component
+  BankCardRowDetail,
 } from "./fullOverviewCard.styles";
 import { FullOverviewCardProps } from "./fullOverviewCard.types";
 
@@ -52,8 +52,10 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
           <Typography
             variant="subtitle1"
             sx={{
-              fontWeight: 600,
-              color: "#000",
+              fontWeight: 700,
+              color: "#1F2937",
+              fontSize: "1.1rem",
+              letterSpacing: "-0.01em",
             }}
           >
             {title}
@@ -66,23 +68,68 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
         </Box>
         <BankCardContainer>
           <BankCardRowDetail>
-            <Typography variant="subtitle2">{bankName}</Typography>
-            <Typography variant="subtitle2">{bankType}</Typography>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{bankName}</Typography>
+            <Typography variant="subtitle2" sx={{ opacity: 0.9 }}>{bankType}</Typography>
           </BankCardRowDetail>
           <BankCardNumber variant="body1">{cardNumber}</BankCardNumber>
           <BankCardRow>
-            <Typography variant="body2">{cardHolder}</Typography>
-            <Typography variant="body2">{cardExpire}</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 500 }}>{cardHolder}</Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9 }}>{cardExpire}</Typography>
           </BankCardRow>
         </BankCardContainer>
-        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            fontWeight: 700,
+            mb: 1.5,
+            fontSize: "1rem",
+            letterSpacing: "0.01em",
+            color: "#1F2937"
+          }}
+        >
           Total balance {totalBalance}
         </Typography>
-        <InfoLines>
-          <Typography variant="body2">Cost {cost}</Typography>
-          <Typography variant="body2">Receipts {receipts}</Typography>
+        <InfoLines sx={{ mt: 1 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 500,
+              fontSize: "0.9rem",
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              py: 0.5
+            }}
+          >
+            <span>Cost</span> <span>{cost}</span>
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 500,
+              fontSize: "0.9rem",
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              py: 0.5
+            }}
+          >
+            <span>Receipts</span> <span>{receipts}</span>
+          </Typography>
           {bankCardRowDetailText && (
-            <Typography variant="body2">{bankCardRowDetailText}</Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 500,
+                fontSize: "0.9rem",
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+                py: 0.5
+              }}
+            >
+              <span>Details</span> <span>{bankCardRowDetailText}</span>
+            </Typography>
           )}
         </InfoLines>
       </StyledCard>
@@ -98,7 +145,15 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
       {details && details.length > 0 && (
         <InfoLines>
           {details.map((line, i) => (
-            <Typography variant="body2" key={i}>
+            <Typography
+              variant="body2"
+              key={i}
+              sx={{
+                py: 0.5,
+                fontWeight: 500,
+                fontSize: "0.9rem"
+              }}
+            >
               {line}
             </Typography>
           ))}
@@ -119,22 +174,32 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
           </CardButton>
         )}
       </Box>
-      <Divider sx={{ mt: 2, width: "360px", margin: 2 }} flexItem />
+      <Divider
+        sx={{
+          mt: 2,
+          mb: 2,
+          width: "100%",
+          opacity: 0.6,
+          background: "linear-gradient(to right, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.3), rgba(79, 70, 229, 0.1))"
+        }}
+        flexItem
+      />
       {imageUrl && (
         <BottomRightImage
           src={imageUrl}
           alt="preview"
           style={{
-            transform: "rotate(20deg)",
+            transform: "rotate(15deg)",
             width: "190px",
             height: "175px",
-            marginRight: "-40px",
+            marginRight: "-30px",
             top: 150,
             left: 360,
             right: 0,
             objectFit: "cover",
-            borderRadius: 64,
+            borderRadius: 24,
             zIndex: 1,
+            filter: "drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1))"
           }}
         />
       )}
