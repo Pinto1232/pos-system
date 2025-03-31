@@ -204,18 +204,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
   }, [handleCleanLogout, login]);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const authError = urlParams.get('error');
-
-    if (authError) {
-      console.error('Authentication error from Keycloak:', authError);
-      const errorDescription = urlParams.get('error_description') || 'Unknown error';
-      setError(`Authentication failed: ${errorDescription}`);
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
+  /* 
+    useEffect(() => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const authError = urlParams.get('error');
+  
+      if (authError) {
+        console.error('Authentication error from Keycloak:', authError);
+        const errorDescription = urlParams.get('error_description') || 'Unknown error';
+        setError(`Authentication failed: ${errorDescription}`);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }, []); */
 
   const logout = useCallback(async () => {
     console.log('Logout requested');
