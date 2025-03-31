@@ -14,10 +14,16 @@ const SubItems: React.FC<SubItemsProps> = ({
   parentLabel,
   subItems,
   isExpanded,
-  activeItem,
   textColor,
   onItemClick
 }) => {
+  const [activeSubItem, setActiveSubItem] = React.useState<string>("");
+
+  const handleSubItemClick = (label: string) => {
+    onItemClick(label, parentLabel);
+    setActiveSubItem(label);
+  };
+
   return (
     <Collapse
       in={isExpanded}
@@ -48,10 +54,10 @@ const SubItems: React.FC<SubItemsProps> = ({
               pl: 4,
               cursor: "pointer",
               backgroundColor:
-                activeItem === subItem.label ? "#34D399" : "#ccd9ff",
+                activeSubItem === subItem.label ? "#34D399" : "#ccd9ff",
               "&:hover": { backgroundColor: "#ebf2ff" },
             }}
-            onClick={() => onItemClick(subItem.label, parentLabel)}
+            onClick={() => handleSubItemClick(subItem.label)}
           >
             <ListItemIcon sx={{
               minWidth: '30px',
@@ -63,7 +69,7 @@ const SubItems: React.FC<SubItemsProps> = ({
               primary={subItem.label}
               sx={{ color: "#000" }}
             />
-            {activeItem === subItem.label && (
+            {activeSubItem === subItem.label && (
               <ChevronRight sx={{ color: textColor }} />
             )}
           </ListItem>

@@ -28,8 +28,10 @@ const MetricCard: React.FC<MetricCardProps> = ({
         sx={{
             bgcolor: bgColor,
             color: color || 'inherit',
-            height: 140,
+            height: 240,
+            width: 144,
             borderRadius: 2,
+            cursor: 'pointer',
             transition: 'all 0.3s ease',
             border: '1px solid',
             borderColor: 'rgba(0, 0, 0, 0.08)',
@@ -40,7 +42,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
             }
         }}
     >
-        <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 2 }}>
+        <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', p: 2 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography
                     variant="subtitle2"
@@ -71,7 +73,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
                 fontWeight="bold"
                 sx={{
                     my: 1.5,
-                    fontSize: '1.5rem'
+                    fontSize: '1.9rem',
+                    color: '#595959fa'
                 }}
             >
                 {value}
@@ -84,7 +87,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
                     sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        fontSize: '0.75rem'
+                        fontSize: '0.75rem',
+                        color: "#000"
                     }}
                 >
                     {subtitle}

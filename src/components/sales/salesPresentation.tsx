@@ -49,6 +49,8 @@ const SalesPresentation: React.FC<SalesDashboardPresentationProps> = ({
                         />
                     </Grid>
 
+
+
                     <Grid item xs={12} md={6}>
                         <KeyMetricsGrid salesData={salesData} />
                     </Grid>

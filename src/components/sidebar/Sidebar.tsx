@@ -87,6 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     }, 500);
   };
 
+
   if (isSmallScreen && !localDrawerOpen) {
     return <MenuToggleButton onClick={handleDrawerToggle} isOpen={false} />;
   }
