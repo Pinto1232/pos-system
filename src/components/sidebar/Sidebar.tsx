@@ -113,6 +113,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           "& .MuiDrawer-paper": {
             width: localDrawerOpen ? drawerWidth : 60,
             boxSizing: "border-box",
+            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
             backgroundColor,
             color: textColor,
             height: '100%',

@@ -48,8 +48,8 @@ const SubItems: React.FC<SubItemsProps> = ({
               pl: 4,
               cursor: "pointer",
               backgroundColor:
-                activeItem === subItem.label ? "#34D399" : "#e6eeff",
-              "&:hover": { backgroundColor: "#d1e0ff" },
+                activeItem === subItem.label ? "#34D399" : "#ccd9ff",
+              "&:hover": { backgroundColor: "#ebf2ff" },
             }}
             onClick={() => onItemClick(subItem.label, parentLabel)}
           >
