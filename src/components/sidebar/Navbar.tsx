@@ -21,6 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
         ml: `${drawerWidth}px`,
         backgroundColor: backgroundColor || "default",
         transition: 'margin-left 0.3s ease, width 0.3s ease',
+        border: 'none'
       }}
     >
       <Toolbar>

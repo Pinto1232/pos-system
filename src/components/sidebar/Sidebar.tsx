@@ -116,12 +116,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             backgroundColor,
             color: textColor,
             height: '100%',
+            border: 'none',
             overflowY: 'auto',
             transition: 'width 0.3s ease',
-            scrollbarWidth: 'none', // Firefox
-            msOverflowStyle: 'none', // IE and Edge
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
             '&::-webkit-scrollbar': {
-              display: 'none', // Chrome, Safari, and Opera
+              display: 'none',
             },
           },
           display: { xs: 'block', sm: 'block', md: 'block' },
