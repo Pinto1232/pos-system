@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import Sales from './Sales';
-import { SalesContainerProps, SalesData } from './types';
+import { SalesContainerProps } from './types';
 
-const mockData: SalesData = {
+const mockData = {
     totalRevenue: 528976.82,
     previousRevenue: 501641.73,
     growthPercentage: 7.9,
@@ -40,64 +40,38 @@ const mockData: SalesData = {
             name: 'Eren Y.',
             revenue: 117115,
             percentage: 22.14
-        },
-        {
-            name: 'Anonymous',
-            revenue: 45386,
-            percentage: 8.58
         }
     ],
-    platformRevenue: [
-        {
-            platform: 'Dribbble',
-            revenue: 209633,
-            percentage: 39.63
-        },
-        {
-            platform: 'Behance',
-            revenue: 156841,
-            percentage: 29.65
-        },
-        {
-            platform: 'LinkedIn',
-            revenue: 117115,
-            percentage: 22.14
-        },
-        {
-            platform: 'Other',
-            revenue: 45386,
-            percentage: 8.58
-        }
-    ],
+    platformRevenue: [],
     platformPerformance: {
         dribbble: {
-            monthlyRevenue: 209633,
-            monthlyLeads: 156,
-            winLoss: '156/44',
-            winPercentage: 78,
-            winLossRatio: '3.5:1'
+            monthlyRevenue: 0,
+            monthlyLeads: 0,
+            winLoss: '0/0',
+            winPercentage: 0,
+            winLossRatio: '0:0'
         }
     },
-    monthlyData: {
-        'Sep': { revenue: 176325.61, cost: 88162.81 },
-        'Oct': { revenue: 176325.61, cost: 88162.81 },
-        'Nov': { revenue: 176325.61, cost: 88162.81 }
-    }
+    monthlyData: {}
 };
 
 const SalesContainer: React.FC<SalesContainerProps> = ({
     className,
     imageUrl,
     title,
-    description,
-    timeframe = 'Sep 1 - Nov 30, 2023',
-    onTimeframeChange
+    description
 }) => {
+    const [timeframe, setTimeframe] = useState('Sep 1 - Nov 30, 2023');
+
+    const handleTimeframeChange = (newTimeframe: string) => {
+        setTimeframe(newTimeframe);
+    };
+
     return (
         <Sales
             data={mockData}
             timeframe={timeframe}
-            onTimeframeChange={onTimeframeChange}
+            onTimeframeChange={handleTimeframeChange}
             className={className}
         />
     );
