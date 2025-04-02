@@ -25,10 +25,10 @@ const SaleTable: React.FC<SaleTableProps> = ({
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold' }}>
-                    Full Overview
+                <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold', color: '#000' }}>
+                    Overall Full Overview
                 </Typography>
-                <Link href="#" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                <Link href="#" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: '#000' }}>
                     View all my data
                     <ChevronRight />
                 </Link>

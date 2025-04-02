@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Sales from './Sales';
 import { SalesContainerProps } from './types';
+import Sales from './Sales';
 
 const mockData = {
     totalRevenue: 528976.82,
