@@ -9,12 +9,13 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  Divider
+  CircularProgress
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { navbarLinks } from "../../settings";
 import { FaRegBell } from "react-icons/fa";
 import { FiUser, FiSettings, FiLogOut } from "react-icons/fi";
+import { useLogout } from "@/hooks/useLogout";
 
 interface NavbarProps {
   drawerWidth: number;
@@ -24,6 +25,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, backgroundColor }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { isLoggingOut, logout } = useLogout();
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -34,8 +36,8 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    // Add your logout logic here
+  const handleLogout = async () => {
+    await logout();
     handleClose();
   };
 
@@ -132,6 +134,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
             </MenuItem>
             <MenuItem
               onClick={handleLogout}
+              disabled={isLoggingOut}
               sx={{
                 backgroundColor: '#173a79',
                 color: 'white',
@@ -140,13 +143,25 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
                 borderRadius: 0,
                 '&:hover': {
                   backgroundColor: '#1a4589'
+                },
+                '&.Mui-disabled': {
+                  opacity: 0.7,
+                  color: 'white'
                 }
               }}
             >
-              <ListItemIcon>
-                <FiLogOut fontSize="small" style={{ color: 'white' }} />
-              </ListItemIcon>
-              Logout
+              {isLoggingOut ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                  <CircularProgress size={24} sx={{ color: 'white' }} />
+                </Box>
+              ) : (
+                <>
+                  <ListItemIcon>
+                    <FiLogOut fontSize="small" style={{ color: 'white' }} />
+                  </ListItemIcon>
+                  Logout
+                </>
+              )}
             </MenuItem>
           </Menu>
         </Box>

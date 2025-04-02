@@ -51,7 +51,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
         const handleLogin = async (event: React.FormEvent) => {
             event.preventDefault();
             setIsFadingOut(true);
-            setLoading(true); // Show spinner
+            setLoading(true);
             const form = event.target as HTMLFormElement;
             const email = (form.elements.namedItem('email') as HTMLInputElement).value;
             const password = (form.elements.namedItem('password') as HTMLInputElement).value;
@@ -64,17 +64,15 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 const { access_token } = response.data;
                 localStorage.setItem('accessToken', access_token);
                 console.log('Login successful:', response.data);
-                setTimeout(() => {
-                    setIsFadingOut(false);
-                    setIsLoggedIn(true);
-                    router.push('/dashboard');
-                }, 50);
+                setIsFadingOut(false);
+                setIsLoggedIn(true);
+                router.push('/dashboard');
             } catch (error) {
                 console.error('Login failed:', error);
                 setError('Login failed. Please check your credentials and try again.');
                 setSnackbarOpen(true);
                 setIsFadingOut(false);
-                setLoading(false); // Hide spinner on error
+                setLoading(false);
             }
         };
 
