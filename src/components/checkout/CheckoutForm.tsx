@@ -11,6 +11,7 @@ import {
     RadioGroup,
     FormControlLabel,
     FormControl,
+    Paper,
 } from "@mui/material";
 import { FaPaypal, FaCreditCard, FaStripe } from "react-icons/fa";
 import styles from "./CheckoutForm.module.css";
@@ -31,14 +32,14 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
     };
 
     return (
-        <Box className={styles.checkoutContainer}>
-            <Box>
+        <Paper elevation={0} className={styles.checkoutContainer}>
+            <Box className={styles.checkoutLeft}>
                 <Typography variant="h5" className={styles.title}>
                     {title}
                 </Typography>
 
-                <form onSubmit={onSubmit} className={styles.checkoutLeft}>
-                    <Grid container spacing={2}>
+                <form onSubmit={onSubmit}>
+                    <Grid container spacing={3}>
                         {checkoutFields.map((field) => {
                             const gridSize = field.name.toLowerCase() === "address" ? 12 : 6;
                             return (
@@ -54,6 +55,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                             onChange={handleSelectChange}
                                             label={field.label}
                                             fullWidth
+                                            variant="outlined"
                                         >
                                             <MenuItem value="">
                                                 <em>Select {field.label}</em>
@@ -73,7 +75,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                                             onChange={onChange}
                                             label={field.label}
                                             fullWidth
-                                            className={field.name.toLowerCase() === "address" ? styles.addressTextfield : ""}
+                                            variant="outlined"
                                         />
                                     )}
                                 </Grid>
@@ -83,94 +85,101 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 </form>
             </Box>
 
-            <Box>
+            <Box className={styles.checkoutRight}>
                 <Typography variant="h5" className={styles.title}>
                     {orderSummaryTitle}
                 </Typography>
 
-                <Box className={styles.checkoutRight}>
+                <Box className={styles.orderSummary}>
                     {orderSummaryItems.map((item) => (
                         <Typography key={item.label} className={styles.summaryItem}>
-                            <strong>{item.label}:</strong> {item.value}
+                            <span>{item.label}</span>
+                            <span>{item.value}</span>
                         </Typography>
                     ))}
                 </Box>
+
                 <Divider className={styles.divider} />
+
                 <Box className={styles.checkoutContent}>
                     <Typography variant="h6" className={styles.total}>
                         Choose Your Payment Method
                     </Typography>
-                    <Divider className={styles.divider} />
+
                     <Box className={styles.paymentDetails}>
-                        <FormControl component="fieldset">
+                        <FormControl component="fieldset" fullWidth>
                             <RadioGroup
                                 aria-label="payment-method"
                                 name="paymentMethod"
                                 value={formData.paymentMethod || ""}
                                 onChange={handleSelectChange}
                             >
-                                {/* PayPal */}
                                 <FormControlLabel
                                     value="paypal"
                                     control={<Radio />}
                                     label={
-                                        <Box display="flex" alignItems="center">
-                                            <FaPaypal style={{ marginRight: 8 }} />
-                                            PayPal
-                                            <Box component="span" sx={{ marginLeft: 30 }}>
+                                        <Box className={styles.paymentMethodLabel}>
+                                            <Box className={styles.paymentMethodIcon}>
+                                                <FaPaypal style={{ fontSize: "1.5rem", color: "#0070ba" }} />
+                                                <Typography>PayPal</Typography>
+                                            </Box>
+                                            <Box className={styles.paymentMethodCards}>
                                                 <Image
                                                     src="/visa.jpg"
                                                     alt="Visa"
-                                                    width={85}
-                                                    height={35}
+                                                    width={60}
+                                                    height={25}
+                                                    className={styles.paymentMethodImage}
                                                 />
                                                 <Image
                                                     src="/card.jpg"
                                                     alt="Card"
-                                                    width={85}
-                                                    height={35}
-                                                    style={{ marginLeft: 8 }}
+                                                    width={60}
+                                                    height={25}
+                                                    className={styles.paymentMethodImage}
                                                 />
                                             </Box>
                                         </Box>
                                     }
                                 />
 
-                                {/* Stripe */}
                                 <FormControlLabel
                                     value="stripe"
                                     control={<Radio />}
                                     label={
-                                        <Box display="flex" alignItems="center">
-                                            <FaStripe style={{
-                                                marginRight: 8,
-                                                color: "#6772E5",
-                                                fontSize: "3.1rem",
-                                            }}
-                                            />
+                                        <Box className={styles.paymentMethodLabel}>
+                                            <Box className={styles.paymentMethodIcon}>
+                                                <FaStripe style={{
+                                                    fontSize: "2rem",
+                                                    color: "#6772E5",
+                                                }}
+                                                />
+                                            </Box>
                                         </Box>
                                     }
                                 />
 
-                                {/* PayFast */}
                                 <FormControlLabel
                                     value="payfast"
                                     control={<Radio />}
                                     label={
-                                        <Box display="flex" alignItems="center">
-                                            PayFast
+                                        <Box className={styles.paymentMethodLabel}>
+                                            <Box className={styles.paymentMethodIcon}>
+                                                <Typography>PayFast</Typography>
+                                            </Box>
                                         </Box>
                                     }
                                 />
 
-                                {/* Credit Card */}
                                 <FormControlLabel
                                     value="creditCard"
                                     control={<Radio />}
                                     label={
-                                        <Box display="flex" alignItems="center">
-                                            <FaCreditCard style={{ marginRight: 8 }} />
-                                            Credit Card
+                                        <Box className={styles.paymentMethodLabel}>
+                                            <Box className={styles.paymentMethodIcon}>
+                                                <FaCreditCard style={{ fontSize: "1.5rem" }} />
+                                                <Typography>Credit Card</Typography>
+                                            </Box>
                                         </Box>
                                     }
                                 />
@@ -178,74 +187,75 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         </FormControl>
 
                         {formData.paymentMethod === "creditCard" && (
-                            <Box sx={{ marginTop: 2 }}>
-                                <TextField
-                                    fullWidth
-                                    label="Name on the card"
-                                    name="nameOnCard"
-                                    value={formData.nameOnCard}
-                                    onChange={onChange}
-                                    margin="normal"
-                                    sx={{ backgroundColor: "#ffffff" }}
-                                />
-                                <TextField
-                                    fullWidth
-                                    label="Card Number"
-                                    name="cardNumber"
-                                    type="text"
-                                    value={formData.cardNumber}
-                                    onChange={onChange}
-                                    margin="normal"
-                                    sx={{ backgroundColor: "#ffffff" }}
-                                />
-
-                                {/* Expiration Date & CCV */}
-                                <Box display="flex" gap={2}>
-                                    <TextField
-                                        select
-                                        fullWidth
-                                        label="Month"
-                                        name="expiryMonth"
-                                        value={formData.expiryMonth}
-                                        onChange={onChange}
-                                        margin="normal"
-                                        sx={{ backgroundColor: "#ffffff" }}
-                                    >
-                                        {["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].map((month) => (
-                                            <MenuItem key={month} value={month}>
-                                                {month}
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
-
-                                    <TextField
-                                        select
-                                        fullWidth
-                                        label="Year"
-                                        name="expiryYear"
-                                        value={formData.expiryYear}
-                                        onChange={onChange}
-                                        margin="normal"
-                                        sx={{ backgroundColor: "#ffffff" }}
-                                    >
-                                        {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
-                                            <MenuItem key={year} value={year}>
-                                                {year}
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
-
-                                    <TextField
-                                        fullWidth
-                                        label="CCV"
-                                        name="ccv"
-                                        type="password"
-                                        value={formData.ccv}
-                                        onChange={onChange}
-                                        margin="normal"
-                                        sx={{ backgroundColor: "#ffffff" }}
-                                    />
-                                </Box>
+                            <Box sx={{ marginTop: 3 }}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Name on the card"
+                                            name="nameOnCard"
+                                            value={formData.nameOnCard}
+                                            onChange={onChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            label="Card Number"
+                                            name="cardNumber"
+                                            type="text"
+                                            value={formData.cardNumber}
+                                            onChange={onChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            label="Month"
+                                            name="expiryMonth"
+                                            value={formData.expiryMonth}
+                                            onChange={onChange}
+                                            variant="outlined"
+                                        >
+                                            {["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].map((month) => (
+                                                <MenuItem key={month} value={month}>
+                                                    {month}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            select
+                                            fullWidth
+                                            label="Year"
+                                            name="expiryYear"
+                                            value={formData.expiryYear}
+                                            onChange={onChange}
+                                            variant="outlined"
+                                        >
+                                            {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
+                                                <MenuItem key={year} value={year}>
+                                                    {year}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            label="CCV"
+                                            name="ccv"
+                                            type="password"
+                                            value={formData.ccv}
+                                            onChange={onChange}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                </Grid>
                             </Box>
                         )}
 
@@ -255,7 +265,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                             className={styles.checkoutButton}
                             onClick={(e) => {
                                 e.preventDefault();
-                                console.log("Checkout button clicked. Form data:", formData);
                                 onSubmit(e);
                             }}
                         >
@@ -264,7 +273,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     </Box>
                 </Box>
             </Box>
-        </Box>
+        </Paper>
     );
 };
 
