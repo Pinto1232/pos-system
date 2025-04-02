@@ -18,6 +18,7 @@ import Image from "next/image";
 import { MdRestore } from "react-icons/md";
 import { SketchPicker, ColorResult } from "react-color";
 import { FaPaintBrush } from "react-icons/fa";
+import { mockFetchCustomization, mockUpdateCustomization } from '@/api/mockUserCustomization';
 
 export interface UserCustomization {
     id: number;
@@ -54,8 +55,7 @@ const DEFAULT_LOGO_URL = "/Pisval_Logo.jpg";
 const DEFAULT_NAVBAR_COLOR = "#000000";
 
 const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
-    const response = await apiClient.get(`/api/UserCustomization/${userId}`);
-    return response.data;
+    return mockFetchCustomization(userId);
 };
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -102,20 +102,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     const updateCustomizationMutation = useUpdateCustomization();
 
     const handleSave = () => {
-        updateCustomizationMutation.mutate(
-            {
-                userId,
-                sidebarColor,
-                navbarColor,
-                logoUrl: logoPreview,
-            },
-            {
-                onSuccess: (updatedData) => {
-                    onCustomizationUpdated(updatedData as UserCustomization);
-                    onClose();
-                },
-            }
-        );
+        mockUpdateCustomization({
+            userId,
+            sidebarColor,
+            navbarColor,
+            logoUrl: logoPreview,
+        } as UserCustomization).then((updatedData) => {
+            onCustomizationUpdated(updatedData);
+            onClose();
+        });
     };
 
 

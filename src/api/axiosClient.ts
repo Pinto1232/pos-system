@@ -116,7 +116,7 @@ const useApiClient = () => {
   const useUpdateCustomization = <TData = unknown>() => {
     return useMutation<TData, Error, Record<string, unknown>>({
       mutationFn: async (customization: Record<string, unknown>) => {
-        const { data } = await apiClient.post<TData>('/UserCustomization', customization);
+        const { data } = await apiClient.post<TData>('/api/UserCustomization', customization);
         return data;
       },
       onSuccess: () => {

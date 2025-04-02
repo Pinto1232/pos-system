@@ -6,6 +6,7 @@ import DashboardMainContainer from "../dashboardMain/dashboardMainContainer";
 import SettingsModal from "@/SettingsModal";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/axiosClient";
+import { mockFetchCustomization } from '@/api/mockUserCustomization';
 
 export interface UserCustomization {
   id: number;
@@ -16,8 +17,7 @@ export interface UserCustomization {
 }
 
 const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
-  const response = await apiClient.get(`/api/UserCustomization/${userId}`);
-  return response.data;
+  return mockFetchCustomization(userId);
 };
 
 interface DashboardLayoutProps {

@@ -26,7 +26,7 @@ const DashboardMain: React.FC = () => {
       case 'dashboard':
         sectionToRender = (
           <Box>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" color='#000' gutterBottom>
               Dashboard
             </Typography>
             <SearchBarContainer />
@@ -38,7 +38,7 @@ const DashboardMain: React.FC = () => {
           </Box>
         );
         break;
-      case 'Products List':
+      case 'Products':
         sectionToRender = (
           <Box>
             <ProductTableContainer />
