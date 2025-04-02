@@ -10,6 +10,8 @@ import React, {
 } from 'react';
 import { KeycloakInstance } from 'keycloak-js';
 import keycloakInstance from '@/auth/keycloak';
+import { Box, Typography } from '@mui/material';
+import LoadingDots from '@/components/LoadingDots';
 
 export interface AuthContextProps {
   token: string | null;
@@ -131,6 +133,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           enableLogging: true,
         });
 
+        console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI);
         isInitialized = true;
         isInitializing = false;
 
@@ -173,10 +176,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           await login();
         }
       } catch (err) {
+        let errorMessage = 'Unknown authentication error';
+        console.error('Authentication Error:', errorMessage);
+        console.error('Error details:', err);
         console.error('Authentication Error Details:', err);
         isInitializing = false;
-
-        let errorMessage = 'Unknown authentication error';
 
         if (err instanceof Error) {
           errorMessage = `Authentication error: ${err.message}`;
@@ -220,6 +224,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   if (error) {
     return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <Typography variant="h6" color="error">
+          Authentication Error: {error}
+        </Typography>
+      </Box>
+    );
+    return (
       <div className="auth-error p-4 bg-red-100 border border-red-400 text-red-700 rounded">
         <h3 className="font-bold mb-2">Authentication Error</h3>
         <p>{error}</p>
@@ -237,6 +255,32 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   if (!initialized) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          gap: 2,
+        }}
+      >
+        <Typography
+          variant="h5"
+          component="div"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            fontWeight: 500,
+            color: 'text.primary'
+          }}
+        >
+          Initializing authentication
+          <LoadingDots />
+        </Typography>
+      </Box>
+    );
     return (
       <div className="auth-loading p-4 text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>

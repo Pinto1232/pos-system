@@ -76,6 +76,13 @@ const Sidebar: React.FC<SidebarProps> = ({
       return {};
     });
 
+    // Check if the section exists before navigating
+    const validSections = ["Dashboard", "Products", "Sales", "Orders", "Customers", "Settings"];
+    if (!validSections.includes(label)) {
+      setLoading(false);
+      return;
+    }
+
     setTimeout(() => {
       handleItemClick(label);
       onSectionSelect(label);

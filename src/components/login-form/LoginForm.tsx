@@ -19,6 +19,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import { Button } from "../ui/button/Button";
 import axios from 'axios';
+import { useSpinner } from '@/contexts/SpinnerContext';
 
 interface LoginFormProps {
     title?: string;
@@ -41,15 +42,16 @@ const LoginForm: React.FC<LoginFormProps> = memo(
         onClose,
     }) => {
         const router = useRouter();
+        const { setLoading } = useSpinner();
         const [error, setError] = useState<string | null>(null);
         const [isFadingOut, setIsFadingOut] = useState(false);
         const [snackbarOpen, setSnackbarOpen] = useState(false);
-        const [isLoggedIn, setIsLoggedIn] = useState(false); 
-
+        const [isLoggedIn, setIsLoggedIn] = useState(false);
 
         const handleLogin = async (event: React.FormEvent) => {
             event.preventDefault();
             setIsFadingOut(true);
+            setLoading(true); // Show spinner
             const form = event.target as HTMLFormElement;
             const email = (form.elements.namedItem('email') as HTMLInputElement).value;
             const password = (form.elements.namedItem('password') as HTMLInputElement).value;
@@ -63,8 +65,8 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 localStorage.setItem('accessToken', access_token);
                 console.log('Login successful:', response.data);
                 setTimeout(() => {
-                    setIsFadingOut(false); 
-                    setIsLoggedIn(true); 
+                    setIsFadingOut(false);
+                    setIsLoggedIn(true);
                     router.push('/dashboard');
                 }, 50);
             } catch (error) {
@@ -72,13 +74,22 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 setError('Login failed. Please check your credentials and try again.');
                 setSnackbarOpen(true);
                 setIsFadingOut(false);
+                setLoading(false); // Hide spinner on error
             }
         };
 
         return (
             <>
-                {!isLoggedIn && ( 
-                    <Box className={`${styles.LoginContainer} ${isFadingOut ? styles.fadeOut : ''}`}>
+                {!isLoggedIn && (
+                    <Box
+                        className={`${styles.LoginContainer} ${isFadingOut ? styles.fadeOut : ''}`}
+                        sx={{
+                            position: 'relative',
+                            zIndex: isFadingOut ? 0 : 1,
+                            boxShadow: isFadingOut ? 'none' : '0px 0px 20px rgba(0, 0, 0, 0.1)',
+                            transition: 'all 0.3s ease-in-out'
+                        }}
+                    >
                         <Box className={styles.formBox}>
                             {onClose && (
                                 <IconButton className={styles.closeButton} onClick={onClose}>

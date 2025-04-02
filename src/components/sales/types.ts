@@ -75,3 +75,19 @@ export interface SalesData {
   totalDeals?: number;
   topPerformer?: TeamMember;
 }
+
+export interface SalesProps {
+    data: SalesData;
+    timeframe: string;
+    onTimeframeChange?: (timeframe: string) => void;
+    className?: string;
+}
+
+export interface SalesContainerProps {
+    className?: string;
+    imageUrl?: string;
+    title?: string;
+    description?: string;
+    timeframe?: string;
+    onTimeframeChange?: (timeframe: string) => void;
+}
