@@ -98,7 +98,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     const fetchConfig = async () => {
       try {
         const response = await apiClient.get<FeaturesResponse>(
-          "PricingPackages/custom/features"
+          "/api/pricingpackages/custom/features"
         );
         console.log("Fetched config response:", response.data);
 
@@ -223,7 +223,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     console.log("Form data captured:", data.formData);
 
     try {
-      await apiClient.post("PricingPackages/custom/select", request);
+      await apiClient.post("/api/pricingpackages/custom/select", request);
       console.log("Package saved successfully!");
       setModalMessage("Package saved successfully!");
     } catch (error) {
@@ -257,7 +257,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
 
         try {
           const response = await apiClient.post<PriceCalculationResponse>(
-            "PricingPackages/custom/calculate-price",
+            "/api/pricingpackages/custom/calculate-price",
             requestBody
           );
           console.log("Price calculation response:", response.data);
