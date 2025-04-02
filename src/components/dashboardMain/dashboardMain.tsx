@@ -7,6 +7,7 @@ import AnalyticsCardContainer from "../analyticsCard/AnalyticsCardContainer";
 import SearchBarContainer from "../searchBar/SearchBarContainer";
 import FullOverviewContainer from "../fullOverview/FullOverviewContainer";
 import { SalesContainer } from "../sales";
+import SaleTableContainer from "../saleTable";
 
 interface DashboardMainProps {
   activeSection: string;
@@ -33,6 +34,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection = "Dashboar
           />
           <AnalyticsCardContainer />
           <FullOverviewContainer />
+          <SaleTableContainer />
         </Box>
       )}
 
