@@ -76,7 +76,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       return {};
     });
 
-    // Check if the section exists before navigating
     const validSections = [
       "Dashboard",
       "Products List",

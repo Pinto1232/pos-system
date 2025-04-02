@@ -29,14 +29,13 @@ export const AuthContext = createContext<AuthContextProps>({
   error: null,
 });
 
-let isInitializing = false;
-let isInitialized = false;
-
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const keycloakRef = useRef<KeycloakInstance>(keycloakInstance);
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const handleCleanLogout = useCallback(async () => {
     try {
@@ -108,7 +107,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    isInitializing = true;
+    setIsInitializing(true);
 
     const kc = keycloakRef.current;
     let refreshInterval: NodeJS.Timeout | null = null;
@@ -134,8 +133,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
 
         console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI);
-        isInitialized = true;
-        isInitializing = false;
+        setIsInitialized(true);
+        setIsInitializing(false);
 
         console.log('Keycloak initialized successfully:', {
           authenticated,
@@ -176,10 +175,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (err) {
         let errorMessage = 'Unknown authentication error';
-        console.error('Authentication Error:', errorMessage);
-        console.error('Error details:', err);
-        isInitializing = false;
-        isInitialized = true;
+        console.error('Authentication Error:', err);
+        setIsInitializing(false);
+        setIsInitialized(true);
 
         if (err instanceof Error) {
           errorMessage = `Authentication error: ${err.message}`;
@@ -206,7 +204,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         clearInterval(refreshInterval);
       }
     };
-  }, [handleCleanLogout, login]);
+  }, [handleCleanLogout, login, isInitializing, isInitialized]);
 
   const logout = useCallback(async () => {
     console.log('Logout requested');
