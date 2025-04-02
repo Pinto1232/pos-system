@@ -3,6 +3,7 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import ErrorModal from '@/components/ui/errorModal/ErrorModal';
+import { usePathname } from 'next/navigation';
 
 export interface SpinnerContextProps {
   loading: boolean;
@@ -16,10 +17,12 @@ const SpinnerContext = createContext<SpinnerContextProps | undefined>(undefined)
 export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const pathname = usePathname();
+  const isDashboard = pathname?.startsWith('/dashboard');
 
   return (
     <SpinnerContext.Provider value={{ loading, setLoading, error, setError }}>
-      {loading && (
+      {loading && !isDashboard && (
         <Box
           sx={{
             position: 'fixed',
@@ -40,6 +43,19 @@ export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
             Loading...
           </Typography>
         </Box>
+      )}
+      {loading && isDashboard && (
+        <CircularProgress
+          size={60}
+          thickness={4}
+          sx={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 9999,
+          }}
+        />
       )}
       {error && (
         <ErrorModal message={error} onClose={() => setError(null)} />

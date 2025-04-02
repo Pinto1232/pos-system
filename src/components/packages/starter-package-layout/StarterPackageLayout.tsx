@@ -29,7 +29,7 @@ const currencySymbols: Record<string, string> = {
   USD: "$",
   EUR: "€",
   GBP: "£",
-  Kz: "Kz", 
+  Kz: "Kz",
 };
 
 const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPackage }) => {
@@ -39,7 +39,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
   const [showCheckoutForm, setShowCheckoutForm] = useState(false)
   const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || "USD");
   const { setTestPeriod } = useTestPeriod();
-  const { setLoading: setSpinnerLoading } = useSpinner(); 
+  const { setLoading: setSpinnerLoading } = useSpinner();
 
   const IconComponent = iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
 
@@ -66,7 +66,7 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
     console.log("Confirmed", isSignup);
     setSuccess(false);
-    setShowCheckoutForm(true); 
+    setShowCheckoutForm(true);
     setShowLoginForm(false);
     setTestPeriod(selectedPackage.testPeriodDays);
   };
@@ -213,18 +213,23 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({ selectedPac
               <Typography variant="h6" className={styles.heading}>
                 Package summary
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Package Type: <b>{selectedPackage.type}</b>
+                Package Type <b>{selectedPackage.type}</b>
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Package ID: <b>{selectedPackage.id}</b>
+                Package ID <b>{selectedPackage.id}</b>
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>
+                Monthly Price <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
+                Test Period <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
+
               <Button
                 variant="contained"
                 className={styles.continueButton}

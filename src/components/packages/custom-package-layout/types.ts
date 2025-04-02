@@ -110,4 +110,6 @@ export interface CustomPackageLayoutProps {
   onAddOnToggle: (addOns: AddOn[]) => void;
   onUsageChange: (quantities: Record<number, number>) => void;
   setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
+  enterpriseFeatures?: Record<string, boolean>;
+  onEnterpriseFeatureToggle?: (featureId: string) => void;
 }

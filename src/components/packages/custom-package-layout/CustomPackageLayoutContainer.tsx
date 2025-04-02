@@ -50,17 +50,41 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [enterpriseFeatures, setEnterpriseFeatures] = useState<Record<string, boolean>>({
+    realTimeAnalytics: false,
+    customReports: false,
+    dataExport: false,
+    predictiveAnalytics: false,
+    centralizedManagement: false,
+    locationSettings: false,
+    crossLocationInventory: false,
+    interLocationTransfers: false,
+    roleBasedAccess: false,
+    advancedEncryption: false,
+    auditLogging: false,
+    twoFactorAuth: false,
+    restfulApi: false,
+    webhookNotifications: false,
+    customIntegration: false,
+    bulkDataImport: false
+  });
 
   const defaultStepsCustom = React.useMemo(() => [
     "Package Details",
     "Select Core Features",
     "Choose Add-Ons",
     "Configure Usage",
+    "Select Payment Plan",
+    "Choose Support Level",
+    "Configure Integrations",
     "Review & Confirm",
   ], []);
 
   const defaultStepsNonCustom = React.useMemo(() => [
     "Package Details",
+    "Select Payment Plan",
+    "Choose Support Level",
+    "Configure Enterprise Features",
     "Review & Confirm",
   ], []);
 
@@ -70,13 +94,13 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     return builtSteps;
   }, [selectedPackage.isCustomizable, defaultStepsCustom, defaultStepsNonCustom]);
 
-    useEffect(() => {
-        const fetchConfig = async () => {
-            try {
-                const response = await apiClient.get<FeaturesResponse>(
-                    "PricingPackages/custom/features"
-                );
-                console.log("Fetched config response:", response.data);
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const response = await apiClient.get<FeaturesResponse>(
+          "/api/pricingpackages/custom/features"
+        );
+        console.log("Fetched config response:", response.data);
 
         const coreFeatures = response.data.coreFeatures || [];
         const addOnsData = response.data.addOns || [];
@@ -199,7 +223,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     console.log("Form data captured:", data.formData);
 
     try {
-      await apiClient .post("PricingPackages/custom/select", request);
+      await apiClient.post("/api/pricingpackages/custom/select", request);
       console.log("Package saved successfully!");
       setModalMessage("Package saved successfully!");
     } catch (error) {
@@ -233,7 +257,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
 
         try {
           const response = await apiClient.post<PriceCalculationResponse>(
-            "PricingPackages/custom/calculate-price",
+            "/api/pricingpackages/custom/calculate-price",
             requestBody
           );
           console.log("Price calculation response:", response.data);
@@ -250,6 +274,13 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
       };
     }
   }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
+
+  const handleEnterpriseFeatureToggle = useCallback((featureId: string) => {
+    setEnterpriseFeatures(prev => ({
+      ...prev,
+      [featureId]: !prev[featureId]
+    }));
+  }, []);
 
   if (isLoading) return <WaveLoading />;
   if (showLoginForm) return <LazyLoginForm />;
@@ -290,7 +321,9 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
             console.log("Updating usage quantities:", quantities);
             setUsageQuantities(quantities);
           }}
-          setSelectedCurrency={() => {}}
+          setSelectedCurrency={() => { }}
+          enterpriseFeatures={enterpriseFeatures}
+          onEnterpriseFeatureToggle={handleEnterpriseFeatureToggle}
         />
       )}
       <SuccessMessage

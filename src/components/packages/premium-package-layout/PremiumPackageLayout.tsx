@@ -46,7 +46,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod();
-  const { setLoading: setSpinnerLoading } = useSpinner(); 
+  const { setLoading: setSpinnerLoading } = useSpinner();
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
   );
@@ -114,12 +114,12 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
       {(!loading && !success) && (
         <Grid container spacing={2} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn} sx={{ 
-              maxHeight: '600px', 
-              overflowY: 'auto', 
+            <Box className={styles.leftColumn} sx={{
+              maxHeight: '600px',
+              overflowY: 'auto',
               scrollbarWidth: 'none',
-               msOverflowStyle: 'none' 
-               }}>
+              msOverflowStyle: 'none'
+            }}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
@@ -176,19 +176,23 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
               <Typography variant="h6" className={styles.heading}>
                 Package summary
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Package Type: {selectedPackage.type}
+                Package Type <b>{selectedPackage.type}</b>
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Package ID: {selectedPackage.id}
+                Package ID <b>{selectedPackage.id}</b>
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: {currencySymbol}
-                {displayPrice}
+                Monthly Price <b>{currencySymbol}{displayPrice}</b>
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period: {selectedPackage.testPeriodDays} days
+                Test Period <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
+
               <Button
                 variant="contained"
                 className={styles.continueButton}
