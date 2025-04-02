@@ -45,7 +45,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const { setTestPeriod } = useTestPeriod(); 
+  const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } = useSpinner();
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
@@ -187,18 +187,23 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
               <Typography variant="h6" className={styles.heading}>
                 Package summary
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Package Type: {selectedPackage.type}
+                Package Type <b>{selectedPackage.type}</b>
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Package ID: {selectedPackage.id}
+                Package ID <b>{selectedPackage.id}</b>
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: {currencySymbol}{displayPrice}
+                Monthly Price <b>{currencySymbol}{displayPrice}</b>
               </Typography>
+
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period: {selectedPackage.testPeriodDays} days
+                Test Period <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
+
               <Button
                 variant="contained"
                 className={styles.continueButton}

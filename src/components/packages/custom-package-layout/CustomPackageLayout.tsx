@@ -54,6 +54,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   onAddOnToggle,
   onUsageChange,
   setSelectedCurrency,
+  enterpriseFeatures,
+  onEnterpriseFeatureToggle,
 }) => {
   const [loading, setLoading] = useState(false);
   const [selectedCurrency, setSelectedCurrencyState] = useState<string>("USD");
@@ -179,7 +181,18 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
     switch (currentLabel) {
       case "Package Details":
-        const multiCurrencyPrices = JSON.parse(selectedPackage.multiCurrencyPrices);
+        let multiCurrencyPrices: Record<string, number> = {};
+        try {
+          if (selectedPackage?.multiCurrencyPrices) {
+            multiCurrencyPrices = JSON.parse(selectedPackage.multiCurrencyPrices);
+          } else {
+            multiCurrencyPrices = { [selectedCurrency]: basePrice };
+          }
+        } catch (error) {
+          console.error("Error parsing multiCurrencyPrices:", error);
+          multiCurrencyPrices = { [selectedCurrency]: basePrice };
+        }
+
         const displayPrice = multiCurrencyPrices[selectedCurrency] || basePrice;
         const formattedDescription = packageDetails.description
           .replace(/([a-z])([A-Z])/g, "$1 $2")
@@ -565,6 +578,322 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 </Button>
               </Box>
             )}
+          </Box>
+        );
+      case "Select Payment Plan":
+        return (
+          <Box className={styles.featuresContainer}>
+            <Box className={styles.sectionHeader}>
+              <Typography variant="h5">Select Payment Plan</Typography>
+              <Typography variant="body2" className={styles.sectionDescription}>
+                Choose your preferred payment plan. Select the option that best suits your needs.
+              </Typography>
+            </Box>
+            <Box className={styles.paymentPlansContainer}>
+              <Box className={styles.paymentPlanItem}>
+                <Typography variant="h6">Monthly Plan</Typography>
+                <Typography variant="body2" className={styles.paymentDescription}>
+                  Pay monthly for maximum flexibility
+                </Typography>
+                <Typography variant="h5" className={styles.paymentPrice}>
+                  {formatPrice(selectedCurrency, calculatedPrice)}/month
+                </Typography>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
+                  Select Monthly Plan
+                </Button>
+              </Box>
+              <Box className={styles.paymentPlanItem}>
+                <Typography variant="h6">Annual Plan</Typography>
+                <Typography variant="body2" className={styles.paymentDescription}>
+                  Save 20% with annual billing
+                </Typography>
+                <Typography variant="h5" className={styles.paymentPrice}>
+                  {formatPrice(selectedCurrency, calculatedPrice * 12 * 0.8)}/year
+                </Typography>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
+                  Select Annual Plan
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        );
+      case "Choose Support Level":
+        return (
+          <Box className={styles.featuresContainer}>
+            <Box className={styles.sectionHeader}>
+              <Typography variant="h5">Choose Support Level</Typography>
+              <Typography variant="body2" className={styles.sectionDescription}>
+                Select the support package that matches your business needs.
+              </Typography>
+            </Box>
+            <Box className={styles.supportPlansContainer}>
+              <Box className={styles.supportPlanItem}>
+                <Typography variant="h6">Standard Support</Typography>
+                <Typography variant="body2" className={styles.supportDescription}>
+                  Email support with 24-hour response time
+                </Typography>
+                <Box className={styles.supportFeatures}>
+                  <Typography variant="body2">✓ Email Support</Typography>
+                  <Typography variant="body2">✓ Knowledge Base Access</Typography>
+                  <Typography variant="body2">✓ Community Forum</Typography>
+                </Box>
+                <Typography variant="h5" className={styles.supportPrice}>
+                  Included
+                </Typography>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
+                  Select Standard Support
+                </Button>
+              </Box>
+              <Box className={styles.supportPlanItem}>
+                <Typography variant="h6">Premium Support</Typography>
+                <Typography variant="body2" className={styles.supportDescription}>
+                  Priority support with 4-hour response time
+                </Typography>
+                <Box className={styles.supportFeatures}>
+                  <Typography variant="body2">✓ 24/7 Priority Support</Typography>
+                  <Typography variant="body2">✓ Dedicated Account Manager</Typography>
+                  <Typography variant="body2">✓ Phone Support</Typography>
+                  <Typography variant="body2">✓ Custom Training Sessions</Typography>
+                </Box>
+                <Typography variant="h5" className={styles.supportPrice}>
+                  +{formatPrice(selectedCurrency, calculatedPrice * 0.2)}/month
+                </Typography>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
+                  Select Premium Support
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        );
+      case "Configure Enterprise Features":
+        return (
+          <Box className={styles.featuresContainer}>
+            <Box className={styles.sectionHeader}>
+              <Typography variant="h5" sx={{ fontWeight: 600, color: "#173a79" }}>
+                Configure Enterprise Features
+              </Typography>
+              <Typography variant="body2" className={styles.sectionDescription}>
+                Customize your enterprise package with advanced features tailored for large businesses.
+              </Typography>
+            </Box>
+            <Box className={styles.enterpriseFeaturesContainer}>
+              <Box className={styles.enterpriseFeatureItem}>
+                <Box className={styles.featureHeader}>
+                  <Typography variant="h6">Advanced Analytics</Typography>
+                  <Typography variant="body2" className={styles.featureDescription}>
+                    Comprehensive reporting and analytics tools to gain deeper insights into your business operations
+                  </Typography>
+                </Box>
+                <Box className={styles.featureOptions}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.realTimeAnalytics || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('realTimeAnalytics')}
+                      />
+                    }
+                    label="Real-time Analytics Dashboard"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.customReports || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('customReports')}
+                      />
+                    }
+                    label="Custom Reports Builder"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.dataExport || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('dataExport')}
+                      />
+                    }
+                    label="Data Export & Integration"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.predictiveAnalytics || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('predictiveAnalytics')}
+                      />
+                    }
+                    label="Predictive Analytics"
+                  />
+                </Box>
+              </Box>
+              <Box className={styles.enterpriseFeatureItem}>
+                <Box className={styles.featureHeader}>
+                  <Typography variant="h6">Multi-Location Management</Typography>
+                  <Typography variant="body2" className={styles.featureDescription}>
+                    Manage multiple business locations from a single dashboard with centralized control
+                  </Typography>
+                </Box>
+                <Box className={styles.featureOptions}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.centralizedManagement || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('centralizedManagement')}
+                      />
+                    }
+                    label="Centralized Management Console"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.locationSettings || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('locationSettings')}
+                      />
+                    }
+                    label="Location-specific Settings"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.crossLocationInventory || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('crossLocationInventory')}
+                      />
+                    }
+                    label="Cross-location Inventory Management"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.interLocationTransfers || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('interLocationTransfers')}
+                      />
+                    }
+                    label="Inter-location Transfers"
+                  />
+                </Box>
+              </Box>
+              <Box className={styles.enterpriseFeatureItem}>
+                <Box className={styles.featureHeader}>
+                  <Typography variant="h6">Advanced Security</Typography>
+                  <Typography variant="body2" className={styles.featureDescription}>
+                    Enterprise-grade security features to protect your business data and operations
+                  </Typography>
+                </Box>
+                <Box className={styles.featureOptions}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.roleBasedAccess || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('roleBasedAccess')}
+                      />
+                    }
+                    label="Role-based Access Control"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.advancedEncryption || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('advancedEncryption')}
+                      />
+                    }
+                    label="Advanced Encryption"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.auditLogging || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('auditLogging')}
+                      />
+                    }
+                    label="Comprehensive Audit Logging"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.twoFactorAuth || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('twoFactorAuth')}
+                      />
+                    }
+                    label="Two-Factor Authentication"
+                  />
+                </Box>
+              </Box>
+              <Box className={styles.enterpriseFeatureItem}>
+                <Box className={styles.featureHeader}>
+                  <Typography variant="h6">API & Integration</Typography>
+                  <Typography variant="body2" className={styles.featureDescription}>
+                    Connect your POS system with other business applications and services
+                  </Typography>
+                </Box>
+                <Box className={styles.featureOptions}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.restfulApi || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('restfulApi')}
+                      />
+                    }
+                    label="RESTful API Access"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.webhookNotifications || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('webhookNotifications')}
+                      />
+                    }
+                    label="Webhook Notifications"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.customIntegration || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('customIntegration')}
+                      />
+                    }
+                    label="Custom Integration Support"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={enterpriseFeatures?.bulkDataImport || false}
+                        onChange={() => onEnterpriseFeatureToggle?.('bulkDataImport')}
+                      />
+                    }
+                    label="Bulk Data Import/Export"
+                  />
+                </Box>
+              </Box>
+            </Box>
           </Box>
         );
       case "Review & Confirm":

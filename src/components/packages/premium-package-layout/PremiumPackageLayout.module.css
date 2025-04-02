@@ -4,16 +4,16 @@
   padding: 50px;
   position: relative;
   border-radius: 6;
-  background-color: transparent; 
+  background-color: transparent;
 }
 
-.gridContainer{
+.gridContainer {
   max-width: 1200px;
   margin: 0 auto;
   padding: 50px;
   position: relative;
   border-radius: 6;
-  background-color: #ffffff; 
+  background-color: #ffffff;
 }
 
 .leftColumn {
@@ -25,12 +25,26 @@
   overflow-y: auto;
 }
 
+/* Right column styling */
 .rightColumn {
   background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rightColumn .heading {
+  font-size: 24px;
+  color: #1a1a1a;
+  margin-bottom: 25px;
+  font-weight: 600;
+  border-bottom: 2px solid #f5f5f5;
+  padding-bottom: 15px;
 }
 
 .heading {
@@ -84,22 +98,39 @@
   color: #666;
 }
 
-
 .summaryItem {
-  margin-bottom: 8px;
-  color: #666;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+  color: #4a5568;
+  font-size: 15px !important;
 }
 
+.summaryItem b {
+  color: #1a1a1a;
+  font-weight: 600;
+}
 
 .continueButton {
-  background-color: #3182ce !important;
+  background-color: #173a79 !important;
   color: white !important;
   width: 100%;
-  padding: 10px 0;
-  font-weight: bold;
-  border-radius: 6px;
-  margin-top: 20px !important;
+  padding: 15px 0 !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  margin-top: auto !important;
   text-transform: none !important;
+  font-size: 16px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(23, 58, 121, 0.15) !important;
+}
+
+.continueButton:hover {
+  background-color: #1a4589 !important;
+  box-shadow: 0 6px 15px rgba(23, 58, 121, 0.25) !important;
+  transform: translateY(-2px);
 }
 
 .multiCurrencyBox {

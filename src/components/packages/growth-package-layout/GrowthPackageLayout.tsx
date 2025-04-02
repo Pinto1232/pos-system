@@ -14,7 +14,7 @@ import iconMap from "../../../utils/icons";
 import SuccessMessage from "../../ui/success-message/SuccessMessage";
 import styles from "./GrowthPackageLayout.module.css";
 import LazyLoginForm from "@/components/login-form/LoginForm";
-import { useTestPeriod } from "@/contexts/TestPeriodContext"; 
+import { useTestPeriod } from "@/contexts/TestPeriodContext";
 import { useSpinner } from "@/contexts/SpinnerContext";
 
 interface GrowthPackageLayoutProps {
@@ -45,7 +45,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const { setTestPeriod } = useTestPeriod(); 
+  const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } = useSpinner();
   const [currentCurrency, setCurrentCurrency] = useState<string>(
     selectedPackage.currency || "USD"
@@ -62,7 +62,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
       currency: currentCurrency
     });
     // Simulate backend 
-   
+
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
     setSpinnerLoading(false);
@@ -188,19 +188,19 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Package Type: <b>{selectedPackage.type}</b>
+                Package Type <b>{selectedPackage.type}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Package ID: <b>{selectedPackage.id}</b>
+                Package ID <b>{selectedPackage.id}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price: <b>{currencySymbol}{displayPrice}</b>
+                Monthly Price <b>{currencySymbol}{displayPrice}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
+                Test Period <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
 
               <Button
