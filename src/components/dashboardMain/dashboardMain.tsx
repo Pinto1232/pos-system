@@ -13,6 +13,7 @@ import SearchBarContainer from "../searchBar/SearchBarContainer";
 import FullOverviewContainer from "../fullOverview/FullOverviewContainer";
 import SaleTableContainer from "../saleTable";
 import TransactionsContainer from "../transactionTable/TransactionsContainer";
+import NotFound from '@/app/404';
 
 interface DashboardMainProps {
   activeSection: string;
@@ -48,13 +49,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
         );
         break;
       default:
-        sectionToRender = (
-          <Box>
-            <Typography variant="h4" gutterBottom>
-              {activeSection}
-            </Typography>
-          </Box>
-        );
+        sectionToRender = <NotFound />;
     }
 
     return sectionToRender;
