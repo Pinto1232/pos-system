@@ -77,13 +77,77 @@ const Sidebar: React.FC<SidebarProps> = ({
     });
 
     // Check if the section exists before navigating
-    const validSections = ["Dashboard", "Products", "Sales", "Orders", "Customers", "Settings"];
+    const validSections = [
+      "Dashboard",
+      "Products List",
+      "Add/Edit Product",
+      "Product Categories",
+      "Stock Levels & Alerts",
+      "Low Stock Warnings",
+      "Bulk Import/Export",
+      "Inventory Adjustments",
+      "Product Expiry Tracking",
+      "New Sale",
+      "Sales History",
+      "Invoices & Receipts",
+      "Returns & Refunds",
+      "Discounts & Promotions",
+      "Loyalty & Reward Points",
+      "Pending Orders",
+      "Completed Orders",
+      "Cancelled Orders",
+      "Pre-Orders",
+      "Customer List",
+      "Add/Edit Customer",
+      "Customer Groups",
+      "Customer Purchase History",
+      "Loyalty Program",
+      "Customer Feedback & Reviews",
+      "Debt & Credit Management",
+      "Supplier List",
+      "Add/Edit Supplier",
+      "Purchase Orders",
+      "Pending Deliveries",
+      "Stock Replenishment Requests",
+      "Supplier Payments & Invoices",
+      "Employee List",
+      "Roles & Permissions",
+      "Cashier Sessions",
+      "Shift Management",
+      "Attendance Tracking",
+      "Activity Logs",
+      "Sales Reports",
+      "Top-Selling Products Report",
+      "Profit & Loss Report",
+      "Stock Movement Report",
+      "Employee Performance Report",
+      "Customer Purchase Trends Report",
+      "Tax & Compliance Reports",
+      "Payment Method Breakdown",
+      "Accepted Payment Methods",
+      "Transaction History",
+      "Pending Payments",
+      "Refund Processing",
+      "Cash Management",
+      "Expense Tracking",
+      "Recurring Expenses",
+      "Cash Flow Overview",
+      "Supplier Payments",
+      "Tax Calculations",
+      "Create New Discount",
+      "Active Promotions",
+      "Coupon & Voucher Management",
+      "Seasonal & Flash Sales",
+      "Settings"
+    ];
+
     if (!validSections.includes(label)) {
       setLoading(false);
       return;
     }
 
     setTimeout(() => {
+      // Always use the subItem label for navigation
       handleItemClick(label);
       onSectionSelect(label);
       setLoading(false);
