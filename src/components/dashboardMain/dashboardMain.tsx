@@ -34,7 +34,7 @@ const DashboardMain: React.FC = () => {
             <AnalyticsCardContainer />
             <FullOverviewContainer />
             <SaleTableContainer />
-            <TransactionsContainer />
+
           </Box>
         );
         break;
