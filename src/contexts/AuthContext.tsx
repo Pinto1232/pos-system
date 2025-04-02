@@ -108,8 +108,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-
-
     isInitializing = true;
 
     const kc = keycloakRef.current;
@@ -131,6 +129,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           pkceMethod: 'S256',
           responseMode: 'query',
           enableLogging: true,
+          silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+          silentCheckSsoFallback: false,
         });
 
         console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI);
@@ -166,7 +166,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             } catch (refreshError) {
               console.error('Token refresh failed:', refreshError);
               if (refreshInterval) clearInterval(refreshInterval);
-
               await handleCleanLogout();
             }
           }, 60000);
@@ -179,8 +178,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         let errorMessage = 'Unknown authentication error';
         console.error('Authentication Error:', errorMessage);
         console.error('Error details:', err);
-        console.error('Authentication Error Details:', err);
         isInitializing = false;
+        isInitialized = true;
 
         if (err instanceof Error) {
           errorMessage = `Authentication error: ${err.message}`;

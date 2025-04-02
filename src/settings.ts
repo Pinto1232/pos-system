@@ -20,7 +20,7 @@ export const sidebarItems = [
   },
   {
     label: "Products & Inventory",
-    icon: MdProductionQuantityLimits ,
+    icon: MdProductionQuantityLimits,
     expandable: true,
     subItems: [
       { 
@@ -55,7 +55,7 @@ export const sidebarItems = [
     expandable: true,
     subItems: [
       { 
-        label: "New Sales",
+        label: "New Sale",
        },
        { 
         label: "Sales History",
@@ -72,12 +72,11 @@ export const sidebarItems = [
        {
         label: "Loyalty & Reward Points"
        },
-       
     ], 
   },
   {
     label: "Orders",
-    icon: TbReorder ,
+    icon: TbReorder,
     expandable: true,
     subItems: [
       { 
@@ -96,7 +95,7 @@ export const sidebarItems = [
   },
   {
     label: "Customers",
-    icon: RiCustomerService2Fill ,
+    icon: RiCustomerService2Fill,
     expandable: true,
     subItems: [
       { 
@@ -122,7 +121,6 @@ export const sidebarItems = [
        },
     ], 
   },
-
   {
     label: "Suppliers & Purchases",
     icon: TbTruckDelivery,
@@ -222,10 +220,7 @@ export const sidebarItems = [
         label: "Refund Processing",
        },
        {
-        label: "Cash Managementt"
-       },
-       {
-        label: "Customer Purchase Trends Report"
+        label: "Cash Management"
        },
     ], 
   },
@@ -247,7 +242,7 @@ export const sidebarItems = [
         label: "Supplier Payments",
        },
        {
-        label: "Cash Managementt",
+        label: "Cash Management",
        },
        {
         label: "Tax Calculations"
@@ -272,94 +267,6 @@ export const sidebarItems = [
         label: "Seasonal & Flash Sales",
        },
     ], 
-  },
-  {
-    label: "Sales",
-    icon: ShoppingCartIcon,
-    expandable: true,
-    subItems: [
-      { label: "New Sale (POS Interface)" },
-      { label: "Sales History" },
-      { label: "Invoices & Receipts" },
-      { label: "Returns & Refunds" },
-      { label: "Discounts & Promotions" },
-      { label: "Loyalty & Reward Points" },
-    ],
-  },
-  {
-    label: "Orders",
-    icon: ListAltIcon,
-    expandable: true,
-    subItems: [
-      { label: "Pending Orders" },
-      { label: "Completed Orders" },
-      { label: "Cancelled Orders" },
-      { label: "Pre-Orders" },
-    ],
-  },
-  {
-    label: "Products & Inventory",
-    icon: InventoryIcon,
-    expandable: true,
-    subItems: [
-      { label: "Product List" },
-      { label: "Add/Edit Product" },
-      { label: "Product Categories" },
-      { label: "Stock Levels & Alerts" },
-      { label: "Low Stock Warnings" },
-      { label: "Bulk Import/Export" },
-      { label: "Inventory Adjustments" },
-      { label: "Product Expiry Tracking" },
-    ],
-  },
-  {
-    label: "Customers",
-    icon: PeopleIcon,
-    expandable: true,
-    subItems: [
-      { label: "Customer List" },
-      { label: "Add/Edit Customer" },
-      { label: "Customer Groups" },
-      { label: "Customer Purchase History" },
-      { label: "Loyalty Program" },
-      { label: "Customer Feedback & Reviews" },
-      { label: "Debt & Credit Management" },
-    ],
-  },
-  {
-    label: "Suppliers & Purchases",
-    icon: LocalShippingIcon,
-    expandable: true,
-    subItems: [
-      { label: "Supplier List" },
-      { label: "Add/Edit Supplier" },
-      { label: "Purchase Orders" },
-      { label: "Pending Deliveries" },
-      { label: "Stock Replenishment Requests" },
-      { label: "Supplier Payments & Invoices" },
-    ],
-  },
-  {
-    label: "Employees & Cashiers",
-    icon: BadgeIcon,
-    expandable: true,
-    subItems: [
-      { label: "Employee List" },
-      { label: "Roles & Permissions" },
-      { label: "Cashier Sessions" },
-      { label: "Shift Management" },
-      { label: "Attendance Tracking" },
-      { label: "Activity Logs" },
-    ],
-  },
-  {
-    label: "Invoices",
-    icon: ReceiptIcon,
-    expandable: true,
-    subItems: [
-      { label: "Overview" },
-      { label: "Recurring Sales" },
-    ],
   },
   {
     label: "Settings",

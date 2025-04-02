@@ -5,7 +5,7 @@ import { useContext, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient, UseMutationResult } from '@tanstack/react-query';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL + '/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   timeout: 10000,
 });
@@ -116,7 +116,7 @@ const useApiClient = () => {
   const useUpdateCustomization = <TData = unknown>() => {
     return useMutation<TData, Error, Record<string, unknown>>({
       mutationFn: async (customization: Record<string, unknown>) => {
-        const { data } = await apiClient.post<TData>('/UserCustomization', customization);
+        const { data } = await apiClient.post<TData>('/api/UserCustomization', customization);
         return data;
       },
       onSuccess: () => {

@@ -14,19 +14,22 @@ import FullOverviewContainer from "../fullOverview/FullOverviewContainer";
 import SaleTableContainer from "../saleTable";
 import TransactionsContainer from "../transactionTable/TransactionsContainer";
 
-const DashboardMain: React.FC = () => {
+interface DashboardMainProps {
+  activeSection: string;
+}
+
+const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
   const { authenticated } = React.useContext(AuthContext);
-  const [activeSection, setActiveSection] = useState('dashboard');
   const { setLoading } = useSpinner();
 
   const renderSection = () => {
     let sectionToRender;
 
     switch (activeSection) {
-      case 'dashboard':
+      case 'Dashboard':
         sectionToRender = (
           <Box>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" color='#000' gutterBottom>
               Dashboard
             </Typography>
             <SearchBarContainer />
@@ -34,11 +37,10 @@ const DashboardMain: React.FC = () => {
             <AnalyticsCardContainer />
             <FullOverviewContainer />
             <SaleTableContainer />
-
           </Box>
         );
         break;
-      case 'products':
+      case 'Products List':
         sectionToRender = (
           <Box>
             <ProductTableContainer />
