@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Silent SSO Check</title>
+    <script>
+        parent.postMessage(location.href, location.origin);
+    </script>
+</head>
+
+<body>
+    <noscript>
+        <p>
+            <strong>Note:</strong> Since your browser does not support JavaScript,
+            you must press the Continue button once to proceed.
+        </p>
+        <form method="post">
+            <input type="submit" value="Continue" />
+        </form>
+    </noscript>
+</body>
+
+</html>

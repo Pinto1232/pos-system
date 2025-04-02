@@ -54,7 +54,7 @@ const DEFAULT_LOGO_URL = "/Pisval_Logo.jpg";
 const DEFAULT_NAVBAR_COLOR = "#000000";
 
 const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
-    const response = await apiClient.get(`/UserCustomization/${userId}`);
+    const response = await apiClient.get(`/api/UserCustomization/${userId}`);
     return response.data;
 };
 

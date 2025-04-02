@@ -16,7 +16,7 @@ export interface UserCustomization {
 }
 
 const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
-  const response = await apiClient.get(`/UserCustomization/${userId}`);
+  const response = await apiClient.get(`/api/UserCustomization/${userId}`);
   return response.data;
 };
 

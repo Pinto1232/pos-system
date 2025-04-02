@@ -38,7 +38,7 @@ const DashboardMain: React.FC = () => {
           </Box>
         );
         break;
-      case 'products':
+      case 'Products List':
         sectionToRender = (
           <Box>
             <ProductTableContainer />

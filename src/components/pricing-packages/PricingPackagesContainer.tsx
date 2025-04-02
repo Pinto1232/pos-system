@@ -20,7 +20,7 @@ const PricingPackagesContainer: React.FC = () => {
     pageNumber: number,
     pageSize: number
   ): Promise<PricePackages> => {
-    const response = await axiosClient.get(`/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`);
+    const response = await axiosClient.get(`/api/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`);
     return response.data;
   };
 
@@ -33,7 +33,7 @@ const PricingPackagesContainer: React.FC = () => {
     fetchCurrencyAndRate().then(setCurrencyInfo).catch(() => setCurrencyInfo({ currency: "USD", rate: 1 }));
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     if (data) {
       console.log("📦 Retrieved Pricing Packages:", data);
     }
