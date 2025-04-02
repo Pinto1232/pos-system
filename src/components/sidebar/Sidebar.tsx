@@ -70,6 +70,13 @@ const Sidebar: React.FC<SidebarProps> = ({
       return {};
     });
 
+    // Check if the section exists before navigating
+    const validSections = ["Dashboard", "Products", "Sales", "Orders", "Customers", "Settings"];
+    if (!validSections.includes(label)) {
+      setLoading(false);
+      return;
+    }
+
     setTimeout(() => {
       handleItemClick(label);
       onSectionSelect(label);
@@ -90,6 +97,12 @@ const Sidebar: React.FC<SidebarProps> = ({
           boxSizing: "border-box",
           backgroundColor,
           color: textColor,
+          overflowY: 'auto',
+          '&::-webkit-scrollbar': {
+            display: 'none', // Hide scrollbar for Chrome, Safari and Opera
+          },
+          scrollbarWidth: 'none', // Hide scrollbar for Firefox
+          msOverflowStyle: 'none', // Hide scrollbar for IE and Edge
         },
       }}
       open
@@ -168,7 +181,18 @@ const Sidebar: React.FC<SidebarProps> = ({
                     >
                       <ListItemText
                         primary={subItem.label}
-                        sx={{ color: textColor }}
+                        sx={{
+                          color: textColor,
+                          '& .MuiTypography-root': {
+                            display: 'flex',
+                            alignItems: 'center',
+                            '&::before': {
+                              content: '"•"',
+                              marginRight: '12px',
+                              fontSize: '20px',
+                            }
+                          }
+                        }}
                       />
                       {activeItemState === subItem.label && (
                         <ChevronRight sx={{ color: textColor }} />

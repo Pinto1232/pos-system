@@ -10,6 +10,8 @@ import React, {
 } from 'react';
 import { KeycloakInstance } from 'keycloak-js';
 import keycloakInstance from '@/auth/keycloak';
+import { Box, Typography } from '@mui/material';
+import LoadingDots from '@/components/LoadingDots';
 
 export interface AuthContextProps {
   token: string | null;
@@ -21,8 +23,8 @@ export interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps>({
   token: null,
-  login: async () => {},
-  logout: async () => {},
+  login: async () => { },
+  logout: async () => { },
   authenticated: false,
   error: null,
 });
@@ -48,7 +50,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           enableLogging: true,
         });
 
-        console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI); 
+        console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI);
 
         if (authenticated) {
           if (kc.token) {
@@ -80,7 +82,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         const errorMessage =
           err instanceof Error ? err.message : 'Unknown authentication error';
         console.error('Authentication Error:', errorMessage);
-        console.error('Error details:', err); 
+        console.error('Error details:', err);
         setError(errorMessage);
         localStorage.removeItem('accessToken');
         setInitialized(true);
@@ -128,11 +130,49 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   if (error) {
-    return <div className="auth-error">Authentication Error: {error}</div>;
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <Typography variant="h6" color="error">
+          Authentication Error: {error}
+        </Typography>
+      </Box>
+    );
   }
 
   if (!initialized) {
-    return <div className="auth-loading">Initializing authentication...</div>;
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          gap: 2,
+        }}
+      >
+        <Typography
+          variant="h5"
+          component="div"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            fontWeight: 500,
+            color: 'text.primary'
+          }}
+        >
+          Initializing authentication
+          <LoadingDots />
+        </Typography>
+      </Box>
+    );
   }
 
   return (
