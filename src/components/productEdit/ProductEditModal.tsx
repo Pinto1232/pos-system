@@ -176,9 +176,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     useEffect(() => {
         if (product && mode === 'view') {
             setFormData({
-                productName: product.name || '',
+                productName: product.productName || '',
                 color: product.color || 'Black',
-                idCode: product.idCode || '',
+                idCode: product.barcode || '',
                 sku: product.sku || '',
                 price: product.price?.toString() || '',
                 statusProduct: product.status ? 'Active' : 'Inactive',
@@ -241,9 +241,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
         e.preventDefault();
         const newProduct: Product = {
             id: product?.id || Date.now(),
-            name: formData.productName,
+            productName: formData.productName,
             color: formData.color,
-            idCode: formData.idCode,
+            barcode: formData.idCode,
             sku: formData.sku,
             price: parseFloat(formData.price),
             status: formData.statusProduct === 'Active',

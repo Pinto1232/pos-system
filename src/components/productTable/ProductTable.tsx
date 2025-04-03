@@ -247,7 +247,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                             <Box sx={productImageStyles}>
                                                 <Image
                                                     src={product.image}
-                                                    alt={`${product.name} product image`}
+                                                    alt={`${product.productName} product image`}
                                                     width={40}
                                                     height={40}
                                                     style={{
@@ -257,7 +257,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                                 />
                                             </Box>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="body1">{product.name}</Typography>
+                                                <Typography variant="body1">{product.productName}</Typography>
                                                 {product.color && (
                                                     <Chip
                                                         label={product.color}
@@ -285,14 +285,14 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                             </Stack>
                                         </Stack>
                                     </TableCell>
-                                    <TableCell>{product.idCode}</TableCell>
+                                    <TableCell>{product.barcode}</TableCell>
                                     <TableCell>{product.sku || '-'}</TableCell>
                                     <TableCell>R{(product.price || 0).toFixed(2)}</TableCell>
                                     <TableCell>
                                         <FormControlLabel
                                             control={
                                                 <Switch
-                                                    checked={product.status}
+                                                    checked={product.status ?? false}
                                                     onChange={(e) => {
                                                         e.stopPropagation();
                                                         onStatusToggle(product);
@@ -302,7 +302,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                                 />
                                             }
                                             label={
-                                                <Typography sx={statusTextStyles(product.status)}>
+                                                <Typography sx={statusTextStyles(product.status ?? false)}>
                                                     {product.status ? 'In Stock' : 'Out of Stock'}
                                                 </Typography>
                                             }
@@ -368,7 +368,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                     <Box sx={modalImageStyles}>
                         <Image
                             src={selectedProduct.image}
-                            alt={selectedProduct.name}
+                            alt={selectedProduct.productName}
                             width={120}
                             height={120}
                             style={{ objectFit: 'cover' }}
@@ -391,7 +391,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                         mb: 0.5
                                     }}
                                 >
-                                    {selectedProduct.name}
+                                    {selectedProduct.productName}
                                 </Typography>
                                 {selectedProduct.color && (
                                     <Typography
@@ -424,7 +424,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                             ID Code
                                         </Typography>
                                         <Typography sx={{ fontWeight: 500, color: '#1a1a1a' }}>
-                                            {selectedProduct.idCode}
+                                            {selectedProduct.barcode}
                                         </Typography>
                                     </Stack>
                                     <Stack

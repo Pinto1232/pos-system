@@ -1,9 +1,9 @@
 export interface Product {
   id: number;
   image: string;
-  name: string;
+  productName: string;
   color: string;
-  idCode: string;
+  barcode: string;
   sku: string;
   price: number;
   status: boolean;

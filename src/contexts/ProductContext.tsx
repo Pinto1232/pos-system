@@ -13,8 +13,8 @@ const ProductContext = createContext<ProductContextType | undefined>(undefined);
 const initialProducts: Product[] = [
     {
         id: 1,
-        name: "Product 1",
-        idCode: "P001",
+        productName: "Product 1",
+        barcode: "P001",
         sku: "SKU001",
         price: 50,
         status: true,
@@ -25,8 +25,8 @@ const initialProducts: Product[] = [
     },
     {
         id: 2,
-        name: "Product 2",
-        idCode: "P002",
+        productName: "Product 2",
+        barcode: "P002",
         sku: "SKU002",
         price: 75,
         status: false,
@@ -37,8 +37,8 @@ const initialProducts: Product[] = [
     },
     {
         id: 3,
-        name: "Product 3",
-        idCode: "P003",
+        productName: "Product 3",
+        barcode: "P003",
         sku: "SKU003",
         price: 120,
         status: true,
