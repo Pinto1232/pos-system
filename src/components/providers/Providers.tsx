@@ -2,8 +2,9 @@
 
 import React from "react";
 import { QueryClient, QueryClientProvider, DefaultOptions } from "@tanstack/react-query";
-import  AuthProvider  from "@/contexts/AuthContext";
-import { AxiosError } from "axios"; 
+import AuthProvider from "@/contexts/AuthContext";
+import { ProductProvider } from "@/contexts/ProductContext";
+import { AxiosError } from "axios";
 
 
 const defaultQueryOptions: DefaultOptions = {
@@ -17,11 +18,11 @@ const defaultQueryOptions: DefaultOptions = {
         return false;
       }
 
-      return failureCount < 3; 
+      return failureCount < 3;
     },
 
-    staleTime: 5 * 60 * 1000, 
-    gcTime: 10 * 60 * 1000, 
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   },
 };
 
@@ -38,7 +39,9 @@ queryClient.getQueryCache().subscribe((event) => {
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <ProductProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </ProductProvider>
     </AuthProvider>
   );
 }

@@ -18,7 +18,7 @@ export const ProductListSection = styled(Box)({
 });
 
 export const TotalSection = styled(Paper)({
-  width: '320px',
+  width: '230px',
   height: 'fit-content',
   padding: '32px',
   display: 'flex',

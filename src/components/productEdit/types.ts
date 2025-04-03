@@ -1,13 +1,14 @@
 export interface Product {
   id: number;
-  productName: string;
-  barcode: string;
+  image: string;
+  name: string;
+  color: string;
+  idCode: string;
   sku: string;
   price: number;
-  statusProduct: string;
+  status: boolean;
   rating: number;
   createdAt: string;
-  image: string;
   stock?: number;
   sales?: number;
   discount?: number;

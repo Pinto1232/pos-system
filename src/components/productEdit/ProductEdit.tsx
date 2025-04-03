@@ -59,27 +59,13 @@ const ProductEdit: React.FC<ProductEditProps> = ({
         setIsModalOpen(true);
     };
 
-    const handleSubmitProduct = (data: any) => {
+    const handleSubmitProduct = (data: Product) => {
         console.log('ProductEdit - Received data from modal:', data);
-        // Format the data to match the table structure
-        const formattedData = {
-            id: editingProduct ? editingProduct.id : Date.now(),
-            productName: data.productName || '',
-            barcode: data.idCode || '',
-            sku: data.sku || '',
-            price: parseFloat(data.price) || 0,
-            statusProduct: data.statusProduct || 'Active',
-            rating: parseFloat(data.rating) || 0,
-            createdAt: editingProduct ? editingProduct.createdAt : new Date().toISOString().split('T')[0],
-            image: data.image || '/placeholder-image.png',
-        };
-
         if (editingProduct) {
-            onUpdateItem(formattedData);
+            onUpdateItem(data);
         } else {
-            onAddItem(formattedData);
+            onAddItem(data);
         }
-
         handleCloseModal();
     };
 
@@ -143,6 +129,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 return '$0.00';
             },
             valueGetter: (params: GridRenderCellParams) => {
+                if (!params || !params.row) return 0;
                 const row = params.row as Product;
                 return row?.price ?? 0;
             },
@@ -318,6 +305,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                                 },
                             }}
                             processRowUpdate={(newRow, oldRow) => {
+                                if (!newRow || !oldRow) return oldRow;
                                 console.log('Updating row:', { newRow, oldRow });
                                 return newRow;
                             }}

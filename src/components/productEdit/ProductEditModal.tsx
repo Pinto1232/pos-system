@@ -140,6 +140,18 @@ interface ProductEditModalProps {
     mode?: 'view' | 'add' | 'edit';
 }
 
+interface FormData {
+    productName: string;
+    color: string;
+    idCode: string;
+    sku: string;
+    price: string;
+    statusProduct: string;
+    rating: string;
+    image: string;
+    createdAt: Date;
+}
+
 const ProductEditModal: React.FC<ProductEditModalProps> = ({
     open,
     onClose,
@@ -147,12 +159,13 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     product,
     mode = 'add'
 }) => {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         productName: '',
+        color: 'Black',
         idCode: '',
         sku: '',
         price: '',
-        statusProduct: '',
+        statusProduct: 'Active',
         rating: '',
         image: '',
         createdAt: new Date(),
@@ -163,11 +176,12 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     useEffect(() => {
         if (product && mode === 'view') {
             setFormData({
-                productName: product.productName || '',
-                idCode: product.barcode || '',
+                productName: product.name || '',
+                color: product.color || 'Black',
+                idCode: product.idCode || '',
                 sku: product.sku || '',
                 price: product.price?.toString() || '',
-                statusProduct: product.statusProduct || '',
+                statusProduct: product.status ? 'Active' : 'Inactive',
                 rating: product.rating?.toString() || '',
                 image: product.image || '',
                 createdAt: new Date(product.createdAt || new Date()),
@@ -223,12 +237,21 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
         });
     };
 
-    const handleSubmit = () => {
-        console.log('Modal - Form data before submit:', formData);
-        onSubmit({
-            ...formData,
-            createdAt: formData.createdAt.toISOString().split('T')[0],
-        });
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const newProduct: Product = {
+            id: product?.id || Date.now(),
+            name: formData.productName,
+            color: formData.color,
+            idCode: formData.idCode,
+            sku: formData.sku,
+            price: parseFloat(formData.price),
+            status: formData.statusProduct === 'Active',
+            rating: parseFloat(formData.rating),
+            image: formData.image || '/placeholder-image.png',
+            createdAt: new Date().toISOString(),
+        };
+        onSubmit(newProduct);
         onClose();
     };
 
@@ -369,9 +392,8 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                                         label="Status Product"
                                         disabled={mode === 'view'}
                                     >
-                                        <MenuItem value="active">Active</MenuItem>
-                                        <MenuItem value="inactive">Inactive</MenuItem>
-                                        <MenuItem value="out_of_stock">Out of Stock</MenuItem>
+                                        <MenuItem value="Active">Active</MenuItem>
+                                        <MenuItem value="Inactive">Inactive</MenuItem>
                                     </Select>
                                 </FormControl>
                             </FormField>

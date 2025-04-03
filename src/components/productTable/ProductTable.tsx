@@ -247,7 +247,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                             <Box sx={productImageStyles}>
                                                 <Image
                                                     src={product.image}
-                                                    alt={product.name}
+                                                    alt={`${product.name} product image`}
                                                     width={40}
                                                     height={40}
                                                     style={{
@@ -287,7 +287,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                     </TableCell>
                                     <TableCell>{product.idCode}</TableCell>
                                     <TableCell>{product.sku || '-'}</TableCell>
-                                    <TableCell>R{product.price.toFixed(2)}</TableCell>
+                                    <TableCell>R{(product.price || 0).toFixed(2)}</TableCell>
                                     <TableCell>
                                         <FormControlLabel
                                             control={
@@ -446,7 +446,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                                 fontSize: '1.1rem'
                                             }}
                                         >
-                                            R{selectedProduct.price.toFixed(2)}
+                                            R{(selectedProduct?.price || 0).toFixed(2)}
                                         </Typography>
                                     </Stack>
                                     <Stack
