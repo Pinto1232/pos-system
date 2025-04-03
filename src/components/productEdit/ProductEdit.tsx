@@ -230,7 +230,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                             Inventory
                         </Typography>
                         <S.ExportButton
-                            variant="outlined"
                             startIcon={<QrCodeScannerIcon />}
                         >
                             Export Product
