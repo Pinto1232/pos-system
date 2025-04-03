@@ -79,18 +79,18 @@ const Sales: React.FC<SalesProps> = ({
                         display: 'flex',
                         alignItems: 'center',
                         gap: 1,
-                        backgroundColor: '#f8f9fa',
+                        backgroundColor: '#173a79',
                         padding: '4px 12px',
                         borderRadius: 2,
                         border: '1px solid rgba(0,0,0,0.08)'
                     }}>
-                        <Typography sx={{ color: '#666666', fontSize: '0.875rem' }}>Timeframe</Typography>
+                        <Typography sx={{ color: '#ffffff', fontSize: '0.875rem' }}>Timeframe</Typography>
                         <Switch
                             size="small"
                             checked={true}
                             onChange={() => onTimeframeChange?.(timeframe)}
                         />
-                        <Typography sx={{ fontSize: '0.875rem', color: '#1a1a1a' }}>{timeframe}</Typography>
+                        <Typography sx={{ fontSize: '0.875rem', color: '#ffffff' }}>{timeframe}</Typography>
                     </Box>
                 </Stack>
             </Stack>
