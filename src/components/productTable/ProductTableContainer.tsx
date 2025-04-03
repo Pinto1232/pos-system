@@ -27,8 +27,8 @@ const ProductTableContainer: React.FC = () => {
     // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.idCode.toLowerCase().includes(searchQuery.toLowerCase())
+        product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.barcode.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -155,8 +155,8 @@ const ProductTableContainer: React.FC = () => {
 
     // Prepare data for the table
     const tableData = filteredProducts.map(product => [
-      product.name,
-      product.idCode,
+      product.productName,
+      product.barcode,
       product.sku || '-',
       `R${product.price.toFixed(2)}`,
       product.status ? 'In Stock' : 'Out of Stock',

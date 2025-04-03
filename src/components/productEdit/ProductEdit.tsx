@@ -7,6 +7,7 @@ import {
     Stack,
     IconButton,
     Avatar,
+    Switch,
 } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
@@ -124,9 +125,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             valueFormatter: (params: GridRenderCellParams) => {
                 const value = params.value;
                 if (typeof value === 'number') {
-                    return `$${value.toFixed(2)}`;
+                    return `R${value.toFixed(2)}`;
                 }
-                return '$0.00';
+                return 'R0.00';
             },
             valueGetter: (params: GridRenderCellParams) => {
                 if (!params || !params.row) return 0;
@@ -139,6 +140,31 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             headerName: 'Status Product',
             flex: 1,
             minWidth: 130,
+            renderCell: (params) => (
+                <Switch
+                    checked={params.value === 'Active'}
+                    onChange={(e) => {
+                        const updatedProduct = {
+                            ...params.row,
+                            statusProduct: e.target.checked ? 'Active' : 'Inactive'
+                        };
+                        onUpdateItem(updatedProduct);
+                    }}
+                    color="primary"
+                    size="small"
+                    sx={{
+                        '& .MuiSwitch-switchBase.Mui-checked': {
+                            color: '#52B788',
+                            '&:hover': {
+                                backgroundColor: 'rgba(82, 183, 136, 0.08)',
+                            },
+                        },
+                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                            backgroundColor: '#52B788',
+                        },
+                    }}
+                />
+            ),
         },
         {
             field: 'rating',
@@ -349,7 +375,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                             fontSize: '24px',
                             color: '#1E2A3B'
                         }}>
-                            ${subTotal.toFixed(2)}
+                            R{subTotal.toFixed(2)}
                         </Typography>
                     </Box>
 
