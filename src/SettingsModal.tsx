@@ -243,7 +243,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     return (
         <Dialog
             open={open}
-            onClose={onClose}
+            onClose={(event, reason) => {
+                if (reason === 'backdropClick' || reason === 'escapeKeyDown') {
+                    return;
+                }
+                onClose();
+            }}
             maxWidth="md"
             fullWidth
             sx={{ "& .MuiDialog-paper": { borderRadius: 8, padding: 2 } }}
