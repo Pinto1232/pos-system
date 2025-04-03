@@ -112,7 +112,9 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
             sx={{
               marginTop: '25px',
               '& .MuiPaper-root': {
-                minWidth: '200px'
+                minWidth: '200px',
+                maxHeight: '400px',
+                overflowY: 'auto'
               },
               '& .MuiList-root': {
                 padding: 0
