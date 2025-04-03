@@ -16,6 +16,8 @@ import {
     SelectChangeEvent,
     IconButton,
     Stack,
+    Switch,
+    FormControlLabel,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -30,21 +32,33 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
         width: '600px',
         maxWidth: '90vw',
         borderRadius: '24px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.12)',
         overflow: 'hidden',
         background: '#FFFFFF',
+        backdropFilter: 'blur(10px)',
     },
 }));
 
 const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
-    padding: '24px 32px',
-    borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
-    background: '#F8F9FA',
+    padding: '28px 32px',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+    background: 'linear-gradient(to right, #F8F9FA, #FFFFFF)',
     '& .MuiTypography-root': {
-        fontSize: '24px',
+        fontSize: '26px',
         fontWeight: 600,
         color: '#1E2A3B',
         letterSpacing: '-0.5px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        '&::before': {
+            content: '""',
+            display: 'block',
+            width: '4px',
+            height: '24px',
+            backgroundColor: '#52B788',
+            borderRadius: '2px',
+        }
     },
 }));
 
@@ -53,23 +67,29 @@ const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '32px',
+    background: '#FFFFFF',
     '& .MuiTextField-root': {
         marginBottom: '0',
         '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
             backgroundColor: '#FFFFFF',
+            transition: 'all 0.2s ease-in-out',
             '&:hover .MuiOutlinedInput-notchedOutline': {
                 borderColor: '#52B788',
+                borderWidth: '1.5px',
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                 borderColor: '#52B788',
                 borderWidth: '2px',
+                boxShadow: '0 0 0 4px rgba(82, 183, 136, 0.1)',
             },
         },
         '& .MuiInputLabel-root': {
             color: '#6C757D',
+            transition: 'all 0.2s ease-in-out',
             '&.Mui-focused': {
                 color: '#52B788',
+                transform: 'translate(14px, -9px) scale(0.75)',
             },
         },
     },
@@ -80,9 +100,9 @@ const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
 
 const StyledDialogActions = styled(DialogActions)(({ theme }) => ({
     padding: '24px 32px',
-    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+    borderTop: '1px solid rgba(0, 0, 0, 0.06)',
     gap: '16px',
-    background: '#F8F9FA',
+    background: 'linear-gradient(to right, #FFFFFF, #F8F9FA)',
 }));
 
 const ImageSection = styled(Box)(({ theme }) => ({
@@ -92,44 +112,68 @@ const ImageSection = styled(Box)(({ theme }) => ({
 }));
 
 const ImageUploadContainer = styled(Box)(({ theme }) => ({
-    border: '2px dashed rgba(0, 0, 0, 0.12)',
-    borderRadius: '8px',
-    padding: '12px',
+    border: '2px dashed rgba(82, 183, 136, 0.3)',
+    borderRadius: '16px',
+    padding: '16px',
     textAlign: 'center',
     cursor: 'pointer',
     transition: 'all 0.3s ease-in-out',
-    background: '#FFFFFF',
-    maxWidth: '160px',
+    background: 'rgba(82, 183, 136, 0.02)',
+    maxWidth: '180px',
     margin: '0 auto',
     '&:hover': {
         borderColor: '#52B788',
         backgroundColor: 'rgba(82, 183, 136, 0.04)',
         transform: 'translateY(-2px)',
+        boxShadow: '0 8px 24px rgba(82, 183, 136, 0.1)',
     },
 }));
 
 const PreviewImage = styled('img')(({ theme }) => ({
     maxWidth: '100%',
-    maxHeight: '100px',
-    marginTop: '8px',
-    borderRadius: '6px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    maxHeight: '120px',
+    marginTop: '12px',
+    borderRadius: '12px',
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.08)',
     objectFit: 'cover',
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+        transform: 'scale(1.02)',
+    }
 }));
 
 const FormSection = styled(Box)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
-    gap: '24px',
+    gap: '28px',
+    padding: '8px 0',
 }));
 
 const FormRow = styled(Box)(({ theme }) => ({
     display: 'flex',
     gap: '24px',
+    '&:hover .MuiTextField-root .MuiOutlinedInput-root': {
+        borderColor: '#52B788',
+    }
 }));
 
 const FormField = styled(Box)(({ theme }) => ({
     flex: 1,
+    position: 'relative',
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        bottom: '-8px',
+        left: '0',
+        width: '100%',
+        height: '1px',
+        background: 'linear-gradient(to right, transparent, rgba(82, 183, 136, 0.1), transparent)',
+        opacity: 0,
+        transition: 'opacity 0.3s ease-in-out',
+    },
+    '&:hover::after': {
+        opacity: 1,
+    }
 }));
 
 interface ProductEditModalProps {
@@ -174,7 +218,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     const [previewImage, setPreviewImage] = useState<string | null>(null);
 
     useEffect(() => {
-        if (product && mode === 'view') {
+        if (product && (mode === 'view' || mode === 'edit')) {
             setFormData({
                 productName: product.productName || '',
                 color: product.color || 'Black',
@@ -245,9 +289,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
             color: formData.color,
             barcode: formData.idCode,
             sku: formData.sku,
-            price: parseFloat(formData.price),
+            price: parseFloat(formData.price) || 0,
             status: formData.statusProduct === 'Active',
-            rating: parseFloat(formData.rating),
+            rating: parseFloat(formData.rating) || 0,
             image: formData.image || '/placeholder-image.png',
             createdAt: new Date().toISOString(),
         };
@@ -280,9 +324,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                                         onChange={handleImageUpload}
                                     />
                                     <label htmlFor="image-upload">
-                                        <Stack direction="column" alignItems="center" spacing={0.5}>
+                                        <Stack direction="column" alignItems="center" spacing={0.25}>
                                             <CloudUploadIcon sx={{
-                                                fontSize: 24,
+                                                fontSize: 20,
                                                 color: '#52B788',
                                                 transition: 'transform 0.3s ease',
                                                 '&:hover': {
@@ -293,12 +337,15 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                                                 color: '#6C757D',
                                                 fontWeight: 500,
                                                 fontSize: '0.75rem',
+                                                cursor: 'pointer',
+                                                lineHeight: 1.2,
                                             }}>
                                                 Click to upload
                                             </Typography>
                                             <Typography variant="caption" sx={{
                                                 color: '#ADB5BD',
                                                 fontSize: '0.65rem',
+                                                lineHeight: 1.2,
                                             }}>
                                                 PNG, JPG or GIF
                                             </Typography>
@@ -375,7 +422,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                                     onChange={handleTextChange('price')}
                                     variant="outlined"
                                     InputProps={{
-                                        startAdornment: <Typography sx={{ mr: 1, color: '#6C757D' }}>$</Typography>,
+                                        startAdornment: <Typography sx={{ mr: 1, color: '#6C757D' }}>R</Typography>,
                                     }}
                                     disabled={mode === 'view'}
                                 />
@@ -384,18 +431,38 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
 
                         <FormRow>
                             <FormField>
-                                <FormControl fullWidth>
-                                    <InputLabel>Status Product</InputLabel>
-                                    <Select
-                                        value={formData.statusProduct}
-                                        onChange={handleSelectChange}
-                                        label="Status Product"
-                                        disabled={mode === 'view'}
-                                    >
-                                        <MenuItem value="Active">Active</MenuItem>
-                                        <MenuItem value="Inactive">Inactive</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={formData.statusProduct === 'Active'}
+                                            onChange={(e) => {
+                                                setFormData({
+                                                    ...formData,
+                                                    statusProduct: e.target.checked ? 'Active' : 'Inactive'
+                                                });
+                                            }}
+                                            disabled={mode === 'view'}
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Status Product"
+                                    sx={{
+                                        '& .MuiFormControlLabel-label': {
+                                            color: '#6C757D',
+                                        },
+                                        '& .MuiSwitch-root': {
+                                            '& .MuiSwitch-switchBase.Mui-checked': {
+                                                color: '#52B788',
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(82, 183, 136, 0.08)',
+                                                },
+                                            },
+                                            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                                backgroundColor: '#52B788',
+                                            },
+                                        },
+                                    }}
+                                />
                             </FormField>
                             <FormField>
                                 <TextField

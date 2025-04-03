@@ -23,8 +23,45 @@ import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
 
 const Sales: React.FC<SalesProps> = ({
-    data,
-    timeframe,
+    data = {
+        totalRevenue: 0,
+        previousRevenue: 0,
+        growthPercentage: 0,
+        growthValue: 0,
+        timeframe: {
+            current: '',
+            previous: ''
+        },
+        topSales: 0,
+        bestDeal: {
+            value: 0,
+            company: ''
+        },
+        deals: {
+            count: 0,
+            value: '',
+            growth: 0,
+            winRate: 0,
+            winRateGrowth: 0
+        },
+        teamPerformance: [],
+        platformRevenue: [],
+        platformPerformance: {
+            dribbble: {
+                monthlyRevenue: 0,
+                monthlyLeads: 0,
+                winLoss: '',
+                winPercentage: 0,
+                winLossRatio: ''
+            }
+        },
+        monthlyData: {
+            sep: { revenue: 0, cost: 0 },
+            oct: { revenue: 0, cost: 0 },
+            nov: { revenue: 0, cost: 0 }
+        }
+    },
+    timeframe = '',
     onTimeframeChange,
     className,
 }) => {
