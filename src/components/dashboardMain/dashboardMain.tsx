@@ -14,6 +14,7 @@ import FullOverviewContainer from "../fullOverview/FullOverviewContainer";
 import SaleTableContainer from "../saleTable";
 import TransactionsContainer from "../transactionTable/TransactionsContainer";
 import NotFound from '@/app/404';
+import ProductEditContainer from "../productEdit/ProductEditContainer";
 
 interface DashboardMainProps {
   activeSection: string;
@@ -48,6 +49,14 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
           </Box>
         );
         break;
+      case 'Add/Edit Product':
+        sectionToRender = (
+          <Box>
+            <ProductEditContainer />
+          </Box>
+        );
+        break;
+
       default:
         sectionToRender = <NotFound />;
     }

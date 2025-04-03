@@ -114,28 +114,28 @@ export const actionsBoxStyles: SxProps<Theme> = {
 };
 
 export const resetButtonStyles: SxProps<Theme> = {
-    color: '#3b82f6',
-    border: '1px solid #3b82f6',
+    color: '#173a79',
+    border: '1px solid #173a79',
     borderRadius: '8px',
     p: { xs: 1, sm: 1.5 },
     fontSize: { xs: '0.7rem', sm: '0.75rem' },
     transition: 'all 0.2s ease-in-out',
     '&:hover': {
-        backgroundColor: 'rgba(59, 130, 246, 0.08)',
+        backgroundColor: 'rgba(23, 58, 121, 0.08)',
         transform: 'rotate(180deg)',
-        borderColor: '#2563eb',
+        borderColor: '#1e4b9e',
     },
 };
 
 export const exportButtonStyles: SxProps<Theme> = {
-    bgcolor: '#3b82f6',
+    bgcolor: '#173a79',
     color: 'white',
     px: { xs: 2, sm: 3 },
     py: { xs: 1, sm: 1.5 },
     fontSize: { xs: '0.7rem', sm: '0.75rem' },
     borderRadius: '6px',
     '&:hover': {
-        bgcolor: '#2563eb',
+        bgcolor: '#1e4b9e',
     },
 };
 

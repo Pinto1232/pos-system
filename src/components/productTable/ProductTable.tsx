@@ -207,6 +207,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         <TableRow>
                             <TableCell sx={tableCellStyles}>Product Name</TableCell>
                             <TableCell sx={tableCellStyles}>ID Code</TableCell>
+                            <TableCell sx={tableCellStyles}>SKU</TableCell>
                             <TableCell sx={tableCellStyles}>Price</TableCell>
                             <TableCell sx={tableCellStyles}>Status Product</TableCell>
                             <TableCell sx={tableCellStyles}>Rating</TableCell>
@@ -217,7 +218,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                     <TableBody>
                         {products.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
+                                <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
                                     <Box sx={noProductsStyles}>
                                         <Typography variant="h6" sx={noProductsTextStyles}>
                                             No products found
@@ -285,6 +286,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                                         </Stack>
                                     </TableCell>
                                     <TableCell>{product.idCode}</TableCell>
+                                    <TableCell>{product.sku || '-'}</TableCell>
                                     <TableCell>R{product.price.toFixed(2)}</TableCell>
                                     <TableCell>
                                         <FormControlLabel

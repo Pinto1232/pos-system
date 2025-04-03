@@ -9,6 +9,7 @@ export interface Product {
     color?: string;
     image: string;
     createdAt: string;
+    sku: string;
 }
 
 export interface ProductTableProps {
