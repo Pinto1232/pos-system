@@ -167,11 +167,11 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         </FormControl>
 
                         <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 180 } }}>
-                            <InputLabel sx={inputLabelStyles}>Price</InputLabel>
+                            <InputLabel sx={inputLabelStyles}>Price Range</InputLabel>
                             <Select
                                 value={priceFilter}
                                 onChange={onPriceChange}
-                                label="Price"
+                                label="Price Range"
                                 sx={selectStyles}
                             >
                                 <MenuItem value="R10-R100">R10-R100</MenuItem>

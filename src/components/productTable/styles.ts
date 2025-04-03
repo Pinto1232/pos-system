@@ -1,7 +1,7 @@
 import { SxProps, Theme } from '@mui/material';
 
 export const containerStyles: SxProps<Theme> = {
-    p: 3,
+    p: { xs: 2, sm: 3 },
     bgcolor: 'background.paper',
     borderRadius: 2,
     boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
@@ -9,45 +9,44 @@ export const containerStyles: SxProps<Theme> = {
 };
 
 export const titleStyles: SxProps<Theme> = {
-    mb: 3,
+    mb: { xs: 2, sm: 3 },
     fontWeight: 600,
     color: '#1a1a1a',
-    fontSize: '1.5rem',
+    fontSize: { xs: '1.25rem', sm: '1.5rem' },
 };
 
 export const filtersWrapperStyles: SxProps<Theme> = {
-    mb: 3,
+    mb: { xs: 2, sm: 3 },
     width: '100%',
     bgcolor: '#f8fafc',
     borderRadius: '12px',
-    p: 3,
+    p: { xs: 2, sm: 3 },
     boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
     border: '1px solid #e2e8f0',
 };
 
 export const filtersContainerStyles: SxProps<Theme> = {
     display: 'flex',
-    flexDirection: { xs: 'column', md: 'row' },
+    flexDirection: { xs: 'column', sm: 'row' },
     justifyContent: 'space-between',
-    gap: 3,
-    alignItems: 'center',
+    gap: { xs: 2, sm: 3 },
+    alignItems: { xs: 'stretch', sm: 'center' },
     flexWrap: 'wrap',
 };
 
 export const filtersBoxStyles: SxProps<Theme> = {
     display: 'flex',
     flexDirection: { xs: 'column', sm: 'row' },
-    gap: 2,
-    alignItems: 'center',
+    gap: { xs: 2, sm: 3 },
+    alignItems: { xs: 'stretch', sm: 'center' },
     flexWrap: 'wrap',
     flex: 1,
-    minWidth: { xs: '100%', md: 'auto' },
+    minWidth: { xs: '100%', sm: 'auto' },
 };
 
 export const searchFieldStyles: SxProps<Theme> = {
-    minWidth: { xs: '100%', sm: 300 },
     '& .MuiOutlinedInput-root': {
-        borderRadius: '6px',
+        height: { xs: 36, sm: 40 },
         backgroundColor: 'white',
         '& fieldset': {
             borderColor: '#e2e8f0',
@@ -57,22 +56,36 @@ export const searchFieldStyles: SxProps<Theme> = {
         },
         '&.Mui-focused fieldset': {
             borderColor: '#3b82f6',
-            borderWidth: '1px',
+        },
+        '& .MuiInputBase-input': {
+            py: { xs: 1, sm: 1.5 },
+            px: 0.5,
+            fontSize: { xs: '0.7rem', sm: '0.75rem' },
+        },
+        '& .MuiInputLabel-root': {
+            fontSize: { xs: '0.7rem', sm: '0.75rem' },
+        },
+        '& .MuiInputAdornment-root': {
+            marginRight: -0.5,
+            '& .MuiSvgIcon-root': {
+                fontSize: { xs: '1rem', sm: '1.25rem' },
+            }
         },
     },
-    '& .MuiInputBase-input': {
-        py: 1.5,
-        px: 2,
-        fontSize: '0.75rem',
-    },
-    '& .MuiInputLabel-root': {
-        fontSize: '0.75rem',
-    },
+    width: '100%',
+    maxWidth: { xs: '100%', sm: 300 },
 };
 
 export const selectStyles: SxProps<Theme> = {
-    borderRadius: '6px',
+    minWidth: { xs: '100%', sm: 200 },
     backgroundColor: 'white',
+    '& .MuiSelect-select': {
+        fontSize: { xs: '0.7rem', sm: '0.75rem' },
+        py: { xs: 1, sm: 1.5 },
+    },
+    '& .MuiInputLabel-root': {
+        fontSize: { xs: '0.7rem', sm: '0.75rem' },
+    },
     '& .MuiOutlinedInput-notchedOutline': {
         borderColor: '#e2e8f0',
     },
@@ -81,7 +94,6 @@ export const selectStyles: SxProps<Theme> = {
     },
     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
         borderColor: '#3b82f6',
-        borderWidth: '1px',
     },
 };
 
@@ -89,20 +101,24 @@ export const inputLabelStyles: SxProps<Theme> = {
     '&.Mui-focused': { color: '#3b82f6' },
     '&.MuiInputLabel-shrink': { color: '#3b82f6' },
     color: '#64748b',
+    fontSize: { xs: '0.7rem', sm: '0.75rem' },
 };
 
 export const actionsBoxStyles: SxProps<Theme> = {
     display: 'flex',
+    flexDirection: { xs: 'column', sm: 'row' },
     gap: 1,
-    alignItems: 'center',
-    mt: { xs: 2, md: 0 },
+    alignItems: 'stretch',
+    width: { xs: '100%', sm: 'auto' },
+    mt: { xs: 2, sm: 0 },
 };
 
 export const resetButtonStyles: SxProps<Theme> = {
     color: '#3b82f6',
     border: '1px solid #3b82f6',
     borderRadius: '8px',
-    p: 1.5,
+    p: { xs: 1, sm: 1.5 },
+    fontSize: { xs: '0.7rem', sm: '0.75rem' },
     transition: 'all 0.2s ease-in-out',
     '&:hover': {
         backgroundColor: 'rgba(59, 130, 246, 0.08)',
@@ -114,8 +130,9 @@ export const resetButtonStyles: SxProps<Theme> = {
 export const exportButtonStyles: SxProps<Theme> = {
     bgcolor: '#3b82f6',
     color: 'white',
-    px: 3,
-    py: 1,
+    px: { xs: 2, sm: 3 },
+    py: { xs: 1, sm: 1.5 },
+    fontSize: { xs: '0.7rem', sm: '0.75rem' },
     borderRadius: '6px',
     '&:hover': {
         bgcolor: '#2563eb',
@@ -125,12 +142,14 @@ export const exportButtonStyles: SxProps<Theme> = {
 export const tableCellStyles: SxProps<Theme> = {
     fontWeight: 600,
     color: '#64748b',
-    fontSize: '0.875rem',
+    fontSize: { xs: '0.7rem', sm: '0.875rem' },
+    py: { xs: 1, sm: 1.5 },
+    px: { xs: 1, sm: 2 },
 };
 
 export const productImageStyles: SxProps<Theme> = {
-    width: 40,
-    height: 40,
+    width: { xs: 32, sm: 40 },
+    height: { xs: 32, sm: 40 },
     position: 'relative',
     borderRadius: '6px',
     overflow: 'hidden',
@@ -138,7 +157,7 @@ export const productImageStyles: SxProps<Theme> = {
 };
 
 export const statusTextStyles = (status: boolean): SxProps<Theme> => ({
-    fontSize: '0.875rem',
+    fontSize: { xs: '0.7rem', sm: '0.875rem' },
     color: status ? '#22c55e' : 'error.main',
     fontWeight: 600,
 });
@@ -153,42 +172,43 @@ export const switchStyles: SxProps<Theme> = {
     '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
         backgroundColor: '#173a79',
     },
+    transform: { xs: 'scale(0.8)', sm: 'scale(1)' },
 };
 
 export const modalPaperStyles: SxProps<Theme> = {
     borderRadius: '16px',
     boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
     overflow: 'visible',
-    maxWidth: 500,
+    maxWidth: { xs: '90%', sm: 500 },
     width: '100%',
     mx: 'auto',
     position: 'relative',
-    pt: 8,
+    pt: { xs: 6, sm: 8 },
 };
 
 export const modalImageStyles: SxProps<Theme> = {
     position: 'absolute',
-    top: -60,
+    top: { xs: -40, sm: -60 },
     left: '50%',
     transform: 'translateX(-50%)',
-    width: 120,
-    height: 120,
+    width: { xs: 80, sm: 120 },
+    height: { xs: 80, sm: 120 },
     borderRadius: '50%',
     overflow: 'hidden',
     border: '2px solid #f0f0f0',
     mx: 'auto',
-    mt: -8,
-    mb: 2,
+    mt: { xs: -6, sm: -8 },
+    mb: { xs: 1, sm: 2 },
     boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
     bgcolor: 'white',
 };
 
 export const modalTitleStyles: SxProps<Theme> = {
     textAlign: 'center',
-    fontSize: '1.5rem',
+    fontSize: { xs: '1.25rem', sm: '1.5rem' },
     fontWeight: 600,
     color: '#1a1a1a',
-    pb: 2,
+    pb: { xs: 1, sm: 2 },
 };
 
 export const noProductsStyles: SxProps<Theme> = {
@@ -196,13 +216,18 @@ export const noProductsStyles: SxProps<Theme> = {
     flexDirection: 'column',
     alignItems: 'center',
     gap: 1,
+    p: { xs: 2, sm: 3 },
 };
 
 export const noProductsTextStyles: SxProps<Theme> = {
     color: 'text.secondary',
     fontWeight: 500,
+    fontSize: { xs: '0.875rem', sm: '1rem' },
+    textAlign: 'center',
 };
 
 export const noProductsSubtextStyles: SxProps<Theme> = {
     color: 'text.secondary',
+    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+    textAlign: 'center',
 }; 
