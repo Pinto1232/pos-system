@@ -47,7 +47,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   const [customization, setCustomization] = useState<UserCustomization | null>(null);
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
-  const [activeSection, setActiveSection] = useState('Dashboard'); // Default to "Dashboard"
+  const [activeSection, setActiveSection] = useState('Dashboard');
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -81,7 +81,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         textColor={textColor}
         iconColor={iconColor}
         onSettingsClick={handleSettingsClick}
-        onSectionSelect={setActiveSection} // Pass setActiveSection to update the active section
+        onSectionSelect={setActiveSection}
         handleItemClick={item => console.log(`Item clicked: ${item}`)}
         logoUrl={logoUrl}
       />
@@ -100,7 +100,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           backgroundColor={navbarBg}
         />
         <Box sx={{ p: 2 }}>
-          <DashboardMainContainer activeSection={activeSection} /> {/* Pass activeSection */}
+          <DashboardMainContainer activeSection={activeSection} />
         </Box>
       </Box>
       <SettingsModal
