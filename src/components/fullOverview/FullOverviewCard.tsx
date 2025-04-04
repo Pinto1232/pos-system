@@ -62,9 +62,9 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
   const renderNotificationIcon = () => {
     switch (notificationType) {
       case "success":
-        return <CheckCircleIcon sx={{ color: "#10B981" }} />;
+        return <CheckCircleIcon sx={{ color: "#ffffff" }} />;
       case "warning":
-        return <WarningIcon sx={{ color: "#F59E0B" }} />;
+        return <WarningIcon sx={{ color: "#ffffff" }} />;
       case "error":
         return <ErrorIcon sx={{ color: "#EF4444" }} />;
       case "info":
@@ -314,106 +314,292 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
 
   if (variant === "notification") {
     return (
-      <StyledCard onClick={onClick} sx={{ cursor: onClick ? "pointer" : "default" }}>
-        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+      <StyledCard onClick={onClick} sx={{
+        cursor: onClick ? "pointer" : "default",
+        background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
+        boxShadow: '0 6px 15px rgba(0, 0, 0, 0.08)',
+        transition: 'all 0.3s ease',
+        p: 1.5,
+        borderRadius: '10px',
+        position: 'relative',
+        overflow: 'hidden',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '4px',
+          background: notificationType === "success"
+            ? "linear-gradient(90deg, #86efac, #4ade80)"
+            : notificationType === "warning"
+              ? "linear-gradient(90deg, #fca5a5, #f87171)"
+              : notificationType === "error"
+                ? "linear-gradient(90deg, #fecaca, #f87171)"
+                : "linear-gradient(90deg, #6b7280, #9ca3af)",
+        },
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.1)',
+          '& .card-content': {
+            transform: 'scale(1.02)',
+          }
+        }
+      }}>
+        <Box className="card-content" sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 1,
+          height: "100%",
+          transition: 'transform 0.3s ease',
+        }}>
+          {/* Header Section */}
           <Box sx={{
-            width: 40,
-            height: 40,
-            borderRadius: '12px',
-            background: notificationType === "success"
-              ? "linear-gradient(135deg, #22c55e, #4ade80)"
-              : notificationType === "warning"
-                ? "linear-gradient(135deg, #f97316, #fb923c)"
-                : "linear-gradient(135deg, #6b7280, #9ca3af)",
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            mt: 2
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 1,
+            width: "100%",
+            position: 'relative',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: -8,
+              left: 0,
+              right: 0,
+              height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent)',
+            }
           }}>
-            {renderNotificationIcon()}
-          </Box>
-          <Box sx={{ flex: 1, pt: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-              <CardTitle sx={{
-                color: notificationType === "success"
-                  ? "#166534"
-                  : notificationType === "warning"
-                    ? "#9a3412"
-                    : "#1f2937",
-                fontSize: '1.1rem',
-                fontWeight: 700
-              }}>
-                {title}
-              </CardTitle>
-              {notificationTime && (
-                <Typography variant="caption" sx={{
+            <Box sx={{
+              width: 36,
+              height: 36,
+              borderRadius: '10px',
+              background: notificationType === "success"
+                ? "linear-gradient(135deg, #86efac, #4ade80)"
+                : notificationType === "warning"
+                  ? "linear-gradient(135deg, #fca5a5, #f87171)"
+                  : notificationType === "error"
+                    ? "linear-gradient(135deg, #fecaca, #f87171)"
+                    : "linear-gradient(135deg, #6b7280, #9ca3af)",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#fff',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              position: 'relative',
+              flexShrink: 0,
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '10px',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0))',
+              }
+            }}>
+              {renderNotificationIcon()}
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                  <CardTitle sx={{
+                    color: notificationType === "success"
+                      ? "#166534"
+                      : notificationType === "warning"
+                        ? "#991b1b"
+                        : notificationType === "error"
+                          ? "#991b1b"
+                          : "#1f2937",
+                    fontSize: '0.95rem',
+                    fontWeight: 700,
+                    letterSpacing: '-0.01em',
+                    position: 'relative',
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: -2,
+                      left: 0,
+                      width: '100%',
+                      height: '2px',
+                      background: notificationType === "success"
+                        ? "linear-gradient(90deg, #86efac, transparent)"
+                        : notificationType === "warning"
+                          ? "linear-gradient(90deg, #fca5a5, transparent)"
+                          : notificationType === "error"
+                            ? "linear-gradient(90deg, #fecaca, transparent)"
+                            : "linear-gradient(90deg, #6b7280, transparent)",
+                      transform: 'scaleX(0)',
+                      transformOrigin: 'left',
+                      transition: 'transform 0.3s ease',
+                    },
+                    '&:hover::after': {
+                      transform: 'scaleX(1)',
+                    }
+                  }}>
+                    {title}
+                  </CardTitle>
+                  {renderStatusIndicator()}
+                </Box>
+                {notificationTime && (
+                  <Typography variant="caption" sx={{
+                    color: notificationType === "success"
+                      ? "#166534"
+                      : notificationType === "warning"
+                        ? "#991b1b"
+                        : notificationType === "error"
+                          ? "#991b1b"
+                          : "#6b7280",
+                    fontSize: '0.65rem',
+                    fontWeight: 500,
+                    background: notificationType === "success"
+                      ? "rgba(34, 197, 94, 0.1)"
+                      : notificationType === "warning"
+                        ? "rgba(248, 113, 113, 0.1)"
+                        : notificationType === "error"
+                          ? "rgba(248, 113, 113, 0.1)"
+                          : "rgba(107, 114, 128, 0.1)",
+                    px: 1,
+                    py: 0.5,
+                    borderRadius: '6px',
+                    backdropFilter: 'blur(4px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      transform: 'scale(1.05)',
+                    }
+                  }}>
+                    {notificationTime}
+                  </Typography>
+                )}
+              </Box>
+              {subTitle && (
+                <CardSubTitle sx={{
                   color: notificationType === "success"
                     ? "#166534"
                     : notificationType === "warning"
-                      ? "#9a3412"
-                      : "#6b7280",
-                  fontSize: '0.75rem',
+                      ? "#991b1b"
+                      : notificationType === "error"
+                        ? "#991b1b"
+                        : "#6b7280",
+                  fontSize: '0.8rem',
                   fontWeight: 500,
-                  background: notificationType === "success"
-                    ? "rgba(34, 197, 94, 0.1)"
-                    : notificationType === "warning"
-                      ? "rgba(249, 115, 22, 0.1)"
-                      : "rgba(107, 114, 128, 0.1)",
-                  px: 1,
-                  py: 0.5,
-                  borderRadius: '6px'
+                  opacity: 0.8
                 }}>
-                  {notificationTime}
-                </Typography>
+                  {subTitle}
+                </CardSubTitle>
               )}
             </Box>
-            {subTitle && (
-              <CardSubTitle sx={{
-                color: notificationType === "success"
-                  ? "#166534"
-                  : notificationType === "warning"
-                    ? "#9a3412"
-                    : "#6b7280",
-                fontSize: '0.9rem',
-                mb: 2
-              }}>
-                {subTitle}
-              </CardSubTitle>
-            )}
-            {details && details.length > 0 && (
+          </Box>
+
+          {/* Tags Section */}
+          {tags && tags.length > 0 && (
+            <Box sx={{
+              display: 'flex',
+              gap: 0.75,
+              flexWrap: 'wrap',
+              mt: 1
+            }}>
+              {tags.map((tag, index) => (
+                <Chip
+                  key={index}
+                  label={tag}
+                  size="small"
+                  sx={{
+                    background: notificationType === "success"
+                      ? "rgba(34, 197, 94, 0.1)"
+                      : notificationType === "warning"
+                        ? "rgba(248, 113, 113, 0.1)"
+                        : notificationType === "error"
+                          ? "rgba(248, 113, 113, 0.1)"
+                          : "rgba(107, 114, 128, 0.1)",
+                    color: notificationType === "success"
+                      ? "#166534"
+                      : notificationType === "warning"
+                        ? "#991b1b"
+                        : notificationType === "error"
+                          ? "#991b1b"
+                          : "#6b7280",
+                    fontSize: '0.65rem',
+                    fontWeight: 600,
+                    height: '20px',
+                    backdropFilter: 'blur(4px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      transform: 'translateY(-1px)',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    },
+                    '& .MuiChip-label': {
+                      px: 1,
+                    },
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+
+          {/* Details Section */}
+          {details && details.length > 0 && (
+            <Box sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              background: notificationType === "success"
+                ? "rgba(34, 197, 94, 0.05)"
+                : notificationType === "warning"
+                  ? "rgba(248, 113, 113, 0.05)"
+                  : notificationType === "error"
+                    ? "rgba(248, 113, 113, 0.05)"
+                    : "rgba(107, 114, 128, 0.05)",
+              p: 1.5,
+              borderRadius: '10px',
+              border: notificationType === "success"
+                ? "1px solid rgba(34, 197, 94, 0.1)"
+                : notificationType === "warning"
+                  ? "1px solid rgba(248, 113, 113, 0.1)"
+                  : notificationType === "error"
+                    ? "1px solid rgba(248, 113, 113, 0.1)"
+                    : "1px solid rgba(107, 114, 128, 0.1)",
+              backdropFilter: 'blur(8px)',
+              flex: 1
+            }}>
               <Box sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
+                gridTemplateColumns: 'repeat(3, 1fr)',
                 gap: 1,
-                background: notificationType === "success"
-                  ? "rgba(34, 197, 94, 0.05)"
-                  : notificationType === "warning"
-                    ? "rgba(249, 115, 22, 0.05)"
-                    : "rgba(107, 114, 128, 0.05)",
-                p: 1.5,
-                borderRadius: '12px',
-                border: notificationType === "success"
-                  ? "1px solid rgba(34, 197, 94, 0.1)"
-                  : notificationType === "warning"
-                    ? "1px solid rgba(249, 115, 22, 0.1)"
-                    : "1px solid rgba(107, 114, 128, 0.1)"
+                width: '100%'
               }}>
                 {details.map((line, i) => (
                   <Box key={i} sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 0.5
+                    gap: 0.25,
+                    p: 1,
+                    background: 'rgba(255, 255, 255, 0.7)',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    transition: 'all 0.2s ease',
+                    minHeight: '60px',
+                    justifyContent: 'center',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+                      background: 'rgba(255, 255, 255, 0.9)',
+                    }
                   }}>
                     <Typography variant="caption" sx={{
                       color: notificationType === "success"
                         ? "#166534"
                         : notificationType === "warning"
-                          ? "#9a3412"
-                          : "#6b7280",
-                      fontSize: '0.75rem',
-                      fontWeight: 500
+                          ? "#991b1b"
+                          : notificationType === "error"
+                            ? "#991b1b"
+                            : "#6b7280",
+                      fontSize: '0.6rem',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      opacity: 0.8,
+                      mb: 0.25
                     }}>
                       {line.split(":")[0]}
                     </Typography>
@@ -421,87 +607,115 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
                       color: notificationType === "success"
                         ? "#166534"
                         : notificationType === "warning"
-                          ? "#9a3412"
-                          : "#1f2937",
-                      fontSize: '0.9rem',
-                      fontWeight: 600
+                          ? "#991b1b"
+                          : notificationType === "error"
+                            ? "#991b1b"
+                            : "#1f2937",
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      lineHeight: 1.2,
+                      wordBreak: 'break-word'
                     }}>
                       {line.split(":")[1]}
                     </Typography>
                   </Box>
                 ))}
               </Box>
-            )}
-            <Box sx={{
-              display: 'flex',
-              gap: 1,
-              mt: 2
-            }}>
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  background: notificationType === "success"
-                    ? "linear-gradient(135deg, #22c55e, #4ade80)"
-                    : notificationType === "warning"
-                      ? "linear-gradient(135deg, #f97316, #fb923c)"
-                      : "linear-gradient(135deg, #6b7280, #9ca3af)",
-                  color: '#fff',
-                  textTransform: 'none',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  px: 2,
-                  py: 0.75,
-                  borderRadius: '8px',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                  '&:hover': {
-                    background: notificationType === "success"
-                      ? "linear-gradient(135deg, #16a34a, #22c55e)"
-                      : notificationType === "warning"
-                        ? "linear-gradient(135deg, #ea580c, #f97316)"
-                        : "linear-gradient(135deg, #4b5563, #6b7280)",
-                  }
-                }}
-              >
-                {notificationType === "success" ? "View Order" : "Restock Now"}
-              </Button>
-              <Button
-                variant="outlined"
-                size="small"
-                sx={{
-                  borderColor: notificationType === "success"
-                    ? "rgba(34, 197, 94, 0.3)"
-                    : notificationType === "warning"
-                      ? "rgba(249, 115, 22, 0.3)"
-                      : "rgba(107, 114, 128, 0.3)",
-                  color: notificationType === "success"
-                    ? "#166534"
-                    : notificationType === "warning"
-                      ? "#9a3412"
-                      : "#6b7280",
-                  textTransform: 'none',
-                  fontSize: '0.8rem',
-                  fontWeight: 500,
-                  px: 2,
-                  py: 0.75,
-                  borderRadius: '8px',
-                  '&:hover': {
-                    borderColor: notificationType === "success"
-                      ? "#22c55e"
-                      : notificationType === "warning"
-                        ? "#f97316"
-                        : "#6b7280",
-                    background: notificationType === "success"
-                      ? "rgba(34, 197, 94, 0.05)"
-                      : notificationType === "warning"
-                        ? "rgba(249, 115, 22, 0.05)"
-                        : "rgba(107, 114, 128, 0.05)",
-                  }
-                }}
-              >
-                {notificationType === "success" ? "Track Order" : "View Details"}
-              </Button>
             </Box>
+          )}
+
+          {/* Action Buttons */}
+          <Box sx={{
+            display: 'flex',
+            gap: 1,
+            mt: 'auto',
+            pt: 1.5
+          }}>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                background: notificationType === "success"
+                  ? "linear-gradient(135deg, #22c55e, #4ade80)"
+                  : notificationType === "warning"
+                    ? "linear-gradient(135deg, #f87171, #ef4444)"
+                    : notificationType === "error"
+                      ? "linear-gradient(135deg, #f87171, #ef4444)"
+                      : "linear-gradient(135deg, #6b7280, #9ca3af)",
+                color: '#fff',
+                textTransform: 'none',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                px: 2,
+                py: 0.75,
+                borderRadius: '4px',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.15)',
+                  background: notificationType === "success"
+                    ? "linear-gradient(135deg, #16a34a, #22c55e)"
+                    : notificationType === "warning"
+                      ? "linear-gradient(135deg, #dc2626, #ef4444)"
+                      : notificationType === "error"
+                        ? "linear-gradient(135deg, #dc2626, #ef4444)"
+                        : "linear-gradient(135deg, #4b5563, #6b7280)",
+                }
+              }}
+            >
+              {notificationType === "success" ? "View Order" :
+                notificationType === "warning" ? "Restock Now" :
+                  notificationType === "error" ? "Retry Payment" : "View Details"}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              sx={{
+                borderColor: notificationType === "success"
+                  ? "rgba(34, 197, 94, 0.3)"
+                  : notificationType === "warning"
+                    ? "rgba(248, 113, 113, 0.3)"
+                    : notificationType === "error"
+                      ? "rgba(248, 113, 113, 0.3)"
+                      : "rgba(107, 114, 128, 0.3)",
+                color: notificationType === "success"
+                  ? "#166534"
+                  : notificationType === "warning"
+                    ? "#991b1b"
+                    : notificationType === "error"
+                      ? "#991b1b"
+                      : "#6b7280",
+                textTransform: 'none',
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                px: 2,
+                py: 0.75,
+                borderRadius: '4px',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  borderColor: notificationType === "success"
+                    ? "#22c55e"
+                    : notificationType === "warning"
+                      ? "#f87171"
+                      : notificationType === "error"
+                        ? "#f87171"
+                        : "#6b7280",
+                  background: notificationType === "success"
+                    ? "rgba(34, 197, 94, 0.05)"
+                    : notificationType === "warning"
+                      ? "rgba(248, 113, 113, 0.05)"
+                      : notificationType === "error"
+                        ? "rgba(248, 113, 113, 0.05)"
+                        : "rgba(107, 114, 128, 0.05)",
+                }
+              }}
+            >
+              {notificationType === "success" ? "Track Order" :
+                notificationType === "warning" ? "View Details" :
+                  notificationType === "error" ? "Contact Support" : "Learn More"}
+            </Button>
           </Box>
         </Box>
       </StyledCard>

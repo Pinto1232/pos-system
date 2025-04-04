@@ -7,25 +7,72 @@ import { FullOverviewCardProps } from "./fullOverviewCard.types";
 const FullOverviewContainer: React.FC = () => {
   const cardsData: FullOverviewCardProps[] = [
     {
-      variant: "overview",
-      topLeftLabel: "Featured",
-      topRightIcon: "⭐",
-      title: "Sales Overview",
-      subTitle: "Track your sales performance and analytics",
+      variant: "notification",
+      title: "New Order Received",
+      subTitle: "Order #12345 has been placed successfully",
       details: [
-        "Total Sales: R15,000",
-        "Average Order: R500",
-        "Conversion Rate: 3.2%",
-        "New Customers: 45",
-        "Returning Customers: 120",
-        "Average Basket Size: 3 items",
+        "Customer: John Doe",
+        "Amount: R500.00",
+        "Items: 3",
+        "Payment Method: Credit Card",
+        "Delivery Address: 123 Main St, City",
+        "Estimated Delivery: 2-3 business days"
       ],
-      price: "R300.00",
-      ctaText: "View Details",
-      imageUrl: "/sales-chart.jpg",
-      tags: ["Sales", "Analytics", "Performance", "Customers"],
-      status: "active",
-      onClick: () => console.log("Sales overview clicked"),
+      notificationType: "success",
+      notificationTime: "2 mins ago",
+      tags: ["New", "Priority"],
+      status: "active"
+    },
+    {
+      variant: "notification",
+      title: "Low Stock Alert",
+      subTitle: "Product inventory is running low",
+      details: [
+        "Product: Premium Widget",
+        "Current Stock: 5 units",
+        "Minimum Required: 20 units",
+        "Last Restock: 7 days ago",
+        "Sales Rate: 10 units/day",
+        "Time to Depletion: 12 hours"
+      ],
+      notificationType: "warning",
+      notificationTime: "5 mins ago",
+      tags: ["Urgent", "Inventory"],
+      status: "pending"
+    },
+    {
+      variant: "notification",
+      title: "Payment Failed",
+      subTitle: "Transaction #67890 could not be processed",
+      details: [
+        "Order ID: #67890",
+        "Amount: R750.00",
+        "Customer: Jane Smith",
+        "Error Code: 402",
+        "Reason: Insufficient Funds",
+        "Retry Attempts: 2/3"
+      ],
+      notificationType: "error",
+      notificationTime: "10 mins ago",
+      tags: ["Payment", "Failed"],
+      status: "inactive"
+    },
+    {
+      variant: "notification",
+      title: "System Update",
+      subTitle: "New features available in your dashboard",
+      details: [
+        "Version: 2.1.0",
+        "Release Date: Today",
+        "New Features: 5",
+        "Bug Fixes: 12",
+        "Performance Improvements: 3",
+        "Security Updates: 2"
+      ],
+      notificationType: "info",
+      notificationTime: "15 mins ago",
+      tags: ["Update", "System"],
+      status: "active"
     },
     {
       variant: "bankCard",
@@ -40,72 +87,6 @@ const FullOverviewContainer: React.FC = () => {
       cost: "R239.00",
       receipts: "R239.00",
       BankCardRowDetail: "R1.00",
-      onClick: () => console.log("Bank card clicked"),
-    },
-    {
-      variant: "analytics",
-      title: "Revenue Growth",
-      subTitle: "Monthly revenue analysis with detailed breakdown",
-      trend: {
-        value: 12.5,
-        direction: "up",
-      },
-      chartData: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        values: [100, 200, 150, 300, 250, 400],
-      },
-      details: [
-        "Monthly Growth: +12.5%",
-        "Quarterly Growth: +8.2%",
-        "Yearly Growth: +15.3%",
-        "Best Performing: Electronics (+25%)",
-        "Top Product: Smartphone X",
-        "Revenue per Customer: R850",
-      ],
-      tags: ["Revenue", "Growth", "Analysis", "Trends", "Forecast"],
-      status: "active",
-      onClick: () => console.log("Analytics clicked"),
-    },
-    {
-      variant: "notification",
-      title: "New Order Received",
-      subTitle: "Order #12345 has been placed",
-      notificationType: "success",
-      notificationTime: "2m ago",
-      details: [
-        "Customer: John Doe",
-        "Amount: R500.00",
-        "Items: 3",
-      ],
-      onClick: () => console.log("Notification clicked"),
-    },
-    {
-      variant: "notification",
-      title: "Low Stock Alert",
-      subTitle: "Product XYZ is running low",
-      notificationType: "warning",
-      notificationTime: "5m ago",
-      details: [
-        "Current Stock: 5 units",
-        "Reorder Point: 10 units",
-        "Last Restock: 2 weeks ago",
-      ],
-      onClick: () => console.log("Stock alert clicked"),
-    },
-    {
-      variant: "analytics",
-      title: "Customer Satisfaction",
-      subTitle: "Customer feedback analysis",
-      trend: {
-        value: 8.2,
-        direction: "down",
-      },
-      chartData: {
-        labels: ["Q1", "Q2", "Q3", "Q4"],
-        values: [85, 90, 82, 75],
-      },
-      tags: ["Customer", "Feedback", "Satisfaction"],
-      onClick: () => console.log("Customer analytics clicked"),
     },
   ];
 
@@ -131,7 +112,7 @@ const FullOverviewContainer: React.FC = () => {
           <ViewModuleIcon />
         </IconButton>
       </Box>
-      <Grid container spacing={3}>
+      <Grid container spacing={1.5}>
         {cardsData.map((item, idx) => (
           <Grid item xs={12} sm={6} md={4} key={idx}>
             <FullOverviewCard {...item} />

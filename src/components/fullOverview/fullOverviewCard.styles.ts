@@ -3,48 +3,48 @@ import { Card, Box, Typography, Button } from "@mui/material";
 
 export const StyledCard = styled(Card)(({ theme }) => ({
   position: "relative",
-  borderRadius: 20,
-  padding: theme.spacing(3),
+  borderRadius: 12,
+  padding: theme.spacing(2),
   background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
+  boxShadow: "0 8px 20px rgba(0, 0, 0, 0.08)",
   height: "100%",
   transition: "all 0.3s ease",
   overflow: "hidden",
   "&:hover": {
-    boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
-    transform: "translateY(-5px)",
+    boxShadow: "0 12px 25px rgba(0, 0, 0, 0.1)",
+    transform: "translateY(-3px)",
   },
 }));
 
 export const TopLeftBadge = styled(Box)(({ theme }) => ({
   position: "absolute",
-  top: theme.spacing(1.5),
-  left: theme.spacing(1.5),
+  top: theme.spacing(1),
+  left: theme.spacing(1),
   background: "linear-gradient(135deg, #4F46E5, #7C3AED)",
-  borderRadius: 12,
-  padding: theme.spacing(0.5, 1.5),
-  fontSize: "0.75rem",
+  borderRadius: 8,
+  padding: theme.spacing(0.5, 1),
+  fontSize: "0.7rem",
   fontWeight: 600,
   color: "#fff",
-  boxShadow: "0 2px 8px rgba(79, 70, 229, 0.3)",
+  boxShadow: "0 2px 6px rgba(79, 70, 229, 0.3)",
   zIndex: 2,
 }));
 
 export const TopRightIcon = styled(Box)(({ theme }) => ({
   position: "absolute",
-  top: theme.spacing(1.5),
-  right: theme.spacing(1.5),
-  width: 32,
-  height: 32,
+  top: theme.spacing(1),
+  right: theme.spacing(1),
+  width: 28,
+  height: 28,
   borderRadius: "50%",
   background: "linear-gradient(135deg, #4F46E5, #7C3AED)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontSize: "0.8rem",
+  fontSize: "0.75rem",
   fontWeight: 600,
   color: "#fff",
-  boxShadow: "0 2px 8px rgba(79, 70, 229, 0.3)",
+  boxShadow: "0 2px 6px rgba(79, 70, 229, 0.3)",
   zIndex: 2,
   transition: "transform 0.2s ease",
   "&:hover": {
@@ -53,17 +53,17 @@ export const TopRightIcon = styled(Box)(({ theme }) => ({
 }));
 
 export const CardTitle = styled(Typography)(({ theme }) => ({
-  marginTop: theme.spacing(4),
+  marginTop: theme.spacing(3),
   fontWeight: 700,
-  fontSize: "1.1rem",
+  fontSize: "1rem",
   letterSpacing: "-0.01em",
   color: "#1F2937",
 }));
 
 export const CardSubTitle = styled(Typography)(({ theme }) => ({
   color: "#6B7280",
-  fontSize: "0.9rem",
-  marginBottom: theme.spacing(2),
+  fontSize: "0.8rem",
+  marginBottom: theme.spacing(1.5),
   fontWeight: 500,
 }));
 
