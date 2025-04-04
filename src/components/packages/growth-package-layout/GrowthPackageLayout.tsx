@@ -104,7 +104,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   }
 
   return (
-    <Box className={styles.container} >
+    <Box className={styles.container}>
       {success && (
         <SuccessMessage
           open={success}
@@ -114,15 +114,9 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
         />
       )}
       {!loading && !success && (
-        <Grid container spacing={2} className={styles.gridContainer} >
+        <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn} sx={{
-              maxHeight: '600px',
-              overflowY: 'auto',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
-            }}
-            >
+            <Box className={styles.leftColumn}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
@@ -140,14 +134,13 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
 
               <Box className={styles.growthBox}>
                 <Typography variant="subtitle2" className={styles.growthBoxLabel}>
-                  YOUR TOTAL IN ( {currentCurrency})
+                  YOUR TOTAL IN ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.growthBoxAmount}>
                   <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
 
-              {/* Multi-Currency Selection */}
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
                   <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
@@ -161,6 +154,12 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
                           <Checkbox
                             checked={currentCurrency === currency}
                             onChange={() => handleCurrencyChange(currency)}
+                            sx={{
+                              color: '#3182ce',
+                              '&.Mui-checked': {
+                                color: '#3182ce',
+                              },
+                            }}
                           />
                         }
                         label={
@@ -196,7 +195,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price <b>{currencySymbol}{displayPrice}</b>
+                Monthly Price <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
