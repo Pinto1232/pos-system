@@ -144,7 +144,7 @@ export const BankCardContainer = styled(Box)(({ theme }) => ({
     background: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)",
     borderRadius: "50%",
   },
-  transition: "transform 0.3s ease",
+  transition: "all 0.3s ease",
   "&:hover": {
     transform: "translateY(-5px)",
     boxShadow: "0 15px 30px rgba(30, 58, 138, 0.4)",
@@ -161,7 +161,7 @@ export const BankCardRow = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const BankCardRowDetail = styled(Box)(({ theme }) => ({
+export const BankCardHeader = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
@@ -179,4 +179,46 @@ export const BankCardNumber = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
   marginBottom: theme.spacing(1),
   textShadow: "0 1px 2px rgba(0, 0, 0, 0.2)",
+}));
+
+export const StatusIndicator = styled(Box)(({ theme }) => ({
+  position: "relative",
+  width: "0.8rem",
+  height: "0.8rem",
+  marginLeft: theme.spacing(1),
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: "50%",
+    animation: "pulse 2s infinite",
+  },
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "0.4rem",
+    height: "0.4rem",
+    borderRadius: "50%",
+    zIndex: 1,
+  },
+  "@keyframes pulse": {
+    "0%": {
+      transform: "scale(1)",
+      opacity: 1,
+    },
+    "50%": {
+      transform: "scale(1.5)",
+      opacity: 0.5,
+    },
+    "100%": {
+      transform: "scale(1)",
+      opacity: 1,
+    },
+  },
 }));
