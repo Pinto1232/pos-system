@@ -85,9 +85,6 @@ export interface SalesProps {
 
 export interface SalesContainerProps {
   className?: string;
-  imageUrl?: string;
-  title?: string;
-  description?: string;
   timeframe?: string;
   onTimeframeChange?: (timeframe: string) => void;
 }

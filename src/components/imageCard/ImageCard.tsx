@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Card, CardContent, CardMedia } from '@mui/material';
+import { Typography, Card, CardContent, CardMedia } from '@mui/material';
 import { ImageCardProps } from './types';
 
 const ImageCard: React.FC<ImageCardProps> = ({

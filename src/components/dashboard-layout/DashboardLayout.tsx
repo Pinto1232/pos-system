@@ -5,7 +5,6 @@ import Navbar from '@/components/sidebar/Navbar';
 import DashboardMainContainer from '../dashboardMain/dashboardMainContainer';
 import SettingsModal from '@/SettingsModal';
 import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/api/axiosClient';
 import { mockFetchCustomization } from '@/api/mockUserCustomization';
 
 export interface UserCustomization {

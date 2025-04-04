@@ -16,8 +16,8 @@ export interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps>({
   token: null,
-  login: async () => {},
-  logout: async () => {},
+  login: async () => { },
+  logout: async () => { },
   authenticated: false,
   error: null,
 });
@@ -181,7 +181,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           errorMessage = `Authentication error: ${JSON.stringify(err)}`;
           // Attempt to access common Keycloak error fields if stringify failed or is generic
           if (errorMessage.includes('{}') || errorMessage.includes('Unknown')) {
-            const kcError = err as any;
+            const kcError = err as {
+              error?: string;
+              error_description?: string;
+            };
             if (kcError.error && kcError.error_description) {
               errorMessage = `Keycloak Error: ${kcError.error} - ${kcError.error_description}`;
             } else if (kcError.error) {
