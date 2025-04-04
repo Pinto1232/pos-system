@@ -1231,3 +1231,27 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(23, 58, 121, 0.25) !important;
 }
+
+/* Add styles for the stepper labels */
+:global(.MuiStepLabel-label) {
+  white-space: nowrap !important;
+}
+
+/* Stepper styles */
+:global(.MuiStepLabel-iconContainer) {
+  transform: scale(1.1) !important;
+}
+
+:global(.MuiStepIcon-root) {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+:global(.MuiStepLabel-label) {
+  white-space: nowrap !important;
+  margin-top: 3px !important;
+}
+
+:global(.MuiStepConnector-line) {
+  margin-top: 3px !important;
+}
