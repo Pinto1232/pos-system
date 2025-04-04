@@ -217,97 +217,268 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
 
   if (variant === "bankCard") {
     return (
-      <StyledCard onClick={onClick} sx={{ cursor: onClick ? "pointer" : "default" }}>
-        <Box
-          sx={{
+      <StyledCard onClick={onClick} sx={{
+        cursor: onClick ? "pointer" : "default",
+        background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
+        boxShadow: '0 3px 8px rgba(0, 0, 0, 0.04)',
+        transition: 'all 0.3s ease',
+        p: { xs: 1, sm: 1.25, md: 1.5 },
+        borderRadius: { xs: '6px', sm: '7px', md: '8px' },
+        position: 'relative',
+        overflow: 'hidden',
+        '&:hover': {
+          transform: 'translateY(-1px)',
+          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.06)',
+        }
+      }}>
+        <Box sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: { xs: 0.75, sm: 0.875, md: 1 },
+          height: "100%"
+        }}>
+          {/* Header Section */}
+          <Box sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}
-        >
-          <Typography
-            variant="subtitle1"
-            sx={{
+            mb: { xs: 0.25, sm: 0.375, md: 0.5 }
+          }}>
+            <Typography variant="h6" sx={{
+              fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
               fontWeight: 700,
-              color: "#1F2937",
-              fontSize: "1.1rem",
-              letterSpacing: "-0.01em",
-            }}
-          >
-            {title}
-          </Typography>
-          {ctaText && (
-            <CardButton variant="outlined" size="small">
-              {ctaText}
-            </CardButton>
-          )}
-        </Box>
-        <BankCardContainer>
-          <BankCardHeader>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{bankName}</Typography>
-            <Typography variant="subtitle2" sx={{ opacity: 0.9 }}>{bankType}</Typography>
-          </BankCardHeader>
-          <BankCardNumber variant="body1">{cardNumber}</BankCardNumber>
-          <BankCardRow>
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>{cardHolder}</Typography>
-            <Typography variant="body2" sx={{ opacity: 0.9 }}>{cardExpire}</Typography>
-          </BankCardRow>
-        </BankCardContainer>
-        <Typography
-          variant="subtitle2"
-          sx={{
-            fontWeight: 700,
-            mb: 1.5,
-            fontSize: "1rem",
-            letterSpacing: "0.01em",
-            color: "#1F2937"
-          }}
-        >
-          Total balance {totalBalance}
-        </Typography>
-        <InfoLines sx={{ mt: 1 }}>
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: 500,
-              fontSize: "0.9rem",
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-              py: 0.5
-            }}
-          >
-            <span>Cost</span> <span>{cost}</span>
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: 500,
-              fontSize: "0.9rem",
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-              py: 0.5
-            }}
-          >
-            <span>Receipts</span> <span>{receipts}</span>
-          </Typography>
-          {BankCardRowDetail && (
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 500,
-                fontSize: "0.9rem",
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-                py: 0.5
-              }}
-            >
-              <span>Details</span> <span>{BankCardRowDetail}</span>
+              color: '#1F2937'
+            }}>
+              {title}
             </Typography>
-          )}
-        </InfoLines>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: { xs: 0.25, sm: 0.375, md: 0.5 }
+            }}>
+              <Typography variant="caption" sx={{
+                color: '#6B7280',
+                fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                fontWeight: 500,
+                background: 'rgba(107, 114, 128, 0.1)',
+                px: { xs: 0.4, sm: 0.45, md: 0.5 },
+                py: { xs: 0.2, sm: 0.225, md: 0.25 },
+                borderRadius: { xs: '3px', sm: '3.5px', md: '4px' }
+              }}>
+                {bankType}
+              </Typography>
+              <Typography variant="caption" sx={{
+                color: '#6B7280',
+                fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                fontWeight: 500,
+                background: 'rgba(107, 114, 128, 0.1)',
+                px: { xs: 0.4, sm: 0.45, md: 0.5 },
+                py: { xs: 0.2, sm: 0.225, md: 0.25 },
+                borderRadius: { xs: '3px', sm: '3.5px', md: '4px' }
+              }}>
+                {bankName}
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Card Preview */}
+          <Box sx={{
+            background: 'linear-gradient(105deg, #000, #3B82F6)',
+            borderRadius: { xs: '6px', sm: '7px', md: '8px' },
+            p: { xs: 1, sm: 1.25, md: 1.5 },
+            color: '#fff',
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              width: { xs: '60px', sm: '65px', md: '70px' },
+              height: { xs: '60px', sm: '65px', md: '70px' },
+              background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+              borderRadius: '50%',
+            }
+          }}>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: { xs: 0.75, sm: 0.875, md: 1 }
+            }}>
+              <Typography variant="h6" sx={{
+                fontSize: { xs: '0.75rem', sm: '0.775rem', md: '0.8rem' },
+                fontWeight: 600,
+                color: 'rgba(255, 255, 255, 0.9)'
+              }}>
+                {bankName}
+              </Typography>
+              <Typography variant="caption" sx={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' }
+              }}>
+                {bankType}
+              </Typography>
+            </Box>
+            <Typography variant="h5" sx={{
+              letterSpacing: { xs: '1px', sm: '1.25px', md: '1.5px' },
+              fontWeight: 700,
+              fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
+              mb: { xs: 0.75, sm: 0.875, md: 1 },
+              color: '#fff'
+            }}>
+              {cardNumber}
+            </Typography>
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <Box>
+                <Typography variant="caption" sx={{
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                  mb: 0.25,
+                  display: 'block'
+                }}>
+                  Card Holder
+                </Typography>
+                <Typography variant="body2" sx={{
+                  color: '#fff',
+                  fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                  fontWeight: 600
+                }}>
+                  {cardHolder}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="caption" sx={{
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                  mb: 0.25,
+                  display: 'block'
+                }}>
+                  Expires
+                </Typography>
+                <Typography variant="body2" sx={{
+                  color: '#fff',
+                  fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                  fontWeight: 600
+                }}>
+                  {cardExpire}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Balance Section */}
+          <Box sx={{
+            background: 'rgba(107, 114, 128, 0.05)',
+            borderRadius: { xs: '4px', sm: '5px', md: '6px' },
+            p: { xs: 0.75, sm: 0.875, md: 1 },
+            mt: { xs: 0.25, sm: 0.375, md: 0.5 }
+          }}>
+            <Typography variant="subtitle2" sx={{
+              color: '#6B7280',
+              fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+              fontWeight: 600,
+              mb: { xs: 0.25, sm: 0.375, md: 0.5 }
+            }}>
+              Total Balance
+            </Typography>
+            <Typography variant="h6" sx={{
+              color: '#1F2937',
+              fontSize: { xs: '1rem', sm: '1.05rem', md: '1.1rem' },
+              fontWeight: 700,
+              mb: { xs: 0.75, sm: 0.875, md: 1 }
+            }}>
+              {totalBalance}
+            </Typography>
+            <Box sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: { xs: 0.5, sm: 0.625, md: 0.75 }
+            }}>
+              <Box>
+                <Typography variant="caption" sx={{
+                  color: '#6B7280',
+                  fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                  display: 'block',
+                  mb: 0.25
+                }}>
+                  Cost
+                </Typography>
+                <Typography variant="body2" sx={{
+                  color: '#1F2937',
+                  fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                  fontWeight: 600
+                }}>
+                  {cost}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="caption" sx={{
+                  color: '#6B7280',
+                  fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                  display: 'block',
+                  mb: 0.25
+                }}>
+                  Receipts
+                </Typography>
+                <Typography variant="body2" sx={{
+                  color: '#1F2937',
+                  fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                  fontWeight: 600
+                }}>
+                  {receipts}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="caption" sx={{
+                  color: '#6B7280',
+                  fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                  display: 'block',
+                  mb: 0.25
+                }}>
+                  Details
+                </Typography>
+                <Typography variant="body2" sx={{
+                  color: '#1F2937',
+                  fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                  fontWeight: 600
+                }}>
+                  {BankCardRowDetail}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Action Button */}
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              background: 'linear-gradient(135deg, #4F46E5, #7C3AED)',
+              color: '#fff',
+              textTransform: 'none',
+              fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+              fontWeight: 600,
+              px: { xs: 1.25, sm: 1.375, md: 1.5 },
+              py: { xs: 0.4, sm: 0.45, md: 0.5 },
+              borderRadius: { xs: '3px', sm: '3.5px', md: '4px' },
+              boxShadow: '0 2px 6px rgba(79, 70, 229, 0.2)',
+              transition: 'all 0.2s ease',
+              mt: 'auto',
+              '&:hover': {
+                transform: 'translateY(-1px)',
+                boxShadow: '0 3px 8px rgba(79, 70, 229, 0.3)',
+                background: 'linear-gradient(135deg, #4338CA, #6D28D9)',
+              }
+            }}
+          >
+            {ctaText}
+          </Button>
+        </Box>
       </StyledCard>
     );
   }
@@ -725,45 +896,192 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
 
   if (variant === "analytics") {
     return (
-      <StyledCard onClick={onClick} sx={{ cursor: onClick ? "pointer" : "default" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <CardTitle>{title}</CardTitle>
-            {renderStatusIndicator()}
-          </Box>
-          {renderTrend()}
-        </Box>
-        {subTitle && <CardSubTitle>{subTitle}</CardSubTitle>}
-        {renderChart()}
+      <StyledCard onClick={onClick} sx={{
+        cursor: onClick ? "pointer" : "default",
+        background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
+        boxShadow: '0 3px 8px rgba(0, 0, 0, 0.04)',
+        transition: 'all 0.3s ease',
+        p: { xs: 1, sm: 1.25, md: 1.5 },
+        borderRadius: { xs: '6px', sm: '7px', md: '8px' },
+        position: 'relative',
+        overflow: 'hidden',
+        '&:hover': {
+          transform: 'translateY(-1px)',
+          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.06)',
+        }
+      }}>
         <Box sx={{
-          mt: 2,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 1
+          display: "flex",
+          flexDirection: "column",
+          gap: { xs: 0.75, sm: 0.875, md: 1 },
+          height: "100%"
         }}>
-          {renderGrowthMetric("Monthly Growth", "+12.5%", <TrendingUpIcon sx={{ fontSize: 14 }} />)}
-          {renderGrowthMetric("Quarterly Growth", "+8.2%", <TrendingUpIcon sx={{ fontSize: 14 }} />)}
-          {renderGrowthMetric("Yearly Growth", "+15.3%", <TrendingUpIcon sx={{ fontSize: 14 }} />)}
-          {renderGrowthMetric("Best Performing", "Electronics (+25%)", <LocalOfferIcon sx={{ fontSize: 14 }} />)}
-          {renderGrowthMetric("Top Product", "Smartphone X", <ShoppingCartIcon sx={{ fontSize: 14 }} />)}
-          {renderGrowthMetric("Revenue per Customer", "R850", <PeopleIcon sx={{ fontSize: 14 }} />)}
-        </Box>
-        {tags && tags.length > 0 && (
-          <Box sx={{ mt: 2, display: "flex", gap: 1, flexWrap: "wrap" }}>
-            {tags.map((tag, i) => (
-              <Chip
-                key={i}
-                label={tag}
-                size="small"
-                sx={{
-                  background: "rgba(79, 70, 229, 0.1)",
-                  color: "#4F46E5",
-                  fontWeight: 500,
-                }}
-              />
-            ))}
+          {/* Header Section */}
+          <Box sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: { xs: 0.25, sm: 0.375, md: 0.5 }
+          }}>
+            <Typography variant="h6" sx={{
+              fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
+              fontWeight: 700,
+              color: '#1F2937'
+            }}>
+              {title}
+            </Typography>
+            {trend && (
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                color: trend.direction === 'up' ? '#10B981' : '#EF4444'
+              }}>
+                <Typography variant="caption" sx={{
+                  fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                  fontWeight: 600
+                }}>
+                  {trend.direction === 'up' ? '↑' : '↓'} {trend.value}%
+                </Typography>
+              </Box>
+            )}
           </Box>
-        )}
+
+          {subTitle && (
+            <Typography variant="body2" sx={{
+              color: '#6B7280',
+              fontSize: { xs: '0.65rem', sm: '0.675rem', md: '0.7rem' },
+              mb: { xs: 0.5, sm: 0.625, md: 0.75 }
+            }}>
+              {subTitle}
+            </Typography>
+          )}
+
+          {/* Chart Section */}
+          {chartData && (
+            <Box sx={{
+              height: { xs: 80, sm: 90, md: 100 },
+              position: 'relative',
+              mb: { xs: 0.75, sm: 0.875, md: 1 }
+            }}>
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                height: '100%',
+                gap: { xs: 0.5, sm: 0.625, md: 0.75 }
+              }}>
+                {chartData.values.map((value, index) => {
+                  const maxValue = Math.max(...chartData.values);
+                  const height = (value / maxValue) * 100;
+                  return (
+                    <Box
+                      key={index}
+                      sx={{
+                        flex: 1,
+                        height: `${height}%`,
+                        background: 'linear-gradient(to top, #4F46E5, #7C3AED)',
+                        borderRadius: { xs: '2px', sm: '3px', md: '4px' },
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          transform: 'scale(1.05)',
+                          background: 'linear-gradient(to top, #4338CA, #6D28D9)',
+                        }
+                      }}
+                    />
+                  );
+                })}
+              </Box>
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                mt: 0.5
+              }}>
+                {chartData.labels.map((label, index) => (
+                  <Typography
+                    key={index}
+                    variant="caption"
+                    sx={{
+                      fontSize: { xs: '0.55rem', sm: '0.575rem', md: '0.6rem' },
+                      color: '#6B7280',
+                      textAlign: 'center',
+                      flex: 1
+                    }}
+                  >
+                    {label}
+                  </Typography>
+                ))}
+              </Box>
+            </Box>
+          )}
+
+          {/* Metrics Grid */}
+          {details && (
+            <Box sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: { xs: 0.5, sm: 0.625, md: 0.75 }
+            }}>
+              {details.map((detail, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    background: 'rgba(107, 114, 128, 0.05)',
+                    borderRadius: { xs: '4px', sm: '5px', md: '6px' },
+                    p: { xs: 0.5, sm: 0.625, md: 0.75 },
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      transform: 'translateY(-1px)',
+                      background: 'rgba(107, 114, 128, 0.08)',
+                    }
+                  }}
+                >
+                  <Typography variant="caption" sx={{
+                    color: '#6B7280',
+                    fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                    display: 'block',
+                    mb: 0.25
+                  }}>
+                    {detail.split(':')[0]}
+                  </Typography>
+                  <Typography variant="body2" sx={{
+                    color: '#1F2937',
+                    fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                    fontWeight: 600
+                  }}>
+                    {detail.split(':')[1]}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          {/* Tags */}
+          {tags && tags.length > 0 && (
+            <Box sx={{
+              display: 'flex',
+              gap: 0.5,
+              mt: 'auto',
+              pt: { xs: 0.5, sm: 0.625, md: 0.75 }
+            }}>
+              {tags.map((tag, index) => (
+                <Typography
+                  key={index}
+                  variant="caption"
+                  sx={{
+                    color: '#4F46E5',
+                    fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                    background: 'rgba(79, 70, 229, 0.1)',
+                    px: { xs: 0.4, sm: 0.45, md: 0.5 },
+                    py: { xs: 0.2, sm: 0.225, md: 0.25 },
+                    borderRadius: { xs: '3px', sm: '3.5px', md: '4px' }
+                  }}
+                >
+                  {tag}
+                </Typography>
+              ))}
+            </Box>
+          )}
+        </Box>
       </StyledCard>
     );
   }

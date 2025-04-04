@@ -88,6 +88,29 @@ const FullOverviewContainer: React.FC = () => {
       receipts: "R239.00",
       BankCardRowDetail: "R1.00",
     },
+    {
+      variant: "analytics",
+      title: "Sales Analytics",
+      subTitle: "Last 30 days performance",
+      trend: {
+        value: 12.5,
+        direction: "up"
+      },
+      chartData: {
+        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        values: [1200, 1900, 1500, 2200, 1800, 2500, 2100]
+      },
+      details: [
+        "Total Sales: R15,200",
+        "Average Order: R850",
+        "Conversion Rate: 3.2%",
+        "Top Product: Smartphone X",
+        "Best Day: Saturday",
+        "Growth: +12.5%"
+      ],
+      tags: ["Performance", "Trending"],
+      status: "active"
+    }
   ];
 
   return (
