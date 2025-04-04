@@ -7,5 +7,60 @@
     "printWidth": 100,
     "bracketSpacing": true,
     "arrowParens": "avoid",
-    "endOfLine": "auto"
+    "endOfLine": "auto",
+    "overrides": [
+        {
+            "files": [
+                "*.ts",
+                "*.tsx"
+            ],
+            "options": {
+                "printWidth": 100,
+                "tabWidth": 2,
+                "semi": true,
+                "singleQuote": true,
+                "trailingComma": "es5",
+                "bracketSpacing": true,
+                "arrowParens": "avoid",
+                "endOfLine": "auto"
+            }
+        },
+        {
+            "files": [
+                "*.css",
+                "*.scss",
+                "*.module.css",
+                "*.module.scss"
+            ],
+            "options": {
+                "printWidth": 100,
+                "tabWidth": 2,
+                "singleQuote": true,
+                "semi": true
+            }
+        },
+        {
+            "files": [
+                "*.json"
+            ],
+            "options": {
+                "printWidth": 100,
+                "tabWidth": 2,
+                "singleQuote": false,
+                "semi": false
+            }
+        },
+        {
+            "files": [
+                "*.md"
+            ],
+            "options": {
+                "printWidth": 80,
+                "tabWidth": 2,
+                "singleQuote": true,
+                "semi": false,
+                "proseWrap": "always"
+            }
+        }
+    ]
 }
