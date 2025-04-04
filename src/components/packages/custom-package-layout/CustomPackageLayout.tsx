@@ -198,32 +198,22 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
           .replace(/([a-z])([A-Z])/g, "$1 $2")
           .replace(/business needs/g, "business needs.");
         return (
-          <Box
-            className={styles.packageDetails}
-            sx={{
-              maxHeight: "600px",
-              overflowY: "auto",
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-          >
-            <style>
-              {`
-                .${styles.packageDetails}::-webkit-scrollbar {
-                  display: none;
-                }
-              `}
-            </style>
+          <Box className={styles.packageDetails}>
             <Box className={styles.detailItem}>
-              <Typography variant="h5">{packageDetails.title}</Typography>
+              <Typography variant="h5">Package Title</Typography>
+              <Typography variant="body2">
+                {packageDetails.title}
+              </Typography>
             </Box>
             <Box className={styles.detailItem}>
-              <Typography variant="body2" sx={{ mb: 1 }}>
+              <Typography variant="h5">Description</Typography>
+              <Typography variant="body2">
                 {formattedDescription}
               </Typography>
             </Box>
             <Box className={styles.detailItem}>
-              <Typography variant="h6">
+              <Typography variant="h5">Base Price</Typography>
+              <Typography variant="body2">
                 {isCustomizable ? (
                   <>
                     Base Price:{" "}
@@ -243,56 +233,28 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 )}
               </Typography>
             </Box>
-            <Box className={styles.currencyContainer}>
-              <Typography variant="body2" className={styles.currencyLabel}>
-                <b>Prices in other currencies:</b>
-              </Typography>
-              <Box className={styles.currencyOptions}>
-                {Object.entries(multiCurrencyPrices).map(([currency, price]) => (
-                  <Box key={currency} className={styles.currencyItem}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={selectedCurrency === currency}
-                          onChange={() => {
-                            setSelectedCurrency(currency);
-                            setSelectedCurrencyState(currency);
-                          }}
-                        />
-                      }
-                      label={
-                        currency === "Kz"
-                          ? `${price}${currency}`
-                          : `${getCurrencySymbol(currency)} ${price}`
-                      }
-                      className={styles.currencyItemPrice}
-                    />
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-            <Box className={styles.testPeriodItem}>
+            <Box className={styles.detailItem}>
+              <Typography variant="h5">Test Period</Typography>
               <Typography variant="body2">
-                Test Period: {packageDetails.testPeriod} days
+                {packageDetails.testPeriod} days
               </Typography>
             </Box>
-            {/* Unique Next/Back controls for "Package Details" */}
-            <Box className={styles.controls}>
+            <Box className={styles.packageDetailsControls}>
               <Button
-                className={styles.btnControlsBack}
+                className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
                 variant="outlined"
                 onClick={onBack}
-                disabled
+                disabled={currentStep === 0}
               >
                 Back
               </Button>
               <Button
-                className={styles.btnControlsNext}
+                className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
                 variant="contained"
                 onClick={handleNext}
                 disabled={loading}
               >
-                {loading ? <CircularProgress size={24} /> : "Next"}
+                {loading ? <CircularProgress size={24} /> : "Continue"}
               </Button>
             </Box>
           </Box>
@@ -583,98 +545,67 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       case "Select Payment Plan":
         return (
           <Box className={styles.featuresContainer}>
-            <Box className={styles.sectionHeader}>
-              <Typography variant="h5">Select Payment Plan</Typography>
-              <Typography variant="body2" className={styles.sectionDescription}>
-                Choose your preferred payment plan. Select the option that best suits your needs.
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h5" sx={{ fontSize: '1rem', fontWeight: 600, color: "#173a79", mb: 1 }}>
+                Select Payment Plan
+              </Typography>
+              <Typography variant="body2" sx={{ fontSize: '0.75rem', color: '#64748b' }}>
+                Choose your preferred payment plan
               </Typography>
             </Box>
             <Box className={styles.paymentPlansContainer}>
-              <Box className={styles.paymentPlanItem}>
-                <Typography variant="h6">Monthly Plan</Typography>
-                <Typography variant="body2" className={styles.paymentDescription}>
-                  Pay monthly for maximum flexibility
-                </Typography>
-                <Typography variant="h5" className={styles.paymentPrice}>
-                  {formatPrice(selectedCurrency, calculatedPrice)}/month
-                </Typography>
-                <Box className={styles.paymentFeatures}>
-                  <Typography variant="body2">✓ Monthly Billing</Typography>
-                  <Typography variant="body2">✓ No Commitment</Typography>
-                  <Typography variant="body2">✓ Easy Upgrade</Typography>
+              {[
+                {
+                  title: "Monthly Plan",
+                  description: "Pay monthly for maximum flexibility",
+                  price: formatPrice(selectedCurrency, calculatedPrice) + "/month",
+                  features: ["Monthly Billing", "No Commitment", "Easy Upgrade"],
+                  buttonText: "Select Monthly Plan"
+                },
+                {
+                  title: "Biannual Plan",
+                  description: "Save 15% with biannual billing",
+                  price: formatPrice(selectedCurrency, calculatedPrice * 6 * 0.85) + "/6 months",
+                  features: ["15% Discount", "Flexible Billing", "Mid-term Adjustments"],
+                  buttonText: "Select Biannual Plan"
+                },
+                {
+                  title: "Annual Plan",
+                  description: "Save 20% with annual billing",
+                  price: formatPrice(selectedCurrency, calculatedPrice * 12 * 0.8) + "/year",
+                  features: ["20% Discount", "Priority Support", "Free Setup"],
+                  buttonText: "Select Annual Plan"
+                },
+                {
+                  title: "Enterprise Plan",
+                  description: "Custom solutions for large businesses",
+                  price: "Custom Pricing",
+                  features: ["Dedicated Support", "Custom Features", "SLA Guarantee"],
+                  buttonText: "Contact Sales"
+                }
+              ].map((plan, index) => (
+                <Box key={index} className={styles.paymentPlanItem}>
+                  <Typography variant="h6">{plan.title}</Typography>
+                  <Typography className={styles.paymentDescription}>
+                    {plan.description}
+                  </Typography>
+                  <Typography className={styles.paymentPrice}>
+                    {plan.price}
+                  </Typography>
+                  <Box className={styles.paymentFeatures}>
+                    {plan.features.map((feature, idx) => (
+                      <Typography key={idx}>✓ {feature}</Typography>
+                    ))}
+                  </Box>
+                  <Button
+                    variant="contained"
+                    className={styles.selectPlanButton}
+                    onClick={onNext}
+                  >
+                    {plan.buttonText}
+                  </Button>
                 </Box>
-                <Button
-                  variant="contained"
-                  className={styles.selectPlanButton}
-                  onClick={onNext}
-                >
-                  Select Monthly Plan
-                </Button>
-              </Box>
-              <Box className={`${styles.paymentPlanItem} ${styles.premium}`}>
-                <Typography variant="h6">Biannual Plan</Typography>
-                <Typography variant="body2" className={styles.paymentDescription}>
-                  Save 15% with biannual billing
-                </Typography>
-                <Typography variant="h5" className={styles.paymentPrice}>
-                  {formatPrice(selectedCurrency, calculatedPrice * 6 * 0.85)}/6 months
-                </Typography>
-                <Box className={styles.paymentFeatures}>
-                  <Typography variant="body2">✓ 15% Discount</Typography>
-                  <Typography variant="body2">✓ Flexible Billing</Typography>
-                  <Typography variant="body2">✓ Mid-term Adjustments</Typography>
-                </Box>
-                <Button
-                  variant="contained"
-                  className={styles.selectPlanButton}
-                  onClick={onNext}
-                >
-                  Select Biannual Plan
-                </Button>
-              </Box>
-              <Box className={styles.paymentPlanItem}>
-                <Typography variant="h6">Annual Plan</Typography>
-                <Typography variant="body2" className={styles.paymentDescription}>
-                  Save 20% with annual billing
-                </Typography>
-                <Typography variant="h5" className={styles.paymentPrice}>
-                  {formatPrice(selectedCurrency, calculatedPrice * 12 * 0.8)}/year
-                </Typography>
-                <Box className={styles.paymentFeatures}>
-                  <Typography variant="body2">✓ 20% Discount</Typography>
-                  <Typography variant="body2">✓ Priority Support</Typography>
-                  <Typography variant="body2">✓ Free Setup Assistance</Typography>
-                </Box>
-                <Button
-                  variant="contained"
-                  className={styles.selectPlanButton}
-                  onClick={onNext}
-                >
-                  Select Annual Plan
-                </Button>
-              </Box>
-              <Box className={`${styles.paymentPlanItem} ${styles.premium}`}>
-                <Typography variant="h6">Enterprise Plan</Typography>
-                <Typography variant="body2" className={styles.paymentDescription}>
-                  Custom solutions for large businesses
-                </Typography>
-                <Typography variant="h5" className={styles.paymentPrice}>
-                  Custom Pricing
-                </Typography>
-                <Box className={styles.paymentFeatures}>
-                  <Typography variant="body2">✓ Dedicated Support</Typography>
-                  <Typography variant="body2">✓ Custom Features</Typography>
-                  <Typography variant="body2">✓ SLA Guarantee</Typography>
-                  <Typography variant="body2">✓ On-site Training</Typography>
-                </Box>
-                <Button
-                  variant="contained"
-                  className={styles.selectPlanButton}
-                  onClick={onNext}
-                >
-                  Contact Sales
-                </Button>
-              </Box>
+              ))}
             </Box>
           </Box>
         );
@@ -773,7 +704,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">Advanced Analytics</Typography>
                   <Typography variant="body2" className={styles.featureDescription}>
-                    Comprehensive reporting and analytics tools to gain deeper insights into your business operations
+                    Comprehensive reporting and analytics tools
                   </Typography>
                 </Box>
                 <Box className={styles.featureOptions}>
@@ -785,7 +716,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('realTimeAnalytics')}
                       />
                     }
-                    label="Real-time Analytics Dashboard"
+                    label="Real-time Analytics"
                   />
                   <FormControlLabel
                     control={
@@ -795,7 +726,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('customReports')}
                       />
                     }
-                    label="Custom Reports Builder"
+                    label="Custom Reports"
                   />
                   <FormControlLabel
                     control={
@@ -805,25 +736,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('dataExport')}
                       />
                     }
-                    label="Data Export & Integration"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        color="primary"
-                        checked={enterpriseFeatures?.predictiveAnalytics || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('predictiveAnalytics')}
-                      />
-                    }
-                    label="Predictive Analytics"
+                    label="Data Export"
                   />
                 </Box>
               </Box>
+
               <Box className={styles.enterpriseFeatureItem}>
                 <Box className={styles.featureHeader}>
-                  <Typography variant="h6">Multi-Location Management</Typography>
+                  <Typography variant="h6">Multi-Location</Typography>
                   <Typography variant="body2" className={styles.featureDescription}>
-                    Manage multiple business locations from a single dashboard with centralized control
+                    Manage multiple business locations efficiently
                   </Typography>
                 </Box>
                 <Box className={styles.featureOptions}>
@@ -835,7 +757,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('centralizedManagement')}
                       />
                     }
-                    label="Centralized Management Console"
+                    label="Centralized Management"
                   />
                   <FormControlLabel
                     control={
@@ -845,7 +767,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('locationSettings')}
                       />
                     }
-                    label="Location-specific Settings"
+                    label="Location Settings"
                   />
                   <FormControlLabel
                     control={
@@ -855,25 +777,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('crossLocationInventory')}
                       />
                     }
-                    label="Cross-location Inventory Management"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        color="primary"
-                        checked={enterpriseFeatures?.interLocationTransfers || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('interLocationTransfers')}
-                      />
-                    }
-                    label="Inter-location Transfers"
+                    label="Cross-location Inventory"
                   />
                 </Box>
               </Box>
+
               <Box className={styles.enterpriseFeatureItem}>
                 <Box className={styles.featureHeader}>
-                  <Typography variant="h6">Advanced Security</Typography>
+                  <Typography variant="h6">Security Suite</Typography>
                   <Typography variant="body2" className={styles.featureDescription}>
-                    Enterprise-grade security features to protect your business data and operations
+                    Advanced security features for enterprise protection
                   </Typography>
                 </Box>
                 <Box className={styles.featureOptions}>
@@ -885,7 +798,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('roleBasedAccess')}
                       />
                     }
-                    label="Role-based Access Control"
+                    label="Role-based Access"
                   />
                   <FormControlLabel
                     control={
@@ -905,25 +818,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('auditLogging')}
                       />
                     }
-                    label="Comprehensive Audit Logging"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        color="primary"
-                        checked={enterpriseFeatures?.twoFactorAuth || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('twoFactorAuth')}
-                      />
-                    }
-                    label="Two-Factor Authentication"
+                    label="Audit Logging"
                   />
                 </Box>
               </Box>
+
               <Box className={styles.enterpriseFeatureItem}>
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">API & Integration</Typography>
                   <Typography variant="body2" className={styles.featureDescription}>
-                    Connect your POS system with other business applications and services
+                    Connect with other business applications
                   </Typography>
                 </Box>
                 <Box className={styles.featureOptions}>
@@ -935,7 +839,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('restfulApi')}
                       />
                     }
-                    label="RESTful API Access"
+                    label="RESTful API"
                   />
                   <FormControlLabel
                     control={
@@ -955,17 +859,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         onChange={() => onEnterpriseFeatureToggle?.('customIntegration')}
                       />
                     }
-                    label="Custom Integration Support"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        color="primary"
-                        checked={enterpriseFeatures?.bulkDataImport || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('bulkDataImport')}
-                      />
-                    }
-                    label="Bulk Data Import/Export"
+                    label="Custom Integration"
                   />
                 </Box>
               </Box>
@@ -974,24 +868,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         );
       case "Review & Confirm":
         return (
-          <>
-            <Grid container spacing={5}>
-              <Grid item xs={12} md={7}>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }} gutterBottom>
+          <Box className={styles.reviewContainer}>
+            <Box className={styles.reviewColumn}>
+              <Box className={styles.reviewSection}>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   Enter Your Detail
                 </Typography>
-                <Box
-                  component="form"
-                  noValidate
-                  autoComplete="off"
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                    mt: 3.5,
-                  }}
-                >
-                  <Box sx={{ display: "flex", gap: 2 }}>
+                <Box className={styles.reviewForm}>
+                  <Box className={styles.formRow}>
                     <TextField
                       label="First Name"
                       name="firstName"
@@ -1033,7 +917,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     value={formData.address}
                     onChange={handleTextFieldChange}
                   />
-                  <Box sx={{ display: "flex", gap: 2 }}>
+                  <Box className={styles.formRow}>
                     <FormControl fullWidth required>
                       <InputLabel>Country</InputLabel>
                       <Select
@@ -1065,7 +949,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       </Select>
                     </FormControl>
                   </Box>
-                  <Box sx={{ display: "flex", gap: 2 }}>
+                  <Box className={styles.formRow}>
                     <TextField
                       label="City"
                       name="city"
@@ -1083,85 +967,175 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     />
                   </Box>
                 </Box>
-              </Grid>
-              <Grid item xs={12} md={5}>
-                <>
-                  <Typography variant="h6" sx={{ mb: 3, fontWeight: "bold" }}>
+              </Box>
+            </Box>
+            <Box className={styles.reviewColumn}>
+              <Box className={styles.orderSummary}>
+                <Box className={styles.orderSummaryHeader}>
+                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                     Order Summary
                   </Typography>
-                  <Box className={styles.review}>
-                    <Box className={styles.priceSummary}>
-                      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                        Total Price: {formatPrice(selectedCurrency, calculatedPrice)}/mo
-                      </Typography>
-                      {isCustomizable && (
-                        <Typography variant="body2">
-                          (Base: {formatPrice(selectedCurrency, basePrice)} + Customizations:{" "}
-                          {formatPrice(selectedCurrency, calculatedPrice - basePrice)})
+                </Box>
+
+                <Box className={styles.orderSummaryContent}>
+                  {/* Package Details */}
+                  <Box className={styles.section}>
+                    <Typography className={styles.sectionTitle}>
+                      Selected Package
+                    </Typography>
+                    <Box className={styles.sectionContent}>
+                      <Box className={styles.itemRow}>
+                        <Typography className={styles.itemLabel}>
+                          Enterprise Package
+                          <span className={styles.discountTag}>Most Popular</span>
                         </Typography>
-                      )}
+                        <Typography className={styles.itemValue}>
+                          {formatPrice(selectedCurrency, basePrice)}/mo
+                        </Typography>
+                      </Box>
+                      <Typography className={styles.itemDescription}>
+                        Basic features and standard support included
+                      </Typography>
                     </Box>
-                    {isCustomizable && (
-                      <>
-                        {selectedFeatures.length > 0 && (
-                          <Box className={styles.section}>
-                            <Typography variant="subtitle1">
-                              Selected Features:
-                            </Typography>
-                            {selectedFeatures.map((f) => (
-                              <Typography key={f.id}>
-                                {f.name} ({formatPrice(selectedCurrency, f.basePrice)})
-                              </Typography>
-                            ))}
-                          </Box>
-                        )}
-                        {selectedAddOns.length > 0 && (
-                          <Box className={styles.section}>
-                            <Typography variant="subtitle1">
-                              Selected Add-Ons:
-                            </Typography>
-                            {selectedAddOns.map((a) => (
-                              <Typography key={a.id}>
-                                {a.name} ({formatPrice(selectedCurrency, a.price)})
-                              </Typography>
-                            ))}
-                          </Box>
-                        )}
-                        {usagePricing.length > 0 && (
-                          <Box className={styles.section}>
-                            <Typography variant="subtitle1">
-                              Usage Limits:
-                            </Typography>
-                            {usagePricing.map((u) => (
-                              <Typography key={u.id}>
-                                {u.name}: {usageQuantities[u.id]} {u.unit}
-                              </Typography>
-                            ))}
-                          </Box>
-                        )}
-                      </>
-                    )}
                   </Box>
-                  <Box className={styles.buttonContainer}>
+
+                  {/* Payment Plan */}
+                  <Box className={styles.section}>
+                    <Typography className={styles.sectionTitle}>
+                      Payment Plan
+                    </Typography>
+                    <Box className={styles.sectionContent}>
+                      <Box className={styles.itemRow}>
+                        <Typography className={styles.itemLabel}>
+                          Annual Plan
+                          <span className={styles.discountTag}>20% Off</span>
+                        </Typography>
+                        <Typography className={styles.itemValue} sx={{ color: '#059669' }}>
+                          -{formatPrice(selectedCurrency, basePrice * 0.2)}/mo
+                        </Typography>
+                      </Box>
+                      <Typography className={styles.itemDescription}>
+                        Billed annually at {formatPrice(selectedCurrency, basePrice * 12 * 0.8)}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* Support Level */}
+                  <Box className={styles.section}>
+                    <Typography className={styles.sectionTitle}>
+                      Support Level
+                    </Typography>
+                    <Box className={styles.sectionContent}>
+                      <Box className={styles.itemRow}>
+                        <Typography className={styles.itemLabel}>
+                          Premium Support
+                          <span className={styles.discountTag}>24/7</span>
+                        </Typography>
+                        <Typography className={styles.itemValue}>
+                          +{formatPrice(selectedCurrency, basePrice * 0.2)}/mo
+                        </Typography>
+                      </Box>
+                      <Typography className={styles.itemDescription}>
+                        Priority support with 4-hour response time
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  {/* Enterprise Features */}
+                  <Box className={styles.section}>
+                    <Typography className={styles.sectionTitle}>
+                      Enterprise Features
+                    </Typography>
+                    <Box className={styles.sectionContent}>
+                      <Box className={styles.itemRow}>
+                        <Typography className={styles.itemLabel}>Advanced Analytics</Typography>
+                        <Typography className={styles.itemValue}>
+                          +{formatPrice(selectedCurrency, 199)}/mo
+                        </Typography>
+                      </Box>
+                      <Box className={styles.itemRow}>
+                        <Typography className={styles.itemLabel}>Multi-Location</Typography>
+                        <Typography className={styles.itemValue}>
+                          +{formatPrice(selectedCurrency, 299)}/mo
+                        </Typography>
+                      </Box>
+                      <Box className={styles.itemRow}>
+                        <Typography className={styles.itemLabel}>Security Suite</Typography>
+                        <Typography className={styles.itemValue}>
+                          +{formatPrice(selectedCurrency, 249)}/mo
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  {/* Price Breakdown */}
+                  <Box className={styles.section}>
+                    <Typography className={styles.sectionTitle}>
+                      Price Breakdown
+                    </Typography>
+                    <Box className={styles.sectionContent}>
+                      <Box className={styles.itemRow}>
+                        <Typography className={styles.itemLabel}>Subtotal</Typography>
+                        <Typography className={styles.itemValue}>
+                          {formatPrice(selectedCurrency, basePrice + 747)}/mo
+                        </Typography>
+                      </Box>
+                      <Box className={styles.divider} />
+                      <Box className={styles.itemRow}>
+                        <Typography className={styles.itemLabel}>
+                          Annual Discount
+                          <span className={styles.discountTag}>20%</span>
+                        </Typography>
+                        <Typography className={styles.itemValue} sx={{ color: '#059669' }}>
+                          -{formatPrice(selectedCurrency, (basePrice + 747) * 0.2)}/mo
+                        </Typography>
+                      </Box>
+                      <Box className={styles.itemRow}>
+                        <Typography className={styles.itemLabel}>
+                          Enterprise Discount
+                          <span className={styles.discountTag}>10%</span>
+                        </Typography>
+                        <Typography className={styles.itemValue} sx={{ color: '#059669' }}>
+                          -{formatPrice(selectedCurrency, (basePrice + 747) * 0.1)}/mo
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+
+                {/* Footer with Total and Buttons */}
+                <Box className={styles.orderSummaryFooter}>
+                  <Box className={styles.totalContainer}>
+                    <Box className={styles.totalLabel}>
+                      <Typography className={styles.totalAmount}>
+                        {formatPrice(selectedCurrency, (basePrice + 747) * 0.7)}/mo
+                      </Typography>
+                      <Typography className={styles.billingNote}>
+                        Billed annually • Includes all discounts
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box className={styles.packageDetailsControls}>
                     <Button
+                      className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
                       variant="outlined"
-                      className={styles.btnControlsBack}
                       onClick={onBack}
                     >
                       Back
                     </Button>
                     <Button
+                      className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
                       variant="contained"
-                      className={styles.btnControlsNext}
                       onClick={handleSave}
                     >
                       Confirm
                     </Button>
                   </Box>
-                </>
-              </Grid>
-            </Grid>
-          </>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
         );
       default:
         return (
