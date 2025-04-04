@@ -1,34 +1,27 @@
-import React, { useState, useEffect } from "react";
-import {
-  Drawer,
-  Box,
-  List,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
-import Image from "next/image";
-import { sidebarItems } from "@/settings";
-import { useSpinner } from "@/contexts/SpinnerContext";
-import { SidebarProps } from "./types";
-import MenuToggleButton from "./MenuToggleButton";
-import SidebarItem from "./SidebarItem";
+import React, { useState, useEffect } from 'react';
+import { Drawer, Box, List, Typography, useMediaQuery, useTheme } from '@mui/material';
+import Image from 'next/image';
+import { sidebarItems } from '@/settings';
+import { useSpinner } from '@/contexts/SpinnerContext';
+import { SidebarProps } from './types';
+import MenuToggleButton from './MenuToggleButton';
+import SidebarItem from './SidebarItem';
 
 const Sidebar: React.FC<SidebarProps> = ({
   drawerWidth,
   isDrawerOpen,
   onSectionSelect,
   onSettingsClick,
-  backgroundColor = "#173a79",
-  textColor = "#fff",
-  iconColor = "#fff",
-  logoUrl = "/Pisval_Logo.jpg",
-  handleItemClick = () => { },
-  onDrawerToggle = () => { },
+  backgroundColor = '#173a79',
+  textColor = '#fff',
+  iconColor = '#fff',
+  logoUrl = '/Pisval_Logo.jpg',
+  handleItemClick = () => {},
+  onDrawerToggle = () => {},
 }) => {
   const { setLoading } = useSpinner();
   const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
-  const [activeItemState, setActiveItemState] = useState<string>("");
+  const [activeItemState, setActiveItemState] = useState<string>('');
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [localDrawerOpen, setLocalDrawerOpen] = useState(isDrawerOpen);
@@ -51,11 +44,14 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleToggle = (label: string) => {
-    setExpandedItems((prev) => {
-      const newState = Object.keys(prev).reduce((acc, key) => {
-        acc[key] = key === label ? !prev[key] : false;
-        return acc;
-      }, {} as { [key: string]: boolean });
+    setExpandedItems(prev => {
+      const newState = Object.keys(prev).reduce(
+        (acc, key) => {
+          acc[key] = key === label ? !prev[key] : false;
+          return acc;
+        },
+        {} as { [key: string]: boolean }
+      );
 
       if (!(label in prev)) {
         newState[label] = true;
@@ -69,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     setLoading(true);
     setActiveItemState(label);
 
-    setExpandedItems((prev) => {
+    setExpandedItems(prev => {
       if (parentLabel) {
         return { ...prev, [parentLabel]: true };
       }
@@ -77,67 +73,67 @@ const Sidebar: React.FC<SidebarProps> = ({
     });
 
     const validSections = [
-      "Dashboard",
-      "Products List",
-      "Add/Edit Product",
-      "Product Categories",
-      "Stock Levels & Alerts",
-      "Low Stock Warnings",
-      "Bulk Import/Export",
-      "Inventory Adjustments",
-      "Product Expiry Tracking",
-      "New Sale",
-      "Sales History",
-      "Invoices & Receipts",
-      "Returns & Refunds",
-      "Discounts & Promotions",
-      "Loyalty & Reward Points",
-      "Pending Orders",
-      "Completed Orders",
-      "Cancelled Orders",
-      "Pre-Orders",
-      "Customer List",
-      "Add/Edit Customer",
-      "Customer Groups",
-      "Customer Purchase History",
-      "Loyalty Program",
-      "Customer Feedback & Reviews",
-      "Debt & Credit Management",
-      "Supplier List",
-      "Add/Edit Supplier",
-      "Purchase Orders",
-      "Pending Deliveries",
-      "Stock Replenishment Requests",
-      "Supplier Payments & Invoices",
-      "Employee List",
-      "Roles & Permissions",
-      "Cashier Sessions",
-      "Shift Management",
-      "Attendance Tracking",
-      "Activity Logs",
-      "Sales Reports",
-      "Top-Selling Products Report",
-      "Profit & Loss Report",
-      "Stock Movement Report",
-      "Employee Performance Report",
-      "Customer Purchase Trends Report",
-      "Tax & Compliance Reports",
-      "Payment Method Breakdown",
-      "Accepted Payment Methods",
-      "Transaction History",
-      "Pending Payments",
-      "Refund Processing",
-      "Cash Management",
-      "Expense Tracking",
-      "Recurring Expenses",
-      "Cash Flow Overview",
-      "Supplier Payments",
-      "Tax Calculations",
-      "Create New Discount",
-      "Active Promotions",
-      "Coupon & Voucher Management",
-      "Seasonal & Flash Sales",
-      "Settings"
+      'Dashboard',
+      'Products List',
+      'Add/Edit Product',
+      'Product Categories',
+      'Stock Levels & Alerts',
+      'Low Stock Warnings',
+      'Bulk Import/Export',
+      'Inventory Adjustments',
+      'Product Expiry Tracking',
+      'New Sale',
+      'Sales History',
+      'Invoices & Receipts',
+      'Returns & Refunds',
+      'Discounts & Promotions',
+      'Loyalty & Reward Points',
+      'Pending Orders',
+      'Completed Orders',
+      'Cancelled Orders',
+      'Pre-Orders',
+      'Customer List',
+      'Add/Edit Customer',
+      'Customer Groups',
+      'Customer Purchase History',
+      'Loyalty Program',
+      'Customer Feedback & Reviews',
+      'Debt & Credit Management',
+      'Supplier List',
+      'Add/Edit Supplier',
+      'Purchase Orders',
+      'Pending Deliveries',
+      'Stock Replenishment Requests',
+      'Supplier Payments & Invoices',
+      'Employee List',
+      'Roles & Permissions',
+      'Cashier Sessions',
+      'Shift Management',
+      'Attendance Tracking',
+      'Activity Logs',
+      'Sales Reports',
+      'Top-Selling Products Report',
+      'Profit & Loss Report',
+      'Stock Movement Report',
+      'Employee Performance Report',
+      'Customer Purchase Trends Report',
+      'Tax & Compliance Reports',
+      'Payment Method Breakdown',
+      'Accepted Payment Methods',
+      'Transaction History',
+      'Pending Payments',
+      'Refund Processing',
+      'Cash Management',
+      'Expense Tracking',
+      'Recurring Expenses',
+      'Cash Flow Overview',
+      'Supplier Payments',
+      'Tax Calculations',
+      'Create New Discount',
+      'Active Promotions',
+      'Coupon & Voucher Management',
+      'Seasonal & Flash Sales',
+      'Settings',
     ];
 
     if (!validSections.includes(label)) {
@@ -157,7 +153,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     }, 500);
   };
 
-
   if (isSmallScreen && !localDrawerOpen) {
     return <MenuToggleButton onClick={handleDrawerToggle} isOpen={false} />;
   }
@@ -166,12 +161,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
-      {isSmallScreen && (
-        <MenuToggleButton onClick={handleDrawerToggle} isOpen={true} />
-      )}
+      {isSmallScreen && <MenuToggleButton onClick={handleDrawerToggle} isOpen={true} />}
 
       <Drawer
-        variant={isSmallScreen ? "temporary" : "permanent"}
+        variant={isSmallScreen ? 'temporary' : 'permanent'}
         open={localDrawerOpen}
         onClose={handleDrawerClose}
         ModalProps={{
@@ -181,9 +174,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           width: localDrawerOpen ? drawerWidth : 60,
           flexShrink: 0,
           transition: 'width 0.3s ease',
-          "& .MuiDrawer-paper": {
+          '& .MuiDrawer-paper': {
             width: localDrawerOpen ? drawerWidth : 60,
-            boxSizing: "border-box",
+            boxSizing: 'border-box',
             boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
             backgroundColor,
             color: textColor,
@@ -200,27 +193,21 @@ const Sidebar: React.FC<SidebarProps> = ({
           display: { xs: 'block', sm: 'block', md: 'block' },
         }}
       >
-        <Box sx={{ textAlign: "center", p: 2 }}>
-          <Image
-            src={logoUrl}
-            alt="Logo"
-            width={80}
-            height={80}
-            style={{ borderRadius: "50%" }}
-          />
+        <Box sx={{ textAlign: 'center', p: 2 }}>
+          <Image src={logoUrl} alt="Logo" width={80} height={80} style={{ borderRadius: '50%' }} />
           <Typography
             variant="h6"
             sx={{
-              color: "#000",
-              background: "#ffffff",
-              borderRadius: "6px",
+              color: '#000',
+              background: '#ffffff',
+              borderRadius: '6px',
               mt: 2,
               p: 0.2,
-              fontWeight: "semibold",
-              textAlign: "center",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              fontWeight: 'semibold',
+              textAlign: 'center',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             Pinto Manuel
@@ -228,7 +215,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </Box>
 
         <List>
-          {sidebarItems.map((item) => (
+          {sidebarItems.map(item => (
             <SidebarItem
               key={item.label}
               item={item}

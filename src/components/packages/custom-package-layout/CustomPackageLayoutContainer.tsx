@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect, useCallback } from "react";
-import { apiClient, } from "@/api/axiosClient";
-import CustomPackageLayout from "./CustomPackageLayout";
-import SuccessMessage from "@/components/ui/success-message/SuccessMessage";
-import WaveLoading from "@/components/ui/WaveLoading/WaveLoading";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import React, { useState, useEffect, useCallback } from 'react';
+import { apiClient } from '@/api/axiosClient';
+import CustomPackageLayout from './CustomPackageLayout';
+import SuccessMessage from '@/components/ui/success-message/SuccessMessage';
+import WaveLoading from '@/components/ui/WaveLoading/WaveLoading';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import {
   Package,
@@ -17,18 +17,15 @@ import {
   PackageSelectionRequest,
   PriceCalculationRequest,
   PriceCalculationResponse,
-} from "./types";
-import { debounce } from "lodash";
-import LazyLoginForm from "@/components/login-form/LoginForm";
+} from './types';
+import { debounce } from 'lodash';
+import LazyLoginForm from '@/components/login-form/LoginForm';
 
 interface CustomPackageLayoutContainerProps {
   selectedPackage: Package;
 }
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref,
-) {
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
@@ -46,9 +43,9 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
   const [isLoading, setIsLoading] = useState(true);
   const [calculatedPrice, setCalculatedPrice] = useState<number>(selectedPackage.price);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
+  const [modalMessage, setModalMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [enterpriseFeatures, setEnterpriseFeatures] = useState<Record<string, boolean>>({
     realTimeAnalytics: false,
@@ -66,31 +63,39 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     restfulApi: false,
     webhookNotifications: false,
     customIntegration: false,
-    bulkDataImport: false
+    bulkDataImport: false,
   });
 
-  const defaultStepsCustom = React.useMemo(() => [
-    "Package Details",
-    "Select Core Features",
-    "Choose Add-Ons",
-    "Configure Usage",
-    "Select Payment Plan",
-    "Choose Support Level",
-    "Configure Integrations",
-    "Review & Confirm",
-  ], []);
+  const defaultStepsCustom = React.useMemo(
+    () => [
+      'Package Details',
+      'Select Core Features',
+      'Choose Add-Ons',
+      'Configure Usage',
+      'Select Payment Plan',
+      'Choose Support Level',
+      'Configure Integrations',
+      'Review & Confirm',
+    ],
+    []
+  );
 
-  const defaultStepsNonCustom = React.useMemo(() => [
-    "Package Details",
-    "Select Payment Plan",
-    "Choose Support Level",
-    "Configure Enterprise Features",
-    "Review & Confirm",
-  ], []);
+  const defaultStepsNonCustom = React.useMemo(
+    () => [
+      'Package Details',
+      'Select Payment Plan',
+      'Choose Support Level',
+      'Configure Enterprise Features',
+      'Review & Confirm',
+    ],
+    []
+  );
 
   const buildSteps = useCallback(() => {
-    const builtSteps = selectedPackage.isCustomizable ? [...defaultStepsCustom] : [...defaultStepsNonCustom];
-    console.log("Built steps:", builtSteps);
+    const builtSteps = selectedPackage.isCustomizable
+      ? [...defaultStepsCustom]
+      : [...defaultStepsNonCustom];
+    console.log('Built steps:', builtSteps);
     return builtSteps;
   }, [selectedPackage.isCustomizable, defaultStepsCustom, defaultStepsNonCustom]);
 
@@ -98,9 +103,9 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     const fetchConfig = async () => {
       try {
         const response = await apiClient.get<FeaturesResponse>(
-          "/api/pricingpackages/custom/features"
+          '/api/pricingpackages/custom/features'
         );
-        console.log("Fetched config response:", response.data);
+        console.log('Fetched config response:', response.data);
 
         const coreFeatures = response.data.coreFeatures || [];
         const addOnsData = response.data.addOns || [];
@@ -109,19 +114,22 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         setFeatures(coreFeatures);
         setAddOns(addOnsData);
         setUsagePricing(usageData);
-        const initialUsageQuantities = usageData.reduce((acc: Record<number, number>, curr: UsagePricing) => ({
-          ...acc,
-          [curr.id]: curr.defaultValue,
-        }), {} as Record<number, number>);
+        const initialUsageQuantities = usageData.reduce(
+          (acc: Record<number, number>, curr: UsagePricing) => ({
+            ...acc,
+            [curr.id]: curr.defaultValue,
+          }),
+          {} as Record<number, number>
+        );
         setUsageQuantities(initialUsageQuantities);
-        console.log("Initial usage quantities:", initialUsageQuantities);
+        console.log('Initial usage quantities:', initialUsageQuantities);
 
         const newSteps = buildSteps();
         setSteps(newSteps);
         setCurrentStep(0);
-        console.log("Initialized steps:", newSteps);
+        console.log('Initialized steps:', newSteps);
       } catch (error) {
-        console.error("Failed to load package config:", error);
+        console.error('Failed to load package config:', error);
         const newSteps = buildSteps();
         setSteps(newSteps);
         setCurrentStep(0);
@@ -138,27 +146,29 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
       setSteps(newSteps);
       setIsLoading(false);
       setCurrentStep(0);
-      console.log("Non-customizable package. Steps set to:", newSteps);
+      console.log('Non-customizable package. Steps set to:', newSteps);
     }
   }, [selectedPackage, buildSteps]);
 
   const validateCurrentStep = useCallback((): boolean => {
-    const currentLabel = steps[currentStep]?.trim() || "";
-    if (currentLabel === "Select Core Features") {
+    const currentLabel = steps[currentStep]?.trim() || '';
+    if (currentLabel === 'Select Core Features') {
       const requiredMissing = features.some(
-        (feature) => feature.isRequired && !selectedFeatures.some(f => f.id === feature.id)
+        feature => feature.isRequired && !selectedFeatures.some(f => f.id === feature.id)
       );
       if (requiredMissing) {
-        setSnackbarMessage("Please select all required features.");
+        setSnackbarMessage('Please select all required features.');
         setSnackbarOpen(true);
         return false;
       }
     }
-    if (currentLabel === "Configure Usage") {
+    if (currentLabel === 'Configure Usage') {
       for (const usage of usagePricing) {
         const value = usageQuantities[usage.id] ?? usage.defaultValue;
         if (value < usage.minValue || value > usage.maxValue) {
-          setSnackbarMessage(`For ${usage.name}, please enter a value between ${usage.minValue} and ${usage.maxValue}.`);
+          setSnackbarMessage(
+            `For ${usage.name}, please enter a value between ${usage.minValue} and ${usage.maxValue}.`
+          );
           setSnackbarOpen(true);
           return false;
         }
@@ -169,7 +179,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
 
   const handleNext = useCallback(() => {
     if (!validateCurrentStep()) return;
-    setCurrentStep((prev) => {
+    setCurrentStep(prev => {
       const nextStep = Math.min(prev + 1, steps.length - 1);
       console.log(`Navigating from step ${prev} to step ${nextStep}`);
       return nextStep;
@@ -177,62 +187,72 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
   }, [steps, validateCurrentStep]);
 
   const handleBack = useCallback(() => {
-    setCurrentStep((prev) => {
+    setCurrentStep(prev => {
       const prevStep = Math.max(prev - 1, 0);
       console.log(`Navigating back from step ${prev} to step ${prevStep}`);
       return prevStep;
     });
   }, []);
 
+  const handleSave = useCallback(
+    async (data: {
+      selectedFeatures: Feature[];
+      selectedAddOns: AddOn[];
+      usageQuantities: Record<number, number>;
+      calculatedPrice: number;
+      selectedCurrency: string;
+      formData: {
+        firstName: string;
+        lastName: string;
+        email: string;
+        phone: string;
+        address: string;
+        country: string;
+        state: string;
+        city: string;
+        zipCode: string;
+      };
+    }) => {
+      if (currentStep !== steps.length - 1) return;
+      if (!validateCurrentStep()) return;
 
-  const handleSave = useCallback(async (data: {
-    selectedFeatures: Feature[];
-    selectedAddOns: AddOn[];
-    usageQuantities: Record<number, number>;
-    calculatedPrice: number;
-    selectedCurrency: string;
-    formData: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      phone: string;
-      address: string;
-      country: string;
-      state: string;
-      city: string;
-      zipCode: string;
-    };
-  }) => {
-    if (currentStep !== steps.length - 1) return;
-    if (!validateCurrentStep()) return;
+      setModalMessage('Saving package...');
+      setIsModalOpen(true);
+      setIsLoading(true);
 
-    setModalMessage("Saving package...");
-    setIsModalOpen(true);
-    setIsLoading(true);
+      const request: PackageSelectionRequest = {
+        packageId: selectedPackage.id,
+        ...(selectedPackage.isCustomizable && {
+          features: selectedFeatures.map(f => f.id),
+          addOns: selectedAddOns.map(a => a.id),
+          usage: usageQuantities,
+        }),
+      };
 
-    const request: PackageSelectionRequest = {
-      packageId: selectedPackage.id,
-      ...(selectedPackage.isCustomizable && {
-        features: selectedFeatures.map((f) => f.id),
-        addOns: selectedAddOns.map((a) => a.id),
-        usage: usageQuantities,
-      }),
-    };
+      console.log('Saving package configuration with request:', request);
+      console.log('Form data captured:', data.formData);
 
-    console.log("Saving package configuration with request:", request);
-    console.log("Form data captured:", data.formData);
-
-    try {
-      await apiClient.post("/api/pricingpackages/custom/select", request);
-      console.log("Package saved successfully!");
-      setModalMessage("Package saved successfully!");
-    } catch (error) {
-      console.error("Save failed:", error);
-      setModalMessage("Error saving package!");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [currentStep, steps.length, selectedPackage, selectedFeatures, selectedAddOns, usageQuantities, validateCurrentStep]);
+      try {
+        await apiClient.post('/api/pricingpackages/custom/select', request);
+        console.log('Package saved successfully!');
+        setModalMessage('Package saved successfully!');
+      } catch (error) {
+        console.error('Save failed:', error);
+        setModalMessage('Error saving package!');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [
+      currentStep,
+      steps.length,
+      selectedPackage,
+      selectedFeatures,
+      selectedAddOns,
+      usageQuantities,
+      validateCurrentStep,
+    ]
+  );
 
   const handleModalConfirm = () => {
     setIsModalOpen(false);
@@ -248,22 +268,22 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
       const calculatePrice = debounce(async () => {
         const requestBody: PriceCalculationRequest = {
           packageId: selectedPackage.id,
-          selectedFeatures: selectedFeatures.map((f) => f.id),
-          selectedAddOns: selectedAddOns.map((a) => a.id),
+          selectedFeatures: selectedFeatures.map(f => f.id),
+          selectedAddOns: selectedAddOns.map(a => a.id),
           usageLimits: usageQuantities,
         };
 
-        console.log("Calculating price with request body:", requestBody);
+        console.log('Calculating price with request body:', requestBody);
 
         try {
           const response = await apiClient.post<PriceCalculationResponse>(
-            "/api/pricingpackages/custom/calculate-price",
+            '/api/pricingpackages/custom/calculate-price',
             requestBody
           );
-          console.log("Price calculation response:", response.data);
+          console.log('Price calculation response:', response.data);
           setCalculatedPrice(response.data.totalPrice);
         } catch (error) {
-          console.error("Failed to calculate price:", error);
+          console.error('Failed to calculate price:', error);
         }
       }, 300);
 
@@ -278,7 +298,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
   const handleEnterpriseFeatureToggle = useCallback((featureId: string) => {
     setEnterpriseFeatures(prev => ({
       ...prev,
-      [featureId]: !prev[featureId]
+      [featureId]: !prev[featureId],
     }));
   }, []);
 
@@ -309,19 +329,19 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
           onNext={handleNext}
           onBack={handleBack}
           onSave={handleSave}
-          onFeatureToggle={(features) => {
-            console.log("Toggling features:", features);
+          onFeatureToggle={features => {
+            console.log('Toggling features:', features);
             setSelectedFeatures(features);
           }}
-          onAddOnToggle={(addOns) => {
-            console.log("Toggling add-ons:", addOns);
+          onAddOnToggle={addOns => {
+            console.log('Toggling add-ons:', addOns);
             setSelectedAddOns(addOns);
           }}
-          onUsageChange={(quantities) => {
-            console.log("Updating usage quantities:", quantities);
+          onUsageChange={quantities => {
+            console.log('Updating usage quantities:', quantities);
             setUsageQuantities(quantities);
           }}
-          setSelectedCurrency={() => { }}
+          setSelectedCurrency={() => {}}
           enterpriseFeatures={enterpriseFeatures}
           onEnterpriseFeatureToggle={handleEnterpriseFeatureToggle}
         />

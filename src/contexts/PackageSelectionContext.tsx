@@ -1,7 +1,7 @@
 // PackageSelectionContext.tsx
-"use client";
+'use client';
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
 export type Package = {
   id: number;
@@ -11,7 +11,7 @@ export type Package = {
   extraDescription: string;
   price: number;
   testPeriodDays: number;
-  type: "starter" | "growth" | "enterprise" | "custom" | "premium"; // Added premium
+  type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium'; // Added premium
 };
 
 type PackageSelectionContextType = {

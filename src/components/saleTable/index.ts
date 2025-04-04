@@ -1,2 +1,2 @@
 export { default } from './SaleTableContainer';
-export * from './types'; 
+export * from './types';

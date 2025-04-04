@@ -27,4 +27,4 @@ export interface ProductEditProps {
   discount: number;
   total: number;
   itemNo: number;
-} 
+}

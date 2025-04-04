@@ -3,110 +3,109 @@
   display: flex;
   justify-content: center;
   padding: 10px;
-  background-color: #f4f4f4; 
+  background-color: #f4f4f4;
 }
 
 .heroContainer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 3rem 1rem;
-    gap: 2rem;
-  }
-  
-  .heroTextSection {
-    flex: 1;
-    max-width: 600px;
-  }
-  
-  .heroTextSection h1 {
-    font-size: 2.5rem;
-    line-height: 1.4;
-    margin-bottom: 1.5rem;
-  }
-  
-  .highlightedText {
-    color: #3b82f6;
-    ;
-    background: linear-gradient(90deg, #3b82f6, #3b82f6); 
-    -webkit-background-clip: text;
-    background-clip: text; 
-    -webkit-text-fill-color: transparent; 
-  }
-  
-  .heroSubheading {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: #444;
-    margin-bottom: 2rem;
-  }
-  
-  .heroButtons {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  
-  .heroBtnPrimary {
-    background-color: #3b82f6!important;
-    color: #fff;
-    font-weight: bold!important;
-    border: none;
-    padding: 0.8rem 1.8rem;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  .heroLinkSecondary {
-    color: #1c2331!important;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s ease;
-    margin-left: 20px !important;
-  }
-  
-  .heroLinkSecondary:hover {
-    color: #1c2331;
-  }
-  
-  .heroImageSection {
-    position: relative;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .heroLadyImage {
-    border-radius: 8px;
-    z-index: 1;
-    animation: float 3s ease-in-out infinite; /* Added animation */
-  }
-  
-  .heroPhoneImage {
-    position: absolute;
-    bottom: -20px;
-    right: -20px;
-    z-index: 2;
-  }
-  
-  .heroIconCart {
-    position: absolute;
-    top: -10px;
-    right: 50px;
-    z-index: 3;
-  }
-  
-  .heroIconDiscount {
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    z-index: 3;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+  gap: 2rem;
+}
+
+.heroTextSection {
+  flex: 1;
+  max-width: 600px;
+}
+
+.heroTextSection h1 {
+  font-size: 2.5rem;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+}
+
+.highlightedText {
+  color: #3b82f6;
+  background: linear-gradient(90deg, #3b82f6, #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroSubheading {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 2rem;
+}
+
+.heroButtons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.heroBtnPrimary {
+  background-color: #3b82f6 !important;
+  color: #fff;
+  font-weight: bold !important;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.heroLinkSecondary {
+  color: #1c2331 !important;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+  margin-left: 20px !important;
+}
+
+.heroLinkSecondary:hover {
+  color: #1c2331;
+}
+
+.heroImageSection {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroLadyImage {
+  border-radius: 8px;
+  z-index: 1;
+  animation: float 3s ease-in-out infinite; /* Added animation */
+}
+
+.heroPhoneImage {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  z-index: 2;
+}
+
+.heroIconCart {
+  position: absolute;
+  top: -10px;
+  right: 50px;
+  z-index: 3;
+}
+
+.heroIconDiscount {
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  z-index: 3;
+}
 
 .heroLadyImage,
 .heroPhoneImage,

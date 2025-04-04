@@ -57,9 +57,7 @@ export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
           }}
         />
       )}
-      {error && (
-        <ErrorModal message={error} onClose={() => setError(null)} />
-      )}
+      {error && <ErrorModal message={error} onClose={() => setError(null)} />}
       {children}
     </SpinnerContext.Provider>
   );

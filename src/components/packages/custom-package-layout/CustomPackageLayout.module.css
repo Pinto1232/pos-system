@@ -368,7 +368,7 @@
   gap: 1.25rem;
 }
 
-.formRow>* {
+.formRow > * {
   flex: 1;
 }
 

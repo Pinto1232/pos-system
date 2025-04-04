@@ -1,4 +1,3 @@
-
 # Deleting the Branch `fix-authentication`
 
 ## Delete the Remote Branch

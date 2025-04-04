@@ -5,7 +5,7 @@
 }
 
 .sidebarContainer {
-  background-color: #1E3A8A !important;
+  background-color: #1e3a8a !important;
   height: 100%;
   padding: 12px;
   border-radius: 0 !important;
@@ -26,22 +26,22 @@
   position: relative;
   right: 0px;
   top: 0px;
-  color: #ffff!important;
+  color: #ffff !important;
 }
 
 .searchBox {
   display: flex;
   align-items: center;
-  background-color: #F8FAFC;
+  background-color: #f8fafc;
   padding: 8px 12px;
   border-radius: 8px;
   margin: 0 8px 16px;
-  color: #64748B;
+  color: #64748b;
 }
 
 .searchIcon {
   margin-right: 8px;
-  color: #64748B;
+  color: #64748b;
 }
 
 .listItem {
@@ -49,7 +49,7 @@
 }
 
 .activeItem {
-  background-color: #52B788 !important;
+  background-color: #52b788 !important;
 }
 
 .activeItem.reporting .MuiListItemText-root {
@@ -63,7 +63,7 @@
 .divider {
   margin: 16px 8px;
   height: 1px;
-  background-color: #E2E8F0;
+  background-color: #e2e8f0;
   margin: 24px;
 }
 
@@ -72,7 +72,7 @@
   align-items: center;
   padding: 12px;
   margin: 6px 8px 0;
-  background-color: #52B788;
+  background-color: #52b788;
   border-radius: 8px;
   cursor: pointer;
   gap: 12px;

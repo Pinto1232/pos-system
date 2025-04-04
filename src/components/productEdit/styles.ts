@@ -18,7 +18,7 @@ export const ProductListSection = styled(Box)({
 });
 
 export const TotalSection = styled(Paper)({
-      width: '380px',
+  width: '380px',
   height: 'fit-content',
   padding: '32px',
   display: 'flex',
@@ -148,7 +148,7 @@ export const EmptyStateIcon = styled(Box)({
   '& svg': {
     color: '#fff',
     fontSize: '48px',
-  }
+  },
 });
 
 export const NewSessionButton = styled(Button)({
@@ -196,7 +196,7 @@ export const TableHeaderRow = styled(Box)({
     color: '#1E2A3B',
     fontSize: '14px',
     fontWeight: 600,
-  }
+  },
 });
 
 export const HeaderCell = styled(Box)({
@@ -232,4 +232,4 @@ export const HeaderWrapper = styled(Box)({
   borderRadius: '8px',
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
   width: '100%',
-}); 
+});

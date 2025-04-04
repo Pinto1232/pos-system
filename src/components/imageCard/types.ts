@@ -8,4 +8,4 @@ export interface ImageCardProps {
 
 export interface ImageCardContainerProps extends Omit<ImageCardProps, 'className'> {
   onCardClick?: () => void;
-} 
+}

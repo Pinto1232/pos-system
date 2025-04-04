@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface TestPeriodContextProps {
   testPeriod: number;
@@ -20,7 +20,7 @@ export const TestPeriodProvider: React.FC<{ children: ReactNode }> = ({ children
 export const useTestPeriod = () => {
   const context = useContext(TestPeriodContext);
   if (!context) {
-    throw new Error("useTestPeriod must be used within a TestPeriodProvider");
+    throw new Error('useTestPeriod must be used within a TestPeriodProvider');
   }
   return context;
 };

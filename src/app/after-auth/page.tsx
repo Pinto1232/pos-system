@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { apiClient } from "@/api/axiosClient";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { apiClient } from '@/api/axiosClient';
 
 const AfterAuth = () => {
   const router = useRouter();

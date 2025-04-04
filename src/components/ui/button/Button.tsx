@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React from "react";
-import styles from "./Button.module.css";
+import React from 'react';
+import styles from './Button.module.css';
 
 interface ButtonProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
   startIcon?: React.ReactNode;
-  type?: "button" | "submit" | "reset";
-  variant?: "contained" | "outlined" | "text";
+  type?: 'button' | 'submit' | 'reset';
+  variant?: 'contained' | 'outlined' | 'text';
   fullWidth?: boolean;
 }
 
@@ -18,13 +18,13 @@ export const Button: React.FC<ButtonProps> = ({
   className,
   onClick,
   startIcon,
-  type = "button",
-  variant = "contained",
+  type = 'button',
+  variant = 'contained',
   fullWidth = false,
 }) => {
   return (
     <button
-      className={`${styles.button} ${className} ${styles[variant]} ${fullWidth ? styles.fullWidth : ""}`}
+      className={`${styles.button} ${className} ${styles[variant]} ${fullWidth ? styles.fullWidth : ''}`}
       onClick={onClick}
       type={type}
     >

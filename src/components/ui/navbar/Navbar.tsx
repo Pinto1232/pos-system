@@ -1,12 +1,18 @@
-"use client";
+'use client';
 
-import React, { memo, Suspense, useEffect, useState } from "react";
-import { AppBar, Toolbar, IconButton, Box, Typography } from "@mui/material";
-import { Menu as MenuIcon, Notifications as NotificationsIcon, ChatBubbleOutline as ChatIcon, AccessTime as TimeIcon, Login as LoginIcon } from "@mui/icons-material";
-import { useSidebar } from "@/contexts/SidebarContext";
-import { useLoginForm } from "@/contexts/LoginFormContext";
-import { useTestPeriod } from "@/contexts/TestPeriodContext";
-import styles from "./Navbar.module.css";
+import React, { memo, Suspense, useEffect, useState } from 'react';
+import { AppBar, Toolbar, IconButton, Box, Typography } from '@mui/material';
+import {
+  Menu as MenuIcon,
+  Notifications as NotificationsIcon,
+  ChatBubbleOutline as ChatIcon,
+  AccessTime as TimeIcon,
+  Login as LoginIcon,
+} from '@mui/icons-material';
+import { useSidebar } from '@/contexts/SidebarContext';
+import { useLoginForm } from '@/contexts/LoginFormContext';
+import { useTestPeriod } from '@/contexts/TestPeriodContext';
+import styles from './Navbar.module.css';
 
 export interface NavbarProps {
   title: string;
@@ -28,7 +34,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setRemainingTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+      setRemainingTime(prevTime => (prevTime > 0 ? prevTime - 1 : 0));
     }, 1000);
 
     return () => clearInterval(timer);
@@ -38,7 +44,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -75,10 +81,10 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
   );
 });
 
-Navbar.displayName = "Navbar";
+Navbar.displayName = 'Navbar';
 export { Navbar };
 
-const LazyNavbar: React.FC<NavbarProps> = (props) => (
+const LazyNavbar: React.FC<NavbarProps> = props => (
   <Suspense fallback={<div>Loading...</div>}>
     <Navbar {...props} />
   </Suspense>

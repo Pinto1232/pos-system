@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useState, createContext, useContext } from "react";
-import LoginForm from "./LoginForm";
-import { Dialog, DialogContent } from "@mui/material";
+import React, { useState, createContext, useContext } from 'react';
+import LoginForm from './LoginForm';
+import { Dialog, DialogContent } from '@mui/material';
 
 interface LoginFormContextProps {
   toggleLoginForm: () => void;
@@ -13,7 +13,7 @@ const LoginFormContext = createContext<LoginFormContextProps | undefined>(undefi
 export const useLoginForm = () => {
   const context = useContext(LoginFormContext);
   if (!context) {
-    throw new Error("useLoginForm must be used within a LoginFormProvider");
+    throw new Error('useLoginForm must be used within a LoginFormProvider');
   }
   return context;
 };
@@ -22,7 +22,7 @@ export const LoginFormProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [open, setOpen] = useState(false);
 
   const toggleLoginForm = () => {
-    setOpen((prev) => !prev);
+    setOpen(prev => !prev);
   };
 
   return (

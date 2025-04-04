@@ -14,11 +14,13 @@ export const mockFetchCustomization = async (userId: string): Promise<UserCustom
     userId,
     sidebarColor: '#173A79',
     logoUrl: '/Pisval_Logo.jpg',
-    navbarColor: '#000000'
+    navbarColor: '#000000',
   };
 };
 
-export const mockUpdateCustomization = async (customization: UserCustomization): Promise<UserCustomization> => {
+export const mockUpdateCustomization = async (
+  customization: UserCustomization
+): Promise<UserCustomization> => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(customization));
   return customization;
-}; 
+};

@@ -1,11 +1,11 @@
 // SidebarContainer.tsx
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
-import Sidebar from "@/components/ui/sidebar/homeSidebar";
+import { useState, useCallback } from 'react';
+import Sidebar from '@/components/ui/sidebar/homeSidebar';
 
 const SidebarContainer = () => {
-  const [activeItem, setActiveItem] = useState<string>("");
+  const [activeItem, setActiveItem] = useState<string>('');
 
   const handleItemClick = useCallback((item: string) => {
     setActiveItem(item);
@@ -15,7 +15,7 @@ const SidebarContainer = () => {
     <Sidebar
       drawerWidth={250}
       isDrawerOpen={true}
-      onDrawerToggle={() => { }}
+      onDrawerToggle={() => {}}
       activeItem={activeItem}
       handleItemClick={handleItemClick}
       onSectionSelect={handleItemClick}

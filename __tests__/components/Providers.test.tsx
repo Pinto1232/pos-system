@@ -3,6 +3,10 @@ import { render } from '@testing-library/react';
 import Providers from '@/components/providers/Providers';
 
 test('Providers dummy test', () => {
-  const { container } = render(<Providers><div>Test</div></Providers>);
+  const { container } = render(
+    <Providers>
+      <div>Test</div>
+    </Providers>
+  );
   expect(container).toBeDefined();
 });

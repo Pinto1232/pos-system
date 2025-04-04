@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { Suspense, useEffect, useState } from "react";
-import styles from "./Jumbotron.module.css";
+import React, { Suspense, useEffect, useState } from 'react';
+import styles from './Jumbotron.module.css';
 
 interface JumbotronProps {
   heading: string;
   subheading: string;
   backgroundImage: string;
-  overlayColor?: string; 
+  overlayColor?: string;
   height?: string;
 }
 
@@ -15,8 +15,8 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
   heading,
   subheading,
   backgroundImage,
-  overlayColor = "rgba(0, 0, 0, 0.5)",
-  height = "500px", 
+  overlayColor = 'rgba(0, 0, 0, 0.5)',
+  height = '500px',
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -30,15 +30,17 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
     <div
       className={styles.jumbotronContainer}
       style={{
-        backgroundImage: imageLoaded ? `
+        backgroundImage: imageLoaded
+          ? `
           ${overlayColor},
           url(${backgroundImage})
-        ` : overlayColor,
-        height: height, 
-        backgroundBlendMode: 'overlay', 
-        backgroundSize: 'cover', 
-        backgroundPosition: 'center', 
-        backgroundRepeat: 'no-repeat', 
+        `
+          : overlayColor,
+        height: height,
+        backgroundBlendMode: 'overlay',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
       }}
     >
       <div className={styles.content}>

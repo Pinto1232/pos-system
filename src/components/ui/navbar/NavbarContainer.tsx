@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 // Import the memoized Navbar instead of the default LazyNavbar
-import { Navbar } from "@/components/ui/navbar/Navbar";
-import Drawer from "@mui/material/Drawer";
+import { Navbar } from '@/components/ui/navbar/Navbar';
+import Drawer from '@mui/material/Drawer';
 
 const NavbarContainer: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -17,7 +17,7 @@ const NavbarContainer: React.FC = () => {
       <Navbar
         title="Pisval Tech POS"
         testPeriod={30}
-        menuItems={["Home", "About", "Contact"]}
+        menuItems={['Home', 'About', 'Contact']}
         isDrawerOpen={isDrawerOpen}
         toggleDrawer={toggleDrawer}
       />

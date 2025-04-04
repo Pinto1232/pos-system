@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Grid,
   Box,
@@ -8,14 +8,14 @@ import {
   Button,
   Checkbox,
   FormGroup,
-  FormControlLabel
-} from "@mui/material";
-import iconMap from "../../../utils/icons";
-import SuccessMessage from "../../ui/success-message/SuccessMessage";
-import styles from "./GrowthPackageLayout.module.css";
-import LazyLoginForm from "@/components/login-form/LoginForm";
-import { useTestPeriod } from "@/contexts/TestPeriodContext";
-import { useSpinner } from "@/contexts/SpinnerContext";
+  FormControlLabel,
+} from '@mui/material';
+import iconMap from '../../../utils/icons';
+import SuccessMessage from '../../ui/success-message/SuccessMessage';
+import styles from './GrowthPackageLayout.module.css';
+import LazyLoginForm from '@/components/login-form/LoginForm';
+import { useTestPeriod } from '@/contexts/TestPeriodContext';
+import { useSpinner } from '@/contexts/SpinnerContext';
 
 interface GrowthPackageLayoutProps {
   selectedPackage: {
@@ -26,44 +26,39 @@ interface GrowthPackageLayoutProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type: "starter" | "growth" | "enterprise" | "custom" | "premium";
+    type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
     currency?: string;
     multiCurrencyPrices?: string;
   };
 }
 
 const currencySymbols: Record<string, string> = {
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-  Kz: "Kz",
+  USD: '$',
+  EUR: '€',
+  GBP: '£',
+  Kz: 'Kz',
 };
 
-const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
-  selectedPackage,
-}) => {
+const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({ selectedPackage }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } = useSpinner();
-  const [currentCurrency, setCurrentCurrency] = useState<string>(
-    selectedPackage.currency || "USD"
-  );
+  const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || 'USD');
 
-  const IconComponent =
-    iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
+  const IconComponent = iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
 
   const handleSelectedGrowthPackage = async () => {
     setSpinnerLoading(true);
     setLoading(true);
-    console.log("Selected package", {
+    console.log('Selected package', {
       ...selectedPackage,
-      currency: currentCurrency
+      currency: currentCurrency,
     });
-    // Simulate backend 
+    // Simulate backend
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 2000));
     setLoading(false);
     setSpinnerLoading(false);
     setSuccess(true);
@@ -74,14 +69,14 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   };
 
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
-    console.log("Confirmed", isSignup);
+    console.log('Confirmed', isSignup);
     setSuccess(false);
     setShowLoginForm(true);
     setTestPeriod(selectedPackage.testPeriodDays);
   };
 
   const handleReturnSuccessMessage = () => {
-    console.log("Return");
+    console.log('Return');
     setSuccess(false);
   };
 
@@ -95,8 +90,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
 
   const displayPrice =
     currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
-  const currencySymbol =
-    currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
+  const currencySymbol = currentCurrency === 'Kz' ? 'Kz' : currencySymbols[currentCurrency] || '$';
 
   // Early return: if showLoginForm is true, render LazyLoginForm only
   if (showLoginForm) {
@@ -117,15 +111,13 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
         <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
-              {selectedPackage.icon && (
-                <IconComponent className={styles.packageIcon} />
-              )}
+              {selectedPackage.icon && <IconComponent className={styles.packageIcon} />}
               <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
 
               <Typography variant="body1" className={styles.description}>
-                {selectedPackage.description.replace(/[^\w\s.,!?]/g, "")}
+                {selectedPackage.description.replace(/[^\w\s.,!?]/g, '')}
               </Typography>
 
               <Typography variant="body2" className={styles.description}>
@@ -137,7 +129,12 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
                   YOUR TOTAL IN ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.growthBoxAmount}>
-                  <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
+                  <b>
+                    {currentCurrency === 'Kz'
+                      ? `${displayPrice}Kz`
+                      : `${currencySymbol}${displayPrice}`}
+                  </b>
+                  /mo
                 </Typography>
               </Box>
 
@@ -164,7 +161,9 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency === "Kz" ? `${price}Kz` : `${currencySymbols[currency] || "$"}${price}`}
+                            {currency === 'Kz'
+                              ? `${price}Kz`
+                              : `${currencySymbols[currency] || '$'}${price}`}
                           </b>
                         }
                         className={styles.multiCurrencyItem}
@@ -195,7 +194,12 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>
+                Monthly Price{' '}
+                <b>
+                  {currentCurrency === 'Kz'
+                    ? `${displayPrice}Kz`
+                    : `${currencySymbol}${displayPrice}`}
+                </b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>

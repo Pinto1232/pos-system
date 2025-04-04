@@ -77,17 +77,17 @@ export interface SalesData {
 }
 
 export interface SalesProps {
-    data: SalesData;
-    timeframe: string;
-    onTimeframeChange?: (timeframe: string) => void;
-    className?: string;
+  data: SalesData;
+  timeframe: string;
+  onTimeframeChange?: (timeframe: string) => void;
+  className?: string;
 }
 
 export interface SalesContainerProps {
-    className?: string;
-    imageUrl?: string;
-    title?: string;
-    description?: string;
-    timeframe?: string;
-    onTimeframeChange?: (timeframe: string) => void;
+  className?: string;
+  imageUrl?: string;
+  title?: string;
+  description?: string;
+  timeframe?: string;
+  onTimeframeChange?: (timeframe: string) => void;
 }
