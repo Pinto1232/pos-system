@@ -58,6 +58,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   onEnterpriseFeatureToggle,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [backLoading, setBackLoading] = useState(false);
   const [selectedCurrency, setSelectedCurrencyState] = useState<string>("USD");
   const { setTestPeriod } = useTestPeriod();
   const [totalFeaturePrice, setTotalFeaturePrice] = useState<number>(0);
@@ -83,10 +84,24 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     setTotalFeaturePrice(total);
   }, [selectedFeatures, selectedCurrency]);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setLoading(true);
-    onNext();
-    setLoading(false);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate loading
+      onNext();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBack = async () => {
+    setBackLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate loading
+      onBack();
+    } finally {
+      setBackLoading(false);
+    }
   };
 
   const handleFeatureToggle = (feature: Feature) => {
@@ -239,24 +254,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 {packageDetails.testPeriod} days
               </Typography>
             </Box>
-            <Box className={styles.packageDetailsControls}>
-              <Button
-                className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
-                variant="outlined"
-                onClick={onBack}
-                disabled={currentStep === 0}
-              >
-                Back
-              </Button>
-              <Button
-                className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
-                variant="contained"
-                onClick={handleNext}
-                disabled={loading}
-              >
-                {loading ? <CircularProgress size={24} /> : "Continue"}
-              </Button>
-            </Box>
+            {renderPackageDetailsButtons()}
           </Box>
         );
       case "Select Core Features":
@@ -544,16 +542,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         );
       case "Select Payment Plan":
         return (
-          <Box className={styles.featuresContainer}>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="h5" sx={{ fontSize: '1rem', fontWeight: 600, color: "#173a79", mb: 1 }}>
+          <Box sx={{ width: '100%', p: 2 }}>
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h5" sx={{ fontSize: '1.25rem', fontWeight: 600, color: "#173a79", mb: 1 }}>
                 Select Payment Plan
               </Typography>
-              <Typography variant="body2" sx={{ fontSize: '0.75rem', color: '#64748b' }}>
+              <Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#64748b' }}>
                 Choose your preferred payment plan
               </Typography>
             </Box>
-            <Box className={styles.paymentPlansContainer}>
+            <Box className={styles.paymentPlansContainer} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
               {[
                 {
                   title: "Monthly Plan",
@@ -600,12 +598,32 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   <Button
                     variant="contained"
                     className={styles.selectPlanButton}
-                    onClick={onNext}
+                    onClick={() => {
+                      handleNext();
+                    }}
                   >
                     {plan.buttonText}
                   </Button>
                 </Box>
               ))}
+            </Box>
+            <Box className={styles.packageDetailsControls}>
+              <Button
+                className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
+                variant="outlined"
+                onClick={handleBack}
+                disabled={currentStep === 0 || backLoading}
+              >
+                {backLoading ? <CircularProgress size={20} /> : "Back"}
+              </Button>
+              <Button
+                className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
+                variant="contained"
+                onClick={handleNext}
+                disabled={loading}
+              >
+                {loading ? <CircularProgress size={20} /> : "Continue"}
+              </Button>
             </Box>
           </Box>
         );
@@ -686,6 +704,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 </Button>
               </Box>
             </Box>
+            {renderPackageDetailsButtons()}
           </Box>
         );
       case "Configure Enterprise Features":
@@ -864,6 +883,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 </Box>
               </Box>
             </Box>
+            {renderPackageDetailsButtons()}
           </Box>
         );
       case "Review & Confirm":
@@ -1120,7 +1140,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     <Button
                       className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
                       variant="outlined"
-                      onClick={onBack}
+                      onClick={handleBack}
                     >
                       Back
                     </Button>
@@ -1146,6 +1166,52 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     }
   };
 
+  const renderPackageDetailsButtons = () => (
+    <Box className={styles.packageDetailsControls}>
+      <Button
+        className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
+        variant="outlined"
+        onClick={handleBack}
+        disabled={currentStep === 0 || backLoading}
+      >
+        {backLoading ? <CircularProgress size={20} /> : "Back"}
+      </Button>
+      <Button
+        className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
+        variant="contained"
+        onClick={handleNext}
+        disabled={loading}
+      >
+        {loading ? <CircularProgress size={20} /> : "Continue"}
+      </Button>
+    </Box>
+  );
+
+  const renderNavigationButtons = () => (
+    <Box className={styles.controls}>
+      {currentStep > 0 && steps[currentStep] !== "Choose Support Level" && steps[currentStep] !== "Select Payment Plan" && (
+        <Button
+          className={styles.btnControlsBack}
+          variant="outlined"
+          onClick={handleBack}
+          disabled={currentStep === 0 || backLoading}
+        >
+          {backLoading ? <CircularProgress size={20} /> : "Back"}
+        </Button>
+      )}
+      {currentStep < steps.length - 1 && steps[currentStep] !== "Choose Support Level" && steps[currentStep] !== "Select Payment Plan" && (
+        <Button
+          className={styles.btnControlsNext}
+          variant="contained"
+          onClick={handleNext}
+          disabled={loading}
+        >
+          {loading ? <CircularProgress size={20} /> : "Next"}
+        </Button>
+      )}
+    </Box>
+  );
+
   return (
     <Card className={styles.container}>
       <CardContent>
@@ -1164,30 +1230,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         >
           {getStepContent()}
         </motion.div>
-        {currentStep !== steps.length - 1 && currentStep !== 0 && (
-          <Box className={styles.controls}>
-            {currentStep > 0 && (
-              <Button
-                className={styles.btnControlsBack}
-                variant="outlined"
-                onClick={onBack}
-                disabled={currentStep === 0}
-              >
-                Back
-              </Button>
-            )}
-            {currentStep < steps.length - 1 && (
-              <Button
-                className={styles.btnControlsNext}
-                variant="contained"
-                onClick={handleNext}
-                disabled={loading}
-              >
-                {loading ? <CircularProgress size={24} /> : "Next"}
-              </Button>
-            )}
-          </Box>
-        )}
+        {currentStep !== steps.length - 1 && currentStep !== 0 && renderNavigationButtons()}
       </CardContent>
     </Card>
   );
