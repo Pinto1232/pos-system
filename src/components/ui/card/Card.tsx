@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { memo, Suspense } from "react";
-import styles from "./Card.module.css";
+import React, { memo, Suspense } from 'react';
+import styles from './Card.module.css';
 
 interface CardProps {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ interface CardProps {
 export const Card: React.FC<CardProps> = memo(({ children, className }) => {
   return <div className={`${styles.card} ${className}`}>{children}</div>;
 });
-Card.displayName = "Card";
+Card.displayName = 'Card';
 
 interface CardHeaderProps {
   children: React.ReactNode;
@@ -21,7 +21,7 @@ interface CardHeaderProps {
 export const CardHeader: React.FC<CardHeaderProps> = memo(({ children, className }) => {
   return <div className={`${styles.cardHeader} ${className}`}>{children}</div>;
 });
-CardHeader.displayName = "CardHeader";
+CardHeader.displayName = 'CardHeader';
 
 interface CardContentProps {
   children: React.ReactNode;
@@ -31,7 +31,7 @@ interface CardContentProps {
 export const CardContent: React.FC<CardContentProps> = memo(({ children, className }) => {
   return <div className={`${styles.cardContent} ${className}`}>{children}</div>;
 });
-CardContent.displayName = "CardContent";
+CardContent.displayName = 'CardContent';
 
 interface CardFooterProps {
   children: React.ReactNode;
@@ -41,7 +41,7 @@ interface CardFooterProps {
 export const CardFooter: React.FC<CardFooterProps> = memo(({ children, className }) => {
   return <div className={`${styles.cardFooter} ${className}`}>{children}</div>;
 });
-CardFooter.displayName = "CardFooter";
+CardFooter.displayName = 'CardFooter';
 
 const LazyCard = () => (
   <Suspense fallback={<div>Loading...</div>}>

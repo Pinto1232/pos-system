@@ -1,13 +1,6 @@
 'use client';
 
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  ReactNode,
-  useRef,
-  useCallback,
-} from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useRef, useCallback } from 'react';
 import { KeycloakInstance } from 'keycloak-js';
 import keycloakInstance from '@/auth/keycloak';
 import { Box, Typography } from '@mui/material';
@@ -23,8 +16,8 @@ export interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps>({
   token: null,
-  login: async () => { },
-  logout: async () => { },
+  login: async () => {},
+  logout: async () => {},
   authenticated: false,
   error: null,
 });
@@ -47,7 +40,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
       console.log('Logout redirect URI:', logoutRedirect);
 
-
       const logoutUrl = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/logout`;
 
       const form = document.createElement('form');
@@ -63,9 +55,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       const redirectInput = document.createElement('input');
       redirectInput.type = 'hidden';
       redirectInput.name = 'post_logout_redirect_uri';
-      redirectInput.value = process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || window.location.origin + '/login';
+      redirectInput.value =
+        process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || window.location.origin + '/login';
       form.appendChild(redirectInput);
-
 
       document.body.appendChild(form);
       form.submit();
@@ -78,7 +70,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = useCallback(async () => {
     console.log('Login requested');
     try {
-      const loginRedirect = process.env.NEXT_PUBLIC_LOGIN_REDIRECT || process.env.NEXT_PUBLIC_REDIRECT_URI;
+      const loginRedirect =
+        process.env.NEXT_PUBLIC_LOGIN_REDIRECT || process.env.NEXT_PUBLIC_REDIRECT_URI;
       console.log('Using login redirect:', loginRedirect);
 
       await keycloakRef.current.login({
@@ -139,7 +132,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log('Keycloak initialized successfully:', {
           authenticated,
           hasToken: !!kc.token,
-          tokenExpiry: kc.tokenParsed?.exp ? new Date(kc.tokenParsed.exp * 1000).toISOString() : 'unknown'
+          tokenExpiry: kc.tokenParsed?.exp
+            ? new Date(kc.tokenParsed.exp * 1000).toISOString()
+            : 'unknown',
         });
 
         if (authenticated) {
@@ -276,7 +271,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             display: 'flex',
             alignItems: 'center',
             fontWeight: 500,
-            color: 'text.primary'
+            color: 'text.primary',
           }}
         >
           Initializing authentication
@@ -292,11 +287,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Grid,
   Box,
@@ -9,13 +9,13 @@ import {
   Checkbox,
   FormGroup,
   FormControlLabel,
-} from "@mui/material";
-import iconMap from "../../../utils/icons";
-import SuccessMessage from "../../ui/success-message/SuccessMessage";
-import styles from "./EnterprisePackageLayout.module.css";
-import LazyLoginForm from "@/components/login-form/LoginForm";
-import { useTestPeriod } from "@/contexts/TestPeriodContext";
-import { useSpinner } from "@/contexts/SpinnerContext";
+} from '@mui/material';
+import iconMap from '../../../utils/icons';
+import SuccessMessage from '../../ui/success-message/SuccessMessage';
+import styles from './EnterprisePackageLayout.module.css';
+import LazyLoginForm from '@/components/login-form/LoginForm';
+import { useTestPeriod } from '@/contexts/TestPeriodContext';
+import { useSpinner } from '@/contexts/SpinnerContext';
 
 interface EnterprisePackageLayoutProps {
   selectedPackage: {
@@ -26,43 +26,38 @@ interface EnterprisePackageLayoutProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type: "starter" | "growth" | "enterprise" | "custom" | "premium";
+    type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
     currency?: string;
     multiCurrencyPrices?: string;
   };
 }
 
 const currencySymbols: Record<string, string> = {
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-  Kz: "Kz",
+  USD: '$',
+  EUR: '€',
+  GBP: '£',
+  Kz: 'Kz',
 };
 
-const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
-  selectedPackage,
-}) => {
+const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selectedPackage }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } = useSpinner();
-  const [currentCurrency, setCurrentCurrency] = useState<string>(
-    selectedPackage.currency || "USD"
-  );
+  const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || 'USD');
 
-  const IconComponent =
-    iconMap[selectedPackage.icon] || iconMap["MUI:DefaultIcon"];
+  const IconComponent = iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
 
   const handleSelectedEnterprisePackage = async () => {
     setSpinnerLoading(true);
     setLoading(true);
-    console.log("Selected package", {
+    console.log('Selected package', {
       ...selectedPackage,
       currency: currentCurrency,
     });
     // Simulate backend call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 2000));
     setLoading(false);
     setSpinnerLoading(false);
     setSuccess(true);
@@ -73,14 +68,14 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
   };
 
   const handleConfirmSuccessMessage = (isSignup: boolean) => {
-    console.log("Confirmed", isSignup);
+    console.log('Confirmed', isSignup);
     setSuccess(false);
     setShowLoginForm(true);
     setTestPeriod(selectedPackage.testPeriodDays);
   };
 
   const handleReturnSuccessMessage = () => {
-    console.log("Return");
+    console.log('Return');
     setSuccess(false);
   };
 
@@ -89,17 +84,13 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
   };
 
   // Parse multiCurrencyPrices if provided
-  const multiCurrency: Record<string, number> | null = selectedPackage
-    .multiCurrencyPrices
+  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
     ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
 
   const displayPrice =
-    currentCurrency && multiCurrency
-      ? multiCurrency[currentCurrency]
-      : selectedPackage.price;
-  const currencySymbol =
-    currentCurrency === "Kz" ? "Kz" : (currencySymbols[currentCurrency] || "$");
+    currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
+  const currencySymbol = currentCurrency === 'Kz' ? 'Kz' : currencySymbols[currentCurrency] || '$';
 
   if (showLoginForm) {
     return <LazyLoginForm />;
@@ -119,15 +110,13 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
         <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
-              {selectedPackage.icon && (
-                <IconComponent className={styles.packageIcon} />
-              )}
+              {selectedPackage.icon && <IconComponent className={styles.packageIcon} />}
               <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
 
               <Typography variant="body1" className={styles.description}>
-                {selectedPackage.description.replace(/[^\w\s.,!?]/g, "")}
+                {selectedPackage.description.replace(/[^\w\s.,!?]/g, '')}
               </Typography>
 
               <Typography variant="body2" className={styles.description}>
@@ -139,7 +128,12 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                   YOUR TOTAL IN ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.enterpriseBoxAmount}>
-                  <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
+                  <b>
+                    {currentCurrency === 'Kz'
+                      ? `${displayPrice}Kz`
+                      : `${currencySymbol}${displayPrice}`}
+                  </b>
+                  /mo
                 </Typography>
               </Box>
 
@@ -166,7 +160,9 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency === "Kz" ? `${price}Kz` : `${currencySymbols[currency] || "$"}${price}`}
+                            {currency === 'Kz'
+                              ? `${price}Kz`
+                              : `${currencySymbols[currency] || '$'}${price}`}
                           </b>
                         }
                         className={styles.multiCurrencyItem}
@@ -197,7 +193,12 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>
+                Monthly Price{' '}
+                <b>
+                  {currentCurrency === 'Kz'
+                    ? `${displayPrice}Kz`
+                    : `${currencySymbol}${displayPrice}`}
+                </b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>

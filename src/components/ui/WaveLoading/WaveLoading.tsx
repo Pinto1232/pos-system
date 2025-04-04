@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { motion } from "framer-motion";
-import { FaCog } from "react-icons/fa";
-import styles from "./WaveLoading.module.css";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { FaCog } from 'react-icons/fa';
+import styles from './WaveLoading.module.css';
 
 const WaveLoading: React.FC = () => {
   return (

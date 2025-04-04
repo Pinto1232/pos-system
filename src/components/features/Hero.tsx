@@ -1,29 +1,23 @@
-import React from "react";
-import Image from "next/image";
-import { Box, Typography, Button, Link } from "@mui/material";
-import styles from "./Hero.module.css";
+import React from 'react';
+import Image from 'next/image';
+import { Box, Typography, Button, Link } from '@mui/material';
+import styles from './Hero.module.css';
 
 interface HeroProps {
-  heading: React.ReactNode; 
+  heading: React.ReactNode;
   subheading: string;
   ctaPrimary: string;
   ctaSecondary: string;
   ladyImage: string;
 }
 
-function Hero({
-  heading,
-  subheading,
-  ctaPrimary,
-  ctaSecondary,
-  ladyImage,
-}: HeroProps) {
+function Hero({ heading, subheading, ctaPrimary, ctaSecondary, ladyImage }: HeroProps) {
   return (
     <Box className={styles.heroContainer__wrapper}>
       <Box className={styles.heroContainer}>
         <Box className={styles.heroTextSection}>
           <Typography sx={{ color: '#000' }} variant="h1">
-            {heading} 
+            {heading}
           </Typography>
           <Typography variant="subtitle1" className={styles.heroSubheading}>
             {subheading}
@@ -40,7 +34,13 @@ function Hero({
         </Box>
 
         <Box className={styles.heroImageSection}>
-          <Image src={ladyImage} alt="Smiling lady" className={styles.heroLadyImage} width={450} height={450} />
+          <Image
+            src={ladyImage}
+            alt="Smiling lady"
+            className={styles.heroLadyImage}
+            width={450}
+            height={450}
+          />
         </Box>
       </Box>
     </Box>

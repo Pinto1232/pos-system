@@ -1,13 +1,10 @@
-import React from "react";
-import { IconButton } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import { MenuToggleButtonProps } from "./types";
+import React from 'react';
+import { IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import { MenuToggleButtonProps } from './types';
 
-const MenuToggleButton: React.FC<MenuToggleButtonProps> = ({
-  onClick,
-  isOpen
-}) => (
+const MenuToggleButton: React.FC<MenuToggleButtonProps> = ({ onClick, isOpen }) => (
   <IconButton
     color="inherit"
     aria-label="toggle drawer"

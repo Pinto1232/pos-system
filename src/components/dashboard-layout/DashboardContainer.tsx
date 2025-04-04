@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import DashboardLayout from "@/components/dashboard-layout/DashboardLayout";
-import Sidebar from "@/components/sidebar/Sidebar";
-import DashboardMain from "@/components/dashboardMain/dashboardMain";
-import { useSpinner } from "@/contexts/SpinnerContext";
+import React, { useState, useEffect } from 'react';
+import DashboardLayout from '@/components/dashboard-layout/DashboardLayout';
+import Sidebar from '@/components/sidebar/Sidebar';
+import DashboardMain from '@/components/dashboardMain/dashboardMain';
+import { useSpinner } from '@/contexts/SpinnerContext';
 
 const DashboardContainer = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
-  const [activeSection, setActiveSection] = useState<string>("Dashboard");
+  const [activeSection, setActiveSection] = useState<string>('Dashboard');
   const { setLoading } = useSpinner();
 
   useEffect(() => {
     // Stop the spinner when dashboard mounts
     setLoading(false);
-    console.log("User redirected to dashboard successfully.");
+    console.log('User redirected to dashboard successfully.');
   }, [setLoading]);
 
   const handleDrawerToggle = () => {
@@ -34,7 +34,7 @@ const DashboardContainer = () => {
       iconColor="#FFFFFF"
       navbarBgColor="#1F2937"
     >
-      <div style={{ display: "flex" }}>
+      <div style={{ display: 'flex' }}>
         <Sidebar
           drawerWidth={240}
           isDrawerOpen={isDrawerOpen}

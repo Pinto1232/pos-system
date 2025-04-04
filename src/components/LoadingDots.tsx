@@ -18,37 +18,37 @@ const dotAnimation = keyframes`
 `;
 
 const LoadingDots = () => {
-    return (
-        <Box
-            component="span"
-            sx={{
-                display: 'inline-flex',
-                gap: 0.5,
-                ml: 0.5,
-                '& > span': {
-                    display: 'inline-block',
-                    width: '4px',
-                    height: '4px',
-                    borderRadius: '50%',
-                    backgroundColor: 'currentColor',
-                    animation: `${dotAnimation} 1.4s infinite ease-in-out`,
-                },
-                '& > span:nth-of-type(1)': {
-                    animationDelay: '0s',
-                },
-                '& > span:nth-of-type(2)': {
-                    animationDelay: '0.2s',
-                },
-                '& > span:nth-of-type(3)': {
-                    animationDelay: '0.4s',
-                },
-            }}
-        >
-            <span />
-            <span />
-            <span />
-        </Box>
-    );
+  return (
+    <Box
+      component="span"
+      sx={{
+        display: 'inline-flex',
+        gap: 0.5,
+        ml: 0.5,
+        '& > span': {
+          display: 'inline-block',
+          width: '4px',
+          height: '4px',
+          borderRadius: '50%',
+          backgroundColor: 'currentColor',
+          animation: `${dotAnimation} 1.4s infinite ease-in-out`,
+        },
+        '& > span:nth-of-type(1)': {
+          animationDelay: '0s',
+        },
+        '& > span:nth-of-type(2)': {
+          animationDelay: '0.2s',
+        },
+        '& > span:nth-of-type(3)': {
+          animationDelay: '0.4s',
+        },
+      }}
+    >
+      <span />
+      <span />
+      <span />
+    </Box>
+  );
 };
 
-export default LoadingDots; 
+export default LoadingDots;

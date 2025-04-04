@@ -1,11 +1,35 @@
-"use client";
+'use client';
 
-import React, { memo } from "react";
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Collapse, Avatar, Box, Typography, Badge, Paper, IconButton } from "@mui/material";
-import { ExpandLess, ExpandMore, Notifications, Settings, Support, Close, Home, Dashboard, Layers, Assignment } from "@mui/icons-material";
-import { FiSearch } from "react-icons/fi";
-import { useSidebar } from "@/contexts/SidebarContext";
-import styles from "./Sidebar.module.css";
+import React, { memo } from 'react';
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  Avatar,
+  Box,
+  Typography,
+  Badge,
+  Paper,
+  IconButton,
+} from '@mui/material';
+import {
+  ExpandLess,
+  ExpandMore,
+  Notifications,
+  Settings,
+  Support,
+  Close,
+  Home,
+  Dashboard,
+  Layers,
+  Assignment,
+} from '@mui/icons-material';
+import { FiSearch } from 'react-icons/fi';
+import { useSidebar } from '@/contexts/SidebarContext';
+import styles from './Sidebar.module.css';
 
 export interface SidebarProps {
   drawerWidth: number;
@@ -21,7 +45,6 @@ export interface SidebarProps {
   handleItemClick: (section: string) => void;
 }
 
-
 const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) => {
   const { isSidebarOpen, toggleSidebar } = useSidebar();
 
@@ -30,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
     dashboard: <Dashboard />,
     projects: <Layers />,
     tasks: <Assignment />,
-    reporting: <Dashboard />
+    reporting: <Dashboard />,
   };
 
   return (
@@ -38,7 +61,9 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
       <Paper className={styles.sidebarContainer}>
         <Box className={styles.sidebarHeader}>
           <Avatar src="/logo.svg" alt="Logo" className={styles.logo} />
-          <Typography variant="h6" className={styles.title}>Pisval Tech POS</Typography>
+          <Typography variant="h6" className={styles.title}>
+            Pisval Tech POS
+          </Typography>
           <IconButton onClick={toggleSidebar} className={styles.closeIcon}>
             <Close />
           </IconButton>
@@ -46,7 +71,9 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
 
         <Box className={styles.searchBox}>
           <FiSearch className={styles.searchIcon} />
-          <Typography variant="body2" className={styles.searchText}>Search</Typography>
+          <Typography variant="body2" className={styles.searchText}>
+            Search
+          </Typography>
         </Box>
 
         <List className={styles.list}>
@@ -56,27 +83,26 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
               onClick={() => handleItemClick(item)}
               className={`${styles.listItem} ${activeItem === item ? `${styles.activeItem} ${item === 'reporting' ? 'reporting' : ''}` : ''}`}
             >
-              <ListItemIcon className={styles.listItemIcon}>
-                {icons[item]}
-              </ListItemIcon>
+              <ListItemIcon className={styles.listItemIcon}>{icons[item]}</ListItemIcon>
               <ListItemText
                 primary={item.charAt(0).toUpperCase() + item.slice(1)}
                 primaryTypographyProps={{
-                  className: `${styles.listItemText} ${activeItem === item ? styles.activeText : ''}`
+                  className: `${styles.listItemText} ${activeItem === item ? styles.activeText : ''}`,
                 }}
               />
-              {item === 'reporting' && (activeItem === "reporting" ? <ExpandLess /> : <ExpandMore />)}
+              {item === 'reporting' &&
+                (activeItem === 'reporting' ? <ExpandLess /> : <ExpandMore />)}
             </ListItem>
           ))}
 
-          <Collapse in={activeItem === "reporting"} timeout="auto" unmountOnExit>
+          <Collapse in={activeItem === 'reporting'} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {['Overview', 'Notifications', 'Analytics', 'Reports'].map((subItem) => (
+              {['Overview', 'Notifications', 'Analytics', 'Reports'].map(subItem => (
                 <ListItem key={subItem} className={`${styles.nestedItem} ${styles.listItem}`}>
                   <ListItemText
                     primary={subItem}
                     primaryTypographyProps={{
-                      className: styles.nestedItemText
+                      className: styles.nestedItemText,
                     }}
                   />
                 </ListItem>
@@ -86,14 +112,16 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
 
           <Box className={styles.divider} />
 
-          {['notifications', 'support'].map((item) => (
+          {['notifications', 'support'].map(item => (
             <ListItem key={item} className={styles.listItem}>
               <ListItemIcon className={styles.listItemIcon}>
                 {item === 'notifications' ? (
                   <Badge badgeContent={4} color="primary" className={styles.badge}>
                     <Notifications />
                   </Badge>
-                ) : <Support />}
+                ) : (
+                  <Support />
+                )}
               </ListItemIcon>
               <ListItemText
                 primary={item.charAt(0).toUpperCase() + item.slice(1)}
@@ -105,7 +133,9 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
           <Box className={styles.userProfile}>
             <Avatar src="/user.jpg" alt="User" className={styles.userAvatar} />
             <Box className={styles.userInfo}>
-              <Typography variant="body2" className={styles.userName}>Elina Kouba</Typography>
+              <Typography variant="body2" className={styles.userName}>
+                Elina Kouba
+              </Typography>
               <Typography variant="caption" className={styles.userEmail}>
                 kouba.elina@gmail.com
               </Typography>
@@ -118,5 +148,5 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
   );
 });
 
-Sidebar.displayName = "Sidebar";
+Sidebar.displayName = 'Sidebar';
 export default Sidebar;

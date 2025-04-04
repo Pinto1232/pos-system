@@ -1,14 +1,10 @@
-import React from "react";
-import {
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-} from "@mui/material";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import ChevronRight from "@mui/icons-material/ChevronRight";
-import { SidebarItemProps } from "./types";
-import SubItems from "./SubItems";
+import React from 'react';
+import { ListItem, ListItemText, ListItemIcon } from '@mui/material';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import { SidebarItemProps } from './types';
+import SubItems from './SubItems';
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
   item,
@@ -18,10 +14,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   textColor,
   onToggle,
   onItemClick,
-  onSettingsClick
+  onSettingsClick,
 }) => {
   const handleClick = () => {
-    if (item.label === "Settings" && onSettingsClick) {
+    if (item.label === 'Settings' && onSettingsClick) {
       onSettingsClick();
     } else if (item.expandable) {
       onToggle(item.label);
@@ -35,30 +31,29 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <ListItem
         onClick={handleClick}
         sx={{
-          cursor: "pointer",
-          backgroundColor: isActive ? "#34D399" : "inherit",
-          "&:hover": { backgroundColor: "" },
+          cursor: 'pointer',
+          backgroundColor: isActive ? '#34D399' : 'inherit',
+          '&:hover': { backgroundColor: '' },
         }}
       >
-        <ListItemIcon sx={{
-          color: iconColor,
-          minWidth: '40px',
-          '& > *': {
-            width: '24px',
-            height: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }
-        }}>
+        <ListItemIcon
+          sx={{
+            color: iconColor,
+            minWidth: '40px',
+            '& > *': {
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+          }}
+        >
           <item.icon />
         </ListItemIcon>
         <ListItemText primary={item.label} sx={{ color: textColor }} />
-        {isActive && (
-          <ChevronRight sx={{ color: textColor }} />
-        )}
-        {item.expandable &&
-          (isExpanded ? <ExpandLess /> : <ExpandMore />)}
+        {isActive && <ChevronRight sx={{ color: textColor }} />}
+        {item.expandable && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
       </ListItem>
 
       {item.expandable && item.subItems && (
@@ -66,7 +61,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           parentLabel={item.label}
           subItems={item.subItems}
           isExpanded={isExpanded}
-          activeItem={isActive ? item.label : ""}
+          activeItem={isActive ? item.label : ''}
           textColor={textColor}
           onItemClick={onItemClick}
         />

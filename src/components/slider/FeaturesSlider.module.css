@@ -1,148 +1,148 @@
 .sliderContainer {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
 }
 
 .slideItem {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    text-align: center;
-    padding: 2.5rem 1.5rem;
-    width: 100%;
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 0.3s ease;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
 }
 
 .slideItem:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .iconWrapper {
-    margin-bottom: 2rem;
-    background: #f0f7ff;
-    border-radius: 20px;
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
+  margin-bottom: 2rem;
+  background: #f0f7ff;
+  border-radius: 20px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
 }
 
 .slideItem:hover .iconWrapper {
-    background: #e1edff;
+  background: #e1edff;
 }
 
 .icon {
-    width: 80px;
-    height: 80px;
-    color: #4285f4;
-    stroke-width: 1;
+  width: 80px;
+  height: 80px;
+  color: #4285f4;
+  stroke-width: 1;
 }
 
 .title {
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
-    margin-bottom: 1rem;
-    font-weight: 600;
-    color: #111827;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #111827;
 }
 
 .description {
-    font-size: clamp(0.875rem, 1.5vw, 1rem);
-    color: #6b7280;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
 }
 
 .learnMore {
-    color: #4285f4;
-    text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    margin-top: auto;
+  color: #4285f4;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  margin-top: auto;
 }
 
 .learnMore:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .learnMore::after {
-    content: '→';
-    margin-left: 4px;
-    transition: transform 0.2s ease;
+  content: '→';
+  margin-left: 4px;
+  transition: transform 0.2s ease;
 }
 
 .learnMore:hover::after {
-    transform: translateX(4px);
+  transform: translateX(4px);
 }
 
 .slick-dots {
-    bottom: -35px;
+  bottom: -35px;
 }
 
 .slick-dots li button:before {
-    font-size: 8px;
-    color: #d1d5db;
-    opacity: 0.5;
+  font-size: 8px;
+  color: #d1d5db;
+  opacity: 0.5;
 }
 
 .slick-dots li.slick-active button:before {
-    color: #4285f4;
-    opacity: 1;
+  color: #4285f4;
+  opacity: 1;
 }
 
 .slick-prev,
 .slick-next {
-    width: 40px;
-    height: 40px;
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 50%;
-    z-index: 1;
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  z-index: 1;
 }
 
 .slick-prev:before,
 .slick-next:before {
-    color: #4285f4;
-    opacity: 1;
+  color: #4285f4;
+  opacity: 1;
 }
 
 .slick-prev {
-    left: -50px;
+  left: -50px;
 }
 
 .slick-next {
-    right: -50px;
+  right: -50px;
 }
 
 @media (max-width: 768px) {
-    .sliderContainer {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
+  .sliderContainer {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 
-    .slideItem {
-        padding: 2rem 1rem;
-        min-height: 280px;
-    }
+  .slideItem {
+    padding: 2rem 1rem;
+    min-height: 280px;
+  }
 
-    .iconWrapper {
-        margin-bottom: 1.5rem;
-    }
+  .iconWrapper {
+    margin-bottom: 1.5rem;
+  }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-    .sliderContainer {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .sliderContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

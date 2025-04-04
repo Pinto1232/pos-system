@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { memo } from "react";
-import styles from "@/components/pricing-packages/PricingPackages.module.css";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card/Card";
-import { Button } from "@/components/ui/button/Button";
-import iconMap from "@/utils/icons";
+import React, { memo } from 'react';
+import styles from '@/components/pricing-packages/PricingPackages.module.css';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card/Card';
+import { Button } from '@/components/ui/button/Button';
+import iconMap from '@/utils/icons';
 
 interface PricingPackageProps {
   packageData: {
@@ -15,44 +15,51 @@ interface PricingPackageProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type: "starter" | "growth" | "enterprise" | "custom" | "premium";
+    type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
   };
   onBuyNow: () => void;
   currency: string;
   rate: number;
 }
 
-const PricingPackageCard: React.FC<PricingPackageProps> = memo(({ packageData, onBuyNow, currency, rate }) => {
-  const IconComponent = iconMap[packageData.icon] || iconMap["MUI:DefaultIcon"];
+const PricingPackageCard: React.FC<PricingPackageProps> = memo(
+  ({ packageData, onBuyNow, currency, rate }) => {
+    const IconComponent = iconMap[packageData.icon] || iconMap['MUI:DefaultIcon'];
 
-  const convertedPrice = (packageData.price * rate).toFixed(2);
+    const convertedPrice = (packageData.price * rate).toFixed(2);
 
-  return (
-    <Card className={styles.card}>
-      <CardHeader className={styles.header}>
-        {IconComponent && React.createElement(IconComponent, { className: styles.icon, fontSize: "large" })}
-        <h2 className={styles.title}>{packageData.title}</h2>
-      </CardHeader>
+    return (
+      <Card className={styles.card}>
+        <CardHeader className={styles.header}>
+          {IconComponent &&
+            React.createElement(IconComponent, { className: styles.icon, fontSize: 'large' })}
+          <h2 className={styles.title}>{packageData.title}</h2>
+        </CardHeader>
 
-      <CardContent className={styles.content}>
-        <ul>
-          {packageData.description.split(". ").map((desc, index) => (
-            <li key={index}>{desc.replace(/[^a-zA-Z0-9\s]/g, " ")}</li>
-          ))}
-        </ul>
-      </CardContent>
+        <CardContent className={styles.content}>
+          <ul>
+            {packageData.description.split('. ').map((desc, index) => (
+              <li key={index}>{desc.replace(/[^a-zA-Z0-9\s]/g, ' ')}</li>
+            ))}
+          </ul>
+        </CardContent>
 
-      <div className={styles.priceSection}>
-        <div className={styles.trial}>{packageData.testPeriodDays} days free trial</div>
-        <div className={styles.price}>{currency} {convertedPrice}/pm</div>
-      </div>
+        <div className={styles.priceSection}>
+          <div className={styles.trial}>{packageData.testPeriodDays} days free trial</div>
+          <div className={styles.price}>
+            {currency} {convertedPrice}/pm
+          </div>
+        </div>
 
-      <CardFooter className={styles.footer}>
-        <Button className={styles.button} onClick={onBuyNow}>Buy now</Button>
-      </CardFooter>
-    </Card>
-  );
-});
+        <CardFooter className={styles.footer}>
+          <Button className={styles.button} onClick={onBuyNow}>
+            Buy now
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+);
 
-PricingPackageCard.displayName = "PricingPackageCard";
+PricingPackageCard.displayName = 'PricingPackageCard';
 export default PricingPackageCard;

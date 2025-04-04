@@ -1,29 +1,29 @@
 .jumbotronContainer {
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    min-height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 20px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  
-  .content {
-    text-align: center;
-    color: #fff; 
-    margin-top: 12em;
-  }
-  
-  .heading {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-  
-  .subheading {
-    font-size: 1.25rem;
-  }
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.content {
+  text-align: center;
+  color: #fff;
+  margin-top: 12em;
+}
+
+.heading {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.subheading {
+  font-size: 1.25rem;
+}

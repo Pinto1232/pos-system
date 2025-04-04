@@ -9,6 +9,5 @@ export type PricePackages = {
     testPeriodDays?: number;
     type?: string;
     packageType?: string;
-    
   }>;
 };

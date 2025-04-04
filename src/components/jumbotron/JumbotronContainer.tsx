@@ -1,5 +1,5 @@
-import React from "react";
-import Jumbotron from "./Jumbotron";
+import React from 'react';
+import Jumbotron from './Jumbotron';
 
 interface JumbotronContainerProps {
   heading?: string;
@@ -14,10 +14,11 @@ const JumbotronContainer: React.FC<JumbotronContainerProps> = ({
   backgroundImage,
   overlayColor,
 }) => {
-  const finalHeading = heading || "Empower Your Business";
-  const finalSubheading = subheading || "Streamline Sales, Manage Inventory, and Grow with Confidence!";
-  const finalBackground = backgroundImage || "/pos_banner.jpg";
-  const finalOverlay = overlayColor || "rgba(0, 0, 0, 0.4)";
+  const finalHeading = heading || 'Empower Your Business';
+  const finalSubheading =
+    subheading || 'Streamline Sales, Manage Inventory, and Grow with Confidence!';
+  const finalBackground = backgroundImage || '/pos_banner.jpg';
+  const finalOverlay = overlayColor || 'rgba(0, 0, 0, 0.4)';
 
   return (
     <Jumbotron

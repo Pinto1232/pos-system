@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState, useMemo } from "react";
-import ProductTable from "./ProductTable";
-import { useProductContext } from "@/contexts/ProductContext";
+import React, { useState, useMemo } from 'react';
+import ProductTable from './ProductTable';
+import { useProductContext } from '@/contexts/ProductContext';
 import { Product } from '../productEdit/types';
-import { SelectChangeEvent } from "@mui/material/Select";
+import { SelectChangeEvent } from '@mui/material/Select';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -12,11 +12,11 @@ const ProductTableContainer: React.FC = () => {
   const { products, updateProduct } = useProductContext();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [priceFilter, setPriceFilter] = useState<string>("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("All");
-  const [ratingFilter, setRatingFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [priceFilter, setPriceFilter] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [ratingFilter, setRatingFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(8);
 
@@ -26,45 +26,46 @@ const ProductTableContainer: React.FC = () => {
 
     // Apply search filter
     if (searchQuery) {
-      filtered = filtered.filter(product =>
-        product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.barcode.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        product =>
+          product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.barcode.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Apply category filter
-    if (categoryFilter !== "All") {
+    if (categoryFilter !== 'All') {
       filtered = filtered.filter(product => product.color === categoryFilter);
     }
 
     // Apply rating filter
-    if (ratingFilter !== "All") {
+    if (ratingFilter !== 'All') {
       const ratingValue = parseInt(ratingFilter);
       filtered = filtered.filter(product => Math.floor(product.rating) === ratingValue);
     }
 
     // Apply status filter
-    if (statusFilter !== "All") {
-      if (statusFilter === "Available") {
+    if (statusFilter !== 'All') {
+      if (statusFilter === 'Available') {
         filtered = filtered.filter(product => product.status === true);
-      } else if (statusFilter === "Out of Stock") {
+      } else if (statusFilter === 'Out of Stock') {
         filtered = filtered.filter(product => product.status === false);
       }
     }
 
     // Apply price filter
-    if (priceFilter !== "All") {
+    if (priceFilter !== 'All') {
       switch (priceFilter) {
-        case "R10-R100":
+        case 'R10-R100':
           filtered = filtered.filter(product => product.price >= 10 && product.price <= 100);
           break;
-        case "R100-R500":
+        case 'R100-R500':
           filtered = filtered.filter(product => product.price >= 100 && product.price <= 500);
           break;
-        case "R500-R1000":
+        case 'R500-R1000':
           filtered = filtered.filter(product => product.price >= 500 && product.price <= 1000);
           break;
-        case "R1000+":
+        case 'R1000+':
           filtered = filtered.filter(product => product.price > 1000);
           break;
       }
@@ -130,11 +131,11 @@ const ProductTableContainer: React.FC = () => {
   };
 
   const handleResetFilters = () => {
-    setSearchQuery("");
-    setCategoryFilter("All");
-    setRatingFilter("All");
-    setStatusFilter("All");
-    setPriceFilter("All");
+    setSearchQuery('');
+    setCategoryFilter('All');
+    setRatingFilter('All');
+    setStatusFilter('All');
+    setPriceFilter('All');
     setPage(0);
   };
 
@@ -142,7 +143,7 @@ const ProductTableContainer: React.FC = () => {
     const doc = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
-      format: 'a4'
+      format: 'a4',
     });
 
     // Add title
@@ -162,13 +163,15 @@ const ProductTableContainer: React.FC = () => {
       product.status ? 'In Stock' : 'Out of Stock',
       product.rating.toString(),
       product.color || 'N/A',
-      new Date(product.createdAt).toLocaleDateString()
+      new Date(product.createdAt).toLocaleDateString(),
     ]);
 
     // Add the table
     autoTable(doc, {
       startY: 30,
-      head: [['Product Name', 'ID Code', 'SKU', 'Price', 'Status', 'Rating', 'Color', 'Created At']],
+      head: [
+        ['Product Name', 'ID Code', 'SKU', 'Price', 'Status', 'Rating', 'Color', 'Created At'],
+      ],
       body: tableData,
       theme: 'grid',
       headStyles: {
@@ -176,13 +179,13 @@ const ProductTableContainer: React.FC = () => {
         textColor: 255,
         fontStyle: 'bold',
         fontSize: 10,
-        cellPadding: 3
+        cellPadding: 3,
       },
       styles: {
         fontSize: 9,
         cellPadding: 3,
         overflow: 'linebreak',
-        cellWidth: 'wrap'
+        cellWidth: 'wrap',
       },
       columnStyles: {
         0: { cellWidth: 50, overflow: 'linebreak' },
@@ -192,13 +195,13 @@ const ProductTableContainer: React.FC = () => {
         4: { cellWidth: 20 },
         5: { cellWidth: 15 },
         6: { cellWidth: 20 },
-        7: { cellWidth: 25 }
+        7: { cellWidth: 25 },
       },
       margin: { left: 10, right: 10 },
       tableWidth: 'auto',
       horizontalPageBreak: true,
       showHead: 'everyPage',
-      pageBreak: 'auto'
+      pageBreak: 'auto',
     });
 
     doc.save('product-list.pdf');

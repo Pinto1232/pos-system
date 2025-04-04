@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState } from 'react';
+import Link from 'next/link';
 import {
   AppBar,
   Box,
@@ -9,14 +9,14 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  CircularProgress
-} from "@mui/material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { navbarLinks } from "../../settings";
-import { FaRegBell } from "react-icons/fa";
-import { FiUser, FiSettings, FiLogOut } from "react-icons/fi";
-import { useLogout } from "@/hooks/useLogout";
-import SettingsModal from "@/SettingsModal";
+  CircularProgress,
+} from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { navbarLinks } from '../../settings';
+import { FaRegBell } from 'react-icons/fa';
+import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
+import { useLogout } from '@/hooks/useLogout';
+import SettingsModal from '@/SettingsModal';
 
 interface NavbarProps {
   drawerWidth: number;
@@ -55,9 +55,9 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
         sx={{
           width: `calc(100% - ${drawerWidth}px)`,
           ml: `${drawerWidth}px`,
-          backgroundColor: backgroundColor || "default",
+          backgroundColor: backgroundColor || 'default',
           transition: 'margin-left 0.3s ease, width 0.3s ease',
-          border: 'none'
+          border: 'none',
         }}
       >
         <Toolbar>
@@ -70,45 +70,46 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
           >
             <ChevronLeftIcon />
           </IconButton>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            {navbarLinks.map((link) => (
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            {navbarLinks.map(link => (
               <Link key={link.label} href={link.href} passHref>
-                <Typography variant="body1" sx={{ cursor: "pointer", color: "inherit" }}>
+                <Typography variant="body1" sx={{ cursor: 'pointer', color: 'inherit' }}>
                   {link.label}
                 </Typography>
               </Link>
             ))}
           </Box>
-          <Box sx={{
-            ml: "auto",
-            display: "flex",
-            gap: 2,
-            alignContent: "center",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+          <Box
+            sx={{
+              ml: 'auto',
+              display: 'flex',
+              gap: 2,
+              alignContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            <Typography variant="body1" sx={{ cursor: "pointer" }}>
-              <FaRegBell style={{
-                padding: "5px",
-                cursor: "pointer",
-                fontSize: "2.3rem",
-              }} />
+            <Typography variant="body1" sx={{ cursor: 'pointer' }}>
+              <FaRegBell
+                style={{
+                  padding: '5px',
+                  cursor: 'pointer',
+                  fontSize: '2.3rem',
+                }}
+              />
             </Typography>
-            <Typography variant="body1" sx={{ cursor: "pointer" }}>
-              <FiUser style={{
-                border: "2px solid	#ffffff",
-                padding: "5px",
-                borderRadius: "50%",
-                cursor: "pointer",
-                fontSize: "1.9rem",
-              }} />
+            <Typography variant="body1" sx={{ cursor: 'pointer' }}>
+              <FiUser
+                style={{
+                  border: '2px solid	#ffffff',
+                  padding: '5px',
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  fontSize: '1.9rem',
+                }}
+              />
             </Typography>
-            <Typography
-              variant="body1"
-              sx={{ cursor: "pointer" }}
-              onClick={handleClick}
-            >
+            <Typography variant="body1" sx={{ cursor: 'pointer' }} onClick={handleClick}>
               Profile
             </Typography>
             <Menu
@@ -122,11 +123,11 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
                 '& .MuiPaper-root': {
                   minWidth: '200px',
                   maxHeight: '400px',
-                  overflowY: 'auto'
+                  overflowY: 'auto',
                 },
                 '& .MuiList-root': {
-                  padding: 0
-                }
+                  padding: 0,
+                },
               }}
             >
               <MenuItem onClick={handleClose}>
@@ -151,12 +152,12 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
                   margin: 0,
                   borderRadius: 0,
                   '&:hover': {
-                    backgroundColor: '#1a4589'
+                    backgroundColor: '#1a4589',
                   },
                   '&.Mui-disabled': {
                     opacity: 0.7,
-                    color: 'white'
-                  }
+                    color: 'white',
+                  },
                 }}
               >
                 {isLoggingOut ? (
@@ -180,7 +181,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
         open={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         userId="current-user"
-        onCustomizationUpdated={() => { }}
+        onCustomizationUpdated={() => {}}
       />
     </>
   );

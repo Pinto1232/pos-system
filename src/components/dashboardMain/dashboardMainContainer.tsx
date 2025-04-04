@@ -1,6 +1,6 @@
-import React from "react";
-import DashboardMain from "./dashboardMain";
-import { Box } from "@mui/material";
+import React from 'react';
+import DashboardMain from './dashboardMain';
+import { Box } from '@mui/material';
 
 interface DashboardMainContainerProps {
   activeSection: string;

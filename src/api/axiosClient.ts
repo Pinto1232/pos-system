@@ -10,7 +10,6 @@ const apiClient = axios.create({
   timeout: 10000,
 });
 
-
 // Hook to setup axios interceptors and provide query hooks.
 const useApiClient = () => {
   const spinnerContext = useContext(SpinnerContext);
@@ -18,7 +17,7 @@ const useApiClient = () => {
 
   useEffect(() => {
     const requestInterceptor = apiClient.interceptors.request.use(
-      (config) => {
+      config => {
         try {
           const token = localStorage.getItem('accessToken');
           if (token) {
@@ -35,21 +34,21 @@ const useApiClient = () => {
         console.log('Request headers:', config.headers);
         return config;
       },
-      (error) => {
+      error => {
         console.error('Request Error:', error);
         return Promise.reject(error);
       }
     );
 
     const responseInterceptor = apiClient.interceptors.response.use(
-      async (response) => {
+      async response => {
         if (spinnerContext) {
           await new Promise(resolve => setTimeout(resolve, 500));
           spinnerContext.setLoading(false);
         }
         return response;
       },
-      async (error) => {
+      async error => {
         if (spinnerContext) {
           await new Promise(resolve => setTimeout(resolve, 500));
           spinnerContext.setLoading(false);
@@ -125,11 +124,11 @@ const useApiClient = () => {
     });
   };
 
-  return { 
-    apiClient, 
-    useFetchData, 
-    usePostData, 
-    useUpdateCustomization 
+  return {
+    apiClient,
+    useFetchData,
+    usePostData,
+    useUpdateCustomization,
   };
 };
 
