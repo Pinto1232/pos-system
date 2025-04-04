@@ -116,39 +116,33 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
         />
       )}
       {!loading && !success && (
-        <Grid container spacing={2} className={styles.gridContainer}>
+        <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn} sx={{
-              maxHeight: '600px',
-              overflowY: 'auto',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
-            }}>
+            <Box className={styles.leftColumn}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
               <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
+
               <Typography variant="body1" className={styles.description}>
                 {selectedPackage.description.replace(/[^\w\s.,!?]/g, "")}
               </Typography>
+
               <Typography variant="body2" className={styles.description}>
                 {selectedPackage.extraDescription}
               </Typography>
+
               <Box className={styles.enterpriseBox}>
-                <Typography
-                  variant="subtitle2"
-                  className={styles.enterpriseBoxLabel}
-                >
-                  YOUR TOTAL IN ( {currentCurrency} )
+                <Typography variant="subtitle2" className={styles.enterpriseBoxLabel}>
+                  YOUR TOTAL IN ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.enterpriseBoxAmount}>
                   <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
 
-              {/* Multi-Currency Selection */}
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
                   <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
@@ -162,6 +156,12 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
                           <Checkbox
                             checked={currentCurrency === currency}
                             onChange={() => handleCurrencyChange(currency)}
+                            sx={{
+                              color: '#805ad5',
+                              '&.Mui-checked': {
+                                color: '#805ad5',
+                              },
+                            }}
                           />
                         }
                         label={
@@ -177,7 +177,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
               )}
 
               <Typography variant="subtitle2" className={styles.testPeriod}>
-                Test Period: {selectedPackage.testPeriodDays} days
+                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
             </Box>
           </Grid>
@@ -197,7 +197,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price <b>{currencySymbol}{displayPrice}</b>
+                Monthly Price <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>

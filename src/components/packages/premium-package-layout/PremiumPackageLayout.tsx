@@ -111,35 +111,34 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
           onReturn={handleReturnSuccessMessage}
         />
       )}
-      {(!loading && !success) && (
-        <Grid container spacing={2} className={styles.gridContainer}>
+      {!loading && !success && (
+        <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
-            <Box className={styles.leftColumn} sx={{
-              maxHeight: '600px',
-              overflowY: 'auto',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none'
-            }}>
+            <Box className={styles.leftColumn}>
               {selectedPackage.icon && (
                 <IconComponent className={styles.packageIcon} />
               )}
               <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
+
               <Typography variant="body1" className={styles.description}>
                 {selectedPackage.description.replace(/[^\w\s.,!?]/g, "")}
               </Typography>
+
               <Typography variant="body2" className={styles.description}>
                 {selectedPackage.extraDescription}
               </Typography>
+
               <Box className={styles.premiumBox}>
                 <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
-                  YOUR TOTAL IN ( {currentCurrency} )
+                  YOUR TOTAL IN ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.premiumBoxAmount}>
                   <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>/mo
                 </Typography>
               </Box>
+
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
                   <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
@@ -153,6 +152,12 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                           <Checkbox
                             checked={currentCurrency === currency}
                             onChange={() => handleCurrencyChange(currency)}
+                            sx={{
+                              color: '#d53f8c',
+                              '&.Mui-checked': {
+                                color: '#d53f8c',
+                              },
+                            }}
                           />
                         }
                         label={
@@ -166,11 +171,13 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
                   </FormGroup>
                 </Box>
               )}
+
               <Typography variant="subtitle2" className={styles.testPeriod}>
-                Test Period: {selectedPackage.testPeriodDays} days
+                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
             </Box>
           </Grid>
+
           <Grid item xs={12} md={4}>
             <Box className={styles.rightColumn}>
               <Typography variant="h6" className={styles.heading}>
@@ -186,7 +193,7 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price <b>{currencySymbol}{displayPrice}</b>
+                Monthly Price <b>{currentCurrency === "Kz" ? `${displayPrice}Kz` : `${currencySymbol}${displayPrice}`}</b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>

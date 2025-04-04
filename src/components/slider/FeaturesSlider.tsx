@@ -1,72 +1,50 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic";
-import { FaCogs, FaToolbox, FaChartLine } from "react-icons/fa";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { HiOutlineCreditCard, HiOutlineChartBar, HiOutlineSquares2X2 } from "react-icons/hi2";
+import Link from "next/link";
 
 import styles from "./FeaturesSlider.module.css";
 
-const Slider = dynamic(() => import("react-slick"), {
-    ssr: false,
-});
-
-const slidesData = [
+const featuresData = [
     {
-        icon: <FaCogs />,
-        title: "Fully integrated",
+        icon: <HiOutlineCreditCard size={50} />,
+        title: "Sales Management",
         description:
-            "Offer a single omni-channel platform that integrates products, stock, payments, finance and more."
+            "Streamline your transactions with an intuitive POS interface. Process sales, returns, and payments quickly and efficiently.",
+        link: "/features/sales-management"
     },
     {
-        icon: <FaToolbox />,
-        title: "Comprehensive",
+        icon: <HiOutlineChartBar size={50} />,
+        title: "Real-time Analytics",
         description:
-            "Provide a comprehensive suite of tools that address the needs of each merchant, enhancing their operational efficiency."
+            "Track your business performance with detailed reports on sales, inventory, and customer behavior. Make data-driven decisions instantly.",
+        link: "/features/analytics"
     },
     {
-        icon: <FaChartLine />,
-        title: "Real time data",
+        icon: <HiOutlineSquares2X2 size={50} />,
+        title: "Inventory Control",
         description:
-            "Give your merchants power over their data with the ability to create custom dashboards and monitor key metrics."
+            "Manage your stock levels effortlessly with automated tracking, reorder alerts, and multi-location inventory management.",
+        link: "/features/inventory"
     },
 ];
 
-export default function FeaturesSlider() {
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        autoplay: true,
-        autoplaySpeed: 3000,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        arrows: false,
-        pauseOnHover: true,
-        responsive: [
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 1,
-                },
-            },
-        ],
-    };
-
+export default function FeaturesGrid() {
     return (
         <div className={styles.sliderContainer}>
-            <Slider {...settings}>
-                {slidesData.map((item, index) => (
-                    <div key={index} className={styles.slideItem}>
-                        <div className={styles.iconWrapper}>
-                            <div className={styles.icon}>{item.icon}</div>
-                        </div>
-                        <h3 className={styles.title}>{item.title}</h3>
-                        <p className={styles.description}>{item.description}</p>
+            {featuresData.map((item, index) => (
+                <div key={index} className={styles.slideItem}>
+                    <div className={styles.iconWrapper}>
+                        <div className={styles.icon}>{item.icon}</div>
                     </div>
-                ))}
-            </Slider>
+                    <h3 className={styles.title}>{item.title}</h3>
+                    <p className={styles.description}>{item.description}</p>
+                    <Link href={item.link} className={styles.learnMore}>
+                        Learn more
+                    </Link>
+                </div>
+            ))}
         </div>
     );
 }
