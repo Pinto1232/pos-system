@@ -181,7 +181,7 @@ const FullOverviewCard: React.FC<FullOverviewCardProps & { viewMode: 'grid' | 'l
     const maxValue = Math.max(...chartData.values);
     const minValue = Math.min(...chartData.values);
     const range = maxValue - minValue;
-    const barHeight = 100; // Maximum height of bars in pixels
+    const barHeight = 100;
 
     return (
       <Box sx={{ mt: 2, mb: 2 }}>
