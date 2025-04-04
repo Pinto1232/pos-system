@@ -598,12 +598,38 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 <Typography variant="h5" className={styles.paymentPrice}>
                   {formatPrice(selectedCurrency, calculatedPrice)}/month
                 </Typography>
+                <Box className={styles.paymentFeatures}>
+                  <Typography variant="body2">✓ Monthly Billing</Typography>
+                  <Typography variant="body2">✓ No Commitment</Typography>
+                  <Typography variant="body2">✓ Easy Upgrade</Typography>
+                </Box>
                 <Button
                   variant="contained"
                   className={styles.selectPlanButton}
                   onClick={onNext}
                 >
                   Select Monthly Plan
+                </Button>
+              </Box>
+              <Box className={`${styles.paymentPlanItem} ${styles.premium}`}>
+                <Typography variant="h6">Biannual Plan</Typography>
+                <Typography variant="body2" className={styles.paymentDescription}>
+                  Save 15% with biannual billing
+                </Typography>
+                <Typography variant="h5" className={styles.paymentPrice}>
+                  {formatPrice(selectedCurrency, calculatedPrice * 6 * 0.85)}/6 months
+                </Typography>
+                <Box className={styles.paymentFeatures}>
+                  <Typography variant="body2">✓ 15% Discount</Typography>
+                  <Typography variant="body2">✓ Flexible Billing</Typography>
+                  <Typography variant="body2">✓ Mid-term Adjustments</Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
+                  Select Biannual Plan
                 </Button>
               </Box>
               <Box className={styles.paymentPlanItem}>
@@ -614,12 +640,39 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 <Typography variant="h5" className={styles.paymentPrice}>
                   {formatPrice(selectedCurrency, calculatedPrice * 12 * 0.8)}/year
                 </Typography>
+                <Box className={styles.paymentFeatures}>
+                  <Typography variant="body2">✓ 20% Discount</Typography>
+                  <Typography variant="body2">✓ Priority Support</Typography>
+                  <Typography variant="body2">✓ Free Setup Assistance</Typography>
+                </Box>
                 <Button
                   variant="contained"
                   className={styles.selectPlanButton}
                   onClick={onNext}
                 >
                   Select Annual Plan
+                </Button>
+              </Box>
+              <Box className={`${styles.paymentPlanItem} ${styles.premium}`}>
+                <Typography variant="h6">Enterprise Plan</Typography>
+                <Typography variant="body2" className={styles.paymentDescription}>
+                  Custom solutions for large businesses
+                </Typography>
+                <Typography variant="h5" className={styles.paymentPrice}>
+                  Custom Pricing
+                </Typography>
+                <Box className={styles.paymentFeatures}>
+                  <Typography variant="body2">✓ Dedicated Support</Typography>
+                  <Typography variant="body2">✓ Custom Features</Typography>
+                  <Typography variant="body2">✓ SLA Guarantee</Typography>
+                  <Typography variant="body2">✓ On-site Training</Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
+                  Contact Sales
                 </Button>
               </Box>
             </Box>
@@ -656,7 +709,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   Select Standard Support
                 </Button>
               </Box>
-              <Box className={styles.supportPlanItem}>
+              <Box className={`${styles.supportPlanItem} ${styles.premium}`}>
                 <Typography variant="h6">Premium Support</Typography>
                 <Typography variant="body2" className={styles.supportDescription}>
                   Priority support with 4-hour response time
@@ -676,6 +729,29 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   onClick={onNext}
                 >
                   Select Premium Support
+                </Button>
+              </Box>
+              <Box className={`${styles.supportPlanItem} ${styles.advanced}`}>
+                <Typography variant="h6">Advanced Support</Typography>
+                <Typography variant="body2" className={styles.supportDescription}>
+                  Enterprise-grade support with dedicated team
+                </Typography>
+                <Box className={styles.supportFeatures}>
+                  <Typography variant="body2">✓ 24/7 Dedicated Support Team</Typography>
+                  <Typography variant="body2">✓ SLA Guarantee</Typography>
+                  <Typography variant="body2">✓ On-site Support</Typography>
+                  <Typography variant="body2">✓ Custom Development</Typography>
+                  <Typography variant="body2">✓ Priority Feature Requests</Typography>
+                </Box>
+                <Typography variant="h5" className={styles.supportPrice}>
+                  +{formatPrice(selectedCurrency, calculatedPrice * 0.4)}/month
+                </Typography>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
+                  Select Advanced Support
                 </Button>
               </Box>
             </Box>
