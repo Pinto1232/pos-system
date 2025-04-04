@@ -143,7 +143,7 @@ const FullOverviewContainer: React.FC = () => {
             color: "#000"
           }}
           >
-            Full Overview
+            Overview Dashboard
           </Typography>
           <IconButton onClick={handleViewModeToggle}>
             {viewMode === 'grid' ? <ViewListIcon /> : <ViewModuleIcon />}
