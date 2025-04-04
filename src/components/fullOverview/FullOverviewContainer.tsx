@@ -115,33 +115,43 @@ const FullOverviewContainer: React.FC = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 3,
-          mt: -3,
-        }}
-      >
-        <Typography variant="h5" sx={{
-          fontWeight: "bold",
-          color: "#000"
-        }}
+      <Box sx={{
+        background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
+        borderRadius: '12px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
+        border: '1px solid rgba(0, 0, 0, 0.05)',
+        overflow: 'hidden'
+      }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            p: 2,
+            borderBottom: '1px solid rgba(0, 0, 0, 0.05)'
+          }}
         >
-          Full Overview
-        </Typography>
-        <IconButton>
-          <ViewModuleIcon />
-        </IconButton>
-      </Box>
-      <Grid container spacing={1.5}>
-        {cardsData.map((item, idx) => (
-          <Grid item xs={12} sm={6} md={4} key={idx}>
-            <FullOverviewCard {...item} />
+          <Typography variant="h5" sx={{
+            fontWeight: "bold",
+            color: "#000"
+          }}
+          >
+            Full Overview
+          </Typography>
+          <IconButton>
+            <ViewModuleIcon />
+          </IconButton>
+        </Box>
+        <Box sx={{ p: 2 }}>
+          <Grid container spacing={1.5}>
+            {cardsData.map((item, idx) => (
+              <Grid item xs={12} sm={6} md={4} key={idx}>
+                <FullOverviewCard {...item} />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        </Box>
+      </Box>
     </Box>
   );
 };
