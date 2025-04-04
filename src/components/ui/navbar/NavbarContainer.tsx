@@ -16,7 +16,6 @@ const NavbarContainer: React.FC = () => {
     <>
       <Navbar
         title="Pisval Tech POS"
-        testPeriod={30}
         menuItems={['Home', 'About', 'Contact']}
         isDrawerOpen={isDrawerOpen}
         toggleDrawer={toggleDrawer}

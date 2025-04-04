@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 import { SalesContainer } from '../sales';
 import { AuthContext } from '@/contexts/AuthContext';
 import styles from './dashboardMain.module.css';
@@ -21,6 +21,8 @@ interface DashboardMainProps {
 const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
   const { authenticated } = React.useContext(AuthContext);
   useSpinner();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const renderSection = () => {
     let sectionToRender;
@@ -29,7 +31,15 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
       case 'Dashboard':
         sectionToRender = (
           <Box>
-            <Typography variant="h4" color="#000" gutterBottom>
+            <Typography
+              variant="h4"
+              color="#000"
+              gutterBottom
+              sx={{
+                textAlign: isMobile ? 'center' : 'left',
+                fontSize: isMobile ? '1.5rem' : 'inherit'
+              }}
+            >
               Dashboard
             </Typography>
             <SearchBarContainer />

@@ -10,6 +10,8 @@ import {
   MenuItem,
   ListItemIcon,
   CircularProgress,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { navbarLinks } from '../../settings';
@@ -29,6 +31,8 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { isLoggingOut, logout } = useLogout();
   const open = Boolean(anchorEl);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -53,14 +57,15 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
       <AppBar
         position="fixed"
         sx={{
-          width: `calc(100% - ${drawerWidth}px)`,
-          ml: `${drawerWidth}px`,
+          width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
+          ml: isMobile ? 0 : `${drawerWidth}px`,
           backgroundColor: backgroundColor || 'default',
           transition: 'margin-left 0.3s ease, width 0.3s ease',
           border: 'none',
+          zIndex: 1300,
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: isMobile ? 'space-between' : 'flex-start' }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -70,10 +75,10 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
           >
             <ChevronLeftIcon />
           </IconButton>
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2, flexGrow: 1, justifyContent: isMobile ? 'center' : 'flex-start' }}>
             {navbarLinks.map(link => (
               <Link key={link.label} href={link.href} passHref>
-                <Typography variant="body1" sx={{ cursor: 'pointer', color: 'inherit' }}>
+                <Typography variant="body1" sx={{ cursor: 'pointer', color: 'inherit', fontSize: isMobile ? '0.875rem' : '1rem' }}>
                   {link.label}
                 </Typography>
               </Link>
@@ -94,18 +99,18 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
                 style={{
                   padding: '5px',
                   cursor: 'pointer',
-                  fontSize: '2.3rem',
+                  fontSize: isMobile ? '1.5rem' : '2.3rem',
                 }}
               />
             </Typography>
             <Typography variant="body1" sx={{ cursor: 'pointer' }}>
               <FiUser
                 style={{
-                  border: '2px solid	#ffffff',
+                  border: '2px solid #ffffff',
                   padding: '5px',
                   borderRadius: '50%',
                   cursor: 'pointer',
-                  fontSize: '1.9rem',
+                  fontSize: isMobile ? '1.5rem' : '1.9rem',
                 }}
               />
             </Typography>
@@ -181,7 +186,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
         open={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         userId="current-user"
-        onCustomizationUpdated={() => {}}
+        onCustomizationUpdated={() => { }}
       />
     </>
   );

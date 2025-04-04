@@ -219,17 +219,30 @@ const Sales: React.FC<SalesProps> = ({
       }}
     >
       {/* Header Section */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={5}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        justifyContent="space-between"
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
+        spacing={{ xs: 2, sm: 0 }}
+        mb={5}
+      >
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+          width: { xs: '100%', sm: 'auto' },
+          justifyContent: { xs: 'space-between', sm: 'flex-start' }
+        }}>
           <Typography
             variant="h4"
             sx={{
               fontWeight: 700,
               color: '#1a1a1a',
-              fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+              fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' },
               background: 'linear-gradient(45deg, #1a1a1a, #333)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
+              whiteSpace: 'nowrap',
             }}
           >
             New Sales report
@@ -237,10 +250,11 @@ const Sales: React.FC<SalesProps> = ({
           <AvatarGroup
             max={4}
             sx={{
+              display: { xs: 'none', sm: 'flex' },
               '& .MuiAvatar-root': {
-                width: 32,
-                height: 32,
-                fontSize: '0.9rem',
+                width: { xs: 24, sm: 28, md: 32 },
+                height: { xs: 24, sm: 28, md: 32 },
+                fontSize: { xs: '0.75rem', sm: '0.85rem', md: '0.9rem' },
                 border: '2px solid #fff',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 transition: 'all 0.3s ease',
@@ -270,62 +284,70 @@ const Sales: React.FC<SalesProps> = ({
             ))}
           </AvatarGroup>
         </Box>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Tooltip title="Refresh data">
-            <IconButton
-              size="small"
-              sx={{
-                color: '#666666',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  color: '#1976d2',
-                  transform: 'scale(1.1)',
-                  backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                },
-              }}
-            >
-              <ShuffleIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Download report">
-            <IconButton
-              size="small"
-              sx={{
-                color: '#666666',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  color: '#1976d2',
-                  transform: 'scale(1.1)',
-                  backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                },
-              }}
-            >
-              <DownloadIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Share report">
-            <IconButton
-              size="small"
-              sx={{
-                color: '#666666',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  color: '#1976d2',
-                  transform: 'scale(1.1)',
-                  backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                },
-              }}
-            >
-              <ShareIcon />
-            </IconButton>
-          </Tooltip>
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          width={{ xs: '100%', sm: 'auto' }}
+          justifyContent={{ xs: 'space-between', sm: 'flex-end' }}
+        >
+          <Stack direction="row" spacing={1}>
+            <Tooltip title="Refresh data">
+              <IconButton
+                size="small"
+                sx={{
+                  color: '#666666',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    color: '#1976d2',
+                    transform: 'scale(1.1)',
+                    backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                  },
+                }}
+              >
+                <ShuffleIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Download report">
+              <IconButton
+                size="small"
+                sx={{
+                  color: '#666666',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    color: '#1976d2',
+                    transform: 'scale(1.1)',
+                    backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                  },
+                }}
+              >
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Share report">
+              <IconButton
+                size="small"
+                sx={{
+                  color: '#666666',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    color: '#1976d2',
+                    transform: 'scale(1.1)',
+                    backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                  },
+                }}
+              >
+                <ShareIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
               gap: 1,
               backgroundColor: '#173a79',
-              padding: '6px 16px',
+              padding: { xs: '4px 8px', sm: '6px 16px' },
               borderRadius: '12px',
               border: '1px solid rgba(0,0,0,0.08)',
               boxShadow: '0 2px 8px rgba(23, 58, 121, 0.15)',
@@ -336,7 +358,14 @@ const Sales: React.FC<SalesProps> = ({
               },
             }}
           >
-            <Typography sx={{ color: '#ffffff', fontSize: '0.875rem', fontWeight: 500 }}>
+            <Typography
+              sx={{
+                color: '#ffffff',
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                fontWeight: 500,
+                display: { xs: 'none', sm: 'block' }
+              }}
+            >
               Timeframe
             </Typography>
             <Switch
@@ -352,23 +381,72 @@ const Sales: React.FC<SalesProps> = ({
                 },
               }}
             />
-            <Typography sx={{ fontSize: '0.875rem', color: '#ffffff', fontWeight: 500 }}>
+            <Typography
+              sx={{
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                color: '#ffffff',
+                fontWeight: 500,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: { xs: '100px', sm: '150px', md: '200px' }
+              }}
+            >
               {timeframe}
             </Typography>
           </Box>
         </Stack>
       </Stack>
 
+      {/* Mobile Avatar Group */}
+      <Box sx={{ display: { xs: 'block', sm: 'none' }, mb: 3 }}>
+        <AvatarGroup
+          max={4}
+          sx={{
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              fontSize: '0.9rem',
+              border: '2px solid #fff',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              },
+            },
+          }}
+        >
+          {data.teamPerformance.map((member: TeamMember) => (
+            <Tooltip
+              key={member.name}
+              title={`${member.name}: ${formatCurrency(member.revenue)}`}
+            >
+              <Avatar
+                sx={{
+                  bgcolor: '#1976d2',
+                  '&:hover': {
+                    bgcolor: '#1565c0',
+                  },
+                }}
+              >
+                {member.name.charAt(0)}
+              </Avatar>
+            </Tooltip>
+          ))}
+        </AvatarGroup>
+      </Box>
+
       {/* Revenue Section */}
       <Box mb={5}>
-        <Stack direction="row" spacing={4}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={4}>
           <Box flex={1}>
             <Stack direction="row" alignItems="center" spacing={1} mb={2}>
               <Typography
                 variant="h6"
                 sx={{
                   color: '#666666',
-                  fontSize: '0.875rem',
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
                   fontWeight: 600,
                   textTransform: 'uppercase',
                   letterSpacing: '1px',
@@ -386,7 +464,7 @@ const Sales: React.FC<SalesProps> = ({
                 sx={{
                   fontWeight: 800,
                   color: '#1a1a1a',
-                  fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                  fontSize: { xs: '1.5rem', sm: '2rem', md: '3rem' },
                   background: 'linear-gradient(45deg, #1a1a1a, #333)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -436,16 +514,22 @@ const Sales: React.FC<SalesProps> = ({
             </Typography>
 
             {/* Distribution Stats */}
-            <Stack direction="row" spacing={3} justifyContent="space-between">
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={3}
+              justifyContent="space-between"
+              sx={{ mt: { xs: 2, sm: 0 } }}
+            >
               {/* In Store Progress */}
               <Box
                 sx={{
                   position: 'relative',
-                  width: 80,
-                  height: 80,
+                  width: { xs: '100%', sm: 80 },
+                  height: { xs: 60, sm: 80 },
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  mb: { xs: 2, sm: 0 },
                 }}
               >
                 <CircularProgress
@@ -516,11 +600,12 @@ const Sales: React.FC<SalesProps> = ({
               <Box
                 sx={{
                   position: 'relative',
-                  width: 80,
-                  height: 80,
+                  width: { xs: '100%', sm: 80 },
+                  height: { xs: 60, sm: 80 },
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  mb: { xs: 2, sm: 0 },
                 }}
               >
                 <CircularProgress
@@ -591,11 +676,12 @@ const Sales: React.FC<SalesProps> = ({
               <Box
                 sx={{
                   position: 'relative',
-                  width: 80,
-                  height: 80,
+                  width: { xs: '100%', sm: 80 },
+                  height: { xs: 60, sm: 80 },
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  mb: { xs: 2, sm: 0 },
                 }}
               >
                 <CircularProgress
@@ -666,11 +752,12 @@ const Sales: React.FC<SalesProps> = ({
               <Box
                 sx={{
                   position: 'relative',
-                  width: 80,
-                  height: 80,
+                  width: { xs: '100%', sm: 80 },
+                  height: { xs: 60, sm: 80 },
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  mb: { xs: 2, sm: 0 },
                 }}
               >
                 <CircularProgress
@@ -739,11 +826,11 @@ const Sales: React.FC<SalesProps> = ({
             </Stack>
           </Box>
 
-          <Box flex={1.5} sx={{ height: 260 }}>
+          <Box flex={1.5} sx={{ height: { xs: 200, sm: 260 } }}>
             <Paper
               elevation={0}
               sx={{
-                p: 2,
+                p: { xs: 1, sm: 2 },
                 backgroundColor: '#ffffff',
                 borderRadius: '12px',
                 border: '1px solid rgba(0, 0, 0, 0.08)',
