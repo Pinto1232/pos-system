@@ -1,4 +1,4 @@
-export type FullOverviewCardVariant = "overview" | "bankCard";
+export type FullOverviewCardVariant = "overview" | "bankCard" | "analytics" | "notification";
 
 export interface FullOverviewCardProps {
   variant: FullOverviewCardVariant;
@@ -19,4 +19,19 @@ export interface FullOverviewCardProps {
   cost?: string;
   receipts?: string;
   BankCardRowDetail?: string;
+  trend?: {
+    value: number;
+    direction: "up" | "down";
+  };
+  chartData?: {
+    labels: string[];
+    values: number[];
+  };
+  notificationType?: "success" | "warning" | "error" | "info";
+  notificationTime?: string;
+  notificationIcon?: string;
+  onClick?: () => void;
+  isActive?: boolean;
+  tags?: string[];
+  status?: "active" | "inactive" | "pending";
 }

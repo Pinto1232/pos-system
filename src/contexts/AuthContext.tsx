@@ -174,6 +174,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           await login();
         }
       } catch (err) {
+        console.error('Authentication Error Raw:', err);
         let errorMessage = 'Unknown authentication error';
         console.error('Authentication Error:', err);
         setIsInitializing(false);
@@ -182,10 +183,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (err instanceof Error) {
           errorMessage = `Authentication error: ${err.message}`;
         } else if (typeof err === 'object' && err !== null) {
-          try {
-            errorMessage = `Authentication error: ${JSON.stringify(err)}`;
-          } catch {
-            errorMessage = 'Authentication error: Non-serializable error object';
+          errorMessage = `Authentication error: ${JSON.stringify(err)}`;
+          // Attempt to access common Keycloak error fields if stringify failed or is generic
+          if (errorMessage.includes('{}') || errorMessage.includes('Unknown')) {
+            const kcError = err as any;
+            if (kcError.error && kcError.error_description) {
+              errorMessage = `Keycloak Error: ${kcError.error} - ${kcError.error_description}`;
+            } else if (kcError.error) {
+              errorMessage = `Keycloak Error: ${kcError.error}`;
+            }
           }
         }
 

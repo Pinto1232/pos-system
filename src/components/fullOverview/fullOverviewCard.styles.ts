@@ -120,7 +120,6 @@ export const InfoLines = styled(Box)(({ theme }) => ({
 
 export const BankCardContainer = styled(Box)(({ theme }) => ({
   background: "linear-gradient(105deg, #000, #3B82F6)",
-  
   color: "#fff",
   borderRadius: 16,
   padding: theme.spacing(3),
@@ -161,6 +160,7 @@ export const BankCardRow = styled(Box)(({ theme }) => ({
     textShadow: "0 1px 2px rgba(0, 0, 0, 0.2)",
   },
 }));
+
 export const BankCardRowDetail = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
