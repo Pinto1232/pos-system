@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Grid, Typography, IconButton } from "@mui/material";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
+import ViewListIcon from "@mui/icons-material/ViewList";
 import FullOverviewCard from "./FullOverviewCard";
 import { FullOverviewCardProps } from "./fullOverviewCard.types";
 
 const FullOverviewContainer: React.FC = () => {
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  const handleViewModeToggle = () => {
+    setViewMode(prevMode => prevMode === 'grid' ? 'list' : 'grid');
+  };
+
   const cardsData: FullOverviewCardProps[] = [
     {
       variant: "notification",
@@ -138,15 +145,27 @@ const FullOverviewContainer: React.FC = () => {
           >
             Full Overview
           </Typography>
-          <IconButton>
-            <ViewModuleIcon />
+          <IconButton onClick={handleViewModeToggle}>
+            {viewMode === 'grid' ? <ViewListIcon /> : <ViewModuleIcon />}
           </IconButton>
         </Box>
         <Box sx={{ p: 2 }}>
-          <Grid container spacing={1.5}>
+          <Grid
+            container
+            spacing={1.5}
+            sx={{
+              ...(viewMode === 'list' && {
+                flexDirection: 'column',
+                '& .MuiGrid-item': {
+                  maxWidth: '100%',
+                  flexBasis: '100%'
+                }
+              })
+            }}
+          >
             {cardsData.map((item, idx) => (
-              <Grid item xs={12} sm={6} md={4} key={idx}>
-                <FullOverviewCard {...item} />
+              <Grid item xs={12} sm={viewMode === 'grid' ? 6 : 12} md={viewMode === 'grid' ? 4 : 12} key={idx}>
+                <FullOverviewCard {...item} viewMode={viewMode} />
               </Grid>
             ))}
           </Grid>

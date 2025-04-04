@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Divider, Typography, Chip, Tooltip, LinearProgress, Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import {
   StyledCard,
   TopLeftBadge,
@@ -28,37 +29,101 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PeopleIcon from "@mui/icons-material/People";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
-const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
-  const {
-    variant,
-    topLeftLabel,
-    topRightIcon,
-    title,
-    subTitle,
-    details,
-    price,
-    ctaText,
-    imageUrl,
-    bankName,
-    bankType,
-    cardNumber,
-    cardHolder,
-    cardExpire,
-    totalBalance,
-    cost,
-    receipts,
-    BankCardRowDetail,
-    trend,
-    chartData,
-    notificationType,
-    notificationTime,
-    notificationIcon,
-    onClick,
-    isActive,
-    tags,
-    status,
-  } = props;
+const CardContent = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+  background: "rgba(255, 255, 255, 0.8)",
+  backdropFilter: "blur(10px)",
+  borderRadius: "12px",
+  overflow: "hidden",
+  transition: "all 0.3s ease",
+}));
 
+const CardHeader = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  background: "linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(124, 58, 237, 0.05))",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
+}));
+
+const CardBody = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(1.5),
+}));
+
+const CardFooter = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  background: "rgba(249, 250, 251, 0.8)",
+  borderTop: "1px solid rgba(0, 0, 0, 0.05)",
+}));
+
+const DetailRow = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1),
+  padding: theme.spacing(1),
+  borderRadius: "8px",
+  background: "rgba(249, 250, 251, 0.5)",
+  transition: "all 0.2s ease",
+  "&:hover": {
+    background: "rgba(249, 250, 251, 0.8)",
+    transform: "translateX(4px)",
+  },
+}));
+
+const TagWrapper = styled(Box)(({ theme }) => ({
+  display: "flex",
+  gap: theme.spacing(1),
+  flexWrap: "wrap",
+}));
+
+const StyledTag = styled(Chip)(({ theme }) => ({
+  background: "rgba(79, 70, 229, 0.08)",
+  color: "#4F46E5",
+  fontWeight: 500,
+  fontSize: "0.75rem",
+  height: "24px",
+  "& .MuiChip-label": {
+    padding: theme.spacing(0, 1),
+  },
+  "&:hover": {
+    background: "rgba(79, 70, 229, 0.12)",
+  },
+}));
+
+const FullOverviewCard: React.FC<FullOverviewCardProps & { viewMode: 'grid' | 'list' }> = ({
+  variant,
+  topLeftLabel,
+  topRightIcon,
+  title,
+  subTitle,
+  details,
+  price,
+  ctaText,
+  imageUrl,
+  bankName,
+  bankType,
+  cardNumber,
+  cardHolder,
+  cardExpire,
+  totalBalance,
+  cost,
+  receipts,
+  BankCardRowDetail,
+  trend,
+  chartData,
+  notificationType,
+  notificationTime,
+  notificationIcon,
+  onClick,
+  isActive,
+  tags,
+  status,
+  viewMode,
+}) => {
   const renderNotificationIcon = () => {
     switch (notificationType) {
       case "success":
@@ -214,6 +279,60 @@ const FullOverviewCard: React.FC<FullOverviewCardProps> = (props) => {
       </Box>
     </Box>
   );
+
+  if (viewMode === 'list') {
+    return (
+      <StyledCard>
+        <CardContent>
+          <CardHeader>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <Box>
+                <Typography variant="h6" sx={{
+                  fontWeight: 600,
+                  color: "#1F2937",
+                  marginBottom: 0.5,
+                }}>
+                  {title}
+                </Typography>
+                {subTitle && (
+                  <Typography variant="body2" sx={{
+                    color: "#6B7280",
+                    fontSize: "0.875rem",
+                  }}>
+                    {subTitle}
+                  </Typography>
+                )}
+              </Box>
+              {topRightIcon && <TopRightIcon>{topRightIcon}</TopRightIcon>}
+            </Box>
+          </CardHeader>
+          <CardBody>
+            {details && details.map((detail, index) => (
+              <DetailRow key={index}>
+                <Typography variant="body2" sx={{
+                  color: "#4B5563",
+                  fontSize: "0.875rem",
+                }}>
+                  {detail}
+                </Typography>
+              </DetailRow>
+            ))}
+          </CardBody>
+          <CardFooter>
+            <TagWrapper>
+              {tags && tags.map((tag, index) => (
+                <StyledTag
+                  key={index}
+                  label={tag}
+                  size="small"
+                />
+              ))}
+            </TagWrapper>
+          </CardFooter>
+        </CardContent>
+      </StyledCard>
+    );
+  }
 
   if (variant === "bankCard") {
     return (

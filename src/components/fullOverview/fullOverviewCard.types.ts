@@ -34,4 +34,5 @@ export interface FullOverviewCardProps {
   isActive?: boolean;
   tags?: string[];
   status?: "active" | "inactive" | "pending";
+  viewMode?: 'grid' | 'list';
 }
