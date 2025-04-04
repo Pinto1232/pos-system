@@ -17,11 +17,11 @@ export interface ProductTableProps {
   priceFilter: string;
   onView: (product: Product) => void;
   onCloseModal: () => void;
-  onPriceChange: (event: any) => void;
-  onSearchChange: (event: any) => void;
-  onCategoryChange: (event: any) => void;
-  onRatingChange: (event: any) => void;
-  onStatusChange: (event: any) => void;
+  onPriceChange: (event: SelectChangeEvent) => void;
+  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCategoryChange: (event: SelectChangeEvent) => void;
+  onRatingChange: (event: SelectChangeEvent) => void;
+  onStatusChange: (event: SelectChangeEvent) => void;
   onStatusToggle: (product: Product) => void;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

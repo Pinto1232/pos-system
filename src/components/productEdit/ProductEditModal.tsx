@@ -9,11 +9,6 @@ import {
   TextField,
   Box,
   Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  SelectChangeEvent,
   IconButton,
   Stack,
   Switch,
@@ -27,7 +22,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const StyledDialog = styled(Dialog)(({ theme }) => ({
+const StyledDialog = styled(Dialog)({
   '& .MuiDialog-paper': {
     width: '600px',
     maxWidth: '90vw',
@@ -37,9 +32,9 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     background: '#FFFFFF',
     backdropFilter: 'blur(10px)',
   },
-}));
+});
 
-const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
+const StyledDialogTitle = styled(DialogTitle)({
   padding: '28px 32px',
   borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
   background: 'linear-gradient(to right, #F8F9FA, #FFFFFF)',
@@ -60,9 +55,9 @@ const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
       borderRadius: '2px',
     },
   },
-}));
+});
 
-const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
+const StyledDialogContent = styled(DialogContent)({
   padding: '32px',
   display: 'flex',
   flexDirection: 'column',
@@ -96,22 +91,22 @@ const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
   '& .MuiSelect-root': {
     borderRadius: '12px',
   },
-}));
+});
 
-const StyledDialogActions = styled(DialogActions)(({ theme }) => ({
+const StyledDialogActions = styled(DialogActions)({
   padding: '24px 32px',
   borderTop: '1px solid rgba(0, 0, 0, 0.06)',
   gap: '16px',
   background: 'linear-gradient(to right, #FFFFFF, #F8F9FA)',
-}));
+});
 
-const ImageSection = styled(Box)(({ theme }) => ({
+const ImageSection = styled(Box)({
   width: '100%',
   marginBottom: '8px',
   marginTop: '16px',
-}));
+});
 
-const ImageUploadContainer = styled(Box)(({ theme }) => ({
+const ImageUploadContainer = styled(Box)({
   border: '2px dashed rgba(82, 183, 136, 0.3)',
   borderRadius: '16px',
   padding: '16px',
@@ -127,9 +122,9 @@ const ImageUploadContainer = styled(Box)(({ theme }) => ({
     transform: 'translateY(-2px)',
     boxShadow: '0 8px 24px rgba(82, 183, 136, 0.1)',
   },
-}));
+});
 
-const PreviewImage = styled('img')(({ theme }) => ({
+const PreviewImage = styled('img')({
   maxWidth: '100%',
   maxHeight: '120px',
   marginTop: '12px',
@@ -140,24 +135,24 @@ const PreviewImage = styled('img')(({ theme }) => ({
   '&:hover': {
     transform: 'scale(1.02)',
   },
-}));
+});
 
-const FormSection = styled(Box)(({ theme }) => ({
+const FormSection = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
   gap: '28px',
   padding: '8px 0',
-}));
+});
 
-const FormRow = styled(Box)(({ theme }) => ({
+const FormRow = styled(Box)({
   display: 'flex',
   gap: '24px',
   '&:hover .MuiTextField-root .MuiOutlinedInput-root': {
     borderColor: '#52B788',
   },
-}));
+});
 
-const FormField = styled(Box)(({ theme }) => ({
+const FormField = styled(Box)({
   flex: 1,
   position: 'relative',
   '&::after': {
@@ -174,12 +169,12 @@ const FormField = styled(Box)(({ theme }) => ({
   '&:hover::after': {
     opacity: 1,
   },
-}));
+});
 
 interface ProductEditModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: Product) => void;
   product?: Product | null;
   mode?: 'view' | 'add' | 'edit';
 }
@@ -241,13 +236,6 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
         [field]: event.target.value,
       });
     };
-
-  const handleSelectChange = (event: SelectChangeEvent<string>) => {
-    setFormData({
-      ...formData,
-      statusProduct: event.target.value,
-    });
-  };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

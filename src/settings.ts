@@ -1,17 +1,10 @@
 import HomeIcon from '@mui/icons-material/Home';
 import { MdProductionQuantityLimits } from 'react-icons/md';
 import { RiCustomerService2Fill } from 'react-icons/ri';
-import ReceiptIcon from '@mui/icons-material/Receipt';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { FaCreditCard, FaUsers, FaChartLine, FaMoneyBillWave, FaPercent } from 'react-icons/fa';
 import { TbReorder, TbTruckDelivery } from 'react-icons/tb';
 import { BiReceipt } from 'react-icons/bi';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import PeopleIcon from '@mui/icons-material/People';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import BadgeIcon from '@mui/icons-material/Badge';
 
 export const sidebarItems = [
   {

@@ -14,8 +14,6 @@ import {
   AvatarGroup,
   Tooltip,
   LinearProgress,
-  useTheme,
-  useMediaQuery,
   Tabs,
   Tab,
   Paper,
@@ -31,7 +29,6 @@ import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
 import InfoIcon from '@mui/icons-material/Info';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import {
   LineChart,
   Line,
@@ -85,8 +82,6 @@ const Sales: React.FC<SalesProps> = ({
   onTimeframeChange,
   className,
 }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState(0);
   const [inStoreProgress, setInStoreProgress] = useState(0);

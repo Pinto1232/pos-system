@@ -15,7 +15,6 @@ import {
   Checkbox,
   FormControlLabel,
   Divider,
-  Grid,
   Select,
   MenuItem,
   InputLabel,
@@ -53,13 +52,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   onFeatureToggle,
   onAddOnToggle,
   onUsageChange,
-  setSelectedCurrency,
   enterpriseFeatures,
   onEnterpriseFeatureToggle,
 }) => {
   const [loading, setLoading] = useState(false);
   const [backLoading, setBackLoading] = useState(false);
-  const [selectedCurrency, setSelectedCurrencyState] = useState<string>('USD');
+  const [selectedCurrency] = useState<string>('USD');
   const { setTestPeriod } = useTestPeriod();
   const [totalFeaturePrice, setTotalFeaturePrice] = useState<number>(0);
   const [formData, setFormData] = useState({
@@ -271,9 +269,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     return (
                       <Box
                         key={feature.id}
-                        className={`${styles.featureItem} ${
-                          isSelected ? styles.selectedFeature : ''
-                        }`}
+                        className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ''
+                          }`}
                       >
                         <Box>
                           <Typography className={styles.featureName}>Create Custom Plan</Typography>

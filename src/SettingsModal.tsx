@@ -13,7 +13,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { apiClient, useUpdateCustomization } from '@/api/axiosClient';
+import { useUpdateCustomization } from '@/api/axiosClient';
 import Image from 'next/image';
 import { MdRestore } from 'react-icons/md';
 import { SketchPicker, ColorResult } from 'react-color';

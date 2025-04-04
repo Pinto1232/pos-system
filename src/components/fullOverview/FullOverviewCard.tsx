@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Divider, Typography, Chip, Tooltip, LinearProgress, Button } from '@mui/material';
+import { Box, Divider, Typography, Chip, Tooltip, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {
   StyledCard,
@@ -11,25 +11,15 @@ import {
   PriceText,
   CardButton,
   InfoLines,
-  BankCardContainer,
-  BankCardRow,
-  BankCardNumber,
-  BankCardHeader,
   StatusIndicator,
 } from './fullOverviewCard.styles';
 import { FullOverviewCardProps } from './fullOverviewCard.types';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WarningIcon from '@mui/icons-material/Warning';
 import ErrorIcon from '@mui/icons-material/Error';
 import InfoIcon from '@mui/icons-material/Info';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PeopleIcon from '@mui/icons-material/People';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
-const CardContent = styled(Box)(({ theme }) => ({
+const CardContent = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
@@ -38,33 +28,33 @@ const CardContent = styled(Box)(({ theme }) => ({
   borderRadius: '12px',
   overflow: 'hidden',
   transition: 'all 0.3s ease',
-}));
+});
 
-const CardHeader = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
+const CardHeader = styled(Box)({
+  padding: '16px',
   background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(124, 58, 237, 0.05))',
   borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-}));
+});
 
-const CardBody = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
+const CardBody = styled(Box)({
+  padding: '16px',
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
-  gap: theme.spacing(1.5),
-}));
+  gap: '12px',
+});
 
-const CardFooter = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
+const CardFooter = styled(Box)({
+  padding: '16px',
   background: 'rgba(249, 250, 251, 0.8)',
   borderTop: '1px solid rgba(0, 0, 0, 0.05)',
-}));
+});
 
-const DetailRow = styled(Box)(({ theme }) => ({
+const DetailRow = styled(Box)({
   display: 'flex',
   alignItems: 'center',
-  gap: theme.spacing(1),
-  padding: theme.spacing(1),
+  gap: '8px',
+  padding: '8px',
   borderRadius: '8px',
   background: 'rgba(249, 250, 251, 0.5)',
   transition: 'all 0.2s ease',
@@ -72,27 +62,27 @@ const DetailRow = styled(Box)(({ theme }) => ({
     background: 'rgba(249, 250, 251, 0.8)',
     transform: 'translateX(4px)',
   },
-}));
+});
 
-const TagWrapper = styled(Box)(({ theme }) => ({
+const TagWrapper = styled(Box)({
   display: 'flex',
-  gap: theme.spacing(1),
+  gap: '8px',
   flexWrap: 'wrap',
-}));
+});
 
-const StyledTag = styled(Chip)(({ theme }) => ({
+const StyledTag = styled(Chip)({
   background: 'rgba(79, 70, 229, 0.08)',
   color: '#4F46E5',
   fontWeight: 500,
   fontSize: '0.75rem',
   height: '24px',
   '& .MuiChip-label': {
-    padding: theme.spacing(0, 1),
+    padding: '0 8px',
   },
   '&:hover': {
     background: 'rgba(79, 70, 229, 0.12)',
   },
-}));
+});
 
 const FullOverviewCard: React.FC<FullOverviewCardProps & { viewMode: 'grid' | 'list' }> = ({
   variant,
@@ -117,9 +107,7 @@ const FullOverviewCard: React.FC<FullOverviewCardProps & { viewMode: 'grid' | 'l
   chartData,
   notificationType,
   notificationTime,
-  notificationIcon,
   onClick,
-  isActive,
   tags,
   status,
   viewMode,
@@ -137,21 +125,6 @@ const FullOverviewCard: React.FC<FullOverviewCardProps & { viewMode: 'grid' | 'l
       default:
         return null;
     }
-  };
-
-  const renderTrend = () => {
-    if (!trend) return null;
-    const Icon = trend.direction === 'up' ? TrendingUpIcon : TrendingDownIcon;
-    const color = trend.direction === 'up' ? '#10B981' : '#EF4444';
-
-    return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Icon sx={{ color }} />
-        <Typography variant="body2" sx={{ color, fontWeight: 600 }}>
-          {trend.value}%
-        </Typography>
-      </Box>
-    );
   };
 
   const renderStatusIndicator = () => {
@@ -174,128 +147,6 @@ const FullOverviewCard: React.FC<FullOverviewCardProps & { viewMode: 'grid' | 'l
       </Tooltip>
     );
   };
-
-  const renderChart = () => {
-    if (!chartData) return null;
-
-    const maxValue = Math.max(...chartData.values);
-    const minValue = Math.min(...chartData.values);
-    const range = maxValue - minValue;
-    const barHeight = 100;
-
-    return (
-      <Box sx={{ mt: 2, mb: 2 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-            height: barHeight,
-          }}
-        >
-          {chartData.values.map((value, index) => {
-            const height = ((value - minValue) / range) * barHeight;
-            return (
-              <Tooltip key={index} title={`${chartData.labels[index]}: ${value}`}>
-                <Box
-                  sx={{
-                    width: '30px',
-                    height: `${height}px`,
-                    background: 'linear-gradient(to top, #4F46E5, #7C3AED)',
-                    borderRadius: '4px 4px 0 0',
-                    transition: 'height 0.3s ease',
-                    '&:hover': {
-                      background: 'linear-gradient(to top, #4338CA, #6D28D9)',
-                    },
-                  }}
-                />
-              </Tooltip>
-            );
-          })}
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-          {chartData.labels.map((label, index) => (
-            <Typography
-              key={index}
-              variant="caption"
-              sx={{
-                width: '30px',
-                textAlign: 'center',
-                color: '#6B7280',
-                fontSize: '0.7rem',
-              }}
-            >
-              {label}
-            </Typography>
-          ))}
-        </Box>
-      </Box>
-    );
-  };
-
-  const renderGrowthMetric = (label: string, value: string, icon: React.ReactNode) => (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        p: 1,
-        background: 'rgba(79, 70, 229, 0.05)',
-        borderRadius: '8px',
-        transition: 'all 0.3s ease',
-        width: '100%',
-        gap: 1,
-        '&:hover': {
-          background: 'rgba(79, 70, 229, 0.1)',
-          transform: 'translateY(-2px)',
-        },
-      }}
-    >
-      <Box
-        sx={{
-          width: 24,
-          height: 24,
-          borderRadius: '6px',
-          background: 'linear-gradient(135deg, #4F46E5, #7C3AED)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#fff',
-          flexShrink: 0,
-        }}
-      >
-        {icon}
-      </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <Typography
-          variant="body2"
-          sx={{
-            color: '#6B7280',
-            fontSize: '0.7rem',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {label}
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: 600,
-            color: '#1F2937',
-            fontSize: '0.8rem',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {value}
-        </Typography>
-      </Box>
-    </Box>
-  );
 
   if (viewMode === 'list') {
     return (

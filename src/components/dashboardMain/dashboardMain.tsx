@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { SalesContainer } from '../sales';
 import { AuthContext } from '@/contexts/AuthContext';
-import { sidebarItems } from '@/settings';
 import styles from './dashboardMain.module.css';
 import ProductTableContainer from '../productTable/ProductTableContainer';
 import { useSpinner } from '@/contexts/SpinnerContext';
@@ -12,7 +11,6 @@ import AnalyticsCardContainer from '../analyticsCard/AnalyticsCardContainer';
 import SearchBarContainer from '../searchBar/SearchBarContainer';
 import FullOverviewContainer from '../fullOverview/FullOverviewContainer';
 import SaleTableContainer from '../saleTable';
-import TransactionsContainer from '../transactionTable/TransactionsContainer';
 import NotFound from '@/app/404';
 import ProductEditContainer from '../productEdit/ProductEditContainer';
 
@@ -22,7 +20,7 @@ interface DashboardMainProps {
 
 const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
   const { authenticated } = React.useContext(AuthContext);
-  const { setLoading } = useSpinner();
+  useSpinner();
 
   const renderSection = () => {
     let sectionToRender;
