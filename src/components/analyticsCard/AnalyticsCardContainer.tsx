@@ -8,7 +8,11 @@ const AnalyticsCardContainer = () => {
       circleText: '01',
       title: 'Customer Insights',
       subTitle: 'Sales Overview & Analytics',
-      dataPoints: ['New vs. Returning Customers', 'Average Order Value (AOV)', 'Top Customers'],
+      dataPoints: [
+        'New vs. Returning Customers',
+        'Average Order Value (AOV)',
+        'Top Customers',
+      ],
       percentage: '-22%',
     },
     {
@@ -37,14 +41,21 @@ const AnalyticsCardContainer = () => {
       circleText: '04',
       title: 'Profitability & Costs',
       subTitle: 'Sales Overview & Analytics',
-      dataPoints: ['Gross Margin', 'Profit or Net Income', 'Profit or Net Income'],
+      dataPoints: [
+        'Gross Margin',
+        'Profit or Net Income',
+        'Profit or Net Income',
+      ],
       percentage: '12%',
     },
   ];
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', color: '#000' }}>
+      <Typography
+        variant="h5"
+        sx={{ mb: 3, fontWeight: 'bold', color: '#000' }}
+      >
         Sales Overview & Analytics
       </Typography>
       <Grid container spacing={3}>

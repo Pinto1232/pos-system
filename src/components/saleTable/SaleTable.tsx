@@ -18,20 +18,36 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { VisibilityOutlined, ReceiptLong, Delete, ChevronRight } from '@mui/icons-material';
+import {
+  VisibilityOutlined,
+  ReceiptLong,
+  Delete,
+  ChevronRight,
+} from '@mui/icons-material';
 import { SaleTableProps } from './types';
 
-const SaleTable: React.FC<SaleTableProps> = ({ sales, onViewDetails, onViewReceipt, onDelete }) => {
+const SaleTable: React.FC<SaleTableProps> = ({
+  sales,
+  onViewDetails,
+  onViewReceipt,
+  onDelete,
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const renderMobileView = () => (
     <Stack spacing={2}>
-      {sales.map(sale => (
+      {sales.map((sale) => (
         <Card key={sale.id} sx={{ width: '100%' }}>
           <CardContent>
             <Stack spacing={2}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                   {sale.id}
                 </Typography>
@@ -83,13 +99,19 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, onViewDetails, onViewRecei
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'text.secondary' }}
+                  >
                     Payment Method
                   </Typography>
                   <Typography variant="body2">{sale.paymentMethod}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'text.secondary' }}
+                  >
                     Items
                   </Typography>
                   <Typography variant="body2">
@@ -100,13 +122,19 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, onViewDetails, onViewRecei
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Box>
-                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'text.secondary' }}
+                  >
                     Cashier
                   </Typography>
                   <Typography variant="body2">{sale.cashier}</Typography>
                 </Box>
                 <Box>
-                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'text.secondary' }}
+                  >
                     Date/Time
                   </Typography>
                   <Typography variant="body2">{sale.dateTime}</Typography>
@@ -134,8 +162,11 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, onViewDetails, onViewRecei
           </TableRow>
         </TableHead>
         <TableBody>
-          {sales.map(sale => (
-            <TableRow key={sale.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+          {sales.map((sale) => (
+            <TableRow
+              key={sale.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
               <TableCell>{sale.id}</TableCell>
               <TableCell>
                 <Box sx={{ width: '100%', maxWidth: 150 }}>
@@ -192,13 +223,29 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, onViewDetails, onViewRecei
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold', color: '#000' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 3,
+        }}
+      >
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{ fontWeight: 'bold', color: '#000' }}
+        >
           Overall Full Overview
         </Typography>
         <Link
           href="#"
-          sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: '#000' }}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: '#000',
+          }}
         >
           View all my data
           <ChevronRight />

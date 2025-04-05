@@ -1,4 +1,8 @@
-export type FullOverviewCardVariant = 'overview' | 'bankCard' | 'analytics' | 'notification';
+export type FullOverviewCardVariant =
+  | 'overview'
+  | 'bankCard'
+  | 'analytics'
+  | 'notification';
 
 export interface FullOverviewCardProps {
   variant: FullOverviewCardVariant;

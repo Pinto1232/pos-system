@@ -5,7 +5,8 @@ import styles from './Hero.module.css';
 function HeroContainer() {
   const heading = (
     <>
-      <span className={styles.highlightedText}>Transform</span> Your Merchant&apos;s POS Device
+      <span className={styles.highlightedText}>Transform</span> Your
+      Merchant&apos;s POS Device
       <span className={styles.emphasis}>
         Into a Dynamic Business Management Tool
       </span>

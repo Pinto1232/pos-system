@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useState, useEffect, ReactNode, useRef, useCallback } from 'react';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useRef,
+  useCallback,
+} from 'react';
 import { KeycloakInstance } from 'keycloak-js';
 import keycloakInstance from '@/auth/keycloak';
 import { Box, Typography } from '@mui/material';
@@ -16,8 +23,8 @@ export interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps>({
   token: null,
-  login: async () => { },
-  logout: async () => { },
+  login: async () => {},
+  logout: async () => {},
   authenticated: false,
   error: null,
 });
@@ -37,7 +44,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (typeof window !== 'undefined') {
         const logoutRedirect = window.encodeURIComponent(
-          process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || window.location.origin + '/login'
+          process.env.NEXT_PUBLIC_LOGOUT_REDIRECT ||
+            window.location.origin + '/login'
         );
         console.log('Logout redirect URI:', logoutRedirect);
 
@@ -57,7 +65,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         redirectInput.type = 'hidden';
         redirectInput.name = 'post_logout_redirect_uri';
         redirectInput.value =
-          process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || window.location.origin + '/login';
+          process.env.NEXT_PUBLIC_LOGOUT_REDIRECT ||
+          window.location.origin + '/login';
         form.appendChild(redirectInput);
 
         document.body.appendChild(form);
@@ -66,7 +75,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (err) {
       console.error('Manual logout failed:', err);
       if (typeof window !== 'undefined') {
-        window.location.href = process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || '/login';
+        window.location.href =
+          process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || '/login';
       }
     }
   }, []);
@@ -76,7 +86,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       if (typeof window !== 'undefined') {
         const loginRedirect =
-          process.env.NEXT_PUBLIC_LOGIN_REDIRECT || process.env.NEXT_PUBLIC_REDIRECT_URI;
+          process.env.NEXT_PUBLIC_LOGIN_REDIRECT ||
+          process.env.NEXT_PUBLIC_REDIRECT_URI;
         console.log('Using login redirect:', loginRedirect);
 
         await keycloakRef.current.login({
@@ -93,17 +104,16 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const initializeAuth = useCallback(async () => {
-    if (typeof window === 'undefined') return;
+  const initializeAuth = useCallback(async (): Promise<() => void> => {
+    if (typeof window === 'undefined') return () => {};
 
     const kc = keycloakRef.current;
     let refreshInterval: NodeJS.Timeout | null = null;
 
-    let keycloakInitialized = false;
-
-    if (keycloakInitialized) {
-      console.log('Keycloak already initialized, skipping initialization');
-      return;
+    // Clear any existing interval before starting a new one
+    if (refreshInterval) {
+      clearInterval(refreshInterval);
+      refreshInterval = null;
     }
 
     console.log('Starting Keycloak initialization...');
@@ -121,21 +131,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         pkceMethod: 'S256',
         responseMode: 'query',
         enableLogging: true,
-        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/silent-check-sso.html',
         silentCheckSsoFallback: false,
       });
 
       console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI);
       setIsInitialized(true);
       setIsInitializing(false);
-
-      console.log('Keycloak initialized successfully:', {
-        authenticated,
-        hasToken: !!kc.token,
-        tokenExpiry: kc.tokenParsed?.exp
-          ? new Date(kc.tokenParsed.exp * 1000).toISOString()
-          : 'unknown',
-      });
 
       if (authenticated) {
         if (kc.token) {
@@ -147,9 +150,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
 
         setInitialized(true);
-        // Set the flag after successful initialization
-        keycloakInitialized = true;
 
+        // Set up token refresh with proper cleanup
         refreshInterval = setInterval(async () => {
           try {
             console.log('Attempting token refresh');
@@ -161,7 +163,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
           } catch (refreshError) {
             console.error('Token refresh failed:', refreshError);
-            if (refreshInterval) clearInterval(refreshInterval);
+            if (refreshInterval) {
+              clearInterval(refreshInterval);
+              refreshInterval = null;
+            }
             await handleCleanLogout();
           }
         }, 60000);
@@ -181,17 +186,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         errorMessage = `Authentication error: ${err.message}`;
       } else if (typeof err === 'object' && err !== null) {
         errorMessage = `Authentication error: ${JSON.stringify(err)}`;
-        // Attempt to access common Keycloak error fields if stringify failed or is generic
-        if (errorMessage.includes('{}') || errorMessage.includes('Unknown')) {
-          const kcError = err as {
-            error?: string;
-            error_description?: string;
-          };
-          if (kcError.error && kcError.error_description) {
-            errorMessage = `Keycloak Error: ${kcError.error} - ${kcError.error_description}`;
-          } else if (kcError.error) {
-            errorMessage = `Keycloak Error: ${kcError.error}`;
-          }
+        const kcError = err as {
+          error?: string;
+          error_description?: string;
+        };
+        if (kcError.error && kcError.error_description) {
+          errorMessage = `Keycloak Error: ${kcError.error} - ${kcError.error_description}`;
+        } else if (kcError.error) {
+          errorMessage = `Keycloak Error: ${kcError.error}`;
         }
       }
 
@@ -205,6 +207,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (refreshInterval) {
         console.log('Cleaning up refresh interval');
         clearInterval(refreshInterval);
+        refreshInterval = null;
       }
     };
   }, [handleCleanLogout, login]);
@@ -223,7 +226,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setIsInitializing(true);
-    initializeAuth();
+    const cleanupPromise = initializeAuth();
+
+    return () => {
+      cleanupPromise.then((cleanup) => cleanup());
+    };
   }, [initializeAuth, isInitializing, isInitialized]);
 
   const logout = useCallback(async () => {
@@ -285,7 +292,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

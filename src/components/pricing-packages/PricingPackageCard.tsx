@@ -2,7 +2,12 @@
 
 import React, { memo } from 'react';
 import styles from '@/components/pricing-packages/PricingPackages.module.css';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card/Card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from '@/components/ui/card/Card';
 import { Button } from '@/components/ui/button/Button';
 import iconMap from '@/utils/icons';
 
@@ -24,7 +29,8 @@ interface PricingPackageProps {
 
 const PricingPackageCard: React.FC<PricingPackageProps> = memo(
   ({ packageData, onBuyNow, currency, rate }) => {
-    const IconComponent = iconMap[packageData.icon] || iconMap['MUI:DefaultIcon'];
+    const IconComponent =
+      iconMap[packageData.icon] || iconMap['MUI:DefaultIcon'];
     const convertedPrice = (packageData.price * rate).toFixed(2);
     const isCustom = packageData.type === 'custom';
     const displayCurrency = currency === 'ZAR' ? 'R' : currency;
@@ -34,7 +40,8 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
         {isCustom && <div className={styles.customBadge}>Custom</div>}
         <CardHeader className={styles.header}>
           <div className={styles.iconWrapper}>
-            {IconComponent && React.createElement(IconComponent, { className: styles.icon })}
+            {IconComponent &&
+              React.createElement(IconComponent, { className: styles.icon })}
           </div>
           <h2 className={styles.title}>{packageData.title}</h2>
         </CardHeader>

@@ -117,7 +117,10 @@ const ProductTable: React.FC<ProductTableProps> = ({
               }}
             />
 
-            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 180 } }}>
+            <FormControl
+              size="small"
+              sx={{ minWidth: { xs: '100%', sm: 180 } }}
+            >
               <InputLabel sx={inputLabelStyles}>Category</InputLabel>
               <Select
                 value={categoryFilter}
@@ -135,7 +138,10 @@ const ProductTable: React.FC<ProductTableProps> = ({
               </Select>
             </FormControl>
 
-            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 180 } }}>
+            <FormControl
+              size="small"
+              sx={{ minWidth: { xs: '100%', sm: 180 } }}
+            >
               <InputLabel sx={inputLabelStyles}>Rating</InputLabel>
               <Select
                 value={ratingFilter}
@@ -152,7 +158,10 @@ const ProductTable: React.FC<ProductTableProps> = ({
               </Select>
             </FormControl>
 
-            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 180 } }}>
+            <FormControl
+              size="small"
+              sx={{ minWidth: { xs: '100%', sm: 180 } }}
+            >
               <InputLabel sx={inputLabelStyles}>Status</InputLabel>
               <Select
                 value={statusFilter}
@@ -166,7 +175,10 @@ const ProductTable: React.FC<ProductTableProps> = ({
               </Select>
             </FormControl>
 
-            <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 180 } }}>
+            <FormControl
+              size="small"
+              sx={{ minWidth: { xs: '100%', sm: 180 } }}
+            >
               <InputLabel sx={inputLabelStyles}>Price Range</InputLabel>
               <Select
                 value={priceFilter}
@@ -256,7 +268,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         />
                       </Box>
                       <Stack direction="row" spacing={1} alignItems="center">
-                        <Typography variant="body1">{product.productName}</Typography>
+                        <Typography variant="body1">
+                          {product.productName}
+                        </Typography>
                         {product.color && (
                           <Chip
                             label={product.color}
@@ -292,7 +306,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                       control={
                         <Switch
                           checked={product.status ?? false}
-                          onChange={e => {
+                          onChange={(e) => {
                             e.stopPropagation();
                             onStatusToggle(product);
                           }}
@@ -301,17 +315,26 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         />
                       }
                       label={
-                        <Typography sx={statusTextStyles(product.status ?? false)}>
+                        <Typography
+                          sx={statusTextStyles(product.status ?? false)}
+                        >
                           {product.status ? 'In Stock' : 'Out of Stock'}
                         </Typography>
                       }
-                      onClick={e => e.stopPropagation()}
+                      onClick={(e) => e.stopPropagation()}
                     />
                   </TableCell>
                   <TableCell>
-                    <Rating value={product.rating} readOnly precision={0.5} size="medium" />
+                    <Rating
+                      value={product.rating}
+                      readOnly
+                      precision={0.5}
+                      size="medium"
+                    />
                   </TableCell>
-                  <TableCell>{new Date(product.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    {new Date(product.createdAt).toLocaleDateString()}
+                  </TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1} justifyContent="center">
                       <IconButton
@@ -417,7 +440,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
                       borderBottom: '1px solid #e0e0e0',
                     }}
                   >
-                    <Typography sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+                    <Typography
+                      sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
+                    >
                       ID Code
                     </Typography>
                     <Typography sx={{ fontWeight: 500, color: '#1a1a1a' }}>
@@ -433,7 +458,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
                       borderBottom: '1px solid #e0e0e0',
                     }}
                   >
-                    <Typography sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+                    <Typography
+                      sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
+                    >
                       Price
                     </Typography>
                     <Typography
@@ -455,7 +482,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
                       borderBottom: '1px solid #e0e0e0',
                     }}
                   >
-                    <Typography sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+                    <Typography
+                      sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
+                    >
                       Status
                     </Typography>
                     <Box
@@ -463,17 +492,27 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         px: 2,
                         py: 0.5,
                         borderRadius: '16px',
-                        bgcolor: selectedProduct?.status ? '#e8f5e9' : '#ffebee',
+                        bgcolor: selectedProduct?.status
+                          ? '#e8f5e9'
+                          : '#ffebee',
                         color: selectedProduct?.status ? '#2e7d32' : '#c62828',
                       }}
                     >
-                      <Typography sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
+                      <Typography
+                        sx={{ fontSize: '0.875rem', fontWeight: 500 }}
+                      >
                         {selectedProduct?.status ? 'In Stock' : 'Out of Stock'}
                       </Typography>
                     </Box>
                   </Stack>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Typography
+                      sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
+                    >
                       Rating
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -484,7 +523,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         size="large"
                         sx={{ color: '#f59e0b' }}
                       />
-                      <Typography sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+                      <Typography
+                        sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
+                      >
                         ({selectedProduct.rating}/5)
                       </Typography>
                     </Box>

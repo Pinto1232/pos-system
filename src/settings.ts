@@ -2,7 +2,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import { MdProductionQuantityLimits } from 'react-icons/md';
 import { RiCustomerService2Fill } from 'react-icons/ri';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { FaCreditCard, FaUsers, FaChartLine, FaMoneyBillWave, FaPercent } from 'react-icons/fa';
+import {
+  FaCreditCard,
+  FaUsers,
+  FaChartLine,
+  FaMoneyBillWave,
+  FaPercent,
+} from 'react-icons/fa';
 import { TbReorder, TbTruckDelivery } from 'react-icons/tb';
 import { BiReceipt } from 'react-icons/bi';
 

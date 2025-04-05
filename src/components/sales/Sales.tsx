@@ -107,10 +107,18 @@ const Sales: React.FC<SalesProps> = ({
       currentStep++;
       const progress = easeOutQuad(currentStep / steps);
 
-      setInStoreProgress(Math.min(Math.round(inStoreTarget * progress), inStoreTarget));
-      setOnlineProgress(Math.min(Math.round(onlineTarget * progress), onlineTarget));
-      setMobileProgress(Math.min(Math.round(mobileTarget * progress), mobileTarget));
-      setDesktopProgress(Math.min(Math.round(desktopTarget * progress), desktopTarget));
+      setInStoreProgress(
+        Math.min(Math.round(inStoreTarget * progress), inStoreTarget)
+      );
+      setOnlineProgress(
+        Math.min(Math.round(onlineTarget * progress), onlineTarget)
+      );
+      setMobileProgress(
+        Math.min(Math.round(mobileTarget * progress), mobileTarget)
+      );
+      setDesktopProgress(
+        Math.min(Math.round(desktopTarget * progress), desktopTarget)
+      );
 
       if (currentStep >= steps) {
         clearInterval(timer);
@@ -226,13 +234,15 @@ const Sales: React.FC<SalesProps> = ({
         spacing={{ xs: 2, sm: 0 }}
         mb={5}
       >
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2,
-          width: { xs: '100%', sm: 'auto' },
-          justifyContent: { xs: 'space-between', sm: 'flex-start' }
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            width: { xs: '100%', sm: 'auto' },
+            justifyContent: { xs: 'space-between', sm: 'flex-start' },
+          }}
+        >
           <Typography
             variant="h4"
             sx={{
@@ -363,7 +373,7 @@ const Sales: React.FC<SalesProps> = ({
                 color: '#ffffff',
                 fontSize: { xs: '0.75rem', sm: '0.875rem' },
                 fontWeight: 500,
-                display: { xs: 'none', sm: 'block' }
+                display: { xs: 'none', sm: 'block' },
               }}
             >
               Timeframe
@@ -389,7 +399,7 @@ const Sales: React.FC<SalesProps> = ({
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                maxWidth: { xs: '100px', sm: '150px', md: '200px' }
+                maxWidth: { xs: '100px', sm: '150px', md: '200px' },
               }}
             >
               {timeframe}
@@ -477,7 +487,13 @@ const Sales: React.FC<SalesProps> = ({
               </Typography>
               <Chip
                 label={`${data.growthPercentage > 0 ? '+' : ''}${formatPercentage(data.growthPercentage)}`}
-                icon={data.growthPercentage > 0 ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+                icon={
+                  data.growthPercentage > 0 ? (
+                    <ArrowUpwardIcon />
+                  ) : (
+                    <ArrowDownwardIcon />
+                  )
+                }
                 color={data.growthPercentage > 0 ? 'success' : 'error'}
                 size="small"
                 sx={{
@@ -509,7 +525,9 @@ const Sales: React.FC<SalesProps> = ({
               }}
             >
               <span>vs prev.</span>
-              <span style={{ fontWeight: 600 }}>{formatCurrency(data.previousRevenue)}</span>
+              <span style={{ fontWeight: 600 }}>
+                {formatCurrency(data.previousRevenue)}
+              </span>
               <span>{timeframe}</span>
             </Typography>
 
@@ -882,7 +900,11 @@ const Sales: React.FC<SalesProps> = ({
                       data={chartData}
                       margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" vertical={false} />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="#e0e0e0"
+                        vertical={false}
+                      />
                       <XAxis
                         dataKey="date"
                         axisLine={false}
@@ -1037,7 +1059,10 @@ const Sales: React.FC<SalesProps> = ({
         >
           <CardContent>
             <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-              <Typography variant="overline" sx={{ color: '#666666', letterSpacing: '1px' }}>
+              <Typography
+                variant="overline"
+                sx={{ color: '#666666', letterSpacing: '1px' }}
+              >
                 Top sales
               </Typography>
               <Tooltip title="Number of top-performing sales">
@@ -1086,18 +1111,27 @@ const Sales: React.FC<SalesProps> = ({
         >
           <CardContent>
             <Box
-              sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+              }}
             >
               <Box>
                 <Stack direction="row" alignItems="center" spacing={1} mb={1}>
                   <Typography
                     variant="overline"
-                    sx={{ color: 'rgba(255,255,255,0.7)', letterSpacing: '1px' }}
+                    sx={{
+                      color: 'rgba(255,255,255,0.7)',
+                      letterSpacing: '1px',
+                    }}
                   >
                     Best deal
                   </Typography>
                   <Tooltip title="Highest value deal">
-                    <InfoIcon sx={{ fontSize: '1rem', color: 'rgba(255,255,255,0.7)' }} />
+                    <InfoIcon
+                      sx={{ fontSize: '1rem', color: 'rgba(255,255,255,0.7)' }}
+                    />
                   </Tooltip>
                 </Stack>
                 <Typography
@@ -1151,7 +1185,10 @@ const Sales: React.FC<SalesProps> = ({
         >
           <CardContent>
             <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-              <Typography variant="overline" sx={{ color: '#666666', letterSpacing: '1px' }}>
+              <Typography
+                variant="overline"
+                sx={{ color: '#666666', letterSpacing: '1px' }}
+              >
                 Deals
               </Typography>
               <Tooltip title="Click for deals overview">
@@ -1177,11 +1214,19 @@ const Sales: React.FC<SalesProps> = ({
                   fontWeight: 600,
                 }}
               >
-                {data.deals.growth > 0 ? '↑' : '↓'} {Math.abs(data.deals.growth)}
+                {data.deals.growth > 0 ? '↑' : '↓'}{' '}
+                {Math.abs(data.deals.growth)}
               </Typography>
             </Stack>
             {selectedMetric === 'deals' && (
-              <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(0,0,0,0.02)', borderRadius: '8px' }}>
+              <Box
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  bgcolor: 'rgba(0,0,0,0.02)',
+                  borderRadius: '8px',
+                }}
+              >
                 <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
                   {getMetricDetails('deals')?.content}
                 </Typography>
@@ -1205,7 +1250,10 @@ const Sales: React.FC<SalesProps> = ({
         >
           <CardContent>
             <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-              <Typography variant="overline" sx={{ color: '#666666', letterSpacing: '1px' }}>
+              <Typography
+                variant="overline"
+                sx={{ color: '#666666', letterSpacing: '1px' }}
+              >
                 Value
               </Typography>
               <Tooltip title="Total deal value">
@@ -1248,7 +1296,10 @@ const Sales: React.FC<SalesProps> = ({
         >
           <CardContent>
             <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-              <Typography variant="overline" sx={{ color: '#666666', letterSpacing: '1px' }}>
+              <Typography
+                variant="overline"
+                sx={{ color: '#666666', letterSpacing: '1px' }}
+              >
                 Win rate
               </Typography>
               <Tooltip title="Click for win rate analysis">
@@ -1270,7 +1321,10 @@ const Sales: React.FC<SalesProps> = ({
               <Typography
                 variant="body2"
                 sx={{
-                  color: data.deals.winRateGrowth > 0 ? 'success.main' : 'error.main',
+                  color:
+                    data.deals.winRateGrowth > 0
+                      ? 'success.main'
+                      : 'error.main',
                   fontWeight: 600,
                 }}
               >
@@ -1279,7 +1333,14 @@ const Sales: React.FC<SalesProps> = ({
               </Typography>
             </Stack>
             {selectedMetric === 'winRate' && (
-              <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(0,0,0,0.02)', borderRadius: '8px' }}>
+              <Box
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  bgcolor: 'rgba(0,0,0,0.02)',
+                  borderRadius: '8px',
+                }}
+              >
                 <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
                   {getMetricDetails('winRate')?.content}
                 </Typography>
@@ -1331,7 +1392,9 @@ const Sales: React.FC<SalesProps> = ({
                 {member.name.charAt(0)}
               </Avatar>
               <Box>
-                <Typography sx={{ fontWeight: 600, color: '#1a1a1a', fontSize: '1rem' }}>
+                <Typography
+                  sx={{ fontWeight: 600, color: '#1a1a1a', fontSize: '1rem' }}
+                >
                   {member.name}
                 </Typography>
                 <Typography sx={{ color: '#666666', fontSize: '0.875rem' }}>
@@ -1366,9 +1429,12 @@ const Sales: React.FC<SalesProps> = ({
                 height: 6,
                 borderRadius: 3,
                 backgroundColor:
-                  member.percentage >= 0 ? 'rgba(46, 125, 50, 0.1)' : 'rgba(211, 47, 47, 0.1)',
+                  member.percentage >= 0
+                    ? 'rgba(46, 125, 50, 0.1)'
+                    : 'rgba(211, 47, 47, 0.1)',
                 '& .MuiLinearProgress-bar': {
-                  backgroundColor: member.percentage >= 0 ? '#2e7d32' : '#d32f2f',
+                  backgroundColor:
+                    member.percentage >= 0 ? '#2e7d32' : '#d32f2f',
                 },
               }}
             />

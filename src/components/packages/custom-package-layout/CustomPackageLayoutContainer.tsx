@@ -25,13 +25,15 @@ interface CustomPackageLayoutContainerProps {
   selectedPackage: Package;
 }
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
+  function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  }
+);
 
-const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> = ({
-  selectedPackage,
-}) => {
+const CustomPackageLayoutContainer: React.FC<
+  CustomPackageLayoutContainerProps
+> = ({ selectedPackage }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [steps, setSteps] = useState<string[]>([]);
   const [features, setFeatures] = useState<Feature[]>([]);
@@ -39,15 +41,21 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
   const [usagePricing, setUsagePricing] = useState<UsagePricing[]>([]);
   const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
   const [selectedAddOns, setSelectedAddOns] = useState<AddOn[]>([]);
-  const [usageQuantities, setUsageQuantities] = useState<Record<number, number>>({});
+  const [usageQuantities, setUsageQuantities] = useState<
+    Record<number, number>
+  >({});
   const [isLoading, setIsLoading] = useState(true);
-  const [calculatedPrice, setCalculatedPrice] = useState<number>(selectedPackage.price);
+  const [calculatedPrice, setCalculatedPrice] = useState<number>(
+    selectedPackage.price
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const [enterpriseFeatures, setEnterpriseFeatures] = useState<Record<string, boolean>>({
+  const [enterpriseFeatures, setEnterpriseFeatures] = useState<
+    Record<string, boolean>
+  >({
     realTimeAnalytics: false,
     customReports: false,
     dataExport: false,
@@ -97,7 +105,11 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
       : [...defaultStepsNonCustom];
     console.log('Built steps:', builtSteps);
     return builtSteps;
-  }, [selectedPackage.isCustomizable, defaultStepsCustom, defaultStepsNonCustom]);
+  }, [
+    selectedPackage.isCustomizable,
+    defaultStepsCustom,
+    defaultStepsNonCustom,
+  ]);
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -154,7 +166,9 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
     const currentLabel = steps[currentStep]?.trim() || '';
     if (currentLabel === 'Select Core Features') {
       const requiredMissing = features.some(
-        feature => feature.isRequired && !selectedFeatures.some(f => f.id === feature.id)
+        (feature) =>
+          feature.isRequired &&
+          !selectedFeatures.some((f) => f.id === feature.id)
       );
       if (requiredMissing) {
         setSnackbarMessage('Please select all required features.');
@@ -175,11 +189,18 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
       }
     }
     return true;
-  }, [steps, currentStep, features, selectedFeatures, usageQuantities, usagePricing]);
+  }, [
+    steps,
+    currentStep,
+    features,
+    selectedFeatures,
+    usageQuantities,
+    usagePricing,
+  ]);
 
   const handleNext = useCallback(() => {
     if (!validateCurrentStep()) return;
-    setCurrentStep(prev => {
+    setCurrentStep((prev) => {
       const nextStep = Math.min(prev + 1, steps.length - 1);
       console.log(`Navigating from step ${prev} to step ${nextStep}`);
       return nextStep;
@@ -187,7 +208,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
   }, [steps, validateCurrentStep]);
 
   const handleBack = useCallback(() => {
-    setCurrentStep(prev => {
+    setCurrentStep((prev) => {
       const prevStep = Math.max(prev - 1, 0);
       console.log(`Navigating back from step ${prev} to step ${prevStep}`);
       return prevStep;
@@ -223,8 +244,8 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
       const request: PackageSelectionRequest = {
         packageId: selectedPackage.id,
         ...(selectedPackage.isCustomizable && {
-          features: selectedFeatures.map(f => f.id),
-          addOns: selectedAddOns.map(a => a.id),
+          features: selectedFeatures.map((f) => f.id),
+          addOns: selectedAddOns.map((a) => a.id),
           usage: usageQuantities,
         }),
       };
@@ -268,8 +289,8 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
       const calculatePrice = debounce(async () => {
         const requestBody: PriceCalculationRequest = {
           packageId: selectedPackage.id,
-          selectedFeatures: selectedFeatures.map(f => f.id),
-          selectedAddOns: selectedAddOns.map(a => a.id),
+          selectedFeatures: selectedFeatures.map((f) => f.id),
+          selectedAddOns: selectedAddOns.map((a) => a.id),
           usageLimits: usageQuantities,
         };
 
@@ -296,7 +317,7 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
   }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
 
   const handleEnterpriseFeatureToggle = useCallback((featureId: string) => {
-    setEnterpriseFeatures(prev => ({
+    setEnterpriseFeatures((prev) => ({
       ...prev,
       [featureId]: !prev[featureId],
     }));
@@ -329,15 +350,15 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
           onNext={handleNext}
           onBack={handleBack}
           onSave={handleSave}
-          onFeatureToggle={features => {
+          onFeatureToggle={(features) => {
             console.log('Toggling features:', features);
             setSelectedFeatures(features);
           }}
-          onAddOnToggle={addOns => {
+          onAddOnToggle={(addOns) => {
             console.log('Toggling add-ons:', addOns);
             setSelectedAddOns(addOns);
           }}
-          onUsageChange={quantities => {
+          onUsageChange={(quantities) => {
             console.log('Updating usage quantities:', quantities);
             setUsageQuantities(quantities);
           }}
@@ -353,7 +374,11 @@ const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> 
         onConfirm={handleModalConfirm}
         onReturn={handleReturnToPackage}
       />
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
         <Alert onClose={() => setSnackbarOpen(false)} severity="warning">
           {snackbarMessage}
         </Alert>

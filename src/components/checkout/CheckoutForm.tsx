@@ -40,11 +40,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
 
         <form onSubmit={onSubmit}>
           <Grid container spacing={3}>
-            {checkoutFields.map(field => {
+            {checkoutFields.map((field) => {
               const gridSize = field.name.toLowerCase() === 'address' ? 12 : 6;
               return (
                 <Grid item xs={12} sm={gridSize} key={field.name}>
-                  {field.type === 'select' || field.name === 'country' || field.name === 'state' ? (
+                  {field.type === 'select' ||
+                  field.name === 'country' ||
+                  field.name === 'state' ? (
                     <TextField
                       select
                       name={field.name}
@@ -90,7 +92,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
           </Typography>
 
           <Box className={styles.orderSummary}>
-            {orderSummaryItems.map(item => (
+            {orderSummaryItems.map((item) => (
               <Typography key={item.label} className={styles.summaryItem}>
                 <span>{item.label}</span>
                 <span>{item.value}</span>
@@ -119,7 +121,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     label={
                       <Box className={styles.paymentMethodLabel}>
                         <Box className={styles.paymentMethodIcon}>
-                          <FaPaypal style={{ fontSize: '1.5rem', color: '#0070ba' }} />
+                          <FaPaypal
+                            style={{ fontSize: '1.5rem', color: '#0070ba' }}
+                          />
                           <Typography>PayPal</Typography>
                         </Box>
                         <Box className={styles.paymentMethodCards}>
@@ -220,13 +224,24 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         onChange={onChange}
                         variant="outlined"
                       >
-                        {['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].map(
-                          month => (
-                            <MenuItem key={month} value={month}>
-                              {month}
-                            </MenuItem>
-                          )
-                        )}
+                        {[
+                          '01',
+                          '02',
+                          '03',
+                          '04',
+                          '05',
+                          '06',
+                          '07',
+                          '08',
+                          '09',
+                          '10',
+                          '11',
+                          '12',
+                        ].map((month) => (
+                          <MenuItem key={month} value={month}>
+                            {month}
+                          </MenuItem>
+                        ))}
                       </TextField>
                     </Grid>
                     <Grid item xs={4}>
@@ -239,13 +254,14 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         onChange={onChange}
                         variant="outlined"
                       >
-                        {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map(
-                          year => (
-                            <MenuItem key={year} value={year}>
-                              {year}
-                            </MenuItem>
-                          )
-                        )}
+                        {Array.from(
+                          { length: 10 },
+                          (_, i) => new Date().getFullYear() + i
+                        ).map((year) => (
+                          <MenuItem key={year} value={year}>
+                            {year}
+                          </MenuItem>
+                        ))}
                       </TextField>
                     </Grid>
                     <Grid item xs={4}>
@@ -267,7 +283,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 type="submit"
                 variant="contained"
                 className={styles.checkoutButton}
-                onClick={e => {
+                onClick={(e) => {
                   e.preventDefault();
                   onSubmit(e);
                 }}

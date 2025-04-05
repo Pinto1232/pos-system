@@ -20,7 +20,7 @@ const SearchBarContainer: React.FC = () => {
         mx: isMobile ? 'auto' : 0,
         px: { xs: 1, sm: 2 },
         display: 'flex',
-        justifyContent: isMobile ? 'center' : 'flex-start'
+        justifyContent: isMobile ? 'center' : 'flex-start',
       }}
     >
       <Box sx={{ width: '100%' }}>

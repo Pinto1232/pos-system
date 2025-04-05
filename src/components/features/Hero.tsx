@@ -11,14 +11,22 @@ interface HeroProps {
   ladyImage: string;
 }
 
-function Hero({ heading, subheading, ctaPrimary, ctaSecondary, ladyImage }: HeroProps) {
-  const formattedSubheading = subheading.split('\n\n').map((paragraph, index) => (
-    <React.Fragment key={index}>
-      {paragraph}
-      {index < subheading.split('\n\n').length - 1 && <br />}
-      {index < subheading.split('\n\n').length - 1 && <br />}
-    </React.Fragment>
-  ));
+function Hero({
+  heading,
+  subheading,
+  ctaPrimary,
+  ctaSecondary,
+  ladyImage,
+}: HeroProps) {
+  const formattedSubheading = subheading
+    .split('\n\n')
+    .map((paragraph, index) => (
+      <React.Fragment key={index}>
+        {paragraph}
+        {index < subheading.split('\n\n').length - 1 && <br />}
+        {index < subheading.split('\n\n').length - 1 && <br />}
+      </React.Fragment>
+    ));
 
   return (
     <Box className={styles.heroContainer__wrapper}>
@@ -35,7 +43,11 @@ function Hero({ heading, subheading, ctaPrimary, ctaSecondary, ladyImage }: Hero
             <Button variant="contained" className={styles.heroBtnPrimary}>
               {ctaPrimary}
             </Button>
-            <Link href="#" underline="hover" className={styles.heroLinkSecondary}>
+            <Link
+              href="#"
+              underline="hover"
+              className={styles.heroLinkSecondary}
+            >
               {ctaSecondary} &rarr;
             </Link>
           </Box>

@@ -18,7 +18,7 @@ const Dashboard = () => {
   }, [setLoading]);
 
   const handleDrawerToggle = () => {
-    setIsDrawerOpen(prev => !prev);
+    setIsDrawerOpen((prev) => !prev);
   };
 
   return (
@@ -32,8 +32,10 @@ const Dashboard = () => {
         drawerWidth={drawerWidth}
         isDrawerOpen={isDrawerOpen}
         onDrawerToggle={handleDrawerToggle}
-        onSectionSelect={section => console.log(`Section selected: ${section}`)}
-        handleItemClick={item => console.log(`Item clicked: ${item}`)}
+        onSectionSelect={(section) =>
+          console.log(`Section selected: ${section}`)
+        }
+        handleItemClick={(item) => console.log(`Item clicked: ${item}`)}
       />
 
       <DashboardContainer />

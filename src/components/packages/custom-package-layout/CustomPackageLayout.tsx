@@ -85,7 +85,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   const handleNext = async () => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate loading
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate loading
       onNext();
     } finally {
       setLoading(false);
@@ -95,7 +95,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   const handleBack = async () => {
     setBackLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate loading
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate loading
       onBack();
     } finally {
       setBackLoading(false);
@@ -103,15 +103,15 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   };
 
   const handleFeatureToggle = (feature: Feature) => {
-    const newFeatures = selectedFeatures.some(f => f.id === feature.id)
-      ? selectedFeatures.filter(f => f.id !== feature.id)
+    const newFeatures = selectedFeatures.some((f) => f.id === feature.id)
+      ? selectedFeatures.filter((f) => f.id !== feature.id)
       : [...selectedFeatures, feature];
     onFeatureToggle(newFeatures);
   };
 
   const handleAddOnToggle = (addOn: AddOn) => {
-    const newAddOns = selectedAddOns.some(a => a.id === addOn.id)
-      ? selectedAddOns.filter(a => a.id !== addOn.id)
+    const newAddOns = selectedAddOns.some((a) => a.id === addOn.id)
+      ? selectedAddOns.filter((a) => a.id !== addOn.id)
       : [...selectedAddOns, addOn];
     onAddOnToggle(newAddOns);
   };
@@ -123,10 +123,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     });
   };
 
-  const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleTextFieldChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     console.log(`TextField change: ${name} = ${value}`);
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -135,7 +137,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
     console.log(`Select change: ${name} = ${value}`);
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -181,7 +183,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     const currentLabel = steps[currentStep]?.trim() || '';
 
     if (!currentLabel) {
-      return <Typography variant="body1">Loading step configuration...</Typography>;
+      return (
+        <Typography variant="body1">Loading step configuration...</Typography>
+      );
     }
 
     switch (currentLabel) {
@@ -189,7 +193,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         let multiCurrencyPrices: Record<string, number> = {};
         try {
           if (selectedPackage?.multiCurrencyPrices) {
-            multiCurrencyPrices = JSON.parse(selectedPackage.multiCurrencyPrices);
+            multiCurrencyPrices = JSON.parse(
+              selectedPackage.multiCurrencyPrices
+            );
           } else {
             multiCurrencyPrices = { [selectedCurrency]: basePrice };
           }
@@ -236,7 +242,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             </Box>
             <Box className={styles.detailItem}>
               <Typography variant="h5">Test Period</Typography>
-              <Typography variant="body2">{packageDetails.testPeriod} days</Typography>
+              <Typography variant="body2">
+                {packageDetails.testPeriod} days
+              </Typography>
             </Box>
             {renderPackageDetailsButtons()}
           </Box>
@@ -261,20 +269,28 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               </Typography>
               <Box className={styles.featuresContainer}>
                 {features.length > 0 ? (
-                  features.map(feature => {
-                    const isSelected = selectedFeatures.some(f => f.id === feature.id);
+                  features.map((feature) => {
+                    const isSelected = selectedFeatures.some(
+                      (f) => f.id === feature.id
+                    );
                     const featurePrice = feature.multiCurrencyPrices
                       ? feature.multiCurrencyPrices[selectedCurrency]
                       : feature.basePrice;
                     return (
                       <Box
                         key={feature.id}
-                        className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ''
-                          }`}
+                        className={`${styles.featureItem} ${
+                          isSelected ? styles.selectedFeature : ''
+                        }`}
                       >
                         <Box>
-                          <Typography className={styles.featureName}>Create Custom Plan</Typography>
-                          <Typography variant="body2" className={styles.featureDescription}>
+                          <Typography className={styles.featureName}>
+                            Create Custom Plan
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            className={styles.featureDescription}
+                          >
                             Select the modules and features.
                           </Typography>
                           <Box>
@@ -304,9 +320,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                               }
                             />
                             {isSelected && (
-                              <Box className={styles.featureDescriptionContainer}>
+                              <Box
+                                className={styles.featureDescriptionContainer}
+                              >
                                 <InfoIcon className={styles.infoIcon} />
-                                <Typography variant="body2" className={styles.featureDescription}>
+                                <Typography
+                                  variant="body2"
+                                  className={styles.featureDescription}
+                                >
                                   {feature.description}
                                 </Typography>
                               </Box>
@@ -345,10 +366,13 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         key={feature.id}
                         className={styles.billingItem}
                         sx={{
-                          backgroundColor: index % 2 === 0 ? '#3b82f65e' : '#ffffff',
+                          backgroundColor:
+                            index % 2 === 0 ? '#3b82f65e' : '#ffffff',
                         }}
                       >
-                        <Typography className={styles.itemLabel}>{feature.name}</Typography>
+                        <Typography className={styles.itemLabel}>
+                          {feature.name}
+                        </Typography>
                         <Typography className={styles.itemPrice}>
                           {formatPrice(selectedCurrency, featurePrice)}
                         </Typography>
@@ -356,16 +380,31 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     );
                   })
                 ) : (
-                  <Box className={styles.billingItem} sx={{ backgroundColor: '#3b82f65e' }}>
-                    <Typography className={styles.itemLabel}>Billing Module</Typography>
+                  <Box
+                    className={styles.billingItem}
+                    sx={{ backgroundColor: '#3b82f65e' }}
+                  >
+                    <Typography className={styles.itemLabel}>
+                      Billing Module
+                    </Typography>
                     <Typography className={styles.itemPrice}>$0.00</Typography>
                   </Box>
                 )}
                 <Box className={styles.userAgreement}>
-                  <FormControlLabel control={<Checkbox />} label="User Agreement" />
-                  <Typography variant="body2" className={styles.userAgreementText}>
-                    Before proceeding to payment, please read and sign, agreeing to the{' '}
-                    <Link href="/path/to/user-agreement" className={styles.userAgreementLink}>
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="User Agreement"
+                  />
+                  <Typography
+                    variant="body2"
+                    className={styles.userAgreementText}
+                  >
+                    Before proceeding to payment, please read and sign, agreeing
+                    to the{' '}
+                    <Link
+                      href="/path/to/user-agreement"
+                      className={styles.userAgreementLink}
+                    >
                       User agreement
                     </Link>
                   </Typography>
@@ -388,13 +427,15 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Box className={styles.sectionHeader}>
               <Typography variant="h5">Choose Add-Ons</Typography>
               <Typography variant="body2" className={styles.sectionDescription}>
-                Select additional features to enhance your package. Each add-on comes with its own
-                pricing.
+                Select additional features to enhance your package. Each add-on
+                comes with its own pricing.
               </Typography>
             </Box>
             {addOns.length > 0 ? (
-              addOns.map(addOn => {
-                const isSelected = selectedAddOns.some(a => a.id === addOn.id);
+              addOns.map((addOn) => {
+                const isSelected = selectedAddOns.some(
+                  (a) => a.id === addOn.id
+                );
                 const addOnPrice = addOn.multiCurrencyPrices
                   ? addOn.multiCurrencyPrices[selectedCurrency]
                   : addOn.price;
@@ -414,7 +455,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     {isSelected && (
                       <Box className={styles.featureDescriptionContainer}>
                         <InfoIcon className={styles.infoIcon} />
-                        <Typography variant="body2" className={styles.featureDescription}>
+                        <Typography
+                          variant="body2"
+                          className={styles.featureDescription}
+                        >
                           {addOn.description}
                         </Typography>
                       </Box>
@@ -438,13 +482,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Box className={styles.sectionHeader}>
               <Typography variant="h5">Configure Usage</Typography>
               <Typography variant="body2" className={styles.sectionDescription}>
-                Adjust the usage metrics to fit your business needs. Ensure the values are within
-                the allowed range.
+                Adjust the usage metrics to fit your business needs. Ensure the
+                values are within the allowed range.
               </Typography>
             </Box>
             {usagePricing.length > 0 ? (
-              usagePricing.map(usage => {
-                const currentValue = usageQuantities[usage.id] ?? usage.defaultValue;
+              usagePricing.map((usage) => {
+                const currentValue =
+                  usageQuantities[usage.id] ?? usage.defaultValue;
                 const usagePrice = usage.multiCurrencyPrices
                   ? usage.multiCurrencyPrices[selectedCurrency]
                   : usage.pricePerUnit;
@@ -455,12 +500,15 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 return (
                   <Box key={usage.id} className={styles.usageItem}>
                     <Typography variant="subtitle1" gutterBottom>
-                      {usage.name} ({formatPrice(selectedCurrency, usagePrice)}/{usage.unit})
+                      {usage.name} ({formatPrice(selectedCurrency, usagePrice)}/
+                      {usage.unit})
                     </Typography>
                     <TextField
                       type="number"
                       value={currentValue}
-                      onChange={e => handleUsageUpdate(usage.id, e.target.value)}
+                      onChange={(e) =>
+                        handleUsageUpdate(usage.id, e.target.value)
+                      }
                       error={!!usageError}
                       helperText={usageError}
                       InputProps={{
@@ -477,7 +525,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               })
             ) : (
               <Box className={styles.emptyState}>
-                <Typography variant="h6">No usage metrics to configure</Typography>
+                <Typography variant="h6">
+                  No usage metrics to configure
+                </Typography>
                 <Button variant="outlined" onClick={onNext}>
                   Continue
                 </Button>
@@ -491,11 +541,19 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Box sx={{ mb: 3 }}>
               <Typography
                 variant="h5"
-                sx={{ fontSize: '1.25rem', fontWeight: 600, color: '#173a79', mb: 1 }}
+                sx={{
+                  fontSize: '1.25rem',
+                  fontWeight: 600,
+                  color: '#173a79',
+                  mb: 1,
+                }}
               >
                 Select Payment Plan
               </Typography>
-              <Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#64748b' }}>
+              <Typography
+                variant="body2"
+                sx={{ fontSize: '0.875rem', color: '#64748b' }}
+              >
                 Choose your preferred payment plan
               </Typography>
             </Box>
@@ -507,21 +565,34 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 {
                   title: 'Monthly Plan',
                   description: 'Pay monthly for maximum flexibility',
-                  price: formatPrice(selectedCurrency, calculatedPrice) + '/month',
-                  features: ['Monthly Billing', 'No Commitment', 'Easy Upgrade'],
+                  price:
+                    formatPrice(selectedCurrency, calculatedPrice) + '/month',
+                  features: [
+                    'Monthly Billing',
+                    'No Commitment',
+                    'Easy Upgrade',
+                  ],
                   buttonText: 'Select Monthly Plan',
                 },
                 {
                   title: 'Biannual Plan',
                   description: 'Save 15% with biannual billing',
-                  price: formatPrice(selectedCurrency, calculatedPrice * 6 * 0.85) + '/6 months',
-                  features: ['15% Discount', 'Flexible Billing', 'Mid-term Adjustments'],
+                  price:
+                    formatPrice(selectedCurrency, calculatedPrice * 6 * 0.85) +
+                    '/6 months',
+                  features: [
+                    '15% Discount',
+                    'Flexible Billing',
+                    'Mid-term Adjustments',
+                  ],
                   buttonText: 'Select Biannual Plan',
                 },
                 {
                   title: 'Annual Plan',
                   description: 'Save 20% with annual billing',
-                  price: formatPrice(selectedCurrency, calculatedPrice * 12 * 0.8) + '/year',
+                  price:
+                    formatPrice(selectedCurrency, calculatedPrice * 12 * 0.8) +
+                    '/year',
                   features: ['20% Discount', 'Priority Support', 'Free Setup'],
                   buttonText: 'Select Annual Plan',
                 },
@@ -529,14 +600,22 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   title: 'Enterprise Plan',
                   description: 'Custom solutions for large businesses',
                   price: 'Custom Pricing',
-                  features: ['Dedicated Support', 'Custom Features', 'SLA Guarantee'],
+                  features: [
+                    'Dedicated Support',
+                    'Custom Features',
+                    'SLA Guarantee',
+                  ],
                   buttonText: 'Contact Sales',
                 },
               ].map((plan, index) => (
                 <Box key={index} className={styles.paymentPlanItem}>
                   <Typography variant="h6">{plan.title}</Typography>
-                  <Typography className={styles.paymentDescription}>{plan.description}</Typography>
-                  <Typography className={styles.paymentPrice}>{plan.price}</Typography>
+                  <Typography className={styles.paymentDescription}>
+                    {plan.description}
+                  </Typography>
+                  <Typography className={styles.paymentPrice}>
+                    {plan.price}
+                  </Typography>
                   <Box className={styles.paymentFeatures}>
                     {plan.features.map((feature, idx) => (
                       <Typography key={idx}>✓ {feature}</Typography>
@@ -586,55 +665,88 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Box className={styles.supportPlansContainer}>
               <Box className={styles.supportPlanItem}>
                 <Typography variant="h6">Standard Support</Typography>
-                <Typography variant="body2" className={styles.supportDescription}>
+                <Typography
+                  variant="body2"
+                  className={styles.supportDescription}
+                >
                   Email support with 24-hour response time
                 </Typography>
                 <Box className={styles.supportFeatures}>
                   <Typography variant="body2">✓ Email Support</Typography>
-                  <Typography variant="body2">✓ Knowledge Base Access</Typography>
+                  <Typography variant="body2">
+                    ✓ Knowledge Base Access
+                  </Typography>
                   <Typography variant="body2">✓ Community Forum</Typography>
                 </Box>
                 <Typography variant="h5" className={styles.supportPrice}>
                   Included
                 </Typography>
-                <Button variant="contained" className={styles.selectPlanButton} onClick={onNext}>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
                   Select Standard Support
                 </Button>
               </Box>
               <Box className={`${styles.supportPlanItem} ${styles.premium}`}>
                 <Typography variant="h6">Premium Support</Typography>
-                <Typography variant="body2" className={styles.supportDescription}>
+                <Typography
+                  variant="body2"
+                  className={styles.supportDescription}
+                >
                   Priority support with 4-hour response time
                 </Typography>
                 <Box className={styles.supportFeatures}>
-                  <Typography variant="body2">✓ 24/7 Priority Support</Typography>
-                  <Typography variant="body2">✓ Dedicated Account Manager</Typography>
+                  <Typography variant="body2">
+                    ✓ 24/7 Priority Support
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ Dedicated Account Manager
+                  </Typography>
                   <Typography variant="body2">✓ Phone Support</Typography>
-                  <Typography variant="body2">✓ Custom Training Sessions</Typography>
+                  <Typography variant="body2">
+                    ✓ Custom Training Sessions
+                  </Typography>
                 </Box>
                 <Typography variant="h5" className={styles.supportPrice}>
                   +{formatPrice(selectedCurrency, calculatedPrice * 0.2)}/month
                 </Typography>
-                <Button variant="contained" className={styles.selectPlanButton} onClick={onNext}>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
                   Select Premium Support
                 </Button>
               </Box>
               <Box className={`${styles.supportPlanItem} ${styles.advanced}`}>
                 <Typography variant="h6">Advanced Support</Typography>
-                <Typography variant="body2" className={styles.supportDescription}>
+                <Typography
+                  variant="body2"
+                  className={styles.supportDescription}
+                >
                   Enterprise-grade support with dedicated team
                 </Typography>
                 <Box className={styles.supportFeatures}>
-                  <Typography variant="body2">✓ 24/7 Dedicated Support Team</Typography>
+                  <Typography variant="body2">
+                    ✓ 24/7 Dedicated Support Team
+                  </Typography>
                   <Typography variant="body2">✓ SLA Guarantee</Typography>
                   <Typography variant="body2">✓ On-site Support</Typography>
                   <Typography variant="body2">✓ Custom Development</Typography>
-                  <Typography variant="body2">✓ Priority Feature Requests</Typography>
+                  <Typography variant="body2">
+                    ✓ Priority Feature Requests
+                  </Typography>
                 </Box>
                 <Typography variant="h5" className={styles.supportPrice}>
                   +{formatPrice(selectedCurrency, calculatedPrice * 0.4)}/month
                 </Typography>
-                <Button variant="contained" className={styles.selectPlanButton} onClick={onNext}>
+                <Button
+                  variant="contained"
+                  className={styles.selectPlanButton}
+                  onClick={onNext}
+                >
                   Select Advanced Support
                 </Button>
               </Box>
@@ -646,19 +758,25 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         return (
           <Box className={styles.featuresContainer}>
             <Box className={styles.sectionHeader}>
-              <Typography variant="h5" sx={{ fontWeight: 600, color: '#173a79' }}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 600, color: '#173a79' }}
+              >
                 Configure Enterprise Features
               </Typography>
               <Typography variant="body2" className={styles.sectionDescription}>
-                Customize your enterprise package with advanced features tailored for large
-                businesses.
+                Customize your enterprise package with advanced features
+                tailored for large businesses.
               </Typography>
             </Box>
             <Box className={styles.enterpriseFeaturesContainer}>
               <Box className={styles.enterpriseFeatureItem}>
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">Advanced Analytics</Typography>
-                  <Typography variant="body2" className={styles.featureDescription}>
+                  <Typography
+                    variant="body2"
+                    className={styles.featureDescription}
+                  >
                     Comprehensive reporting and analytics tools
                   </Typography>
                 </Box>
@@ -668,7 +786,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.realTimeAnalytics || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('realTimeAnalytics')}
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('realTimeAnalytics')
+                        }
                       />
                     }
                     label="Real-time Analytics"
@@ -678,7 +798,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.customReports || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('customReports')}
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('customReports')
+                        }
                       />
                     }
                     label="Custom Reports"
@@ -688,7 +810,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.dataExport || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('dataExport')}
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('dataExport')
+                        }
                       />
                     }
                     label="Data Export"
@@ -699,7 +823,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               <Box className={styles.enterpriseFeatureItem}>
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">Multi-Location</Typography>
-                  <Typography variant="body2" className={styles.featureDescription}>
+                  <Typography
+                    variant="body2"
+                    className={styles.featureDescription}
+                  >
                     Manage multiple business locations efficiently
                   </Typography>
                 </Box>
@@ -708,8 +835,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     control={
                       <Checkbox
                         color="primary"
-                        checked={enterpriseFeatures?.centralizedManagement || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('centralizedManagement')}
+                        checked={
+                          enterpriseFeatures?.centralizedManagement || false
+                        }
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('centralizedManagement')
+                        }
                       />
                     }
                     label="Centralized Management"
@@ -719,7 +850,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.locationSettings || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('locationSettings')}
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('locationSettings')
+                        }
                       />
                     }
                     label="Location Settings"
@@ -728,8 +861,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     control={
                       <Checkbox
                         color="primary"
-                        checked={enterpriseFeatures?.crossLocationInventory || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('crossLocationInventory')}
+                        checked={
+                          enterpriseFeatures?.crossLocationInventory || false
+                        }
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('crossLocationInventory')
+                        }
                       />
                     }
                     label="Cross-location Inventory"
@@ -740,7 +877,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               <Box className={styles.enterpriseFeatureItem}>
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">Security Suite</Typography>
-                  <Typography variant="body2" className={styles.featureDescription}>
+                  <Typography
+                    variant="body2"
+                    className={styles.featureDescription}
+                  >
                     Advanced security features for enterprise protection
                   </Typography>
                 </Box>
@@ -750,7 +890,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.roleBasedAccess || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('roleBasedAccess')}
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('roleBasedAccess')
+                        }
                       />
                     }
                     label="Role-based Access"
@@ -759,8 +901,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     control={
                       <Checkbox
                         color="primary"
-                        checked={enterpriseFeatures?.advancedEncryption || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('advancedEncryption')}
+                        checked={
+                          enterpriseFeatures?.advancedEncryption || false
+                        }
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('advancedEncryption')
+                        }
                       />
                     }
                     label="Advanced Encryption"
@@ -770,7 +916,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.auditLogging || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('auditLogging')}
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('auditLogging')
+                        }
                       />
                     }
                     label="Audit Logging"
@@ -781,7 +929,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               <Box className={styles.enterpriseFeatureItem}>
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">API & Integration</Typography>
-                  <Typography variant="body2" className={styles.featureDescription}>
+                  <Typography
+                    variant="body2"
+                    className={styles.featureDescription}
+                  >
                     Connect with other business applications
                   </Typography>
                 </Box>
@@ -791,7 +942,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.restfulApi || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('restfulApi')}
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('restfulApi')
+                        }
                       />
                     }
                     label="RESTful API"
@@ -800,8 +953,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     control={
                       <Checkbox
                         color="primary"
-                        checked={enterpriseFeatures?.webhookNotifications || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('webhookNotifications')}
+                        checked={
+                          enterpriseFeatures?.webhookNotifications || false
+                        }
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('webhookNotifications')
+                        }
                       />
                     }
                     label="Webhook Notifications"
@@ -811,7 +968,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.customIntegration || false}
-                        onChange={() => onEnterpriseFeatureToggle?.('customIntegration')}
+                        onChange={() =>
+                          onEnterpriseFeatureToggle?.('customIntegration')
+                        }
                       />
                     }
                     label="Custom Integration"
@@ -882,7 +1041,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         value={formData.country}
                         onChange={handleSelectChange}
                       >
-                        {countries.map(country => (
+                        {countries.map((country) => (
                           <MenuItem key={country} value={country}>
                             {country}
                           </MenuItem>
@@ -897,7 +1056,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         value={formData.state}
                         onChange={handleSelectChange}
                       >
-                        {states.map(state => (
+                        {states.map((state) => (
                           <MenuItem key={state} value={state}>
                             {state}
                           </MenuItem>
@@ -936,12 +1095,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 <Box className={styles.orderSummaryContent}>
                   {/* Package Details */}
                   <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>Selected Package</Typography>
+                    <Typography className={styles.sectionTitle}>
+                      Selected Package
+                    </Typography>
                     <Box className={styles.sectionContent}>
                       <Box className={styles.itemRow}>
                         <Typography className={styles.itemLabel}>
                           Enterprise Package
-                          <span className={styles.discountTag}>Most Popular</span>
+                          <span className={styles.discountTag}>
+                            Most Popular
+                          </span>
                         </Typography>
                         <Typography className={styles.itemValue}>
                           {formatPrice(selectedCurrency, basePrice)}/mo
@@ -955,26 +1118,34 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
                   {/* Payment Plan */}
                   <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>Payment Plan</Typography>
+                    <Typography className={styles.sectionTitle}>
+                      Payment Plan
+                    </Typography>
                     <Box className={styles.sectionContent}>
                       <Box className={styles.itemRow}>
                         <Typography className={styles.itemLabel}>
                           Annual Plan
                           <span className={styles.discountTag}>20% Off</span>
                         </Typography>
-                        <Typography className={styles.itemValue} sx={{ color: '#059669' }}>
+                        <Typography
+                          className={styles.itemValue}
+                          sx={{ color: '#059669' }}
+                        >
                           -{formatPrice(selectedCurrency, basePrice * 0.2)}/mo
                         </Typography>
                       </Box>
                       <Typography className={styles.itemDescription}>
-                        Billed annually at {formatPrice(selectedCurrency, basePrice * 12 * 0.8)}
+                        Billed annually at{' '}
+                        {formatPrice(selectedCurrency, basePrice * 12 * 0.8)}
                       </Typography>
                     </Box>
                   </Box>
 
                   {/* Support Level */}
                   <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>Support Level</Typography>
+                    <Typography className={styles.sectionTitle}>
+                      Support Level
+                    </Typography>
                     <Box className={styles.sectionContent}>
                       <Box className={styles.itemRow}>
                         <Typography className={styles.itemLabel}>
@@ -993,22 +1164,30 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
                   {/* Enterprise Features */}
                   <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>Enterprise Features</Typography>
+                    <Typography className={styles.sectionTitle}>
+                      Enterprise Features
+                    </Typography>
                     <Box className={styles.sectionContent}>
                       <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>Advanced Analytics</Typography>
+                        <Typography className={styles.itemLabel}>
+                          Advanced Analytics
+                        </Typography>
                         <Typography className={styles.itemValue}>
                           +{formatPrice(selectedCurrency, 199)}/mo
                         </Typography>
                       </Box>
                       <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>Multi-Location</Typography>
+                        <Typography className={styles.itemLabel}>
+                          Multi-Location
+                        </Typography>
                         <Typography className={styles.itemValue}>
                           +{formatPrice(selectedCurrency, 299)}/mo
                         </Typography>
                       </Box>
                       <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>Security Suite</Typography>
+                        <Typography className={styles.itemLabel}>
+                          Security Suite
+                        </Typography>
                         <Typography className={styles.itemValue}>
                           +{formatPrice(selectedCurrency, 249)}/mo
                         </Typography>
@@ -1018,10 +1197,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
                   {/* Price Breakdown */}
                   <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>Price Breakdown</Typography>
+                    <Typography className={styles.sectionTitle}>
+                      Price Breakdown
+                    </Typography>
                     <Box className={styles.sectionContent}>
                       <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>Subtotal</Typography>
+                        <Typography className={styles.itemLabel}>
+                          Subtotal
+                        </Typography>
                         <Typography className={styles.itemValue}>
                           {formatPrice(selectedCurrency, basePrice + 747)}/mo
                         </Typography>
@@ -1032,8 +1215,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                           Annual Discount
                           <span className={styles.discountTag}>20%</span>
                         </Typography>
-                        <Typography className={styles.itemValue} sx={{ color: '#059669' }}>
-                          -{formatPrice(selectedCurrency, (basePrice + 747) * 0.2)}/mo
+                        <Typography
+                          className={styles.itemValue}
+                          sx={{ color: '#059669' }}
+                        >
+                          -
+                          {formatPrice(
+                            selectedCurrency,
+                            (basePrice + 747) * 0.2
+                          )}
+                          /mo
                         </Typography>
                       </Box>
                       <Box className={styles.itemRow}>
@@ -1041,8 +1232,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                           Enterprise Discount
                           <span className={styles.discountTag}>10%</span>
                         </Typography>
-                        <Typography className={styles.itemValue} sx={{ color: '#059669' }}>
-                          -{formatPrice(selectedCurrency, (basePrice + 747) * 0.1)}/mo
+                        <Typography
+                          className={styles.itemValue}
+                          sx={{ color: '#059669' }}
+                        >
+                          -
+                          {formatPrice(
+                            selectedCurrency,
+                            (basePrice + 747) * 0.1
+                          )}
+                          /mo
                         </Typography>
                       </Box>
                     </Box>
@@ -1054,7 +1253,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   <Box className={styles.totalContainer}>
                     <Box className={styles.totalLabel}>
                       <Typography className={styles.totalAmount}>
-                        {formatPrice(selectedCurrency, (basePrice + 747) * 0.7)}/mo
+                        {formatPrice(selectedCurrency, (basePrice + 747) * 0.7)}
+                        /mo
                       </Typography>
                       <Typography className={styles.billingNote}>
                         Billed annually • Includes all discounts
@@ -1160,7 +1360,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         >
           {getStepContent()}
         </motion.div>
-        {currentStep !== steps.length - 1 && currentStep !== 0 && renderNavigationButtons()}
+        {currentStep !== steps.length - 1 &&
+          currentStep !== 0 &&
+          renderNavigationButtons()}
       </CardContent>
     </Card>
   );

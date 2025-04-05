@@ -76,9 +76,7 @@ const mockData: SalesData = {
   },
 };
 
-const SalesContainer: React.FC<SalesContainerProps> = ({
-  className,
-}) => {
+const SalesContainer: React.FC<SalesContainerProps> = ({ className }) => {
   const [timeframe, setTimeframe] = useState('Sep 1 - Nov 30, 2023');
 
   const handleTimeframeChange = (newTimeframe: string) => {

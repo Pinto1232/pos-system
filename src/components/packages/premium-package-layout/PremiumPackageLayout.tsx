@@ -39,22 +39,30 @@ const currencySymbols: Record<string, string> = {
   Kz: 'Kz',
 };
 
-const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({ selectedPackage }) => {
+const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({
+  selectedPackage,
+}) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } = useSpinner();
-  const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || 'USD');
+  const [currentCurrency, setCurrentCurrency] = useState<string>(
+    selectedPackage.currency || 'USD'
+  );
 
-  const IconComponent = iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
+  const IconComponent =
+    iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
 
   const handleSelectedPremiumPackage = async () => {
     setSpinnerLoading(true);
     setLoading(true);
-    console.log('Selected package', { ...selectedPackage, currency: currentCurrency });
+    console.log('Selected package', {
+      ...selectedPackage,
+      currency: currentCurrency,
+    });
     // Simulate backend call
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
     setSpinnerLoading(false);
     setSuccess(true);
@@ -80,15 +88,19 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({ selectedPac
     setCurrentCurrency(currency);
   };
 
-  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
-    ? JSON.parse(selectedPackage.multiCurrencyPrices)
-    : null;
+  const multiCurrency: Record<string, number> | null =
+    selectedPackage.multiCurrencyPrices
+      ? JSON.parse(selectedPackage.multiCurrencyPrices)
+      : null;
 
   const displayPrice =
-    currentCurrency && multiCurrency && multiCurrency[currentCurrency] !== undefined
+    currentCurrency &&
+    multiCurrency &&
+    multiCurrency[currentCurrency] !== undefined
       ? multiCurrency[currentCurrency]
       : selectedPackage.price;
-  const currencySymbol = currentCurrency === 'Kz' ? 'Kz' : currencySymbols[currentCurrency] || '$';
+  const currencySymbol =
+    currentCurrency === 'Kz' ? 'Kz' : currencySymbols[currentCurrency] || '$';
 
   if (showLoginForm) {
     return <LazyLoginForm />;
@@ -108,7 +120,9 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({ selectedPac
         <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
-              {selectedPackage.icon && <IconComponent className={styles.packageIcon} />}
+              {selectedPackage.icon && (
+                <IconComponent className={styles.packageIcon} />
+              )}
               <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
@@ -122,7 +136,10 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({ selectedPac
               </Typography>
 
               <Box className={styles.premiumBox}>
-                <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
+                <Typography
+                  variant="subtitle2"
+                  className={styles.premiumBoxLabel}
+                >
                   YOUR TOTAL IN ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.premiumBoxAmount}>
@@ -137,7 +154,10 @@ const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({ selectedPac
 
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
-                  <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
+                  <Typography
+                    variant="subtitle2"
+                    className={styles.multiCurrencyLabel}
+                  >
                     Prices in other currencies:
                   </Typography>
                   <FormGroup row>

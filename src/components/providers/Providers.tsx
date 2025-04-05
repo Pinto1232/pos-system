@@ -1,7 +1,11 @@
 'use client';
 
 import React from 'react';
-import { QueryClient, QueryClientProvider, DefaultOptions } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  DefaultOptions,
+} from '@tanstack/react-query';
 import AuthProvider from '@/contexts/AuthContext';
 import { ProductProvider } from '@/contexts/ProductContext';
 import { AxiosError } from 'axios';
@@ -26,8 +30,11 @@ const defaultQueryOptions: DefaultOptions = {
 
 const queryClient = new QueryClient({ defaultOptions: defaultQueryOptions });
 
-queryClient.getQueryCache().subscribe(event => {
-  if (event?.query.getObserversCount() > 0 && event.query.state.status === 'error') {
+queryClient.getQueryCache().subscribe((event) => {
+  if (
+    event?.query.getObserversCount() > 0 &&
+    event.query.state.status === 'error'
+  ) {
     console.error('A query error occurred:', event.query.state.error);
   }
 });
@@ -36,7 +43,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
       <ProductProvider>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
       </ProductProvider>
     </AuthProvider>
   );

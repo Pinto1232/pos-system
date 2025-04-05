@@ -5,9 +5,13 @@ interface TestPeriodContextProps {
   setTestPeriod: (testPeriod: number) => void;
 }
 
-const TestPeriodContext = createContext<TestPeriodContextProps | undefined>(undefined);
+const TestPeriodContext = createContext<TestPeriodContextProps | undefined>(
+  undefined
+);
 
-export const TestPeriodProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const TestPeriodProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [testPeriod, setTestPeriod] = useState(0);
 
   return (

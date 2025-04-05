@@ -18,9 +18,13 @@ interface CardHeaderProps {
   className?: string;
 }
 
-export const CardHeader: React.FC<CardHeaderProps> = memo(({ children, className }) => {
-  return <div className={`${styles.cardHeader} ${className}`}>{children}</div>;
-});
+export const CardHeader: React.FC<CardHeaderProps> = memo(
+  ({ children, className }) => {
+    return (
+      <div className={`${styles.cardHeader} ${className}`}>{children}</div>
+    );
+  }
+);
 CardHeader.displayName = 'CardHeader';
 
 interface CardContentProps {
@@ -28,9 +32,13 @@ interface CardContentProps {
   className?: string;
 }
 
-export const CardContent: React.FC<CardContentProps> = memo(({ children, className }) => {
-  return <div className={`${styles.cardContent} ${className}`}>{children}</div>;
-});
+export const CardContent: React.FC<CardContentProps> = memo(
+  ({ children, className }) => {
+    return (
+      <div className={`${styles.cardContent} ${className}`}>{children}</div>
+    );
+  }
+);
 CardContent.displayName = 'CardContent';
 
 interface CardFooterProps {
@@ -38,9 +46,13 @@ interface CardFooterProps {
   className?: string;
 }
 
-export const CardFooter: React.FC<CardFooterProps> = memo(({ children, className }) => {
-  return <div className={`${styles.cardFooter} ${className}`}>{children}</div>;
-});
+export const CardFooter: React.FC<CardFooterProps> = memo(
+  ({ children, className }) => {
+    return (
+      <div className={`${styles.cardFooter} ${className}`}>{children}</div>
+    );
+  }
+);
 CardFooter.displayName = 'CardFooter';
 
 const LazyCard = () => (

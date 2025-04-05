@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { SearchBarProps } from './searchBar.types';
-import { StyledSearchBar, StyledInput, SearchIconButton } from './searchBar.styles';
+import {
+  StyledSearchBar,
+  StyledInput,
+  SearchIconButton,
+} from './searchBar.styles';
 import SearchIcon from '@mui/icons-material/Search';
 
 const SearchBar: React.FC<SearchBarProps> = ({

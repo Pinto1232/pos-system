@@ -5,7 +5,8 @@ import FeaturesSlider from '@/components/slider/FeaturesSlider';
 
 export default function Home() {
   const heading = `Packages`;
-  const description = 'Choose the perfect package that suits your business needs. Our flexible pricing options are designed to scale with your growth.';
+  const description =
+    'Choose the perfect package that suits your business needs. Our flexible pricing options are designed to scale with your growth.';
 
   return (
     <div>
@@ -17,7 +18,7 @@ export default function Home() {
               marginBottom: '0.5rem',
               fontWeight: 600,
               fontSize: '2.5rem',
-              letterSpacing: '-0.02em'
+              letterSpacing: '-0.02em',
             }}
             variant="h4"
             dangerouslySetInnerHTML={{ __html: heading }}

@@ -9,7 +9,7 @@ const FullOverviewContainer: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const handleViewModeToggle = () => {
-    setViewMode(prevMode => (prevMode === 'grid' ? 'list' : 'grid'));
+    setViewMode((prevMode) => (prevMode === 'grid' ? 'list' : 'grid'));
   };
 
   const cardsData: FullOverviewCardProps[] = [

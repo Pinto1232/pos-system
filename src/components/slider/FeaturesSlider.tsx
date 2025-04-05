@@ -1,7 +1,11 @@
 'use client';
 
 import React from 'react';
-import { HiOutlineCreditCard, HiOutlineChartBar, HiOutlineSquares2X2 } from 'react-icons/hi2';
+import {
+  HiOutlineCreditCard,
+  HiOutlineChartBar,
+  HiOutlineSquares2X2,
+} from 'react-icons/hi2';
 import Link from 'next/link';
 
 import styles from './FeaturesSlider.module.css';

@@ -29,16 +29,29 @@ interface TransactionsTableProps {
   transactions: Transaction[];
 }
 
-const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) => {
+const TransactionsTable: React.FC<TransactionsTableProps> = ({
+  transactions,
+}) => {
   return (
     <Box sx={{ width: '100%' }}>
       {/* Header with title and view all link */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+        }}
+      >
         <Typography variant="h5" component="h2" fontWeight="bold" color="#000">
           Transaction Full Overview
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-          <Typography variant="h5" fontWeight="bold" sx={{ mr: 1, color: '#000' }}>
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            sx={{ mr: 1, color: '#000' }}
+          >
             View all my data
           </Typography>
           <ArrowForwardIcon />
@@ -56,17 +69,27 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) =
       >
         <TableHead>
           <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Order / Transaction ID</TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Progress / Fulfillment</TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Payment Method</TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Item(s) Purchased</TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Cashier / User</TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Order / Transaction ID
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Progress / Fulfillment
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Payment Method
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Item(s) Purchased
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Cashier / User
+            </TableCell>
             <TableCell sx={{ fontWeight: 600, py: 2 }}>Date / Time</TableCell>
             <TableCell sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {transactions.map(transaction => (
+          {transactions.map((transaction) => (
             <TableRow
               key={transaction.id}
               hover
@@ -110,13 +133,25 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) =
               <TableCell sx={{ py: 2 }}>{transaction.cashier}</TableCell>
               <TableCell sx={{ py: 2 }}>{transaction.date}</TableCell>
               <TableCell sx={{ py: 2 }}>
-                <IconButton aria-label="info" size="small" sx={{ color: '#2196f3' }}>
+                <IconButton
+                  aria-label="info"
+                  size="small"
+                  sx={{ color: '#2196f3' }}
+                >
                   <InfoOutlinedIcon fontSize="small" />
                 </IconButton>
-                <IconButton aria-label="view" size="small" sx={{ color: '#2196f3' }}>
+                <IconButton
+                  aria-label="view"
+                  size="small"
+                  sx={{ color: '#2196f3' }}
+                >
                   <VisibilityOutlinedIcon fontSize="small" />
                 </IconButton>
-                <IconButton aria-label="delete" size="small" sx={{ color: '#f44336' }}>
+                <IconButton
+                  aria-label="delete"
+                  size="small"
+                  sx={{ color: '#f44336' }}
+                >
                   <CloseIcon fontSize="small" />
                 </IconButton>
               </TableCell>
@@ -126,7 +161,14 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) =
       </Table>
 
       {/* Pagination */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          mt: 2,
+          alignItems: 'center',
+        }}
+      >
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography variant="body2" color="text.secondary">
             0

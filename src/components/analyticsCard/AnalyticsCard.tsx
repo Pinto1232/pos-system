@@ -151,7 +151,10 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
                 }}
               >
                 <Icon size={theme.breakpoints.up('sm') ? 12 : 14} />
-                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                <Box
+                  component="span"
+                  sx={{ display: { xs: 'none', sm: 'inline' } }}
+                >
                   {i}
                 </Box>
               </Button>

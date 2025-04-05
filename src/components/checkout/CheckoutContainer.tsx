@@ -96,7 +96,7 @@ const CheckoutContainer: React.FC = () => {
   // Update formData whenever an input changes.
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));

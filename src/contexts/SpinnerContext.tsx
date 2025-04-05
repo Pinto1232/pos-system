@@ -12,7 +12,9 @@ export interface SpinnerContextProps {
   setError: (error: string | null) => void;
 }
 
-const SpinnerContext = createContext<SpinnerContextProps | undefined>(undefined);
+const SpinnerContext = createContext<SpinnerContextProps | undefined>(
+  undefined
+);
 
 export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);

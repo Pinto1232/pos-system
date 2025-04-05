@@ -36,7 +36,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setRemainingTime(prevTime => (prevTime > 0 ? prevTime - 1 : 0));
+      setRemainingTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
     }, 1000);
 
     return () => clearInterval(timer);
@@ -70,16 +70,18 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
               fontSize: '0.875rem',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px'
+              gap: '4px',
             }}
           >
             <span style={{ fontWeight: 700, opacity: 0.95 }}>Test Period:</span>
-            <span style={{
-              fontWeight: 800,
-              fontSize: '1.125rem',
-              letterSpacing: '0.5px',
-              color: selectedPackage ? '#F59E0B' : '#ffffff'
-            }}>
+            <span
+              style={{
+                fontWeight: 800,
+                fontSize: '1.125rem',
+                letterSpacing: '0.5px',
+                color: selectedPackage ? '#F59E0B' : '#ffffff',
+              }}
+            >
               {formatTime(remainingTime)}
             </span>
             <span style={{ opacity: 0.85 }}>remaining</span>
@@ -105,7 +107,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
 Navbar.displayName = 'Navbar';
 export { Navbar };
 
-const LazyNavbar: React.FC<NavbarProps> = props => (
+const LazyNavbar: React.FC<NavbarProps> = (props) => (
   <Suspense fallback={<div>Loading...</div>}>
     <Navbar {...props} />
   </Suspense>

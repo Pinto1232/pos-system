@@ -2,7 +2,9 @@ import { UserCustomization } from '@/components/dashboard-layout/DashboardLayout
 
 const STORAGE_KEY = 'userCustomization';
 
-export const mockFetchCustomization = async (userId: string): Promise<UserCustomization> => {
+export const mockFetchCustomization = async (
+  userId: string
+): Promise<UserCustomization> => {
   const storedData = localStorage.getItem(STORAGE_KEY);
   if (storedData) {
     return JSON.parse(storedData);

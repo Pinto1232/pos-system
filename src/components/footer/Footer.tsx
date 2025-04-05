@@ -85,18 +85,30 @@ const Footer: React.FC = memo(() => {
             <Typography variant="h6" className={styles.sectionTitle}>
               Contact
             </Typography>
-            <Typography className={styles.text}>Tel: +1 5263 2540 981</Typography>
-            <Typography className={styles.text}>Tel: +1 5263 5720 450</Typography>
-            <Typography className={styles.text}>Email: info@info.com</Typography>
-            <Typography className={styles.text}>Email: career@career.com</Typography>
+            <Typography className={styles.text}>
+              Tel: +1 5263 2540 981
+            </Typography>
+            <Typography className={styles.text}>
+              Tel: +1 5263 5720 450
+            </Typography>
+            <Typography className={styles.text}>
+              Email: info@info.com
+            </Typography>
+            <Typography className={styles.text}>
+              Email: career@career.com
+            </Typography>
           </Box>
 
           <Box>
             <Typography variant="h6" className={styles.sectionTitle}>
               New York
             </Typography>
-            <Typography className={styles.text}>361 Avisco Green St,</Typography>
-            <Typography className={styles.text}>Lovasa Avenue, Los Angeles</Typography>
+            <Typography className={styles.text}>
+              361 Avisco Green St,
+            </Typography>
+            <Typography className={styles.text}>
+              Lovasa Avenue, Los Angeles
+            </Typography>
             <Typography className={styles.text}>90251, US</Typography>
           </Box>
 

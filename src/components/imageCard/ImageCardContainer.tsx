@@ -17,7 +17,12 @@ const ImageCardContainer: React.FC<ImageCardContainerProps> = ({
   };
 
   return (
-    <ImageCard imageUrl={imageUrl} title={title} description={description} onClick={handleClick} />
+    <ImageCard
+      imageUrl={imageUrl}
+      title={title}
+      description={description}
+      onClick={handleClick}
+    />
   );
 };
 

@@ -11,20 +11,17 @@ export const Container = styled(Box)({
   width: '100%',
   boxSizing: 'border-box',
   '@media (max-width: 1200px)': {
-    gridTemplateColumns: '1fr', 
-  }
+    gridTemplateColumns: '1fr',
+  },
 });
 
-
-
 export const ProductListSection = styled(Box)({
-  minWidth: '0', 
+  minWidth: '0',
   width: '100%',
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
 });
-
 
 export const TotalSection = styled(Paper)({
   width: '100%',
@@ -40,9 +37,8 @@ export const TotalSection = styled(Paper)({
   top: '24px',
   '@media (max-width: 1200px)': {
     position: 'static',
-  }
+  },
 });
-
 
 export const HeaderSection = styled(Box)({
   display: 'flex',

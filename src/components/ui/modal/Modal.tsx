@@ -23,10 +23,19 @@ const SuccessMessage: React.FC<SuccessMessageProps> = memo(
       <Dialog
         open={open}
         onClose={onClose}
-        PaperProps={{ style: { width: '600px', height: '200px', backgroundColor: '#f0f0f0' } }}
+        PaperProps={{
+          style: {
+            width: '600px',
+            height: '200px',
+            backgroundColor: '#f0f0f0',
+          },
+        }}
       >
         <div className={styles.modalHeader}>
-          <Typography variant="h6" style={{ fontSize: '1.75rem', color: '#333' }}>
+          <Typography
+            variant="h6"
+            style={{ fontSize: '1.75rem', color: '#333' }}
+          >
             Package Save Status
           </Typography>
           <IconButton onClick={onClose} className={styles.closeButton}>

@@ -8,7 +8,9 @@ interface LoginFormContextProps {
   toggleLoginForm: () => void;
 }
 
-const LoginFormContext = createContext<LoginFormContextProps | undefined>(undefined);
+const LoginFormContext = createContext<LoginFormContextProps | undefined>(
+  undefined
+);
 
 export const useLoginForm = () => {
   const context = useContext(LoginFormContext);
@@ -18,11 +20,13 @@ export const useLoginForm = () => {
   return context;
 };
 
-export const LoginFormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const LoginFormProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [open, setOpen] = useState(false);
 
   const toggleLoginForm = () => {
-    setOpen(prev => !prev);
+    setOpen((prev) => !prev);
   };
 
   return (

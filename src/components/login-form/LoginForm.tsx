@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo, Suspense, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
 import {
@@ -9,13 +9,15 @@ import {
   Checkbox,
   FormControlLabel,
   Link,
-  Divider,
   IconButton,
   TextField,
   Snackbar,
   Alert,
+  InputAdornment,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Image from 'next/image';
 import { Button } from '../ui/button/Button';
 import axios from 'axios';
@@ -28,17 +30,15 @@ interface LoginFormProps {
   passwordPlaceholder?: string;
   buttonText?: string;
   onSubmit?: (email: string, password: string) => void;
-  showSocialLogin?: boolean;
   onClose?: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = memo(
   ({
-    title = 'Login in your Account',
-    subtitle = '',
-    buttonText = 'Login',
+    title = 'Welcome Back',
+    subtitle = 'Please enter your credentials to access your account',
+    buttonText = 'Sign In',
     onSubmit,
-    showSocialLogin = true,
     onClose,
   }) => {
     const router = useRouter();
@@ -47,23 +47,35 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     const [isFadingOut, setIsFadingOut] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleLogin = async (event: React.FormEvent) => {
       event.preventDefault();
       setIsFadingOut(true);
       setLoading(true);
-      const form = event.target as HTMLFormElement;
-      const email = (form.elements.namedItem('email') as HTMLInputElement).value;
-      const password = (form.elements.namedItem('password') as HTMLInputElement).value;
+
+      if (!email || !password) {
+        setError('Please fill in all fields');
+        setSnackbarOpen(true);
+        setIsFadingOut(false);
+        setLoading(false);
+        return;
+      }
+
       if (onSubmit) {
         onSubmit(email, password);
       }
 
       try {
-        const response = await axios.post('http://localhost:5107/api/auth/login', {
-          email,
-          password,
-        });
+        const response = await axios.post(
+          'http://localhost:5107/api/auth/login',
+          {
+            email,
+            password,
+          }
+        );
         const { access_token } = response.data;
         localStorage.setItem('accessToken', access_token);
         console.log('Login successful:', response.data);
@@ -87,7 +99,9 @@ const LoginForm: React.FC<LoginFormProps> = memo(
             sx={{
               position: 'relative',
               zIndex: isFadingOut ? 0 : 1,
-              boxShadow: isFadingOut ? 'none' : '0px 0px 20px rgba(0, 0, 0, 0.1)',
+              boxShadow: isFadingOut
+                ? 'none'
+                : '0px 0px 20px rgba(0, 0, 0, 0.1)',
               transition: 'all 0.3s ease-in-out',
             }}
           >
@@ -98,9 +112,13 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 </IconButton>
               )}
               <Box className={styles.logoContainer}>
-                <Typography variant="h5" className={styles.logoText}>
-                  Pisval Tech POS
-                </Typography>
+                <Image
+                  src="/logo-placeholder.png"
+                  alt="POS Logo"
+                  width={60}
+                  height={60}
+                  className={styles.logoImage}
+                />
               </Box>
 
               <Typography variant="h6" className={styles.heading}>
@@ -110,60 +128,67 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 {subtitle}
               </Typography>
 
-              {showSocialLogin && (
-                <Box className={styles.socialButtons}>
-                  <Button
-                    className={styles.googleButton}
-                    startIcon={<Image src="/google.png" alt="" width={20} height={20} />}
-                  >
-                    Google
-                  </Button>
-                  <Button
-                    className={styles.facebookButton}
-                    startIcon={<Image src="/facebook.png" alt="" width={20} height={20} />}
-                  >
-                    Facebook
-                  </Button>
-                </Box>
-              )}
-
-              <Divider textAlign="center" sx={{ mb: 4 }}>
-                <span>or continue with email</span>
-              </Divider>
-
-              <form onSubmit={handleLogin} style={{ marginTop: '-30px' }}>
-                <Box mb={1}>
+              <form className={styles.form} onSubmit={handleLogin}>
+                <Box mb={2}>
                   <TextField
-                    id="standard-email"
+                    id="email"
                     name="email"
-                    label="email"
-                    variant="standard"
+                    label="Email"
+                    variant="outlined"
                     fullWidth
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={styles.textField}
                   />
                 </Box>
 
-                <Box mb={1}>
+                <Box mb={2}>
                   <TextField
-                    id="standard-password"
+                    id="password"
                     name="password"
-                    label="password"
-                    variant="standard"
+                    label="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    variant="outlined"
                     fullWidth
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            {showPassword ? (
+                              <VisibilityOffIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    className={styles.textField}
                   />
                 </Box>
 
                 <Box className={styles.options}>
                   <FormControlLabel
                     control={<Checkbox className={styles.checkbox} />}
-                    label="Remember me"
+                    label="remember me"
                     className={styles.rememberMe}
                   />
                   <Link href="#" className={styles.forgotPassword}>
-                    Forgot Password?
+                    forgot password?
                   </Link>
                 </Box>
 
-                <Button type="submit" variant="contained" fullWidth className={styles.loginButton}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  className={styles.loginButton}
+                >
                   {buttonText}
                 </Button>
               </form>
@@ -175,9 +200,13 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           autoHideDuration={6000}
           onClose={() => setSnackbarOpen(false)}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          sx={{ width: '466px', bottom: '20px' }}
+          className={styles.snackbar}
         >
-          <Alert onClose={() => setSnackbarOpen(false)} severity="error" sx={{ width: '100%' }}>
+          <Alert
+            onClose={() => setSnackbarOpen(false)}
+            severity="error"
+            className={styles.alert}
+          >
             {error}
           </Alert>
         </Snackbar>
@@ -188,10 +217,4 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
 LoginForm.displayName = 'LoginForm';
 
-const LazyLoginForm = () => (
-  <Suspense fallback={<div>Loading...</div>}>
-    <LoginForm />
-  </Suspense>
-);
-
-export default LazyLoginForm;
+export default LoginForm;

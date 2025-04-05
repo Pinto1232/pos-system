@@ -90,7 +90,7 @@
 
 .heroSubheading br {
   display: block;
-  content: "";
+  content: '';
   margin-top: 1rem;
 }
 

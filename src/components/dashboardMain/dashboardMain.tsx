@@ -32,12 +32,13 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
         sectionToRender = (
           <Box>
             <Typography
-              variant="h4"
+              variant={isMobile ? 'h4' : 'h1'}
               color="#000"
               gutterBottom
               sx={{
                 textAlign: isMobile ? 'center' : 'left',
-                fontSize: isMobile ? '1.5rem' : 'inherit'
+                fontSize: isMobile ? '1rem' : '2.5rem',
+                fontWeight: 600,
               }}
             >
               Dashboard

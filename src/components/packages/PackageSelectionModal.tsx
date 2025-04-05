@@ -19,7 +19,11 @@ const PackageSelectionModal: React.FC = memo(() => {
   const renderPackageLayout = () => {
     switch (selectedPackage.type) {
       case 'custom':
-        return <CustomPackageLayoutContainer selectedPackage={selectedPackage as CustomPackage} />;
+        return (
+          <CustomPackageLayoutContainer
+            selectedPackage={selectedPackage as CustomPackage}
+          />
+        );
 
       case 'starter':
         return <StarterPackageLayout selectedPackage={selectedPackage} />;
@@ -42,7 +46,9 @@ const PackageSelectionModal: React.FC = memo(() => {
 
   return (
     <Modal open={isModalOpen} onClose={closeModal}>
-      <Box className={`${styles.modal} ${styles[`${selectedPackage.type}Modal`]}`}>
+      <Box
+        className={`${styles.modal} ${styles[`${selectedPackage.type}Modal`]}`}
+      >
         <div className={styles.modalContent}>{renderPackageLayout()}</div>
       </Box>
     </Modal>

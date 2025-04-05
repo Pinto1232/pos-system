@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Drawer, Box, List, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Drawer,
+  Box,
+  List,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import Image from 'next/image';
 import { sidebarItems } from '@/settings';
 import { useSpinner } from '@/contexts/SpinnerContext';
@@ -16,11 +23,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   textColor = '#fff',
   iconColor = '#fff',
   logoUrl = '/Pisval_Logo.jpg',
-  handleItemClick = () => { },
-  onDrawerToggle = () => { },
+  handleItemClick = () => {},
+  onDrawerToggle = () => {},
 }) => {
   const { setLoading } = useSpinner();
-  const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
+  const [expandedItems, setExpandedItems] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [activeItemState, setActiveItemState] = useState<string>('');
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -44,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleToggle = (label: string) => {
-    setExpandedItems(prev => {
+    setExpandedItems((prev) => {
       const newState = Object.keys(prev).reduce(
         (acc, key) => {
           acc[key] = key === label ? !prev[key] : false;
@@ -65,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     setLoading(true);
     setActiveItemState(label);
 
-    setExpandedItems(prev => {
+    setExpandedItems((prev) => {
       if (parentLabel) {
         return { ...prev, [parentLabel]: true };
       }
@@ -161,7 +170,9 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
-      {isSmallScreen && <MenuToggleButton onClick={handleDrawerToggle} isOpen={true} />}
+      {isSmallScreen && (
+        <MenuToggleButton onClick={handleDrawerToggle} isOpen={true} />
+      )}
 
       <Drawer
         variant={isSmallScreen ? 'temporary' : 'permanent'}
@@ -194,7 +205,13 @@ const Sidebar: React.FC<SidebarProps> = ({
         }}
       >
         <Box sx={{ textAlign: 'center', p: 2 }}>
-          <Image src={logoUrl} alt="Logo" width={80} height={80} style={{ borderRadius: '50%' }} />
+          <Image
+            src={logoUrl}
+            alt="Logo"
+            width={80}
+            height={80}
+            style={{ borderRadius: '50%' }}
+          />
           <Typography
             variant="h6"
             sx={{
@@ -216,7 +233,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </Box>
 
         <List>
-          {sidebarItems.map(item => (
+          {sidebarItems.map((item) => (
             <SidebarItem
               key={item.label}
               item={item}

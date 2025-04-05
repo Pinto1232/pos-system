@@ -26,7 +26,11 @@ interface NavbarProps {
   backgroundColor?: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, backgroundColor }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  drawerWidth,
+  onDrawerToggle,
+  backgroundColor,
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { isLoggingOut, logout } = useLogout();
@@ -65,7 +69,9 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
           zIndex: 1300,
         }}
       >
-        <Toolbar sx={{ justifyContent: isMobile ? 'space-between' : 'flex-start' }}>
+        <Toolbar
+          sx={{ justifyContent: isMobile ? 'space-between' : 'flex-start' }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -75,10 +81,24 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
           >
             <ChevronLeftIcon />
           </IconButton>
-          <Box sx={{ display: 'flex', gap: 2, flexGrow: 1, justifyContent: isMobile ? 'center' : 'flex-start' }}>
-            {navbarLinks.map(link => (
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              flexGrow: 1,
+              justifyContent: isMobile ? 'center' : 'flex-start',
+            }}
+          >
+            {navbarLinks.map((link) => (
               <Link key={link.label} href={link.href} passHref>
-                <Typography variant="body1" sx={{ cursor: 'pointer', color: 'inherit', fontSize: isMobile ? '0.875rem' : '1rem' }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    cursor: 'pointer',
+                    color: 'inherit',
+                    fontSize: isMobile ? '0.875rem' : '1rem',
+                  }}
+                >
                   {link.label}
                 </Typography>
               </Link>
@@ -114,7 +134,11 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
                 }}
               />
             </Typography>
-            <Typography variant="body1" sx={{ cursor: 'pointer' }} onClick={handleClick}>
+            <Typography
+              variant="body1"
+              sx={{ cursor: 'pointer' }}
+              onClick={handleClick}
+            >
               Profile
             </Typography>
             <Menu
@@ -166,7 +190,13 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
                 }}
               >
                 {isLoggingOut ? (
-                  <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      width: '100%',
+                    }}
+                  >
                     <CircularProgress size={24} sx={{ color: 'white' }} />
                   </Box>
                 ) : (
@@ -186,7 +216,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle, background
         open={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         userId="current-user"
-        onCustomizationUpdated={() => { }}
+        onCustomizationUpdated={() => {}}
       />
     </>
   );

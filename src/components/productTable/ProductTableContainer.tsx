@@ -27,29 +27,33 @@ const ProductTableContainer: React.FC = () => {
     // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(
-        product =>
-          product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (product) =>
+          product.productName
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
           product.barcode.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Apply category filter
     if (categoryFilter !== 'All') {
-      filtered = filtered.filter(product => product.color === categoryFilter);
+      filtered = filtered.filter((product) => product.color === categoryFilter);
     }
 
     // Apply rating filter
     if (ratingFilter !== 'All') {
       const ratingValue = parseInt(ratingFilter);
-      filtered = filtered.filter(product => Math.floor(product.rating) === ratingValue);
+      filtered = filtered.filter(
+        (product) => Math.floor(product.rating) === ratingValue
+      );
     }
 
     // Apply status filter
     if (statusFilter !== 'All') {
       if (statusFilter === 'Available') {
-        filtered = filtered.filter(product => product.status === true);
+        filtered = filtered.filter((product) => product.status === true);
       } else if (statusFilter === 'Out of Stock') {
-        filtered = filtered.filter(product => product.status === false);
+        filtered = filtered.filter((product) => product.status === false);
       }
     }
 
@@ -57,22 +61,35 @@ const ProductTableContainer: React.FC = () => {
     if (priceFilter !== 'All') {
       switch (priceFilter) {
         case 'R10-R100':
-          filtered = filtered.filter(product => product.price >= 10 && product.price <= 100);
+          filtered = filtered.filter(
+            (product) => product.price >= 10 && product.price <= 100
+          );
           break;
         case 'R100-R500':
-          filtered = filtered.filter(product => product.price >= 100 && product.price <= 500);
+          filtered = filtered.filter(
+            (product) => product.price >= 100 && product.price <= 500
+          );
           break;
         case 'R500-R1000':
-          filtered = filtered.filter(product => product.price >= 500 && product.price <= 1000);
+          filtered = filtered.filter(
+            (product) => product.price >= 500 && product.price <= 1000
+          );
           break;
         case 'R1000+':
-          filtered = filtered.filter(product => product.price > 1000);
+          filtered = filtered.filter((product) => product.price > 1000);
           break;
       }
     }
 
     return filtered;
-  }, [products, searchQuery, categoryFilter, ratingFilter, statusFilter, priceFilter]);
+  }, [
+    products,
+    searchQuery,
+    categoryFilter,
+    ratingFilter,
+    statusFilter,
+    priceFilter,
+  ]);
 
   // Memoize paginated products
   const paginatedProducts = useMemo(() => {
@@ -125,7 +142,9 @@ const ProductTableContainer: React.FC = () => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -155,7 +174,7 @@ const ProductTableContainer: React.FC = () => {
     doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 22);
 
     // Prepare data for the table
-    const tableData = filteredProducts.map(product => [
+    const tableData = filteredProducts.map((product) => [
       product.productName,
       product.barcode,
       product.sku || '-',
@@ -170,7 +189,16 @@ const ProductTableContainer: React.FC = () => {
     autoTable(doc, {
       startY: 30,
       head: [
-        ['Product Name', 'ID Code', 'SKU', 'Price', 'Status', 'Rating', 'Color', 'Created At'],
+        [
+          'Product Name',
+          'ID Code',
+          'SKU',
+          'Price',
+          'Status',
+          'Rating',
+          'Color',
+          'Created At',
+        ],
       ],
       body: tableData,
       theme: 'grid',

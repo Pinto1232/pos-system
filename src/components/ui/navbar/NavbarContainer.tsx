@@ -32,8 +32,8 @@ const NavbarContainer: React.FC = () => {
         }}
         slotProps={{
           backdrop: {
-            'aria-hidden': 'true'
-          }
+            'aria-hidden': 'true',
+          },
         }}
       >
         <Box role="presentation" tabIndex={-1}>

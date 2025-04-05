@@ -39,15 +39,20 @@ const currencySymbols: Record<string, string> = {
   Kz: 'Kz',
 };
 
-const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selectedPackage }) => {
+const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
+  selectedPackage,
+}) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } = useSpinner();
-  const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || 'USD');
+  const [currentCurrency, setCurrentCurrency] = useState<string>(
+    selectedPackage.currency || 'USD'
+  );
 
-  const IconComponent = iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
+  const IconComponent =
+    iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
 
   const handleSelectedEnterprisePackage = async () => {
     setSpinnerLoading(true);
@@ -57,7 +62,7 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
       currency: currentCurrency,
     });
     // Simulate backend call
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
     setSpinnerLoading(false);
     setSuccess(true);
@@ -84,13 +89,17 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
   };
 
   // Parse multiCurrencyPrices if provided
-  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
-    ? JSON.parse(selectedPackage.multiCurrencyPrices)
-    : null;
+  const multiCurrency: Record<string, number> | null =
+    selectedPackage.multiCurrencyPrices
+      ? JSON.parse(selectedPackage.multiCurrencyPrices)
+      : null;
 
   const displayPrice =
-    currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
-  const currencySymbol = currentCurrency === 'Kz' ? 'Kz' : currencySymbols[currentCurrency] || '$';
+    currentCurrency && multiCurrency
+      ? multiCurrency[currentCurrency]
+      : selectedPackage.price;
+  const currencySymbol =
+    currentCurrency === 'Kz' ? 'Kz' : currencySymbols[currentCurrency] || '$';
 
   if (showLoginForm) {
     return <LazyLoginForm />;
@@ -110,7 +119,9 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
         <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
-              {selectedPackage.icon && <IconComponent className={styles.packageIcon} />}
+              {selectedPackage.icon && (
+                <IconComponent className={styles.packageIcon} />
+              )}
               <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
@@ -124,7 +135,10 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
               </Typography>
 
               <Box className={styles.enterpriseBox}>
-                <Typography variant="subtitle2" className={styles.enterpriseBoxLabel}>
+                <Typography
+                  variant="subtitle2"
+                  className={styles.enterpriseBoxLabel}
+                >
                   YOUR TOTAL IN ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.enterpriseBoxAmount}>
@@ -139,7 +153,10 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
 
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
-                  <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
+                  <Typography
+                    variant="subtitle2"
+                    className={styles.multiCurrencyLabel}
+                  >
                     Prices in other currencies:
                   </Typography>
                   <FormGroup row>

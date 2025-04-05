@@ -49,7 +49,9 @@ const initialProducts: Product[] = [
   },
 ];
 
-export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [products, setProducts] = useState<Product[]>(() => {
     const savedProducts = localStorage.getItem('products');
     return savedProducts ? JSON.parse(savedProducts) : initialProducts;
@@ -60,21 +62,27 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [products]);
 
   const addProduct = (product: Product) => {
-    setProducts(prevProducts => [...prevProducts, product]);
+    setProducts((prevProducts) => [...prevProducts, product]);
   };
 
   const updateProduct = (updatedProduct: Product) => {
-    setProducts(prevProducts =>
-      prevProducts.map(product => (product.id === updatedProduct.id ? updatedProduct : product))
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product
+      )
     );
   };
 
   const deleteProduct = (productId: number) => {
-    setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
+    setProducts((prevProducts) =>
+      prevProducts.filter((product) => product.id !== productId)
+    );
   };
 
   return (
-    <ProductContext.Provider value={{ products, addProduct, updateProduct, deleteProduct }}>
+    <ProductContext.Provider
+      value={{ products, addProduct, updateProduct, deleteProduct }}
+    >
       {children}
     </ProductContext.Provider>
   );

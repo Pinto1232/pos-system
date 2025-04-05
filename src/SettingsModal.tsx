@@ -18,7 +18,10 @@ import Image from 'next/image';
 import { MdRestore } from 'react-icons/md';
 import { SketchPicker, ColorResult } from 'react-color';
 import { FaPaintBrush } from 'react-icons/fa';
-import { mockFetchCustomization, mockUpdateCustomization } from '@/api/mockUserCustomization';
+import {
+  mockFetchCustomization,
+  mockUpdateCustomization,
+} from '@/api/mockUserCustomization';
 
 export interface UserCustomization {
   id: number;
@@ -54,7 +57,9 @@ const DEFAULT_SIDEBAR_COLOR = '#173A79';
 const DEFAULT_LOGO_URL = '/Pisval_Logo.jpg';
 const DEFAULT_NAVBAR_COLOR = '#000000';
 
-const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
+const fetchCustomization = async (
+  userId: string
+): Promise<UserCustomization> => {
   return mockFetchCustomization(userId);
 };
 
@@ -106,7 +111,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       sidebarColor,
       navbarColor,
       logoUrl: logoPreview,
-    } as UserCustomization).then(updatedData => {
+    } as UserCustomization).then((updatedData) => {
       onCustomizationUpdated(updatedData);
       onClose();
     });
@@ -124,7 +129,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       case 'General Settings':
         return (
           <>
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 2,
+              }}
+            >
               {logoPreview && (
                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
                   <Image
@@ -147,17 +159,25 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   fontWeight: 'bold',
                   color: 'primary.main',
                   borderColor: 'primary.main',
-                  '&:hover': { backgroundColor: 'primary.light', borderColor: 'primary.main' },
+                  '&:hover': {
+                    backgroundColor: 'primary.light',
+                    borderColor: 'primary.main',
+                  },
                 }}
               >
                 Upload Logo
-                <input type="file" accept="image/*" onChange={handleLogoFileChange} hidden />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoFileChange}
+                  hidden
+                />
               </Button>
             </Box>
             <TextField
               label="Sidebar Color"
               value={sidebarColor}
-              onChange={e => setSidebarColor(e.target.value)}
+              onChange={(e) => setSidebarColor(e.target.value)}
               margin="normal"
               fullWidth
               sx={{ '& .MuiInputBase-root': { borderRadius: 4 } }}
@@ -170,7 +190,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                       fontSize: '1.5rem',
                       marginLeft: '8px',
                     }}
-                    onClick={() => setShowSidebarColorPicker(prev => !prev)}
+                    onClick={() => setShowSidebarColorPicker((prev) => !prev)}
                   />
                 ),
               }}
@@ -186,7 +206,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <TextField
               label="Navbar Color"
               value={navbarColor}
-              onChange={e => setNavbarColor(e.target.value)}
+              onChange={(e) => setNavbarColor(e.target.value)}
               margin="normal"
               fullWidth
               sx={{ '& .MuiInputBase-root': { borderRadius: 4 } }}
@@ -199,7 +219,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                       fontSize: '1.5rem',
                       marginLeft: '8px',
                     }}
-                    onClick={() => setShowNavbarColorPicker(prev => !prev)}
+                    onClick={() => setShowNavbarColorPicker((prev) => !prev)}
                   />
                 ),
               }}
@@ -215,20 +235,46 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           </>
         );
       case 'Business Information':
-        return <Typography>Business Information settings will be available soon.</Typography>;
+        return (
+          <Typography>
+            Business Information settings will be available soon.
+          </Typography>
+        );
       case 'Tax & VAT Configuration':
-        return <Typography>Tax & VAT Configuration settings will be available soon.</Typography>;
+        return (
+          <Typography>
+            Tax & VAT Configuration settings will be available soon.
+          </Typography>
+        );
       case 'Currency & Regional Settings':
-        return <Typography>Currency & Regional Settings will be available soon.</Typography>;
+        return (
+          <Typography>
+            Currency & Regional Settings will be available soon.
+          </Typography>
+        );
       case 'User & Role Management':
-        return <Typography>User & Role Management settings will be available soon.</Typography>;
+        return (
+          <Typography>
+            User & Role Management settings will be available soon.
+          </Typography>
+        );
       case 'Email & Notification Settings':
-        return <Typography>Email & Notification Settings will be available soon.</Typography>;
+        return (
+          <Typography>
+            Email & Notification Settings will be available soon.
+          </Typography>
+        );
       case 'System Backup & Restore':
-        return <Typography>System Backup & Restore options will be available soon.</Typography>;
+        return (
+          <Typography>
+            System Backup & Restore options will be available soon.
+          </Typography>
+        );
       case 'API & Third-Party Integrations':
         return (
-          <Typography>API & Third-Party Integrations settings will be available soon.</Typography>
+          <Typography>
+            API & Third-Party Integrations settings will be available soon.
+          </Typography>
         );
       default:
         return <Typography>Select a setting from the sidebar.</Typography>;
@@ -248,7 +294,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       fullWidth
       sx={{ '& .MuiDialog-paper': { borderRadius: 8, padding: 2 } }}
     >
-      <DialogTitle sx={{ fontSize: '1.2rem', fontWeight: 'bold', textAlign: 'center' }}>
+      <DialogTitle
+        sx={{ fontSize: '1.2rem', fontWeight: 'bold', textAlign: 'center' }}
+      >
         Settings
       </DialogTitle>
       <DialogContent dividers sx={{ display: 'flex', padding: 0 }}>
@@ -262,16 +310,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           }}
         >
           <List component="nav" aria-label="settings categories">
-            {settingsItems.map(item => (
+            {settingsItems.map((item) => (
               <ListItemButton
                 key={item.label}
                 onClick={() => setSelectedSetting(item.label)}
                 selected={selectedSetting === item.label}
                 sx={{
                   borderLeft:
-                    selectedSetting === item.label ? '4px solid #173A79' : '4px solid transparent',
+                    selectedSetting === item.label
+                      ? '4px solid #173A79'
+                      : '4px solid transparent',
                   bgcolor:
-                    selectedSetting === item.label ? 'rgba(23, 58, 121, 0.08)' : 'transparent',
+                    selectedSetting === item.label
+                      ? 'rgba(23, 58, 121, 0.08)'
+                      : 'transparent',
                   '&:hover': {
                     bgcolor: 'rgba(23, 58, 121, 0.04)',
                   },
@@ -284,19 +336,34 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         </Box>
 
         {/* Settings Content */}
-        <Box sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
           {isLoading && <Typography>Loading customization...</Typography>}
           {error && <Typography color="error">{error.message}</Typography>}
           {data && renderSettingContent()}
         </Box>
       </DialogContent>
-      <DialogActions sx={{ justifyContent: 'space-between', padding: '16px 24px' }}>
+      <DialogActions
+        sx={{ justifyContent: 'space-between', padding: '16px 24px' }}
+      >
         <Button onClick={onClose} sx={{ textTransform: 'none' }}>
           Cancel
         </Button>
         <Button
           onClick={handleReset}
-          sx={{ textTransform: 'none', display: 'flex', alignItems: 'center', gap: 1 }}
+          sx={{
+            textTransform: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+          }}
         >
           <MdRestore /> Reset to Default
         </Button>

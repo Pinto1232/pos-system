@@ -2,7 +2,6 @@
 
 import React, { Suspense, useEffect, useState } from 'react';
 import styles from './Jumbotron.module.css';
-import Image from 'next/image';
 
 interface JumbotronProps {
   heading: string;
@@ -19,7 +18,9 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
   overlayColor = 'rgba(0, 0, 0, 0.6)',
   height = '500px',
 }) => {
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1024
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -41,36 +42,15 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
   return (
     <div
       className={styles.jumbotronContainer}
-      style={{
-        height: getResponsiveHeight(),
-        position: 'relative',
-        overflow: 'hidden',
-      }}
+      style={{ height: getResponsiveHeight() }}
     >
       <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: overlayColor,
-          zIndex: 1,
-        }}
+        className={styles.overlay}
+        style={{ backgroundColor: overlayColor }}
       />
       <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          zIndex: 0,
-        }}
+        className={styles.backgroundImage}
+        style={{ backgroundImage: `url(${backgroundImage})` }}
       />
       <div className={styles.content}>
         <h1 className={styles.heading}>{heading}</h1>

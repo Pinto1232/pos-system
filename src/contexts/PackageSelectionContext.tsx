@@ -28,7 +28,9 @@ const PackageSelectionContext = createContext<PackageSelectionContextType>({
   closeModal: () => {},
 });
 
-export const PackageSelectionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PackageSelectionProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

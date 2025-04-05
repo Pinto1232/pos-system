@@ -15,7 +15,9 @@ export interface UserCustomization {
   navbarColor: string;
 }
 
-const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
+const fetchCustomization = async (
+  userId: string
+): Promise<UserCustomization> => {
   return mockFetchCustomization(userId);
 };
 
@@ -44,7 +46,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     queryFn: () => fetchCustomization(userId),
   });
 
-  const [customization, setCustomization] = useState<UserCustomization | null>(null);
+  const [customization, setCustomization] = useState<UserCustomization | null>(
+    null
+  );
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
   const [activeSection, setActiveSection] = useState('Dashboard');
 
@@ -62,7 +66,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     setOpenSettingsModal(false);
   };
 
-  const sidebarBackground = customization?.sidebarColor || backgroundColor || '#173A79';
+  const sidebarBackground =
+    customization?.sidebarColor || backgroundColor || '#173A79';
   const logoUrl = customization?.logoUrl || '/Pisval_Logo.jpg';
   const navbarBg = customization?.navbarColor || navbarBgColor || '#000000';
 
@@ -81,7 +86,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         iconColor={iconColor}
         onSettingsClick={handleSettingsClick}
         onSectionSelect={setActiveSection}
-        handleItemClick={item => console.log(`Item clicked: ${item}`)}
+        handleItemClick={(item) => console.log(`Item clicked: ${item}`)}
         logoUrl={logoUrl}
       />
       <Box

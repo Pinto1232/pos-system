@@ -9,7 +9,7 @@ import {
   Avatar,
   Switch,
 } from '@mui/material';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import AddIcon from '@mui/icons-material/Add';
 import StorefrontIcon from '@mui/icons-material/Storefront';
@@ -35,8 +35,12 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   onDeleteItem,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [viewingProduct, setViewingProduct] = React.useState<Product | null>(null);
-  const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
+  const [viewingProduct, setViewingProduct] = React.useState<Product | null>(
+    null
+  );
+  const [editingProduct, setEditingProduct] = React.useState<Product | null>(
+    null
+  );
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -84,7 +88,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'image',
       headerName: 'Image',
       width: 100,
-      renderCell: params => (
+      renderCell: (params) => (
         <Avatar
           src={params.value || '/placeholder-image.png'}
           alt={params.row.productName}
@@ -125,17 +129,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       renderCell: (params) => {
         const price = params.row.price !== undefined ? params.row.price : 0;
         return <span>R{Number(price).toFixed(2)}</span>;
-      }
+      },
     },
     {
       field: 'statusProduct',
       headerName: 'Status Product',
       flex: 1,
       minWidth: 130,
-      renderCell: params => (
+      renderCell: (params) => (
         <Switch
           checked={params.value === 'Active'}
-          onChange={e => {
+          onChange={(e) => {
             const updatedProduct = {
               ...params.row,
               statusProduct: e.target.checked ? 'Active' : 'Inactive',
@@ -184,17 +188,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               })}
             </span>
           );
-        } catch (error) {
+        } catch {
           return <span>{params.row.createdAt || '-'}</span>;
         }
-      }
+      },
     },
     {
       field: 'actions',
       headerName: 'Actions',
       flex: 1,
       minWidth: 150,
-      renderCell: params => (
+      renderCell: (params) => (
         <Box sx={{ display: 'flex', gap: 1 }}>
           <IconButton
             size="small"
@@ -226,13 +230,15 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   ];
 
   return (
-    <Box sx={{
-      width: '100%',
-      maxWidth: '100%',
-      overflowX: 'hidden',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: '100%',
+        overflowX: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <S.Container>
         <S.ProductListSection>
           <S.HeaderSection>
@@ -247,7 +253,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               >
                 Inventory
               </Typography>
-              <S.ExportButton startIcon={<QrCodeScannerIcon />}>Export Product</S.ExportButton>
+              <S.ExportButton startIcon={<QrCodeScannerIcon />}>
+                Export Product
+              </S.ExportButton>
             </S.HeaderWrapper>
           </S.HeaderSection>
 
@@ -267,7 +275,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           </S.TableHeaderRow>
 
           <S.ButtonGroup>
-            <S.AddItemButton variant="contained" onClick={handleOpenModal} startIcon={<AddIcon />}>
+            <S.AddItemButton
+              variant="contained"
+              onClick={handleOpenModal}
+              startIcon={<AddIcon />}
+            >
               Add item manually
             </S.AddItemButton>
             <S.QrCodeButton variant="contained">
@@ -303,10 +315,13 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 disableColumnMenu
                 rowHeight={60}
                 columnHeaderHeight={56}
-                getRowId={row => row.id}
-                onStateChange={state => {
+                getRowId={(row) => row.id}
+                onStateChange={(state) => {
                   console.log('ProductEdit - DataGrid state:', state);
-                  console.log('ProductEdit - Current products in DataGrid:', products);
+                  console.log(
+                    'ProductEdit - Current products in DataGrid:',
+                    products
+                  );
                 }}
                 sx={{
                   border: 'none',
@@ -452,7 +467,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               </Typography>
             </Box>
 
-            <S.CollectPaymentButton variant="contained" onClick={onCollectPayment}>
+            <S.CollectPaymentButton
+              variant="contained"
+              onClick={onCollectPayment}
+            >
               Collect Payment
             </S.CollectPaymentButton>
 

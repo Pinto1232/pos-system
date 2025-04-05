@@ -39,15 +39,20 @@ const currencySymbols: Record<string, string> = {
   Kz: 'Kz',
 };
 
-const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({ selectedPackage }) => {
+const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
+  selectedPackage,
+}) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } = useSpinner();
-  const [currentCurrency, setCurrentCurrency] = useState<string>(selectedPackage.currency || 'USD');
+  const [currentCurrency, setCurrentCurrency] = useState<string>(
+    selectedPackage.currency || 'USD'
+  );
 
-  const IconComponent = iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
+  const IconComponent =
+    iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
 
   const handleSelectedGrowthPackage = async () => {
     setSpinnerLoading(true);
@@ -58,7 +63,7 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({ selectedPacka
     });
     // Simulate backend
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setLoading(false);
     setSpinnerLoading(false);
     setSuccess(true);
@@ -84,13 +89,17 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({ selectedPacka
     setCurrentCurrency(currency);
   };
 
-  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
-    ? JSON.parse(selectedPackage.multiCurrencyPrices)
-    : null;
+  const multiCurrency: Record<string, number> | null =
+    selectedPackage.multiCurrencyPrices
+      ? JSON.parse(selectedPackage.multiCurrencyPrices)
+      : null;
 
   const displayPrice =
-    currentCurrency && multiCurrency ? multiCurrency[currentCurrency] : selectedPackage.price;
-  const currencySymbol = currentCurrency === 'Kz' ? 'Kz' : currencySymbols[currentCurrency] || '$';
+    currentCurrency && multiCurrency
+      ? multiCurrency[currentCurrency]
+      : selectedPackage.price;
+  const currencySymbol =
+    currentCurrency === 'Kz' ? 'Kz' : currencySymbols[currentCurrency] || '$';
 
   // Early return: if showLoginForm is true, render LazyLoginForm only
   if (showLoginForm) {
@@ -111,7 +120,9 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({ selectedPacka
         <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
-              {selectedPackage.icon && <IconComponent className={styles.packageIcon} />}
+              {selectedPackage.icon && (
+                <IconComponent className={styles.packageIcon} />
+              )}
               <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
@@ -125,7 +136,10 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({ selectedPacka
               </Typography>
 
               <Box className={styles.growthBox}>
-                <Typography variant="subtitle2" className={styles.growthBoxLabel}>
+                <Typography
+                  variant="subtitle2"
+                  className={styles.growthBoxLabel}
+                >
                   YOUR TOTAL IN ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.growthBoxAmount}>
@@ -140,7 +154,10 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({ selectedPacka
 
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
-                  <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
+                  <Typography
+                    variant="subtitle2"
+                    className={styles.multiCurrencyLabel}
+                  >
                     Prices in other currencies:
                   </Typography>
                   <FormGroup row>

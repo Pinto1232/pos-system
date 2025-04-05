@@ -2,7 +2,12 @@
 import axios from 'axios';
 import { SpinnerContext } from '@/contexts/SpinnerContext';
 import { useContext, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient, UseMutationResult } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseMutationResult,
+} from '@tanstack/react-query';
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -17,7 +22,7 @@ const useApiClient = () => {
 
   useEffect(() => {
     const requestInterceptor = apiClient.interceptors.request.use(
-      config => {
+      (config) => {
         try {
           const token = localStorage.getItem('accessToken');
           if (token) {
@@ -34,23 +39,23 @@ const useApiClient = () => {
         console.log('Request headers:', config.headers);
         return config;
       },
-      error => {
+      (error) => {
         console.error('Request Error:', error);
         return Promise.reject(error);
       }
     );
 
     const responseInterceptor = apiClient.interceptors.response.use(
-      async response => {
+      async (response) => {
         if (spinnerContext) {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise((resolve) => setTimeout(resolve, 500));
           spinnerContext.setLoading(false);
         }
         return response;
       },
-      async error => {
+      async (error) => {
         if (spinnerContext) {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise((resolve) => setTimeout(resolve, 500));
           spinnerContext.setLoading(false);
           spinnerContext.setError('Failed to load data from the server.');
         }
@@ -66,19 +71,29 @@ const useApiClient = () => {
           case 401:
             console.warn('Unauthorized: Token may be expired.');
             localStorage.removeItem('accessToken');
-            return Promise.reject(new Error('Unauthorized. Please log in again.'));
+            return Promise.reject(
+              new Error('Unauthorized. Please log in again.')
+            );
           case 403:
-            console.warn('Forbidden: You do not have permission to access this resource.');
-            return Promise.reject(new Error('Forbidden. You do not have access.'));
+            console.warn(
+              'Forbidden: You do not have permission to access this resource.'
+            );
+            return Promise.reject(
+              new Error('Forbidden. You do not have access.')
+            );
           case 404:
             console.warn('Not Found:', data);
             return Promise.reject(new Error('Requested resource not found.'));
           case 500:
             console.error('Server Error:', data);
-            return Promise.reject(new Error('Internal server error. Try again later.'));
+            return Promise.reject(
+              new Error('Internal server error. Try again later.')
+            );
           default:
             console.error('API Error:', data);
-            return Promise.reject(new Error(data?.message || 'An unknown error occurred.'));
+            return Promise.reject(
+              new Error(data?.message || 'An unknown error occurred.')
+            );
         }
       }
     );
@@ -115,7 +130,10 @@ const useApiClient = () => {
   const useUpdateCustomization = <TData = unknown>() => {
     return useMutation<TData, Error, Record<string, unknown>>({
       mutationFn: async (customization: Record<string, unknown>) => {
-        const { data } = await apiClient.post<TData>('/api/UserCustomization', customization);
+        const { data } = await apiClient.post<TData>(
+          '/api/UserCustomization',
+          customization
+        );
         return data;
       },
       onSuccess: () => {

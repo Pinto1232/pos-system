@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Product } from './types';
 import {
   Dialog,
@@ -164,7 +164,7 @@ const StyledDialogContent = styled(DialogContent)({
       backgroundColor: '#E9ECEF',
       opacity: 1,
     },
-  }
+  },
 });
 
 const StyledDialogActions = styled(DialogActions)({
@@ -270,7 +270,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
   product,
   mode = 'add',
 }) => {
-  const defaultFormData = {
+  const defaultFormData = useMemo(() => ({
     productName: '',
     color: 'Black',
     idCode: '',
@@ -280,10 +280,15 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     rating: '',
     image: '',
     createdAt: new Date(),
-  };
+  }), []);
 
   const [formData, setFormData] = useState<FormData>(defaultFormData);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const resetForm = useCallback(() => {
+    setFormData(defaultFormData);
+    setPreviewImage(null);
+  }, [defaultFormData]);
 
   useEffect(() => {
     if (product && (mode === 'view' || mode === 'edit')) {
@@ -300,18 +305,18 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
       });
       setPreviewImage(product.image || null);
     } else {
-      setFormData(defaultFormData);
-      setPreviewImage(null);
+      resetForm();
     }
-  }, [product, mode, open]);
+  }, [product, mode, open, resetForm]);
 
   const handleTextChange =
-    (field: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFormData({
-        ...formData,
-        [field]: event.target.value,
-      });
-    };
+    (field: string) =>
+      (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({
+          ...formData,
+          [field]: event.target.value,
+        });
+      };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -362,8 +367,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     };
     onSubmit(newProduct);
     // Reset form data to defaults
-    setFormData(defaultFormData);
-    setPreviewImage(null);
+    resetForm();
   };
 
   return (
@@ -372,9 +376,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
         open={open}
         onClose={() => {
           onClose();
-          // Reset form data when closing
-          setFormData(defaultFormData);
-          setPreviewImage(null);
+          resetForm();
         }}
         maxWidth="md"
         fullWidth
@@ -401,7 +403,11 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                     onChange={handleImageUpload}
                   />
                   <label htmlFor="image-upload">
-                    <Stack direction="column" alignItems="center" spacing={0.25}>
+                    <Stack
+                      direction="column"
+                      alignItems="center"
+                      spacing={0.25}
+                    >
                       <CloudUploadIcon
                         sx={{
                           fontSize: 20,
@@ -511,7 +517,11 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   onChange={handleTextChange('price')}
                   variant="outlined"
                   InputProps={{
-                    startAdornment: <Typography sx={{ mr: 1, color: '#6C757D' }}>R</Typography>,
+                    startAdornment: (
+                      <Typography sx={{ mr: 1, color: '#6C757D' }}>
+                        R
+                      </Typography>
+                    ),
                   }}
                   disabled={mode === 'view'}
                 />
@@ -524,10 +534,12 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   control={
                     <Switch
                       checked={formData.statusProduct === 'Active'}
-                      onChange={e => {
+                      onChange={(e) => {
                         setFormData({
                           ...formData,
-                          statusProduct: e.target.checked ? 'Active' : 'Inactive',
+                          statusProduct: e.target.checked
+                            ? 'Active'
+                            : 'Inactive',
                         });
                       }}
                       disabled={mode === 'view'}
@@ -546,7 +558,8 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                           backgroundColor: 'rgba(82, 183, 136, 0.08)',
                         },
                       },
-                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                      {
                         backgroundColor: '#52B788',
                       },
                     },

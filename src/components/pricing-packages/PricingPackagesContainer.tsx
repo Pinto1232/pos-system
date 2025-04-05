@@ -5,7 +5,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useApiClient } from '@/api/axiosClient';
 import styles from './PricingPackages.module.css';
 import PricingPackageCard from './PricingPackageCard';
-import { usePackageSelection, type Package } from '@/contexts/PackageSelectionContext';
+import {
+  usePackageSelection,
+  type Package,
+} from '@/contexts/PackageSelectionContext';
 import { AxiosInstance } from 'axios';
 import { PricePackages } from '@/components/pricing-packages/types';
 import { fetchCurrencyAndRate } from '@/utils/currencyUtils';
@@ -13,7 +16,10 @@ import { fetchCurrencyAndRate } from '@/utils/currencyUtils';
 const PricingPackagesContainer: React.FC = () => {
   const { apiClient } = useApiClient();
   const { selectPackage } = usePackageSelection();
-  const [currencyInfo, setCurrencyInfo] = useState<{ currency: string; rate: number }>({
+  const [currencyInfo, setCurrencyInfo] = useState<{
+    currency: string;
+    rate: number;
+  }>({
     currency: 'USD',
     rate: 1,
   });
@@ -33,7 +39,7 @@ const PricingPackagesContainer: React.FC = () => {
     queryKey: ['pricingPackages'],
     queryFn: () => fetchPricingPackages(apiClient, 1, 10),
     retry: 3,
-    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   useEffect(() => {
@@ -51,7 +57,8 @@ const PricingPackagesContainer: React.FC = () => {
     }
   }, [data]);
 
-  if (isLoading) return <div className={styles.loading}>Loading pricing packages...</div>;
+  if (isLoading)
+    return <div className={styles.loading}>Loading pricing packages...</div>;
   if (error) {
     return (
       <div className={styles.error}>
@@ -63,9 +70,15 @@ const PricingPackagesContainer: React.FC = () => {
     );
   }
 
-  const packages = (data?.data ?? []).map(pkg => {
+  const packages = (data?.data ?? []).map((pkg) => {
     const type = pkg.type || pkg.packageType || 'starter';
-    const validType = ['starter', 'growth', 'enterprise', 'custom', 'premium'].includes(type)
+    const validType = [
+      'starter',
+      'growth',
+      'enterprise',
+      'custom',
+      'premium',
+    ].includes(type)
       ? (type as 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium')
       : 'starter';
 
@@ -83,7 +96,7 @@ const PricingPackagesContainer: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {packages.map(pkg => (
+      {packages.map((pkg) => (
         <PricingPackageCard
           key={pkg.id}
           packageData={pkg}

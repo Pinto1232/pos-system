@@ -7,7 +7,7 @@ export const useLogout = () => {
     setIsLoggingOut(true);
     try {
       // Simulate logout process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       // Redirect using window.location for client-side navigation
       window.location.href = '/';
     } catch (error) {
