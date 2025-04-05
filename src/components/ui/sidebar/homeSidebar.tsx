@@ -34,7 +34,7 @@ import styles from './Sidebar.module.css';
 export interface SidebarProps {
   drawerWidth: number;
   isDrawerOpen: boolean;
-  onDrawerToggle?: () => void; // Mark as optional
+  onDrawerToggle?: () => void;
   onSectionSelect: (section: string) => void;
   onSettingsClick?: () => void;
   backgroundColor?: string;
@@ -60,7 +60,9 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
     <Drawer anchor="left" open={isSidebarOpen} onClose={toggleSidebar} className={styles.sidebar}>
       <Paper className={styles.sidebarContainer}>
         <Box className={styles.sidebarHeader}>
-          <Avatar src="/logo.svg" alt="Logo" className={styles.logo} />
+          <Box className={styles.logo}>
+            <Avatar src="/logo.svg" alt="Logo" />
+          </Box>
           <Typography variant="h6" className={styles.title}>
             Pisval Tech POS
           </Typography>
@@ -81,17 +83,18 @@ const Sidebar: React.FC<SidebarProps> = memo(({ activeItem, handleItemClick }) =
             <ListItem
               key={item}
               onClick={() => handleItemClick(item)}
-              className={`${styles.listItem} ${activeItem === item ? `${styles.activeItem} ${item === 'reporting' ? 'reporting' : ''}` : ''}`}
+              className={`${styles.listItem} ${activeItem === item ? styles.activeItem : ''}`}
             >
               <ListItemIcon className={styles.listItemIcon}>{icons[item]}</ListItemIcon>
               <ListItemText
                 primary={item.charAt(0).toUpperCase() + item.slice(1)}
                 primaryTypographyProps={{
-                  className: `${styles.listItemText} ${activeItem === item ? styles.activeText : ''}`,
+                  className: styles.listItemText,
                 }}
               />
-              {item === 'reporting' &&
-                (activeItem === 'reporting' ? <ExpandLess /> : <ExpandMore />)}
+              {item === 'reporting' && (
+                activeItem === 'reporting' ? <ExpandLess /> : <ExpandMore />
+              )}
             </ListItem>
           ))}
 

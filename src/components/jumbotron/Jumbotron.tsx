@@ -2,6 +2,7 @@
 
 import React, { Suspense, useEffect, useState } from 'react';
 import styles from './Jumbotron.module.css';
+import Image from 'next/image';
 
 interface JumbotronProps {
   heading: string;
@@ -18,7 +19,6 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
   overlayColor = 'rgba(0, 0, 0, 0.6)',
   height = '500px',
 }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
 
   useEffect(() => {
@@ -29,12 +29,6 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = backgroundImage;
-    img.onload = () => setImageLoaded(true);
-  }, [backgroundImage]);
 
   // Calculate responsive height based on screen width
   const getResponsiveHeight = () => {
@@ -48,16 +42,36 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
     <div
       className={styles.jumbotronContainer}
       style={{
-        backgroundImage: imageLoaded
-          ? `linear-gradient(${overlayColor}, ${overlayColor}), url(${backgroundImage})`
-          : overlayColor,
         height: getResponsiveHeight(),
-        backgroundBlendMode: 'overlay',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: overlayColor,
+          zIndex: 1,
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: 0,
+        }}
+      />
       <div className={styles.content}>
         <h1 className={styles.heading}>{heading}</h1>
         <p className={styles.subheading}>{subheading}</p>

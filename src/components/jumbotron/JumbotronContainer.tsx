@@ -18,7 +18,7 @@ const JumbotronContainer: React.FC<JumbotronContainerProps> = ({
   const finalSubheading =
     subheading || 'Streamline Sales, Manage Inventory, and Grow with Confidence!';
   const finalBackground = backgroundImage || '/pos_banner.jpg';
-  const finalOverlay = overlayColor || 'rgba(0, 0, 0, 0.4)';
+  const finalOverlay = overlayColor || 'rgba(0, 0, 0, 0.7)';
 
   return (
     <Jumbotron

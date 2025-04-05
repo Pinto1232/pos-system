@@ -28,7 +28,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <>
                   <NavbarContainer />
                   <LazyJumbotron
-                    heading="Point of Sale System"
+                    heading="Pisval Tech Point of Sale System"
                     subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
                     backgroundImage="/pos_banner.jpg"
                     overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
