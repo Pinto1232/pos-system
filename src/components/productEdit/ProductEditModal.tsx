@@ -66,31 +66,105 @@ const StyledDialogContent = styled(DialogContent)({
   '& .MuiTextField-root': {
     marginBottom: '0',
     '& .MuiOutlinedInput-root': {
-      borderRadius: '12px',
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#F8F9FA',
+      border: '1px solid #E9ECEF',
+      borderRadius: '0',
       transition: 'all 0.2s ease-in-out',
-      '&:hover .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#52B788',
-        borderWidth: '1.5px',
+      '& fieldset': {
+        border: 'none',
+        borderRadius: '0',
       },
-      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#52B788',
-        borderWidth: '2px',
-        boxShadow: '0 0 0 4px rgba(82, 183, 136, 0.1)',
+      '&:hover': {
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #52B788',
+      },
+      '&.Mui-focused': {
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #52B788',
+        boxShadow: '0 0 0 3px rgba(82, 183, 136, 0.1)',
+      },
+      '& input': {
+        padding: '12px 16px',
+        fontSize: '14px',
+        '&::placeholder': {
+          color: '#ADB5BD',
+          opacity: 1,
+        },
+      },
+      '& .MuiInputAdornment-root': {
+        marginLeft: '16px',
+        marginRight: '-4px',
+        '& .MuiTypography-root': {
+          fontSize: '14px',
+          color: '#6C757D',
+        },
       },
     },
     '& .MuiInputLabel-root': {
-      color: '#6C757D',
-      transition: 'all 0.2s ease-in-out',
+      color: '#495057',
+      fontSize: '14px',
+      fontWeight: 500,
+      transform: 'translate(16px, 13px) scale(1)',
       '&.Mui-focused': {
         color: '#52B788',
-        transform: 'translate(14px, -9px) scale(0.75)',
+        transform: 'translate(16px, -9px) scale(0.75)',
+      },
+      '&.MuiInputLabel-shrink': {
+        transform: 'translate(16px, -9px) scale(0.75)',
       },
     },
   },
   '& .MuiSelect-root': {
-    borderRadius: '12px',
+    backgroundColor: '#F8F9FA',
+    borderRadius: '0',
   },
+  '& .MuiDatePicker-root .MuiOutlinedInput-root': {
+    backgroundColor: '#F8F9FA',
+    border: '1px solid #E9ECEF',
+    borderRadius: '0',
+    '& fieldset': {
+      border: 'none',
+      borderRadius: '0',
+    },
+    '&:hover': {
+      backgroundColor: '#FFFFFF',
+      border: '1px solid #52B788',
+    },
+    '&.Mui-focused': {
+      backgroundColor: '#FFFFFF',
+      border: '1px solid #52B788',
+      boxShadow: '0 0 0 3px rgba(82, 183, 136, 0.1)',
+    },
+  },
+  '& .MuiSwitch-root': {
+    width: 42,
+    height: 24,
+    padding: 0,
+    '& .MuiSwitch-switchBase': {
+      padding: 0,
+      margin: 2,
+      transitionDuration: '300ms',
+      '&.Mui-checked': {
+        transform: 'translateX(18px)',
+        color: '#fff',
+        '& + .MuiSwitch-track': {
+          backgroundColor: '#52B788',
+          opacity: 1,
+          border: 0,
+        },
+      },
+    },
+    '& .MuiSwitch-thumb': {
+      boxSizing: 'border-box',
+      width: 20,
+      height: 20,
+    },
+    '& .MuiSwitch-track': {
+      borderRadius: 26 / 2,
+      backgroundColor: '#E9ECEF',
+      opacity: 1,
+    },
+  }
 });
 
 const StyledDialogActions = styled(DialogActions)({
@@ -155,19 +229,17 @@ const FormRow = styled(Box)({
 const FormField = styled(Box)({
   flex: 1,
   position: 'relative',
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    bottom: '-8px',
-    left: '0',
+  '& .MuiFormControl-root': {
     width: '100%',
-    height: '1px',
-    background: 'linear-gradient(to right, transparent, rgba(82, 183, 136, 0.1), transparent)',
-    opacity: 0,
-    transition: 'opacity 0.3s ease-in-out',
   },
-  '&:hover::after': {
-    opacity: 1,
+  '& .MuiFormControlLabel-root': {
+    marginLeft: 0,
+    marginRight: 0,
+    '& .MuiFormControlLabel-label': {
+      fontSize: '14px',
+      fontWeight: 500,
+      color: '#495057',
+    },
   },
 });
 
@@ -198,7 +270,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
   product,
   mode = 'add',
 }) => {
-  const [formData, setFormData] = useState<FormData>({
+  const defaultFormData = {
     productName: '',
     color: 'Black',
     idCode: '',
@@ -208,8 +280,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     rating: '',
     image: '',
     createdAt: new Date(),
-  });
+  };
 
+  const [formData, setFormData] = useState<FormData>(defaultFormData);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -226,8 +299,11 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
         createdAt: new Date(product.createdAt || new Date()),
       });
       setPreviewImage(product.image || null);
+    } else {
+      setFormData(defaultFormData);
+      setPreviewImage(null);
     }
-  }, [product, mode]);
+  }, [product, mode, open]);
 
   const handleTextChange =
     (field: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -282,15 +358,27 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
       status: formData.statusProduct === 'Active',
       rating: parseFloat(formData.rating) || 0,
       image: formData.image || '/placeholder-image.png',
-      createdAt: new Date().toISOString(),
+      createdAt: formData.createdAt.toISOString(),
     };
     onSubmit(newProduct);
-    onClose();
+    // Reset form data to defaults
+    setFormData(defaultFormData);
+    setPreviewImage(null);
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <StyledDialog open={open} onClose={onClose} aria-labelledby="product-dialog">
+      <StyledDialog
+        open={open}
+        onClose={() => {
+          onClose();
+          // Reset form data when closing
+          setFormData(defaultFormData);
+          setPreviewImage(null);
+        }}
+        maxWidth="md"
+        fullWidth
+      >
         <StyledDialogTitle id="product-dialog">
           {mode === 'view' ? 'View Product' : 'Add New Product'}
         </StyledDialogTitle>
@@ -381,6 +469,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 <TextField
                   fullWidth
                   label="Product Name"
+                  placeholder="Enter product name"
                   value={formData.productName}
                   onChange={handleTextChange('productName')}
                   variant="outlined"
@@ -391,6 +480,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 <TextField
                   fullWidth
                   label="ID Code"
+                  placeholder="Enter ID code"
                   value={formData.idCode}
                   onChange={handleTextChange('idCode')}
                   variant="outlined"
@@ -404,6 +494,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 <TextField
                   fullWidth
                   label="SKU"
+                  placeholder="Enter SKU"
                   value={formData.sku}
                   onChange={handleTextChange('sku')}
                   variant="outlined"
@@ -414,6 +505,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 <TextField
                   fullWidth
                   label="Price"
+                  placeholder="0.00"
                   type="number"
                   value={formData.price}
                   onChange={handleTextChange('price')}
@@ -518,7 +610,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 backgroundColor: '#52B788',
                 fontWeight: 600,
                 padding: '8px 24px',
-                borderRadius: '12px',
+                borderRadius: '0',
                 boxShadow: 'none',
                 '&:hover': {
                   backgroundColor: '#429670',

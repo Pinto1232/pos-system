@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Box } from '@mui/material';
 import ProductEdit from './ProductEdit';
 import { Product } from './types';
 
@@ -18,7 +19,7 @@ const ProductEditContainer: React.FC = () => {
   const [subTotalState, setSubTotalState] = useState(0);
   const [discountState, setDiscountState] = useState(0);
 
-  const handleAddItem = (newProduct: Omit<Product, 'stock' | 'sales' | 'discount'>) => {
+  const handleAddItem = (newProduct: Omit<Product, 'stock' | 'sales' | 'discount'>, resetForm: () => void) => {
     console.log('ProductEditContainer - Adding new product:', newProduct);
     const productWithDefaults: Product = {
       ...newProduct,
@@ -37,6 +38,9 @@ const ProductEditContainer: React.FC = () => {
     setProductsState(prevProducts => [...prevProducts, productWithDefaults]);
     setItemNoState(prev => prev + 1);
     setSubTotalState(prev => prev + productWithDefaults.price);
+
+    // Reset the form after successful submission
+    resetForm();
   };
 
   const handleUpdateItem = (updatedProduct: Omit<Product, 'stock' | 'sales' | 'discount'>) => {
@@ -44,11 +48,11 @@ const ProductEditContainer: React.FC = () => {
       prevProducts.map(product =>
         product.id === updatedProduct.id
           ? {
-              ...updatedProduct,
-              stock: product.stock || 0,
-              sales: product.sales || 0,
-              discount: product.discount || 0,
-            }
+            ...updatedProduct,
+            stock: product.stock || 0,
+            sales: product.sales || 0,
+            discount: product.discount || 0,
+          }
           : product
       )
     );
@@ -90,20 +94,31 @@ const ProductEditContainer: React.FC = () => {
   const total = subTotalState - discountState;
 
   return (
-    <ProductEdit
-      products={productsState}
-      onAddItem={handleAddItem}
-      onUpdateItem={handleUpdateItem}
-      onDeleteItem={handleDeleteItem}
-      onNewSession={handleNewSession}
-      onCollectPayment={handleCollectPayment}
-      onAddDiscount={handleAddDiscount}
-      onCancelSession={handleCancelSession}
-      subTotal={subTotalState}
-      discount={discountState}
-      total={total}
-      itemNo={itemNoState}
-    />
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: '100%',
+        overflowX: 'hidden',
+        margin: 0,
+        padding: 0,
+        boxSizing: 'border-box'
+      }}
+    >
+      <ProductEdit
+        products={productsState}
+        onAddItem={handleAddItem}
+        onUpdateItem={handleUpdateItem}
+        onDeleteItem={handleDeleteItem}
+        onNewSession={handleNewSession}
+        onCollectPayment={handleCollectPayment}
+        onAddDiscount={handleAddDiscount}
+        onCancelSession={handleCancelSession}
+        subTotal={subTotalState}
+        discount={discountState}
+        total={total}
+        itemNo={itemNoState}
+      />
+    </Box>
   );
 };
 
