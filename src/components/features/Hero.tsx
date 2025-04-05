@@ -12,6 +12,14 @@ interface HeroProps {
 }
 
 function Hero({ heading, subheading, ctaPrimary, ctaSecondary, ladyImage }: HeroProps) {
+  const formattedSubheading = subheading.split('\n\n').map((paragraph, index) => (
+    <React.Fragment key={index}>
+      {paragraph}
+      {index < subheading.split('\n\n').length - 1 && <br />}
+      {index < subheading.split('\n\n').length - 1 && <br />}
+    </React.Fragment>
+  ));
+
   return (
     <Box className={styles.heroContainer__wrapper}>
       <Box className={styles.heroContainer}>
@@ -20,7 +28,7 @@ function Hero({ heading, subheading, ctaPrimary, ctaSecondary, ladyImage }: Hero
             {heading}
           </Typography>
           <Typography variant="subtitle1" className={styles.heroSubheading}>
-            {subheading}
+            {formattedSubheading}
           </Typography>
 
           <Box className={styles.heroButtons}>

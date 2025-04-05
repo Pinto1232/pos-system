@@ -5,15 +5,30 @@ import FeaturesSlider from '@/components/slider/FeaturesSlider';
 
 export default function Home() {
   const heading = `Packages`;
+  const description = 'Choose the perfect package that suits your business needs. Our flexible pricing options are designed to scale with your growth.';
+
   return (
     <div>
       <Box>
         <Box textAlign="center" mt={5}>
           <Typography
-            sx={{ color: '#000' }}
+            sx={{ color: '#000', marginBottom: '0.5rem' }}
             variant="h4"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
+          <Typography
+            sx={{
+              color: '#4b5563',
+              maxWidth: '600px',
+              margin: '0 auto',
+              marginBottom: '0.2rem',
+              fontSize: '1.1rem',
+              lineHeight: 1.6,
+              fontWeight: 400,
+            }}
+          >
+            {description}
+          </Typography>
         </Box>
         <PricingPackagesContainer />
         <HeroContainer />

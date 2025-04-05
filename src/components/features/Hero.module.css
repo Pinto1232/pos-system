@@ -22,24 +22,76 @@
 }
 
 .heroTextSection h1 {
-  font-size: 2.5rem;
-  line-height: 1.4;
+  font-size: 2rem;
+  line-height: 1.2;
   margin-bottom: 1.5rem;
+  white-space: nowrap;
 }
 
 .highlightedText {
-  color: #3b82f6;
-  background: linear-gradient(90deg, #3b82f6, #3b82f6);
+  color: #4287f5;
+  font-weight: 700;
+  font-size: 3.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  display: inline;
+}
+
+.emphasis {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+  font-size: 2.2rem;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.heading {
+  font-size: 3rem;
+  line-height: 1.2;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+}
+
+.subheading {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  font-weight: 400;
+}
+
+.heroTextSection p {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #4b5563;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  font-weight: 400;
+  white-space: pre-line;
 }
 
 .heroSubheading {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: #444;
+  font-size: 1.125rem !important;
+  line-height: 1.8 !important;
+  color: #4b5563 !important;
   margin-bottom: 2rem;
+  max-width: 600px;
+  font-weight: 400 !important;
+  letter-spacing: 0.2px;
+  text-align: left;
+}
+
+.heroSubheading br {
+  display: block;
+  content: "";
+  margin-top: 1rem;
 }
 
 .heroButtons {
@@ -83,7 +135,8 @@
 .heroLadyImage {
   border-radius: 8px;
   z-index: 1;
-  animation: float 3s ease-in-out infinite; /* Added animation */
+  animation: float 3s ease-in-out infinite;
+  /* Added animation */
 }
 
 .heroPhoneImage {
@@ -122,9 +175,11 @@
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-10px);
   }
+
   100% {
     transform: translateY(0);
   }
