@@ -22,6 +22,13 @@
   max-width: 480px;
 }
 
+.checkoutRightWrapper {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid #eaeaea;
+}
+
 .checkoutContent {
   margin-top: 2.5rem;
 }
@@ -61,108 +68,130 @@
 }
 
 .paymentDetails {
-  margin-top: 2rem;
-  background-color: #f8fafc;
-  padding: 1.5rem;
-  border-radius: 12px;
+  margin-top: 1.5rem;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 5px;
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .paymentMethodLabel {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  transition: all 0.2s ease;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   background-color: #ffffff;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .paymentMethodLabel:hover {
-  background-color: #f1f5f9;
-  transform: translateX(4px);
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.paymentMethodLabel.Mui-checked {
+  background-color: #f0f7ff;
+  border-color: #2563eb;
 }
 
 .paymentMethodIcon {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  flex: 1;
+  gap: 1.25rem;
   min-width: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .paymentMethodCards {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-left: 1rem;
+  gap: 0;
+  margin-left: auto;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.paymentMethodLabel:not(:has(.paymentMethodCards)) .paymentMethodIcon {
+  width: 200%;
+  justify-content: space-between;
+}
+
+.paymentMethodLabel:not(:has(.paymentMethodCards)) .paymentMethodIcon svg {
+  font-size: 1.5rem;
+}
+
+.paymentMethodLabel:not(:has(.paymentMethodCards)) .paymentMethodIcon span {
+  font-weight: 500;
+  color: #1e293b;
 }
 
 .paymentMethodImage {
-  width: 60px !important;
-  height: 25px !important;
+  width: 50px !important;
+  height: 20px !important;
   object-fit: contain;
+  opacity: 0.8;
+  transition: opacity 0.15s ease;
+  margin-left: 1.5rem;
 }
 
-.checkoutButton {
-  width: auto !important;
-  min-width: 160px !important;
-  margin: 1.5rem auto 0 !important;
-  padding: 0.5rem 1.5rem !important;
-  background-color: #2563eb !important;
-  color: white !important;
-  font-weight: 600 !important;
-  text-transform: none !important;
-  border-radius: 8px !important;
-  transition: all 0.2s ease !important;
-  font-size: 0.95rem !important;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
-  display: block !important;
+
+.paymentMethodImage+.paymentMethodImage {
+  margin-left: 0;
 }
 
-.checkoutButton:hover {
-  background-color: #1d4ed8 !important;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3) !important;
+.paymentMethodLabel:hover .paymentMethodImage {
+  opacity: 1;
 }
 
-/* Style overrides for Material-UI components */
-:global(.MuiTextField-root) {
-  margin-bottom: 1.25rem;
+/* Credit card form specific styles */
+.paymentDetails form {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  margin-top: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
-:global(.MuiTextField-root .MuiOutlinedInput-root) {
-  border-radius: 12px;
-  background-color: #ffffff;
+.paymentDetails form .MuiTextField-root {
+  margin-bottom: 0;
 }
 
-:global(.MuiFormControlLabel-root) {
-  margin: 0.5rem 0 !important;
-  padding: 0 !important;
-  width: 100% !important;
+.paymentDetails form .MuiGrid-container {
+  gap: 1rem;
 }
 
-:global(.MuiFormControlLabel-label) {
-  width: 100% !important;
+/* Scrollbar styles */
+.paymentDetails::-webkit-scrollbar {
+  width: 4px;
 }
 
-:global(.MuiRadio-root) {
-  color: #2563eb !important;
-  padding: 8px !important;
+.paymentDetails::-webkit-scrollbar-track {
+  background: #f1f5f9;
 }
 
-:global(.MuiRadio-root.Mui-checked) {
-  color: #2563eb !important;
+.paymentDetails::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
 }
 
-:global(.MuiTypography-root) {
-  font-family:
-    'Inter',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    sans-serif !important;
+.paymentDetails::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
 }
 
 /* Responsive styles */
@@ -183,8 +212,6 @@
 
   .checkoutLeft {
     padding-right: 0;
-    border-right: none;
-    border-bottom: 1px solid #eaeaea;
     padding-bottom: 2rem;
   }
 
@@ -199,6 +226,14 @@
     padding: 1.25rem;
   }
 
+  .paymentMethodLabel {
+    padding: 0.875rem;
+  }
+
+  .paymentDetails form {
+    padding: 1rem;
+  }
+
   .paymentMethodCards {
     margin-left: 0.5rem;
   }
@@ -207,4 +242,25 @@
     width: 100% !important;
     min-width: unset !important;
   }
+}
+
+.checkoutButton {
+  width: 200px !important;
+  margin: 1rem auto 0 !important;
+  padding: 0.375rem 1.25rem !important;
+  background-color: #2563eb !important;
+  color: white !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+  font-size: 0.9rem !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
+  display: block !important;
+}
+
+.checkoutButton:hover {
+  background-color: #1d4ed8 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3) !important;
 }

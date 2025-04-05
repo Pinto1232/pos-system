@@ -12,6 +12,7 @@ import {
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useLoginForm } from '@/contexts/LoginFormContext';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
+import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 import styles from './Navbar.module.css';
 
 export interface NavbarProps {
@@ -26,6 +27,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
   const { toggleSidebar } = useSidebar();
   const { toggleLoginForm } = useLoginForm();
   const { testPeriod } = useTestPeriod();
+  const { selectedPackage } = usePackageSelection();
   const [remainingTime, setRemainingTime] = useState(testPeriod * 24 * 60 * 60); // convert days to seconds
 
   useEffect(() => {
@@ -60,8 +62,27 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
 
         <Box className={styles.testPeriodBox}>
           <TimeIcon className={styles.icon} />
-          <Typography variant="body2">
-            Test Period: {formatTime(remainingTime)} remaining
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 500,
+              letterSpacing: '0.3px',
+              fontSize: '0.875rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <span style={{ fontWeight: 700, opacity: 0.95 }}>Test Period:</span>
+            <span style={{
+              fontWeight: 800,
+              fontSize: '1.125rem',
+              letterSpacing: '0.5px',
+              color: selectedPackage ? '#F59E0B' : '#ffffff'
+            }}>
+              {formatTime(remainingTime)}
+            </span>
+            <span style={{ opacity: 0.85 }}>remaining</span>
           </Typography>
         </Box>
 
