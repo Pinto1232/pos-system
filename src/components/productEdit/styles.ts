@@ -102,7 +102,8 @@ export const CollectPaymentButton = styled(ActionButton)({
   backgroundColor: '#52B788',
   color: '#fff',
   fontSize: '15px',
-  padding: '16px',
+  borderRadius: '1',
+  padding: '5px',
   '&:hover': {
     backgroundColor: '#429670',
   },
