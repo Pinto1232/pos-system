@@ -65,7 +65,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     if (editingProduct) {
       onUpdateItem(data);
     } else {
-      onAddItem(data);
+      onAddItem(data, handleCloseModal);
     }
     handleCloseModal();
   };
@@ -100,40 +100,32 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'productName',
       headerName: 'Product Name',
       flex: 2,
-      minWidth: 200,
+      minWidth: 90,
     },
     {
       field: 'sku',
       headerName: 'SKU',
       flex: 1,
-      minWidth: 120,
+      minWidth: 90,
     },
     {
       field: 'barcode',
       headerName: 'ID Code',
       flex: 1,
-      minWidth: 130,
+      minWidth: 100,
     },
     {
       field: 'price',
       headerName: 'Price',
       flex: 1,
-      minWidth: 100,
+      minWidth: 90,
       type: 'number',
       align: 'left',
       headerAlign: 'left',
-      valueFormatter: (params: GridRenderCellParams) => {
-        const value = params.value;
-        if (typeof value === 'number') {
-          return `R${value.toFixed(2)}`;
-        }
-        return 'R0.00';
-      },
-      valueGetter: (params: GridRenderCellParams) => {
-        if (!params || !params.row) return 0;
-        const row = params.row as Product;
-        return row?.price ?? 0;
-      },
+      renderCell: (params) => {
+        const price = params.row.price !== undefined ? params.row.price : 0;
+        return <span>R{Number(price).toFixed(2)}</span>;
+      }
     },
     {
       field: 'statusProduct',
@@ -170,7 +162,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'rating',
       headerName: 'Rating',
       flex: 1,
-      minWidth: 100,
+      minWidth: 20,
       type: 'number',
       align: 'left',
       headerAlign: 'left',
@@ -179,7 +171,23 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'createdAt',
       headerName: 'Created At',
       flex: 1,
-      minWidth: 150,
+      minWidth: 120,
+      renderCell: (params) => {
+        try {
+          const date = new Date(params.row.createdAt);
+          return (
+            <span>
+              {date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </span>
+          );
+        } catch (error) {
+          return <span>{params.row.createdAt || '-'}</span>;
+        }
+      }
     },
     {
       field: 'actions',
@@ -218,255 +226,283 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   ];
 
   return (
-    <S.Container>
-      <S.ProductListSection>
-        <S.HeaderSection>
-          <S.HeaderWrapper>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                fontSize: '20px',
-                color: '#1E2A3B',
-              }}
+    <Box sx={{
+      width: '100%',
+      maxWidth: '100%',
+      overflowX: 'hidden',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <S.Container>
+        <S.ProductListSection>
+          <S.HeaderSection>
+            <S.HeaderWrapper>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '20px',
+                  color: '#1E2A3B',
+                }}
+              >
+                Inventory
+              </Typography>
+              <S.ExportButton startIcon={<QrCodeScannerIcon />}>Export Product</S.ExportButton>
+            </S.HeaderWrapper>
+          </S.HeaderSection>
+
+          <S.TableHeaderRow>
+            <S.CheckboxCell>
+              <Checkbox size="small" />
+            </S.CheckboxCell>
+            <S.StandardCell>Image</S.StandardCell>
+            <S.ProductNameCell>Product Name</S.ProductNameCell>
+            <S.StandardCell>SKU</S.StandardCell>
+            <S.StandardCell>ID Code</S.StandardCell>
+            <S.StandardCell>Price</S.StandardCell>
+            <S.StandardCell>Status Product</S.StandardCell>
+            <S.StandardCell>Rating</S.StandardCell>
+            <S.StandardCell>Created At</S.StandardCell>
+            <S.StandardCell>Actions</S.StandardCell>
+          </S.TableHeaderRow>
+
+          <S.ButtonGroup>
+            <S.AddItemButton variant="contained" onClick={handleOpenModal} startIcon={<AddIcon />}>
+              Add item manually
+            </S.AddItemButton>
+            <S.QrCodeButton variant="contained">
+              <QrCodeScannerIcon />
+            </S.QrCodeButton>
+            <S.NewSessionButton
+              variant="contained"
+              onClick={onNewSession}
+              startIcon={<StorefrontIcon />}
             >
-              Inventory
-            </Typography>
-            <S.ExportButton startIcon={<QrCodeScannerIcon />}>Export Product</S.ExportButton>
-          </S.HeaderWrapper>
-        </S.HeaderSection>
+              New Session
+            </S.NewSessionButton>
+          </S.ButtonGroup>
 
-        <S.TableHeaderRow>
-          <S.CheckboxCell>
-            <Checkbox size="small" />
-          </S.CheckboxCell>
-          <S.StandardCell>Image</S.StandardCell>
-          <S.ProductNameCell>Product Name</S.ProductNameCell>
-          <S.StandardCell>SKU</S.StandardCell>
-          <S.StandardCell>ID Code</S.StandardCell>
-          <S.StandardCell>Price</S.StandardCell>
-          <S.StandardCell>Status Product</S.StandardCell>
-          <S.StandardCell>Rating</S.StandardCell>
-          <S.StandardCell>Created At</S.StandardCell>
-          <S.StandardCell>Actions</S.StandardCell>
-        </S.TableHeaderRow>
+          {products.length === 0 ? (
+            <S.EmptyStateWrapper>
+              <S.EmptyStateIcon>
+                <StorefrontIcon />
+              </S.EmptyStateIcon>
+              <Typography variant="body1" color="textSecondary">
+                No items added yet.
+              </Typography>
+            </S.EmptyStateWrapper>
+          ) : (
+            <S.ProductTable>
+              <DataGrid
+                rows={products}
+                columns={columns}
+                autoHeight
+                hideFooter
+                disableRowSelectionOnClick
+                checkboxSelection={false}
+                disableColumnMenu
+                rowHeight={60}
+                columnHeaderHeight={56}
+                getRowId={row => row.id}
+                onStateChange={state => {
+                  console.log('ProductEdit - DataGrid state:', state);
+                  console.log('ProductEdit - Current products in DataGrid:', products);
+                }}
+                sx={{
+                  border: 'none',
+                  '& .MuiDataGrid-root': {
+                    border: 'none',
+                  },
+                  '& .MuiDataGrid-row:hover': {
+                    backgroundColor: '#F8F9FA',
+                  },
+                  '& .MuiDataGrid-cell:focus': {
+                    outline: 'none',
+                  },
+                  '& .MuiDataGrid-columnHeader:focus': {
+                    outline: 'none',
+                  },
+                  '& .MuiDataGrid-main': {
+                    width: '100%',
+                    overflow: 'visible',
+                  },
+                  '& .MuiDataGrid-virtualScroller': {
+                    overflow: 'auto !important',
+                    '&::-webkit-scrollbar': {
+                      width: '8px',
+                      height: '0px', // Hide horizontal scrollbar
+                    },
+                    '&::-webkit-scrollbar-track': {
+                      background: '#f1f1f1',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: '#888',
+                      borderRadius: '4px',
+                    },
+                  },
+                }}
+                slotProps={{
+                  basePopper: {
+                    sx: {
+                      zIndex: 1300,
+                    },
+                  },
+                }}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 10,
+                    },
+                  },
+                }}
+                processRowUpdate={(newRow, oldRow) => {
+                  if (!newRow || !oldRow) return oldRow;
+                  console.log('Updating row:', { newRow, oldRow });
+                  return newRow;
+                }}
+                aria-label="Product inventory table"
+              />
+            </S.ProductTable>
+          )}
+        </S.ProductListSection>
 
-        <S.ButtonGroup>
-          <S.AddItemButton variant="contained" onClick={handleOpenModal} startIcon={<AddIcon />}>
-            Add item manually
-          </S.AddItemButton>
-          <S.QrCodeButton variant="contained">
-            <QrCodeScannerIcon />
-          </S.QrCodeButton>
-          <S.NewSessionButton
-            variant="contained"
-            onClick={onNewSession}
-            startIcon={<StorefrontIcon />}
-          >
-            New Session
-          </S.NewSessionButton>
-        </S.ButtonGroup>
+        <S.TotalSection>
+          <Stack spacing={3}>
+            <Box>
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                gutterBottom
+                sx={{ fontSize: '13px', marginBottom: '8px' }}
+              >
+                Item No.
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  color: '#1E2A3B',
+                }}
+              >
+                {itemNo}
+              </Typography>
+            </Box>
 
-        {products.length === 0 ? (
-          <S.EmptyStateWrapper>
-            <S.EmptyStateIcon>
-              <StorefrontIcon />
-            </S.EmptyStateIcon>
-            <Typography variant="body1" color="textSecondary">
-              No items added yet.
-            </Typography>
-          </S.EmptyStateWrapper>
-        ) : (
-          <S.ProductTable>
-            <DataGrid
-              rows={products}
-              columns={columns}
-              autoHeight
-              hideFooter
-              disableRowSelectionOnClick
-              checkboxSelection={false}
-              disableColumnMenu
-              rowHeight={60}
-              columnHeaderHeight={56}
-              getRowId={row => row.id}
-              onStateChange={state => {
-                console.log('ProductEdit - DataGrid state:', state);
-                console.log('ProductEdit - Current products in DataGrid:', products);
-              }}
-              sx={{
-                '& .MuiDataGrid-row:hover': {
+            <Box>
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                gutterBottom
+                sx={{ fontSize: '13px', marginBottom: '8px' }}
+              >
+                Sub Total (Incld. Tax)
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  color: '#1E2A3B',
+                }}
+              >
+                R{subTotal.toFixed(2)}
+              </Typography>
+            </Box>
+
+            <Box>
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                gutterBottom
+                sx={{ fontSize: '13px', marginBottom: '8px' }}
+              >
+                Discount
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  color: '#1E2A3B',
+                }}
+              >
+                ${discount.toFixed(2)}
+              </Typography>
+            </Box>
+
+            <Box>
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                gutterBottom
+                sx={{ fontSize: '13px', marginBottom: '8px' }}
+              >
+                Total
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  color: '#1E2A3B',
+                }}
+              >
+                ${total.toFixed(2)}
+              </Typography>
+            </Box>
+
+            <S.CollectPaymentButton variant="contained" onClick={onCollectPayment}>
+              Collect Payment
+            </S.CollectPaymentButton>
+
+            <Stack direction="row" spacing={1}>
+              <Button
+                variant="contained"
+                color="inherit"
+                fullWidth
+                onClick={onAddDiscount}
+                sx={{
+                  textTransform: 'none',
+                  fontSize: '14px',
+                  flexWrap: 'nowrap',
                   backgroundColor: '#F8F9FA',
-                },
-                '& .MuiDataGrid-cell:focus': {
-                  outline: 'none',
-                },
-                '& .MuiDataGrid-columnHeader:focus': {
-                  outline: 'none',
-                },
-                '& .MuiDataGrid-main': {
-                  position: 'relative',
-                  zIndex: 0,
-                },
-              }}
-              slotProps={{
-                basePopper: {
-                  sx: {
-                    zIndex: 1300,
+                  color: '#1E2A3B',
+                  '&:hover': {
+                    backgroundColor: '#E9ECEF',
                   },
-                },
-              }}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 10,
+                }}
+              >
+                Add Discount
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                fullWidth
+                onClick={onCancelSession}
+                sx={{
+                  textTransform: 'none',
+                  backgroundColor: '#DC3545',
+                  '&:hover': {
+                    backgroundColor: '#C82333',
                   },
-                },
-              }}
-              processRowUpdate={(newRow, oldRow) => {
-                if (!newRow || !oldRow) return oldRow;
-                console.log('Updating row:', { newRow, oldRow });
-                return newRow;
-              }}
-              aria-label="Product inventory table"
-            />
-          </S.ProductTable>
-        )}
-      </S.ProductListSection>
-
-      <S.TotalSection>
-        <Stack spacing={3}>
-          <Box>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              gutterBottom
-              sx={{ fontSize: '13px', marginBottom: '8px' }}
-            >
-              Item No.
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                fontSize: '24px',
-                color: '#1E2A3B',
-              }}
-            >
-              {itemNo}
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              gutterBottom
-              sx={{ fontSize: '13px', marginBottom: '8px' }}
-            >
-              Sub Total (Incld. Tax)
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                fontSize: '24px',
-                color: '#1E2A3B',
-              }}
-            >
-              R{subTotal.toFixed(2)}
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              gutterBottom
-              sx={{ fontSize: '13px', marginBottom: '8px' }}
-            >
-              Discount
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                fontSize: '24px',
-                color: '#1E2A3B',
-              }}
-            >
-              ${discount.toFixed(2)}
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              gutterBottom
-              sx={{ fontSize: '13px', marginBottom: '8px' }}
-            >
-              Total
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-                fontSize: '24px',
-                color: '#1E2A3B',
-              }}
-            >
-              ${total.toFixed(2)}
-            </Typography>
-          </Box>
-
-          <S.CollectPaymentButton variant="contained" onClick={onCollectPayment}>
-            Collect Payment
-          </S.CollectPaymentButton>
-
-          <Stack direction="row" spacing={1}>
-            <Button
-              variant="contained"
-              color="inherit"
-              fullWidth
-              onClick={onAddDiscount}
-              sx={{
-                textTransform: 'none',
-                backgroundColor: '#F8F9FA',
-                color: '#1E2A3B',
-                '&:hover': {
-                  backgroundColor: '#E9ECEF',
-                },
-              }}
-            >
-              Add Discount
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              fullWidth
-              onClick={onCancelSession}
-              sx={{
-                textTransform: 'none',
-                backgroundColor: '#DC3545',
-                '&:hover': {
-                  backgroundColor: '#C82333',
-                },
-              }}
-            >
-              Cancel Session
-            </Button>
+                }}
+              >
+                Cancel Session
+              </Button>
+            </Stack>
           </Stack>
-        </Stack>
-      </S.TotalSection>
+        </S.TotalSection>
 
-      <ProductEditModal
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        onSubmit={handleSubmitProduct}
-        product={viewingProduct || editingProduct}
-        mode={viewingProduct ? 'view' : editingProduct ? 'edit' : 'add'}
-      />
-    </S.Container>
+        <ProductEditModal
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          onSubmit={handleSubmitProduct}
+          product={viewingProduct || editingProduct}
+          mode={viewingProduct ? 'view' : editingProduct ? 'edit' : 'add'}
+        />
+      </S.Container>
+    </Box>
   );
 };
 

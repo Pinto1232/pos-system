@@ -13,6 +13,7 @@ import { TestPeriodProvider } from '@/contexts/TestPeriodContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const isDashboard = pathname === '/dashboard';
@@ -23,16 +24,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <PackageSelectionProvider>
           <SidebarProvider>
             <TestPeriodProvider>
-              {!isDashboard && <NavbarContainer />}
               {!isDashboard && (
-                <LazyJumbotron
-                  heading="Point of Sale System"
-                  subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
-                  backgroundImage="/pos_banner.jpg"
-                  overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
-                />
+                <>
+                  <NavbarContainer />
+                  <LazyJumbotron
+                    heading="Point of Sale System"
+                    subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
+                    backgroundImage="/pos_banner.jpg"
+                    overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
+                  />
+                  <SidebarContainer />
+                </>
               )}
-              {!isDashboard && <SidebarContainer />}
               <main>{children}</main>
               <PackageSelectionModal />
               {!isDashboard && <FooterContainer />}

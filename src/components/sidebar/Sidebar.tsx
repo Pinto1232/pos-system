@@ -16,14 +16,14 @@ const Sidebar: React.FC<SidebarProps> = ({
   textColor = '#fff',
   iconColor = '#fff',
   logoUrl = '/Pisval_Logo.jpg',
-  handleItemClick = () => {},
-  onDrawerToggle = () => {},
+  handleItemClick = () => { },
+  onDrawerToggle = () => { },
 }) => {
   const { setLoading } = useSpinner();
   const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
   const [activeItemState, setActiveItemState] = useState<string>('');
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [localDrawerOpen, setLocalDrawerOpen] = useState(isDrawerOpen);
 
   useEffect(() => {
@@ -208,6 +208,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              fontSize: isSmallScreen ? '0.875rem' : '1rem',
             }}
           >
             Pinto Manuel

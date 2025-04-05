@@ -2,32 +2,47 @@ import { styled } from '@mui/material/styles';
 import { Box, Button, Paper } from '@mui/material';
 
 export const Container = styled(Box)({
-  display: 'flex',
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) 360px',
   gap: '24px',
   padding: '24px',
-  width: '100%',
   backgroundColor: '#f5f5f5',
   minHeight: '100vh',
+  width: '100%',
+  boxSizing: 'border-box',
+  '@media (max-width: 1200px)': {
+    gridTemplateColumns: '1fr', 
+  }
 });
 
+
+
 export const ProductListSection = styled(Box)({
-  flex: '1',
+  minWidth: '0', 
+  width: '100%',
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
 });
 
+
 export const TotalSection = styled(Paper)({
-  width: '380px',
+  width: '100%',
   height: 'fit-content',
-  padding: '32px',
+  padding: '24px',
   display: 'flex',
   flexDirection: 'column',
-  gap: '32px',
+  gap: '24px',
   borderRadius: '12px',
   backgroundColor: '#fff',
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
+  position: 'sticky',
+  top: '24px',
+  '@media (max-width: 1200px)': {
+    position: 'static',
+  }
 });
+
 
 export const HeaderSection = styled(Box)({
   display: 'flex',
@@ -87,7 +102,8 @@ export const CollectPaymentButton = styled(ActionButton)({
   backgroundColor: '#52B788',
   color: '#fff',
   fontSize: '15px',
-  padding: '16px',
+  borderRadius: '1',
+  padding: '5px',
   '&:hover': {
     backgroundColor: '#429670',
   },
@@ -100,10 +116,7 @@ export const ProductTable = styled(Box)({
     backgroundColor: '#fff',
     borderRadius: '12px',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
-    '& .MuiDataGrid-row': {
-      maxHeight: '60px !important',
-      minHeight: '60px !important',
-    },
+    maxWidth: '100%',
   },
   '& .MuiDataGrid-columnHeaders': {
     backgroundColor: '#fff',
@@ -113,12 +126,18 @@ export const ProductTable = styled(Box)({
     lineHeight: '56px',
     '& .MuiDataGrid-columnHeader': {
       fontWeight: 600,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
     },
   },
   '& .MuiDataGrid-cell': {
     borderBottom: '1px solid #E0E0E0',
     color: '#1E2A3B',
     fontSize: '14px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   '& .MuiCheckbox-root': {
     color: '#1E2A3B',
