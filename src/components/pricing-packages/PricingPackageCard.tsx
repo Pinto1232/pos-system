@@ -25,35 +25,47 @@ interface PricingPackageProps {
 const PricingPackageCard: React.FC<PricingPackageProps> = memo(
   ({ packageData, onBuyNow, currency, rate }) => {
     const IconComponent = iconMap[packageData.icon] || iconMap['MUI:DefaultIcon'];
-
     const convertedPrice = (packageData.price * rate).toFixed(2);
+    const isCustom = packageData.type === 'custom';
+    const displayCurrency = currency === 'ZAR' ? 'R' : currency;
 
     return (
-      <Card className={styles.card}>
+      <Card className={`${styles.card} ${isCustom ? styles.custom : ''}`}>
+        {isCustom && <div className={styles.customBadge}>Custom</div>}
         <CardHeader className={styles.header}>
-          {IconComponent &&
-            React.createElement(IconComponent, { className: styles.icon, fontSize: 'large' })}
+          <div className={styles.iconWrapper}>
+            {IconComponent && React.createElement(IconComponent, { className: styles.icon })}
+          </div>
           <h2 className={styles.title}>{packageData.title}</h2>
         </CardHeader>
 
         <CardContent className={styles.content}>
           <ul>
             {packageData.description.split('. ').map((desc, index) => (
-              <li key={index}>{desc.replace(/[^a-zA-Z0-9\s]/g, ' ')}</li>
+              <li key={index}>{desc.trim()}</li>
             ))}
           </ul>
         </CardContent>
 
         <div className={styles.priceSection}>
-          <div className={styles.trial}>{packageData.testPeriodDays} days free trial</div>
+          {packageData.testPeriodDays > 0 && (
+            <div className={styles.trial}>
+              {packageData.testPeriodDays} days free trial
+            </div>
+          )}
           <div className={styles.price}>
-            {currency} {convertedPrice}/pm
+            <span className={styles.currency}>{displayCurrency}</span>
+            {convertedPrice}
+            <span className={styles.period}>/month</span>
           </div>
         </div>
 
         <CardFooter className={styles.footer}>
-          <Button className={styles.button} onClick={onBuyNow}>
-            Buy now
+          <Button
+            className={`${styles.button} ${isCustom ? styles.contactButton : ''}`}
+            onClick={onBuyNow}
+          >
+            {isCustom ? 'Contact Us' : 'Get Started'}
           </Button>
         </CardFooter>
       </Card>
