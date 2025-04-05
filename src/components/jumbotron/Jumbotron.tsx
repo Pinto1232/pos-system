@@ -15,10 +15,20 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
   heading,
   subheading,
   backgroundImage,
-  overlayColor = 'rgba(0, 0, 0, 0.5)',
+  overlayColor = 'rgba(0, 0, 0, 0.6)',
   height = '500px',
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const img = new Image();
@@ -26,17 +36,22 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
     img.onload = () => setImageLoaded(true);
   }, [backgroundImage]);
 
+  // Calculate responsive height based on screen width
+  const getResponsiveHeight = () => {
+    if (windowWidth <= 480) return '300px';
+    if (windowWidth <= 768) return '350px';
+    if (windowWidth <= 1024) return '400px';
+    return height;
+  };
+
   return (
     <div
       className={styles.jumbotronContainer}
       style={{
         backgroundImage: imageLoaded
-          ? `
-          ${overlayColor},
-          url(${backgroundImage})
-        `
+          ? `linear-gradient(${overlayColor}, ${overlayColor}), url(${backgroundImage})`
           : overlayColor,
-        height: height,
+        height: getResponsiveHeight(),
         backgroundBlendMode: 'overlay',
         backgroundSize: 'cover',
         backgroundPosition: 'center',

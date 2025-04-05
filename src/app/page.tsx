@@ -12,7 +12,13 @@ export default function Home() {
       <Box>
         <Box textAlign="center" mt={5}>
           <Typography
-            sx={{ color: '#000', marginBottom: '0.5rem' }}
+            sx={{
+              color: '#000',
+              marginBottom: '0.5rem',
+              fontWeight: 600,
+              fontSize: '2.5rem',
+              letterSpacing: '-0.02em'
+            }}
             variant="h4"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
