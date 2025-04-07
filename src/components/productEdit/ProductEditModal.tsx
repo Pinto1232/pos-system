@@ -270,17 +270,20 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
   product,
   mode = 'add',
 }) => {
-  const defaultFormData = useMemo(() => ({
-    productName: '',
-    color: 'Black',
-    idCode: '',
-    sku: '',
-    price: '',
-    statusProduct: 'Active',
-    rating: '',
-    image: '',
-    createdAt: new Date(),
-  }), []);
+  const defaultFormData = useMemo(
+    () => ({
+      productName: '',
+      color: 'Black',
+      idCode: '',
+      sku: '',
+      price: '',
+      statusProduct: 'Active',
+      rating: '',
+      image: '',
+      createdAt: new Date(),
+    }),
+    []
+  );
 
   const [formData, setFormData] = useState<FormData>(defaultFormData);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -311,12 +314,12 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
 
   const handleTextChange =
     (field: string) =>
-      (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({
-          ...formData,
-          [field]: event.target.value,
-        });
-      };
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormData({
+        ...formData,
+        [field]: event.target.value,
+      });
+    };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -559,9 +562,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                         },
                       },
                       '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
-                      {
-                        backgroundColor: '#52B788',
-                      },
+                        {
+                          backgroundColor: '#52B788',
+                        },
                     },
                   }}
                 />

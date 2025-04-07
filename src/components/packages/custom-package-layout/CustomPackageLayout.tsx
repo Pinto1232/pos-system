@@ -442,7 +442,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 return (
                   <Box
                     key={addOn.id}
-                    className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ''}`}
+                    className={`${styles.featureItem} ${
+                      isSelected ? styles.selectedFeature : ''
+                    }`}
                   >
                     <Button
                       className={styles.addOnsfeatureButton}

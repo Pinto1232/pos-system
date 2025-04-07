@@ -90,7 +90,9 @@ const Sidebar: React.FC<SidebarProps> = memo(
                 <ListItem
                   key={item}
                   onClick={() => handleItemClick(item)}
-                  className={`${styles.listItem} ${activeItem === item ? styles.activeItem : ''}`}
+                  className={`${styles.listItem} ${
+                    activeItem === item ? styles.activeItem : ''
+                  }`}
                 >
                   <ListItemIcon className={styles.listItemIcon}>
                     {icons[item]}

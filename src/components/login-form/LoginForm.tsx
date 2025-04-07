@@ -95,7 +95,9 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       <>
         {!isLoggedIn && (
           <Box
-            className={`${styles.LoginContainer} ${isFadingOut ? styles.fadeOut : ''}`}
+            className={`${styles.LoginContainer} ${
+              isFadingOut ? styles.fadeOut : ''
+            }`}
             sx={{
               position: 'relative',
               zIndex: isFadingOut ? 0 : 1,

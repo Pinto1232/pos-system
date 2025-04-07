@@ -24,7 +24,9 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
-      className={`${styles.button} ${className} ${styles[variant]} ${fullWidth ? styles.fullWidth : ''}`}
+      className={`${styles.button} ${className} ${styles[variant]} ${
+        fullWidth ? styles.fullWidth : ''
+      }`}
       onClick={onClick}
       type={type}
     >
