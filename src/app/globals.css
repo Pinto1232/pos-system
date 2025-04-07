@@ -92,3 +92,25 @@ a {
 .auth-error button:hover {
   background: #1e4a8e;
 }
+
+.MuiStepLabel-label {
+  white-space: nowrap !important;
+}
+
+.MuiStepLabel-iconContainer {
+  transform: scale(1.1) !important;
+}
+
+.MuiStepIcon-root {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.MuiStepLabel-label {
+  white-space: nowrap !important;
+  margin-top: 3px !important;
+}
+
+.MuiStepConnector-line {
+  margin-top: 3px !important;
+}
