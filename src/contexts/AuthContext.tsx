@@ -391,10 +391,6 @@ const AuthProvider = ({
           justifyContent: 'center',
           minHeight: '100vh',
           gap: 2,
-          backgroundImage: 'url(/pos_banner.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
         }}
       >
         <Typography
@@ -404,7 +400,7 @@ const AuthProvider = ({
             display: 'flex',
             alignItems: 'center',
             fontWeight: 500,
-            color: 'white',
+            color: 'text.primary',
           }}
         >
           Initializing authentication
