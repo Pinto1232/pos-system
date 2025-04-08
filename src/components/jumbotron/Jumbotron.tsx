@@ -24,13 +24,15 @@ const JumbotronComponent: React.FC<
   overlayColor = 'rgba(0, 0, 0, 0.6)',
   height = '500px',
 }) => {
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== 'undefined'
-      ? window.innerWidth
-      : 1024
-  );
+  // Initialize with null to avoid hydration mismatch
+  const [windowWidth, setWindowWidth] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
+    // Set the initial width after component mounts (client-side only)
+    setWindowWidth(window.innerWidth);
+
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -48,6 +50,10 @@ const JumbotronComponent: React.FC<
 
   // Calculate responsive height based on screen width
   const getResponsiveHeight = () => {
+    // Default height for server-side rendering
+    if (windowWidth === null) return height;
+
+    // Client-side responsive adjustments
     if (windowWidth <= 480) return '300px';
     if (windowWidth <= 768) return '350px';
     if (windowWidth <= 1024) return '400px';
@@ -80,7 +86,6 @@ const JumbotronComponent: React.FC<
     </div>
   );
 };
-
 const Jumbotron = React.memo(JumbotronComponent);
 
 const LazyJumbotron = (props: JumbotronProps) => (

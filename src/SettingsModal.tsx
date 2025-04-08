@@ -104,6 +104,8 @@ const SettingsModal: React.FC<
   ] = useState(false);
   const [selectedSetting, setSelectedSetting] =
     useState('General Settings');
+  const [selectedFile, setSelectedFile] =
+    useState<File | null>(null);
 
   useEffect(() => {
     if (data) {
@@ -117,6 +119,19 @@ const SettingsModal: React.FC<
     }
   }, [data, open]);
 
+  // Add effect for file handling
+  useEffect(() => {
+    if (selectedFile) {
+      const previewUrl =
+        URL.createObjectURL(selectedFile);
+      setLogoPreview(previewUrl);
+
+      // Clean up the URL when component unmounts or file changes
+      return () =>
+        URL.revokeObjectURL(previewUrl);
+    }
+  }, [selectedFile]);
+
   const handleLogoFileChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -125,10 +140,7 @@ const SettingsModal: React.FC<
       e.target.files.length > 0
     ) {
       const file = e.target.files[0];
-      const previewUrl =
-        URL.createObjectURL(file);
-      setLogoPreview(previewUrl);
-      // In production, upload the file and set the returned URL.
+      setSelectedFile(file);
     }
   };
 
@@ -240,7 +252,7 @@ const SettingsModal: React.FC<
                     }}
                     onClick={() =>
                       setShowSidebarColorPicker(
-                        (prev) => !prev
+                        (prev: boolean) => !prev
                       )
                     }
                   />
@@ -286,7 +298,7 @@ const SettingsModal: React.FC<
                     }}
                     onClick={() =>
                       setShowNavbarColorPicker(
-                        (prev) => !prev
+                        (prev: boolean) => !prev
                       )
                     }
                   />

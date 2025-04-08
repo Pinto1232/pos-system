@@ -46,9 +46,17 @@ const AuthProvider = ({
   const [error, setError] = useState<
     string | null
   >(null);
+  const [isMounted, setIsMounted] =
+    useState(false);
   const keycloakRef = useRef<KeycloakInstance>(
     keycloakInstance
   );
+
+  const initStartedRef = useRef(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleCleanLogout =
     useCallback(async () => {
@@ -56,7 +64,7 @@ const AuthProvider = ({
         localStorage.removeItem('accessToken');
         setToken(null);
 
-        if (typeof window !== 'undefined') {
+        if (isMounted) {
           const logoutRedirect =
             window.encodeURIComponent(
               process.env
@@ -111,19 +119,19 @@ const AuthProvider = ({
           'Manual logout failed:',
           err
         );
-        if (typeof window !== 'undefined') {
+        if (isMounted) {
           window.location.href =
             process.env
               .NEXT_PUBLIC_LOGOUT_REDIRECT ||
             '/login';
         }
       }
-    }, []);
+    }, [isMounted]);
 
   const login = useCallback(async () => {
     console.log('Login requested');
     try {
-      if (typeof window !== 'undefined') {
+      if (isMounted) {
         const loginRedirect =
           process.env
             .NEXT_PUBLIC_LOGIN_REDIRECT ||
@@ -145,18 +153,16 @@ const AuthProvider = ({
           : 'Login failed'
       );
     }
-  }, []);
+  }, [isMounted]);
 
   const initializeAuth =
     useCallback(async (): Promise<() => void> => {
-      if (typeof window === 'undefined')
-        return () => {};
+      if (!isMounted) return () => {};
 
       const kc = keycloakRef.current;
       let refreshInterval: NodeJS.Timeout | null =
         null;
 
-      // Clear any existing interval before starting a new one
       if (refreshInterval) {
         clearInterval(refreshInterval);
         refreshInterval = null;
@@ -240,7 +246,6 @@ const AuthProvider = ({
 
           setInitialized(true);
 
-          // Set up token refresh with proper cleanup
           refreshInterval = setInterval(
             handleTokenRefresh,
             60000
@@ -303,31 +308,43 @@ const AuthProvider = ({
           refreshInterval = null;
         }
       };
-    }, [handleCleanLogout, login]);
+    }, [handleCleanLogout, login, isMounted]);
 
   useEffect(() => {
-    if (!keycloakInitialized) {
-      keycloakInitialized = true;
-      const cleanupPromise = initializeAuth();
-
-      return () => {
-        cleanupPromise.then((cleanup) =>
-          cleanup()
-        );
-      };
-    } else {
-      console.log(
-        'Keycloak already initialized, skipping'
-      );
-      setInitialized(true);
+    // Only run this effect after component is mounted and if initialization hasn't started
+    if (isMounted && !initStartedRef.current) {
+      // First check if we already have a session via localStorage
       const storedToken = localStorage.getItem(
         'accessToken'
       );
       if (storedToken) {
         setToken(storedToken);
+        setInitialized(true);
+      }
+
+      if (!keycloakInitialized) {
+        console.log(
+          'Starting Keycloak initialization for the first time'
+        );
+        keycloakInitialized = true;
+        initStartedRef.current = true;
+
+        const cleanupPromise = initializeAuth();
+
+        return () => {
+          cleanupPromise.then((cleanup) =>
+            cleanup()
+          );
+        };
+      } else {
+        console.log(
+          'Keycloak already initialized globally, skipping initialization'
+        );
+        initStartedRef.current = true;
+        setInitialized(true);
       }
     }
-  }, [initializeAuth]);
+  }, [isMounted, initializeAuth]);
 
   const logout = useCallback(async () => {
     console.log('Logout requested');
@@ -341,6 +358,11 @@ const AuthProvider = ({
     authenticated: !!token,
     error,
   };
+
+  // Prevent hydration errors by returning null on the server
+  if (!isMounted) {
+    return null;
+  }
 
   if (error) {
     return (

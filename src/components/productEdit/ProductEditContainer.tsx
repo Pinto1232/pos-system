@@ -5,11 +5,16 @@ import React, {
 import { Box } from '@mui/material';
 import ProductEdit from './ProductEdit';
 import { Product } from './types';
+// Import nanoid for stable ID generation
+import { nanoid } from 'nanoid';
 
 const ProductEditContainer: React.FC = () => {
   const [productsState, setProductsState] =
     useState<Product[]>(() => {
       // Initialize state from localStorage if available
+      if (typeof window === 'undefined')
+        return [];
+
       const savedProducts =
         localStorage.getItem('products');
       return savedProducts
@@ -45,7 +50,8 @@ const ProductEditContainer: React.FC = () => {
     );
     const productWithDefaults: Product = {
       ...newProduct,
-      id: Date.now(), // Generate a unique ID for each product
+      // Use Date.now() since id is expected to be a number
+      id: Date.now(),
       stock: 0,
       sales: 0,
       discount: 0,
