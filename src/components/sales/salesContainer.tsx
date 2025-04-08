@@ -12,56 +12,56 @@ const mockData: SalesData = {
   topSales: 72,
   bestDeal: {
     value: 42300,
-    company: 'Rolf Inc.'
+    company: 'Rolf Inc.',
   },
   deals: {
     count: 256,
     value: '528k',
     growth: -5,
     winRate: 44,
-    winRateGrowth: 1.2
+    winRateGrowth: 1.2,
   },
   timeframe: {
     current: 'Sep 1 - Nov 30, 2023',
-    previous: 'Jun 1 - Aug 31, 2023'
+    previous: 'Jun 1 - Aug 31, 2023',
   },
   teamPerformance: [
     {
       name: 'Armin A.',
       revenue: 209633,
-      percentage: 39.63
+      percentage: 39.63,
     },
     {
       name: 'Mikasa A.',
       revenue: 156841,
-      percentage: 29.65
+      percentage: 29.65,
     },
     {
       name: 'Eren Y.',
       revenue: 117115,
-      percentage: 22.14
+      percentage: 22.14,
     },
     {
       name: 'Anonymous',
       revenue: 45386,
-      percentage: 8.58
-    }
+      percentage: 8.58,
+    },
   ],
-  platformRevenue: [],  // Add empty arrays to satisfy the interface
+  platformRevenue: [], // Add empty arrays to satisfy the interface
   platformPerformance: {
     dribbble: {
       monthlyRevenue: 0,
       monthlyLeads: 0,
       winLoss: '',
       winPercentage: 0,
-      winLossRatio: ''
-    }
+      winLossRatio: '',
+    },
   },
   monthlyData: {
     sep: { revenue: 165000, cost: 110000 },
     oct: { revenue: 185000, cost: 115000 },
-    nov: { revenue: 178976, cost: 112000 }
-  }
+    nov: { revenue: 178976, cost: 112000 },
+  },
 };
 
 const SalesContainer: React.FC<SalesContainerProps> = ({ className }) => {

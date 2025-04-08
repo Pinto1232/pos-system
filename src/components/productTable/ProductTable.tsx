@@ -68,6 +68,11 @@ const getColorStyles = (color: string) => {
   return colorMap[color] || { bg: '#f8fafc', text: '#64748b' };
 };
 
+const categories = ['All', 'Black', 'White', 'Green', 'Silver', 'Gold', 'Space Gray'];
+const ratings = ['All', '5', '4', '3', '2', '1'];
+const statuses = ['All', 'Available', 'Out of Stock'];
+const prices = ['R10-R100', 'R100-R500', 'R500-R1000', 'R1000+'];
+
 const ProductTable: React.FC<ProductTableProps> = ({
   products,
   filteredProducts,
@@ -93,6 +98,43 @@ const ProductTable: React.FC<ProductTableProps> = ({
   onResetFilters,
   onExportPDF,
 }) => {
+  const renderProductImage = (
+    imageSrc: string | undefined,
+    productName: string,
+    width: number,
+    height: number
+  ) => {
+    if (imageSrc) {
+      return (
+        <Image
+          src={imageSrc}
+          alt={`${productName} product image`}
+          width={width}
+          height={height}
+          style={{
+            objectFit: 'cover',
+          }}
+          priority
+        />
+      );
+    } else {
+      return (
+        <Box
+          sx={{
+            width: width,
+            height: height,
+            bgcolor: '#f0f0f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography variant="caption">No Image</Typography>
+        </Box>
+      );
+    }
+  };
+
   return (
     <Box sx={containerStyles}>
       <Typography variant="h5" sx={titleStyles}>
@@ -126,15 +168,14 @@ const ProductTable: React.FC<ProductTableProps> = ({
                 value={categoryFilter}
                 onChange={onCategoryChange}
                 label="Category"
-                sx={selectStyles}
+                sx={{ ...selectStyles }}
               >
-                <MenuItem value="All">All</MenuItem>
-                <MenuItem value="Black">Black</MenuItem>
-                <MenuItem value="White">White</MenuItem>
-                <MenuItem value="Green">Green</MenuItem>
-                <MenuItem value="Silver">Silver</MenuItem>
-                <MenuItem value="Gold">Gold</MenuItem>
-                <MenuItem value="Space Gray">Space Gray</MenuItem>
+                {categories.map((category) => (
+                  <MenuItem key={`category-${category}`} value={category}>
+                    {String(category)}
+                  </MenuItem>
+
+                ))}
               </Select>
             </FormControl>
 
@@ -147,14 +188,15 @@ const ProductTable: React.FC<ProductTableProps> = ({
                 value={ratingFilter}
                 onChange={onRatingChange}
                 label="Rating"
-                sx={selectStyles}
+                sx={{ ...selectStyles }}
               >
-                <MenuItem value="All">All</MenuItem>
-                <MenuItem value="5">5 Stars</MenuItem>
-                <MenuItem value="4">4 Stars</MenuItem>
-                <MenuItem value="3">3 Stars</MenuItem>
-                <MenuItem value="2">2 Stars</MenuItem>
-                <MenuItem value="1">1 Star</MenuItem>
+                {ratings.map((rating) => (
+                  <MenuItem key={`rating-${rating}`} value={rating}>
+                    {typeof rating === 'string' && rating === 'All'
+                      ? 'All'
+                      : `${rating} Stars`}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
@@ -167,11 +209,13 @@ const ProductTable: React.FC<ProductTableProps> = ({
                 value={statusFilter}
                 onChange={onStatusChange}
                 label="Status"
-                sx={selectStyles}
+                sx={{ ...selectStyles }}
               >
-                <MenuItem value="All">All</MenuItem>
-                <MenuItem value="Available">Available</MenuItem>
-                <MenuItem value="Out of Stock">Out of Stock</MenuItem>
+                {statuses.map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
@@ -184,12 +228,13 @@ const ProductTable: React.FC<ProductTableProps> = ({
                 value={priceFilter}
                 onChange={onPriceChange}
                 label="Price Range"
-                sx={selectStyles}
+                sx={{ ...selectStyles }}
               >
-                <MenuItem value="R10-R100">R10-R100</MenuItem>
-                <MenuItem value="R100-R500">R100-R500</MenuItem>
-                <MenuItem value="R500-R1000">R500-R1000</MenuItem>
-                <MenuItem value="R1000+">R1000+</MenuItem>
+                {prices.map((price) => (
+                  <MenuItem key={price} value={price}>
+                    {price}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Box>
@@ -256,31 +301,11 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <TableCell>
                     <Stack direction="row" spacing={2} alignItems="center">
                       <Box sx={productImageStyles}>
-                        {/* Defensive check for product.image */}
-                        {product.image ? (
-                          <Image
-                            src={product.image}
-                            alt={`${product.productName} product image`}
-                            width={40}
-                            height={40}
-                            style={{
-                              objectFit: 'cover',
-                            }}
-                            priority
-                          />
-                        ) : (
-                          <Box
-                            sx={{
-                              width: 40,
-                              height: 40,
-                              bgcolor: '#f0f0f0',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <Typography variant="caption">No Image</Typography>
-                          </Box>
+                        {renderProductImage(
+                          product.image,
+                          product.productName,
+                          40,
+                          40
                         )}
                       </Box>
                       <Stack direction="row" spacing={1} alignItems="center">
@@ -293,18 +318,13 @@ const ProductTable: React.FC<ProductTableProps> = ({
                             size="small"
                             sx={{
                               height: 20,
-                              width: 80,
-                              py: 1,
-                              '& .MuiChip-label': {
-                                px: 0.5,
-                                fontSize: '0.7rem',
-                                width: '100%',
-                                textAlign: 'center',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                lineHeight: 1.2,
-                              },
+                              minWidth: 60,
+                              padding: '2px 4px',
+                              fontSize: '0.7rem',
+                              fontWeight: 500,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
                               bgcolor: getColorStyles(product.color).bg,
                               color: getColorStyles(product.color).text,
                               border: '1px solid #e2e8f0',
@@ -402,29 +422,11 @@ const ProductTable: React.FC<ProductTableProps> = ({
       >
         {selectedProduct && (
           <Box sx={modalImageStyles}>
-            {/* Defensive check for selectedProduct.image */}
-            {selectedProduct.image ? (
-              <Image
-                src={selectedProduct.image}
-                alt={selectedProduct.productName}
-                width={120}
-                height={120}
-                style={{ objectFit: 'cover' }}
-                priority
-              />
-            ) : (
-              <Box
-                sx={{
-                  width: 120,
-                  height: 120,
-                  bgcolor: '#f0f0f0',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography variant="caption">No Image</Typography>
-              </Box>
+            {renderProductImage(
+              selectedProduct.image,
+              selectedProduct.productName,
+              120,
+              120
             )}
           </Box>
         )}

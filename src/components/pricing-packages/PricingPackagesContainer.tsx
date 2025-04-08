@@ -62,7 +62,7 @@ const PricingPackagesContainer: React.FC = () => {
   if (error) {
     return (
       <div className={styles.error}>
-        <p>Error loading pricing packages</p>
+        {/* <p>Error loading pricing packages</p> */}
         <button onClick={() => refetch()} className={styles.retryButton}>
           Retry
         </button>
