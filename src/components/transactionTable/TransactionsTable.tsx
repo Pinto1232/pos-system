@@ -111,10 +111,10 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                       transaction.id === 'INV-2025-0012'
                         ? 75
                         : transaction.id === 'INV-2025-0002'
-                        ? 45
-                        : transaction.id === 'INV-2024-0412'
-                        ? 60
-                        : 85
+                          ? 45
+                          : transaction.id === 'INV-2024-0412'
+                            ? 60
+                            : 85
                     }
                     sx={{
                       height: 8,

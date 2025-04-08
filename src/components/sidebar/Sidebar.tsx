@@ -54,10 +54,13 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const handleToggle = (label: string) => {
     setExpandedItems((prev) => {
-      const newState = Object.keys(prev).reduce((acc, key) => {
-        acc[key] = key === label ? !prev[key] : false;
-        return acc;
-      }, {} as { [key: string]: boolean });
+      const newState = Object.keys(prev).reduce(
+        (acc, key) => {
+          acc[key] = key === label ? !prev[key] : false;
+          return acc;
+        },
+        {} as { [key: string]: boolean }
+      );
 
       if (!(label in prev)) {
         newState[label] = true;

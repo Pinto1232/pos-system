@@ -256,16 +256,32 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <TableCell>
                     <Stack direction="row" spacing={2} alignItems="center">
                       <Box sx={productImageStyles}>
-                        <Image
-                          src={product.image}
-                          alt={`${product.productName} product image`}
-                          width={40}
-                          height={40}
-                          style={{
-                            objectFit: 'cover',
-                          }}
-                          priority
-                        />
+                        {/* Defensive check for product.image */}
+                        {product.image ? (
+                          <Image
+                            src={product.image}
+                            alt={`${product.productName} product image`}
+                            width={40}
+                            height={40}
+                            style={{
+                              objectFit: 'cover',
+                            }}
+                            priority
+                          />
+                        ) : (
+                          <Box
+                            sx={{
+                              width: 40,
+                              height: 40,
+                              bgcolor: '#f0f0f0',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Typography variant="caption">No Image</Typography>
+                          </Box>
+                        )}
                       </Box>
                       <Stack direction="row" spacing={1} alignItems="center">
                         <Typography variant="body1">
@@ -386,14 +402,30 @@ const ProductTable: React.FC<ProductTableProps> = ({
       >
         {selectedProduct && (
           <Box sx={modalImageStyles}>
-            <Image
-              src={selectedProduct.image}
-              alt={selectedProduct.productName}
-              width={120}
-              height={120}
-              style={{ objectFit: 'cover' }}
-              priority
-            />
+            {/* Defensive check for selectedProduct.image */}
+            {selectedProduct.image ? (
+              <Image
+                src={selectedProduct.image}
+                alt={selectedProduct.productName}
+                width={120}
+                height={120}
+                style={{ objectFit: 'cover' }}
+                priority
+              />
+            ) : (
+              <Box
+                sx={{
+                  width: 120,
+                  height: 120,
+                  bgcolor: '#f0f0f0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Typography variant="caption">No Image</Typography>
+              </Box>
+            )}
           </Box>
         )}
         <DialogTitle sx={modalTitleStyles}>Product Details</DialogTitle>
