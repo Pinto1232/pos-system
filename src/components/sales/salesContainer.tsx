@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
-import Sales from './Sales'; // Assuming Sales.tsx is in the same directory
-import { SalesContainerProps, SalesData } from './types'; // Import SalesData
+import React from 'react';
+import Sales from './Sales';
+import { SalesContainerProps, SalesData } from './types';
 
 const SalesContainer: React.FC<SalesContainerProps> = ({
   className,
   timeframe = 'This Month',
   onTimeframeChange,
 }) => {
-  // Mock data - replace this with your actual data fetching logic
   const mockSalesData: SalesData = {
     totalRevenue: 150000,
     previousRevenue: 120000,
