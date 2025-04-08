@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--max-old-space-size=4096' next dev --turbopack",
+    "dev": "cross-env NODE_OPTIONS='--max-old-space-size=4096' next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -59,6 +59,7 @@
     "@types/react-query": "^1.2.9",
     "@types/react-slick": "^0.23.13",
     "@types/webpack": "^5.28.5",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "eslint-config-prettier": "^10.1.1",

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
-import { SalesContainer } from '../sales';
 import { AuthContext } from '@/contexts/AuthContext';
 import styles from './dashboardMain.module.css';
 import ProductTableContainer from '../productTable/ProductTableContainer';
@@ -13,6 +12,7 @@ import FullOverviewContainer from '../fullOverview/FullOverviewContainer';
 import SaleTableContainer from '../saleTable';
 import NotFound from '@/app/404';
 import ProductEditContainer from '../productEdit/ProductEditContainer';
+import SalesContainer from '../sales/SalesContainer';
 
 interface DashboardMainProps {
   activeSection: string;

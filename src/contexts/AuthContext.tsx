@@ -13,6 +13,9 @@ import keycloakInstance from '@/auth/keycloak';
 import { Box, Typography } from '@mui/material';
 import LoadingDots from '@/components/LoadingDots';
 
+// Global flag to track Keycloak initialization
+let keycloakInitialized = false;
+
 export interface AuthContextProps {
   token: string | null;
   login: () => Promise<void>;
@@ -23,8 +26,8 @@ export interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps>({
   token: null,
-  login: async () => {},
-  logout: async () => {},
+  login: async () => { },
+  logout: async () => { },
   authenticated: false,
   error: null,
 });
@@ -34,8 +37,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const keycloakRef = useRef<KeycloakInstance>(keycloakInstance);
-  const [isInitializing, setIsInitializing] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
 
   const handleCleanLogout = useCallback(async () => {
     try {
@@ -45,7 +46,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (typeof window !== 'undefined') {
         const logoutRedirect = window.encodeURIComponent(
           process.env.NEXT_PUBLIC_LOGOUT_REDIRECT ||
-            window.location.origin + '/login'
+          window.location.origin + '/login'
         );
         console.log('Logout redirect URI:', logoutRedirect);
 
@@ -105,7 +106,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const initializeAuth = useCallback(async (): Promise<() => void> => {
-    if (typeof window === 'undefined') return () => {};
+    if (typeof window === 'undefined') return () => { };
 
     const kc = keycloakRef.current;
     let refreshInterval: NodeJS.Timeout | null = null;
@@ -137,8 +138,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI);
-      setIsInitialized(true);
-      setIsInitializing(false);
 
       if (authenticated) {
         if (kc.token) {
@@ -179,8 +178,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Authentication Error Raw:', err);
       let errorMessage = 'Unknown authentication error';
       console.error('Authentication Error:', err);
-      setIsInitializing(false);
-      setIsInitialized(true);
 
       if (err instanceof Error) {
         errorMessage = `Authentication error: ${err.message}`;
@@ -213,25 +210,22 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [handleCleanLogout, login]);
 
   useEffect(() => {
-    if (isInitializing || isInitialized) {
-      console.log('Keycloak already initializing or initialized, skipping');
-      if (isInitialized) {
-        setInitialized(true);
-        const storedToken = localStorage.getItem('accessToken');
-        if (storedToken) {
-          setToken(storedToken);
-        }
+    if (!keycloakInitialized) {
+      keycloakInitialized = true;
+      const cleanupPromise = initializeAuth();
+
+      return () => {
+        cleanupPromise.then((cleanup) => cleanup());
+      };
+    } else {
+      console.log('Keycloak already initialized, skipping');
+      setInitialized(true);
+      const storedToken = localStorage.getItem('accessToken');
+      if (storedToken) {
+        setToken(storedToken);
       }
-      return;
     }
-
-    setIsInitializing(true);
-    const cleanupPromise = initializeAuth();
-
-    return () => {
-      cleanupPromise.then((cleanup) => cleanup());
-    };
-  }, [initializeAuth, isInitializing, isInitialized]);
+  }, [initializeAuth]);
 
   const logout = useCallback(async () => {
     console.log('Logout requested');

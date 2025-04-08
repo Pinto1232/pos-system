@@ -69,12 +69,11 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
 
         <CardFooter className={styles.footer}>
           <Button
-            className={`${styles.button} ${
-              isCustom ? styles.contactButton : ''
-            }`}
+            className={`${styles.button} ${isCustom ? styles.contactButton : ''
+              }`}
             onClick={onBuyNow}
           >
-            {isCustom ? 'Contact Us' : 'Get Started'}
+            {isCustom ? 'Buy Now' : 'Buy Now'}
           </Button>
         </CardFooter>
       </Card>
