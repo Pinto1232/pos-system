@@ -5,8 +5,10 @@ import styles from './Hero.module.css';
 function HeroContainer() {
   const heading = (
     <>
-      <span className={styles.highlightedText}>Transform</span> Your
-      Merchant&apos;s POS Device
+      <span className={styles.highlightedText}>
+        Transform
+      </span>{' '}
+      Your Merchant&apos;s POS Device
       <span className={styles.emphasis}>
         Into a Dynamic Business Management Tool
       </span>
@@ -20,7 +22,8 @@ function HeroContainer() {
     'processes and drive growth, empowering businesses to thrive.';
 
   const ctaPrimary = 'Book a Demo';
-  const ctaSecondary = 'Learn About Bank Solutions';
+  const ctaSecondary =
+    'Learn About Bank Solutions';
 
   const ladyImage = '/pos_3.png';
 

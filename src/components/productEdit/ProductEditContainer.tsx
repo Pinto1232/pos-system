@@ -1,29 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+} from 'react';
 import { Box } from '@mui/material';
 import ProductEdit from './ProductEdit';
 import { Product } from './types';
 
 const ProductEditContainer: React.FC = () => {
-  const [productsState, setProductsState] = useState<Product[]>(() => {
-    // Initialize state from localStorage if available
-    const savedProducts = localStorage.getItem('products');
-    return savedProducts ? JSON.parse(savedProducts) : [];
-  });
+  const [productsState, setProductsState] =
+    useState<Product[]>(() => {
+      // Initialize state from localStorage if available
+      const savedProducts =
+        localStorage.getItem('products');
+      return savedProducts
+        ? JSON.parse(savedProducts)
+        : [];
+    });
 
   // Save products to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(productsState));
+    localStorage.setItem(
+      'products',
+      JSON.stringify(productsState)
+    );
   }, [productsState]);
 
-  const [itemNoState, setItemNoState] = useState(0);
-  const [subTotalState, setSubTotalState] = useState(0);
-  const [discountState, setDiscountState] = useState(0);
+  const [itemNoState, setItemNoState] =
+    useState(0);
+  const [subTotalState, setSubTotalState] =
+    useState(0);
+  const [discountState, setDiscountState] =
+    useState(0);
 
   const handleAddItem = (
-    newProduct: Omit<Product, 'stock' | 'sales' | 'discount'>,
+    newProduct: Omit<
+      Product,
+      'stock' | 'sales' | 'discount'
+    >,
     resetForm: () => void
   ) => {
-    console.log('ProductEditContainer - Adding new product:', newProduct);
+    console.log(
+      'ProductEditContainer - Adding new product:',
+      newProduct
+    );
     const productWithDefaults: Product = {
       ...newProduct,
       id: Date.now(), // Generate a unique ID for each product
@@ -32,22 +51,34 @@ const ProductEditContainer: React.FC = () => {
       discount: 0,
       price: Number(newProduct.price) || 0,
       rating: Number(newProduct.rating) || 0,
-      image: newProduct.image || '/placeholder-image.png',
+      image:
+        newProduct.image ||
+        '/placeholder-image.png',
       sku: newProduct.sku || '',
-      createdAt: newProduct.createdAt || new Date().toISOString().split('T')[0],
+      createdAt:
+        newProduct.createdAt ||
+        new Date().toISOString().split('T')[0],
     };
 
     // Add the new product to the existing products array
-    setProductsState((prevProducts) => [...prevProducts, productWithDefaults]);
+    setProductsState((prevProducts) => [
+      ...prevProducts,
+      productWithDefaults,
+    ]);
     setItemNoState((prev) => prev + 1);
-    setSubTotalState((prev) => prev + productWithDefaults.price);
+    setSubTotalState(
+      (prev) => prev + productWithDefaults.price
+    );
 
     // Reset the form after successful submission
     resetForm();
   };
 
   const handleUpdateItem = (
-    updatedProduct: Omit<Product, 'stock' | 'sales' | 'discount'>
+    updatedProduct: Omit<
+      Product,
+      'stock' | 'sales' | 'discount'
+    >
   ) => {
     setProductsState((prevProducts) =>
       prevProducts.map((product) =>
@@ -63,14 +94,22 @@ const ProductEditContainer: React.FC = () => {
     );
   };
 
-  const handleDeleteItem = (productId: number) => {
+  const handleDeleteItem = (
+    productId: number
+  ) => {
     setProductsState((prevProducts) => {
-      const deletedProduct = prevProducts.find((p) => p.id === productId);
+      const deletedProduct = prevProducts.find(
+        (p) => p.id === productId
+      );
       if (deletedProduct) {
-        setSubTotalState((prev) => prev - deletedProduct.price);
+        setSubTotalState(
+          (prev) => prev - deletedProduct.price
+        );
         setItemNoState((prev) => prev - 1);
       }
-      return prevProducts.filter((product) => product.id !== productId);
+      return prevProducts.filter(
+        (product) => product.id !== productId
+      );
     });
   };
 

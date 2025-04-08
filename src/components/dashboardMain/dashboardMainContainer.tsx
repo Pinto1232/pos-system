@@ -6,12 +6,14 @@ interface DashboardMainContainerProps {
   activeSection: string;
 }
 
-const DashboardMainContainer: React.FC<DashboardMainContainerProps> = ({
-  activeSection,
-}) => {
+const DashboardMainContainer: React.FC<
+  DashboardMainContainerProps
+> = ({ activeSection }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <DashboardMain activeSection={activeSection} />
+      <DashboardMain
+        activeSection={activeSection}
+      />
     </Box>
   );
 };

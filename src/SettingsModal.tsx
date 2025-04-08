@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -16,7 +19,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useUpdateCustomization } from '@/api/axiosClient';
 import Image from 'next/image';
 import { MdRestore } from 'react-icons/md';
-import { SketchPicker, ColorResult } from 'react-color';
+import {
+  SketchPicker,
+  ColorResult,
+} from 'react-color';
 import { FaPaintBrush } from 'react-icons/fa';
 import {
   mockFetchCustomization,
@@ -39,7 +45,9 @@ interface SettingsModalProps {
   open: boolean;
   onClose: () => void;
   userId: string;
-  onCustomizationUpdated: (updated: UserCustomization) => void;
+  onCustomizationUpdated: (
+    updated: UserCustomization
+  ) => void;
 }
 
 const settingsItems: SettingsItem[] = [
@@ -63,24 +71,39 @@ const fetchCustomization = async (
   return mockFetchCustomization(userId);
 };
 
-const SettingsModal: React.FC<SettingsModalProps> = ({
+const SettingsModal: React.FC<
+  SettingsModalProps
+> = ({
   open,
   onClose,
   userId,
   onCustomizationUpdated,
 }) => {
-  const { data, isLoading, error } = useQuery<UserCustomization, Error>({
+  const { data, isLoading, error } = useQuery<
+    UserCustomization,
+    Error
+  >({
     queryKey: ['userCustomization', userId],
     queryFn: () => fetchCustomization(userId),
     enabled: open,
   });
 
-  const [sidebarColor, setSidebarColor] = useState('');
-  const [navbarColor, setNavbarColor] = useState('');
-  const [logoPreview, setLogoPreview] = useState('');
-  const [showSidebarColorPicker, setShowSidebarColorPicker] = useState(false);
-  const [showNavbarColorPicker, setShowNavbarColorPicker] = useState(false);
-  const [selectedSetting, setSelectedSetting] = useState('General Settings');
+  const [sidebarColor, setSidebarColor] =
+    useState('');
+  const [navbarColor, setNavbarColor] =
+    useState('');
+  const [logoPreview, setLogoPreview] =
+    useState('');
+  const [
+    showSidebarColorPicker,
+    setShowSidebarColorPicker,
+  ] = useState(false);
+  const [
+    showNavbarColorPicker,
+    setShowNavbarColorPicker,
+  ] = useState(false);
+  const [selectedSetting, setSelectedSetting] =
+    useState('General Settings');
 
   useEffect(() => {
     if (data) {
@@ -94,16 +117,23 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   }, [data, open]);
 
-  const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
+  const handleLogoFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (
+      e.target.files &&
+      e.target.files.length > 0
+    ) {
       const file = e.target.files[0];
-      const previewUrl = URL.createObjectURL(file);
+      const previewUrl =
+        URL.createObjectURL(file);
       setLogoPreview(previewUrl);
       // In production, upload the file and set the returned URL.
     }
   };
 
-  const updateCustomizationMutation = useUpdateCustomization();
+  const updateCustomizationMutation =
+    useUpdateCustomization();
 
   const handleSave = () => {
     mockUpdateCustomization({
@@ -111,10 +141,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       sidebarColor,
       navbarColor,
       logoUrl: logoPreview,
-    } as UserCustomization).then((updatedData) => {
-      onCustomizationUpdated(updatedData);
-      onClose();
-    });
+    } as UserCustomization).then(
+      (updatedData) => {
+        onCustomizationUpdated(updatedData);
+        onClose();
+      }
+    );
   };
 
   const handleReset = () => {
@@ -138,13 +170,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               }}
             >
               {logoPreview && (
-                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+                <Box
+                  sx={{
+                    mt: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
                   <Image
                     src={logoPreview}
                     alt="Logo Preview"
                     width={80}
                     height={80}
-                    style={{ borderRadius: '50%', border: '2px solid #ccc' }}
+                    style={{
+                      borderRadius: '50%',
+                      border: '2px solid #ccc',
+                    }}
                     unoptimized
                   />
                 </Box>
@@ -160,7 +201,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                   color: 'primary.main',
                   borderColor: 'primary.main',
                   '&:hover': {
-                    backgroundColor: 'primary.light',
+                    backgroundColor:
+                      'primary.light',
                     borderColor: 'primary.main',
                   },
                 }}
@@ -177,10 +219,16 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             <TextField
               label="Sidebar Color"
               value={sidebarColor}
-              onChange={(e) => setSidebarColor(e.target.value)}
+              onChange={(e) =>
+                setSidebarColor(e.target.value)
+              }
               margin="normal"
               fullWidth
-              sx={{ '& .MuiInputBase-root': { borderRadius: 4 } }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  borderRadius: 4,
+                },
+              }}
               InputProps={{
                 endAdornment: (
                   <FaPaintBrush
@@ -190,26 +238,43 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                       fontSize: '1.5rem',
                       marginLeft: '8px',
                     }}
-                    onClick={() => setShowSidebarColorPicker((prev) => !prev)}
+                    onClick={() =>
+                      setShowSidebarColorPicker(
+                        (prev) => !prev
+                      )
+                    }
                   />
                 ),
               }}
             />
             {showSidebarColorPicker && (
-              <Box sx={{ position: 'absolute', zIndex: 2 }}>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  zIndex: 2,
+                }}
+              >
                 <SketchPicker
                   color={sidebarColor}
-                  onChange={(color: ColorResult) => setSidebarColor(color.hex)}
+                  onChange={(
+                    color: ColorResult
+                  ) => setSidebarColor(color.hex)}
                 />
               </Box>
             )}
             <TextField
               label="Navbar Color"
               value={navbarColor}
-              onChange={(e) => setNavbarColor(e.target.value)}
+              onChange={(e) =>
+                setNavbarColor(e.target.value)
+              }
               margin="normal"
               fullWidth
-              sx={{ '& .MuiInputBase-root': { borderRadius: 4 } }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  borderRadius: 4,
+                },
+              }}
               InputProps={{
                 endAdornment: (
                   <FaPaintBrush
@@ -219,16 +284,27 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                       fontSize: '1.5rem',
                       marginLeft: '8px',
                     }}
-                    onClick={() => setShowNavbarColorPicker((prev) => !prev)}
+                    onClick={() =>
+                      setShowNavbarColorPicker(
+                        (prev) => !prev
+                      )
+                    }
                   />
                 ),
               }}
             />
             {showNavbarColorPicker && (
-              <Box sx={{ position: 'absolute', zIndex: 2 }}>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  zIndex: 2,
+                }}
+              >
                 <SketchPicker
                   color={navbarColor}
-                  onChange={(color: ColorResult) => setNavbarColor(color.hex)}
+                  onChange={(
+                    color: ColorResult
+                  ) => setNavbarColor(color.hex)}
                 />
               </Box>
             )}
@@ -237,47 +313,58 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
       case 'Business Information':
         return (
           <Typography>
-            Business Information settings will be available soon.
+            Business Information settings will be
+            available soon.
           </Typography>
         );
       case 'Tax & VAT Configuration':
         return (
           <Typography>
-            Tax & VAT Configuration settings will be available soon.
+            Tax & VAT Configuration settings will
+            be available soon.
           </Typography>
         );
       case 'Currency & Regional Settings':
         return (
           <Typography>
-            Currency & Regional Settings will be available soon.
+            Currency & Regional Settings will be
+            available soon.
           </Typography>
         );
       case 'User & Role Management':
         return (
           <Typography>
-            User & Role Management settings will be available soon.
+            User & Role Management settings will
+            be available soon.
           </Typography>
         );
       case 'Email & Notification Settings':
         return (
           <Typography>
-            Email & Notification Settings will be available soon.
+            Email & Notification Settings will be
+            available soon.
           </Typography>
         );
       case 'System Backup & Restore':
         return (
           <Typography>
-            System Backup & Restore options will be available soon.
+            System Backup & Restore options will
+            be available soon.
           </Typography>
         );
       case 'API & Third-Party Integrations':
         return (
           <Typography>
-            API & Third-Party Integrations settings will be available soon.
+            API & Third-Party Integrations
+            settings will be available soon.
           </Typography>
         );
       default:
-        return <Typography>Select a setting from the sidebar.</Typography>;
+        return (
+          <Typography>
+            Select a setting from the sidebar.
+          </Typography>
+        );
     }
   };
 
@@ -285,21 +372,36 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     <Dialog
       open={open}
       onClose={(event, reason) => {
-        if (reason === 'backdropClick' || reason === 'escapeKeyDown') {
+        if (
+          reason === 'backdropClick' ||
+          reason === 'escapeKeyDown'
+        ) {
           return;
         }
         onClose();
       }}
       maxWidth="md"
       fullWidth
-      sx={{ '& .MuiDialog-paper': { borderRadius: 8, padding: 2 } }}
+      sx={{
+        '& .MuiDialog-paper': {
+          borderRadius: 8,
+          padding: 2,
+        },
+      }}
     >
       <DialogTitle
-        sx={{ fontSize: '1.2rem', fontWeight: 'bold', textAlign: 'center' }}
+        sx={{
+          fontSize: '1.2rem',
+          fontWeight: 'bold',
+          textAlign: 'center',
+        }}
       >
         Settings
       </DialogTitle>
-      <DialogContent dividers sx={{ display: 'flex', padding: 0 }}>
+      <DialogContent
+        dividers
+        sx={{ display: 'flex', padding: 0 }}
+      >
         {/* Settings Sidebar */}
         <Box
           sx={{
@@ -309,12 +411,19 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             bgcolor: '#f5f5f5',
           }}
         >
-          <List component="nav" aria-label="settings categories">
+          <List
+            component="nav"
+            aria-label="settings categories"
+          >
             {settingsItems.map((item) => (
               <ListItemButton
                 key={item.label}
-                onClick={() => setSelectedSetting(item.label)}
-                selected={selectedSetting === item.label}
+                onClick={() =>
+                  setSelectedSetting(item.label)
+                }
+                selected={
+                  selectedSetting === item.label
+                }
                 sx={{
                   borderLeft:
                     selectedSetting === item.label
@@ -325,11 +434,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                       ? 'rgba(23, 58, 121, 0.08)'
                       : 'transparent',
                   '&:hover': {
-                    bgcolor: 'rgba(23, 58, 121, 0.04)',
+                    bgcolor:
+                      'rgba(23, 58, 121, 0.04)',
                   },
                 }}
               >
-                <ListItemText primary={item.label} />
+                <ListItemText
+                  primary={item.label}
+                />
               </ListItemButton>
             ))}
           </List>
@@ -345,15 +457,29 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             gap: 2,
           }}
         >
-          {isLoading && <Typography>Loading customization...</Typography>}
-          {error && <Typography color="error">{error.message}</Typography>}
+          {isLoading && (
+            <Typography>
+              Loading customization...
+            </Typography>
+          )}
+          {error && (
+            <Typography color="error">
+              {error.message}
+            </Typography>
+          )}
           {data && renderSettingContent()}
         </Box>
       </DialogContent>
       <DialogActions
-        sx={{ justifyContent: 'space-between', padding: '16px 24px' }}
+        sx={{
+          justifyContent: 'space-between',
+          padding: '16px 24px',
+        }}
       >
-        <Button onClick={onClose} sx={{ textTransform: 'none' }}>
+        <Button
+          onClick={onClose}
+          sx={{ textTransform: 'none' }}
+        >
           Cancel
         </Button>
         <Button
@@ -371,8 +497,13 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           onClick={handleSave}
           color="primary"
           variant="contained"
-          disabled={updateCustomizationMutation.isPending}
-          sx={{ textTransform: 'none', borderRadius: 4 }}
+          disabled={
+            updateCustomizationMutation.isPending
+          }
+          sx={{
+            textTransform: 'none',
+            borderRadius: 4,
+          }}
         >
           Save
         </Button>

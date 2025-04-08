@@ -1,5 +1,9 @@
 import { styled } from '@mui/material/styles';
-import { Box, Button, Paper } from '@mui/material';
+import {
+  Box,
+  Button,
+  Paper,
+} from '@mui/material';
 
 export const Container = styled(Box)({
   display: 'grid',
@@ -94,7 +98,9 @@ export const ActionButton = styled(Button)({
   borderRadius: '8px',
 });
 
-export const CollectPaymentButton = styled(ActionButton)({
+export const CollectPaymentButton = styled(
+  ActionButton
+)({
   backgroundColor: '#52B788',
   color: '#fff',
   fontSize: '15px',
@@ -228,10 +234,12 @@ export const BarcodeCell = styled(HeaderCell)({
   minWidth: '130px',
 });
 
-export const ProductNameCell = styled(HeaderCell)({
-  flex: 2,
-  minWidth: '200px',
-});
+export const ProductNameCell = styled(HeaderCell)(
+  {
+    flex: 2,
+    minWidth: '200px',
+  }
+);
 
 export const StandardCell = styled(HeaderCell)({
   flex: 1,

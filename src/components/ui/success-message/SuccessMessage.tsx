@@ -1,7 +1,11 @@
 'use client';
 
 import React, { memo } from 'react';
-import { Typography, Button, IconButton } from '@mui/material';
+import {
+  Typography,
+  Button,
+  IconButton,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -16,52 +20,88 @@ interface SuccessMessageProps {
   onReturn: () => void;
 }
 
-const SuccessMessage: React.FC<SuccessMessageProps> = memo(
-  ({ open, onClose, message, onConfirm, onReturn }) => {
-    if (!open) return null;
+const SuccessMessage: React.FC<SuccessMessageProps> =
+  memo(
+    ({
+      open,
+      onClose,
+      message,
+      onConfirm,
+      onReturn,
+    }) => {
+      if (!open) return null;
 
-    return (
-      <div className={styles.successMessageOverlay}>
-        <div className={styles.successMessageContainer}>
-          <IconButton className={styles.closeButton} onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-
-          {/* The container with the animation */}
-          <div className={styles.successIconContainer}>
-            <CheckCircleIcon className={styles.successIcon} />
-          </div>
-
-          <Typography variant="h5" className={styles.successTitle}>
-            Success
-          </Typography>
-          <Typography className={styles.successText}>
-            {message || 'Your action was successful. Please login now'}
-          </Typography>
-
-          <div className={styles.successMessageActions}>
-            <Button
-              variant="contained"
-              style={{ backgroundColor: '#1e3a8a' }}
-              onClick={onReturn}
-              startIcon={<ArrowBackIcon />}
+      return (
+        <div
+          className={styles.successMessageOverlay}
+        >
+          <div
+            className={
+              styles.successMessageContainer
+            }
+          >
+            <IconButton
+              className={styles.closeButton}
+              onClick={onClose}
             >
-              Return
-            </Button>
-            <Button
-              variant="contained"
-              style={{ backgroundColor: '#1e3a8a' }}
-              onClick={() => onConfirm(true)}
-              startIcon={<DoneIcon />}
+              <CloseIcon />
+            </IconButton>
+
+            {/* The container with the animation */}
+            <div
+              className={
+                styles.successIconContainer
+              }
             >
-              Confirm
-            </Button>
+              <CheckCircleIcon
+                className={styles.successIcon}
+              />
+            </div>
+
+            <Typography
+              variant="h5"
+              className={styles.successTitle}
+            >
+              Success
+            </Typography>
+            <Typography
+              className={styles.successText}
+            >
+              {message ||
+                'Your action was successful. Please login now'}
+            </Typography>
+
+            <div
+              className={
+                styles.successMessageActions
+              }
+            >
+              <Button
+                variant="contained"
+                style={{
+                  backgroundColor: '#1e3a8a',
+                }}
+                onClick={onReturn}
+                startIcon={<ArrowBackIcon />}
+              >
+                Return
+              </Button>
+              <Button
+                variant="contained"
+                style={{
+                  backgroundColor: '#1e3a8a',
+                }}
+                onClick={() => onConfirm(true)}
+                startIcon={<DoneIcon />}
+              >
+                Confirm
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  }
-);
+      );
+    }
+  );
 
 SuccessMessage.displayName = 'SuccessMessage';
 

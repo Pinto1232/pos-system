@@ -1,6 +1,8 @@
 import * as Icons from '@mui/icons-material';
 
-const iconMap: { [key: string]: React.ElementType } = {
+const iconMap: {
+  [key: string]: React.ElementType;
+} = {
   'MUI:StartIcon': Icons.Start,
   'MUI:TrendingUpIcon': Icons.TrendingUp,
   'MUI:BuildIcon': Icons.Build,

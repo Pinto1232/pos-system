@@ -29,9 +29,9 @@ interface TransactionsTableProps {
   transactions: Transaction[];
 }
 
-const TransactionsTable: React.FC<TransactionsTableProps> = ({
-  transactions,
-}) => {
+const TransactionsTable: React.FC<
+  TransactionsTableProps
+> = ({ transactions }) => {
   return (
     <Box sx={{ width: '100%' }}>
       {/* Header with title and view all link */}
@@ -43,10 +43,21 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
           mb: 2,
         }}
       >
-        <Typography variant="h5" component="h2" fontWeight="bold" color="#000">
+        <Typography
+          variant="h5"
+          component="h2"
+          fontWeight="bold"
+          color="#000"
+        >
           Transaction Full Overview
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            cursor: 'pointer',
+          }}
+        >
           <Typography
             variant="h5"
             fontWeight="bold"
@@ -62,30 +73,51 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
       <Table
         sx={{
           background: '#fff',
-          boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)',
+          boxShadow:
+            '0px 4px 20px rgba(0, 0, 0, 0.08)',
           borderRadius: '12px',
           overflow: 'hidden',
         }}
       >
         <TableHead>
-          <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+          <TableRow
+            sx={{ backgroundColor: '#f8f9fa' }}
+          >
+            <TableCell
+              sx={{ fontWeight: 600, py: 2 }}
+            >
               Order / Transaction ID
             </TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+            <TableCell
+              sx={{ fontWeight: 600, py: 2 }}
+            >
               Progress / Fulfillment
             </TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+            <TableCell
+              sx={{ fontWeight: 600, py: 2 }}
+            >
               Payment Method
             </TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+            <TableCell
+              sx={{ fontWeight: 600, py: 2 }}
+            >
               Item(s) Purchased
             </TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+            <TableCell
+              sx={{ fontWeight: 600, py: 2 }}
+            >
               Cashier / User
             </TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Date / Time</TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
+            <TableCell
+              sx={{ fontWeight: 600, py: 2 }}
+            >
+              Date / Time
+            </TableCell>
+            <TableCell
+              sx={{ fontWeight: 600, py: 2 }}
+            >
+              Actions
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -101,18 +133,28 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
               }}
             >
               <TableCell sx={{ py: 2 }}>
-                <Typography fontWeight="bold">{transaction.id}</Typography>
+                <Typography fontWeight="bold">
+                  {transaction.id}
+                </Typography>
               </TableCell>
               <TableCell sx={{ py: 2 }}>
-                <Box sx={{ width: '100%', maxWidth: 120 }}>
+                <Box
+                  sx={{
+                    width: '100%',
+                    maxWidth: 120,
+                  }}
+                >
                   <LinearProgress
                     variant="determinate"
                     value={
-                      transaction.id === 'INV-2025-0012'
+                      transaction.id ===
+                      'INV-2025-0012'
                         ? 75
-                        : transaction.id === 'INV-2025-0002'
+                        : transaction.id ===
+                            'INV-2025-0002'
                           ? 45
-                          : transaction.id === 'INV-2024-0412'
+                          : transaction.id ===
+                              'INV-2024-0412'
                             ? 60
                             : 85
                     }
@@ -120,18 +162,28 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                       height: 8,
                       borderRadius: 4,
                       backgroundColor: '#e0e0e0',
-                      '& .MuiLinearProgress-bar': {
-                        backgroundColor: '#4caf50',
-                        borderRadius: 4,
-                      },
+                      '& .MuiLinearProgress-bar':
+                        {
+                          backgroundColor:
+                            '#4caf50',
+                          borderRadius: 4,
+                        },
                     }}
                   />
                 </Box>
               </TableCell>
-              <TableCell sx={{ py: 2 }}>{transaction.paymentMethod}</TableCell>
-              <TableCell sx={{ py: 2 }}>{transaction.items}</TableCell>
-              <TableCell sx={{ py: 2 }}>{transaction.cashier}</TableCell>
-              <TableCell sx={{ py: 2 }}>{transaction.date}</TableCell>
+              <TableCell sx={{ py: 2 }}>
+                {transaction.paymentMethod}
+              </TableCell>
+              <TableCell sx={{ py: 2 }}>
+                {transaction.items}
+              </TableCell>
+              <TableCell sx={{ py: 2 }}>
+                {transaction.cashier}
+              </TableCell>
+              <TableCell sx={{ py: 2 }}>
+                {transaction.date}
+              </TableCell>
               <TableCell sx={{ py: 2 }}>
                 <IconButton
                   aria-label="info"
@@ -169,14 +221,28 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
           alignItems: 'center',
         }}
       >
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Typography variant="body2" color="text.secondary">
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+        >
+          <Typography
+            variant="body2"
+            color="text.secondary"
+          >
             0
           </Typography>
-          <Typography variant="body2" color="text.primary" fontWeight="bold">
+          <Typography
+            variant="body2"
+            color="text.primary"
+            fontWeight="bold"
+          >
             1
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+          >
             2
           </Typography>
           <IconButton size="small">

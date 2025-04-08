@@ -21,7 +21,9 @@ export default function Home() {
               letterSpacing: '-0.02em',
             }}
             variant="h4"
-            dangerouslySetInnerHTML={{ __html: heading }}
+            dangerouslySetInnerHTML={{
+              __html: heading,
+            }}
           />
           <Typography
             sx={{

@@ -1,7 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Typography, Card, CardContent, CardMedia } from '@mui/material';
+import {
+  Typography,
+  Card,
+  CardContent,
+  CardMedia,
+} from '@mui/material';
 import { ImageCardProps } from './types';
 
 const ImageCard: React.FC<ImageCardProps> = ({
@@ -20,7 +25,9 @@ const ImageCard: React.FC<ImageCardProps> = ({
         cursor: onClick ? 'pointer' : 'default',
         transition: 'transform 0.2s ease-in-out',
         '&:hover': {
-          transform: onClick ? 'scale(1.02)' : 'none',
+          transform: onClick
+            ? 'scale(1.02)'
+            : 'none',
         },
       }}
     >
@@ -34,10 +41,17 @@ const ImageCard: React.FC<ImageCardProps> = ({
         }}
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography
+          gutterBottom
+          variant="h5"
+          component="div"
+        >
           {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+        >
           {description}
         </Typography>
       </CardContent>

@@ -10,11 +10,18 @@ import { PackageSelectionProvider } from '@/contexts/PackageSelectionContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
 import { SpinnerProvider } from '@/contexts/SpinnerContext';
 import { TestPeriodProvider } from '@/contexts/TestPeriodContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const pathname = usePathname();
   const isDashboard = pathname === '/dashboard';
 
@@ -38,7 +45,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               )}
               <main>{children}</main>
               <PackageSelectionModal />
-              {!isDashboard && <FooterContainer />}
+              {!isDashboard && (
+                <FooterContainer />
+              )}
             </TestPeriodProvider>
           </SidebarProvider>
         </PackageSelectionProvider>

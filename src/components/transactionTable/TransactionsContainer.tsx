@@ -35,7 +35,11 @@ const TransactionsContainer = () => {
     // Add other transactions similarly
   ];
 
-  return <TransactionsTable transactions={transactions} />;
+  return (
+    <TransactionsTable
+      transactions={transactions}
+    />
+  );
 };
 
 export default TransactionsContainer;

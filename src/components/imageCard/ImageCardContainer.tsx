@@ -4,7 +4,9 @@ import React from 'react';
 import ImageCard from './ImageCard';
 import { ImageCardContainerProps } from './types';
 
-const ImageCardContainer: React.FC<ImageCardContainerProps> = ({
+const ImageCardContainer: React.FC<
+  ImageCardContainerProps
+> = ({
   imageUrl,
   title,
   description,

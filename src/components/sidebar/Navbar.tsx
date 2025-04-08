@@ -16,7 +16,11 @@ import {
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { navbarLinks } from '../../settings';
 import { FaRegBell } from 'react-icons/fa';
-import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
+import {
+  FiUser,
+  FiSettings,
+  FiLogOut,
+} from 'react-icons/fi';
 import { useLogout } from '@/hooks/useLogout';
 import SettingsModal from '@/SettingsModal';
 
@@ -31,14 +35,20 @@ const Navbar: React.FC<NavbarProps> = ({
   onDrawerToggle,
   backgroundColor,
 }) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [anchorEl, setAnchorEl] =
+    useState<null | HTMLElement>(null);
+  const [isSettingsOpen, setIsSettingsOpen] =
+    useState(false);
   const { isLoggingOut, logout } = useLogout();
   const open = Boolean(anchorEl);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(
+    theme.breakpoints.down('sm')
+  );
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLElement>
+  ) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -61,16 +71,24 @@ const Navbar: React.FC<NavbarProps> = ({
       <AppBar
         position="fixed"
         sx={{
-          width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
+          width: isMobile
+            ? '100%'
+            : `calc(100% - ${drawerWidth}px)`,
           ml: isMobile ? 0 : `${drawerWidth}px`,
-          backgroundColor: backgroundColor || 'default',
-          transition: 'margin-left 0.3s ease, width 0.3s ease',
+          backgroundColor:
+            backgroundColor || 'default',
+          transition:
+            'margin-left 0.3s ease, width 0.3s ease',
           border: 'none',
           zIndex: 1300,
         }}
       >
         <Toolbar
-          sx={{ justifyContent: isMobile ? 'space-between' : 'flex-start' }}
+          sx={{
+            justifyContent: isMobile
+              ? 'space-between'
+              : 'flex-start',
+          }}
         >
           <IconButton
             color="inherit"
@@ -86,17 +104,25 @@ const Navbar: React.FC<NavbarProps> = ({
               display: 'flex',
               gap: 2,
               flexGrow: 1,
-              justifyContent: isMobile ? 'center' : 'flex-start',
+              justifyContent: isMobile
+                ? 'center'
+                : 'flex-start',
             }}
           >
             {navbarLinks.map((link) => (
-              <Link key={link.label} href={link.href} passHref>
+              <Link
+                key={link.label}
+                href={link.href}
+                passHref
+              >
                 <Typography
                   variant="body1"
                   sx={{
                     cursor: 'pointer',
                     color: 'inherit',
-                    fontSize: isMobile ? '0.875rem' : '1rem',
+                    fontSize: isMobile
+                      ? '0.875rem'
+                      : '1rem',
                   }}
                 >
                   {link.label}
@@ -114,23 +140,33 @@ const Navbar: React.FC<NavbarProps> = ({
               justifyContent: 'center',
             }}
           >
-            <Typography variant="body1" sx={{ cursor: 'pointer' }}>
+            <Typography
+              variant="body1"
+              sx={{ cursor: 'pointer' }}
+            >
               <FaRegBell
                 style={{
                   padding: '5px',
                   cursor: 'pointer',
-                  fontSize: isMobile ? '1.5rem' : '2.3rem',
+                  fontSize: isMobile
+                    ? '1.5rem'
+                    : '2.3rem',
                 }}
               />
             </Typography>
-            <Typography variant="body1" sx={{ cursor: 'pointer' }}>
+            <Typography
+              variant="body1"
+              sx={{ cursor: 'pointer' }}
+            >
               <FiUser
                 style={{
                   border: '2px solid #ffffff',
                   padding: '5px',
                   borderRadius: '50%',
                   cursor: 'pointer',
-                  fontSize: isMobile ? '1.5rem' : '1.9rem',
+                  fontSize: isMobile
+                    ? '1.5rem'
+                    : '1.9rem',
                 }}
               />
             </Typography>
@@ -145,8 +181,14 @@ const Navbar: React.FC<NavbarProps> = ({
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
-              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              transformOrigin={{
+                horizontal: 'right',
+                vertical: 'top',
+              }}
+              anchorOrigin={{
+                horizontal: 'right',
+                vertical: 'bottom',
+              }}
               sx={{
                 marginTop: '25px',
                 '& .MuiPaper-root': {
@@ -165,7 +207,9 @@ const Navbar: React.FC<NavbarProps> = ({
                 </ListItemIcon>
                 My Profile
               </MenuItem>
-              <MenuItem onClick={handleSettingsClick}>
+              <MenuItem
+                onClick={handleSettingsClick}
+              >
                 <ListItemIcon>
                   <FiSettings fontSize="small" />
                 </ListItemIcon>
@@ -197,12 +241,18 @@ const Navbar: React.FC<NavbarProps> = ({
                       width: '100%',
                     }}
                   >
-                    <CircularProgress size={24} sx={{ color: 'white' }} />
+                    <CircularProgress
+                      size={24}
+                      sx={{ color: 'white' }}
+                    />
                   </Box>
                 ) : (
                   <>
                     <ListItemIcon>
-                      <FiLogOut fontSize="small" style={{ color: 'white' }} />
+                      <FiLogOut
+                        fontSize="small"
+                        style={{ color: 'white' }}
+                      />
                     </ListItemIcon>
                     Logout
                   </>

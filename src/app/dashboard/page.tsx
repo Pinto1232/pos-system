@@ -1,20 +1,26 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+} from 'react';
 import DashboardContainer from '@/components/dashboard-layout/DashboardContainer';
 import Navbar from '@/components/sidebar/Navbar';
 import Sidebar from '@/components/sidebar/Sidebar';
 import { useSpinner } from '@/contexts/SpinnerContext';
 
 const Dashboard = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] =
+    useState(true);
   const drawerWidth = 240;
   const { setLoading } = useSpinner();
 
   useEffect(() => {
     // Ensure spinner is stopped when dashboard page mounts
     setLoading(false);
-    console.log('User redirected to dashboard successfully.');
+    console.log(
+      'User redirected to dashboard successfully.'
+    );
   }, [setLoading]);
 
   const handleDrawerToggle = () => {
@@ -33,9 +39,13 @@ const Dashboard = () => {
         isDrawerOpen={isDrawerOpen}
         onDrawerToggle={handleDrawerToggle}
         onSectionSelect={(section) =>
-          console.log(`Section selected: ${section}`)
+          console.log(
+            `Section selected: ${section}`
+          )
         }
-        handleItemClick={(item) => console.log(`Item clicked: ${item}`)}
+        handleItemClick={(item) =>
+          console.log(`Item clicked: ${item}`)
+        }
       />
 
       <DashboardContainer />

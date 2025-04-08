@@ -6,11 +6,18 @@ export interface Package {
   extraDescription: string;
   price: number;
   testPeriodDays: number;
-  type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
+  type:
+    | 'starter'
+    | 'growth'
+    | 'enterprise'
+    | 'custom'
+    | 'premium';
   isCustomizable: boolean;
   selectedFeatures?: number[] | null;
   selectedAddOns?: number[] | null;
-  selectedUsageBasedPricing?: UsagePricing[] | null;
+  selectedUsageBasedPricing?:
+    | UsagePricing[]
+    | null;
   multiCurrencyPrices: string;
 }
 
@@ -108,8 +115,14 @@ export interface CustomPackageLayoutProps {
   }) => void;
   onFeatureToggle: (features: Feature[]) => void;
   onAddOnToggle: (addOns: AddOn[]) => void;
-  onUsageChange: (quantities: Record<number, number>) => void;
-  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
+  onUsageChange: (
+    quantities: Record<number, number>
+  ) => void;
+  setSelectedCurrency: React.Dispatch<
+    React.SetStateAction<string>
+  >;
   enterpriseFeatures?: Record<string, boolean>;
-  onEnterpriseFeatureToggle?: (featureId: string) => void;
+  onEnterpriseFeatureToggle?: (
+    featureId: string
+  ) => void;
 }

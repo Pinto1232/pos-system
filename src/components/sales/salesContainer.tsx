@@ -2,7 +2,10 @@
 
 import React, { useState } from 'react';
 import Sales from './Sales';
-import { SalesContainerProps, SalesData } from './types';
+import {
+  SalesContainerProps,
+  SalesData,
+} from './types';
 
 const mockData: SalesData = {
   totalRevenue: 528976.82,
@@ -64,10 +67,16 @@ const mockData: SalesData = {
   },
 };
 
-const SalesContainer: React.FC<SalesContainerProps> = ({ className }) => {
-  const [timeframe, setTimeframe] = useState('Sep 1 - Nov 30, 2023');
+const SalesContainer: React.FC<
+  SalesContainerProps
+> = ({ className }) => {
+  const [timeframe, setTimeframe] = useState(
+    'Sep 1 - Nov 30, 2023'
+  );
 
-  const handleTimeframeChange = (newTimeframe: string) => {
+  const handleTimeframeChange = (
+    newTimeframe: string
+  ) => {
     setTimeframe(newTimeframe);
   };
 

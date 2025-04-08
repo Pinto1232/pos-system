@@ -1,27 +1,36 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+} from 'react';
 import DashboardLayout from '@/components/dashboard-layout/DashboardLayout';
 import Sidebar from '@/components/sidebar/Sidebar';
 import DashboardMain from '@/components/dashboardMain/dashboardMain';
 import { useSpinner } from '@/contexts/SpinnerContext';
 
 const DashboardContainer = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
-  const [activeSection, setActiveSection] = useState<string>('Dashboard');
+  const [isDrawerOpen, setIsDrawerOpen] =
+    useState(true);
+  const [activeSection, setActiveSection] =
+    useState<string>('Dashboard');
   const { setLoading } = useSpinner();
 
   useEffect(() => {
     // Stop the spinner when dashboard mounts
     setLoading(false);
-    console.log('User redirected to dashboard successfully.');
+    console.log(
+      'User redirected to dashboard successfully.'
+    );
   }, [setLoading]);
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const handleSectionSelect = (section: string) => {
+  const handleSectionSelect = (
+    section: string
+  ) => {
     setActiveSection(section);
   };
 
@@ -41,7 +50,9 @@ const DashboardContainer = () => {
           onSectionSelect={handleSectionSelect}
           handleItemClick={handleSectionSelect}
         />
-        <DashboardMain activeSection={activeSection} />
+        <DashboardMain
+          activeSection={activeSection}
+        />
       </div>
     </DashboardLayout>
   );

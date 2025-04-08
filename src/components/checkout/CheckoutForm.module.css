@@ -98,168 +98,85 @@
 
 .paymentMethodLabel:hover {
   background-color: #f8fafc;
-  border-color: #cbd5e1;
 }
 
-.paymentMethodLabel.Mui-checked {
-  background-color: #f0f7ff;
-  border-color: #2563eb;
-}
-
-.paymentMethodIcon {
+/* Modern styles for order summary section */
+.orderSummaryContent {
   display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  min-width: 0;
-  position: relative;
-  z-index: 1;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.paymentMethodCards {
+.section {
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+}
+
+.sectionTitle {
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: #1a1a1a;
+  margin-bottom: 1.25rem !important;
+  letter-spacing: -0.03em;
+}
+
+.sectionContent {
   display: flex;
-  align-items: center;
-  gap: 0;
-  margin-left: auto;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.paymentMethodLabel:not(:has(.paymentMethodCards)) .paymentMethodIcon {
-  width: 200%;
-  justify-content: space-between;
-}
-
-.paymentMethodLabel:not(:has(.paymentMethodCards)) .paymentMethodIcon svg {
-  font-size: 1.5rem;
-}
-
-.paymentMethodLabel:not(:has(.paymentMethodCards)) .paymentMethodIcon span {
-  font-weight: 500;
-  color: #1e293b;
-}
-
-.paymentMethodImage {
-  width: 50px !important;
-  height: 20px !important;
-  object-fit: contain;
-  opacity: 0.8;
-  transition: opacity 0.15s ease;
-  margin-left: 1.5rem;
-}
-
-.paymentMethodImage + .paymentMethodImage {
-  margin-left: 0;
-}
-
-.paymentMethodLabel:hover .paymentMethodImage {
-  opacity: 1;
-}
-
-/* Credit card form specific styles */
-.paymentDetails form {
-  display: grid;
-  gap: 0.75rem;
-  padding: 1rem;
-  background-color: #f8fafc;
-  border-radius: 8px;
-  margin-top: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
-}
-
-.paymentDetails form .MuiTextField-root {
-  margin-bottom: 0;
-}
-
-.paymentDetails form .MuiGrid-container {
+  flex-direction: column;
   gap: 1rem;
 }
 
-/* Scrollbar styles */
-.paymentDetails::-webkit-scrollbar {
-  width: 4px;
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
 }
 
-.paymentDetails::-webkit-scrollbar-track {
-  background: #f1f5f9;
+.itemLabel {
+  font-size: 1rem !important;
+  color: #2d2d2d;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 500 !important;
 }
 
-.paymentDetails::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1;
+.discountTag {
+  background: linear-gradient(135deg, #4caf50, #45a049);
+  color: white;
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.25);
 }
 
-.paymentDetails::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8;
+.itemValue {
+  font-weight: 700 !important;
+  color: #1a1a1a;
+  font-size: 1.125rem !important;
+  background: -webkit-linear-gradient(45deg, #1976d2, #2196f3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Responsive styles */
-@media (max-width: 1200px) {
-  .checkoutContainer {
-    max-width: 95%;
-    gap: 2rem;
-    padding: 2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .checkoutContainer {
-    flex-direction: column;
-    padding: 1.5rem;
-    margin: 1rem auto;
-  }
-
-  .checkoutLeft {
-    padding-right: 0;
-    padding-bottom: 2rem;
-  }
-
-  .checkoutRight {
-    padding-left: 0;
-    padding-top: 2rem;
-    min-width: unset;
-    max-width: unset;
-  }
-
-  .paymentDetails {
-    padding: 1.25rem;
-  }
-
-  .paymentMethodLabel {
-    padding: 0.875rem;
-  }
-
-  .paymentDetails form {
-    padding: 1rem;
-  }
-
-  .paymentMethodCards {
-    margin-left: 0.5rem;
-  }
-
-  .checkoutButton {
-    width: 100% !important;
-    min-width: unset !important;
-  }
-}
-
-.checkoutButton {
-  width: 200px !important;
-  margin: 1rem auto 0 !important;
-  padding: 0.375rem 1.25rem !important;
-  background-color: #2563eb !important;
-  color: white !important;
-  font-weight: 600 !important;
-  text-transform: none !important;
-  border-radius: 6px !important;
-  transition: all 0.2s ease !important;
+.itemDescription {
   font-size: 0.9rem !important;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
-  display: block !important;
-}
-
-.checkoutButton:hover {
-  background-color: #1d4ed8 !important;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3) !important;
+  color: #666666;
+  line-height: 1.5;
+  margin-top: 0.25rem;
 }

@@ -38,3 +38,173 @@
 .stepperContainer :global(.MuiStepConnector-line) {
   margin-top: 3px !important;
 }
+
+.orderSummaryContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* package details */
+.packageDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  min-width: 1000px;
+  margin-top: 3rem;
+}
+
+.packageTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.packageDescription {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.featuresTable {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tableHeader,
+.tableRow {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tableHeader {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.featureColumn {
+  flex: 2;
+  padding: 1rem;
+  border-right: 1px solid #e0e0e0;
+}
+
+.planColumn {
+  flex: 1;
+  padding: 1rem;
+  text-align: center;
+  border-right: 1px solid #e0e0e0;
+}
+
+.planColumn:last-child {
+  border-right: none;
+}
+
+.priceSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.priceTabs {
+  display: flex;
+  gap: 1rem;
+}
+
+.priceTab,
+.priceTabActive {
+  flex: 1;
+  padding: 0.75rem;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.priceTabActive {
+  background-color: #2e7d32;
+  color: white;
+}
+
+.priceCards {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.priceCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.buyButton {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #2e7d32;
+  color: white;
+  font-weight: 500;
+  text-transform: none;
+}
+
+.buyButton:hover {
+  background-color: #1b5e20;
+}
+
+.packageDetailsControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 900px;
+  margin: 0 auto;
+  gap: 21rem;
+}
+
+.packageDetailsButtonBack {
+  width: 300px;
+}
+
+.packageDetailsButtonContinue {
+  width: 300px;
+}
+
+@media (max-width: 768px) {
+  .priceCards {
+    flex-direction: column;
+  }
+
+  .tableHeader,
+  .tableRow {
+    flex-direction: column;
+  }
+
+  .featureColumn,
+  .planColumn {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+  }
+
+  .planColumn {
+    text-align: left;
+  }
+}

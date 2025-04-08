@@ -6,5 +6,7 @@ test('Login with Keycloak', async ({ page }) => {
   await page.fill('#password', 'testpassword');
   await page.click('button[type="submit"]');
 
-  await expect(page).toHaveURL('http://localhost:3000/dashboard');
+  await expect(page).toHaveURL(
+    'http://localhost:3000/dashboard'
+  );
 });

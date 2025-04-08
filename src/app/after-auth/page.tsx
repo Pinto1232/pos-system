@@ -9,21 +9,33 @@ const AfterAuth = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    const timeout = setTimeout(
+      () => controller.abort(),
+      15000
+    );
 
     const exchangeCodeForToken = async () => {
-      const params = new URLSearchParams(window.location.search);
+      const params = new URLSearchParams(
+        window.location.search
+      );
       const code = params.get('code');
       const error = params.get('error');
 
       if (error) {
-        console.error('Auth error:', params.toString());
-        router.replace(`/?error=${encodeURIComponent(error)}`);
+        console.error(
+          'Auth error:',
+          params.toString()
+        );
+        router.replace(
+          `/?error=${encodeURIComponent(error)}`
+        );
         return;
       }
 
       if (!code) {
-        router.replace('/?error=missing_auth_code');
+        router.replace(
+          '/?error=missing_auth_code'
+        );
         return;
       }
 
@@ -35,16 +47,28 @@ const AfterAuth = () => {
         );
 
         if (response.data?.accessToken) {
-          localStorage.setItem('accessToken', response.data.accessToken);
+          localStorage.setItem(
+            'accessToken',
+            response.data.accessToken
+          );
           router.replace('/dashboard');
         } else {
-          throw new Error('Invalid server response');
+          throw new Error(
+            'Invalid server response'
+          );
         }
       } catch (err) {
-        console.error('Token exchange error:', err);
+        console.error(
+          'Token exchange error:',
+          err
+        );
         const errorMessage =
-          err instanceof Error ? err.message : 'exchange_failed';
-        router.replace(`/?error=${encodeURIComponent(errorMessage)}`);
+          err instanceof Error
+            ? err.message
+            : 'exchange_failed';
+        router.replace(
+          `/?error=${encodeURIComponent(errorMessage)}`
+        );
       } finally {
         clearTimeout(timeout);
       }

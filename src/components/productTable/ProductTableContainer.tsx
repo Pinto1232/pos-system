@@ -9,16 +9,25 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 const ProductTableContainer: React.FC = () => {
-  const { products, updateProduct } = useProductContext();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [priceFilter, setPriceFilter] = useState<string>('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('All');
-  const [ratingFilter, setRatingFilter] = useState('All');
-  const [statusFilter, setStatusFilter] = useState('All');
+  const { products, updateProduct } =
+    useProductContext();
+  const [selectedProduct, setSelectedProduct] =
+    useState<Product | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] =
+    useState(false);
+  const [priceFilter, setPriceFilter] =
+    useState<string>('All');
+  const [searchQuery, setSearchQuery] =
+    useState('');
+  const [categoryFilter, setCategoryFilter] =
+    useState('All');
+  const [ratingFilter, setRatingFilter] =
+    useState('All');
+  const [statusFilter, setStatusFilter] =
+    useState('All');
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(8);
+  const [rowsPerPage, setRowsPerPage] =
+    useState(8);
 
   // Memoize the filtered products to prevent unnecessary recalculations
   const filteredProducts = useMemo(() => {
@@ -30,30 +39,45 @@ const ProductTableContainer: React.FC = () => {
         (product) =>
           product.productName
             .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          product.barcode.toLowerCase().includes(searchQuery.toLowerCase())
+            .includes(
+              searchQuery.toLowerCase()
+            ) ||
+          product.barcode
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
       );
     }
 
     // Apply category filter
     if (categoryFilter !== 'All') {
-      filtered = filtered.filter((product) => product.color === categoryFilter);
+      filtered = filtered.filter(
+        (product) =>
+          product.color === categoryFilter
+      );
     }
 
     // Apply rating filter
     if (ratingFilter !== 'All') {
       const ratingValue = parseInt(ratingFilter);
       filtered = filtered.filter(
-        (product) => Math.floor(product.rating) === ratingValue
+        (product) =>
+          Math.floor(product.rating) ===
+          ratingValue
       );
     }
 
     // Apply status filter
     if (statusFilter !== 'All') {
       if (statusFilter === 'Available') {
-        filtered = filtered.filter((product) => product.status === true);
-      } else if (statusFilter === 'Out of Stock') {
-        filtered = filtered.filter((product) => product.status === false);
+        filtered = filtered.filter(
+          (product) => product.status === true
+        );
+      } else if (
+        statusFilter === 'Out of Stock'
+      ) {
+        filtered = filtered.filter(
+          (product) => product.status === false
+        );
       }
     }
 
@@ -62,21 +86,29 @@ const ProductTableContainer: React.FC = () => {
       switch (priceFilter) {
         case 'R10-R100':
           filtered = filtered.filter(
-            (product) => product.price >= 10 && product.price <= 100
+            (product) =>
+              product.price >= 10 &&
+              product.price <= 100
           );
           break;
         case 'R100-R500':
           filtered = filtered.filter(
-            (product) => product.price >= 100 && product.price <= 500
+            (product) =>
+              product.price >= 100 &&
+              product.price <= 500
           );
           break;
         case 'R500-R1000':
           filtered = filtered.filter(
-            (product) => product.price >= 500 && product.price <= 1000
+            (product) =>
+              product.price >= 500 &&
+              product.price <= 1000
           );
           break;
         case 'R1000+':
-          filtered = filtered.filter((product) => product.price > 1000);
+          filtered = filtered.filter(
+            (product) => product.price > 1000
+          );
           break;
       }
     }
@@ -95,7 +127,10 @@ const ProductTableContainer: React.FC = () => {
   const paginatedProducts = useMemo(() => {
     const startIndex = page * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
-    return filteredProducts.slice(startIndex, endIndex);
+    return filteredProducts.slice(
+      startIndex,
+      endIndex
+    );
   }, [filteredProducts, page, rowsPerPage]);
 
   const handleView = (product: Product) => {
@@ -108,44 +143,64 @@ const ProductTableContainer: React.FC = () => {
     setSelectedProduct(null);
   };
 
-  const handlePriceChange = (event: SelectChangeEvent) => {
+  const handlePriceChange = (
+    event: SelectChangeEvent
+  ) => {
     setPriceFilter(event.target.value);
     setPage(0);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSearchQuery(event.target.value);
     setPage(0);
   };
 
-  const handleCategoryChange = (event: SelectChangeEvent) => {
+  const handleCategoryChange = (
+    event: SelectChangeEvent
+  ) => {
     setCategoryFilter(event.target.value);
     setPage(0);
   };
 
-  const handleRatingChange = (event: SelectChangeEvent) => {
+  const handleRatingChange = (
+    event: SelectChangeEvent
+  ) => {
     setRatingFilter(event.target.value);
     setPage(0);
   };
 
-  const handleStatusChange = (event: SelectChangeEvent) => {
+  const handleStatusChange = (
+    event: SelectChangeEvent
+  ) => {
     setStatusFilter(event.target.value);
     setPage(0);
   };
 
-  const handleStatusToggle = (product: Product) => {
-    const updatedProduct = { ...product, status: !product.status };
+  const handleStatusToggle = (
+    product: Product
+  ) => {
+    const updatedProduct = {
+      ...product,
+      status: !product.status,
+    };
     updateProduct(updatedProduct);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (
+    event: unknown,
+    newPage: number
+  ) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(
+      parseInt(event.target.value, 10)
+    );
     setPage(0);
   };
 
@@ -171,19 +226,29 @@ const ProductTableContainer: React.FC = () => {
 
     // Add date
     doc.setFontSize(10);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 22);
+    doc.text(
+      `Generated on: ${new Date().toLocaleDateString()}`,
+      14,
+      22
+    );
 
     // Prepare data for the table
-    const tableData = filteredProducts.map((product) => [
-      product.productName,
-      product.barcode,
-      product.sku || '-',
-      `R${product.price.toFixed(2)}`,
-      product.status ? 'In Stock' : 'Out of Stock',
-      product.rating.toString(),
-      product.color || 'N/A',
-      new Date(product.createdAt).toLocaleDateString(),
-    ]);
+    const tableData = filteredProducts.map(
+      (product) => [
+        product.productName,
+        product.barcode,
+        product.sku || '-',
+        `R${product.price.toFixed(2)}`,
+        product.status
+          ? 'In Stock'
+          : 'Out of Stock',
+        product.rating.toString(),
+        product.color || 'N/A',
+        new Date(
+          product.createdAt
+        ).toLocaleDateString(),
+      ]
+    );
 
     // Add the table
     autoTable(doc, {
@@ -216,7 +281,10 @@ const ProductTableContainer: React.FC = () => {
         cellWidth: 'wrap',
       },
       columnStyles: {
-        0: { cellWidth: 50, overflow: 'linebreak' },
+        0: {
+          cellWidth: 50,
+          overflow: 'linebreak',
+        },
         1: { cellWidth: 25 },
         2: { cellWidth: 25 },
         3: { cellWidth: 20 },
@@ -257,7 +325,9 @@ const ProductTableContainer: React.FC = () => {
       onStatusChange={handleStatusChange}
       onStatusToggle={handleStatusToggle}
       onPageChange={handleChangePage}
-      onRowsPerPageChange={handleChangeRowsPerPage}
+      onRowsPerPageChange={
+        handleChangeRowsPerPage
+      }
       onResetFilters={handleResetFilters}
       onExportPDF={handleExportPDF}
     />

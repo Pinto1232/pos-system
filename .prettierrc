@@ -4,7 +4,7 @@
     "singleQuote": true,
     "tabWidth": 2,
     "useTabs": false,
-    "printWidth": 80,
+    "printWidth": 50,
     "bracketSpacing": true,
     "arrowParens": "always",
     "endOfLine": "auto",
@@ -19,7 +19,7 @@
                 "*.tsx"
             ],
             "options": {
-                "printWidth": 80,
+                "printWidth": 50,
                 "tabWidth": 2,
                 "semi": true,
                 "singleQuote": true,
@@ -41,7 +41,7 @@
                 "*.module.scss"
             ],
             "options": {
-                "printWidth": 100,
+                "printWidth": 90,
                 "tabWidth": 2,
                 "singleQuote": true,
                 "semi": true

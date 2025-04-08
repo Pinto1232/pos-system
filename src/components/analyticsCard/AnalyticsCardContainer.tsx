@@ -1,5 +1,9 @@
 import React from 'react';
-import { Box, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Typography,
+} from '@mui/material';
 import AnalyticsCard from './AnalyticsCard';
 
 const AnalyticsCardContainer = () => {
@@ -54,13 +58,23 @@ const AnalyticsCardContainer = () => {
     <Box sx={{ p: 4 }}>
       <Typography
         variant="h5"
-        sx={{ mb: 3, fontWeight: 'bold', color: '#000' }}
+        sx={{
+          mb: 3,
+          fontWeight: 'bold',
+          color: '#000',
+        }}
       >
         Sales Overview & Analytics
       </Typography>
       <Grid container spacing={3}>
         {cardsData.map((card, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            key={index}
+          >
             <AnalyticsCard
               circleText={card.circleText}
               title={card.title}

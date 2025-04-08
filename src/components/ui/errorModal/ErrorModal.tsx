@@ -6,7 +6,10 @@ interface ErrorModalProps {
   onClose: () => void;
 }
 
-const ErrorModal: React.FC<ErrorModalProps> = ({ message, onClose }) => {
+const ErrorModal: React.FC<ErrorModalProps> = ({
+  message,
+  onClose,
+}) => {
   return (
     <div className="error-modal-overlay">
       <div className="error-modal">
@@ -26,7 +29,9 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ message, onClose }) => {
           </p>
 
           {/* Action Button */}
-          <button onClick={onClose}>Try again</button>
+          <button onClick={onClose}>
+            Try again
+          </button>
         </div>
       </div>
     </div>

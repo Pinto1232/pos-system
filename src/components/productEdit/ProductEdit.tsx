@@ -9,14 +9,20 @@ import {
   Avatar,
   Switch,
 } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+} from '@mui/x-data-grid';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import AddIcon from '@mui/icons-material/Add';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { ProductEditProps, Product } from './types';
+import {
+  ProductEditProps,
+  Product,
+} from './types';
 import * as S from './styles';
 import ProductEditModal from './ProductEditModal';
 
@@ -34,13 +40,12 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   itemNo,
   onDeleteItem,
 }) => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [viewingProduct, setViewingProduct] = React.useState<Product | null>(
-    null
-  );
-  const [editingProduct, setEditingProduct] = React.useState<Product | null>(
-    null
-  );
+  const [isModalOpen, setIsModalOpen] =
+    React.useState(false);
+  const [viewingProduct, setViewingProduct] =
+    React.useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] =
+    React.useState<Product | null>(null);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -52,20 +57,27 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     setEditingProduct(null);
   };
 
-  const handleViewProduct = (product: Product) => {
+  const handleViewProduct = (
+    product: Product
+  ) => {
     setViewingProduct(product);
     setEditingProduct(null);
     setIsModalOpen(true);
   };
 
-  const handleEditProduct = (product: Product) => {
+  const handleEditProduct = (
+    product: Product
+  ) => {
     setEditingProduct(product);
     setViewingProduct(null);
     setIsModalOpen(true);
   };
 
   const handleSubmitProduct = (data: Product) => {
-    console.log('ProductEdit - Received data from modal:', data);
+    console.log(
+      'ProductEdit - Received data from modal:',
+      data
+    );
     if (editingProduct) {
       onUpdateItem(data);
     } else {
@@ -79,7 +91,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'select',
       headerName: '',
       width: 70,
-      renderHeader: () => <Checkbox size="small" />,
+      renderHeader: () => (
+        <Checkbox size="small" />
+      ),
       renderCell: () => <Checkbox size="small" />,
       sortable: false,
       filterable: false,
@@ -90,7 +104,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       width: 100,
       renderCell: (params) => (
         <Avatar
-          src={params.value || '/placeholder-image.png'}
+          src={
+            params.value ||
+            '/placeholder-image.png'
+          }
           alt={params.row.productName}
           sx={{
             width: 40,
@@ -127,8 +144,13 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       align: 'left',
       headerAlign: 'left',
       renderCell: (params) => {
-        const price = params.row.price !== undefined ? params.row.price : 0;
-        return <span>R{Number(price).toFixed(2)}</span>;
+        const price =
+          params.row.price !== undefined
+            ? params.row.price
+            : 0;
+        return (
+          <span>R{Number(price).toFixed(2)}</span>
+        );
       },
     },
     {
@@ -142,22 +164,27 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           onChange={(e) => {
             const updatedProduct = {
               ...params.row,
-              statusProduct: e.target.checked ? 'Active' : 'Inactive',
+              statusProduct: e.target.checked
+                ? 'Active'
+                : 'Inactive',
             };
             onUpdateItem(updatedProduct);
           }}
           color="primary"
           size="small"
           sx={{
-            '& .MuiSwitch-switchBase.Mui-checked': {
-              color: '#52B788',
-              '&:hover': {
-                backgroundColor: 'rgba(82, 183, 136, 0.08)',
+            '& .MuiSwitch-switchBase.Mui-checked':
+              {
+                color: '#52B788',
+                '&:hover': {
+                  backgroundColor:
+                    'rgba(82, 183, 136, 0.08)',
+                },
               },
-            },
-            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-              backgroundColor: '#52B788',
-            },
+            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+              {
+                backgroundColor: '#52B788',
+              },
           }}
         />
       ),
@@ -178,7 +205,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       minWidth: 120,
       renderCell: (params) => {
         try {
-          const date = new Date(params.row.createdAt);
+          const date = new Date(
+            params.row.createdAt
+          );
           return (
             <span>
               {date.toLocaleDateString('en-US', {
@@ -189,7 +218,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             </span>
           );
         } catch {
-          return <span>{params.row.createdAt || '-'}</span>;
+          return (
+            <span>
+              {params.row.createdAt || '-'}
+            </span>
+          );
         }
       },
     },
@@ -203,24 +236,45 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           <IconButton
             size="small"
             color="primary"
-            sx={{ '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.08)' } }}
-            onClick={() => handleViewProduct(params.row)}
+            sx={{
+              '&:hover': {
+                backgroundColor:
+                  'rgba(25, 118, 210, 0.08)',
+              },
+            }}
+            onClick={() =>
+              handleViewProduct(params.row)
+            }
           >
             <VisibilityIcon fontSize="small" />
           </IconButton>
           <IconButton
             size="small"
             color="primary"
-            sx={{ '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.08)' } }}
-            onClick={() => handleEditProduct(params.row)}
+            sx={{
+              '&:hover': {
+                backgroundColor:
+                  'rgba(25, 118, 210, 0.08)',
+              },
+            }}
+            onClick={() =>
+              handleEditProduct(params.row)
+            }
           >
             <EditIcon fontSize="small" />
           </IconButton>
           <IconButton
             size="small"
             color="error"
-            sx={{ '&:hover': { backgroundColor: 'rgba(211, 47, 47, 0.08)' } }}
-            onClick={() => onDeleteItem(params.row.id)}
+            sx={{
+              '&:hover': {
+                backgroundColor:
+                  'rgba(211, 47, 47, 0.08)',
+              },
+            }}
+            onClick={() =>
+              onDeleteItem(params.row.id)
+            }
           >
             <DeleteIcon fontSize="small" />
           </IconButton>
@@ -253,7 +307,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               >
                 Inventory
               </Typography>
-              <S.ExportButton startIcon={<QrCodeScannerIcon />}>
+              <S.ExportButton
+                startIcon={<QrCodeScannerIcon />}
+              >
                 Export Product
               </S.ExportButton>
             </S.HeaderWrapper>
@@ -264,14 +320,26 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               <Checkbox size="small" />
             </S.CheckboxCell>
             <S.StandardCell>Image</S.StandardCell>
-            <S.ProductNameCell>Product Name</S.ProductNameCell>
+            <S.ProductNameCell>
+              Product Name
+            </S.ProductNameCell>
             <S.StandardCell>SKU</S.StandardCell>
-            <S.StandardCell>ID Code</S.StandardCell>
+            <S.StandardCell>
+              ID Code
+            </S.StandardCell>
             <S.StandardCell>Price</S.StandardCell>
-            <S.StandardCell>Status Product</S.StandardCell>
-            <S.StandardCell>Rating</S.StandardCell>
-            <S.StandardCell>Created At</S.StandardCell>
-            <S.StandardCell>Actions</S.StandardCell>
+            <S.StandardCell>
+              Status Product
+            </S.StandardCell>
+            <S.StandardCell>
+              Rating
+            </S.StandardCell>
+            <S.StandardCell>
+              Created At
+            </S.StandardCell>
+            <S.StandardCell>
+              Actions
+            </S.StandardCell>
           </S.TableHeaderRow>
 
           <S.ButtonGroup>
@@ -299,7 +367,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               <S.EmptyStateIcon>
                 <StorefrontIcon />
               </S.EmptyStateIcon>
-              <Typography variant="body1" color="textSecondary">
+              <Typography
+                variant="body1"
+                color="textSecondary"
+              >
                 No items added yet.
               </Typography>
             </S.EmptyStateWrapper>
@@ -317,7 +388,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 columnHeaderHeight={56}
                 getRowId={(row) => row.id}
                 onStateChange={(state) => {
-                  console.log('ProductEdit - DataGrid state:', state);
+                  console.log(
+                    'ProductEdit - DataGrid state:',
+                    state
+                  );
                   console.log(
                     'ProductEdit - Current products in DataGrid:',
                     products
@@ -334,27 +408,31 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   '& .MuiDataGrid-cell:focus': {
                     outline: 'none',
                   },
-                  '& .MuiDataGrid-columnHeader:focus': {
-                    outline: 'none',
-                  },
+                  '& .MuiDataGrid-columnHeader:focus':
+                    {
+                      outline: 'none',
+                    },
                   '& .MuiDataGrid-main': {
                     width: '100%',
                     overflow: 'visible',
                   },
-                  '& .MuiDataGrid-virtualScroller': {
-                    overflow: 'auto !important',
-                    '&::-webkit-scrollbar': {
-                      width: '8px',
-                      height: '0px', // Hide horizontal scrollbar
+                  '& .MuiDataGrid-virtualScroller':
+                    {
+                      overflow: 'auto !important',
+                      '&::-webkit-scrollbar': {
+                        width: '8px',
+                        height: '0px', // Hide horizontal scrollbar
+                      },
+                      '&::-webkit-scrollbar-track':
+                        {
+                          background: '#f1f1f1',
+                        },
+                      '&::-webkit-scrollbar-thumb':
+                        {
+                          background: '#888',
+                          borderRadius: '4px',
+                        },
                     },
-                    '&::-webkit-scrollbar-track': {
-                      background: '#f1f1f1',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: '#888',
-                      borderRadius: '4px',
-                    },
-                  },
                 }}
                 slotProps={{
                   basePopper: {
@@ -370,9 +448,16 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     },
                   },
                 }}
-                processRowUpdate={(newRow, oldRow) => {
-                  if (!newRow || !oldRow) return oldRow;
-                  console.log('Updating row:', { newRow, oldRow });
+                processRowUpdate={(
+                  newRow,
+                  oldRow
+                ) => {
+                  if (!newRow || !oldRow)
+                    return oldRow;
+                  console.log('Updating row:', {
+                    newRow,
+                    oldRow,
+                  });
                   return newRow;
                 }}
                 aria-label="Product inventory table"
@@ -388,7 +473,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 variant="subtitle2"
                 color="text.secondary"
                 gutterBottom
-                sx={{ fontSize: '13px', marginBottom: '8px' }}
+                sx={{
+                  fontSize: '13px',
+                  marginBottom: '8px',
+                }}
               >
                 Item No.
               </Typography>
@@ -409,7 +497,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 variant="subtitle2"
                 color="text.secondary"
                 gutterBottom
-                sx={{ fontSize: '13px', marginBottom: '8px' }}
+                sx={{
+                  fontSize: '13px',
+                  marginBottom: '8px',
+                }}
               >
                 Sub Total (Incld. Tax)
               </Typography>
@@ -430,7 +521,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 variant="subtitle2"
                 color="text.secondary"
                 gutterBottom
-                sx={{ fontSize: '13px', marginBottom: '8px' }}
+                sx={{
+                  fontSize: '13px',
+                  marginBottom: '8px',
+                }}
               >
                 Discount
               </Typography>
@@ -451,7 +545,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 variant="subtitle2"
                 color="text.secondary"
                 gutterBottom
-                sx={{ fontSize: '13px', marginBottom: '8px' }}
+                sx={{
+                  fontSize: '13px',
+                  marginBottom: '8px',
+                }}
               >
                 Total
               </Typography>
@@ -516,8 +613,16 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           open={isModalOpen}
           onClose={handleCloseModal}
           onSubmit={handleSubmitProduct}
-          product={viewingProduct || editingProduct}
-          mode={viewingProduct ? 'view' : editingProduct ? 'edit' : 'add'}
+          product={
+            viewingProduct || editingProduct
+          }
+          mode={
+            viewingProduct
+              ? 'view'
+              : editingProduct
+                ? 'edit'
+                : 'add'
+          }
         />
       </S.Container>
     </Box>

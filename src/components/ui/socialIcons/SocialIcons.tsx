@@ -1,6 +1,11 @@
 import React from 'react';
 import { Box, IconButton } from '@mui/material';
-import { Facebook, Twitter, LinkedIn, Instagram } from '@mui/icons-material';
+import {
+  Facebook,
+  Twitter,
+  LinkedIn,
+  Instagram,
+} from '@mui/icons-material';
 
 const SocialIcons: React.FC = () => {
   return (

@@ -12,13 +12,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   value = '',
 }) => {
-  const [searchValue, setSearchValue] = useState(value);
+  const [searchValue, setSearchValue] =
+    useState(value);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSearchValue(event.target.value);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (event.key === 'Enter' && onSearch) {
       onSearch(searchValue);
     }
@@ -38,7 +43,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
-      <SearchIconButton onClick={handleSearchClick}>
+      <SearchIconButton
+        onClick={handleSearchClick}
+      >
         <SearchIcon />
       </SearchIconButton>
     </StyledSearchBar>

@@ -17,14 +17,29 @@ export interface ProductTableProps {
   priceFilter: string;
   onView: (product: Product) => void;
   onCloseModal: () => void;
-  onPriceChange: (event: SelectChangeEvent) => void;
-  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onCategoryChange: (event: SelectChangeEvent) => void;
-  onRatingChange: (event: SelectChangeEvent) => void;
-  onStatusChange: (event: SelectChangeEvent) => void;
+  onPriceChange: (
+    event: SelectChangeEvent
+  ) => void;
+  onSearchChange: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void;
+  onCategoryChange: (
+    event: SelectChangeEvent
+  ) => void;
+  onRatingChange: (
+    event: SelectChangeEvent
+  ) => void;
+  onStatusChange: (
+    event: SelectChangeEvent
+  ) => void;
   onStatusToggle: (product: Product) => void;
-  onPageChange: (event: unknown, newPage: number) => void;
-  onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onPageChange: (
+    event: unknown,
+    newPage: number
+  ) => void;
+  onRowsPerPageChange: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void;
   onResetFilters: () => void;
   onExportPDF: () => void;
 }

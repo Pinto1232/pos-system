@@ -29,7 +29,10 @@ interface LoginFormProps {
   emailPlaceholder?: string;
   passwordPlaceholder?: string;
   buttonText?: string;
-  onSubmit?: (email: string, password: string) => void;
+  onSubmit?: (
+    email: string,
+    password: string
+  ) => void;
   onClose?: () => void;
 }
 
@@ -43,15 +46,23 @@ const LoginForm: React.FC<LoginFormProps> = memo(
   }) => {
     const router = useRouter();
     const { setLoading } = useSpinner();
-    const [error, setError] = useState<string | null>(null);
-    const [isFadingOut, setIsFadingOut] = useState(false);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState<
+      string | null
+    >(null);
+    const [isFadingOut, setIsFadingOut] =
+      useState(false);
+    const [snackbarOpen, setSnackbarOpen] =
+      useState(false);
+    const [isLoggedIn, setIsLoggedIn] =
+      useState(false);
+    const [showPassword, setShowPassword] =
+      useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = async (event: React.FormEvent) => {
+    const handleLogin = async (
+      event: React.FormEvent
+    ) => {
       event.preventDefault();
       setIsFadingOut(true);
       setLoading(true);
@@ -77,14 +88,22 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           }
         );
         const { access_token } = response.data;
-        localStorage.setItem('accessToken', access_token);
-        console.log('Login successful:', response.data);
+        localStorage.setItem(
+          'accessToken',
+          access_token
+        );
+        console.log(
+          'Login successful:',
+          response.data
+        );
         setIsFadingOut(false);
         setIsLoggedIn(true);
         router.push('/dashboard');
       } catch (error) {
         console.error('Login failed:', error);
-        setError('Login failed. Please check your credentials and try again.');
+        setError(
+          'Login failed. Please check your credentials and try again.'
+        );
         setSnackbarOpen(true);
         setIsFadingOut(false);
         setLoading(false);
@@ -109,11 +128,16 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           >
             <Box className={styles.formBox}>
               {onClose && (
-                <IconButton className={styles.closeButton} onClick={onClose}>
+                <IconButton
+                  className={styles.closeButton}
+                  onClick={onClose}
+                >
                   <CloseIcon />
                 </IconButton>
               )}
-              <Box className={styles.logoContainer}>
+              <Box
+                className={styles.logoContainer}
+              >
                 <Image
                   src="/logo-placeholder.png"
                   alt="POS Logo"
@@ -123,14 +147,23 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 />
               </Box>
 
-              <Typography variant="h6" className={styles.heading}>
+              <Typography
+                variant="h6"
+                className={styles.heading}
+              >
                 {title}
               </Typography>
-              <Typography variant="body1" className={styles.subtext}>
+              <Typography
+                variant="body1"
+                className={styles.subtext}
+              >
                 {subtitle}
               </Typography>
 
-              <form className={styles.form} onSubmit={handleLogin}>
+              <form
+                className={styles.form}
+                onSubmit={handleLogin}
+              >
                 <Box mb={2}>
                   <TextField
                     id="email"
@@ -139,7 +172,9 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                     variant="outlined"
                     fullWidth
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) =>
+                      setEmail(e.target.value)
+                    }
                     className={styles.textField}
                   />
                 </Box>
@@ -149,16 +184,26 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                     id="password"
                     name="password"
                     label="Password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={
+                      showPassword
+                        ? 'text'
+                        : 'password'
+                    }
                     variant="outlined"
                     fullWidth
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) =>
+                      setPassword(e.target.value)
+                    }
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
+                            onClick={() =>
+                              setShowPassword(
+                                !showPassword
+                              )
+                            }
                             edge="end"
                           >
                             {showPassword ? (
@@ -176,11 +221,22 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
                 <Box className={styles.options}>
                   <FormControlLabel
-                    control={<Checkbox className={styles.checkbox} />}
+                    control={
+                      <Checkbox
+                        className={
+                          styles.checkbox
+                        }
+                      />
+                    }
                     label="remember me"
                     className={styles.rememberMe}
                   />
-                  <Link href="#" className={styles.forgotPassword}>
+                  <Link
+                    href="#"
+                    className={
+                      styles.forgotPassword
+                    }
+                  >
                     forgot password?
                   </Link>
                 </Box>
@@ -201,7 +257,10 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           open={snackbarOpen}
           autoHideDuration={6000}
           onClose={() => setSnackbarOpen(false)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
           className={styles.snackbar}
         >
           <Alert

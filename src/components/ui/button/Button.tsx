@@ -30,7 +30,11 @@ export const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       type={type}
     >
-      {startIcon && <span className={styles.startIcon}>{startIcon}</span>}
+      {startIcon && (
+        <span className={styles.startIcon}>
+          {startIcon}
+        </span>
+      )}
       {children}
     </button>
   );

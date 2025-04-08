@@ -1,6 +1,10 @@
 'use client';
 
-import React, { Suspense, useEffect, useState } from 'react';
+import React, {
+  Suspense,
+  useEffect,
+  useState,
+} from 'react';
 import styles from './Jumbotron.module.css';
 
 interface JumbotronProps {
@@ -11,7 +15,9 @@ interface JumbotronProps {
   height?: string;
 }
 
-const JumbotronComponent: React.FC<JumbotronProps> = ({
+const JumbotronComponent: React.FC<
+  JumbotronProps
+> = ({
   heading,
   subheading,
   backgroundImage,
@@ -19,7 +25,9 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
   height = '500px',
 }) => {
   const [windowWidth, setWindowWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1024
+    typeof window !== 'undefined'
+      ? window.innerWidth
+      : 1024
   );
 
   useEffect(() => {
@@ -27,8 +35,15 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
       setWindowWidth(window.innerWidth);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener(
+      'resize',
+      handleResize
+    );
+    return () =>
+      window.removeEventListener(
+        'resize',
+        handleResize
+      );
   }, []);
 
   // Calculate responsive height based on screen width
@@ -50,11 +65,17 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
       />
       <div
         className={styles.backgroundImage}
-        style={{ backgroundImage: `url(${backgroundImage})` }}
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+        }}
       />
       <div className={styles.content}>
-        <h1 className={styles.heading}>{heading}</h1>
-        <p className={styles.subheading}>{subheading}</p>
+        <h1 className={styles.heading}>
+          {heading}
+        </h1>
+        <p className={styles.subheading}>
+          {subheading}
+        </p>
       </div>
     </div>
   );

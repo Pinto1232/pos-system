@@ -17,11 +17,17 @@ export interface Product {
 export interface ProductEditProps {
   products: Product[];
   onAddItem: (
-    product: Omit<Product, 'stock' | 'sales' | 'discount'>,
+    product: Omit<
+      Product,
+      'stock' | 'sales' | 'discount'
+    >,
     resetForm: () => void
   ) => void;
   onUpdateItem: (
-    product: Omit<Product, 'stock' | 'sales' | 'discount'>
+    product: Omit<
+      Product,
+      'stock' | 'sales' | 'discount'
+    >
   ) => void;
   onDeleteItem: (productId: number) => void;
   onNewSession: () => void;

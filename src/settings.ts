@@ -9,7 +9,10 @@ import {
   FaMoneyBillWave,
   FaPercent,
 } from 'react-icons/fa';
-import { TbReorder, TbTruckDelivery } from 'react-icons/tb';
+import {
+  TbReorder,
+  TbTruckDelivery,
+} from 'react-icons/tb';
 import { BiReceipt } from 'react-icons/bi';
 
 export const sidebarItems = [

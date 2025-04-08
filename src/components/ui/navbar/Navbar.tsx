@@ -17,7 +17,6 @@ import styles from './Navbar.module.css';
 
 export interface NavbarProps {
   title: string;
-  // Optionally, if you plan to use these props inside Navbar, add them here:
   menuItems?: string[];
   isDrawerOpen?: boolean;
   toggleDrawer?: (open: boolean) => () => void;
@@ -28,10 +27,10 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
   const { toggleLoginForm } = useLoginForm();
   const { testPeriod } = useTestPeriod();
   const { selectedPackage } = usePackageSelection();
-  const [remainingTime, setRemainingTime] = useState(testPeriod * 24 * 60 * 60); // convert days to seconds
+  const [remainingTime, setRemainingTime] = useState(testPeriod * 24 * 60 * 60);
 
   useEffect(() => {
-    setRemainingTime(testPeriod * 24 * 60 * 60); // reset remaining time when testPeriod changes
+    setRemainingTime(testPeriod * 24 * 60 * 60);
   }, [testPeriod]);
 
   useEffect(() => {

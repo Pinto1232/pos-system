@@ -8,18 +8,23 @@ interface JumbotronContainerProps {
   overlayColor?: string;
 }
 
-const JumbotronContainer: React.FC<JumbotronContainerProps> = ({
+const JumbotronContainer: React.FC<
+  JumbotronContainerProps
+> = ({
   heading,
   subheading,
   backgroundImage,
   overlayColor,
 }) => {
-  const finalHeading = heading || 'Empower Your Business';
+  const finalHeading =
+    heading || 'Empower Your Business';
   const finalSubheading =
     subheading ||
     'Streamline Sales, Manage Inventory, and Grow with Confidence!';
-  const finalBackground = backgroundImage || '/pos_banner.jpg';
-  const finalOverlay = overlayColor || 'rgba(0, 0, 0, 0.7)';
+  const finalBackground =
+    backgroundImage || '/pos_banner.jpg';
+  const finalOverlay =
+    overlayColor || 'rgba(0, 0, 0, 0.7)';
 
   return (
     <Jumbotron

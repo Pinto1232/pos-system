@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+} from 'react';
 import { Box } from '@mui/material';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Navbar from '@/components/sidebar/Navbar';
@@ -31,7 +34,9 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({
+const DashboardLayout: React.FC<
+  DashboardLayoutProps
+> = ({
   isDrawerOpen,
   onDrawerToggle,
   backgroundColor,
@@ -41,16 +46,22 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 }) => {
   const userId = '1';
 
-  const { data, isSuccess } = useQuery<UserCustomization, Error>({
+  const { data, isSuccess } = useQuery<
+    UserCustomization,
+    Error
+  >({
     queryKey: ['userCustomization', userId],
     queryFn: () => fetchCustomization(userId),
   });
 
-  const [customization, setCustomization] = useState<UserCustomization | null>(
-    null
-  );
-  const [openSettingsModal, setOpenSettingsModal] = useState(false);
-  const [activeSection, setActiveSection] = useState('Dashboard');
+  const [customization, setCustomization] =
+    useState<UserCustomization | null>(null);
+  const [
+    openSettingsModal,
+    setOpenSettingsModal,
+  ] = useState(false);
+  const [activeSection, setActiveSection] =
+    useState('Dashboard');
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -67,16 +78,30 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   };
 
   const sidebarBackground =
-    customization?.sidebarColor || backgroundColor || '#173A79';
-  const logoUrl = customization?.logoUrl || '/Pisval_Logo.jpg';
-  const navbarBg = customization?.navbarColor || navbarBgColor || '#000000';
+    customization?.sidebarColor ||
+    backgroundColor ||
+    '#173A79';
+  const logoUrl =
+    customization?.logoUrl || '/Pisval_Logo.jpg';
+  const navbarBg =
+    customization?.navbarColor ||
+    navbarBgColor ||
+    '#000000';
 
-  const handleCustomizationUpdated = (updated: UserCustomization) => {
+  const handleCustomizationUpdated = (
+    updated: UserCustomization
+  ) => {
     setCustomization(updated);
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#F3F4F6' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        minHeight: '100vh',
+        bgcolor: '#F3F4F6',
+      }}
+    >
       <Sidebar
         drawerWidth={300}
         isDrawerOpen={isDrawerOpen}
@@ -86,7 +111,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         iconColor={iconColor}
         onSettingsClick={handleSettingsClick}
         onSectionSelect={setActiveSection}
-        handleItemClick={(item) => console.log(`Item clicked: ${item}`)}
+        handleItemClick={(item) =>
+          console.log(`Item clicked: ${item}`)
+        }
         logoUrl={logoUrl}
       />
       <Box
@@ -104,14 +131,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           backgroundColor={navbarBg}
         />
         <Box sx={{ p: 2 }}>
-          <DashboardMainContainer activeSection={activeSection} />
+          <DashboardMainContainer
+            activeSection={activeSection}
+          />
         </Box>
       </Box>
       <SettingsModal
         open={openSettingsModal}
         onClose={handleCloseSettings}
         userId={userId}
-        onCustomizationUpdated={handleCustomizationUpdated}
+        onCustomizationUpdated={
+          handleCustomizationUpdated
+        }
       />
     </Box>
   );

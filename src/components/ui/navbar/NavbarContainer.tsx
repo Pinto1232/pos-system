@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-// Import the memoized Navbar instead of the default LazyNavbar
 import { Navbar } from '@/components/ui/navbar/Navbar';
 import Drawer from '@mui/material/Drawer';
 import { Box } from '@mui/material';
 
 const NavbarContainer: React.FC = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] =
+    useState(false);
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);

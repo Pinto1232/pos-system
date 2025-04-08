@@ -1,6 +1,16 @@
 import React from 'react';
-import { Box, Button, useTheme } from '@mui/material';
-import { FaStar, FaHeart, FaCheck, FaBell, FaSmile } from 'react-icons/fa';
+import {
+  Box,
+  Button,
+  useTheme,
+} from '@mui/material';
+import {
+  FaStar,
+  FaHeart,
+  FaCheck,
+  FaBell,
+  FaSmile,
+} from 'react-icons/fa';
 import {
   StyledCard,
   CircleNumber,
@@ -12,15 +22,29 @@ import {
 } from './analyticsCard.styles';
 import { AnalyticsCardProps } from './analyticsCard.types';
 
-const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
+const AnalyticsCard: React.FC<
+  AnalyticsCardProps
+> = ({
   circleText,
   title,
   dataPoints,
   percentage,
 }) => {
   const theme = useTheme();
-  const buttonColors = ['#006D77', '#1E3A8A', '#52B788', '#1F2937', '#F59E0B'];
-  const buttonIcons = [FaStar, FaHeart, FaCheck, FaBell, FaSmile];
+  const buttonColors = [
+    '#006D77',
+    '#1E3A8A',
+    '#52B788',
+    '#1F2937',
+    '#F59E0B',
+  ];
+  const buttonIcons = [
+    FaStar,
+    FaHeart,
+    FaCheck,
+    FaBell,
+    FaSmile,
+  ];
 
   return (
     <StyledCard
@@ -28,12 +52,15 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
         width: { xs: '100%', sm: 370 },
         height: { xs: 'auto', sm: 315 },
         p: { xs: 2, sm: 3 },
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
-        background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
+        boxShadow:
+          '0 10px 30px rgba(0, 0, 0, 0.08)',
+        background:
+          'linear-gradient(145deg, #ffffff, #f8f9fa)',
         transition: 'all 0.3s ease',
         '&:hover': {
           transform: 'translateY(-5px)',
-          boxShadow: '0 15px 35px rgba(0, 0, 0, 0.1)',
+          boxShadow:
+            '0 15px 35px rgba(0, 0, 0, 0.1)',
         },
       }}
     >
@@ -41,8 +68,14 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', sm: 'center' },
-          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: {
+            xs: 'flex-start',
+            sm: 'center',
+          },
+          flexDirection: {
+            xs: 'column',
+            sm: 'row',
+          },
           gap: 1,
         }}
       >
@@ -51,9 +84,14 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
             width: { xs: 40, sm: 60 },
             height: { xs: 40, sm: 60 },
             mb: { xs: 1, sm: 2 },
-            background: 'linear-gradient(135deg, #4F46E5, #7C3AED)',
-            boxShadow: '0 4px 10px rgba(124, 58, 237, 0.3)',
-            fontSize: { xs: '1rem', sm: '1.25rem' },
+            background:
+              'linear-gradient(135deg, #4F46E5, #7C3AED)',
+            boxShadow:
+              '0 4px 10px rgba(124, 58, 237, 0.3)',
+            fontSize: {
+              xs: '1rem',
+              sm: '1.25rem',
+            },
             fontWeight: 700,
           }}
         >
@@ -62,17 +100,26 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
 
         <Percentage
           sx={{
-            fontSize: { xs: '1.25rem', sm: '1.5rem' },
+            fontSize: {
+              xs: '1.25rem',
+              sm: '1.5rem',
+            },
             '& span:first-of-type': {
-              fontSize: { xs: '1.75rem', sm: '2rem' },
+              fontSize: {
+                xs: '1.75rem',
+                sm: '2rem',
+              },
               fontWeight: 800,
-              background: 'linear-gradient(135deg, #4F46E5, #7C3AED)',
+              background:
+                'linear-gradient(135deg, #4F46E5, #7C3AED)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             },
           }}
         >
-          <span>{percentage.replace('%', '')}</span>
+          <span>
+            {percentage.replace('%', '')}
+          </span>
           <span>%</span>
         </Percentage>
       </Box>
@@ -80,7 +127,10 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
       <Title
         variant="h6"
         sx={{
-          fontSize: { xs: '1.1rem', sm: '1.25rem' },
+          fontSize: {
+            xs: '1.1rem',
+            sm: '1.25rem',
+          },
           mt: { xs: 0, sm: -1 },
           mb: { xs: 1, sm: 0.5 },
           fontWeight: 700,
@@ -100,7 +150,10 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
           <DataPoint
             key={index}
             sx={{
-              fontSize: { xs: '0.875rem', sm: '0.9rem' },
+              fontSize: {
+                xs: '0.875rem',
+                sm: '0.9rem',
+              },
             }}
           >
             <a href="#">{point}</a>
@@ -111,7 +164,10 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
+          flexDirection: {
+            xs: 'column',
+            sm: 'row',
+          },
           gap: { xs: 1.5, sm: 0 },
           mt: { xs: 1, sm: 2 },
         }}
@@ -132,13 +188,19 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
                 size="small"
                 sx={{
                   flex: 1,
-                  minWidth: { xs: 'auto', sm: 34 },
+                  minWidth: {
+                    xs: 'auto',
+                    sm: 34,
+                  },
                   height: { xs: 36, sm: 28 },
                   p: { xs: '4px', sm: 0 },
                   bgcolor: buttonColors[i],
                   color: '#fff',
                   gap: { xs: '2px', sm: '6px' },
-                  fontSize: { xs: '0.75rem', sm: '10px' },
+                  fontSize: {
+                    xs: '0.75rem',
+                    sm: '10px',
+                  },
                   borderRadius: '8px',
                   margin: '0 1px',
                   transition: 'all 0.2s ease',
@@ -146,14 +208,26 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
                     bgcolor: buttonColors[i],
                     opacity: 0.9,
                     transform: 'translateY(-2px)',
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
+                    boxShadow:
+                      '0 4px 8px rgba(0, 0, 0, 0.15)',
                   },
                 }}
               >
-                <Icon size={theme.breakpoints.up('sm') ? 12 : 14} />
+                <Icon
+                  size={
+                    theme.breakpoints.up('sm')
+                      ? 12
+                      : 14
+                  }
+                />
                 <Box
                   component="span"
-                  sx={{ display: { xs: 'none', sm: 'inline' } }}
+                  sx={{
+                    display: {
+                      xs: 'none',
+                      sm: 'inline',
+                    },
+                  }}
                 >
                   {i}
                 </Box>
@@ -165,14 +239,20 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
         <Box
           sx={{
             width: '100%',
-            textAlign: { xs: 'center', sm: 'right' },
+            textAlign: {
+              xs: 'center',
+              sm: 'right',
+            },
             order: { xs: 1, sm: 2 },
           }}
         >
           <a href="#">
             <ViewDetails
               sx={{
-                fontSize: { xs: '0.875rem', sm: '0.9rem' },
+                fontSize: {
+                  xs: '0.875rem',
+                  sm: '0.9rem',
+                },
                 mt: { xs: 0, sm: 2 },
                 fontWeight: 600,
                 transition: 'all 0.2s ease',

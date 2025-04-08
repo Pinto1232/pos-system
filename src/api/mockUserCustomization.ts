@@ -5,7 +5,8 @@ const STORAGE_KEY = 'userCustomization';
 export const mockFetchCustomization = async (
   userId: string
 ): Promise<UserCustomization> => {
-  const storedData = localStorage.getItem(STORAGE_KEY);
+  const storedData =
+    localStorage.getItem(STORAGE_KEY);
   if (storedData) {
     return JSON.parse(storedData);
   }
@@ -23,6 +24,9 @@ export const mockFetchCustomization = async (
 export const mockUpdateCustomization = async (
   customization: UserCustomization
 ): Promise<UserCustomization> => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(customization));
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(customization)
+  );
   return customization;
 };

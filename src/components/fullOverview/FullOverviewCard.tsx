@@ -1,5 +1,12 @@
 import React from 'react';
-import { Box, Divider, Typography, Chip, Tooltip, Button } from '@mui/material';
+import {
+  Box,
+  Divider,
+  Typography,
+  Chip,
+  Tooltip,
+  Button,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {
   StyledCard,
@@ -86,7 +93,9 @@ const StyledTag = styled(Chip)({
 });
 
 const FullOverviewCard: React.FC<
-  FullOverviewCardProps & { viewMode: 'grid' | 'list' }
+  FullOverviewCardProps & {
+    viewMode: 'grid' | 'list';
+  }
 > = ({
   variant,
   topLeftLabel,
@@ -118,13 +127,25 @@ const FullOverviewCard: React.FC<
   const renderNotificationIcon = () => {
     switch (notificationType) {
       case 'success':
-        return <CheckCircleIcon sx={{ color: '#ffffff' }} />;
+        return (
+          <CheckCircleIcon
+            sx={{ color: '#ffffff' }}
+          />
+        );
       case 'warning':
-        return <WarningIcon sx={{ color: '#ffffff' }} />;
+        return (
+          <WarningIcon
+            sx={{ color: '#ffffff' }}
+          />
+        );
       case 'error':
-        return <ErrorIcon sx={{ color: '#EF4444' }} />;
+        return (
+          <ErrorIcon sx={{ color: '#EF4444' }} />
+        );
       case 'info':
-        return <InfoIcon sx={{ color: '#3B82F6' }} />;
+        return (
+          <InfoIcon sx={{ color: '#3B82F6' }} />
+        );
       default:
         return null;
     }
@@ -140,7 +161,12 @@ const FullOverviewCard: React.FC<
           : '#EF4444';
 
     return (
-      <Tooltip title={status.charAt(0).toUpperCase() + status.slice(1)}>
+      <Tooltip
+        title={
+          status.charAt(0).toUpperCase() +
+          status.slice(1)
+        }
+      >
         <StatusIndicator
           sx={{
             '&::before': {
@@ -191,7 +217,11 @@ const FullOverviewCard: React.FC<
                   </Typography>
                 )}
               </Box>
-              {topRightIcon && <TopRightIcon>{topRightIcon}</TopRightIcon>}
+              {topRightIcon && (
+                <TopRightIcon>
+                  {topRightIcon}
+                </TopRightIcon>
+              )}
             </Box>
           </CardHeader>
           <CardBody>
@@ -214,7 +244,11 @@ const FullOverviewCard: React.FC<
             <TagWrapper>
               {tags &&
                 tags.map((tag, index) => (
-                  <StyledTag key={index} label={tag} size="small" />
+                  <StyledTag
+                    key={index}
+                    label={tag}
+                    size="small"
+                  />
                 ))}
             </TagWrapper>
           </CardFooter>
@@ -229,16 +263,23 @@ const FullOverviewCard: React.FC<
         onClick={onClick}
         sx={{
           cursor: onClick ? 'pointer' : 'default',
-          background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
-          boxShadow: '0 3px 8px rgba(0, 0, 0, 0.04)',
+          background:
+            'linear-gradient(145deg, #ffffff, #f8f9fa)',
+          boxShadow:
+            '0 3px 8px rgba(0, 0, 0, 0.04)',
           transition: 'all 0.3s ease',
           p: { xs: 1, sm: 1.25, md: 1.5 },
-          borderRadius: { xs: '6px', sm: '7px', md: '8px' },
+          borderRadius: {
+            xs: '6px',
+            sm: '7px',
+            md: '8px',
+          },
           position: 'relative',
           overflow: 'hidden',
           '&:hover': {
             transform: 'translateY(-1px)',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.06)',
+            boxShadow:
+              '0 4px 10px rgba(0, 0, 0, 0.06)',
           },
         }}
       >
@@ -256,13 +297,21 @@ const FullOverviewCard: React.FC<
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              mb: { xs: 0.25, sm: 0.375, md: 0.5 },
+              mb: {
+                xs: 0.25,
+                sm: 0.375,
+                md: 0.5,
+              },
             }}
           >
             <Typography
               variant="h6"
               sx={{
-                fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
+                fontSize: {
+                  xs: '0.8rem',
+                  sm: '0.85rem',
+                  md: '0.9rem',
+                },
                 fontWeight: 700,
                 color: '#1F2937',
               }}
@@ -273,19 +322,40 @@ const FullOverviewCard: React.FC<
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: { xs: 0.25, sm: 0.375, md: 0.5 },
+                gap: {
+                  xs: 0.25,
+                  sm: 0.375,
+                  md: 0.5,
+                },
               }}
             >
               <Typography
                 variant="caption"
                 sx={{
                   color: '#6B7280',
-                  fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                  fontSize: {
+                    xs: '0.6rem',
+                    sm: '0.625rem',
+                    md: '0.65rem',
+                  },
                   fontWeight: 500,
-                  background: 'rgba(107, 114, 128, 0.1)',
-                  px: { xs: 0.4, sm: 0.45, md: 0.5 },
-                  py: { xs: 0.2, sm: 0.225, md: 0.25 },
-                  borderRadius: { xs: '3px', sm: '3.5px', md: '4px' },
+                  background:
+                    'rgba(107, 114, 128, 0.1)',
+                  px: {
+                    xs: 0.4,
+                    sm: 0.45,
+                    md: 0.5,
+                  },
+                  py: {
+                    xs: 0.2,
+                    sm: 0.225,
+                    md: 0.25,
+                  },
+                  borderRadius: {
+                    xs: '3px',
+                    sm: '3.5px',
+                    md: '4px',
+                  },
                 }}
               >
                 {bankType}
@@ -294,12 +364,29 @@ const FullOverviewCard: React.FC<
                 variant="caption"
                 sx={{
                   color: '#6B7280',
-                  fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                  fontSize: {
+                    xs: '0.6rem',
+                    sm: '0.625rem',
+                    md: '0.65rem',
+                  },
                   fontWeight: 500,
-                  background: 'rgba(107, 114, 128, 0.1)',
-                  px: { xs: 0.4, sm: 0.45, md: 0.5 },
-                  py: { xs: 0.2, sm: 0.225, md: 0.25 },
-                  borderRadius: { xs: '3px', sm: '3.5px', md: '4px' },
+                  background:
+                    'rgba(107, 114, 128, 0.1)',
+                  px: {
+                    xs: 0.4,
+                    sm: 0.45,
+                    md: 0.5,
+                  },
+                  py: {
+                    xs: 0.2,
+                    sm: 0.225,
+                    md: 0.25,
+                  },
+                  borderRadius: {
+                    xs: '3px',
+                    sm: '3.5px',
+                    md: '4px',
+                  },
                 }}
               >
                 {bankName}
@@ -310,8 +397,13 @@ const FullOverviewCard: React.FC<
           {/* Card Preview */}
           <Box
             sx={{
-              background: 'linear-gradient(105deg, #000, #3B82F6)',
-              borderRadius: { xs: '6px', sm: '7px', md: '8px' },
+              background:
+                'linear-gradient(105deg, #000, #3B82F6)',
+              borderRadius: {
+                xs: '6px',
+                sm: '7px',
+                md: '8px',
+              },
               p: { xs: 1, sm: 1.25, md: 1.5 },
               color: '#fff',
               position: 'relative',
@@ -321,8 +413,16 @@ const FullOverviewCard: React.FC<
                 position: 'absolute',
                 top: 0,
                 right: 0,
-                width: { xs: '60px', sm: '65px', md: '70px' },
-                height: { xs: '60px', sm: '65px', md: '70px' },
+                width: {
+                  xs: '60px',
+                  sm: '65px',
+                  md: '70px',
+                },
+                height: {
+                  xs: '60px',
+                  sm: '65px',
+                  md: '70px',
+                },
                 background:
                   'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
                 borderRadius: '50%',
@@ -334,15 +434,24 @@ const FullOverviewCard: React.FC<
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                mb: { xs: 0.75, sm: 0.875, md: 1 },
+                mb: {
+                  xs: 0.75,
+                  sm: 0.875,
+                  md: 1,
+                },
               }}
             >
               <Typography
                 variant="h6"
                 sx={{
-                  fontSize: { xs: '0.75rem', sm: '0.775rem', md: '0.8rem' },
+                  fontSize: {
+                    xs: '0.75rem',
+                    sm: '0.775rem',
+                    md: '0.8rem',
+                  },
                   fontWeight: 600,
-                  color: 'rgba(255, 255, 255, 0.9)',
+                  color:
+                    'rgba(255, 255, 255, 0.9)',
                 }}
               >
                 {bankName}
@@ -350,8 +459,13 @@ const FullOverviewCard: React.FC<
               <Typography
                 variant="caption"
                 sx={{
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                  color:
+                    'rgba(255, 255, 255, 0.7)',
+                  fontSize: {
+                    xs: '0.6rem',
+                    sm: '0.625rem',
+                    md: '0.65rem',
+                  },
                 }}
               >
                 {bankType}
@@ -360,10 +474,22 @@ const FullOverviewCard: React.FC<
             <Typography
               variant="h5"
               sx={{
-                letterSpacing: { xs: '1px', sm: '1.25px', md: '1.5px' },
+                letterSpacing: {
+                  xs: '1px',
+                  sm: '1.25px',
+                  md: '1.5px',
+                },
                 fontWeight: 700,
-                fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
-                mb: { xs: 0.75, sm: 0.875, md: 1 },
+                fontSize: {
+                  xs: '0.8rem',
+                  sm: '0.85rem',
+                  md: '0.9rem',
+                },
+                mb: {
+                  xs: 0.75,
+                  sm: 0.875,
+                  md: 1,
+                },
                 color: '#fff',
               }}
             >
@@ -380,8 +506,13 @@ const FullOverviewCard: React.FC<
                 <Typography
                   variant="caption"
                   sx={{
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                    color:
+                      'rgba(255, 255, 255, 0.7)',
+                    fontSize: {
+                      xs: '0.6rem',
+                      sm: '0.625rem',
+                      md: '0.65rem',
+                    },
                     mb: 0.25,
                     display: 'block',
                   }}
@@ -392,7 +523,11 @@ const FullOverviewCard: React.FC<
                   variant="body2"
                   sx={{
                     color: '#fff',
-                    fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                    fontSize: {
+                      xs: '0.7rem',
+                      sm: '0.725rem',
+                      md: '0.75rem',
+                    },
                     fontWeight: 600,
                   }}
                 >
@@ -403,8 +538,13 @@ const FullOverviewCard: React.FC<
                 <Typography
                   variant="caption"
                   sx={{
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                    color:
+                      'rgba(255, 255, 255, 0.7)',
+                    fontSize: {
+                      xs: '0.6rem',
+                      sm: '0.625rem',
+                      md: '0.65rem',
+                    },
                     mb: 0.25,
                     display: 'block',
                   }}
@@ -415,7 +555,11 @@ const FullOverviewCard: React.FC<
                   variant="body2"
                   sx={{
                     color: '#fff',
-                    fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                    fontSize: {
+                      xs: '0.7rem',
+                      sm: '0.725rem',
+                      md: '0.75rem',
+                    },
                     fontWeight: 600,
                   }}
                 >
@@ -428,19 +572,36 @@ const FullOverviewCard: React.FC<
           {/* Balance Section */}
           <Box
             sx={{
-              background: 'rgba(107, 114, 128, 0.05)',
-              borderRadius: { xs: '4px', sm: '5px', md: '6px' },
+              background:
+                'rgba(107, 114, 128, 0.05)',
+              borderRadius: {
+                xs: '4px',
+                sm: '5px',
+                md: '6px',
+              },
               p: { xs: 0.75, sm: 0.875, md: 1 },
-              mt: { xs: 0.25, sm: 0.375, md: 0.5 },
+              mt: {
+                xs: 0.25,
+                sm: 0.375,
+                md: 0.5,
+              },
             }}
           >
             <Typography
               variant="subtitle2"
               sx={{
                 color: '#6B7280',
-                fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                fontSize: {
+                  xs: '0.7rem',
+                  sm: '0.725rem',
+                  md: '0.75rem',
+                },
                 fontWeight: 600,
-                mb: { xs: 0.25, sm: 0.375, md: 0.5 },
+                mb: {
+                  xs: 0.25,
+                  sm: 0.375,
+                  md: 0.5,
+                },
               }}
             >
               Total Balance
@@ -449,9 +610,17 @@ const FullOverviewCard: React.FC<
               variant="h6"
               sx={{
                 color: '#1F2937',
-                fontSize: { xs: '1rem', sm: '1.05rem', md: '1.1rem' },
+                fontSize: {
+                  xs: '1rem',
+                  sm: '1.05rem',
+                  md: '1.1rem',
+                },
                 fontWeight: 700,
-                mb: { xs: 0.75, sm: 0.875, md: 1 },
+                mb: {
+                  xs: 0.75,
+                  sm: 0.875,
+                  md: 1,
+                },
               }}
             >
               {totalBalance}
@@ -459,8 +628,13 @@ const FullOverviewCard: React.FC<
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: { xs: 0.5, sm: 0.625, md: 0.75 },
+                gridTemplateColumns:
+                  'repeat(3, 1fr)',
+                gap: {
+                  xs: 0.5,
+                  sm: 0.625,
+                  md: 0.75,
+                },
               }}
             >
               <Box>
@@ -468,7 +642,11 @@ const FullOverviewCard: React.FC<
                   variant="caption"
                   sx={{
                     color: '#6B7280',
-                    fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                    fontSize: {
+                      xs: '0.6rem',
+                      sm: '0.625rem',
+                      md: '0.65rem',
+                    },
                     display: 'block',
                     mb: 0.25,
                   }}
@@ -479,7 +657,11 @@ const FullOverviewCard: React.FC<
                   variant="body2"
                   sx={{
                     color: '#1F2937',
-                    fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                    fontSize: {
+                      xs: '0.7rem',
+                      sm: '0.725rem',
+                      md: '0.75rem',
+                    },
                     fontWeight: 600,
                   }}
                 >
@@ -491,7 +673,11 @@ const FullOverviewCard: React.FC<
                   variant="caption"
                   sx={{
                     color: '#6B7280',
-                    fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                    fontSize: {
+                      xs: '0.6rem',
+                      sm: '0.625rem',
+                      md: '0.65rem',
+                    },
                     display: 'block',
                     mb: 0.25,
                   }}
@@ -502,7 +688,11 @@ const FullOverviewCard: React.FC<
                   variant="body2"
                   sx={{
                     color: '#1F2937',
-                    fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                    fontSize: {
+                      xs: '0.7rem',
+                      sm: '0.725rem',
+                      md: '0.75rem',
+                    },
                     fontWeight: 600,
                   }}
                 >
@@ -514,7 +704,11 @@ const FullOverviewCard: React.FC<
                   variant="caption"
                   sx={{
                     color: '#6B7280',
-                    fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                    fontSize: {
+                      xs: '0.6rem',
+                      sm: '0.625rem',
+                      md: '0.65rem',
+                    },
                     display: 'block',
                     mb: 0.25,
                   }}
@@ -525,7 +719,11 @@ const FullOverviewCard: React.FC<
                   variant="body2"
                   sx={{
                     color: '#1F2937',
-                    fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                    fontSize: {
+                      xs: '0.7rem',
+                      sm: '0.725rem',
+                      md: '0.75rem',
+                    },
                     fontWeight: 600,
                   }}
                 >
@@ -540,21 +738,37 @@ const FullOverviewCard: React.FC<
             variant="contained"
             size="small"
             sx={{
-              background: 'linear-gradient(135deg, #4F46E5, #7C3AED)',
+              background:
+                'linear-gradient(135deg, #4F46E5, #7C3AED)',
               color: '#fff',
               textTransform: 'none',
-              fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+              fontSize: {
+                xs: '0.7rem',
+                sm: '0.725rem',
+                md: '0.75rem',
+              },
               fontWeight: 600,
-              px: { xs: 1.25, sm: 1.375, md: 1.5 },
+              px: {
+                xs: 1.25,
+                sm: 1.375,
+                md: 1.5,
+              },
               py: { xs: 0.4, sm: 0.45, md: 0.5 },
-              borderRadius: { xs: '3px', sm: '3.5px', md: '4px' },
-              boxShadow: '0 2px 6px rgba(79, 70, 229, 0.2)',
+              borderRadius: {
+                xs: '3px',
+                sm: '3.5px',
+                md: '4px',
+              },
+              boxShadow:
+                '0 2px 6px rgba(79, 70, 229, 0.2)',
               transition: 'all 0.2s ease',
               mt: 'auto',
               '&:hover': {
                 transform: 'translateY(-1px)',
-                boxShadow: '0 3px 8px rgba(79, 70, 229, 0.3)',
-                background: 'linear-gradient(135deg, #4338CA, #6D28D9)',
+                boxShadow:
+                  '0 3px 8px rgba(79, 70, 229, 0.3)',
+                background:
+                  'linear-gradient(135deg, #4338CA, #6D28D9)',
               },
             }}
           >
@@ -571,8 +785,10 @@ const FullOverviewCard: React.FC<
         onClick={onClick}
         sx={{
           cursor: onClick ? 'pointer' : 'default',
-          background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
-          boxShadow: '0 6px 15px rgba(0, 0, 0, 0.08)',
+          background:
+            'linear-gradient(145deg, #ffffff, #f8f9fa)',
+          boxShadow:
+            '0 6px 15px rgba(0, 0, 0, 0.08)',
           transition: 'all 0.3s ease',
           p: 1.5,
           borderRadius: '10px',
@@ -596,7 +812,8 @@ const FullOverviewCard: React.FC<
           },
           '&:hover': {
             transform: 'translateY(-2px)',
-            boxShadow: '0 8px 20px rgba(0, 0, 0, 0.1)',
+            boxShadow:
+              '0 8px 20px rgba(0, 0, 0, 0.1)',
             '& .card-content': {
               transform: 'scale(1.02)',
             },
@@ -641,16 +858,19 @@ const FullOverviewCard: React.FC<
                 background:
                   notificationType === 'success'
                     ? 'linear-gradient(135deg, #86efac, #4ade80)'
-                    : notificationType === 'warning'
+                    : notificationType ===
+                        'warning'
                       ? 'linear-gradient(135deg, #fca5a5, #f87171)'
-                      : notificationType === 'error'
+                      : notificationType ===
+                          'error'
                         ? 'linear-gradient(135deg, #fecaca, #f87171)'
                         : 'linear-gradient(135deg, #6b7280, #9ca3af)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#fff',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                boxShadow:
+                  '0 4px 12px rgba(0, 0, 0, 0.1)',
                 position: 'relative',
                 flexShrink: 0,
                 '&::after': {
@@ -674,15 +894,24 @@ const FullOverviewCard: React.FC<
                   mb: 0.5,
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.75,
+                  }}
+                >
                   <CardTitle
                     sx={{
                       color:
-                        notificationType === 'success'
+                        notificationType ===
+                        'success'
                           ? '#166534'
-                          : notificationType === 'warning'
+                          : notificationType ===
+                              'warning'
                             ? '#991b1b'
-                            : notificationType === 'error'
+                            : notificationType ===
+                                'error'
                               ? '#991b1b'
                               : '#1f2937',
                       fontSize: '0.95rem',
@@ -697,16 +926,20 @@ const FullOverviewCard: React.FC<
                         width: '100%',
                         height: '2px',
                         background:
-                          notificationType === 'success'
+                          notificationType ===
+                          'success'
                             ? 'linear-gradient(90deg, #86efac, transparent)'
-                            : notificationType === 'warning'
+                            : notificationType ===
+                                'warning'
                               ? 'linear-gradient(90deg, #fca5a5, transparent)'
-                              : notificationType === 'error'
+                              : notificationType ===
+                                  'error'
                                 ? 'linear-gradient(90deg, #fecaca, transparent)'
                                 : 'linear-gradient(90deg, #6b7280, transparent)',
                         transform: 'scaleX(0)',
                         transformOrigin: 'left',
-                        transition: 'transform 0.3s ease',
+                        transition:
+                          'transform 0.3s ease',
                       },
                       '&:hover::after': {
                         transform: 'scaleX(1)',
@@ -722,28 +955,35 @@ const FullOverviewCard: React.FC<
                     variant="caption"
                     sx={{
                       color:
-                        notificationType === 'success'
+                        notificationType ===
+                        'success'
                           ? '#166534'
-                          : notificationType === 'warning'
+                          : notificationType ===
+                              'warning'
                             ? '#991b1b'
-                            : notificationType === 'error'
+                            : notificationType ===
+                                'error'
                               ? '#991b1b'
                               : '#6b7280',
                       fontSize: '0.65rem',
                       fontWeight: 500,
                       background:
-                        notificationType === 'success'
+                        notificationType ===
+                        'success'
                           ? 'rgba(34, 197, 94, 0.1)'
-                          : notificationType === 'warning'
+                          : notificationType ===
+                              'warning'
                             ? 'rgba(248, 113, 113, 0.1)'
-                            : notificationType === 'error'
+                            : notificationType ===
+                                'error'
                               ? 'rgba(248, 113, 113, 0.1)'
                               : 'rgba(107, 114, 128, 0.1)',
                       px: 1,
                       py: 0.5,
                       borderRadius: '6px',
                       backdropFilter: 'blur(4px)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      border:
+                        '1px solid rgba(255, 255, 255, 0.1)',
                       transition: 'all 0.2s ease',
                       '&:hover': {
                         transform: 'scale(1.05)',
@@ -758,11 +998,14 @@ const FullOverviewCard: React.FC<
                 <CardSubTitle
                   sx={{
                     color:
-                      notificationType === 'success'
+                      notificationType ===
+                      'success'
                         ? '#166534'
-                        : notificationType === 'warning'
+                        : notificationType ===
+                            'warning'
                           ? '#991b1b'
-                          : notificationType === 'error'
+                          : notificationType ===
+                              'error'
                             ? '#991b1b'
                             : '#6b7280',
                     fontSize: '0.8rem',
@@ -793,30 +1036,39 @@ const FullOverviewCard: React.FC<
                   size="small"
                   sx={{
                     background:
-                      notificationType === 'success'
+                      notificationType ===
+                      'success'
                         ? 'rgba(34, 197, 94, 0.1)'
-                        : notificationType === 'warning'
+                        : notificationType ===
+                            'warning'
                           ? 'rgba(248, 113, 113, 0.1)'
-                          : notificationType === 'error'
+                          : notificationType ===
+                              'error'
                             ? 'rgba(248, 113, 113, 0.1)'
                             : 'rgba(107, 114, 128, 0.1)',
                     color:
-                      notificationType === 'success'
+                      notificationType ===
+                      'success'
                         ? '#166534'
-                        : notificationType === 'warning'
+                        : notificationType ===
+                            'warning'
                           ? '#991b1b'
-                          : notificationType === 'error'
+                          : notificationType ===
+                              'error'
                             ? '#991b1b'
                             : '#6b7280',
                     fontSize: '0.65rem',
                     fontWeight: 600,
                     height: '20px',
                     backdropFilter: 'blur(4px)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    border:
+                      '1px solid rgba(255, 255, 255, 0.1)',
                     transition: 'all 0.2s ease',
                     '&:hover': {
-                      transform: 'translateY(-1px)',
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                      transform:
+                        'translateY(-1px)',
+                      boxShadow:
+                        '0 2px 8px rgba(0, 0, 0, 0.1)',
                     },
                     '& .MuiChip-label': {
                       px: 1,
@@ -837,9 +1089,11 @@ const FullOverviewCard: React.FC<
                 background:
                   notificationType === 'success'
                     ? 'rgba(34, 197, 94, 0.05)'
-                    : notificationType === 'warning'
+                    : notificationType ===
+                        'warning'
                       ? 'rgba(248, 113, 113, 0.05)'
-                      : notificationType === 'error'
+                      : notificationType ===
+                          'error'
                         ? 'rgba(248, 113, 113, 0.05)'
                         : 'rgba(107, 114, 128, 0.05)',
                 p: 1.5,
@@ -847,9 +1101,11 @@ const FullOverviewCard: React.FC<
                 border:
                   notificationType === 'success'
                     ? '1px solid rgba(34, 197, 94, 0.1)'
-                    : notificationType === 'warning'
+                    : notificationType ===
+                        'warning'
                       ? '1px solid rgba(248, 113, 113, 0.1)'
-                      : notificationType === 'error'
+                      : notificationType ===
+                          'error'
                         ? '1px solid rgba(248, 113, 113, 0.1)'
                         : '1px solid rgba(107, 114, 128, 0.1)',
                 backdropFilter: 'blur(8px)',
@@ -859,7 +1115,8 @@ const FullOverviewCard: React.FC<
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gridTemplateColumns:
+                    'repeat(3, 1fr)',
                   gap: 1,
                   width: '100%',
                 }}
@@ -872,17 +1129,22 @@ const FullOverviewCard: React.FC<
                       flexDirection: 'column',
                       gap: 0.25,
                       p: 1,
-                      background: 'rgba(255, 255, 255, 0.7)',
+                      background:
+                        'rgba(255, 255, 255, 0.7)',
                       borderRadius: '6px',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      border:
+                        '1px solid rgba(255, 255, 255, 0.3)',
                       transition: 'all 0.2s ease',
                       minHeight: '60px',
                       justifyContent: 'center',
                       cursor: 'pointer',
                       '&:hover': {
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-                        background: 'rgba(255, 255, 255, 0.9)',
+                        transform:
+                          'translateY(-2px)',
+                        boxShadow:
+                          '0 4px 12px rgba(0, 0, 0, 0.05)',
+                        background:
+                          'rgba(255, 255, 255, 0.9)',
                       },
                     }}
                   >
@@ -890,16 +1152,20 @@ const FullOverviewCard: React.FC<
                       variant="caption"
                       sx={{
                         color:
-                          notificationType === 'success'
+                          notificationType ===
+                          'success'
                             ? '#166534'
-                            : notificationType === 'warning'
+                            : notificationType ===
+                                'warning'
                               ? '#991b1b'
-                              : notificationType === 'error'
+                              : notificationType ===
+                                  'error'
                                 ? '#991b1b'
                                 : '#6b7280',
                         fontSize: '0.6rem',
                         fontWeight: 600,
-                        textTransform: 'uppercase',
+                        textTransform:
+                          'uppercase',
                         letterSpacing: '0.05em',
                         opacity: 0.8,
                         mb: 0.25,
@@ -911,11 +1177,14 @@ const FullOverviewCard: React.FC<
                       variant="body2"
                       sx={{
                         color:
-                          notificationType === 'success'
+                          notificationType ===
+                          'success'
                             ? '#166534'
-                            : notificationType === 'warning'
+                            : notificationType ===
+                                'warning'
                               ? '#991b1b'
-                              : notificationType === 'error'
+                              : notificationType ===
+                                  'error'
                                 ? '#991b1b'
                                 : '#1f2937',
                         fontSize: '0.75rem',
@@ -948,9 +1217,11 @@ const FullOverviewCard: React.FC<
                 background:
                   notificationType === 'success'
                     ? 'linear-gradient(135deg, #22c55e, #4ade80)'
-                    : notificationType === 'warning'
+                    : notificationType ===
+                        'warning'
                       ? 'linear-gradient(135deg, #f87171, #ef4444)'
-                      : notificationType === 'error'
+                      : notificationType ===
+                          'error'
                         ? 'linear-gradient(135deg, #f87171, #ef4444)'
                         : 'linear-gradient(135deg, #6b7280, #9ca3af)',
                 color: '#fff',
@@ -960,17 +1231,21 @@ const FullOverviewCard: React.FC<
                 px: 2,
                 py: 0.75,
                 borderRadius: '4px',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                boxShadow:
+                  '0 4px 12px rgba(0, 0, 0, 0.1)',
                 transition: 'all 0.2s ease',
                 '&:hover': {
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.15)',
+                  boxShadow:
+                    '0 6px 16px rgba(0, 0, 0, 0.15)',
                   background:
                     notificationType === 'success'
                       ? 'linear-gradient(135deg, #16a34a, #22c55e)'
-                      : notificationType === 'warning'
+                      : notificationType ===
+                          'warning'
                         ? 'linear-gradient(135deg, #dc2626, #ef4444)'
-                        : notificationType === 'error'
+                        : notificationType ===
+                            'error'
                           ? 'linear-gradient(135deg, #dc2626, #ef4444)'
                           : 'linear-gradient(135deg, #4b5563, #6b7280)',
                 },
@@ -991,17 +1266,21 @@ const FullOverviewCard: React.FC<
                 borderColor:
                   notificationType === 'success'
                     ? 'rgba(34, 197, 94, 0.3)'
-                    : notificationType === 'warning'
+                    : notificationType ===
+                        'warning'
                       ? 'rgba(248, 113, 113, 0.3)'
-                      : notificationType === 'error'
+                      : notificationType ===
+                          'error'
                         ? 'rgba(248, 113, 113, 0.3)'
                         : 'rgba(107, 114, 128, 0.3)',
                 color:
                   notificationType === 'success'
                     ? '#166534'
-                    : notificationType === 'warning'
+                    : notificationType ===
+                        'warning'
                       ? '#991b1b'
-                      : notificationType === 'error'
+                      : notificationType ===
+                          'error'
                         ? '#991b1b'
                         : '#6b7280',
                 textTransform: 'none',
@@ -1016,17 +1295,21 @@ const FullOverviewCard: React.FC<
                   borderColor:
                     notificationType === 'success'
                       ? '#22c55e'
-                      : notificationType === 'warning'
+                      : notificationType ===
+                          'warning'
                         ? '#f87171'
-                        : notificationType === 'error'
+                        : notificationType ===
+                            'error'
                           ? '#f87171'
                           : '#6b7280',
                   background:
                     notificationType === 'success'
                       ? 'rgba(34, 197, 94, 0.05)'
-                      : notificationType === 'warning'
+                      : notificationType ===
+                          'warning'
                         ? 'rgba(248, 113, 113, 0.05)'
-                        : notificationType === 'error'
+                        : notificationType ===
+                            'error'
                           ? 'rgba(248, 113, 113, 0.05)'
                           : 'rgba(107, 114, 128, 0.05)',
                 },
@@ -1052,16 +1335,23 @@ const FullOverviewCard: React.FC<
         onClick={onClick}
         sx={{
           cursor: onClick ? 'pointer' : 'default',
-          background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
-          boxShadow: '0 3px 8px rgba(0, 0, 0, 0.04)',
+          background:
+            'linear-gradient(145deg, #ffffff, #f8f9fa)',
+          boxShadow:
+            '0 3px 8px rgba(0, 0, 0, 0.04)',
           transition: 'all 0.3s ease',
           p: { xs: 1, sm: 1.25, md: 1.5 },
-          borderRadius: { xs: '6px', sm: '7px', md: '8px' },
+          borderRadius: {
+            xs: '6px',
+            sm: '7px',
+            md: '8px',
+          },
           position: 'relative',
           overflow: 'hidden',
           '&:hover': {
             transform: 'translateY(-1px)',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.06)',
+            boxShadow:
+              '0 4px 10px rgba(0, 0, 0, 0.06)',
           },
         }}
       >
@@ -1079,13 +1369,21 @@ const FullOverviewCard: React.FC<
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              mb: { xs: 0.25, sm: 0.375, md: 0.5 },
+              mb: {
+                xs: 0.25,
+                sm: 0.375,
+                md: 0.5,
+              },
             }}
           >
             <Typography
               variant="h6"
               sx={{
-                fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
+                fontSize: {
+                  xs: '0.8rem',
+                  sm: '0.85rem',
+                  md: '0.9rem',
+                },
                 fontWeight: 700,
                 color: '#1F2937',
               }}
@@ -1098,17 +1396,27 @@ const FullOverviewCard: React.FC<
                   display: 'flex',
                   alignItems: 'center',
                   gap: 0.5,
-                  color: trend.direction === 'up' ? '#10B981' : '#EF4444',
+                  color:
+                    trend.direction === 'up'
+                      ? '#10B981'
+                      : '#EF4444',
                 }}
               >
                 <Typography
                   variant="caption"
                   sx={{
-                    fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                    fontSize: {
+                      xs: '0.6rem',
+                      sm: '0.625rem',
+                      md: '0.65rem',
+                    },
                     fontWeight: 600,
                   }}
                 >
-                  {trend.direction === 'up' ? '↑' : '↓'} {trend.value}%
+                  {trend.direction === 'up'
+                    ? '↑'
+                    : '↓'}{' '}
+                  {trend.value}%
                 </Typography>
               </Box>
             )}
@@ -1119,8 +1427,16 @@ const FullOverviewCard: React.FC<
               variant="body2"
               sx={{
                 color: '#6B7280',
-                fontSize: { xs: '0.65rem', sm: '0.675rem', md: '0.7rem' },
-                mb: { xs: 0.5, sm: 0.625, md: 0.75 },
+                fontSize: {
+                  xs: '0.65rem',
+                  sm: '0.675rem',
+                  md: '0.7rem',
+                },
+                mb: {
+                  xs: 0.5,
+                  sm: 0.625,
+                  md: 0.75,
+                },
               }}
             >
               {subTitle}
@@ -1131,9 +1447,17 @@ const FullOverviewCard: React.FC<
           {chartData && (
             <Box
               sx={{
-                height: { xs: 80, sm: 90, md: 100 },
+                height: {
+                  xs: 80,
+                  sm: 90,
+                  md: 100,
+                },
                 position: 'relative',
-                mb: { xs: 0.75, sm: 0.875, md: 1 },
+                mb: {
+                  xs: 0.75,
+                  sm: 0.875,
+                  md: 1,
+                },
               }}
             >
               <Box
@@ -1141,30 +1465,46 @@ const FullOverviewCard: React.FC<
                   display: 'flex',
                   alignItems: 'flex-end',
                   height: '100%',
-                  gap: { xs: 0.5, sm: 0.625, md: 0.75 },
+                  gap: {
+                    xs: 0.5,
+                    sm: 0.625,
+                    md: 0.75,
+                  },
                 }}
               >
-                {chartData.values.map((value, index) => {
-                  const maxValue = Math.max(...chartData.values);
-                  const height = (value / maxValue) * 100;
-                  return (
-                    <Box
-                      key={index}
-                      sx={{
-                        flex: 1,
-                        height: `${height}%`,
-                        background: 'linear-gradient(to top, #4F46E5, #7C3AED)',
-                        borderRadius: { xs: '2px', sm: '3px', md: '4px' },
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          transform: 'scale(1.05)',
+                {chartData.values.map(
+                  (value, index) => {
+                    const maxValue = Math.max(
+                      ...chartData.values
+                    );
+                    const height =
+                      (value / maxValue) * 100;
+                    return (
+                      <Box
+                        key={index}
+                        sx={{
+                          flex: 1,
+                          height: `${height}%`,
                           background:
-                            'linear-gradient(to top, #4338CA, #6D28D9)',
-                        },
-                      }}
-                    />
-                  );
-                })}
+                            'linear-gradient(to top, #4F46E5, #7C3AED)',
+                          borderRadius: {
+                            xs: '2px',
+                            sm: '3px',
+                            md: '4px',
+                          },
+                          transition:
+                            'all 0.3s ease',
+                          '&:hover': {
+                            transform:
+                              'scale(1.05)',
+                            background:
+                              'linear-gradient(to top, #4338CA, #6D28D9)',
+                          },
+                        }}
+                      />
+                    );
+                  }
+                )}
               </Box>
               <Box
                 sx={{
@@ -1173,20 +1513,26 @@ const FullOverviewCard: React.FC<
                   mt: 0.5,
                 }}
               >
-                {chartData.labels.map((label, index) => (
-                  <Typography
-                    key={index}
-                    variant="caption"
-                    sx={{
-                      fontSize: { xs: '0.55rem', sm: '0.575rem', md: '0.6rem' },
-                      color: '#6B7280',
-                      textAlign: 'center',
-                      flex: 1,
-                    }}
-                  >
-                    {label}
-                  </Typography>
-                ))}
+                {chartData.labels.map(
+                  (label, index) => (
+                    <Typography
+                      key={index}
+                      variant="caption"
+                      sx={{
+                        fontSize: {
+                          xs: '0.55rem',
+                          sm: '0.575rem',
+                          md: '0.6rem',
+                        },
+                        color: '#6B7280',
+                        textAlign: 'center',
+                        flex: 1,
+                      }}
+                    >
+                      {label}
+                    </Typography>
+                  )
+                )}
               </Box>
             </Box>
           )}
@@ -1196,21 +1542,37 @@ const FullOverviewCard: React.FC<
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: { xs: 0.5, sm: 0.625, md: 0.75 },
+                gridTemplateColumns:
+                  'repeat(2, 1fr)',
+                gap: {
+                  xs: 0.5,
+                  sm: 0.625,
+                  md: 0.75,
+                },
               }}
             >
               {details.map((detail, index) => (
                 <Box
                   key={index}
                   sx={{
-                    background: 'rgba(107, 114, 128, 0.05)',
-                    borderRadius: { xs: '4px', sm: '5px', md: '6px' },
-                    p: { xs: 0.5, sm: 0.625, md: 0.75 },
+                    background:
+                      'rgba(107, 114, 128, 0.05)',
+                    borderRadius: {
+                      xs: '4px',
+                      sm: '5px',
+                      md: '6px',
+                    },
+                    p: {
+                      xs: 0.5,
+                      sm: 0.625,
+                      md: 0.75,
+                    },
                     transition: 'all 0.2s ease',
                     '&:hover': {
-                      transform: 'translateY(-1px)',
-                      background: 'rgba(107, 114, 128, 0.08)',
+                      transform:
+                        'translateY(-1px)',
+                      background:
+                        'rgba(107, 114, 128, 0.08)',
                     },
                   }}
                 >
@@ -1218,7 +1580,11 @@ const FullOverviewCard: React.FC<
                     variant="caption"
                     sx={{
                       color: '#6B7280',
-                      fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
+                      fontSize: {
+                        xs: '0.6rem',
+                        sm: '0.625rem',
+                        md: '0.65rem',
+                      },
                       display: 'block',
                       mb: 0.25,
                     }}
@@ -1229,7 +1595,11 @@ const FullOverviewCard: React.FC<
                     variant="body2"
                     sx={{
                       color: '#1F2937',
-                      fontSize: { xs: '0.7rem', sm: '0.725rem', md: '0.75rem' },
+                      fontSize: {
+                        xs: '0.7rem',
+                        sm: '0.725rem',
+                        md: '0.75rem',
+                      },
                       fontWeight: 600,
                     }}
                   >
@@ -1247,7 +1617,11 @@ const FullOverviewCard: React.FC<
                 display: 'flex',
                 gap: 0.5,
                 mt: 'auto',
-                pt: { xs: 0.5, sm: 0.625, md: 0.75 },
+                pt: {
+                  xs: 0.5,
+                  sm: 0.625,
+                  md: 0.75,
+                },
               }}
             >
               {tags.map((tag, index) => (
@@ -1256,11 +1630,28 @@ const FullOverviewCard: React.FC<
                   variant="caption"
                   sx={{
                     color: '#4F46E5',
-                    fontSize: { xs: '0.6rem', sm: '0.625rem', md: '0.65rem' },
-                    background: 'rgba(79, 70, 229, 0.1)',
-                    px: { xs: 0.4, sm: 0.45, md: 0.5 },
-                    py: { xs: 0.2, sm: 0.225, md: 0.25 },
-                    borderRadius: { xs: '3px', sm: '3.5px', md: '4px' },
+                    fontSize: {
+                      xs: '0.6rem',
+                      sm: '0.625rem',
+                      md: '0.65rem',
+                    },
+                    background:
+                      'rgba(79, 70, 229, 0.1)',
+                    px: {
+                      xs: 0.4,
+                      sm: 0.45,
+                      md: 0.5,
+                    },
+                    py: {
+                      xs: 0.2,
+                      sm: 0.225,
+                      md: 0.25,
+                    },
+                    borderRadius: {
+                      xs: '3px',
+                      sm: '3.5px',
+                      md: '4px',
+                    },
                   }}
                 >
                   {tag}
@@ -1276,15 +1667,32 @@ const FullOverviewCard: React.FC<
   return (
     <StyledCard
       onClick={onClick}
-      sx={{ cursor: onClick ? 'pointer' : 'default' }}
+      sx={{
+        cursor: onClick ? 'pointer' : 'default',
+      }}
     >
-      {topLeftLabel && <TopLeftBadge>{topLeftLabel}</TopLeftBadge>}
-      {topRightIcon && <TopRightIcon>{topRightIcon}</TopRightIcon>}
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      {topLeftLabel && (
+        <TopLeftBadge>
+          {topLeftLabel}
+        </TopLeftBadge>
+      )}
+      {topRightIcon && (
+        <TopRightIcon>
+          {topRightIcon}
+        </TopRightIcon>
+      )}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         <CardTitle>{title}</CardTitle>
         {renderStatusIndicator()}
       </Box>
-      {subTitle && <CardSubTitle>{subTitle}</CardSubTitle>}
+      {subTitle && (
+        <CardSubTitle>{subTitle}</CardSubTitle>
+      )}
       {details && details.length > 0 && (
         <InfoLines>
           {details.map((line, i) => (
@@ -1301,7 +1709,9 @@ const FullOverviewCard: React.FC<
               }}
             >
               <span>{line.split(':')[0]}:</span>
-              <span style={{ fontWeight: 600 }}>{line.split(':')[1]}</span>
+              <span style={{ fontWeight: 600 }}>
+                {line.split(':')[1]}
+              </span>
             </Typography>
           ))}
         </InfoLines>
@@ -1316,7 +1726,10 @@ const FullOverviewCard: React.FC<
       >
         {price && <PriceText>{price}</PriceText>}
         {ctaText && (
-          <CardButton variant="text" color="primary">
+          <CardButton
+            variant="text"
+            color="primary"
+          >
             {ctaText}
           </CardButton>
         )}
@@ -1347,19 +1760,28 @@ const FullOverviewCard: React.FC<
             objectFit: 'cover',
             borderRadius: 24,
             zIndex: 1,
-            filter: 'drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1))',
+            filter:
+              'drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1))',
           }}
         />
       )}
       {tags && tags.length > 0 && (
-        <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+        <Box
+          sx={{
+            mt: 2,
+            display: 'flex',
+            gap: 1,
+            flexWrap: 'wrap',
+          }}
+        >
           {tags.map((tag, i) => (
             <Chip
               key={i}
               label={tag}
               size="small"
               sx={{
-                background: 'rgba(79, 70, 229, 0.1)',
+                background:
+                  'rgba(79, 70, 229, 0.1)',
                 color: '#4F46E5',
                 fontWeight: 500,
               }}

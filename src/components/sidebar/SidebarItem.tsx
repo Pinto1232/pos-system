@@ -1,5 +1,9 @@
 import React from 'react';
-import { ListItem, ListItemText, ListItemIcon } from '@mui/material';
+import {
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+} from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import ChevronRight from '@mui/icons-material/ChevronRight';
@@ -17,7 +21,10 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   onSettingsClick,
 }) => {
   const handleClick = () => {
-    if (item.label === 'Settings' && onSettingsClick) {
+    if (
+      item.label === 'Settings' &&
+      onSettingsClick
+    ) {
       onSettingsClick();
     } else if (item.expandable) {
       onToggle(item.label);
@@ -32,7 +39,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         onClick={handleClick}
         sx={{
           cursor: 'pointer',
-          backgroundColor: isActive ? '#34D399' : 'inherit',
+          backgroundColor: isActive
+            ? '#34D399'
+            : 'inherit',
           '&:hover': { backgroundColor: '' },
         }}
       >
@@ -51,9 +60,21 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         >
           <item.icon />
         </ListItemIcon>
-        <ListItemText primary={item.label} sx={{ color: textColor }} />
-        {isActive && <ChevronRight sx={{ color: textColor }} />}
-        {item.expandable && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
+        <ListItemText
+          primary={item.label}
+          sx={{ color: textColor }}
+        />
+        {isActive && (
+          <ChevronRight
+            sx={{ color: textColor }}
+          />
+        )}
+        {item.expandable &&
+          (isExpanded ? (
+            <ExpandLess />
+          ) : (
+            <ExpandMore />
+          ))}
       </ListItem>
 
       {item.expandable && item.subItems && (

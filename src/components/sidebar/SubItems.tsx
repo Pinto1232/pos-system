@@ -17,7 +17,8 @@ const SubItems: React.FC<SubItemsProps> = ({
   textColor,
   onItemClick,
 }) => {
-  const [activeSubItem, setActiveSubItem] = React.useState<string>('');
+  const [activeSubItem, setActiveSubItem] =
+    React.useState<string>('');
 
   const handleSubItemClick = (label: string) => {
     onItemClick(label, parentLabel);
@@ -29,17 +30,23 @@ const SubItems: React.FC<SubItemsProps> = ({
       in={isExpanded}
       timeout={700}
       easing={{
-        enter: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        enter:
+          'cubic-bezier(0.34, 1.56, 0.64, 1)',
         exit: 'cubic-bezier(0.34, 0.01, 0.64, 1)',
       }}
       sx={{
-        transition: 'all 700ms cubic-bezier(0.34, 1.56, 0.64, 1) !important',
+        transition:
+          'all 700ms cubic-bezier(0.34, 1.56, 0.64, 1) !important',
         '& .MuiCollapse-wrapper': {
-          transitionProperty: 'height, opacity, transform',
+          transitionProperty:
+            'height, opacity, transform',
           transitionDuration: '700ms',
-          transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+          transitionTimingFunction:
+            'cubic-bezier(0.34, 1.56, 0.64, 1)',
           opacity: isExpanded ? 1 : 0,
-          transform: isExpanded ? 'translateY(0)' : 'translateY(-10px)',
+          transform: isExpanded
+            ? 'translateY(0)'
+            : 'translateY(-10px)',
         },
       }}
       unmountOnExit
@@ -52,10 +59,16 @@ const SubItems: React.FC<SubItemsProps> = ({
               pl: 4,
               cursor: 'pointer',
               backgroundColor:
-                activeSubItem === subItem.label ? '#34D399' : '#ccd9ff',
-              '&:hover': { backgroundColor: '#ebf2ff' },
+                activeSubItem === subItem.label
+                  ? '#34D399'
+                  : '#ccd9ff',
+              '&:hover': {
+                backgroundColor: '#ebf2ff',
+              },
             }}
-            onClick={() => handleSubItemClick(subItem.label)}
+            onClick={() =>
+              handleSubItemClick(subItem.label)
+            }
           >
             <ListItemIcon
               sx={{
@@ -63,11 +76,18 @@ const SubItems: React.FC<SubItemsProps> = ({
                 color: '#173A79',
               }}
             >
-              <FiberManualRecordIcon sx={{ fontSize: '8px' }} />
+              <FiberManualRecordIcon
+                sx={{ fontSize: '8px' }}
+              />
             </ListItemIcon>
-            <ListItemText primary={subItem.label} sx={{ color: '#000' }} />
+            <ListItemText
+              primary={subItem.label}
+              sx={{ color: '#000' }}
+            />
             {activeSubItem === subItem.label && (
-              <ChevronRight sx={{ color: textColor }} />
+              <ChevronRight
+                sx={{ color: textColor }}
+              />
             )}
           </ListItem>
         ))}

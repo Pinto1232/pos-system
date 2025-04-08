@@ -1,7 +1,16 @@
 'use client';
 
-import React, { createContext, useState, ReactNode, useContext } from 'react';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  useContext,
+} from 'react';
+import {
+  Box,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
 import ErrorModal from '@/components/ui/errorModal/ErrorModal';
 import { usePathname } from 'next/navigation';
 
@@ -12,18 +21,32 @@ export interface SpinnerContextProps {
   setError: (error: string | null) => void;
 }
 
-const SpinnerContext = createContext<SpinnerContextProps | undefined>(
-  undefined
-);
+const SpinnerContext = createContext<
+  SpinnerContextProps | undefined
+>(undefined);
 
-export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
+export const SpinnerProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<
+    string | null
+  >(null);
   const pathname = usePathname();
-  const isDashboard = pathname?.startsWith('/dashboard');
+  const isDashboard =
+    pathname?.startsWith('/dashboard');
 
   return (
-    <SpinnerContext.Provider value={{ loading, setLoading, error, setError }}>
+    <SpinnerContext.Provider
+      value={{
+        loading,
+        setLoading,
+        error,
+        setError,
+      }}
+    >
       {loading && !isDashboard && (
         <Box
           sx={{
@@ -36,12 +59,19 @@ export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor:
+              'rgba(255, 255, 255, 0.8)',
             zIndex: 9999,
           }}
         >
-          <CircularProgress size={60} thickness={4} />
-          <Typography variant="h6" sx={{ mt: 2, color: 'text.primary' }}>
+          <CircularProgress
+            size={60}
+            thickness={4}
+          />
+          <Typography
+            variant="h6"
+            sx={{ mt: 2, color: 'text.primary' }}
+          >
             Loading...
           </Typography>
         </Box>
@@ -59,7 +89,12 @@ export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
           }}
         />
       )}
-      {error && <ErrorModal message={error} onClose={() => setError(null)} />}
+      {error && (
+        <ErrorModal
+          message={error}
+          onClose={() => setError(null)}
+        />
+      )}
       {children}
     </SpinnerContext.Provider>
   );
@@ -68,7 +103,9 @@ export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
 export const useSpinner = () => {
   const context = useContext(SpinnerContext);
   if (!context) {
-    throw new Error('useSpinner must be used within a SpinnerProvider');
+    throw new Error(
+      'useSpinner must be used within a SpinnerProvider'
+    );
   }
   return context;
 };

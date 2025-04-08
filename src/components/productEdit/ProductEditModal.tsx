@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { Product } from './types';
 import {
   Dialog,
@@ -37,7 +42,8 @@ const StyledDialog = styled(Dialog)({
 const StyledDialogTitle = styled(DialogTitle)({
   padding: '28px 32px',
   borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
-  background: 'linear-gradient(to right, #F8F9FA, #FFFFFF)',
+  background:
+    'linear-gradient(to right, #F8F9FA, #FFFFFF)',
   '& .MuiTypography-root': {
     fontSize: '26px',
     fontWeight: 600,
@@ -57,122 +63,133 @@ const StyledDialogTitle = styled(DialogTitle)({
   },
 });
 
-const StyledDialogContent = styled(DialogContent)({
-  padding: '32px',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '32px',
-  background: '#FFFFFF',
-  '& .MuiTextField-root': {
-    marginBottom: '0',
-    '& .MuiOutlinedInput-root': {
-      backgroundColor: '#F8F9FA',
-      border: '1px solid #E9ECEF',
-      borderRadius: '0',
-      transition: 'all 0.2s ease-in-out',
-      '& fieldset': {
-        border: 'none',
+const StyledDialogContent = styled(DialogContent)(
+  {
+    padding: '32px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '32px',
+    background: '#FFFFFF',
+    '& .MuiTextField-root': {
+      marginBottom: '0',
+      '& .MuiOutlinedInput-root': {
+        backgroundColor: '#F8F9FA',
+        border: '1px solid #E9ECEF',
         borderRadius: '0',
-      },
-      '&:hover': {
-        backgroundColor: '#FFFFFF',
-        border: '1px solid #52B788',
-      },
-      '&.Mui-focused': {
-        backgroundColor: '#FFFFFF',
-        border: '1px solid #52B788',
-        boxShadow: '0 0 0 3px rgba(82, 183, 136, 0.1)',
-      },
-      '& input': {
-        padding: '12px 16px',
-        fontSize: '14px',
-        '&::placeholder': {
-          color: '#ADB5BD',
-          opacity: 1,
+        transition: 'all 0.2s ease-in-out',
+        '& fieldset': {
+          border: 'none',
+          borderRadius: '0',
         },
-      },
-      '& .MuiInputAdornment-root': {
-        marginLeft: '16px',
-        marginRight: '-4px',
-        '& .MuiTypography-root': {
+        '&:hover': {
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #52B788',
+        },
+        '&.Mui-focused': {
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #52B788',
+          boxShadow:
+            '0 0 0 3px rgba(82, 183, 136, 0.1)',
+        },
+        '& input': {
+          padding: '12px 16px',
           fontSize: '14px',
-          color: '#6C757D',
+          '&::placeholder': {
+            color: '#ADB5BD',
+            opacity: 1,
+          },
+        },
+        '& .MuiInputAdornment-root': {
+          marginLeft: '16px',
+          marginRight: '-4px',
+          '& .MuiTypography-root': {
+            fontSize: '14px',
+            color: '#6C757D',
+          },
+        },
+      },
+      '& .MuiInputLabel-root': {
+        color: '#495057',
+        fontSize: '14px',
+        fontWeight: 500,
+        transform:
+          'translate(16px, 13px) scale(1)',
+        '&.Mui-focused': {
+          color: '#52B788',
+          transform:
+            'translate(16px, -9px) scale(0.75)',
+        },
+        '&.MuiInputLabel-shrink': {
+          transform:
+            'translate(16px, -9px) scale(0.75)',
         },
       },
     },
-    '& .MuiInputLabel-root': {
-      color: '#495057',
-      fontSize: '14px',
-      fontWeight: 500,
-      transform: 'translate(16px, 13px) scale(1)',
-      '&.Mui-focused': {
-        color: '#52B788',
-        transform: 'translate(16px, -9px) scale(0.75)',
-      },
-      '&.MuiInputLabel-shrink': {
-        transform: 'translate(16px, -9px) scale(0.75)',
-      },
-    },
-  },
-  '& .MuiSelect-root': {
-    backgroundColor: '#F8F9FA',
-    borderRadius: '0',
-  },
-  '& .MuiDatePicker-root .MuiOutlinedInput-root': {
-    backgroundColor: '#F8F9FA',
-    border: '1px solid #E9ECEF',
-    borderRadius: '0',
-    '& fieldset': {
-      border: 'none',
+    '& .MuiSelect-root': {
+      backgroundColor: '#F8F9FA',
       borderRadius: '0',
     },
-    '&:hover': {
-      backgroundColor: '#FFFFFF',
-      border: '1px solid #52B788',
-    },
-    '&.Mui-focused': {
-      backgroundColor: '#FFFFFF',
-      border: '1px solid #52B788',
-      boxShadow: '0 0 0 3px rgba(82, 183, 136, 0.1)',
-    },
-  },
-  '& .MuiSwitch-root': {
-    width: 42,
-    height: 24,
-    padding: 0,
-    '& .MuiSwitch-switchBase': {
-      padding: 0,
-      margin: 2,
-      transitionDuration: '300ms',
-      '&.Mui-checked': {
-        transform: 'translateX(18px)',
-        color: '#fff',
-        '& + .MuiSwitch-track': {
-          backgroundColor: '#52B788',
-          opacity: 1,
-          border: 0,
+    '& .MuiDatePicker-root .MuiOutlinedInput-root':
+      {
+        backgroundColor: '#F8F9FA',
+        border: '1px solid #E9ECEF',
+        borderRadius: '0',
+        '& fieldset': {
+          border: 'none',
+          borderRadius: '0',
+        },
+        '&:hover': {
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #52B788',
+        },
+        '&.Mui-focused': {
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #52B788',
+          boxShadow:
+            '0 0 0 3px rgba(82, 183, 136, 0.1)',
         },
       },
+    '& .MuiSwitch-root': {
+      width: 42,
+      height: 24,
+      padding: 0,
+      '& .MuiSwitch-switchBase': {
+        padding: 0,
+        margin: 2,
+        transitionDuration: '300ms',
+        '&.Mui-checked': {
+          transform: 'translateX(18px)',
+          color: '#fff',
+          '& + .MuiSwitch-track': {
+            backgroundColor: '#52B788',
+            opacity: 1,
+            border: 0,
+          },
+        },
+      },
+      '& .MuiSwitch-thumb': {
+        boxSizing: 'border-box',
+        width: 20,
+        height: 20,
+      },
+      '& .MuiSwitch-track': {
+        borderRadius: 26 / 2,
+        backgroundColor: '#E9ECEF',
+        opacity: 1,
+      },
     },
-    '& .MuiSwitch-thumb': {
-      boxSizing: 'border-box',
-      width: 20,
-      height: 20,
-    },
-    '& .MuiSwitch-track': {
-      borderRadius: 26 / 2,
-      backgroundColor: '#E9ECEF',
-      opacity: 1,
-    },
-  },
-});
+  }
+);
 
-const StyledDialogActions = styled(DialogActions)({
-  padding: '24px 32px',
-  borderTop: '1px solid rgba(0, 0, 0, 0.06)',
-  gap: '16px',
-  background: 'linear-gradient(to right, #FFFFFF, #F8F9FA)',
-});
+const StyledDialogActions = styled(DialogActions)(
+  {
+    padding: '24px 32px',
+    borderTop: '1px solid rgba(0, 0, 0, 0.06)',
+    gap: '16px',
+    background:
+      'linear-gradient(to right, #FFFFFF, #F8F9FA)',
+  }
+);
 
 const ImageSection = styled(Box)({
   width: '100%',
@@ -194,7 +211,8 @@ const ImageUploadContainer = styled(Box)({
     borderColor: '#52B788',
     backgroundColor: 'rgba(82, 183, 136, 0.04)',
     transform: 'translateY(-2px)',
-    boxShadow: '0 8px 24px rgba(82, 183, 136, 0.1)',
+    boxShadow:
+      '0 8px 24px rgba(82, 183, 136, 0.1)',
   },
 });
 
@@ -221,9 +239,10 @@ const FormSection = styled(Box)({
 const FormRow = styled(Box)({
   display: 'flex',
   gap: '24px',
-  '&:hover .MuiTextField-root .MuiOutlinedInput-root': {
-    borderColor: '#52B788',
-  },
+  '&:hover .MuiTextField-root .MuiOutlinedInput-root':
+    {
+      borderColor: '#52B788',
+    },
 });
 
 const FormField = styled(Box)({
@@ -263,7 +282,9 @@ interface FormData {
   createdAt: Date;
 }
 
-const ProductEditModal: React.FC<ProductEditModalProps> = ({
+const ProductEditModal: React.FC<
+  ProductEditModalProps
+> = ({
   open,
   onClose,
   onSubmit,
@@ -285,8 +306,10 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     []
   );
 
-  const [formData, setFormData] = useState<FormData>(defaultFormData);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [formData, setFormData] =
+    useState<FormData>(defaultFormData);
+  const [previewImage, setPreviewImage] =
+    useState<string | null>(null);
 
   const resetForm = useCallback(() => {
     setFormData(defaultFormData);
@@ -294,17 +317,24 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
   }, [defaultFormData]);
 
   useEffect(() => {
-    if (product && (mode === 'view' || mode === 'edit')) {
+    if (
+      product &&
+      (mode === 'view' || mode === 'edit')
+    ) {
       setFormData({
         productName: product.productName || '',
         color: product.color || 'Black',
         idCode: product.barcode || '',
         sku: product.sku || '',
         price: product.price?.toString() || '',
-        statusProduct: product.status ? 'Active' : 'Inactive',
+        statusProduct: product.status
+          ? 'Active'
+          : 'Inactive',
         rating: product.rating?.toString() || '',
         image: product.image || '',
-        createdAt: new Date(product.createdAt || new Date()),
+        createdAt: new Date(
+          product.createdAt || new Date()
+        ),
       });
       setPreviewImage(product.image || null);
     } else {
@@ -314,19 +344,26 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
 
   const handleTextChange =
     (field: string) =>
-    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (
+      event: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement
+      >
+    ) => {
       setFormData({
         ...formData,
         [field]: event.target.value,
       });
     };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result as string;
+        const base64String =
+          reader.result as string;
         setPreviewImage(base64String);
         setFormData({
           ...formData,
@@ -337,7 +374,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     }
   };
 
-  const handleDateChange = (date: Date | null) => {
+  const handleDateChange = (
+    date: Date | null
+  ) => {
     if (date) {
       setFormData({
         ...formData,
@@ -365,7 +404,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
       price: parseFloat(formData.price) || 0,
       status: formData.statusProduct === 'Active',
       rating: parseFloat(formData.rating) || 0,
-      image: formData.image || '/placeholder-image.png',
+      image:
+        formData.image ||
+        '/placeholder-image.png',
       createdAt: formData.createdAt.toISOString(),
     };
     onSubmit(newProduct);
@@ -374,7 +415,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider
+      dateAdapter={AdapterDateFns}
+    >
       <StyledDialog
         open={open}
         onClose={() => {
@@ -385,7 +428,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
         fullWidth
       >
         <StyledDialogTitle id="product-dialog">
-          {mode === 'view' ? 'View Product' : 'Add New Product'}
+          {mode === 'view'
+            ? 'View Product'
+            : 'Add New Product'}
         </StyledDialogTitle>
         <StyledDialogContent>
           <ImageSection>
@@ -393,7 +438,10 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
               {mode === 'view' ? (
                 previewImage && (
                   <Box position="relative">
-                    <PreviewImage src={previewImage} alt="Product" />
+                    <PreviewImage
+                      src={previewImage}
+                      alt="Product"
+                    />
                   </Box>
                 )
               ) : (
@@ -415,9 +463,11 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                         sx={{
                           fontSize: 20,
                           color: '#52B788',
-                          transition: 'transform 0.3s ease',
+                          transition:
+                            'transform 0.3s ease',
                           '&:hover': {
-                            transform: 'scale(1.1)',
+                            transform:
+                              'scale(1.1)',
                           },
                         }}
                       />
@@ -447,20 +497,30 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   </label>
                   {previewImage && (
                     <Box position="relative">
-                      <PreviewImage src={previewImage} alt="Preview" />
+                      <PreviewImage
+                        src={previewImage}
+                        alt="Preview"
+                      />
                       <IconButton
-                        onClick={handleRemoveImage}
+                        onClick={
+                          handleRemoveImage
+                        }
                         sx={{
                           position: 'absolute',
                           top: 8,
                           right: 8,
-                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                          backgroundColor:
+                            'rgba(255, 255, 255, 0.9)',
+                          boxShadow:
+                            '0 2px 8px rgba(0, 0, 0, 0.1)',
                           '&:hover': {
-                            backgroundColor: '#FFFFFF',
-                            transform: 'scale(1.1)',
+                            backgroundColor:
+                              '#FFFFFF',
+                            transform:
+                              'scale(1.1)',
                           },
-                          transition: 'all 0.2s ease',
+                          transition:
+                            'all 0.2s ease',
                         }}
                       >
                         <DeleteIcon />
@@ -480,7 +540,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   label="Product Name"
                   placeholder="Enter product name"
                   value={formData.productName}
-                  onChange={handleTextChange('productName')}
+                  onChange={handleTextChange(
+                    'productName'
+                  )}
                   variant="outlined"
                   disabled={mode === 'view'}
                 />
@@ -491,7 +553,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   label="ID Code"
                   placeholder="Enter ID code"
                   value={formData.idCode}
-                  onChange={handleTextChange('idCode')}
+                  onChange={handleTextChange(
+                    'idCode'
+                  )}
                   variant="outlined"
                   disabled={mode === 'view'}
                 />
@@ -505,7 +569,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   label="SKU"
                   placeholder="Enter SKU"
                   value={formData.sku}
-                  onChange={handleTextChange('sku')}
+                  onChange={handleTextChange(
+                    'sku'
+                  )}
                   variant="outlined"
                   disabled={mode === 'view'}
                 />
@@ -517,11 +583,18 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   placeholder="0.00"
                   type="number"
                   value={formData.price}
-                  onChange={handleTextChange('price')}
+                  onChange={handleTextChange(
+                    'price'
+                  )}
                   variant="outlined"
                   InputProps={{
                     startAdornment: (
-                      <Typography sx={{ mr: 1, color: '#6C757D' }}>
+                      <Typography
+                        sx={{
+                          mr: 1,
+                          color: '#6C757D',
+                        }}
+                      >
                         R
                       </Typography>
                     ),
@@ -536,11 +609,15 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={formData.statusProduct === 'Active'}
+                      checked={
+                        formData.statusProduct ===
+                        'Active'
+                      }
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          statusProduct: e.target.checked
+                          statusProduct: e.target
+                            .checked
                             ? 'Active'
                             : 'Inactive',
                         });
@@ -551,19 +628,23 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   }
                   label="Status Product"
                   sx={{
-                    '& .MuiFormControlLabel-label': {
-                      color: '#6C757D',
-                    },
-                    '& .MuiSwitch-root': {
-                      '& .MuiSwitch-switchBase.Mui-checked': {
-                        color: '#52B788',
-                        '&:hover': {
-                          backgroundColor: 'rgba(82, 183, 136, 0.08)',
-                        },
+                    '& .MuiFormControlLabel-label':
+                      {
+                        color: '#6C757D',
                       },
+                    '& .MuiSwitch-root': {
+                      '& .MuiSwitch-switchBase.Mui-checked':
+                        {
+                          color: '#52B788',
+                          '&:hover': {
+                            backgroundColor:
+                              'rgba(82, 183, 136, 0.08)',
+                          },
+                        },
                       '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
                         {
-                          backgroundColor: '#52B788',
+                          backgroundColor:
+                            '#52B788',
                         },
                     },
                   }}
@@ -575,7 +656,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   label="Rating"
                   type="number"
                   value={formData.rating}
-                  onChange={handleTextChange('rating')}
+                  onChange={handleTextChange(
+                    'rating'
+                  )}
                   variant="outlined"
                   inputProps={{
                     min: 0,
@@ -612,7 +695,8 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
               color: '#6C757D',
               fontWeight: 500,
               '&:hover': {
-                backgroundColor: 'rgba(108, 117, 125, 0.04)',
+                backgroundColor:
+                  'rgba(108, 117, 125, 0.04)',
               },
             }}
           >
@@ -630,11 +714,14 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 boxShadow: 'none',
                 '&:hover': {
                   backgroundColor: '#429670',
-                  boxShadow: '0 4px 12px rgba(82, 183, 136, 0.2)',
+                  boxShadow:
+                    '0 4px 12px rgba(82, 183, 136, 0.2)',
                 },
               }}
             >
-              {mode === 'edit' ? 'Update Product' : 'Add Product'}
+              {mode === 'edit'
+                ? 'Update Product'
+                : 'Add Product'}
             </Button>
           )}
         </StyledDialogActions>

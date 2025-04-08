@@ -8,9 +8,17 @@ interface CardProps {
   className?: string;
 }
 
-export const Card: React.FC<CardProps> = memo(({ children, className }) => {
-  return <div className={`${styles.card} ${className}`}>{children}</div>;
-});
+export const Card: React.FC<CardProps> = memo(
+  ({ children, className }) => {
+    return (
+      <div
+        className={`${styles.card} ${className}`}
+      >
+        {children}
+      </div>
+    );
+  }
+);
 Card.displayName = 'Card';
 
 interface CardHeaderProps {
@@ -18,13 +26,16 @@ interface CardHeaderProps {
   className?: string;
 }
 
-export const CardHeader: React.FC<CardHeaderProps> = memo(
-  ({ children, className }) => {
+export const CardHeader: React.FC<CardHeaderProps> =
+  memo(({ children, className }) => {
     return (
-      <div className={`${styles.cardHeader} ${className}`}>{children}</div>
+      <div
+        className={`${styles.cardHeader} ${className}`}
+      >
+        {children}
+      </div>
     );
-  }
-);
+  });
 CardHeader.displayName = 'CardHeader';
 
 interface CardContentProps {
@@ -32,13 +43,16 @@ interface CardContentProps {
   className?: string;
 }
 
-export const CardContent: React.FC<CardContentProps> = memo(
-  ({ children, className }) => {
+export const CardContent: React.FC<CardContentProps> =
+  memo(({ children, className }) => {
     return (
-      <div className={`${styles.cardContent} ${className}`}>{children}</div>
+      <div
+        className={`${styles.cardContent} ${className}`}
+      >
+        {children}
+      </div>
     );
-  }
-);
+  });
 CardContent.displayName = 'CardContent';
 
 interface CardFooterProps {
@@ -46,13 +60,16 @@ interface CardFooterProps {
   className?: string;
 }
 
-export const CardFooter: React.FC<CardFooterProps> = memo(
-  ({ children, className }) => {
+export const CardFooter: React.FC<CardFooterProps> =
+  memo(({ children, className }) => {
     return (
-      <div className={`${styles.cardFooter} ${className}`}>{children}</div>
+      <div
+        className={`${styles.cardFooter} ${className}`}
+      >
+        {children}
+      </div>
     );
-  }
-);
+  });
 CardFooter.displayName = 'CardFooter';
 
 const LazyCard = () => (

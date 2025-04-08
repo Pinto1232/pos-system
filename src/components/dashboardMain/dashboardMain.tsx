@@ -1,7 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Typography,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
 import { AuthContext } from '@/contexts/AuthContext';
 import styles from './dashboardMain.module.css';
 import ProductTableContainer from '../productTable/ProductTableContainer';
@@ -18,11 +23,16 @@ interface DashboardMainProps {
   activeSection: string;
 }
 
-const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
-  const { authenticated } = React.useContext(AuthContext);
+const DashboardMain: React.FC<
+  DashboardMainProps
+> = ({ activeSection }) => {
+  const { authenticated } =
+    React.useContext(AuthContext);
   useSpinner();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(
+    theme.breakpoints.down('sm')
+  );
 
   const renderSection = () => {
     let sectionToRender;
@@ -36,8 +46,12 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
               color="#000"
               gutterBottom
               sx={{
-                textAlign: isMobile ? 'center' : 'left',
-                fontSize: isMobile ? '1rem' : '2.5rem',
+                textAlign: isMobile
+                  ? 'center'
+                  : 'left',
+                fontSize: isMobile
+                  ? '1rem'
+                  : '2.5rem',
                 fontWeight: 600,
               }}
             >
@@ -83,7 +97,11 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
     );
   }
 
-  return <div className={styles.container}>{renderSection()}</div>;
+  return (
+    <div className={styles.container}>
+      {renderSection()}
+    </div>
+  );
 };
 
 export default DashboardMain;

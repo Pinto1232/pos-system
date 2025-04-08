@@ -13,12 +13,18 @@ import {
   FormControl,
   Paper,
 } from '@mui/material';
-import { FaPaypal, FaCreditCard, FaStripe } from 'react-icons/fa';
+import {
+  FaPaypal,
+  FaCreditCard,
+  FaStripe,
+} from 'react-icons/fa';
 import styles from './CheckoutForm.module.css';
 import { CheckoutFormProps } from './CheckoutFormInterfaces';
 import Image from 'next/image';
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({
+const CheckoutForm: React.FC<
+  CheckoutFormProps
+> = ({
   title,
   checkoutFields,
   orderSummaryTitle,
@@ -27,23 +33,40 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
   onChange,
   onSubmit,
 }) => {
-  const handleSelectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     onChange(e);
   };
 
   return (
-    <Paper elevation={0} className={styles.checkoutContainer}>
+    <Paper
+      elevation={0}
+      className={styles.checkoutContainer}
+    >
       <Box className={styles.checkoutLeft}>
-        <Typography variant="h5" className={styles.title}>
+        <Typography
+          variant="h5"
+          className={styles.title}
+        >
           {title}
         </Typography>
 
         <form onSubmit={onSubmit}>
           <Grid container spacing={3}>
             {checkoutFields.map((field) => {
-              const gridSize = field.name.toLowerCase() === 'address' ? 12 : 6;
+              const gridSize =
+                field.name.toLowerCase() ===
+                'address'
+                  ? 12
+                  : 6;
               return (
-                <Grid item xs={12} sm={gridSize} key={field.name}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={gridSize}
+                  key={field.name}
+                >
                   {field.type === 'select' ||
                   field.name === 'country' ||
                   field.name === 'state' ? (
@@ -51,27 +74,40 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                       select
                       name={field.name}
                       required={field.required}
-                      value={formData[field.name] || ''}
-                      onChange={handleSelectChange}
+                      value={
+                        formData[field.name] || ''
+                      }
+                      onChange={
+                        handleSelectChange
+                      }
                       label={field.label}
                       fullWidth
                       variant="outlined"
                     >
                       <MenuItem value="">
-                        <em>Select {field.label}</em>
+                        <em>
+                          Select {field.label}
+                        </em>
                       </MenuItem>
-                      {field.options?.map((option: string) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
+                      {field.options?.map(
+                        (option: string) => (
+                          <MenuItem
+                            key={option}
+                            value={option}
+                          >
+                            {option}
+                          </MenuItem>
+                        )
+                      )}
                     </TextField>
                   ) : (
                     <TextField
                       type={field.type ?? 'text'}
                       name={field.name}
                       required={field.required}
-                      value={formData[field.name] || ''}
+                      value={
+                        formData[field.name] || ''
+                      }
                       onChange={onChange}
                       label={field.label}
                       fullWidth
@@ -86,14 +122,22 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
       </Box>
 
       <Box className={styles.checkoutRight}>
-        <Box className={styles.checkoutRightWrapper}>
-          <Typography variant="h5" className={styles.title}>
+        <Box
+          className={styles.checkoutRightWrapper}
+        >
+          <Typography
+            variant="h5"
+            className={styles.title}
+          >
             {orderSummaryTitle}
           </Typography>
 
           <Box className={styles.orderSummary}>
             {orderSummaryItems.map((item) => (
-              <Typography key={item.label} className={styles.summaryItem}>
+              <Typography
+                key={item.label}
+                className={styles.summaryItem}
+              >
                 <span>{item.label}</span>
                 <span>{item.value}</span>
               </Typography>
@@ -103,43 +147,74 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
           <Divider className={styles.divider} />
 
           <Box className={styles.checkoutContent}>
-            <Typography variant="h6" className={styles.total}>
+            <Typography
+              variant="h6"
+              className={styles.total}
+            >
               Payment Method
             </Typography>
 
-            <Box className={styles.paymentDetails}>
-              <FormControl component="fieldset" fullWidth>
+            <Box
+              className={styles.paymentDetails}
+            >
+              <FormControl
+                component="fieldset"
+                fullWidth
+              >
                 <RadioGroup
                   aria-label="payment-method"
                   name="paymentMethod"
-                  value={formData.paymentMethod || ''}
+                  value={
+                    formData.paymentMethod || ''
+                  }
                   onChange={handleSelectChange}
                 >
                   <FormControlLabel
                     value="paypal"
                     control={<Radio />}
                     label={
-                      <Box className={styles.paymentMethodLabel}>
-                        <Box className={styles.paymentMethodIcon}>
+                      <Box
+                        className={
+                          styles.paymentMethodLabel
+                        }
+                      >
+                        <Box
+                          className={
+                            styles.paymentMethodIcon
+                          }
+                        >
                           <FaPaypal
-                            style={{ fontSize: '1.5rem', color: '#0070ba' }}
+                            style={{
+                              fontSize: '1.5rem',
+                              color: '#0070ba',
+                            }}
                           />
-                          <Typography>PayPal</Typography>
+                          <Typography>
+                            PayPal
+                          </Typography>
                         </Box>
-                        <Box className={styles.paymentMethodCards}>
+                        <Box
+                          className={
+                            styles.paymentMethodCards
+                          }
+                        >
                           <Image
                             src="/visa.jpg"
                             alt="Visa"
                             width={60}
                             height={25}
-                            className={styles.paymentMethodImage}
+                            className={
+                              styles.paymentMethodImage
+                            }
                           />
                           <Image
                             src="/card.jpg"
                             alt="Card"
                             width={60}
                             height={25}
-                            className={styles.paymentMethodImage}
+                            className={
+                              styles.paymentMethodImage
+                            }
                           />
                         </Box>
                       </Box>
@@ -150,8 +225,16 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     value="stripe"
                     control={<Radio />}
                     label={
-                      <Box className={styles.paymentMethodLabel}>
-                        <Box className={styles.paymentMethodIcon}>
+                      <Box
+                        className={
+                          styles.paymentMethodLabel
+                        }
+                      >
+                        <Box
+                          className={
+                            styles.paymentMethodIcon
+                          }
+                        >
                           <FaStripe
                             style={{
                               fontSize: '2rem',
@@ -167,9 +250,19 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     value="payfast"
                     control={<Radio />}
                     label={
-                      <Box className={styles.paymentMethodLabel}>
-                        <Box className={styles.paymentMethodIcon}>
-                          <Typography>PayFast</Typography>
+                      <Box
+                        className={
+                          styles.paymentMethodLabel
+                        }
+                      >
+                        <Box
+                          className={
+                            styles.paymentMethodIcon
+                          }
+                        >
+                          <Typography>
+                            PayFast
+                          </Typography>
                         </Box>
                       </Box>
                     }
@@ -179,10 +272,24 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     value="creditCard"
                     control={<Radio />}
                     label={
-                      <Box className={styles.paymentMethodLabel}>
-                        <Box className={styles.paymentMethodIcon}>
-                          <FaCreditCard style={{ fontSize: '1.5rem' }} />
-                          <Typography>Credit Card</Typography>
+                      <Box
+                        className={
+                          styles.paymentMethodLabel
+                        }
+                      >
+                        <Box
+                          className={
+                            styles.paymentMethodIcon
+                          }
+                        >
+                          <FaCreditCard
+                            style={{
+                              fontSize: '1.5rem',
+                            }}
+                          />
+                          <Typography>
+                            Credit Card
+                          </Typography>
                         </Box>
                       </Box>
                     }
@@ -190,7 +297,8 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 </RadioGroup>
               </FormControl>
 
-              {formData.paymentMethod === 'creditCard' && (
+              {formData.paymentMethod ===
+                'creditCard' && (
                 <Box sx={{ marginTop: 3 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -198,7 +306,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         fullWidth
                         label="Name on the card"
                         name="nameOnCard"
-                        value={formData.nameOnCard}
+                        value={
+                          formData.nameOnCard
+                        }
                         onChange={onChange}
                         variant="outlined"
                       />
@@ -209,7 +319,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         label="Card Number"
                         name="cardNumber"
                         type="text"
-                        value={formData.cardNumber}
+                        value={
+                          formData.cardNumber
+                        }
                         onChange={onChange}
                         variant="outlined"
                       />
@@ -220,7 +332,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         fullWidth
                         label="Month"
                         name="expiryMonth"
-                        value={formData.expiryMonth}
+                        value={
+                          formData.expiryMonth
+                        }
                         onChange={onChange}
                         variant="outlined"
                       >
@@ -238,7 +352,10 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                           '11',
                           '12',
                         ].map((month) => (
-                          <MenuItem key={month} value={month}>
+                          <MenuItem
+                            key={month}
+                            value={month}
+                          >
                             {month}
                           </MenuItem>
                         ))}
@@ -250,15 +367,22 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                         fullWidth
                         label="Year"
                         name="expiryYear"
-                        value={formData.expiryYear}
+                        value={
+                          formData.expiryYear
+                        }
                         onChange={onChange}
                         variant="outlined"
                       >
                         {Array.from(
                           { length: 10 },
-                          (_, i) => new Date().getFullYear() + i
+                          (_, i) =>
+                            new Date().getFullYear() +
+                            i
                         ).map((year) => (
-                          <MenuItem key={year} value={year}>
+                          <MenuItem
+                            key={year}
+                            value={year}
+                          >
                             {year}
                           </MenuItem>
                         ))}

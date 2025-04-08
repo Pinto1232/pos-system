@@ -2,7 +2,13 @@
 
 import React, { memo, Suspense } from 'react';
 import styles from './Footer.module.css';
-import { Container, Typography, Box, Link, TextField } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Box,
+  Link,
+  TextField,
+} from '@mui/material';
 import SocialIcons from '@/components/ui/socialIcons/SocialIcons';
 import { Button } from '../ui/button/Button';
 
@@ -11,7 +17,10 @@ const Footer: React.FC = memo(() => {
     <footer className={styles.footer}>
       <Container maxWidth="lg">
         <Box className={styles.subscription}>
-          <Typography variant="h5" className={styles.heading}>
+          <Typography
+            variant="h5"
+            className={styles.heading}
+          >
             SUBSCRIBE NOW
             <br />
             FOR UPDATES AND EXCLUSIVE OFFERS!
@@ -27,13 +36,16 @@ const Footer: React.FC = memo(() => {
                   backgroundColor: '#ffffff',
                   borderRadius: '4px',
                   height: '48px',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                  boxShadow:
+                    '0 2px 8px rgba(0, 0, 0, 0.1)',
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                    boxShadow:
+                      '0 4px 12px rgba(0, 0, 0, 0.15)',
                   },
                   '&.Mui-focused': {
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                    boxShadow:
+                      '0 4px 12px rgba(0, 0, 0, 0.2)',
                   },
                 },
                 '& .MuiOutlinedInput-input': {
@@ -41,12 +53,15 @@ const Footer: React.FC = memo(() => {
                   padding: '14px 20px',
                   fontSize: '16px',
                 },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  border: 'none',
-                },
+                '& .MuiOutlinedInput-notchedOutline':
+                  {
+                    border: 'none',
+                  },
               }}
             />
-            <Button className={styles.sendButton}>SUBSCRIBE</Button>
+            <Button className={styles.sendButton}>
+              SUBSCRIBE
+            </Button>
           </Box>
         </Box>
 
@@ -54,27 +69,42 @@ const Footer: React.FC = memo(() => {
 
         <Box className={styles.footerContent}>
           <Box>
-            <Typography variant="h6" className={styles.sectionTitle}>
+            <Typography
+              variant="h6"
+              className={styles.sectionTitle}
+            >
               Company
             </Typography>
             <ul className={styles.list}>
               <li>
-                <Link href="#" className={styles.link}>
+                <Link
+                  href="#"
+                  className={styles.link}
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="#" className={styles.link}>
+                <Link
+                  href="#"
+                  className={styles.link}
+                >
                   Our Services
                 </Link>
               </li>
               <li>
-                <Link href="#" className={styles.link}>
+                <Link
+                  href="#"
+                  className={styles.link}
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="#" className={styles.link}>
+                <Link
+                  href="#"
+                  className={styles.link}
+                >
                   Contact
                 </Link>
               </li>
@@ -82,7 +112,10 @@ const Footer: React.FC = memo(() => {
           </Box>
 
           <Box>
-            <Typography variant="h6" className={styles.sectionTitle}>
+            <Typography
+              variant="h6"
+              className={styles.sectionTitle}
+            >
               Contact
             </Typography>
             <Typography className={styles.text}>
@@ -100,7 +133,10 @@ const Footer: React.FC = memo(() => {
           </Box>
 
           <Box>
-            <Typography variant="h6" className={styles.sectionTitle}>
+            <Typography
+              variant="h6"
+              className={styles.sectionTitle}
+            >
               New York
             </Typography>
             <Typography className={styles.text}>
@@ -109,23 +145,37 @@ const Footer: React.FC = memo(() => {
             <Typography className={styles.text}>
               Lovasa Avenue, Los Angeles
             </Typography>
-            <Typography className={styles.text}>90251, US</Typography>
+            <Typography className={styles.text}>
+              90251, US
+            </Typography>
           </Box>
 
           <Box className={styles.socialContainer}>
-            <Typography variant="h6" className={styles.sectionTitle}>
+            <Typography
+              variant="h6"
+              className={styles.sectionTitle}
+            >
               Follow Us On
             </Typography>
             <SocialIcons />
           </Box>
         </Box>
 
-        <Box className={styles.copyrightContainer}>
-          <Link href="#" className={styles.privacy}>
+        <Box
+          className={styles.copyrightContainer}
+        >
+          <Link
+            href="#"
+            className={styles.privacy}
+          >
             Privacy Policy
           </Link>
-          <Typography variant="body2" className={styles.copyright}>
-            © {new Date().getFullYear()} Pisval Tech. All rights reserved.
+          <Typography
+            variant="body2"
+            className={styles.copyright}
+          >
+            © {new Date().getFullYear()} Pisval
+            Tech. All rights reserved.
           </Typography>
         </Box>
       </Container>

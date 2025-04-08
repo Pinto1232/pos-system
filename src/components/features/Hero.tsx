@@ -1,6 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
-import { Box, Typography, Button, Link } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  Link,
+} from '@mui/material';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -23,24 +28,41 @@ function Hero({
     .map((paragraph, index) => (
       <React.Fragment key={index}>
         {paragraph}
-        {index < subheading.split('\n\n').length - 1 && <br />}
-        {index < subheading.split('\n\n').length - 1 && <br />}
+        {index <
+          subheading.split('\n\n').length - 1 && (
+          <br />
+        )}
+        {index <
+          subheading.split('\n\n').length - 1 && (
+          <br />
+        )}
       </React.Fragment>
     ));
 
   return (
-    <Box className={styles.heroContainer__wrapper}>
+    <Box
+      className={styles.heroContainer__wrapper}
+    >
       <Box className={styles.heroContainer}>
         <Box className={styles.heroTextSection}>
-          <Typography sx={{ color: '#000' }} variant="h1">
+          <Typography
+            sx={{ color: '#000' }}
+            variant="h1"
+          >
             {heading}
           </Typography>
-          <Typography variant="subtitle1" className={styles.heroSubheading}>
+          <Typography
+            variant="subtitle1"
+            className={styles.heroSubheading}
+          >
             {formattedSubheading}
           </Typography>
 
           <Box className={styles.heroButtons}>
-            <Button variant="contained" className={styles.heroBtnPrimary}>
+            <Button
+              variant="contained"
+              className={styles.heroBtnPrimary}
+            >
               {ctaPrimary}
             </Button>
             <Link

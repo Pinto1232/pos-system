@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+} from 'react';
 import {
   Drawer,
   Box,
@@ -27,13 +30,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   onDrawerToggle = () => {},
 }) => {
   const { setLoading } = useSpinner();
-  const [expandedItems, setExpandedItems] = useState<{
-    [key: string]: boolean;
-  }>({});
-  const [activeItemState, setActiveItemState] = useState<string>('');
+  const [expandedItems, setExpandedItems] =
+    useState<{
+      [key: string]: boolean;
+    }>({});
+  const [activeItemState, setActiveItemState] =
+    useState<string>('');
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [localDrawerOpen, setLocalDrawerOpen] = useState(isDrawerOpen);
+  const isSmallScreen = useMediaQuery(
+    theme.breakpoints.down('sm')
+  );
+  const [localDrawerOpen, setLocalDrawerOpen] =
+    useState(isDrawerOpen);
 
   useEffect(() => {
     setLocalDrawerOpen(isDrawerOpen);
@@ -56,7 +64,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     setExpandedItems((prev) => {
       const newState = Object.keys(prev).reduce(
         (acc, key) => {
-          acc[key] = key === label ? !prev[key] : false;
+          acc[key] =
+            key === label ? !prev[key] : false;
           return acc;
         },
         {} as { [key: string]: boolean }
@@ -70,7 +79,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     });
   };
 
-  const handleItemClickInternal = (label: string, parentLabel?: string) => {
+  const handleItemClickInternal = (
+    label: string,
+    parentLabel?: string
+  ) => {
     setLoading(true);
     setActiveItemState(label);
 
@@ -163,32 +175,50 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   if (isSmallScreen && !localDrawerOpen) {
-    return <MenuToggleButton onClick={handleDrawerToggle} isOpen={false} />;
+    return (
+      <MenuToggleButton
+        onClick={handleDrawerToggle}
+        isOpen={false}
+      />
+    );
   }
 
-  if (!isSmallScreen && !localDrawerOpen) return null;
+  if (!isSmallScreen && !localDrawerOpen)
+    return null;
 
   return (
     <>
       {isSmallScreen && (
-        <MenuToggleButton onClick={handleDrawerToggle} isOpen={true} />
+        <MenuToggleButton
+          onClick={handleDrawerToggle}
+          isOpen={true}
+        />
       )}
 
       <Drawer
-        variant={isSmallScreen ? 'temporary' : 'permanent'}
+        variant={
+          isSmallScreen
+            ? 'temporary'
+            : 'permanent'
+        }
         open={localDrawerOpen}
         onClose={handleDrawerClose}
         ModalProps={{
           keepMounted: true,
         }}
         sx={{
-          width: localDrawerOpen ? drawerWidth : 60,
+          width: localDrawerOpen
+            ? drawerWidth
+            : 60,
           flexShrink: 0,
           transition: 'width 0.3s ease',
           '& .MuiDrawer-paper': {
-            width: localDrawerOpen ? drawerWidth : 60,
+            width: localDrawerOpen
+              ? drawerWidth
+              : 60,
             boxSizing: 'border-box',
-            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+            boxShadow:
+              '0px 4px 6px rgba(0, 0, 0, 0.1)',
             backgroundColor,
             color: textColor,
             height: '100%',
@@ -201,7 +231,11 @@ const Sidebar: React.FC<SidebarProps> = ({
               display: 'none',
             },
           },
-          display: { xs: 'block', sm: 'block', md: 'block' },
+          display: {
+            xs: 'block',
+            sm: 'block',
+            md: 'block',
+          },
         }}
       >
         <Box sx={{ textAlign: 'center', p: 2 }}>
@@ -225,7 +259,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              fontSize: isSmallScreen ? '0.875rem' : '1rem',
+              fontSize: isSmallScreen
+                ? '0.875rem'
+                : '1rem',
             }}
           >
             Pinto Manuel
@@ -237,12 +273,18 @@ const Sidebar: React.FC<SidebarProps> = ({
             <SidebarItem
               key={item.label}
               item={item}
-              isActive={activeItemState === item.label}
-              isExpanded={!!expandedItems[item.label]}
+              isActive={
+                activeItemState === item.label
+              }
+              isExpanded={
+                !!expandedItems[item.label]
+              }
               iconColor={iconColor}
               textColor={textColor}
               onToggle={handleToggle}
-              onItemClick={handleItemClickInternal}
+              onItemClick={
+                handleItemClickInternal
+              }
               onSettingsClick={onSettingsClick}
             />
           ))}
