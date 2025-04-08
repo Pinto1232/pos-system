@@ -1,11 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/api/axiosClient';
 
 const AfterAuth = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] =
+    useState(true);
+  const [status, setStatus] = useState(
+    'Initializing authentication...'
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -40,6 +45,9 @@ const AfterAuth = () => {
       }
 
       try {
+        setStatus(
+          'Exchanging authorization code...'
+        );
         const response = await apiClient.post(
           '/auth/keycloak/callback',
           { code },
@@ -47,6 +55,7 @@ const AfterAuth = () => {
         );
 
         if (response.data?.accessToken) {
+          setStatus('Authentication successful!');
           localStorage.setItem(
             'accessToken',
             response.data.accessToken
@@ -71,9 +80,9 @@ const AfterAuth = () => {
         );
       } finally {
         clearTimeout(timeout);
+        setIsLoading(false);
       }
     };
-
     exchangeCodeForToken();
 
     return () => {
@@ -85,7 +94,7 @@ const AfterAuth = () => {
   return (
     <div className="auth-processing">
       <div className="spinner"></div>
-      <p>Completing authentication...</p>
+      <p>{status}</p>
     </div>
   );
 };

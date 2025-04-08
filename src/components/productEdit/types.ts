@@ -1,6 +1,6 @@
 export interface Product {
   id: number;
-  image: string;
+  image?: string;
   productName: string;
   color: string;
   barcode: string;
