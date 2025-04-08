@@ -74,7 +74,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
             }`}
             onClick={onBuyNow}
           >
-            {isCustom ? 'Contact Us' : 'Get Started'}
+            {isCustom ? 'Buy Now' : 'Buy Now'}
           </Button>
         </CardFooter>
       </Card>

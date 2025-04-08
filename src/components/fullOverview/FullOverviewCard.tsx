@@ -136,8 +136,8 @@ const FullOverviewCard: React.FC<
       status === 'active'
         ? '#10B981'
         : status === 'pending'
-        ? '#F59E0B'
-        : '#EF4444';
+          ? '#F59E0B'
+          : '#EF4444';
 
     return (
       <Tooltip title={status.charAt(0).toUpperCase() + status.slice(1)}>
@@ -589,10 +589,10 @@ const FullOverviewCard: React.FC<
               notificationType === 'success'
                 ? 'linear-gradient(90deg, #86efac, #4ade80)'
                 : notificationType === 'warning'
-                ? 'linear-gradient(90deg, #fca5a5, #f87171)'
-                : notificationType === 'error'
-                ? 'linear-gradient(90deg, #fecaca, #f87171)'
-                : 'linear-gradient(90deg, #6b7280, #9ca3af)',
+                  ? 'linear-gradient(90deg, #fca5a5, #f87171)'
+                  : notificationType === 'error'
+                    ? 'linear-gradient(90deg, #fecaca, #f87171)'
+                    : 'linear-gradient(90deg, #6b7280, #9ca3af)',
           },
           '&:hover': {
             transform: 'translateY(-2px)',
@@ -642,10 +642,10 @@ const FullOverviewCard: React.FC<
                   notificationType === 'success'
                     ? 'linear-gradient(135deg, #86efac, #4ade80)'
                     : notificationType === 'warning'
-                    ? 'linear-gradient(135deg, #fca5a5, #f87171)'
-                    : notificationType === 'error'
-                    ? 'linear-gradient(135deg, #fecaca, #f87171)'
-                    : 'linear-gradient(135deg, #6b7280, #9ca3af)',
+                      ? 'linear-gradient(135deg, #fca5a5, #f87171)'
+                      : notificationType === 'error'
+                        ? 'linear-gradient(135deg, #fecaca, #f87171)'
+                        : 'linear-gradient(135deg, #6b7280, #9ca3af)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -681,10 +681,10 @@ const FullOverviewCard: React.FC<
                         notificationType === 'success'
                           ? '#166534'
                           : notificationType === 'warning'
-                          ? '#991b1b'
-                          : notificationType === 'error'
-                          ? '#991b1b'
-                          : '#1f2937',
+                            ? '#991b1b'
+                            : notificationType === 'error'
+                              ? '#991b1b'
+                              : '#1f2937',
                       fontSize: '0.95rem',
                       fontWeight: 700,
                       letterSpacing: '-0.01em',
@@ -700,10 +700,10 @@ const FullOverviewCard: React.FC<
                           notificationType === 'success'
                             ? 'linear-gradient(90deg, #86efac, transparent)'
                             : notificationType === 'warning'
-                            ? 'linear-gradient(90deg, #fca5a5, transparent)'
-                            : notificationType === 'error'
-                            ? 'linear-gradient(90deg, #fecaca, transparent)'
-                            : 'linear-gradient(90deg, #6b7280, transparent)',
+                              ? 'linear-gradient(90deg, #fca5a5, transparent)'
+                              : notificationType === 'error'
+                                ? 'linear-gradient(90deg, #fecaca, transparent)'
+                                : 'linear-gradient(90deg, #6b7280, transparent)',
                         transform: 'scaleX(0)',
                         transformOrigin: 'left',
                         transition: 'transform 0.3s ease',
@@ -725,20 +725,20 @@ const FullOverviewCard: React.FC<
                         notificationType === 'success'
                           ? '#166534'
                           : notificationType === 'warning'
-                          ? '#991b1b'
-                          : notificationType === 'error'
-                          ? '#991b1b'
-                          : '#6b7280',
+                            ? '#991b1b'
+                            : notificationType === 'error'
+                              ? '#991b1b'
+                              : '#6b7280',
                       fontSize: '0.65rem',
                       fontWeight: 500,
                       background:
                         notificationType === 'success'
                           ? 'rgba(34, 197, 94, 0.1)'
                           : notificationType === 'warning'
-                          ? 'rgba(248, 113, 113, 0.1)'
-                          : notificationType === 'error'
-                          ? 'rgba(248, 113, 113, 0.1)'
-                          : 'rgba(107, 114, 128, 0.1)',
+                            ? 'rgba(248, 113, 113, 0.1)'
+                            : notificationType === 'error'
+                              ? 'rgba(248, 113, 113, 0.1)'
+                              : 'rgba(107, 114, 128, 0.1)',
                       px: 1,
                       py: 0.5,
                       borderRadius: '6px',
@@ -761,10 +761,10 @@ const FullOverviewCard: React.FC<
                       notificationType === 'success'
                         ? '#166534'
                         : notificationType === 'warning'
-                        ? '#991b1b'
-                        : notificationType === 'error'
-                        ? '#991b1b'
-                        : '#6b7280',
+                          ? '#991b1b'
+                          : notificationType === 'error'
+                            ? '#991b1b'
+                            : '#6b7280',
                     fontSize: '0.8rem',
                     fontWeight: 500,
                     opacity: 0.8,
@@ -796,18 +796,18 @@ const FullOverviewCard: React.FC<
                       notificationType === 'success'
                         ? 'rgba(34, 197, 94, 0.1)'
                         : notificationType === 'warning'
-                        ? 'rgba(248, 113, 113, 0.1)'
-                        : notificationType === 'error'
-                        ? 'rgba(248, 113, 113, 0.1)'
-                        : 'rgba(107, 114, 128, 0.1)',
+                          ? 'rgba(248, 113, 113, 0.1)'
+                          : notificationType === 'error'
+                            ? 'rgba(248, 113, 113, 0.1)'
+                            : 'rgba(107, 114, 128, 0.1)',
                     color:
                       notificationType === 'success'
                         ? '#166534'
                         : notificationType === 'warning'
-                        ? '#991b1b'
-                        : notificationType === 'error'
-                        ? '#991b1b'
-                        : '#6b7280',
+                          ? '#991b1b'
+                          : notificationType === 'error'
+                            ? '#991b1b'
+                            : '#6b7280',
                     fontSize: '0.65rem',
                     fontWeight: 600,
                     height: '20px',
@@ -838,20 +838,20 @@ const FullOverviewCard: React.FC<
                   notificationType === 'success'
                     ? 'rgba(34, 197, 94, 0.05)'
                     : notificationType === 'warning'
-                    ? 'rgba(248, 113, 113, 0.05)'
-                    : notificationType === 'error'
-                    ? 'rgba(248, 113, 113, 0.05)'
-                    : 'rgba(107, 114, 128, 0.05)',
+                      ? 'rgba(248, 113, 113, 0.05)'
+                      : notificationType === 'error'
+                        ? 'rgba(248, 113, 113, 0.05)'
+                        : 'rgba(107, 114, 128, 0.05)',
                 p: 1.5,
                 borderRadius: '10px',
                 border:
                   notificationType === 'success'
                     ? '1px solid rgba(34, 197, 94, 0.1)'
                     : notificationType === 'warning'
-                    ? '1px solid rgba(248, 113, 113, 0.1)'
-                    : notificationType === 'error'
-                    ? '1px solid rgba(248, 113, 113, 0.1)'
-                    : '1px solid rgba(107, 114, 128, 0.1)',
+                      ? '1px solid rgba(248, 113, 113, 0.1)'
+                      : notificationType === 'error'
+                        ? '1px solid rgba(248, 113, 113, 0.1)'
+                        : '1px solid rgba(107, 114, 128, 0.1)',
                 backdropFilter: 'blur(8px)',
                 flex: 1,
               }}
@@ -893,10 +893,10 @@ const FullOverviewCard: React.FC<
                           notificationType === 'success'
                             ? '#166534'
                             : notificationType === 'warning'
-                            ? '#991b1b'
-                            : notificationType === 'error'
-                            ? '#991b1b'
-                            : '#6b7280',
+                              ? '#991b1b'
+                              : notificationType === 'error'
+                                ? '#991b1b'
+                                : '#6b7280',
                         fontSize: '0.6rem',
                         fontWeight: 600,
                         textTransform: 'uppercase',
@@ -914,10 +914,10 @@ const FullOverviewCard: React.FC<
                           notificationType === 'success'
                             ? '#166534'
                             : notificationType === 'warning'
-                            ? '#991b1b'
-                            : notificationType === 'error'
-                            ? '#991b1b'
-                            : '#1f2937',
+                              ? '#991b1b'
+                              : notificationType === 'error'
+                                ? '#991b1b'
+                                : '#1f2937',
                         fontSize: '0.75rem',
                         fontWeight: 600,
                         lineHeight: 1.2,
@@ -949,10 +949,10 @@ const FullOverviewCard: React.FC<
                   notificationType === 'success'
                     ? 'linear-gradient(135deg, #22c55e, #4ade80)'
                     : notificationType === 'warning'
-                    ? 'linear-gradient(135deg, #f87171, #ef4444)'
-                    : notificationType === 'error'
-                    ? 'linear-gradient(135deg, #f87171, #ef4444)'
-                    : 'linear-gradient(135deg, #6b7280, #9ca3af)',
+                      ? 'linear-gradient(135deg, #f87171, #ef4444)'
+                      : notificationType === 'error'
+                        ? 'linear-gradient(135deg, #f87171, #ef4444)'
+                        : 'linear-gradient(135deg, #6b7280, #9ca3af)',
                 color: '#fff',
                 textTransform: 'none',
                 fontSize: '0.8rem',
@@ -969,20 +969,20 @@ const FullOverviewCard: React.FC<
                     notificationType === 'success'
                       ? 'linear-gradient(135deg, #16a34a, #22c55e)'
                       : notificationType === 'warning'
-                      ? 'linear-gradient(135deg, #dc2626, #ef4444)'
-                      : notificationType === 'error'
-                      ? 'linear-gradient(135deg, #dc2626, #ef4444)'
-                      : 'linear-gradient(135deg, #4b5563, #6b7280)',
+                        ? 'linear-gradient(135deg, #dc2626, #ef4444)'
+                        : notificationType === 'error'
+                          ? 'linear-gradient(135deg, #dc2626, #ef4444)'
+                          : 'linear-gradient(135deg, #4b5563, #6b7280)',
                 },
               }}
             >
               {notificationType === 'success'
                 ? 'View Order'
                 : notificationType === 'warning'
-                ? 'Restock Now'
-                : notificationType === 'error'
-                ? 'Retry Payment'
-                : 'View Details'}
+                  ? 'Restock Now'
+                  : notificationType === 'error'
+                    ? 'Retry Payment'
+                    : 'View Details'}
             </Button>
             <Button
               variant="outlined"
@@ -992,18 +992,18 @@ const FullOverviewCard: React.FC<
                   notificationType === 'success'
                     ? 'rgba(34, 197, 94, 0.3)'
                     : notificationType === 'warning'
-                    ? 'rgba(248, 113, 113, 0.3)'
-                    : notificationType === 'error'
-                    ? 'rgba(248, 113, 113, 0.3)'
-                    : 'rgba(107, 114, 128, 0.3)',
+                      ? 'rgba(248, 113, 113, 0.3)'
+                      : notificationType === 'error'
+                        ? 'rgba(248, 113, 113, 0.3)'
+                        : 'rgba(107, 114, 128, 0.3)',
                 color:
                   notificationType === 'success'
                     ? '#166534'
                     : notificationType === 'warning'
-                    ? '#991b1b'
-                    : notificationType === 'error'
-                    ? '#991b1b'
-                    : '#6b7280',
+                      ? '#991b1b'
+                      : notificationType === 'error'
+                        ? '#991b1b'
+                        : '#6b7280',
                 textTransform: 'none',
                 fontSize: '0.8rem',
                 fontWeight: 500,
@@ -1017,28 +1017,28 @@ const FullOverviewCard: React.FC<
                     notificationType === 'success'
                       ? '#22c55e'
                       : notificationType === 'warning'
-                      ? '#f87171'
-                      : notificationType === 'error'
-                      ? '#f87171'
-                      : '#6b7280',
+                        ? '#f87171'
+                        : notificationType === 'error'
+                          ? '#f87171'
+                          : '#6b7280',
                   background:
                     notificationType === 'success'
                       ? 'rgba(34, 197, 94, 0.05)'
                       : notificationType === 'warning'
-                      ? 'rgba(248, 113, 113, 0.05)'
-                      : notificationType === 'error'
-                      ? 'rgba(248, 113, 113, 0.05)'
-                      : 'rgba(107, 114, 128, 0.05)',
+                        ? 'rgba(248, 113, 113, 0.05)'
+                        : notificationType === 'error'
+                          ? 'rgba(248, 113, 113, 0.05)'
+                          : 'rgba(107, 114, 128, 0.05)',
                 },
               }}
             >
               {notificationType === 'success'
                 ? 'Track Order'
                 : notificationType === 'warning'
-                ? 'View Details'
-                : notificationType === 'error'
-                ? 'Contact Support'
-                : 'Learn More'}
+                  ? 'View Details'
+                  : notificationType === 'error'
+                    ? 'Contact Support'
+                    : 'Learn More'}
             </Button>
           </Box>
         </Box>

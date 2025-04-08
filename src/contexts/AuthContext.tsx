@@ -13,6 +13,9 @@ import keycloakInstance from '@/auth/keycloak';
 import { Box, Typography } from '@mui/material';
 import LoadingDots from '@/components/LoadingDots';
 
+// Global flag to track Keycloak initialization
+let keycloakInitialized = false;
+
 export interface AuthContextProps {
   token: string | null;
   login: () => Promise<void>;
@@ -34,8 +37,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const keycloakRef = useRef<KeycloakInstance>(keycloakInstance);
-  const [isInitializing, setIsInitializing] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
 
   const handleCleanLogout = useCallback(async () => {
     try {
@@ -51,23 +52,30 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         const logoutUrl = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/logout`;
 
+        const createFormInput = (name: string, value: string) => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = name;
+          input.value = value;
+          return input;
+        };
+
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = logoutUrl;
-
-        const clientIdInput = document.createElement('input');
-        clientIdInput.type = 'hidden';
-        clientIdInput.name = 'client_id';
-        clientIdInput.value = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || '';
-        form.appendChild(clientIdInput);
-
-        const redirectInput = document.createElement('input');
-        redirectInput.type = 'hidden';
-        redirectInput.name = 'post_logout_redirect_uri';
-        redirectInput.value =
-          process.env.NEXT_PUBLIC_LOGOUT_REDIRECT ||
-          window.location.origin + '/login';
-        form.appendChild(redirectInput);
+        form.appendChild(
+          createFormInput(
+            'client_id',
+            process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || ''
+          )
+        );
+        form.appendChild(
+          createFormInput(
+            'post_logout_redirect_uri',
+            process.env.NEXT_PUBLIC_LOGOUT_REDIRECT ||
+              window.location.origin + '/login'
+          )
+        );
 
         document.body.appendChild(form);
         form.submit();
@@ -96,11 +104,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       console.error('Login error:', err);
-      let errorMessage = 'Login failed';
-      if (err instanceof Error) {
-        errorMessage = `Login failed: ${err.message}`;
-      }
-      setError(errorMessage);
+      setError(
+        err instanceof Error ? `Login failed: ${err.message}` : 'Login failed'
+      );
     }
   }, []);
 
@@ -123,6 +129,25 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       logoutRedirect: process.env.NEXT_PUBLIC_LOGOUT_REDIRECT,
     });
 
+    const handleTokenRefresh = async () => {
+      try {
+        console.log('Attempting token refresh');
+        const refreshed = await kc.updateToken(70);
+        if (refreshed && kc.token) {
+          console.log('Token refreshed successfully');
+          setToken(kc.token);
+          localStorage.setItem('accessToken', kc.token);
+        }
+      } catch (refreshError) {
+        console.error('Token refresh failed:', refreshError);
+        if (refreshInterval) {
+          clearInterval(refreshInterval);
+          refreshInterval = null;
+        }
+        await handleCleanLogout();
+      }
+    };
+
     try {
       const authenticated = await kc.init({
         onLoad: 'check-sso',
@@ -137,8 +162,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       console.log('Redirect URI:', process.env.NEXT_PUBLIC_REDIRECT_URI);
-      setIsInitialized(true);
-      setIsInitializing(false);
 
       if (authenticated) {
         if (kc.token) {
@@ -152,24 +175,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setInitialized(true);
 
         // Set up token refresh with proper cleanup
-        refreshInterval = setInterval(async () => {
-          try {
-            console.log('Attempting token refresh');
-            const refreshed = await kc.updateToken(70);
-            if (refreshed && kc.token) {
-              console.log('Token refreshed successfully');
-              setToken(kc.token);
-              localStorage.setItem('accessToken', kc.token);
-            }
-          } catch (refreshError) {
-            console.error('Token refresh failed:', refreshError);
-            if (refreshInterval) {
-              clearInterval(refreshInterval);
-              refreshInterval = null;
-            }
-            await handleCleanLogout();
-          }
-        }, 60000);
+        refreshInterval = setInterval(handleTokenRefresh, 60000);
       } else {
         console.log('Not authenticated, redirecting to login');
         setInitialized(true);
@@ -179,8 +185,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Authentication Error Raw:', err);
       let errorMessage = 'Unknown authentication error';
       console.error('Authentication Error:', err);
-      setIsInitializing(false);
-      setIsInitialized(true);
 
       if (err instanceof Error) {
         errorMessage = `Authentication error: ${err.message}`;
@@ -213,25 +217,22 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [handleCleanLogout, login]);
 
   useEffect(() => {
-    if (isInitializing || isInitialized) {
-      console.log('Keycloak already initializing or initialized, skipping');
-      if (isInitialized) {
-        setInitialized(true);
-        const storedToken = localStorage.getItem('accessToken');
-        if (storedToken) {
-          setToken(storedToken);
-        }
+    if (!keycloakInitialized) {
+      keycloakInitialized = true;
+      const cleanupPromise = initializeAuth();
+
+      return () => {
+        cleanupPromise.then((cleanup) => cleanup());
+      };
+    } else {
+      console.log('Keycloak already initialized, skipping');
+      setInitialized(true);
+      const storedToken = localStorage.getItem('accessToken');
+      if (storedToken) {
+        setToken(storedToken);
       }
-      return;
     }
-
-    setIsInitializing(true);
-    const cleanupPromise = initializeAuth();
-
-    return () => {
-      cleanupPromise.then((cleanup) => cleanup());
-    };
-  }, [initializeAuth, isInitializing, isInitialized]);
+  }, [initializeAuth]);
 
   const logout = useCallback(async () => {
     console.log('Logout requested');

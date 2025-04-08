@@ -1,71 +1,83 @@
-import React, { useState } from 'react';
-import Sales from './Sales'; // Assuming Sales.tsx is in the same directory
-import { SalesContainerProps, SalesData } from './types'; // Import SalesData
+'use client';
 
-const SalesContainer: React.FC<SalesContainerProps> = ({
-  className,
-  timeframe = 'This Month',
-  onTimeframeChange,
-}) => {
-  // Mock data - replace this with your actual data fetching logic
-  const mockSalesData: SalesData = {
-    totalRevenue: 150000,
-    previousRevenue: 120000,
-    growthPercentage: 25,
-    growthValue: 30000,
-    timeframe: {
-      current: 'This Month',
-      previous: 'Last Month',
+import React, { useState } from 'react';
+import Sales from './Sales';
+import { SalesContainerProps, SalesData } from './types';
+
+const mockData: SalesData = {
+  totalRevenue: 528976.82,
+  previousRevenue: 501641.73,
+  growthPercentage: 7.9,
+  growthValue: 27335.09,
+  topSales: 72,
+  bestDeal: {
+    value: 42300,
+    company: 'Rolf Inc.'
+  },
+  deals: {
+    count: 256,
+    value: '528k',
+    growth: -5,
+    winRate: 44,
+    winRateGrowth: 1.2
+  },
+  timeframe: {
+    current: 'Sep 1 - Nov 30, 2023',
+    previous: 'Jun 1 - Aug 31, 2023'
+  },
+  teamPerformance: [
+    {
+      name: 'Armin A.',
+      revenue: 209633,
+      percentage: 39.63
     },
-    topSales: 8,
-    bestDeal: {
-      value: 50000,
-      company: 'Acme Corp',
+    {
+      name: 'Mikasa A.',
+      revenue: 156841,
+      percentage: 29.65
     },
-    deals: {
-      count: 20,
-      value: '$250k',
-      growth: 10,
-      winRate: 60,
-      winRateGrowth: 5,
+    {
+      name: 'Eren Y.',
+      revenue: 117115,
+      percentage: 22.14
     },
-    teamPerformance: [
-      { name: 'Alice', revenue: 60000, percentage: 30 },
-      { name: 'Bob', revenue: 45000, percentage: 20 },
-      { name: 'Charlie', revenue: 45000, percentage: 15 },
-    ],
-    platformRevenue: [],
-    platformPerformance: {
-      dribbble: {
-        monthlyRevenue: 0,
-        monthlyLeads: 0,
-        winLoss: '',
-        winPercentage: 0,
-        winLossRatio: '',
-      },
-    },
-    monthlyData: {
-      sep: { revenue: 0, cost: 0 },
-      oct: { revenue: 0, cost: 0 },
-      nov: { revenue: 0, cost: 0 },
-    },
-  };
+    {
+      name: 'Anonymous',
+      revenue: 45386,
+      percentage: 8.58
+    }
+  ],
+  platformRevenue: [],  // Add empty arrays to satisfy the interface
+  platformPerformance: {
+    dribbble: {
+      monthlyRevenue: 0,
+      monthlyLeads: 0,
+      winLoss: '',
+      winPercentage: 0,
+      winLossRatio: ''
+    }
+  },
+  monthlyData: {
+    sep: { revenue: 165000, cost: 110000 },
+    oct: { revenue: 185000, cost: 115000 },
+    nov: { revenue: 178976, cost: 112000 }
+  }
+};
+
+const SalesContainer: React.FC<SalesContainerProps> = ({ className }) => {
+  const [timeframe, setTimeframe] = useState('Sep 1 - Nov 30, 2023');
 
   const handleTimeframeChange = (newTimeframe: string) => {
-    console.log('Timeframe changed to:', newTimeframe);
-    if (onTimeframeChange) {
-      onTimeframeChange(newTimeframe);
-    }
+    setTimeframe(newTimeframe);
   };
 
   return (
-    <div className={className}>
-      <Sales
-        data={mockSalesData}
-        timeframe={timeframe}
-        onTimeframeChange={handleTimeframeChange}
-      />
-    </div>
+    <Sales
+      data={mockData}
+      timeframe={timeframe}
+      onTimeframeChange={handleTimeframeChange}
+      className={className}
+    />
   );
 };
 
