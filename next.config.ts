@@ -10,22 +10,22 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    turbo: {},
+    turbo: {
+      resolveAlias: {
+        '@components': './src/components',
+        '@utils': './src/utils',
+        '@lib': './src/lib',
+        '@contexts': './src/contexts',
+        '@hooks': './src/hooks',
+        '@pages': './src/pages',
+        '@public': './public',
+        '@styles': './src/styles',
+        '@types': './src/types'
+      }
+    },
   },
   transpilePackages: ['next-auth'],
-  swcMinify: true,
   productionBrowserSourceMaps: false,
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.cache = {
-        type: 'filesystem',
-        buildDependencies: {
-          config: [__filename],
-        },
-      };
-    }
-    return config;
-  },
   images: {
     domains: [
       'example.com',

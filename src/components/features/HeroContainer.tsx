@@ -8,9 +8,10 @@ function HeroContainer() {
       <span className={styles.highlightedText}>
         Transform
       </span>{' '}
-      Your Merchant&apos;s POS Device
+      Your Merchant&apos;s POS
       <span className={styles.emphasis}>
-        Into a Dynamic Business Management Tool
+        Into a Dynamic Business <br /> Management
+        Tool
       </span>
     </>
   );
