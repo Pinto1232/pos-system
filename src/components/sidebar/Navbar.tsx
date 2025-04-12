@@ -33,7 +33,6 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({
   drawerWidth,
   onDrawerToggle,
-  backgroundColor,
 }) => {
   const [anchorEl, setAnchorEl] =
     useState<null | HTMLElement>(null);
@@ -75,12 +74,9 @@ const Navbar: React.FC<NavbarProps> = ({
             ? '100%'
             : `calc(100% - ${drawerWidth}px)`,
           ml: isMobile ? 0 : `${drawerWidth}px`,
-          backgroundColor:
-            backgroundColor || 'default',
           transition:
             'margin-left 0.3s ease, width 0.3s ease',
           border: 'none',
-          zIndex: 1300,
         }}
       >
         <Toolbar

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo, useState } from 'react';
+import React, { memo, useState } from 'react'; // Ensure useState is imported
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
 import {
@@ -59,6 +59,8 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [logoError, setLogoError] =
+      useState(false); // <-- State to track logo loading error
 
     const handleLogin = async (
       event: React.FormEvent
@@ -81,6 +83,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
       try {
         const response = await axios.post(
+          // Consider moving URL to environment variables
           'http://localhost:5107/api/auth/login',
           {
             email,
@@ -88,6 +91,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           }
         );
         const { access_token } = response.data;
+        // Consider using more secure storage if needed (e.g., httpOnly cookies managed server-side)
         localStorage.setItem(
           'accessToken',
           access_token
@@ -96,18 +100,29 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           'Login successful:',
           response.data
         );
-        setIsFadingOut(false);
-        setIsLoggedIn(true);
-        router.push('/dashboard');
-      } catch (error) {
-        console.error('Login failed:', error);
+        setIsFadingOut(false); // Reset fade out on success before navigation
+        setIsLoggedIn(true); // Set logged in state
+        router.push('/dashboard'); // Navigate after successful login
+      } catch (err) {
+        // Use 'err' for catch block variable
+        console.error('Login failed:', err);
+        // Provide more specific error messages if the API returns them
         setError(
           'Login failed. Please check your credentials and try again.'
         );
         setSnackbarOpen(true);
-        setIsFadingOut(false);
-        setLoading(false);
+        setIsFadingOut(false); // Reset fade out on error
+        setLoading(false); // Ensure loading is stopped on error
       }
+      // Removed setLoading(false) from here as it should only be set on error or completion if needed elsewhere
+    };
+
+    // Handler for image loading errors
+    const handleLogoError = () => {
+      console.warn(
+        "Logo image '/logo-placeholder.png' failed to load."
+      );
+      setLogoError(true);
     };
 
     return (
@@ -129,6 +144,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
             <Box className={styles.formBox}>
               {onClose && (
                 <IconButton
+                  aria-label="Close login form" // Add aria-label for accessibility
                   className={styles.closeButton}
                   onClick={onClose}
                 >
@@ -138,13 +154,36 @@ const LoginForm: React.FC<LoginFormProps> = memo(
               <Box
                 className={styles.logoContainer}
               >
-                <Image
-                  src="/logo-placeholder.png"
-                  alt="POS Logo"
-                  width={60}
-                  height={60}
-                  className={styles.logoImage}
-                />
+                {/* --- Conditional Logo Rendering --- */}
+                {logoError ? (
+                  // Fallback element if the image fails to load
+                  <Box
+                    sx={{
+                      width: 60,
+                      height: 60,
+                      backgroundColor: 'grey.300', // Use theme colors if possible
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 1, // Use theme spacing/values
+                      color: 'text.secondary',
+                    }}
+                  >
+                    <Typography variant="caption">
+                      Logo
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Image
+                    src="/Pisval_Logo.jpg"
+                    alt="POS Logo"
+                    width={60}
+                    height={60}
+                    className={styles.logoImage}
+                    onError={handleLogoError}
+                    priority
+                  />
+                )}
               </Box>
 
               <Typography
@@ -168,6 +207,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                   <TextField
                     id="email"
                     name="email"
+                    type="email"
                     label="Email"
                     variant="outlined"
                     fullWidth
@@ -176,6 +216,11 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                       setEmail(e.target.value)
                     }
                     className={styles.textField}
+                    required
+                    InputLabelProps={{
+                      shrink:
+                        !!email || undefined,
+                    }}
                   />
                 </Box>
 
@@ -199,6 +244,11 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                       endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
+                            aria-label={
+                              showPassword
+                                ? 'Hide password'
+                                : 'Show password'
+                            }
                             onClick={() =>
                               setShowPassword(
                                 !showPassword
@@ -216,6 +266,11 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                       ),
                     }}
                     className={styles.textField}
+                    required
+                    InputLabelProps={{
+                      shrink:
+                        !!password || undefined,
+                    }}
                   />
                 </Box>
 
@@ -228,7 +283,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                         }
                       />
                     }
-                    label="remember me"
+                    label="Remember me"
                     className={styles.rememberMe}
                   />
                   <Link
@@ -237,7 +292,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                       styles.forgotPassword
                     }
                   >
-                    forgot password?
+                    Forgot password?
                   </Link>
                 </Box>
 
@@ -266,6 +321,8 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           <Alert
             onClose={() => setSnackbarOpen(false)}
             severity="error"
+            variant="filled"
+            sx={{ width: '100%' }}
             className={styles.alert}
           >
             {error}

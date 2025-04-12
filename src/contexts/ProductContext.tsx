@@ -7,6 +7,7 @@ import React, {
   useEffect,
 } from 'react';
 import { Product as ProductType } from '../components/productEdit/types';
+import Image from 'next/image';
 
 interface Product extends ProductType {
   image?: string;
@@ -187,7 +188,7 @@ export const ProductImage: React.FC<{
       : product.image;
 
   return (
-    <img
+    <Image
       src={imageSrc}
       alt={imageAlt}
       className={className}
