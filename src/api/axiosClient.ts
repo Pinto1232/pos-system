@@ -1,4 +1,3 @@
-// src/api/axiosClient.ts
 import axios from 'axios';
 import { SpinnerContext } from '@/contexts/SpinnerContext';
 import { useContext, useEffect } from 'react';
@@ -15,7 +14,7 @@ const apiClient = axios.create({
   timeout: 10000,
 });
 
-// Hook to setup axios interceptors and provide query hooks.
+// Hook to setup axios interceptors
 const useApiClient = () => {
   const spinnerContext = useContext(
     SpinnerContext
@@ -229,9 +228,9 @@ const useApiClient = () => {
   };
 };
 
-// Export individual hooks
+
 export { apiClient, useApiClient };
-// Export useUpdateCustomization with an explicit type annotation
+// Export useUpdateCustomization 
 export const useUpdateCustomization =
   (): UseMutationResult<
     unknown,
