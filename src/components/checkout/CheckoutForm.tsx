@@ -33,284 +33,333 @@ const CheckoutForm: React.FC<
   onChange,
   onSubmit,
 }) => {
-  const handleSelectChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    onChange(e);
-  };
+    const handleSelectChange = (
+      e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+      onChange(e);
+    };
 
-  return (
-    <Paper
-      elevation={0}
-      className={styles.checkoutContainer}
-    >
-      <Box className={styles.checkoutLeft}>
-        <Typography
-          variant="h5"
-          className={styles.title}
-        >
-          {title}
-        </Typography>
-
-        <form onSubmit={onSubmit}>
-          <Grid container spacing={3}>
-            {checkoutFields.map((field) => {
-              const gridSize =
-                field.name.toLowerCase() ===
-                'address'
-                  ? 12
-                  : 6;
-              return (
-                <Grid
-                  item
-                  xs={12}
-                  sm={gridSize}
-                  key={field.name}
-                >
-                  {field.type === 'select' ||
-                  field.name === 'country' ||
-                  field.name === 'state' ? (
-                    <TextField
-                      select
-                      name={field.name}
-                      required={field.required}
-                      value={
-                        formData[field.name] || ''
-                      }
-                      onChange={
-                        handleSelectChange
-                      }
-                      label={field.label}
-                      fullWidth
-                      variant="outlined"
-                    >
-                      <MenuItem value="">
-                        <em>
-                          Select {field.label}
-                        </em>
-                      </MenuItem>
-                      {field.options?.map(
-                        (option: string) => (
-                          <MenuItem
-                            key={option}
-                            value={option}
-                          >
-                            {option}
-                          </MenuItem>
-                        )
-                      )}
-                    </TextField>
-                  ) : (
-                    <TextField
-                      type={field.type ?? 'text'}
-                      name={field.name}
-                      required={field.required}
-                      value={
-                        formData[field.name] || ''
-                      }
-                      onChange={onChange}
-                      label={field.label}
-                      fullWidth
-                      variant="outlined"
-                    />
-                  )}
-                </Grid>
-              );
-            })}
-          </Grid>
-        </form>
-      </Box>
-
-      <Box className={styles.checkoutRight}>
-        <Box
-          className={styles.checkoutRightWrapper}
-        >
+    return (
+      <Paper
+        elevation={0}
+        className={styles.checkoutContainer}
+      >
+        <Box className={styles.checkoutLeft}>
           <Typography
             variant="h5"
             className={styles.title}
+            sx={{ padding: '1rem' }}
           >
-            {orderSummaryTitle}
+            {title}
           </Typography>
 
-          <Box className={styles.orderSummary}>
-            {orderSummaryItems.map((item) => (
-              <Typography
-                key={item.label}
-                className={styles.summaryItem}
-              >
-                <span>{item.label}</span>
-                <span>{item.value}</span>
-              </Typography>
-            ))}
-          </Box>
+          <form onSubmit={onSubmit}>
+            <Grid container spacing={3} sx={{ padding: '0 1rem' }}>
+              {checkoutFields.map((field) => {
+                const gridSize =
+                  field.name.toLowerCase() ===
+                    'address'
+                    ? 12
+                    : 6;
+                return (
+                  <Grid
+                    item
+                    xs={12}
+                    sm={gridSize}
+                    key={field.name}
+                  >
+                    {field.type === 'select' ||
+                      field.name === 'country' ||
+                      field.name === 'state' ? (
+                      <TextField
+                        select
+                        name={field.name}
+                        required={field.required}
+                        value={
+                          formData[field.name] || ''
+                        }
+                        onChange={
+                          handleSelectChange
+                        }
+                        label={field.label}
+                        fullWidth
+                        variant="outlined"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            backgroundColor: '#f8fafc',
+                            borderRadius: '0px',
+                            '& fieldset': {
+                              borderColor: 'rgba(0, 0, 0, 0.1)',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            }
+                          },
+                          '& .MuiInputLabel-root': {
+                            color: '#64748b',
+                            '&.Mui-focused': {
+                              color: '#1976d2',
+                            }
+                          },
+                          '& .MuiSelect-select': {
+                            padding: '12px 14px',
+                          }
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>
+                            Select {field.label}
+                          </em>
+                        </MenuItem>
+                        {field.options?.map(
+                          (option: string) => (
+                            <MenuItem
+                              key={option}
+                              value={option}
+                            >
+                              {option}
+                            </MenuItem>
+                          )
+                        )}
+                      </TextField>
+                    ) : (
+                      <TextField
+                        type={field.type ?? 'text'}
+                        name={field.name}
+                        required={field.required}
+                        value={
+                          formData[field.name] || ''
+                        }
+                        onChange={onChange}
+                        label={field.label}
+                        fullWidth
+                        variant="outlined"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            backgroundColor: '#f8fafc',
+                            borderRadius: '0px',
+                            '& fieldset': {
+                              borderColor: 'rgba(0, 0, 0, 0.1)',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            }
+                          },
+                          '& .MuiInputLabel-root': {
+                            color: '#64748b',
+                            '&.Mui-focused': {
+                              color: '#1976d2',
+                            }
+                          },
+                          '& .MuiOutlinedInput-input': {
+                            padding: '12px 14px',
+                          }
+                        }}
+                      />
+                    )}
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </form>
+        </Box>
 
-          <Divider className={styles.divider} />
-
-          <Box className={styles.checkoutContent}>
-            <Typography
-              variant="h6"
-              className={styles.total}
-            >
-              Payment Method
+        <Box className={styles.checkoutRight}>
+          <Box className={styles.checkoutRightWrapper}>
+            <Typography variant="h5" className={styles.title} sx={{ padding: '1rem' }}>
+              {orderSummaryTitle}
             </Typography>
 
-            <Box
-              className={styles.paymentDetails}
-            >
-              <FormControl
-                component="fieldset"
-                fullWidth
-              >
+            <Box className={styles.orderSummary}>
+              <Box className={styles.orderSummaryContent}>
+                {orderSummaryItems.map((item, index) => (
+                  <Box key={item.label} className={styles.section}>
+                    <Box className={styles.itemRow}>
+                      <Typography className={styles.itemLabel}>
+                        {item.label}
+                      </Typography>
+                      <Typography className={styles.itemValue}>
+                        {item.value}
+                      </Typography>
+                    </Box>
+                    {item.description && (
+                      <Typography className={styles.itemDescription}>
+                        {item.description}
+                      </Typography>
+                    )}
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+
+            <Divider className={styles.divider} />
+
+            <Box className={styles.total}>
+              <Typography>Total</Typography>
+              <Typography>
+                {orderSummaryItems.reduce(
+                  (acc, item) => {
+                    if (typeof item.value === 'number') {
+                      return acc + item.value;
+                    }
+                    const numericValue = parseFloat(item.value.replace(/[^0-9.-]/g, ''));
+                    return acc + (isNaN(numericValue) ? 0 : numericValue);
+                  },
+                  0
+                ).toLocaleString('en-ZA', {
+                  style: 'currency',
+                  currency: 'ZAR'
+                })}
+              </Typography>
+            </Box>
+
+            <Box className={styles.paymentDetails}>
+              <Typography variant="h6" className={styles.sectionTitle}>
+                Payment Method
+              </Typography>
+
+              <FormControl component="fieldset" fullWidth>
                 <RadioGroup
                   aria-label="payment-method"
                   name="paymentMethod"
-                  value={
-                    formData.paymentMethod || ''
-                  }
+                  value={formData.paymentMethod || ''}
                   onChange={handleSelectChange}
                 >
                   <FormControlLabel
                     value="paypal"
-                    control={<Radio />}
+                    control={
+                      <Radio
+                        sx={{
+                          color: '#0070ba',
+                          '&.Mui-checked': {
+                            color: '#0070ba',
+                          },
+                        }}
+                      />
+                    }
                     label={
-                      <Box
-                        className={
-                          styles.paymentMethodLabel
-                        }
-                      >
-                        <Box
-                          className={
-                            styles.paymentMethodIcon
-                          }
-                        >
-                          <FaPaypal
-                            style={{
-                              fontSize: '1.5rem',
-                              color: '#0070ba',
-                            }}
-                          />
-                          <Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                        <Box className={styles.paymentMethodIcon}>
+                          <FaPaypal style={{ fontSize: '2rem', color: '#0070ba' }} />
+                          <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: '#1a1a1a' }}>
                             PayPal
                           </Typography>
                         </Box>
-                        <Box
-                          className={
-                            styles.paymentMethodCards
-                          }
-                        >
+                        <Box className={styles.paymentMethodCards}>
                           <Image
                             src="/visa.jpg"
                             alt="Visa"
-                            width={60}
+                            width={40}
                             height={25}
-                            className={
-                              styles.paymentMethodImage
-                            }
+                            style={{ objectFit: 'contain' }}
                           />
                           <Image
                             src="/card.jpg"
                             alt="Card"
-                            width={60}
+                            width={40}
                             height={25}
-                            className={
-                              styles.paymentMethodImage
-                            }
+                            style={{ objectFit: 'contain' }}
                           />
                         </Box>
                       </Box>
                     }
+                    sx={{
+                      margin: 0,
+                      width: '100%',
+                      '.MuiFormControlLabel-label': {
+                        width: '100%',
+                      },
+                    }}
                   />
 
                   <FormControlLabel
                     value="stripe"
-                    control={<Radio />}
-                    label={
-                      <Box
-                        className={
-                          styles.paymentMethodLabel
-                        }
-                      >
-                        <Box
-                          className={
-                            styles.paymentMethodIcon
-                          }
-                        >
-                          <FaStripe
-                            style={{
-                              fontSize: '2rem',
-                              color: '#6772E5',
-                            }}
-                          />
-                        </Box>
-                      </Box>
+                    control={
+                      <Radio
+                        sx={{
+                          color: '#6772E5',
+                          '&.Mui-checked': {
+                            color: '#6772E5',
+                          },
+                        }}
+                      />
                     }
-                  />
-
-                  <FormControlLabel
-                    value="payfast"
-                    control={<Radio />}
                     label={
-                      <Box
-                        className={
-                          styles.paymentMethodLabel
-                        }
-                      >
-                        <Box
-                          className={
-                            styles.paymentMethodIcon
-                          }
-                        >
-                          <Typography>
-                            PayFast
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                        <Box className={styles.paymentMethodIcon}>
+                          <FaStripe style={{ fontSize: '2.5rem', color: '#6772E5' }} />
+                          <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: '#1a1a1a' }}>
+                            Stripe
                           </Typography>
                         </Box>
                       </Box>
                     }
+                    sx={{
+                      margin: 0,
+                      width: '100%',
+                      '.MuiFormControlLabel-label': {
+                        width: '100%',
+                      },
+                    }}
                   />
 
                   <FormControlLabel
                     value="creditCard"
-                    control={<Radio />}
+                    control={
+                      <Radio
+                        sx={{
+                          color: '#1a1a1a',
+                          '&.Mui-checked': {
+                            color: '#1a1a1a',
+                          },
+                        }}
+                      />
+                    }
                     label={
-                      <Box
-                        className={
-                          styles.paymentMethodLabel
-                        }
-                      >
-                        <Box
-                          className={
-                            styles.paymentMethodIcon
-                          }
-                        >
-                          <FaCreditCard
-                            style={{
-                              fontSize: '1.5rem',
-                            }}
-                          />
-                          <Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                        <Box className={styles.paymentMethodIcon}>
+                          <FaCreditCard style={{ fontSize: '1.5rem', color: '#1a1a1a' }} />
+                          <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: '#1a1a1a' }}>
                             Credit Card
                           </Typography>
                         </Box>
                       </Box>
                     }
+                    sx={{
+                      margin: 0,
+                      width: '100%',
+                      '.MuiFormControlLabel-label': {
+                        width: '100%',
+                      },
+                    }}
                   />
                 </RadioGroup>
               </FormControl>
 
-              {formData.paymentMethod ===
-                'creditCard' && (
-                <Box sx={{ marginTop: 3 }}>
+              {formData.paymentMethod === 'creditCard' && (
+                <Box sx={{ mt: 3 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <TextField
                         fullWidth
                         label="Name on the card"
                         name="nameOnCard"
-                        value={
-                          formData.nameOnCard
-                        }
+                        value={formData.nameOnCard}
                         onChange={onChange}
                         variant="outlined"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '&:hover fieldset': {
+                              borderColor: '#1a1a1a',
+                            },
+                          },
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -319,9 +368,7 @@ const CheckoutForm: React.FC<
                         label="Card Number"
                         name="cardNumber"
                         type="text"
-                        value={
-                          formData.cardNumber
-                        }
+                        value={formData.cardNumber}
                         onChange={onChange}
                         variant="outlined"
                       />
@@ -332,33 +379,17 @@ const CheckoutForm: React.FC<
                         fullWidth
                         label="Month"
                         name="expiryMonth"
-                        value={
-                          formData.expiryMonth
-                        }
+                        value={formData.expiryMonth}
                         onChange={onChange}
                         variant="outlined"
                       >
-                        {[
-                          '01',
-                          '02',
-                          '03',
-                          '04',
-                          '05',
-                          '06',
-                          '07',
-                          '08',
-                          '09',
-                          '10',
-                          '11',
-                          '12',
-                        ].map((month) => (
-                          <MenuItem
-                            key={month}
-                            value={month}
-                          >
-                            {month}
-                          </MenuItem>
-                        ))}
+                        {['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].map(
+                          (month) => (
+                            <MenuItem key={month} value={month}>
+                              {month}
+                            </MenuItem>
+                          )
+                        )}
                       </TextField>
                     </Grid>
                     <Grid item xs={4}>
@@ -367,25 +398,17 @@ const CheckoutForm: React.FC<
                         fullWidth
                         label="Year"
                         name="expiryYear"
-                        value={
-                          formData.expiryYear
-                        }
+                        value={formData.expiryYear}
                         onChange={onChange}
                         variant="outlined"
                       >
-                        {Array.from(
-                          { length: 10 },
-                          (_, i) =>
-                            new Date().getFullYear() +
-                            i
-                        ).map((year) => (
-                          <MenuItem
-                            key={year}
-                            value={year}
-                          >
-                            {year}
-                          </MenuItem>
-                        ))}
+                        {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map(
+                          (year) => (
+                            <MenuItem key={year} value={year}>
+                              {year}
+                            </MenuItem>
+                          )
+                        )}
                       </TextField>
                     </Grid>
                     <Grid item xs={4}>
@@ -411,15 +434,30 @@ const CheckoutForm: React.FC<
                   e.preventDefault();
                   onSubmit(e);
                 }}
+                sx={{
+                  mt: 2,
+                  py: 1,
+                  px: 1,
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  borderRadius: '8px',
+                  backgroundColor: '#1976d2',
+                  width: '80%',
+                  display: 'block',
+                  margin: '16px auto',
+                  '&:hover': {
+                    backgroundColor: '#1565c0',
+                  },
+                }}
               >
                 Checkout
               </Button>
             </Box>
           </Box>
         </Box>
-      </Box>
-    </Paper>
-  );
-};
+      </Paper>
+    );
+  };
 
 export default CheckoutForm;

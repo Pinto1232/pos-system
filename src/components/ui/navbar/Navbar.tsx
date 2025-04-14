@@ -39,9 +39,12 @@ const Navbar: React.FC<NavbarProps> = memo(
     const { toggleSidebar } = useSidebar();
     const { toggleLoginForm } = useLoginForm();
     const { testPeriod } = useTestPeriod();
-    const { selectedPackage } = usePackageSelection();
-    const [remainingTime, setRemainingTime] = useState(testPeriod * 24 * 60 * 60);
-    const [isCartOpen, setIsCartOpen] = useState(false);
+    const { selectedPackage } =
+      usePackageSelection();
+    const [remainingTime, setRemainingTime] =
+      useState(testPeriod * 24 * 60 * 60);
+    const [isCartOpen, setIsCartOpen] =
+      useState(false);
 
     useEffect(() => {
       setRemainingTime(testPeriod * 24 * 60 * 60);
@@ -59,11 +62,16 @@ const Navbar: React.FC<NavbarProps> = memo(
 
     const formatTime = (seconds: number) => {
       const hrs = Math.floor(seconds / 3600);
-      const mins = Math.floor((seconds % 3600) / 60);
+      const mins = Math.floor(
+        (seconds % 3600) / 60
+      );
       const secs = seconds % 60;
       return `${hrs.toString().padStart(2, '0')}:${mins
         .toString()
-        .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        .padStart(
+          2,
+          '0'
+        )}:${secs.toString().padStart(2, '0')}`;
     };
 
     const handleCartClick = () => {
@@ -76,16 +84,21 @@ const Navbar: React.FC<NavbarProps> = memo(
 
     return (
       <>
-        <AppBar position="sticky" className={styles.navbar}>
+        <AppBar
+          position="sticky"
+          className={styles.navbar}
+        >
           <Toolbar>
             <IconButton
               edge="start"
               color="inherit"
               onClick={toggleSidebar}
-            >
-            </IconButton>
+            ></IconButton>
 
-            <Typography variant="h6" className={styles.brand}>
+            <Typography
+              variant="h6"
+              className={styles.brand}
+            >
               {title}
             </Typography>
 
@@ -102,7 +115,12 @@ const Navbar: React.FC<NavbarProps> = memo(
                   gap: '4px',
                 }}
               >
-                <span style={{ fontWeight: 700, opacity: 0.95 }}>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    opacity: 0.95,
+                  }}
+                >
                   Test Period:
                 </span>
                 <span
@@ -110,12 +128,16 @@ const Navbar: React.FC<NavbarProps> = memo(
                     fontWeight: 800,
                     fontSize: '1.125rem',
                     letterSpacing: '0.5px',
-                    color: selectedPackage ? '#F59E0B' : '#ffffff',
+                    color: selectedPackage
+                      ? '#F59E0B'
+                      : '#ffffff',
                   }}
                 >
                   {formatTime(remainingTime)}
                 </span>
-                <span style={{ opacity: 0.85 }}>remaining</span>
+                <span style={{ opacity: 0.85 }}>
+                  remaining
+                </span>
               </Typography>
             </Box>
 
@@ -123,18 +145,30 @@ const Navbar: React.FC<NavbarProps> = memo(
               <NotificationsIcon />
             </IconButton>
 
-            <IconButton color="inherit" onClick={toggleLoginForm}>
+            <IconButton
+              color="inherit"
+              onClick={toggleLoginForm}
+            >
               <LoginIcon />
             </IconButton>
 
-            <IconButton color="inherit" onClick={handleCartClick}>
-              <Badge badgeContent={3} color="error">
+            <IconButton
+              color="inherit"
+              onClick={handleCartClick}
+            >
+              <Badge
+                badgeContent={3}
+                color="error"
+              >
                 <IoCartOutline />
               </Badge>
             </IconButton>
           </Toolbar>
         </AppBar>
-        <CartSidebar open={isCartOpen} onClose={handleCartClose} />
+        <CartSidebar
+          open={isCartOpen}
+          onClose={handleCartClose}
+        />
       </>
     );
   }
@@ -143,7 +177,9 @@ const Navbar: React.FC<NavbarProps> = memo(
 Navbar.displayName = 'Navbar';
 export { Navbar };
 
-const LazyNavbar: React.FC<NavbarProps> = (props) => (
+const LazyNavbar: React.FC<NavbarProps> = (
+  props
+) => (
   <Suspense fallback={<div>Loading...</div>}>
     <Navbar {...props} />
   </Suspense>

@@ -33,7 +33,11 @@ import {
   CustomPackageLayoutProps,
 } from './types';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
-import { FaCheck, FaCalendarAlt, FaCalendarCheck } from 'react-icons/fa';
+import {
+  FaCheck,
+  FaCalendarAlt,
+  FaCalendarCheck,
+} from 'react-icons/fa';
 import Link from 'next/link';
 
 const countries = [
@@ -84,23 +88,24 @@ const CustomPackageLayout: React.FC<
     totalFeaturePrice,
     setTotalFeaturePrice,
   ] = useState<number>(0);
-  const [checkboxStates, setCheckboxStates] = useState<Record<string, boolean>>({
-    'business-regular-updates': false,
-    'startup-regular-updates': false,
-    'personal-regular-updates': false,
-    'business-cloud-storage': false,
-    'startup-cloud-storage': false,
-    'personal-cloud-storage': false,
-    'business-market-analysis': false,
-    'startup-market-analysis': false,
-    'personal-market-analysis': false,
-    'business-team-management': false,
-    'startup-team-management': false,
-    'personal-team-management': false,
-    'business-support': false,
-    'startup-support': false,
-    'personal-support': false,
-  });
+  const [checkboxStates, setCheckboxStates] =
+    useState<Record<string, boolean>>({
+      'business-regular-updates': false,
+      'startup-regular-updates': false,
+      'personal-regular-updates': false,
+      'business-cloud-storage': false,
+      'startup-cloud-storage': false,
+      'personal-cloud-storage': false,
+      'business-market-analysis': false,
+      'startup-market-analysis': false,
+      'personal-market-analysis': false,
+      'business-team-management': false,
+      'startup-team-management': false,
+      'personal-team-management': false,
+      'business-support': false,
+      'startup-support': false,
+      'personal-support': false,
+    });
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -112,8 +117,14 @@ const CustomPackageLayout: React.FC<
     city: '',
     zipCode: '',
   });
-  const [selectedPlanIndex, setSelectedPlanIndex] = useState<number | null>(null);
-  const [selectedSupportIndex, setSelectedSupportIndex] = useState<number | null>(null);
+  const [
+    selectedPlanIndex,
+    setSelectedPlanIndex,
+  ] = useState<number | null>(null);
+  const [
+    selectedSupportIndex,
+    setSelectedSupportIndex,
+  ] = useState<number | null>(null);
 
   useEffect(() => {
     const total = selectedFeatures.reduce(
@@ -260,9 +271,9 @@ const CustomPackageLayout: React.FC<
   };
 
   const handleCheckboxChange = (id: string) => {
-    setCheckboxStates(prev => ({
+    setCheckboxStates((prev) => ({
       ...prev,
-      [id]: !prev[id]
+      [id]: !prev[id],
     }));
   };
 
@@ -342,9 +353,13 @@ const CustomPackageLayout: React.FC<
             </Typography>
             <Typography
               variant="body1"
-              className={styles.packageDescription}
+              className={
+                styles.packageDescription
+              }
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit laoreet dolore.
+              Lorem ipsum dolor sit amet,
+              consectetur adipiscing elit laoreet
+              dolore.
             </Typography>
 
             <Box className={styles.featuresTable}>
@@ -369,78 +384,107 @@ const CustomPackageLayout: React.FC<
                 </Box>
               </Box>
 
-              <Box className={styles.tableRow} sx={{ borderBottom: '2px solid #e0e0e0' }}>
-                <Box className={styles.featureColumn}>
+              <Box
+                className={styles.tableRow}
+                sx={{
+                  borderBottom:
+                    '2px solid #e0e0e0',
+                }}
+              >
+                <Box
+                  className={styles.featureColumn}
+                >
                   Billing Period
                 </Box>
-                <Box className={styles.planColumn}>
+                <Box
+                  className={styles.planColumn}
+                >
                   <Button
                     variant="contained"
-                    className={styles.priceTabActive}
-                    sx={{ 
+                    className={
+                      styles.priceTabActive
+                    }
+                    sx={{
                       minWidth: '100px',
                       backgroundColor: '#2563eb',
                       '&:hover': {
-                        backgroundColor: '#1d4ed8'
-                      }
+                        backgroundColor:
+                          '#1d4ed8',
+                      },
                     }}
                     startIcon={<FaCalendarAlt />}
                   >
                     Monthly
                   </Button>
                 </Box>
-                <Box className={styles.planColumn}>
+                <Box
+                  className={styles.planColumn}
+                >
                   <Button
                     variant="outlined"
                     className={styles.priceTab}
-                    sx={{ 
+                    sx={{
                       minWidth: '100px',
                       borderColor: '#e2e8f0',
                       color: '#64748b',
                       '&:hover': {
                         borderColor: '#cbd5e1',
-                        backgroundColor: '#f8fafc'
-                      }
+                        backgroundColor:
+                          '#f8fafc',
+                      },
                     }}
-                    startIcon={<FaCalendarCheck />}
+                    startIcon={
+                      <FaCalendarCheck />
+                    }
                   >
                     Yearly
-                    <span style={{ 
-                      backgroundColor: '#dcfce7',
-                      color: '#166534',
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                      fontSize: '0.75rem',
-                      marginLeft: '8px'
-                    }}>
+                    <span
+                      style={{
+                        backgroundColor:
+                          '#dcfce7',
+                        color: '#166534',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        marginLeft: '8px',
+                      }}
+                    >
                       -20%
                     </span>
                   </Button>
                 </Box>
-                <Box className={styles.planColumn}>
+                <Box
+                  className={styles.planColumn}
+                >
                   <Button
                     variant="outlined"
                     className={styles.priceTab}
-                    sx={{ 
+                    sx={{
                       minWidth: '100px',
                       borderColor: '#e2e8f0',
                       color: '#64748b',
                       '&:hover': {
                         borderColor: '#cbd5e1',
-                        backgroundColor: '#f8fafc'
-                      }
+                        backgroundColor:
+                          '#f8fafc',
+                      },
                     }}
-                    startIcon={<FaCalendarCheck />}
+                    startIcon={
+                      <FaCalendarCheck />
+                    }
                   >
                     2 Years
-                    <span style={{ 
-                      backgroundColor: '#dcfce7',
-                      color: '#166534',
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                      fontSize: '0.75rem',
-                      marginLeft: '8px'
-                    }}>
+                    <span
+                      style={{
+                        backgroundColor:
+                          '#dcfce7',
+                        color: '#166534',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        marginLeft: '8px',
+                      }}
+                    >
                       -30%
                     </span>
                   </Button>
@@ -456,37 +500,79 @@ const CustomPackageLayout: React.FC<
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['business-regular-updates'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'business-regular-updates'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['business-regular-updates']}
-                    onChange={() => handleCheckboxChange('business-regular-updates')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'business-regular-updates'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'business-regular-updates'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['startup-regular-updates'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'startup-regular-updates'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['startup-regular-updates']}
-                    onChange={() => handleCheckboxChange('startup-regular-updates')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'startup-regular-updates'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'startup-regular-updates'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['personal-regular-updates'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'personal-regular-updates'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['personal-regular-updates']}
-                    onChange={() => handleCheckboxChange('personal-regular-updates')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'personal-regular-updates'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'personal-regular-updates'
+                      )
+                    }
                   />
                 </Box>
               </Box>
@@ -500,37 +586,79 @@ const CustomPackageLayout: React.FC<
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['business-cloud-storage'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'business-cloud-storage'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['business-cloud-storage']}
-                    onChange={() => handleCheckboxChange('business-cloud-storage')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'business-cloud-storage'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'business-cloud-storage'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['startup-cloud-storage'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'startup-cloud-storage'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['startup-cloud-storage']}
-                    onChange={() => handleCheckboxChange('startup-cloud-storage')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'startup-cloud-storage'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'startup-cloud-storage'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['personal-cloud-storage'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'personal-cloud-storage'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['personal-cloud-storage']}
-                    onChange={() => handleCheckboxChange('personal-cloud-storage')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'personal-cloud-storage'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'personal-cloud-storage'
+                      )
+                    }
                   />
                 </Box>
               </Box>
@@ -544,37 +672,79 @@ const CustomPackageLayout: React.FC<
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['business-market-analysis'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'business-market-analysis'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['business-market-analysis']}
-                    onChange={() => handleCheckboxChange('business-market-analysis')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'business-market-analysis'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'business-market-analysis'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['startup-market-analysis'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'startup-market-analysis'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['startup-market-analysis']}
-                    onChange={() => handleCheckboxChange('startup-market-analysis')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'startup-market-analysis'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'startup-market-analysis'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['personal-market-analysis'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'personal-market-analysis'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['personal-market-analysis']}
-                    onChange={() => handleCheckboxChange('personal-market-analysis')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'personal-market-analysis'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'personal-market-analysis'
+                      )
+                    }
                   />
                 </Box>
               </Box>
@@ -588,37 +758,79 @@ const CustomPackageLayout: React.FC<
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['business-team-management'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'business-team-management'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['business-team-management']}
-                    onChange={() => handleCheckboxChange('business-team-management')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'business-team-management'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'business-team-management'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['startup-team-management'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'startup-team-management'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['startup-team-management']}
-                    onChange={() => handleCheckboxChange('startup-team-management')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'startup-team-management'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'startup-team-management'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['personal-team-management'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'personal-team-management'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['personal-team-management']}
-                    onChange={() => handleCheckboxChange('personal-team-management')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'personal-team-management'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'personal-team-management'
+                      )
+                    }
                   />
                 </Box>
               </Box>
@@ -632,37 +844,79 @@ const CustomPackageLayout: React.FC<
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['business-support'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'business-support'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['business-support']}
-                    onChange={() => handleCheckboxChange('business-support')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'business-support'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'business-support'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['startup-support'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'startup-support'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['startup-support']}
-                    onChange={() => handleCheckboxChange('startup-support')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'startup-support'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'startup-support'
+                      )
+                    }
                   />
                 </Box>
                 <Box
                   className={styles.planColumn}
                   sx={{
-                    backgroundColor: checkboxStates['personal-support'] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    backgroundColor:
+                      checkboxStates[
+                        'personal-support'
+                      ]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition:
+                      'background-color 0.3s ease',
                   }}
                 >
-                  <Checkbox 
-                    checked={checkboxStates['personal-support']}
-                    onChange={() => handleCheckboxChange('personal-support')}
+                  <Checkbox
+                    checked={
+                      checkboxStates[
+                        'personal-support'
+                      ]
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        'personal-support'
+                      )
+                    }
                   />
                 </Box>
               </Box>
@@ -1189,7 +1443,9 @@ const CustomPackageLayout: React.FC<
               </Typography>
             </Box>
             <Box
-              className={styles.paymentPlansContainer}
+              className={
+                styles.paymentPlansContainer
+              }
               sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -1199,196 +1455,445 @@ const CustomPackageLayout: React.FC<
               {[
                 {
                   title: 'Monthly Plan',
-                  description: 'Pay monthly for maximum flexibility',
-                  price: formatPrice(selectedCurrency, calculatedPrice) + '/month',
-                  features: ['Monthly Billing', 'No Commitment', 'Easy Upgrade'],
+                  description:
+                    'Pay monthly for maximum flexibility',
+                  price:
+                    formatPrice(
+                      selectedCurrency,
+                      calculatedPrice
+                    ) + '/month',
+                  features: [
+                    'Monthly Billing',
+                    'No Commitment',
+                    'Easy Upgrade',
+                  ],
                   buttonText: 'Select Plan',
                 },
                 {
                   title: 'Biannual Plan',
-                  description: 'Save 15% with biannual billing',
-                  price: formatPrice(selectedCurrency, calculatedPrice * 6 * 0.85) + '/6 months',
-                  features: ['15% Discount', 'Flexible Billing', 'Mid-term Adjustments'],
+                  description:
+                    'Save 15% with biannual billing',
+                  price:
+                    formatPrice(
+                      selectedCurrency,
+                      calculatedPrice * 6 * 0.85
+                    ) + '/6 months',
+                  features: [
+                    '15% Discount',
+                    'Flexible Billing',
+                    'Mid-term Adjustments',
+                  ],
                   buttonText: 'Select Plan',
                 },
                 {
                   title: 'Annual Plan',
-                  description: 'Save 20% with annual billing',
-                  price: formatPrice(selectedCurrency, calculatedPrice * 12 * 0.8) + '/year',
-                  features: ['20% Discount', 'Priority Support', 'Free Setup'],
+                  description:
+                    'Save 20% with annual billing',
+                  price:
+                    formatPrice(
+                      selectedCurrency,
+                      calculatedPrice * 12 * 0.8
+                    ) + '/year',
+                  features: [
+                    '20% Discount',
+                    'Priority Support',
+                    'Free Setup',
+                  ],
                   buttonText: 'Select Plan',
                 },
                 {
                   title: 'Enterprise Plan',
-                  description: 'Custom solutions for large businesses',
+                  description:
+                    'Custom solutions for large businesses',
                   price: 'Custom Pricing',
-                  features: ['Dedicated Support', 'Custom Features', 'SLA Guarantee'],
+                  features: [
+                    'Dedicated Support',
+                    'Custom Features',
+                    'SLA Guarantee',
+                  ],
                   buttonText: 'Select Plan',
                 },
               ].map((plan, index) => (
                 <Box
                   key={index}
-                  className={styles.paymentPlanItem}
-                  data-selected={selectedPlanIndex === index}
+                  className={
+                    styles.paymentPlanItem
+                  }
+                  data-selected={
+                    selectedPlanIndex === index
+                  }
                   sx={{
-                    opacity: selectedPlanIndex !== null && selectedPlanIndex !== index ? 0.5 : 1,
-                    pointerEvents: selectedPlanIndex !== null && selectedPlanIndex !== index ? 'none' : 'auto',
+                    opacity:
+                      selectedPlanIndex !==
+                        null &&
+                      selectedPlanIndex !== index
+                        ? 0.5
+                        : 1,
+                    pointerEvents:
+                      selectedPlanIndex !==
+                        null &&
+                      selectedPlanIndex !== index
+                        ? 'none'
+                        : 'auto',
                   }}
                 >
-                  <Typography variant="h6">{plan.title}</Typography>
-                  <Typography className={styles.paymentDescription}>
+                  <Typography variant="h6">
+                    {plan.title}
+                  </Typography>
+                  <Typography
+                    className={
+                      styles.paymentDescription
+                    }
+                  >
                     {plan.description}
                   </Typography>
-                  <Typography className={styles.paymentPrice}>
+                  <Typography
+                    className={
+                      styles.paymentPrice
+                    }
+                  >
                     {plan.price}
                   </Typography>
-                  <Box className={styles.paymentFeatures}>
-                    {plan.features.map((feature, idx) => (
-                      <Typography key={idx}>✓ {feature}</Typography>
-                    ))}
+                  <Box
+                    className={
+                      styles.paymentFeatures
+                    }
+                  >
+                    {plan.features.map(
+                      (feature, idx) => (
+                        <Typography key={idx}>
+                          ✓ {feature}
+                        </Typography>
+                      )
+                    )}
                   </Box>
                   <Button
                     variant="contained"
-                    className={styles.selectPlanButton}
-                    onClick={() => handlePlanSelect(index)}
-                    disabled={selectedPlanIndex !== null && selectedPlanIndex !== index}
+                    className={
+                      styles.selectPlanButton
+                    }
+                    onClick={() =>
+                      handlePlanSelect(index)
+                    }
+                    disabled={
+                      selectedPlanIndex !==
+                        null &&
+                      selectedPlanIndex !== index
+                    }
                   >
-                    {selectedPlanIndex === index ? 'Selected' : 'Select Plan'}
+                    {selectedPlanIndex === index
+                      ? 'Selected'
+                      : 'Select Plan'}
                   </Button>
                 </Box>
               ))}
             </Box>
-            <Box className={styles.packageDetailsControls}>
+            <Box
+              className={
+                styles.packageDetailsControls
+              }
+            >
               <Button
                 className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
                 variant="outlined"
                 onClick={handleBack}
-                disabled={currentStep === 0 || backLoading}
+                disabled={
+                  currentStep === 0 || backLoading
+                }
               >
-                {backLoading ? <CircularProgress size={20} /> : 'Back'}
+                {backLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  'Back'
+                )}
               </Button>
               <Button
                 className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
                 variant="contained"
                 onClick={handleNext}
-                disabled={loading || selectedPlanIndex === null}
+                disabled={
+                  loading ||
+                  selectedPlanIndex === null
+                }
               >
-                {loading ? <CircularProgress size={20} /> : 'Continue'}
+                {loading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  'Continue'
+                )}
               </Button>
             </Box>
           </Box>
         );
       case 'Choose Support Level':
         return (
-          <Box className={styles.featuresContainer}>
+          <Box
+            className={styles.featuresContainer}
+          >
             <Box className={styles.sectionHeader}>
-              <Typography variant="h5">Choose Support Level</Typography>
-              <Typography variant="body2" className={styles.sectionDescription}>
-                Select the support package that matches your business needs.
+              <Typography variant="h5">
+                Choose Support Level
+              </Typography>
+              <Typography
+                variant="body2"
+                className={
+                  styles.sectionDescription
+                }
+              >
+                Select the support package that
+                matches your business needs.
               </Typography>
             </Box>
-            <Box className={styles.supportPlansContainer}>
-              <Box 
+            <Box
+              className={
+                styles.supportPlansContainer
+              }
+            >
+              <Box
                 className={`${styles.supportPlanItem} ${selectedSupportIndex === 0 ? styles.selected : ''}`}
                 sx={{
-                  opacity: selectedSupportIndex !== null && selectedSupportIndex !== 0 ? 0.5 : 1,
-                  pointerEvents: selectedSupportIndex !== null && selectedSupportIndex !== 0 ? 'none' : 'auto',
+                  opacity:
+                    selectedSupportIndex !==
+                      null &&
+                    selectedSupportIndex !== 0
+                      ? 0.5
+                      : 1,
+                  pointerEvents:
+                    selectedSupportIndex !==
+                      null &&
+                    selectedSupportIndex !== 0
+                      ? 'none'
+                      : 'auto',
                 }}
               >
-                <Typography variant="h6">Standard Support</Typography>
-                <Typography variant="body2" className={styles.supportDescription}>
-                  Email support with 24-hour response time
+                <Typography variant="h6">
+                  Standard Support
                 </Typography>
-                <Box className={styles.supportFeatures}>
-                  <Typography variant="body2">✓ Email Support</Typography>
-                  <Typography variant="body2">✓ Knowledge Base Access</Typography>
-                  <Typography variant="body2">✓ Community Forum</Typography>
+                <Typography
+                  variant="body2"
+                  className={
+                    styles.supportDescription
+                  }
+                >
+                  Email support with 24-hour
+                  response time
+                </Typography>
+                <Box
+                  className={
+                    styles.supportFeatures
+                  }
+                >
+                  <Typography variant="body2">
+                    ✓ Email Support
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ Knowledge Base Access
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ Community Forum
+                  </Typography>
                 </Box>
-                <Typography variant="h5" className={styles.supportPrice}>
+                <Typography
+                  variant="h5"
+                  className={styles.supportPrice}
+                >
                   Included
                 </Typography>
                 <Button
                   variant="contained"
-                  className={styles.selectPlanButton}
-                  onClick={() => handleSupportSelect(0)}
+                  className={
+                    styles.selectPlanButton
+                  }
+                  onClick={() =>
+                    handleSupportSelect(0)
+                  }
                 >
-                  {selectedSupportIndex === 0 ? 'Selected' : 'Select Plan'}
+                  {selectedSupportIndex === 0
+                    ? 'Selected'
+                    : 'Select Plan'}
                 </Button>
               </Box>
-              <Box 
+              <Box
                 className={`${styles.supportPlanItem} ${styles.premium} ${selectedSupportIndex === 1 ? styles.selected : ''}`}
                 sx={{
-                  opacity: selectedSupportIndex !== null && selectedSupportIndex !== 1 ? 0.5 : 1,
-                  pointerEvents: selectedSupportIndex !== null && selectedSupportIndex !== 1 ? 'none' : 'auto',
+                  opacity:
+                    selectedSupportIndex !==
+                      null &&
+                    selectedSupportIndex !== 1
+                      ? 0.5
+                      : 1,
+                  pointerEvents:
+                    selectedSupportIndex !==
+                      null &&
+                    selectedSupportIndex !== 1
+                      ? 'none'
+                      : 'auto',
                 }}
               >
-                <Typography variant="h6">Premium Support</Typography>
-                <Typography variant="body2" className={styles.supportDescription}>
-                  Priority support with 4-hour response time
+                <Typography variant="h6">
+                  Premium Support
                 </Typography>
-                <Box className={styles.supportFeatures}>
-                  <Typography variant="body2">✓ 24/7 Priority Support</Typography>
-                  <Typography variant="body2">✓ Dedicated Account Manager</Typography>
-                  <Typography variant="body2">✓ Phone Support</Typography>
-                  <Typography variant="body2">✓ Custom Training Sessions</Typography>
+                <Typography
+                  variant="body2"
+                  className={
+                    styles.supportDescription
+                  }
+                >
+                  Priority support with 4-hour
+                  response time
+                </Typography>
+                <Box
+                  className={
+                    styles.supportFeatures
+                  }
+                >
+                  <Typography variant="body2">
+                    ✓ 24/7 Priority Support
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ Dedicated Account Manager
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ Phone Support
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ Custom Training Sessions
+                  </Typography>
                 </Box>
-                <Typography variant="h5" className={styles.supportPrice}>
-                  +{formatPrice(selectedCurrency, calculatedPrice * 0.2)}/month
+                <Typography
+                  variant="h5"
+                  className={styles.supportPrice}
+                >
+                  +
+                  {formatPrice(
+                    selectedCurrency,
+                    calculatedPrice * 0.2
+                  )}
+                  /month
                 </Typography>
                 <Button
                   variant="contained"
-                  className={styles.selectPlanButton}
-                  onClick={() => handleSupportSelect(1)}
+                  className={
+                    styles.selectPlanButton
+                  }
+                  onClick={() =>
+                    handleSupportSelect(1)
+                  }
                 >
-                  {selectedSupportIndex === 1 ? 'Selected' : 'Select Plan'}
+                  {selectedSupportIndex === 1
+                    ? 'Selected'
+                    : 'Select Plan'}
                 </Button>
               </Box>
-              <Box 
+              <Box
                 className={`${styles.supportPlanItem} ${styles.advanced} ${selectedSupportIndex === 2 ? styles.selected : ''}`}
                 sx={{
-                  opacity: selectedSupportIndex !== null && selectedSupportIndex !== 2 ? 0.5 : 1,
-                  pointerEvents: selectedSupportIndex !== null && selectedSupportIndex !== 2 ? 'none' : 'auto',
+                  opacity:
+                    selectedSupportIndex !==
+                      null &&
+                    selectedSupportIndex !== 2
+                      ? 0.5
+                      : 1,
+                  pointerEvents:
+                    selectedSupportIndex !==
+                      null &&
+                    selectedSupportIndex !== 2
+                      ? 'none'
+                      : 'auto',
                 }}
               >
-                <Typography variant="h6">Advanced Support</Typography>
-                <Typography variant="body2" className={styles.supportDescription}>
-                  Enterprise-grade support with dedicated team
+                <Typography variant="h6">
+                  Advanced Support
                 </Typography>
-                <Box className={styles.supportFeatures}>
-                  <Typography variant="body2">✓ 24/7 Dedicated Support Team</Typography>
-                  <Typography variant="body2">✓ SLA Guarantee</Typography>
-                  <Typography variant="body2">✓ On-site Support</Typography>
-                  <Typography variant="body2">✓ Custom Development</Typography>
-                  <Typography variant="body2">✓ Priority Feature Requests</Typography>
+                <Typography
+                  variant="body2"
+                  className={
+                    styles.supportDescription
+                  }
+                >
+                  Enterprise-grade support with
+                  dedicated team
+                </Typography>
+                <Box
+                  className={
+                    styles.supportFeatures
+                  }
+                >
+                  <Typography variant="body2">
+                    ✓ 24/7 Dedicated Support Team
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ SLA Guarantee
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ On-site Support
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ Custom Development
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ Priority Feature Requests
+                  </Typography>
                 </Box>
-                <Typography variant="h5" className={styles.supportPrice}>
-                  +{formatPrice(selectedCurrency, calculatedPrice * 0.4)}/month
+                <Typography
+                  variant="h5"
+                  className={styles.supportPrice}
+                >
+                  +
+                  {formatPrice(
+                    selectedCurrency,
+                    calculatedPrice * 0.4
+                  )}
+                  /month
                 </Typography>
                 <Button
                   variant="contained"
-                  className={styles.selectPlanButton}
-                  onClick={() => handleSupportSelect(2)}
+                  className={
+                    styles.selectPlanButton
+                  }
+                  onClick={() =>
+                    handleSupportSelect(2)
+                  }
                 >
-                  {selectedSupportIndex === 2 ? 'Selected' : 'Select Plan'}
+                  {selectedSupportIndex === 2
+                    ? 'Selected'
+                    : 'Select Plan'}
                 </Button>
               </Box>
             </Box>
-            <Box className={styles.packageDetailsControls}>
+            <Box
+              className={
+                styles.packageDetailsControls
+              }
+            >
               <Button
                 className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
                 variant="outlined"
                 onClick={handleBack}
-                disabled={currentStep === 0 || backLoading}
+                disabled={
+                  currentStep === 0 || backLoading
+                }
               >
-                {backLoading ? <CircularProgress size={20} /> : 'Back'}
+                {backLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  'Back'
+                )}
               </Button>
               <Button
                 className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
                 variant="contained"
                 onClick={handleNext}
-                disabled={loading || selectedSupportIndex === null}
+                disabled={
+                  loading ||
+                  selectedSupportIndex === null
+                }
               >
-                {loading ? <CircularProgress size={20} /> : 'Continue'}
+                {loading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  'Continue'
+                )}
               </Button>
             </Box>
           </Box>
@@ -1744,37 +2249,60 @@ const CustomPackageLayout: React.FC<
                 </Box>
               </Box>
             </Box>
-            <Box className={styles.packageDetailsControls}>
+            <Box
+              className={
+                styles.packageDetailsControls
+              }
+            >
               <Button
                 className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
                 variant="outlined"
                 onClick={handleBack}
-                disabled={currentStep === 0 || backLoading}
+                disabled={
+                  currentStep === 0 || backLoading
+                }
               >
-                {backLoading ? <CircularProgress size={20} /> : 'Back'}
+                {backLoading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  'Back'
+                )}
               </Button>
               <Button
                 className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
                 variant="contained"
                 onClick={handleNext}
-                disabled={loading || !isAnyEnterpriseFeatureSelected()}
+                disabled={
+                  loading ||
+                  !isAnyEnterpriseFeatureSelected()
+                }
               >
-                {loading ? <CircularProgress size={20} /> : 'Continue'}
+                {loading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  'Continue'
+                )}
               </Button>
             </Box>
           </Box>
         );
 
-
       case 'Review & Confirm':
         return (
           <Box className={styles.reviewContainer}>
             <Box className={styles.reviewColumn}>
-              <Box className={styles.reviewSection}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              <Box
+                className={styles.reviewSection}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 'bold' }}
+                >
                   Enter Your Details
                 </Typography>
-                <Box className={styles.reviewForm}>
+                <Box
+                  className={styles.reviewForm}
+                >
                   <Box className={styles.formRow}>
                     <TextField
                       label="First Name"
@@ -1782,7 +2310,9 @@ const CustomPackageLayout: React.FC<
                       fullWidth
                       required
                       value={formData.firstName}
-                      onChange={handleTextFieldChange}
+                      onChange={
+                        handleTextFieldChange
+                      }
                     />
                     <TextField
                       label="Last Name"
@@ -1790,7 +2320,9 @@ const CustomPackageLayout: React.FC<
                       fullWidth
                       required
                       value={formData.lastName}
-                      onChange={handleTextFieldChange}
+                      onChange={
+                        handleTextFieldChange
+                      }
                     />
                   </Box>
                   <TextField
@@ -1799,7 +2331,9 @@ const CustomPackageLayout: React.FC<
                     fullWidth
                     required
                     value={formData.email}
-                    onChange={handleTextFieldChange}
+                    onChange={
+                      handleTextFieldChange
+                    }
                   />
                   <TextField
                     label="Phone Number"
@@ -1807,7 +2341,9 @@ const CustomPackageLayout: React.FC<
                     fullWidth
                     required
                     value={formData.phone}
-                    onChange={handleTextFieldChange}
+                    onChange={
+                      handleTextFieldChange
+                    }
                   />
                   <TextField
                     label="Address"
@@ -1815,34 +2351,55 @@ const CustomPackageLayout: React.FC<
                     fullWidth
                     required
                     value={formData.address}
-                    onChange={handleTextFieldChange}
+                    onChange={
+                      handleTextFieldChange
+                    }
                   />
                   <Box className={styles.formRow}>
-                    <FormControl fullWidth required>
-                      <InputLabel>Country</InputLabel>
+                    <FormControl
+                      fullWidth
+                      required
+                    >
+                      <InputLabel>
+                        Country
+                      </InputLabel>
                       <Select
                         label="Country"
                         name="country"
                         value={formData.country}
-                        onChange={handleSelectChange}
+                        onChange={
+                          handleSelectChange
+                        }
                       >
-                        {countries.map((country) => (
-                          <MenuItem key={country} value={country}>
-                            {country}
-                          </MenuItem>
-                        ))}
+                        {countries.map(
+                          (country) => (
+                            <MenuItem
+                              key={country}
+                              value={country}
+                            >
+                              {country}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                     </FormControl>
                     <FormControl fullWidth>
-                      <InputLabel>State / Province / Region</InputLabel>
+                      <InputLabel>
+                        State / Province / Region
+                      </InputLabel>
                       <Select
                         label="State / Province / Region"
                         name="state"
                         value={formData.state}
-                        onChange={handleSelectChange}
+                        onChange={
+                          handleSelectChange
+                        }
                       >
                         {states.map((state) => (
-                          <MenuItem key={state} value={state}>
+                          <MenuItem
+                            key={state}
+                            value={state}
+                          >
                             {state}
                           </MenuItem>
                         ))}
@@ -1856,188 +2413,560 @@ const CustomPackageLayout: React.FC<
                       fullWidth
                       required
                       value={formData.city}
-                      onChange={handleTextFieldChange}
+                      onChange={
+                        handleTextFieldChange
+                      }
                     />
                     <TextField
                       label="Postal / Zip Code"
                       name="zipCode"
                       fullWidth
                       value={formData.zipCode}
-                      onChange={handleTextFieldChange}
+                      onChange={
+                        handleTextFieldChange
+                      }
                     />
                   </Box>
                 </Box>
               </Box>
             </Box>
             <Box className={styles.reviewColumn}>
-              <Box className={styles.orderSummary}>
-                <Box className={styles.orderSummaryHeader}>
-                  <Typography variant="h5">
+              <Box
+                className={styles.orderSummary}
+              >
+                <Box
+                  className={
+                    styles.orderSummaryHeader
+                  }
+                  sx={{
+                    borderBottom: '1px solid',
+                    borderColor: 'divider',
+                    pb: 2,
+                    mb: 3,
+                  }}
+                >
+                  <Typography 
+                    variant="h5"
+                    sx={{
+                      fontSize: '1.5rem',
+                      fontWeight: 600,
+                      color: '#1a1a1a',
+                    }}
+                  >
                     Order Summary
                   </Typography>
                 </Box>
-                <Box className={styles.orderSummaryContent}>
-                  <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>
+                <Box
+                  className={
+                    styles.orderSummaryContent
+                  }
+                  sx={{
+                    '& .MuiTypography-root': {
+                      color: '#1a1a1a',
+                    }
+                  }}
+                >
+                  <Box className={styles.section} sx={{ mb: 3 }}>
+                    <Typography
+                      className={
+                        styles.sectionTitle
+                      }
+                      sx={{
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        mb: 2,
+                        color: '#4B5563',
+                      }}
+                    >
                       Selected Package
                     </Typography>
-                    <Box className={styles.sectionContent}>
-                      <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>
+                    <Box
+                      className={
+                        styles.sectionContent
+                      }
+                      sx={{
+                        backgroundColor: '#F9FAFB',
+                        borderRadius: '8px',
+                        p: 2,
+                      }}
+                    >
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                          }}
+                        >
                           Enterprise Package
-                          <span className={styles.discountTag}>Most Popular</span>
+                          <span
+                            className={
+                              styles.discountTag
+                            }
+                            style={{
+                              backgroundColor: '#EEF2FF',
+                              color: '#4F46E5',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                            }}
+                          >
+                            Most Popular
+                          </span>
                         </Typography>
-                        <Typography className={styles.itemValue}>
-                          {formatPrice(selectedCurrency, basePrice)}/mo
+                        <Typography
+                          className={
+                            styles.itemValue
+                          }
+                          sx={{
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {formatPrice(
+                            selectedCurrency,
+                            basePrice
+                          )}
+                          <span style={{ 
+                            fontSize: '0.85rem',
+                            color: '#6B7280',
+                            marginLeft: '2px',
+                          }}>/mo</span>
                         </Typography>
                       </Box>
-                      <Typography className={styles.itemDescription}>
+                      <Typography
+                        className={
+                          styles.itemDescription
+                        }
+                        sx={{
+                          fontSize: '0.875rem',
+                          color: '#6B7280',
+                        }}
+                      >
                         Complete enterprise solution with advanced features and priority support
                       </Typography>
                     </Box>
                   </Box>
 
-                  <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>
+                  <Box className={styles.section} sx={{ mb: 3 }}>
+                    <Typography
+                      className={
+                        styles.sectionTitle
+                      }
+                      sx={{
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        mb: 2,
+                        color: '#4B5563',
+                      }}
+                    >
                       Payment Plan
                     </Typography>
-                    <Box className={styles.sectionContent}>
-                      <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>
+                    <Box
+                      className={
+                        styles.sectionContent
+                      }
+                      sx={{
+                        backgroundColor: '#F9FAFB',
+                        borderRadius: '8px',
+                        p: 2,
+                      }}
+                    >
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                          }}
+                        >
                           Annual Plan
-                          <span className={styles.discountTag}>Save 20%</span>
+                          <span
+                            className={
+                              styles.discountTag
+                            }
+                            style={{
+                              backgroundColor: '#ECFDF5',
+                              color: '#059669',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                            }}
+                          >
+                            Save 20%
+                          </span>
                         </Typography>
-                        <Typography className={styles.priceReduction}>
-                          -{formatPrice(selectedCurrency, basePrice * 0.2)}/mo
+                        <Typography
+                          className={
+                            styles.priceReduction
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                            color: '#059669',
+                          }}
+                        >
+                          -
+                          {formatPrice(
+                            selectedCurrency,
+                            basePrice * 0.2
+                          )}
+                          <span style={{ 
+                            fontSize: '0.85rem',
+                            marginLeft: '2px',
+                          }}>/mo</span>
                         </Typography>
                       </Box>
-                      <Typography className={styles.itemDescription}>
-                        Billed annually • {formatPrice(selectedCurrency, basePrice * 12 * 0.8)} total
+                      <Typography
+                        className={
+                          styles.itemDescription
+                        }
+                        sx={{
+                          fontSize: '0.875rem',
+                          color: '#6B7280',
+                        }}
+                      >
+                        Billed annually •{' '}
+                        {formatPrice(
+                          selectedCurrency,
+                          basePrice * 12 * 0.8
+                        )}{' '}
+                        total
                       </Typography>
                     </Box>
                   </Box>
 
-                  <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>
+                  <Box className={styles.section} sx={{ mb: 3 }}>
+                    <Typography
+                      className={
+                        styles.sectionTitle
+                      }
+                      sx={{
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        mb: 2,
+                        color: '#4B5563',
+                      }}
+                    >
                       Support Level
                     </Typography>
-                    <Box className={styles.sectionContent}>
-                      <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>
+                    <Box
+                      className={
+                        styles.sectionContent
+                      }
+                      sx={{
+                        backgroundColor: '#F9FAFB',
+                        borderRadius: '8px',
+                        p: 2,
+                      }}
+                    >
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                          }}
+                        >
                           Premium Support
-                          <span className={styles.discountTag}>24/7</span>
+                          <span
+                            className={
+                              styles.discountTag
+                            }
+                            style={{
+                              backgroundColor: '#FEF3C7',
+                              color: '#D97706',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                            }}
+                          >
+                            24/7
+                          </span>
                         </Typography>
-                        <Typography className={styles.itemValue}>
-                          +{formatPrice(selectedCurrency, basePrice * 0.2)}/mo
+                        <Typography
+                          className={
+                            styles.itemValue
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          +
+                          {formatPrice(
+                            selectedCurrency,
+                            basePrice * 0.2
+                          )}
+                          <span style={{ 
+                            fontSize: '0.85rem',
+                            color: '#6B7280',
+                            marginLeft: '2px',
+                          }}>/mo</span>
                         </Typography>
                       </Box>
-                      <Typography className={styles.itemDescription}>
+                      <Typography
+                        className={
+                          styles.itemDescription
+                        }
+                        sx={{
+                          fontSize: '0.875rem',
+                          color: '#6B7280',
+                        }}
+                      >
                         Dedicated support team • 4-hour response time • Priority handling
                       </Typography>
                     </Box>
                   </Box>
 
-                  <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>
-                      Enterprise Features
-                    </Typography>
-                    <Box className={styles.sectionContent}>
-                      <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>
-                          Advanced Analytics Suite
-                        </Typography>
-                        <Typography className={styles.itemValue}>
-                          +{formatPrice(selectedCurrency, 199)}/mo
-                        </Typography>
-                      </Box>
-                      <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>
-                          Multi-Location Management
-                        </Typography>
-                        <Typography className={styles.itemValue}>
-                          +{formatPrice(selectedCurrency, 299)}/mo
-                        </Typography>
-                      </Box>
-                      <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>
-                          Security & Compliance
-                        </Typography>
-                        <Typography className={styles.itemValue}>
-                          +{formatPrice(selectedCurrency, 249)}/mo
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-
-                  <Box className={styles.section}>
-                    <Typography className={styles.sectionTitle}>
+                  <Box className={styles.section} sx={{ mb: 4 }}>
+                    <Typography
+                      className={
+                        styles.sectionTitle
+                      }
+                      sx={{
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        mb: 2,
+                        color: '#4B5563',
+                      }}
+                    >
                       Savings Overview
                     </Typography>
-                    <Box className={styles.sectionContent}>
-                      <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>
+                    <Box
+                      className={
+                        styles.sectionContent
+                      }
+                      sx={{
+                        backgroundColor: '#F9FAFB',
+                        borderRadius: '8px',
+                        p: 2,
+                      }}
+                    >
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          mb: 2,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                          }}
+                        >
                           Subtotal
                         </Typography>
-                        <Typography className={styles.itemValue}>
-                          {formatPrice(selectedCurrency, basePrice + 747)}/mo
+                        <Typography
+                          className={
+                            styles.itemValue
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          {formatPrice(
+                            selectedCurrency,
+                            basePrice + 747
+                          )}
+                          <span style={{ 
+                            fontSize: '0.85rem',
+                            color: '#6B7280',
+                            marginLeft: '2px',
+                          }}>/mo</span>
                         </Typography>
                       </Box>
-                      <Box className={styles.divider} />
-                      <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>
+                      <Box
+                        className={styles.divider}
+                        sx={{
+                          height: '1px',
+                          backgroundColor: '#E5E7EB',
+                          my: 2,
+                        }}
+                      />
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          mb: 2,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                          }}
+                        >
                           Annual Discount
-                          <span className={styles.discountTag}>20% Off</span>
+                          <span
+                            className={
+                              styles.discountTag
+                            }
+                            style={{
+                              backgroundColor: '#ECFDF5',
+                              color: '#059669',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                            }}
+                          >
+                            20% Off
+                          </span>
                         </Typography>
-                        <Typography className={styles.priceReduction}>
-                          -{formatPrice(selectedCurrency, (basePrice + 747) * 0.2)}/mo
-                        </Typography>
-                      </Box>
-                      <Box className={styles.itemRow}>
-                        <Typography className={styles.itemLabel}>
-                          Enterprise Discount
-                          <span className={styles.discountTag}>10% Off</span>
-                        </Typography>
-                        <Typography className={styles.priceReduction}>
-                          -{formatPrice(selectedCurrency, (basePrice + 747) * 0.1)}/mo
+                        <Typography
+                          className={
+                            styles.priceReduction
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                            color: '#059669',
+                          }}
+                        >
+                          -
+                          {formatPrice(
+                            selectedCurrency,
+                            (basePrice + 747) *
+                              0.2
+                          )}
+                          <span style={{ 
+                            fontSize: '0.85rem',
+                            marginLeft: '2px',
+                          }}>/mo</span>
                         </Typography>
                       </Box>
                     </Box>
                   </Box>
                 </Box>
-                <Box className={styles.orderSummaryFooter}>
-                  <Box className={styles.totalContainer}>
-                    <Box className={styles.totalLabel}>
-                      <Typography className={styles.totalAmount}>
-                        {formatPrice(selectedCurrency, (basePrice + 747) * 0.7)}/mo
+                <Box
+                  className={
+                    styles.orderSummaryFooter
+                  }
+                  sx={{
+                    borderTop: '1px solid',
+                    borderColor: 'divider',
+                    pt: 3,
+                  }}
+                >
+                  <Box
+                    className={
+                      styles.totalContainer
+                    }
+                    sx={{
+                      mb: 3,
+                    }}
+                  >
+                    <Box
+                      className={
+                        styles.totalLabel
+                      }
+                    >
+                      <Typography
+                        className={
+                          styles.totalAmount
+                        }
+                        sx={{
+                          fontSize: '1.5rem',
+                          fontWeight: 700,
+                          color: '#1a1a1a',
+                          mb: 1,
+                        }}
+                      >
+                        {formatPrice(
+                          selectedCurrency,
+                          (basePrice + 747) * 0.7
+                        )}
+                        <span style={{ 
+                          fontSize: '1rem',
+                          color: '#6B7280',
+                          marginLeft: '4px',
+                        }}>/mo</span>
                       </Typography>
-                      <Typography className={styles.billingNote}>
-                        Billed annually • Total savings of {formatPrice(selectedCurrency, (basePrice + 747) * 0.3 * 12)}/year
+                      <Typography
+                        className={
+                          styles.billingNote
+                        }
+                        sx={{
+                          fontSize: '0.875rem',
+                          color: '#6B7280',
+                        }}
+                      >
+                        Billed annually • Total savings of{' '}
+                        {formatPrice(
+                          selectedCurrency,
+                          (basePrice + 747) *
+                            0.3 *
+                            12
+                        )}
+                        /year
                       </Typography>
                     </Box>
-                  </Box>
-                  <Box className={styles.packageDetailsControls}>
-                    <Button
-                      className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
-                      variant="outlined"
-                      onClick={handleBack}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
-                      variant="contained"
-                      onClick={handleSave}
-                    >
-                      Confirm
-                    </Button>
                   </Box>
                 </Box>
               </Box>
             </Box>
           </Box>
         );
-     
-        default:
+
+      default:
         return (
           <Typography variant="body1">
             Unknown step configuration. Please
@@ -2048,31 +2977,49 @@ const CustomPackageLayout: React.FC<
   };
 
   const isAnyCheckboxSelected = () => {
-    return Object.values(checkboxStates).some(value => value === true);
+    return Object.values(checkboxStates).some(
+      (value) => value === true
+    );
   };
 
   const isAnyEnterpriseFeatureSelected = () => {
     if (!enterpriseFeatures) return false;
-    return Object.values(enterpriseFeatures).some(value => value === true);
+    return Object.values(enterpriseFeatures).some(
+      (value) => value === true
+    );
   };
 
   const renderPackageDetailsButtons = () => (
-    <Box className={styles.packageDetailsControls}>
+    <Box
+      className={styles.packageDetailsControls}
+    >
       <Button
         className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
         variant="outlined"
         onClick={handleBack}
-        disabled={currentStep === 0 || backLoading}
+        disabled={
+          currentStep === 0 || backLoading
+        }
       >
-        {backLoading ? <CircularProgress size={20} /> : 'Back'}
+        {backLoading ? (
+          <CircularProgress size={20} />
+        ) : (
+          'Back'
+        )}
       </Button>
       <Button
         className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
         variant="contained"
         onClick={handleNext}
-        disabled={loading || !isAnyCheckboxSelected()}
+        disabled={
+          loading || !isAnyCheckboxSelected()
+        }
       >
-        {loading ? <CircularProgress size={20} /> : 'Continue'}
+        {loading ? (
+          <CircularProgress size={20} />
+        ) : (
+          'Continue'
+        )}
       </Button>
     </Box>
   );
@@ -2080,29 +3027,45 @@ const CustomPackageLayout: React.FC<
   const renderNavigationButtons = () => (
     <Box className={styles.controls}>
       {currentStep > 0 &&
-        steps[currentStep] !== 'Choose Support Level' &&
-        steps[currentStep] !== 'Select Payment Plan' &&
-        steps[currentStep] !== 'Configure Enterprise Features' && (
+        steps[currentStep] !==
+          'Choose Support Level' &&
+        steps[currentStep] !==
+          'Select Payment Plan' &&
+        steps[currentStep] !==
+          'Configure Enterprise Features' && (
           <Button
             className={styles.btnControlsBack}
             variant="outlined"
             onClick={handleBack}
-            disabled={currentStep === 0 || backLoading}
+            disabled={
+              currentStep === 0 || backLoading
+            }
           >
-            {backLoading ? <CircularProgress size={20} /> : 'Back'}
+            {backLoading ? (
+              <CircularProgress size={20} />
+            ) : (
+              'Back'
+            )}
           </Button>
         )}
       {currentStep < steps.length - 1 &&
-        steps[currentStep] !== 'Choose Support Level' &&
-        steps[currentStep] !== 'Select Payment Plan' &&
-        steps[currentStep] !== 'Configure Enterprise Features' && (
+        steps[currentStep] !==
+          'Choose Support Level' &&
+        steps[currentStep] !==
+          'Select Payment Plan' &&
+        steps[currentStep] !==
+          'Configure Enterprise Features' && (
           <Button
             className={styles.btnControlsNext}
             variant="contained"
             onClick={handleNext}
             disabled={loading}
           >
-            {loading ? <CircularProgress size={20} /> : 'Next'}
+            {loading ? (
+              <CircularProgress size={20} />
+            ) : (
+              'Next'
+            )}
           </Button>
         )}
     </Box>
@@ -2131,7 +3094,9 @@ const CustomPackageLayout: React.FC<
         >
           {getStepContent()}
         </motion.div>
-        {currentStep !== steps.length - 1 && currentStep !== 0 && renderNavigationButtons()}
+        {currentStep !== steps.length - 1 &&
+          currentStep !== 0 &&
+          renderNavigationButtons()}
       </CardContent>
     </Card>
   );
