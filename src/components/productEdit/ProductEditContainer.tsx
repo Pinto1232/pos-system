@@ -5,8 +5,6 @@ import React, {
 import { Box } from '@mui/material';
 import ProductEdit from './ProductEdit';
 import { Product } from './types';
-// Import nanoid for stable ID generation
-import { nanoid } from 'nanoid';
 
 const ProductEditContainer: React.FC = () => {
   const [productsState, setProductsState] =

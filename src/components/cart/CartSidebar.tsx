@@ -14,8 +14,9 @@ import {
   ListItemSecondaryAction,
   Badge,
   Paper,
+  useTheme as useMuiTheme,
 } from '@mui/material';
-import { IoClose } from 'react-icons/io5';
+import CloseIcon from '@mui/icons-material/Close';
 import { FaTrash } from 'react-icons/fa';
 import { HiShoppingCart } from 'react-icons/hi';
 import { styled } from '@mui/material/styles';
@@ -25,86 +26,78 @@ interface CartSidebarProps {
   onClose: () => void;
 }
 
-const StyledDrawer = styled(Drawer)(
-  ({ theme }) => ({
-    '& .MuiDrawer-paper': {
-      width: { xs: '100%', sm: 550 },
-      boxSizing: 'border-box',
-      background: '#FFFFFF',
-      boxShadow:
-        '-4px 0 20px rgba(0, 0, 0, 0.08)',
-    },
-  })
-);
+const StyledDrawer = styled(Drawer)(() => ({
+  '& .MuiDrawer-paper': {
+    width: { xs: '100%', sm: 550 },
+    boxSizing: 'border-box',
+    background: '#FFFFFF',
+    boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.08)',
+  },
+}));
 
-const CartHeader = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(3, 4),
+const CartHeader = styled(Box)(() => ({
+  padding: '24px 32px',
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  borderBottom: `1px solid ${theme.palette.divider}`,
+  borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
   backgroundColor: '#FAFBFC',
 }));
 
-const CartItem = styled(Paper)(({ theme }) => ({
+const CartItem = styled(Paper)(() => ({
   display: 'flex',
   alignItems: 'flex-start',
-  padding: theme.spacing(2.5, 3),
-  margin: theme.spacing(0, 2),
-  marginTop: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius,
+  padding: '20px 24px',
+  margin: '0 16px',
+  marginTop: '16px',
+  borderRadius: '8px',
   backgroundColor: '#FFFFFF',
   boxShadow: '0 2px 4px rgba(0, 0, 0, 0.02)',
-  border: '1px solid',
-  borderColor: theme.palette.divider,
+  border: '1px solid rgba(0, 0, 0, 0.12)',
   transition: 'all 0.2s ease-in-out',
   position: 'relative',
   '&:hover': {
     transform: 'translateY(-2px)',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.04)',
-    borderColor: theme.palette.primary.main,
+    borderColor: '#1976d2',
   },
 }));
 
-const ProductImage = styled(Box)(({ theme }) => ({
+const ProductImage = styled(Box)(() => ({
   width: 80,
   height: 80,
-  background: theme.palette.grey[50],
-  borderRadius: theme.shape.borderRadius,
+  background: '#f5f5f5',
+  borderRadius: '8px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  marginRight: theme.spacing(3),
+  marginRight: '24px',
   fontSize: '1.75rem',
-  color: theme.palette.grey[300],
-  border: `1px solid ${theme.palette.grey[100]}`,
+  color: '#e0e0e0',
+  border: '1px solid #f0f0f0',
   flexShrink: 0,
 }));
 
-const DeleteButton = styled(IconButton)(
-  ({ theme }) => ({
-    color: theme.palette.grey[400],
-    padding: theme.spacing(1),
-    position: 'absolute',
-    right: theme.spacing(2),
-    top: '50%',
-    transform: 'translateY(-50%)',
-    '&:hover': {
-      backgroundColor: theme.palette.error.light,
-      color: theme.palette.error.main,
-    },
-  })
-);
+const DeleteButton = styled(IconButton)(() => ({
+  color: '#bdbdbd',
+  padding: '8px',
+  position: 'absolute',
+  right: '16px',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  '&:hover': {
+    backgroundColor: '#ffebee',
+    color: '#f44336',
+  },
+}));
 
-const PriceText = styled(Typography)(
-  ({ theme }) => ({
-    color: theme.palette.primary.main,
-    fontWeight: 600,
-    fontSize: '1rem',
-    marginLeft: theme.spacing(2),
-    flexShrink: 0,
-  })
-);
+const PriceText = styled(Typography)(() => ({
+  color: '#1976d2',
+  fontWeight: 600,
+  fontSize: '1rem',
+  marginLeft: '16px',
+  flexShrink: 0,
+}));
 
 const formatPrice = (amount: number) => {
   return new Intl.NumberFormat('en-ZA', {
@@ -200,7 +193,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
             },
           }}
         >
-          <IoClose size={22} />
+          <CloseIcon />
         </IconButton>
       </CartHeader>
 
@@ -340,7 +333,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
           variant="contained"
           fullWidth
           size="large"
-          sx={{ 
+          sx={{
             py: 0.5,
             backgroundColor: (theme) =>
               theme.palette.primary.main,

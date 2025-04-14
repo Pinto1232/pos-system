@@ -26,7 +26,9 @@
   padding: 0;
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
 }
@@ -74,7 +76,9 @@
   padding: 0.75rem;
   margin-bottom: 0.75rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .section:last-child {
@@ -111,9 +115,10 @@
 }
 
 .divider {
-  margin: 0 1rem !important;
+  margin-top: 1rem !important;
   background-color: rgba(0, 0, 0, 0.05);
   height: 1px;
+  margin: 1rem !important;
 }
 
 .total {
@@ -135,7 +140,6 @@
   background-color: #ffffff;
   padding: 1.5rem;
   border-radius: 16px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
   position: relative;
   z-index: 1;
 }

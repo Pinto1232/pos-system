@@ -20,6 +20,8 @@ export interface CheckoutFormProps {
   orderSummaryTitle?: string;
   orderSummaryItems: OrderSummaryItem[];
   formData: Record<string, string>;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (
+    e: ChangeEvent<HTMLInputElement>
+  ) => void;
   onSubmit: (e: FormEvent) => void;
 }

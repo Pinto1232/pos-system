@@ -349,18 +349,20 @@ const CustomPackageLayout: React.FC<
               variant="h4"
               className={styles.packageTitle}
             >
-              Package Details
+              {isCustomizable ? 'Customize Your Package' : 'Package Details'}
             </Typography>
             <Typography
               variant="body1"
-              className={
-                styles.packageDescription
-              }
+              className={styles.packageDescription}
             >
-              Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit laoreet
-              dolore.
+              {formattedDescription}
             </Typography>
+
+            <Box className={styles.priceDisplay}>
+              <Typography variant="h5">
+                Base Price: {displayPrice}
+              </Typography>
+            </Box>
 
             <Box className={styles.featuresTable}>
               <Box className={styles.tableHeader}>
@@ -922,8 +924,23 @@ const CustomPackageLayout: React.FC<
               </Box>
             </Box>
 
-            <Box className={styles.priceSection}>
-              {renderPackageDetailsButtons()}
+            <Box className={styles.packageDetailsControls}>
+              <Button
+                className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
+                variant="outlined"
+                onClick={handleBack}
+                disabled={currentStep === 0 || backLoading}
+              >
+                {backLoading ? <CircularProgress size={20} /> : 'Back'}
+              </Button>
+              <Button
+                className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
+                variant="contained"
+                onClick={handleSave}
+                disabled={loading || !isAnyCheckboxSelected()}
+              >
+                {loading ? <CircularProgress size={20} /> : 'Save & Continue'}
+              </Button>
             </Box>
           </Box>
         );
@@ -2445,7 +2462,7 @@ const CustomPackageLayout: React.FC<
                     mb: 3,
                   }}
                 >
-                  <Typography 
+                  <Typography
                     variant="h5"
                     sx={{
                       fontSize: '1.5rem',
@@ -2463,10 +2480,13 @@ const CustomPackageLayout: React.FC<
                   sx={{
                     '& .MuiTypography-root': {
                       color: '#1a1a1a',
-                    }
+                    },
                   }}
                 >
-                  <Box className={styles.section} sx={{ mb: 3 }}>
+                  <Box
+                    className={styles.section}
+                    sx={{ mb: 3 }}
+                  >
                     <Typography
                       className={
                         styles.sectionTitle
@@ -2485,7 +2505,8 @@ const CustomPackageLayout: React.FC<
                         styles.sectionContent
                       }
                       sx={{
-                        backgroundColor: '#F9FAFB',
+                        backgroundColor:
+                          '#F9FAFB',
                         borderRadius: '8px',
                         p: 2,
                       }}
@@ -2494,7 +2515,8 @@ const CustomPackageLayout: React.FC<
                         className={styles.itemRow}
                         sx={{
                           display: 'flex',
-                          justifyContent: 'space-between',
+                          justifyContent:
+                            'space-between',
                           alignItems: 'center',
                           mb: 1,
                         }}
@@ -2517,7 +2539,8 @@ const CustomPackageLayout: React.FC<
                               styles.discountTag
                             }
                             style={{
-                              backgroundColor: '#EEF2FF',
+                              backgroundColor:
+                                '#EEF2FF',
                               color: '#4F46E5',
                               padding: '4px 8px',
                               borderRadius: '4px',
@@ -2541,11 +2564,15 @@ const CustomPackageLayout: React.FC<
                             selectedCurrency,
                             basePrice
                           )}
-                          <span style={{ 
-                            fontSize: '0.85rem',
-                            color: '#6B7280',
-                            marginLeft: '2px',
-                          }}>/mo</span>
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              color: '#6B7280',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
                         </Typography>
                       </Box>
                       <Typography
@@ -2557,12 +2584,18 @@ const CustomPackageLayout: React.FC<
                           color: '#6B7280',
                         }}
                       >
-                        Complete enterprise solution with advanced features and priority support
+                        Complete enterprise
+                        solution with advanced
+                        features and priority
+                        support
                       </Typography>
                     </Box>
                   </Box>
 
-                  <Box className={styles.section} sx={{ mb: 3 }}>
+                  <Box
+                    className={styles.section}
+                    sx={{ mb: 3 }}
+                  >
                     <Typography
                       className={
                         styles.sectionTitle
@@ -2581,7 +2614,8 @@ const CustomPackageLayout: React.FC<
                         styles.sectionContent
                       }
                       sx={{
-                        backgroundColor: '#F9FAFB',
+                        backgroundColor:
+                          '#F9FAFB',
                         borderRadius: '8px',
                         p: 2,
                       }}
@@ -2590,7 +2624,8 @@ const CustomPackageLayout: React.FC<
                         className={styles.itemRow}
                         sx={{
                           display: 'flex',
-                          justifyContent: 'space-between',
+                          justifyContent:
+                            'space-between',
                           alignItems: 'center',
                           mb: 1,
                         }}
@@ -2613,7 +2648,8 @@ const CustomPackageLayout: React.FC<
                               styles.discountTag
                             }
                             style={{
-                              backgroundColor: '#ECFDF5',
+                              backgroundColor:
+                                '#ECFDF5',
                               color: '#059669',
                               padding: '4px 8px',
                               borderRadius: '4px',
@@ -2639,10 +2675,14 @@ const CustomPackageLayout: React.FC<
                             selectedCurrency,
                             basePrice * 0.2
                           )}
-                          <span style={{ 
-                            fontSize: '0.85rem',
-                            marginLeft: '2px',
-                          }}>/mo</span>
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
                         </Typography>
                       </Box>
                       <Typography
@@ -2664,7 +2704,10 @@ const CustomPackageLayout: React.FC<
                     </Box>
                   </Box>
 
-                  <Box className={styles.section} sx={{ mb: 3 }}>
+                  <Box
+                    className={styles.section}
+                    sx={{ mb: 3 }}
+                  >
                     <Typography
                       className={
                         styles.sectionTitle
@@ -2683,7 +2726,8 @@ const CustomPackageLayout: React.FC<
                         styles.sectionContent
                       }
                       sx={{
-                        backgroundColor: '#F9FAFB',
+                        backgroundColor:
+                          '#F9FAFB',
                         borderRadius: '8px',
                         p: 2,
                       }}
@@ -2692,7 +2736,8 @@ const CustomPackageLayout: React.FC<
                         className={styles.itemRow}
                         sx={{
                           display: 'flex',
-                          justifyContent: 'space-between',
+                          justifyContent:
+                            'space-between',
                           alignItems: 'center',
                           mb: 1,
                         }}
@@ -2715,7 +2760,8 @@ const CustomPackageLayout: React.FC<
                               styles.discountTag
                             }
                             style={{
-                              backgroundColor: '#FEF3C7',
+                              backgroundColor:
+                                '#FEF3C7',
                               color: '#D97706',
                               padding: '4px 8px',
                               borderRadius: '4px',
@@ -2740,11 +2786,15 @@ const CustomPackageLayout: React.FC<
                             selectedCurrency,
                             basePrice * 0.2
                           )}
-                          <span style={{ 
-                            fontSize: '0.85rem',
-                            color: '#6B7280',
-                            marginLeft: '2px',
-                          }}>/mo</span>
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              color: '#6B7280',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
                         </Typography>
                       </Box>
                       <Typography
@@ -2756,12 +2806,17 @@ const CustomPackageLayout: React.FC<
                           color: '#6B7280',
                         }}
                       >
-                        Dedicated support team • 4-hour response time • Priority handling
+                        Dedicated support team •
+                        4-hour response time •
+                        Priority handling
                       </Typography>
                     </Box>
                   </Box>
 
-                  <Box className={styles.section} sx={{ mb: 4 }}>
+                  <Box
+                    className={styles.section}
+                    sx={{ mb: 4 }}
+                  >
                     <Typography
                       className={
                         styles.sectionTitle
@@ -2780,7 +2835,8 @@ const CustomPackageLayout: React.FC<
                         styles.sectionContent
                       }
                       sx={{
-                        backgroundColor: '#F9FAFB',
+                        backgroundColor:
+                          '#F9FAFB',
                         borderRadius: '8px',
                         p: 2,
                       }}
@@ -2789,7 +2845,8 @@ const CustomPackageLayout: React.FC<
                         className={styles.itemRow}
                         sx={{
                           display: 'flex',
-                          justifyContent: 'space-between',
+                          justifyContent:
+                            'space-between',
                           alignItems: 'center',
                           mb: 2,
                         }}
@@ -2818,18 +2875,23 @@ const CustomPackageLayout: React.FC<
                             selectedCurrency,
                             basePrice + 747
                           )}
-                          <span style={{ 
-                            fontSize: '0.85rem',
-                            color: '#6B7280',
-                            marginLeft: '2px',
-                          }}>/mo</span>
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              color: '#6B7280',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
                         </Typography>
                       </Box>
                       <Box
                         className={styles.divider}
                         sx={{
                           height: '1px',
-                          backgroundColor: '#E5E7EB',
+                          backgroundColor:
+                            '#E5E7EB',
                           my: 2,
                         }}
                       />
@@ -2837,7 +2899,8 @@ const CustomPackageLayout: React.FC<
                         className={styles.itemRow}
                         sx={{
                           display: 'flex',
-                          justifyContent: 'space-between',
+                          justifyContent:
+                            'space-between',
                           alignItems: 'center',
                           mb: 2,
                         }}
@@ -2860,7 +2923,8 @@ const CustomPackageLayout: React.FC<
                               styles.discountTag
                             }
                             style={{
-                              backgroundColor: '#ECFDF5',
+                              backgroundColor:
+                                '#ECFDF5',
                               color: '#059669',
                               padding: '4px 8px',
                               borderRadius: '4px',
@@ -2887,10 +2951,14 @@ const CustomPackageLayout: React.FC<
                             (basePrice + 747) *
                               0.2
                           )}
-                          <span style={{ 
-                            fontSize: '0.85rem',
-                            marginLeft: '2px',
-                          }}>/mo</span>
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
                         </Typography>
                       </Box>
                     </Box>
@@ -2934,11 +3002,15 @@ const CustomPackageLayout: React.FC<
                           selectedCurrency,
                           (basePrice + 747) * 0.7
                         )}
-                        <span style={{ 
-                          fontSize: '1rem',
-                          color: '#6B7280',
-                          marginLeft: '4px',
-                        }}>/mo</span>
+                        <span
+                          style={{
+                            fontSize: '1rem',
+                            color: '#6B7280',
+                            marginLeft: '4px',
+                          }}
+                        >
+                          /mo
+                        </span>
                       </Typography>
                       <Typography
                         className={
@@ -2949,7 +3021,8 @@ const CustomPackageLayout: React.FC<
                           color: '#6B7280',
                         }}
                       >
-                        Billed annually • Total savings of{' '}
+                        Billed annually • Total
+                        savings of{' '}
                         {formatPrice(
                           selectedCurrency,
                           (basePrice + 747) *
@@ -3010,10 +3083,8 @@ const CustomPackageLayout: React.FC<
       <Button
         className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
         variant="contained"
-        onClick={handleNext}
-        disabled={
-          loading || !isAnyCheckboxSelected()
-        }
+        onClick={handleSave}
+        disabled={loading || !isAnyCheckboxSelected()}
       >
         {loading ? (
           <CircularProgress size={20} />
