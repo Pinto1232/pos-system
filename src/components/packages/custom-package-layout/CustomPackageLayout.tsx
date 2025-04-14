@@ -1872,7 +1872,7 @@ const CustomPackageLayout: React.FC<
             <Box className={styles.reviewColumn}>
               <Box className={styles.orderSummary}>
                 <Box className={styles.orderSummaryHeader}>
-                  <Typography variant="h6">
+                  <Typography variant="h5">
                     Order Summary
                   </Typography>
                 </Box>
@@ -2028,7 +2028,7 @@ const CustomPackageLayout: React.FC<
                       variant="contained"
                       onClick={handleSave}
                     >
-                      Confirm Order
+                      Confirm
                     </Button>
                   </Box>
                 </Box>
