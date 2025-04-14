@@ -20,7 +20,7 @@ export type Package = {
     | 'growth'
     | 'enterprise'
     | 'custom'
-    | 'premium'; // Added premium
+    | 'premium'; 
 };
 
 type PackageSelectionContextType = {

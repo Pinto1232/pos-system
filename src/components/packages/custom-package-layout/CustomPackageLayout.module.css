@@ -13,9 +13,7 @@
   overflow: hidden;
 }
 
-/* All your other CSS rules... */
 
-/* Change the problematic global selectors to have a local class first */
 .stepperContainer :global(.MuiStepLabel-label) {
   white-space: nowrap !important;
 }
@@ -54,8 +52,9 @@
   padding: 2rem;
   background: #fff;
   border-radius: 16px;
-  min-width: 1000px;
-  margin-top: 3rem;
+  min-width: 800px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .packageTitle {
@@ -74,20 +73,43 @@
 .featuresTable {
   display: flex;
   flex-direction: column;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   overflow: hidden;
-}
-
-.tableHeader,
-.tableRow {
-  display: flex;
-  border-bottom: 1px solid #e0e0e0;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .tableHeader {
-  background-color: #f5f5f5;
+  display: flex;
+  background-color: #f8fafc;
   font-weight: 600;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 0.5rem 0;
+}
+
+.tableHeader .featureColumn {
+  color: #64748b;
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+  padding: 0.5rem 1rem;
+}
+
+.tableHeader .planColumn {
+  color: #1e293b;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.5rem;
+}
+
+.tableRow {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  min-height: 48px;
+}
+
+.tableRow:hover {
+  background-color: #f8fafc;
 }
 
 .tableRow:last-child {
@@ -96,19 +118,88 @@
 
 .featureColumn {
   flex: 2;
-  padding: 1rem;
-  border-right: 1px solid #e0e0e0;
+  padding: 0.75rem 1.25rem;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  color: #4b5563;
+  font-size: 0.875rem;
 }
 
 .planColumn {
   flex: 1;
-  padding: 1rem;
+  padding: 0.75rem;
   text-align: center;
-  border-right: 1px solid #e0e0e0;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
 }
 
 .planColumn:last-child {
   border-right: none;
+}
+
+.planColumn .MuiCheckbox-root {
+  padding: 6px;
+  transition: all 0.2s ease;
+}
+
+.planColumn .MuiCheckbox-root.Mui-checked {
+  color: #2563eb;
+}
+
+.planColumn .MuiCheckbox-root:hover {
+  background-color: rgba(37, 99, 235, 0.04);
+}
+
+/* Billing period row specific styles */
+.tableRow:first-of-type {
+  background-color: #f8fafc;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tableRow:first-of-type .featureColumn {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.tableRow:first-of-type .planColumn {
+  padding: 1.25rem 1rem;
+}
+
+/* Add subtle hover effect for interactive elements */
+.tableRow:not(:first-of-type):hover {
+  background-color: #f8fafc;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .featuresTable {
+    border-radius: 8px;
+  }
+
+  .tableHeader,
+  .tableRow {
+    flex-direction: column;
+  }
+
+  .featureColumn,
+  .planColumn {
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    padding: 1rem;
+  }
+
+  .planColumn {
+    justify-content: flex-start;
+  }
+
+  .planColumn:last-child {
+    border-bottom: none;
+  }
 }
 
 .priceSection {
@@ -174,17 +265,41 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 900px;
-  margin: 0 auto;
-  gap: 21rem;
+  width: 100%;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+}
+
+.packageDetailsButton {
+  min-width: 120px;
+  text-transform: none;
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  height: 40px;
 }
 
 .packageDetailsButtonBack {
-  width: 300px;
+  border-color: #d1d5db;
+  color: #4b5563;
+  background-color: #ffffff;
+  order: 0;
 }
 
 .packageDetailsButtonContinue {
-  width: 300px;
+  background-color: #2563eb;
+  color: white;
+  order: 1;
+}
+
+.packageDetailsButtonContinue:hover {
+  background-color: #1d4ed8;
+}
+
+.packageDetailsButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
@@ -207,4 +322,704 @@
   .planColumn {
     text-align: left;
   }
+
+  .packageDetailsControls {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .packageDetailsButton {
+    width: auto;
+    flex: 1;
+  }
+}
+
+.paymentPlansContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 2rem 0 4rem 0;
+  width: 100%;
+  min-width: 1200px;
+}
+
+.paymentPlanItem {
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  background: #fff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex: 1;
+  min-width: 250px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.paymentPlanItem[data-selected="true"] {
+  border: 2px solid #1976d2;
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.02), rgba(25, 118, 210, 0.05));
+  box-shadow: 0 8px 24px rgba(25, 118, 210, 0.12);
+  transform: translateY(-4px);
+}
+
+.paymentPlanItem[data-selected="true"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #1565c0, #1976d2);
+  opacity: 1;
+}
+
+.paymentPlanItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.paymentTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.paymentDescription {
+  color: #4a5568;
+  margin: 1rem 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.paymentPrice {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.paymentFeatures {
+  margin: 2rem 0;
+  padding: 0;
+  list-style: none;
+  flex-grow: 1;
+}
+
+.paymentFeatures li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #2d3748;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+  padding: 0.5rem 0;
+}
+
+.paymentFeatures li:before {
+  content: "✓";
+  color: #1976d2;
+  margin-right: 1rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.selectPlanButton {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 24px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+
+.selectPlanButton:hover {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+
+.selectPlanButton:disabled {
+  background-color: #e2e8f0;
+  color: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.selectPlanButton[data-selected="true"] {
+  background-color: #1565c0;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+
+@media (max-width: 1200px) {
+  .paymentPlansContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 768px) {
+  .paymentPlansContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.supportPlansContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.supportPlanItem {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: #fff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  min-height: 400px;
+  width: 100%;
+}
+
+.supportPlanItem.premium {
+  border: 2px solid #1976d2;
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.02), rgba(25, 118, 210, 0.05));
+  box-shadow: 0 8px 24px rgba(25, 118, 210, 0.12);
+  transform: translateY(-4px);
+}
+
+.supportPlanItem.advanced {
+  border: 2px solid #1976d2;
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.02), rgba(25, 118, 210, 0.05));
+  box-shadow: 0 8px 24px rgba(25, 118, 210, 0.12);
+  transform: translateY(-4px);
+}
+
+.supportPlanItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.supportDescription {
+  color: #4a5568;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-weight: 400;
+  text-align: center;
+}
+
+.supportFeatures {
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+  flex-grow: 1;
+}
+
+.supportFeatures li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  color: #2d3748;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  font-weight: 500;
+  padding: 0.25rem 0;
+}
+
+.supportPrice {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.selectPlanButton {
+  width: 100%;
+  margin-top: auto;
+  padding: 0.75rem 1.5rem;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: none;
+  letter-spacing: 0.01em;
+}
+
+.selectPlanButton:hover {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+
+@media (max-width: 1200px) {
+  .supportPlansContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .supportPlansContainer {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+  
+  .supportPlanItem {
+    padding: 1.5rem;
+    min-height: auto;
+  }
+}
+
+.supportPlanItem {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.supportPlanItem.selected {
+  border-color: #4caf50;
+  box-shadow: 0 4px 6px -1px rgba(76, 175, 80, 0.1), 0 2px 4px -1px rgba(76, 175, 80, 0.06);
+}
+
+.supportPlanItem:hover:not([style*="pointer-events: none"]) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.supportPlanItem[style*="pointer-events: none"] {
+  cursor: not-allowed;
+}
+
+.selectPlanButton {
+  width: 100%;
+  margin-top: 16px;
+  background-color: #4caf50;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.selectPlanButton:hover {
+  background-color: #45a049;
+}
+
+.selectPlanButton:disabled {
+  background-color: #e2e8f0;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+
+.enterpriseFeaturesContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0 4rem 0;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.enterpriseFeatureItem {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: #fff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  min-height: 300px;
+  width: 100%;
+}
+
+.enterpriseFeatureItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.featureHeader {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.featureHeader h6 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.featureDescription {
+  color: #4a5568;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.featureOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 1rem;
+}
+
+.featureOptions .MuiFormControlLabel-root {
+  margin: 0;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Remove hover effect */
+.featureOptions .MuiFormControlLabel-root:hover {
+  background-color: transparent;
+}
+
+.featureOptions .MuiCheckbox-root {
+  color: #4caf50;
+  padding: 4px;
+}
+
+.featureOptions .MuiCheckbox-root.Mui-checked {
+  color: #4caf50;
+}
+
+/* Style for when checkbox is checked */
+.featureOptions .MuiFormControlLabel-root.Mui-checked,
+.featureOptions .MuiFormControlLabel-root:has(input:checked) {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.featureOptions .MuiTypography-root {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2d3748;
+  margin-left: 4px;
+  padding: 4px 8px;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 1200px) {
+  .enterpriseFeaturesContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .enterpriseFeaturesContainer {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+  
+  .enterpriseFeatureItem {
+    padding: 1.5rem;
+    min-height: auto;
+  }
+}
+
+.reviewContainer {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.reviewColumn {
+  flex: 1;
+  min-width: 0;
+}
+
+.reviewSection {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  height: 100%;
+}
+
+.reviewForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+}
+
+.formRow > * {
+  flex: 1;
+}
+
+.orderSummary {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 200px);
+  position: sticky;
+  top: 24px;
+}
+
+.orderSummaryHeader {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(to right, #f8fafc, #ffffff);
+}
+
+.orderSummaryHeader h6 {
+  color: #1e293b;
+  font-size: 1.25rem;
+  letter-spacing: -0.025em;
+}
+
+.orderSummaryContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.orderSummaryContent::-webkit-scrollbar {
+  width: 4px;
+}
+
+.orderSummaryContent::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+
+.orderSummaryContent::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.section {
+  margin-bottom: 1.75rem;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sectionContent {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.sectionContent:hover {
+  background: #f1f5f9;
+}
+
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.itemLabel {
+  font-size: 0.875rem;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+}
+
+.itemValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.itemDescription {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+}
+
+.discountTag {
+  background: linear-gradient(135deg, #22c55e20, #16a34a20);
+  color: #15803d;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #22c55e30;
+}
+
+.divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 1rem 0;
+}
+
+.orderSummaryFooter {
+  margin-top: auto;
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  background: linear-gradient(to right, #f8fafc, #ffffff);
+}
+
+.totalContainer {
+  margin-bottom: 1.5rem;
+}
+
+.totalLabel {
+  text-align: left;
+}
+
+.totalAmount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.025em;
+}
+
+.billingNote {
+  font-size: 0.75rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.billingNote::before {
+  content: "•";
+  color: #22c55e;
+  font-size: 1.5rem;
+  line-height: 0;
+}
+
+.savingsHighlight {
+  color: #15803d;
+  font-weight: 500;
+}
+
+.priceReduction {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.packageDetailsControls {
+  display: flex;
+  gap: 1rem;
+ 
+}
+
+.packageDetailsButton {
+  min-width: 120px;
+}
+
+@media (max-width: 768px) {
+  .reviewContainer {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .formRow {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .reviewSection,
+  .orderSummary {
+    padding: 1rem;
+  }
+
+  .orderSummary {
+    max-height: none;
+  }
+}
+
+/* Material-UI Input Overrides */
+.reviewForm :global(.MuiOutlinedInput-root) {
+  background: #fff;
+}
+
+.reviewForm :global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
+  border-color: #1976d2;
+}
+
+.reviewForm :global(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline) {
+  border-color: #1976d2;
+  border-width: 2px;
 }
