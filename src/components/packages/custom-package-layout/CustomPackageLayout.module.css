@@ -52,8 +52,9 @@
   padding: 2rem;
   background: #fff;
   border-radius: 16px;
-  min-width: 1000px;
-  margin-top: 3rem;
+  min-width: 800px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .packageTitle {
@@ -84,25 +85,27 @@
   background-color: #f8fafc;
   font-weight: 600;
   border-bottom: 2px solid #e5e7eb;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 }
 
 .tableHeader .featureColumn {
   color: #64748b;
   font-size: 0.875rem;
   letter-spacing: 0.025em;
+  padding: 0.5rem 1rem;
 }
 
 .tableHeader .planColumn {
   color: #1e293b;
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 600;
+  padding: 0.5rem;
 }
 
 .tableRow {
   display: flex;
   border-bottom: 1px solid #e5e7eb;
-  transition: background-color 0.2s ease;
+  min-height: 48px;
 }
 
 .tableRow:hover {
@@ -115,22 +118,23 @@
 
 .featureColumn {
   flex: 2;
-  padding: 1.25rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   border-right: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   color: #4b5563;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
 }
 
 .planColumn {
   flex: 1;
-  padding: 1rem;
+  padding: 0.75rem;
   text-align: center;
   border-right: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 0.875rem;
 }
 
 .planColumn:last-child {
@@ -978,7 +982,7 @@
 .packageDetailsControls {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
+ 
 }
 
 .packageDetailsButton {
