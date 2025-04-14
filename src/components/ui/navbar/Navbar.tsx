@@ -15,7 +15,6 @@ import {
   Badge,
 } from '@mui/material';
 import {
-  Menu as MenuIcon,
   Notifications as NotificationsIcon,
   AccessTime as TimeIcon,
   Login as LoginIcon,
@@ -84,7 +83,6 @@ const Navbar: React.FC<NavbarProps> = memo(
               color="inherit"
               onClick={toggleSidebar}
             >
-              <MenuIcon />
             </IconButton>
 
             <Typography variant="h6" className={styles.brand}>
