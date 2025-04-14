@@ -82,7 +82,6 @@ const Navbar: React.FC<NavbarProps> = memo(
             color="inherit"
             onClick={toggleSidebar}
           >
-            <MenuIcon />
           </IconButton>
 
           <Typography
