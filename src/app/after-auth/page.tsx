@@ -6,8 +6,6 @@ import { apiClient } from '@/api/axiosClient';
 
 const AfterAuth = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] =
-    useState(true);
   const [status, setStatus] = useState(
     'Initializing authentication...'
   );
@@ -80,7 +78,6 @@ const AfterAuth = () => {
         );
       } finally {
         clearTimeout(timeout);
-        setIsLoading(false);
       }
     };
     exchangeCodeForToken();

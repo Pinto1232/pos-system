@@ -20,8 +20,8 @@ const nextConfig: NextConfig = {
         '@pages': './src/pages',
         '@public': './public',
         '@styles': './src/styles',
-        '@types': './src/types'
-      }
+        '@types': './src/types',
+      },
     },
   },
   transpilePackages: ['next-auth'],

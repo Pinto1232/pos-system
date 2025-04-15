@@ -5,12 +5,13 @@ export interface CheckoutField {
   name: string;
   type?: string;
   required?: boolean;
-  options?: string[]; // Add options property for select fields
+  options?: string[];
 }
 
 export interface OrderSummaryItem {
   label: string;
   value: string | number;
+  description?: string;
 }
 
 export interface CheckoutFormProps {
