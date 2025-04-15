@@ -228,9 +228,8 @@ const useApiClient = () => {
   };
 };
 
-
 export { apiClient, useApiClient };
-// Export useUpdateCustomization 
+// Export useUpdateCustomization
 export const useUpdateCustomization =
   (): UseMutationResult<
     unknown,

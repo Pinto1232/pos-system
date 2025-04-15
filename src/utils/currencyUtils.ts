@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 const OPEN_EXCHANGE_APP_ID =
   'c88ce4a807aa43c3b578f19b66eef7be';
