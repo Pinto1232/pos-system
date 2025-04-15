@@ -939,7 +939,7 @@ const CustomPackageLayout: React.FC<
                 onClick={handleSave}
                 disabled={loading || !isAnyCheckboxSelected()}
               >
-                {loading ? <CircularProgress size={20} /> : 'Save & Continue'}
+                {loading ? <CircularProgress size={20} /> : 'Continue'}
               </Button>
             </Box>
           </Box>
