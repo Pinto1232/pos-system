@@ -17,7 +17,7 @@ import FullOverviewContainer from '../fullOverview/FullOverviewContainer';
 import SaleTableContainer from '../saleTable';
 import NotFound from '@/app/404';
 import ProductEditContainer from '../productEdit/ProductEditContainer';
-import SalesContainer from '../sales/SalesContainer';
+import SalesContainer from '../sales/salesContainer';
 
 interface DashboardMainProps {
   activeSection: string;
