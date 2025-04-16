@@ -126,7 +126,6 @@ const SettingsModal: React.FC<
         URL.createObjectURL(selectedFile);
       setLogoPreview(previewUrl);
 
-      // Clean up the URL when component unmounts or file changes
       return () =>
         URL.revokeObjectURL(previewUrl);
     }

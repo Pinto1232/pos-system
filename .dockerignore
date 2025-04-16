@@ -9,3 +9,15 @@ logs/
 *.mdf
 *.ldf
 *.db
+npm-debug.log
+.next
+.git
+.github
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+README.md
+.DS_Store
+*.md
