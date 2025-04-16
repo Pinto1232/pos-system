@@ -837,6 +837,8 @@
 .formRow {
   display: flex;
   gap: 1rem;
+  background-color: #ffffff;
+  color:#0f172a,
 }
 
 .formRow > * {
