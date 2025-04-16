@@ -11,6 +11,7 @@
   margin: 0 auto;
   position: relative;
   overflow: hidden;
+  height:100%;
 }
 
 .stepperContainer :global(.MuiStepLabel-label) {
