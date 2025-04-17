@@ -210,20 +210,14 @@ const CheckoutForm: React.FC<
                   key={item.label}
                   className={styles.section}
                 >
-                  <Box
-                    className={styles.itemRow}
-                  >
+                  <Box className={styles.itemRow}>
                     <Typography
-                      className={
-                        styles.itemLabel
-                      }
+                      className={styles.itemLabel}
                     >
                       {item.label}
                     </Typography>
                     <Typography
-                      className={
-                        styles.itemValue
-                      }
+                      className={styles.itemValue}
                     >
                       {item.value}
                     </Typography>

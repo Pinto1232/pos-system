@@ -1,23 +1,23 @@
-# Use official Node.js image
+# Use Node.js LTS version
 FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package.json package-lock.json ./
+COPY package*.json ./
 
 # Install dependencies
-RUN npm install --frozen-lockfile
+RUN npm ci
 
-# Copy rest of the project
+# Copy the rest of the application
 COPY . .
 
-# Build Next.js app
+# Build the application
 RUN npm run build
 
-# Expose port 3000
+# Expose the port the app runs on
 EXPOSE 3000
 
-# Start the Next.js app
+# Start the application
 CMD ["npm", "start"]
