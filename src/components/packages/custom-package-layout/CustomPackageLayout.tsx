@@ -345,10 +345,15 @@ const CustomPackageLayout: React.FC<
                 'business needs.'
               );
           return (
-            <Box className={styles.packageDetails}>
+            <Box className={styles.packageDetails}  >
               <Typography
                 variant="h4"
                 className={styles.packageTitle}
+                sx={{
+                  fontSize: '1.25rem',
+                  fontWeight: 600,
+                  color: '#173a79',
+                }}
               >
                 {isCustomizable ? 'Customize Your Package' : 'Package Details'}
               </Typography>
@@ -365,565 +370,568 @@ const CustomPackageLayout: React.FC<
                 </Typography>
               </Box>
 
-              <Box className={styles.featuresTable}>
-                <Box className={styles.tableHeader}>
-                  <Box
-                    className={styles.featureColumn}
-                  ></Box>
-                  <Box
-                    className={styles.planColumn}
-                  >
-                    Business
+              <Box sx={{ overflowY: 'auto', maxHeight: '400px' }}>
+                <Box className={styles.featuresTable} >
+                  <Box className={styles.tableHeader}>
+                    <Box
+                      className={styles.featureColumn}
+                    ></Box>
+                    <Box
+                      className={styles.planColumn}
+                    >
+                      Business
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                    >
+                      Startup
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                    >
+                      Personal
+                    </Box>
                   </Box>
-                  <Box
-                    className={styles.planColumn}
-                  >
-                    Startup
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                  >
-                    Personal
-                  </Box>
-                </Box>
 
-                <Box
-                  className={styles.tableRow}
-                  sx={{
-                    borderBottom:
-                      '2px solid #e0e0e0',
-                  }}
-                >
                   <Box
-                    className={styles.featureColumn}
+                    className={styles.tableRow}
+                    sx={{
+                      borderBottom:
+                        '2px solid #e0e0e0',
+                    }}
                   >
-                    Billing Period
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                  >
-                    <Button
-                      variant="contained"
-                      className={
-                        styles.priceTabActive
-                      }
-                      sx={{
-                        minWidth: '100px',
-                        backgroundColor: '#2563eb',
-                        '&:hover': {
-                          backgroundColor:
-                            '#1d4ed8',
-                        },
-                      }}
-                      startIcon={<FaCalendarAlt />}
+                    <Box
+                      className={styles.featureColumn}
                     >
-                      Monthly
-                    </Button>
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                  >
-                    <Button
-                      variant="outlined"
-                      className={styles.priceTab}
-                      sx={{
-                        minWidth: '100px',
-                        borderColor: '#e2e8f0',
-                        color: '#64748b',
-                        '&:hover': {
-                          borderColor: '#cbd5e1',
-                          backgroundColor:
-                            '#f8fafc',
-                        },
-                      }}
-                      startIcon={
-                        <FaCalendarCheck />
-                      }
+                      Billing Period
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
                     >
-                      Yearly
-                      <span
-                        style={{
-                          backgroundColor:
-                            '#dcfce7',
-                          color: '#166534',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          fontSize: '0.75rem',
-                          marginLeft: '8px',
+                      <Button
+                        variant="contained"
+                        className={
+                          styles.priceTabActive
+                        }
+                        sx={{
+                          minWidth: '100px',
+                          backgroundColor: '#2563eb',
+                          '&:hover': {
+                            backgroundColor:
+                              '#1d4ed8',
+                          },
                         }}
+                        startIcon={<FaCalendarAlt />}
                       >
-                        -20%
-                      </span>
-                    </Button>
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                  >
-                    <Button
-                      variant="outlined"
-                      className={styles.priceTab}
-                      sx={{
-                        minWidth: '100px',
-                        borderColor: '#e2e8f0',
-                        color: '#64748b',
-                        '&:hover': {
-                          borderColor: '#cbd5e1',
-                          backgroundColor:
-                            '#f8fafc',
-                        },
-                      }}
-                      startIcon={
-                        <FaCalendarCheck />
-                      }
+                        Monthly
+                      </Button>
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
                     >
-                      2 Years
-                      <span
-                        style={{
-                          backgroundColor:
-                            '#dcfce7',
-                          color: '#166534',
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          fontSize: '0.75rem',
-                          marginLeft: '8px',
+                      <Button
+                        variant="outlined"
+                        className={styles.priceTab}
+                        sx={{
+                          minWidth: '100px',
+                          borderColor: '#e2e8f0',
+                          color: '#64748b',
+                          '&:hover': {
+                            borderColor: '#cbd5e1',
+                            backgroundColor:
+                              '#f8fafc',
+                          },
                         }}
+                        startIcon={
+                          <FaCalendarCheck />
+                        }
                       >
-                        -30%
-                      </span>
-                    </Button>
+                        Yearly
+                        <span
+                          style={{
+                            backgroundColor:
+                              '#dcfce7',
+                            color: '#166534',
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            marginLeft: '8px',
+                          }}
+                        >
+                          -20%
+                        </span>
+                      </Button>
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                    >
+                      <Button
+                        variant="outlined"
+                        className={styles.priceTab}
+                        sx={{
+                          minWidth: '100px',
+                          borderColor: '#e2e8f0',
+                          color: '#64748b',
+                          '&:hover': {
+                            borderColor: '#cbd5e1',
+                            backgroundColor:
+                              '#f8fafc',
+                          },
+                        }}
+                        startIcon={
+                          <FaCalendarCheck />
+                        }
+                      >
+                        2 Years
+                        <span
+                          style={{
+                            backgroundColor:
+                              '#dcfce7',
+                            color: '#166534',
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem',
+                            marginLeft: '8px',
+                          }}
+                        >
+                          -30%
+                        </span>
+                      </Button>
+                    </Box>
                   </Box>
-                </Box>
 
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={styles.featureColumn}
-                  >
-                    Regular Update & Reports
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                  <Box className={styles.tableRow}>
+                    <Box
+                      className={styles.featureColumn}
+                    >
+                      Regular Update & Reports
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'business-regular-updates'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'business-regular-updates'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'business-regular-updates'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-regular-updates'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'business-regular-updates'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'startup-regular-updates'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'startup-regular-updates'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'startup-regular-updates'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-regular-updates'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'startup-regular-updates'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'personal-regular-updates'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'personal-regular-updates'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'personal-regular-updates'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-regular-updates'
-                        )
-                      }
-                    />
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'personal-regular-updates'
+                          )
+                        }
+                      />
+                    </Box>
                   </Box>
-                </Box>
 
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={styles.featureColumn}
-                  >
-                    Cloud Storage & Sharing
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                  <Box className={styles.tableRow}>
+                    <Box
+                      className={styles.featureColumn}
+                    >
+                      Cloud Storage & Sharing
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'business-cloud-storage'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'business-cloud-storage'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'business-cloud-storage'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-cloud-storage'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'business-cloud-storage'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'startup-cloud-storage'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'startup-cloud-storage'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'startup-cloud-storage'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-cloud-storage'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'startup-cloud-storage'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'personal-cloud-storage'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'personal-cloud-storage'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'personal-cloud-storage'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-cloud-storage'
-                        )
-                      }
-                    />
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'personal-cloud-storage'
+                          )
+                        }
+                      />
+                    </Box>
                   </Box>
-                </Box>
 
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={styles.featureColumn}
-                  >
-                    Market Analysis Tools
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                  <Box className={styles.tableRow}>
+                    <Box
+                      className={styles.featureColumn}
+                    >
+                      Market Analysis Tools
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'business-market-analysis'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'business-market-analysis'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'business-market-analysis'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-market-analysis'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'business-market-analysis'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'startup-market-analysis'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'startup-market-analysis'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'startup-market-analysis'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-market-analysis'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'startup-market-analysis'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'personal-market-analysis'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'personal-market-analysis'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'personal-market-analysis'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-market-analysis'
-                        )
-                      }
-                    />
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'personal-market-analysis'
+                          )
+                        }
+                      />
+                    </Box>
                   </Box>
-                </Box>
 
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={styles.featureColumn}
-                  >
-                    Team Management
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                  <Box className={styles.tableRow}>
+                    <Box
+                      className={styles.featureColumn}
+                    >
+                      Team Management
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'business-team-management'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'business-team-management'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'business-team-management'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-team-management'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'business-team-management'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'startup-team-management'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'startup-team-management'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'startup-team-management'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-team-management'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'startup-team-management'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'personal-team-management'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'personal-team-management'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'personal-team-management'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-team-management'
-                        )
-                      }
-                    />
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'personal-team-management'
+                          )
+                        }
+                      />
+                    </Box>
                   </Box>
-                </Box>
 
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={styles.featureColumn}
-                  >
-                    24/7 Business Support
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                  <Box className={styles.tableRow}>
+                    <Box
+                      className={styles.featureColumn}
+                    >
+                      24/7 Business Support
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'business-support'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'business-support'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'business-support'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-support'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'business-support'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'startup-support'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'startup-support'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'startup-support'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-support'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'startup-support'
+                          )
+                        }
+                      />
+                    </Box>
+                    <Box
+                      className={styles.planColumn}
+                      sx={{
+                        backgroundColor:
+                          checkboxStates[
+                            'personal-support'
+                          ]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                        transition:
+                          'background-color 0.3s ease',
+                      }}
+                    >
+                      <Checkbox
+                        checked={
+                          checkboxStates[
                           'personal-support'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                        'personal-support'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-support'
-                        )
-                      }
-                    />
+                          ]
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            'personal-support'
+                          )
+                        }
+                      />
+                    </Box>
                   </Box>
                 </Box>
               </Box>
+
 
               <Box className={styles.packageDetailsControls}>
                 <Button
@@ -1647,7 +1655,15 @@ const CustomPackageLayout: React.FC<
               className={styles.featuresContainer}
             >
               <Box className={styles.sectionHeader}>
-                <Typography variant="h5">
+                <Typography variant="h5"
+                  sx={{
+                    fontSize: '1.25rem',
+                    fontWeight: 600,
+                    color: '#173a79',
+                    mb: 1,
+                    mt: 2,
+                  }}
+                >
                   Choose Support Level
                 </Typography>
                 <Typography
@@ -1926,8 +1942,11 @@ const CustomPackageLayout: React.FC<
                 <Typography
                   variant="h5"
                   sx={{
+                    fontSize: '1.25rem',
                     fontWeight: 600,
                     color: '#173a79',
+                    mb: 1,
+                    mt: 2,
                   }}
                 >
                   Configure Enterprise Features
@@ -2314,8 +2333,14 @@ const CustomPackageLayout: React.FC<
                   className={styles.reviewSection}
                 >
                   <Typography
-                    variant="h6"
-                    sx={{ fontWeight: 'bold' }}
+                    variant="h5"
+                    sx={{
+                      fontSize: '1.25rem',
+                      fontWeight: 600,
+                      color: '#173a79',
+                      mb: 1,
+                      mt: 2,
+                    }}
                   >
                     Enter Your Details
                   </Typography>
@@ -2467,9 +2492,11 @@ const CustomPackageLayout: React.FC<
                     <Typography
                       variant="h5"
                       sx={{
-                        fontSize: '1.5rem',
+                        fontSize: '1.25rem',
                         fontWeight: 600,
-                        color: '#1a1a1a',
+                        color: '#173a79',
+                        mb: 1,
+                        mt: 2,
                       }}
                     >
                       Order Summary
