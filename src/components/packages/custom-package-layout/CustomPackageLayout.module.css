@@ -115,29 +115,6 @@
   padding: 0;
 }
 
-.tableHeader .featureColumn {
-  color: #64748b;
-  font-size: 0.875rem;
-  letter-spacing: 0.025em;
-  padding: 1rem 1.5rem;
-  flex: 2;
-  display: flex;
-  align-items: center;
-  border-right: 1px solid #e5e7eb;
-}
-
-.tableHeader .planColumn {
-  color: #1e293b;
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 1rem 1.5rem;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-right: 1px solid #e5e7eb;
-}
-
 .tableHeader .planColumn:last-child {
   border-right: none;
 }
@@ -165,7 +142,7 @@
 }
 
 .planColumn {
-  flex: 1;
+  flex: 2;
   padding: 0.75rem 1.5rem;
   text-align: center;
   border-right: 1px solid #e5e7eb;
@@ -212,7 +189,6 @@
   background-color: #ffffff;
 }
 
-/* Add subtle hover effect for interactive elements */
 .tableRow:not(:first-of-type):hover {
   background-color: #f8fafc;
 }
@@ -864,10 +840,10 @@
   display: flex;
   gap: 1rem;
   background-color: #ffffff;
-  color: #0f172a,
+  color: #0f172a;
 }
 
-.formRow>* {
+.formRow > * {
   flex: 1;
 }
 
