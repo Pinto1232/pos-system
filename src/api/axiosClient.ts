@@ -220,8 +220,6 @@ const useApiClient = () => {
     });
   };
 
-  
-
   return {
     apiClient,
     useFetchData,

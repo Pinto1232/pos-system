@@ -8,20 +8,20 @@ function HeroContainer() {
       <span className={styles.highlightedText}>
         Change for a more
       </span>{' '}
-      Fast, Reliable,and 
+      Fast, Reliable,and
       <span className={styles.emphasis}>
-        Smart Point of Sale  System.
+        Smart Point of Sale System.
       </span>
     </>
   );
 
   const subheading =
     'An all-in-one POS solution designed to streamline sales,  ' +
-    'manage inventory, and grow your business with ease.\n\n' + '';
+    'manage inventory, and grow your business with ease.\n\n' +
+    '';
 
   const ctaPrimary = 'Book a Demo';
-  const ctaSecondary =
-    'Learn About Solutions';
+  const ctaSecondary = 'Learn About Solutions';
 
   const ladyImage = '/pos.png';
 
