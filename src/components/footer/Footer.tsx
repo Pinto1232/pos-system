@@ -54,9 +54,9 @@ const Footer: React.FC = memo(() => {
                   fontSize: '16px',
                 },
                 '& .MuiOutlinedInput-notchedOutline':
-                  {
-                    border: 'none',
-                  },
+                {
+                  border: 'none',
+                },
               }}
             />
             <Button className={styles.sendButton}>
@@ -137,7 +137,7 @@ const Footer: React.FC = memo(() => {
               variant="h6"
               className={styles.sectionTitle}
             >
-              New York
+              Cape Town Office
             </Typography>
             <Typography className={styles.text}>
               361 Avisco Green St,
