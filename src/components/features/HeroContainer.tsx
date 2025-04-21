@@ -6,27 +6,24 @@ function HeroContainer() {
   const heading = (
     <>
       <span className={styles.highlightedText}>
-        Transform
+        Change for a more
       </span>{' '}
-      Your Merchant&apos;s POS
+      Fast, Reliable,and 
       <span className={styles.emphasis}>
-        Into a Dynamic Business <br /> Management
-        Tool
+        Smart Point of Sale  System.
       </span>
     </>
   );
 
   const subheading =
-    'Pisval Tech POS is a powerful omni-channel business tool that enables ' +
-    'banks to deliver unmatched value to their MSME customers.\n\n' +
-    'By seamlessly integrating payments with business operations, we simplify ' +
-    'processes and drive growth, empowering businesses to thrive.';
+    'An all-in-one POS solution designed to streamline sales,  ' +
+    'manage inventory, and grow your business with ease.\n\n' + '';
 
   const ctaPrimary = 'Book a Demo';
   const ctaSecondary =
-    'Learn About Bank Solutions';
+    'Learn About Solutions';
 
-  const ladyImage = '/pos_3.png';
+  const ladyImage = '/pos.png';
 
   return (
     <Hero

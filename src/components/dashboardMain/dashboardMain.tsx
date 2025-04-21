@@ -19,6 +19,7 @@ import NotFound from '@/app/404';
 import ProductEditContainer from '../productEdit/ProductEditContainer';
 import SalesContainer from '../sales/salesContainer';
 
+
 interface DashboardMainProps {
   activeSection: string;
 }
