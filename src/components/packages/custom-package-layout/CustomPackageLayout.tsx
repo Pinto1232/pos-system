@@ -3209,41 +3209,6 @@ const CustomPackageLayout: React.FC<
     );
   };
 
-  const renderPackageDetailsButtons = () => (
-    <Box
-      className={styles.packageDetailsControls}
-    >
-      <Button
-        className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
-        variant="outlined"
-        onClick={handleBack}
-        disabled={
-          currentStep === 0 || backLoading
-        }
-      >
-        {backLoading ? (
-          <CircularProgress size={20} />
-        ) : (
-          'Back'
-        )}
-      </Button>
-      <Button
-        className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
-        variant="contained"
-        onClick={handleSave}
-        disabled={
-          loading || !isAnyCheckboxSelected()
-        }
-      >
-        {loading ? (
-          <CircularProgress size={20} />
-        ) : (
-          'Continue'
-        )}
-      </Button>
-    </Box>
-  );
-
   const renderNavigationButtons = () => (
     <Box className={styles.controls}>
       {currentStep > 0 &&
