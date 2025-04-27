@@ -2,6 +2,7 @@ import Providers from '@/components/providers/Providers';
 import { LoginFormProvider } from '@/contexts/LoginFormContext';
 import './globals.css';
 import Layout from '@/layouts/Layout';
+import { CartProvider } from '@/contexts/CartContext';
 
 export const metadata = {
   title: 'Pisval Tech POS',
@@ -17,11 +18,13 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body>
-        <LoginFormProvider>
-          <Providers>
-            <Layout>{children}</Layout>
-          </Providers>
-        </LoginFormProvider>
+        <CartProvider>
+          <LoginFormProvider>
+            <Providers>
+              <Layout>{children}</Layout>
+            </Providers>
+          </LoginFormProvider>
+        </CartProvider>
       </body>
     </html>
   );

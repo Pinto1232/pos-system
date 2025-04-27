@@ -366,9 +366,57 @@ const CustomPackageLayoutContainer: React.FC<
     ]
   );
 
-  const handleModalConfirm = () => {
+  const handleModalConfirm = (
+    isSignup: boolean
+  ) => {
+    const cartItem = {
+      id: Date.now(),
+      name: selectedPackage.title,
+      price: calculatedPrice,
+      quantity: 1,
+      features: selectedFeatures.map(
+        (f) => f.name
+      ),
+      addOns: selectedAddOns.map((a) => a.name),
+      packageType: selectedPackage.isCustomizable
+        ? 'Custom'
+        : 'Standard',
+    };
+
+    const existingCartItems = JSON.parse(
+      localStorage.getItem('cartItems') || '[]'
+    );
+
+    // Add new item to cart
+    const updatedCart = [
+      ...existingCartItems,
+      cartItem,
+    ];
+
+    // Save updated cart to localStorage
+    localStorage.setItem(
+      'cartItems',
+      JSON.stringify(updatedCart)
+    );
+
+    // Close the modal
     setIsModalOpen(false);
-    setShowLoginForm(true);
+
+    setSnackbarMessage(
+      'Package added to cart successfully!'
+    );
+    setSnackbarOpen(true);
+
+    if (isSignup) {
+      setShowLoginForm(true);
+    }
+  };
+
+  const handleShowSuccessMessage = (
+    message: string
+  ) => {
+    setModalMessage(message);
+    setIsModalOpen(true);
   };
 
   const handleReturnToPackage = () => {
@@ -450,6 +498,9 @@ const CustomPackageLayoutContainer: React.FC<
             selectedPackage.isCustomizable
           }
           currentStep={currentStep}
+          onShowSuccessMessage={
+            handleShowSuccessMessage
+          }
           steps={steps}
           features={features}
           addOns={addOns}
@@ -512,7 +563,13 @@ const CustomPackageLayoutContainer: React.FC<
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
-          severity="warning"
+          severity={
+            snackbarMessage.includes(
+              'successfully'
+            )
+              ? 'success'
+              : 'warning'
+          }
         >
           {snackbarMessage}
         </Alert>

@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FaTrash } from 'react-icons/fa';
 import { HiShoppingCart } from 'react-icons/hi';
 import { styled } from '@mui/material/styles';
+import { useCart } from '@/contexts/CartContext';
 
 interface CartSidebarProps {
   open: boolean;
@@ -39,7 +40,7 @@ const CartHeader = styled(Box)(() => ({
   backgroundColor: '#FAFBFC',
 }));
 
-const CartItem = styled(Paper)(() => ({
+const CartItemContainer = styled(Paper)(() => ({
   display: 'flex',
   alignItems: 'flex-start',
   padding: '20px 24px',
@@ -107,33 +108,14 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   open,
   onClose,
 }) => {
-  const cartItems = [
-    {
-      id: 1,
-      name: 'Product 1',
-      price: 1499.99,
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      price: 2499.99,
-      quantity: 2,
-    },
-    {
-      id: 3,
-      name: 'Product 3',
-      price: 3499.99,
-      quantity: 1,
-    },
-  ];
+  const { cartItems, removeFromCart } = useCart();
 
   const totalPrice = cartItems.reduce(
     (sum, item) =>
       sum + item.price * item.quantity,
     0
   );
-  const taxAmount = totalPrice * 0.15; // 15% VAT for South Africa
+  const taxAmount = totalPrice * 0.15;
   const finalTotal = totalPrice + taxAmount;
 
   return (
@@ -201,52 +183,70 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
           height: '100%',
         }}
       >
-        {cartItems.map((item) => (
-          <CartItem key={item.id} elevation={0}>
-            <ProductImage>P</ProductImage>
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: '100%',
-                }}
-              >
-                <Typography
-                  variant="subtitle1"
+        {cartItems.length > 0 ? (
+          cartItems.map((item) => (
+            <CartItemContainer
+              key={item.id}
+              elevation={0}
+            >
+              <ProductImage>P</ProductImage>
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Box
                   sx={{
-                    fontWeight: 500,
-                    color: 'text.primary',
-                    fontSize: '1rem',
+                    display: 'flex',
+                    justifyContent:
+                      'space-between',
+                    alignItems: 'center',
+                    width: '100%',
                   }}
                 >
-                  {item.name}
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontWeight: 500,
+                      color: 'text.primary',
+                      fontSize: '1rem',
+                    }}
+                  >
+                    {item.name}
+                  </Typography>
+                  <PriceText>
+                    {formatPrice(
+                      item.price * item.quantity
+                    )}
+                  </PriceText>
+                </Box>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
+                    mt: 1,
+                  }}
+                >
+                  Quantity: {item.quantity}
                 </Typography>
-                <PriceText>
-                  {formatPrice(
-                    item.price * item.quantity
-                  )}
-                </PriceText>
               </Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: 'text.secondary',
-                  mt: 1,
-                }}
+              <DeleteButton
+                edge="end"
+                aria-label="delete"
+                onClick={() =>
+                  removeFromCart(item.id)
+                }
               >
-                Quantity: {item.quantity}
-              </Typography>
-            </Box>
-            <DeleteButton
-              edge="end"
-              aria-label="delete"
+                <FaTrash size={14} />
+              </DeleteButton>
+            </CartItemContainer>
+          ))
+        ) : (
+          <Box sx={{ p: 4, textAlign: 'center' }}>
+            <Typography
+              variant="body1"
+              color="text.secondary"
             >
-              <FaTrash size={14} />
-            </DeleteButton>
-          </CartItem>
-        ))}
+              Your cart is empty
+            </Typography>
+          </Box>
+        )}
       </Box>
 
       <Box
