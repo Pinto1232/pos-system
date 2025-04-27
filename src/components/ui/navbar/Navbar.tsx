@@ -26,6 +26,7 @@ import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 import { IoCartOutline } from 'react-icons/io5';
 import CartSidebar from '@/components/cart/CartSidebar';
 import styles from './Navbar.module.css';
+import Image from 'next/image';
 
 export interface NavbarProps {
   title: string;
@@ -94,7 +95,17 @@ const Navbar: React.FC<NavbarProps> = memo(
               color="inherit"
               onClick={toggleSidebar}
             ></IconButton>
-
+            <Image
+              src="/Pisval_Logo.jpg"
+              alt="Pisval Logo"
+              width={54}
+              height={54}
+              style={{
+                marginRight: 8,
+                objectFit: 'contain',
+                borderRadius: '50%',
+              }}
+            />
             <Typography
               variant="h6"
               className={styles.brand}

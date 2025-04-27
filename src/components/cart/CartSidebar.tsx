@@ -8,13 +8,8 @@ import {
   IconButton,
   Button,
   Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
   Badge,
   Paper,
-  useTheme as useMuiTheme,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { FaTrash } from 'react-icons/fa';
@@ -155,7 +150,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
           }}
         >
           <HiShoppingCart
-            size={24}
+            size={20}
             color="#2196F3"
             style={{ marginRight: '12px' }}
           />
