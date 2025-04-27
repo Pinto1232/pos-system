@@ -23,6 +23,7 @@ import {
 } from 'react-icons/fi';
 import { useLogout } from '@/hooks/useLogout';
 import SettingsModal from '@/SettingsModal';
+import { useCustomization } from '@/contexts/CustomizationContext';
 
 interface NavbarProps {
   drawerWidth: number;
@@ -44,6 +45,8 @@ const Navbar: React.FC<NavbarProps> = ({
   const isMobile = useMediaQuery(
     theme.breakpoints.down('sm')
   );
+  const { customization, updateCustomization } =
+    useCustomization();
 
   const handleClick = (
     event: React.MouseEvent<HTMLElement>
@@ -77,6 +80,9 @@ const Navbar: React.FC<NavbarProps> = ({
           transition:
             'margin-left 0.3s ease, width 0.3s ease',
           border: 'none',
+          backgroundColor:
+            customization?.navbarColor ||
+            '#000000',
         }}
       >
         <Toolbar
@@ -262,7 +268,9 @@ const Navbar: React.FC<NavbarProps> = ({
         open={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         userId="current-user"
-        onCustomizationUpdated={() => {}}
+        onCustomizationUpdated={
+          updateCustomization
+        }
       />
     </>
   );

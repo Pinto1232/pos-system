@@ -26,6 +26,8 @@ import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 import { IoCartOutline } from 'react-icons/io5';
 import CartSidebar from '@/components/cart/CartSidebar';
 import styles from './Navbar.module.css';
+import Image from 'next/image';
+import { useCart } from '@/contexts/CartContext';
 
 export interface NavbarProps {
   title: string;
@@ -45,6 +47,9 @@ const Navbar: React.FC<NavbarProps> = memo(
       useState(testPeriod * 24 * 60 * 60);
     const [isCartOpen, setIsCartOpen] =
       useState(false);
+    const { cartItems } = useCart();
+
+    const cartCount = cartItems.length;
 
     useEffect(() => {
       setRemainingTime(testPeriod * 24 * 60 * 60);
@@ -94,7 +99,17 @@ const Navbar: React.FC<NavbarProps> = memo(
               color="inherit"
               onClick={toggleSidebar}
             ></IconButton>
-
+            <Image
+              src="/Pisval_Logo.jpg"
+              alt="Pisval Logo"
+              width={45}
+              height={45}
+              style={{
+                marginRight: 8,
+                objectFit: 'contain',
+                borderRadius: '50%',
+              }}
+            />
             <Typography
               variant="h6"
               className={styles.brand}
@@ -157,7 +172,7 @@ const Navbar: React.FC<NavbarProps> = memo(
               onClick={handleCartClick}
             >
               <Badge
-                badgeContent={3}
+                badgeContent={cartCount}
                 color="error"
               >
                 <IoCartOutline />

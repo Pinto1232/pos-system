@@ -156,6 +156,7 @@ const SettingsModal: React.FC<
       (updatedData) => {
         onCustomizationUpdated(updatedData);
         onClose();
+        window.location.reload();
       }
     );
   };

@@ -9,7 +9,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import DoneIcon from '@mui/icons-material/Done';
+import { HiShoppingCart } from 'react-icons/hi';
 import styles from './SuccessMessage.module.css';
 
 interface SuccessMessageProps {
@@ -31,6 +31,13 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
     }) => {
       if (!open) return null;
 
+      const handleAddToCart = () => {
+        onConfirm(true);
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
+      };
+
       return (
         <div
           className={styles.successMessageOverlay}
@@ -47,7 +54,6 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
               <CloseIcon />
             </IconButton>
 
-            {/* The container with the animation */}
             <div
               className={
                 styles.successIconContainer
@@ -59,7 +65,7 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
             </div>
 
             <Typography
-              variant="h5"
+              variant="h6"
               className={styles.successTitle}
             >
               Success
@@ -68,7 +74,7 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
               className={styles.successText}
             >
               {message ||
-                'Your action was successful. Please login now'}
+                'Please proceed with payment'}
             </Typography>
 
             <div
@@ -83,6 +89,10 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                 }}
                 onClick={onReturn}
                 startIcon={<ArrowBackIcon />}
+                sx={{
+                  width: '150px',
+                  whiteSpace: 'nowrap',
+                }}
               >
                 Return
               </Button>
@@ -91,10 +101,14 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                 style={{
                   backgroundColor: '#1e3a8a',
                 }}
-                onClick={() => onConfirm(true)}
-                startIcon={<DoneIcon />}
+                onClick={handleAddToCart}
+                startIcon={<HiShoppingCart />}
+                sx={{
+                  width: '150px',
+                  whiteSpace: 'nowrap',
+                }}
               >
-                Confirm
+                Add to Cart
               </Button>
             </div>
           </div>

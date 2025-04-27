@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query';
 import AuthProvider from '@/contexts/AuthContext';
 import { ProductProvider } from '@/contexts/ProductContext';
+import { CustomizationProvider } from '@/contexts/CustomizationContext';
 import { AxiosError } from 'axios';
 
 const defaultQueryOptions: DefaultOptions = {
@@ -63,9 +64,13 @@ export default function Providers({
   return (
     <AuthProvider>
       <ProductProvider>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <CustomizationProvider userId="current-user">
+          <QueryClientProvider
+            client={queryClient}
+          >
+            {children}
+          </QueryClientProvider>
+        </CustomizationProvider>
       </ProductProvider>
     </AuthProvider>
   );

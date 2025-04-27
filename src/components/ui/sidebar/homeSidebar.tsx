@@ -30,6 +30,7 @@ import {
 import { FiSearch } from 'react-icons/fi';
 import { useSidebar } from '@/contexts/SidebarContext';
 import styles from './Sidebar.module.css';
+import Image from 'next/image';
 
 export interface SidebarProps {
   drawerWidth: number;
@@ -77,12 +78,29 @@ const Sidebar: React.FC<SidebarProps> = memo(
                 alt="Logo"
               />
             </Box>
-            <Typography
-              variant="h6"
-              className={styles.title}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
             >
-              Pisval Tech POS
-            </Typography>
+              <Image
+                src="/Pisval_Logo.jpg"
+                alt="Pisval Logo"
+                width={24}
+                height={24}
+                style={{
+                  marginRight: 8,
+                  objectFit: 'contain',
+                }}
+              />
+              <Typography
+                variant="h6"
+                className={styles.title}
+              >
+                Pisval Tech POS
+              </Typography>
+            </Box>
             <IconButton
               onClick={toggleSidebar}
               className={styles.closeIcon}

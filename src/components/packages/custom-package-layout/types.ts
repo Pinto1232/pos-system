@@ -74,7 +74,6 @@ export interface PackageSelectionRequest {
   usage?: Record<number, number>;
 }
 
-// Update onSave to accept a data object including formData
 export interface CustomPackageLayoutProps {
   isCustomizable: boolean;
   currentStep: number;
@@ -85,6 +84,9 @@ export interface CustomPackageLayoutProps {
   selectedFeatures: Feature[];
   selectedAddOns: AddOn[];
   usageQuantities: Record<number, number>;
+  onShowSuccessMessage?: (
+    message: string
+  ) => void;
   basePrice: number;
   calculatedPrice: number;
   packageDetails: {
