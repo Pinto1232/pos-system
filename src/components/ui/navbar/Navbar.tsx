@@ -98,8 +98,8 @@ const Navbar: React.FC<NavbarProps> = memo(
             <Image
               src="/Pisval_Logo.jpg"
               alt="Pisval Logo"
-              width={54}
-              height={54}
+              width={45}
+              height={45}
               style={{
                 marginRight: 8,
                 objectFit: 'contain',
