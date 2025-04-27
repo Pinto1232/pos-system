@@ -78,7 +78,12 @@ const Sidebar: React.FC<SidebarProps> = memo(
                 alt="Logo"
               />
             </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
               <Image
                 src="/Pisval_Logo.jpg"
                 alt="Pisval Logo"
@@ -129,10 +134,11 @@ const Sidebar: React.FC<SidebarProps> = memo(
                 onClick={() =>
                   handleItemClick(item)
                 }
-                className={`${styles.listItem} ${activeItem === item
-                  ? styles.activeItem
-                  : ''
-                  }`}
+                className={`${styles.listItem} ${
+                  activeItem === item
+                    ? styles.activeItem
+                    : ''
+                }`}
               >
                 <ListItemIcon
                   className={styles.listItemIcon}
