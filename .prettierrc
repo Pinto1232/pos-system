@@ -16,7 +16,9 @@
         {
             "files": [
                 "*.ts",
-                "*.tsx"
+                "*.tsx",
+                "*.js",
+                "*.jsx"
             ],
             "options": {
                 "printWidth": 50,

@@ -1750,6 +1750,20 @@ const CustomPackageLayout: React.FC<
                         null &&
                       selectedPlanIndex !== index
                     }
+                    sx={{
+                      backgroundColor:
+                        selectedPlanIndex ===
+                        index
+                          ? 'green'
+                          : '',
+                      '&:hover': {
+                        backgroundColor:
+                          selectedPlanIndex ===
+                          index
+                            ? 'darkgreen'
+                            : '',
+                      },
+                    }}
                   >
                     {selectedPlanIndex === index
                       ? 'Selected'
@@ -1795,6 +1809,7 @@ const CustomPackageLayout: React.FC<
             </Box>
           </Box>
         );
+
       case 'Choose Support Level':
         return (
           <Box
@@ -2101,6 +2116,7 @@ const CustomPackageLayout: React.FC<
             </Box>
           </Box>
         );
+
       case 'Configure Enterprise Features':
         return (
           <Box

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Drawer,
   Box,
@@ -10,12 +10,14 @@ import {
   Divider,
   Badge,
   Paper,
+  CircularProgress,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { FaTrash } from 'react-icons/fa';
 import { HiShoppingCart } from 'react-icons/hi';
 import { styled } from '@mui/material/styles';
 import { useCart } from '@/contexts/CartContext';
+import { loadStripe } from '@stripe/stripe-js';
 
 interface CartSidebarProps {
   open: boolean;
@@ -109,6 +111,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   onClose,
 }) => {
   const { cartItems, removeFromCart } = useCart();
+  const [isLoading, setIsLoading] =
+    useState(false);
 
   const totalPrice = cartItems.reduce(
     (sum, item) =>
@@ -117,6 +121,83 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   );
   const taxAmount = totalPrice * 0.15;
   const finalTotal = totalPrice + taxAmount;
+
+  const handleCheckout = async () => {
+    setIsLoading(true);
+    try {
+      console.log(
+        'Cart Items being sent:',
+        cartItems
+      );
+
+      cartItems.forEach((item) => {
+        console.log(
+          `Item ID: ${item.id}, stripePriceId: ${item.stripePriceId}`
+        );
+      });
+      console.log(
+        'Stripe Publishable Key:',
+        process.env
+          .NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      );
+
+      const response = await fetch(
+        '/api/create-checkout-session',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ cartItems }),
+        }
+      );
+
+      console.log(
+        'Response from server:',
+        response
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server Error:', errorData);
+        throw new Error(
+          errorData.error ||
+            'Network response was not ok'
+        );
+      }
+
+      const { sessionId } = await response.json();
+      const stripe = await loadStripe(
+        process.env
+          .NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      );
+
+      if (!stripe)
+        throw new Error(
+          'Stripe failed to initialize'
+        );
+
+      const { error } =
+        await stripe.redirectToCheckout({
+          sessionId,
+        });
+
+      if (error)
+        throw new Error(
+          error.message ||
+            'Redirect to checkout failed'
+        );
+    } catch (error) {
+      console.error('Checkout Error:', error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : 'Checkout failed'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <StyledDrawer
@@ -328,6 +409,10 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
           variant="contained"
           fullWidth
           size="large"
+          onClick={handleCheckout}
+          disabled={
+            cartItems.length === 0 || isLoading
+          }
           sx={{
             py: 0.5,
             backgroundColor: (theme) =>
@@ -349,7 +434,14 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
             transition: 'all 0.2s ease-in-out',
           }}
         >
-          Checkout Now
+          {isLoading ? (
+            <CircularProgress
+              size={24}
+              color="inherit"
+            />
+          ) : (
+            'Checkout Now'
+          )}
         </Button>
       </Box>
     </StyledDrawer>

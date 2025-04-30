@@ -11,6 +11,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { HiShoppingCart } from 'react-icons/hi';
 import styles from './SuccessMessage.module.css';
+import { STRIPE_PRICE_IDS } from '@/constants/stripeProducts';
+import { useCart } from '@/contexts/CartContext';
 
 interface SuccessMessageProps {
   open: boolean;
@@ -29,10 +31,29 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
       onConfirm,
       onReturn,
     }) => {
+      const { addToCart } = useCart();
+
       if (!open) return null;
 
       const handleAddToCart = () => {
+        const packageType = 'standard';
+        const stripePriceId =
+          STRIPE_PRICE_IDS[packageType] ||
+          STRIPE_PRICE_IDS.standard;
+
+        const cartItem = {
+          id: Date.now(),
+          name: 'Custom',
+          price: 29.99,
+          quantity: 1,
+          packageType: packageType,
+          stripePriceId: stripePriceId,
+        };
+
+        addToCart(cartItem);
+
         onConfirm(true);
+
         setTimeout(() => {
           window.location.reload();
         }, 300);
