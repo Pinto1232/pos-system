@@ -9,7 +9,6 @@ interface FallbackCurrencies {
 
 export const fetchCurrencyAndRate = async () => {
   try {
-    // Use environment variable or fallback to relative path
     const apiUrl =
       process.env.NEXT_PUBLIC_API_URL ||
       'http://localhost:5107';

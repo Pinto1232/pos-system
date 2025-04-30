@@ -7,6 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
+
 export interface CartItem {
   id: number;
   name: string;
@@ -15,6 +16,7 @@ export interface CartItem {
   features?: string[];
   addOns?: string[];
   packageType?: string;
+  stripePriceId: string;
 }
 
 interface CartContextType {
@@ -51,10 +53,34 @@ export const CartProvider: React.FC<{
   }, [cartItems]);
 
   const addToCart = (item: CartItem) => {
-    setCartItems((prevItems) => [
-      ...prevItems,
-      item,
-    ]);
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find(
+        (cartItem) => cartItem.id === item.id
+      );
+
+      if (existingItem) {
+        const updatedCartItems = prevItems.map(
+          (cartItem) =>
+            cartItem.id === item.id
+              ? {
+                  ...cartItem,
+                  quantity:
+                    cartItem.quantity +
+                    item.quantity,
+                }
+              : cartItem
+        );
+        return updatedCartItems;
+      } else {
+        return [
+          ...prevItems,
+          {
+            ...item,
+            quantity: item.quantity || 1,
+          },
+        ]; // Ensure quantity is set, default to 1
+      }
+    });
   };
 
   const removeFromCart = (id: number) => {
