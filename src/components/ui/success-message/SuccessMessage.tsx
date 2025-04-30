@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import {
   Typography,
   Button,
@@ -13,6 +13,7 @@ import { HiShoppingCart } from 'react-icons/hi';
 import styles from './SuccessMessage.module.css';
 import { STRIPE_PRICE_IDS } from '@/constants/stripeProducts';
 import { useCart } from '@/contexts/CartContext';
+import { motion } from 'framer-motion';
 
 interface SuccessMessageProps {
   open: boolean;
@@ -33,31 +34,28 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
     }) => {
       const { addToCart } = useCart();
 
-      if (!open) return null;
-
-      const handleAddToCart = () => {
-        const packageType = 'standard';
+      const handleAddToCart = useCallback(() => {
+        const packageType = 'custom';
         const stripePriceId =
-          STRIPE_PRICE_IDS[packageType] ||
-          STRIPE_PRICE_IDS.standard;
+          STRIPE_PRICE_IDS?.[packageType] ||
+          'default_price_id';
 
         const cartItem = {
           id: Date.now(),
           name: 'Custom',
           price: 29.99,
           quantity: 1,
-          packageType: packageType,
-          stripePriceId: stripePriceId,
+          packageType,
+          stripePriceId,
         };
 
-        addToCart(cartItem);
+        addToCart?.(cartItem);
+        onConfirm?.(true);
 
-        onConfirm(true);
+        setTimeout(() => {}, 30);
+      }, [addToCart, onConfirm]);
 
-        setTimeout(() => {
-          window.location.reload();
-        }, 300);
-      };
+      if (!open) return null;
 
       return (
         <div
@@ -80,9 +78,23 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                 styles.successIconContainer
               }
             >
-              <CheckCircleIcon
-                className={styles.successIcon}
-              />
+              <motion.div
+                animate={{
+                  rotate: [
+                    0, 10, -10, 10, -10, 0,
+                  ],
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.5,
+                  repeat: 0,
+                }}
+              >
+                <CheckCircleIcon
+                  className={styles.successIcon}
+                />
+              </motion.div>
             </div>
 
             <Typography
