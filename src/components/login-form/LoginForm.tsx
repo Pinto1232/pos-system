@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo, useState } from 'react'; // Ensure useState is imported
+import React, { memo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
 import {
@@ -60,8 +60,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [logoError, setLogoError] =
-      useState(false); // <-- State to track logo loading error
-
+      useState(false);
     const handleLogin = async (
       event: React.FormEvent
     ) => {
@@ -83,7 +82,6 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
       try {
         const response = await axios.post(
-          // Consider moving URL to environment variables
           'http://localhost:5107/api/auth/login',
           {
             email,
@@ -91,7 +89,6 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           }
         );
         const { access_token } = response.data;
-        // Consider using more secure storage if needed (e.g., httpOnly cookies managed server-side)
         localStorage.setItem(
           'accessToken',
           access_token
@@ -100,24 +97,20 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           'Login successful:',
           response.data
         );
-        setIsFadingOut(false); // Reset fade out on success before navigation
-        setIsLoggedIn(true); // Set logged in state
-        router.push('/dashboard'); // Navigate after successful login
+        setIsFadingOut(false);
+        setIsLoggedIn(true);
+        router.push('/dashboard');
       } catch (err) {
-        // Use 'err' for catch block variable
         console.error('Login failed:', err);
-        // Provide more specific error messages if the API returns them
         setError(
           'Login failed. Please check your credentials and try again.'
         );
         setSnackbarOpen(true);
-        setIsFadingOut(false); // Reset fade out on error
-        setLoading(false); // Ensure loading is stopped on error
+        setIsFadingOut(false);
+        setLoading(false);
       }
-      // Removed setLoading(false) from here as it should only be set on error or completion if needed elsewhere
     };
 
-    // Handler for image loading errors
     const handleLogoError = () => {
       console.warn(
         "Logo image '/logo-placeholder.png' failed to load."
@@ -144,7 +137,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
             <Box className={styles.formBox}>
               {onClose && (
                 <IconButton
-                  aria-label="Close login form" // Add aria-label for accessibility
+                  aria-label="Close login form"
                   className={styles.closeButton}
                   onClick={onClose}
                 >
@@ -154,18 +147,16 @@ const LoginForm: React.FC<LoginFormProps> = memo(
               <Box
                 className={styles.logoContainer}
               >
-                {/* --- Conditional Logo Rendering --- */}
                 {logoError ? (
-                  // Fallback element if the image fails to load
                   <Box
                     sx={{
                       width: 60,
                       height: 60,
-                      backgroundColor: 'grey.300', // Use theme colors if possible
+                      backgroundColor: 'grey.300',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      borderRadius: 1, // Use theme spacing/values
+                      borderRadius: 1,
                       color: 'text.secondary',
                     }}
                   >

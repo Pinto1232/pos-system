@@ -104,7 +104,6 @@ const Navbar: React.FC<NavbarProps> = memo(
               justifyContent: 'space-between',
             }}
           >
-            {/* Left section - Logo and title */}
             <Box
               onClick={handleLogoClick}
               sx={{
@@ -117,7 +116,7 @@ const Navbar: React.FC<NavbarProps> = memo(
                 edge="start"
                 color="inherit"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent logo click handler from firing
+                  e.stopPropagation();
                   toggleSidebar();
                 }}
               ></IconButton>
@@ -140,7 +139,6 @@ const Navbar: React.FC<NavbarProps> = memo(
               </Typography>
             </Box>
 
-            {/* Right section - Test period and icons */}
             <Box
               sx={{
                 display: 'flex',
