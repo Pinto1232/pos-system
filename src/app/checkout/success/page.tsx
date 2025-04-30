@@ -84,7 +84,10 @@ function SuccessContent() {
             <Typography
               variant="h5"
               gutterBottom
-              sx={{ fontWeight: 600 }}
+              sx={{
+                fontWeight: 600,
+                color: '#000',
+              }}
             >
               Payment Successful! 🎉
             </Typography>
