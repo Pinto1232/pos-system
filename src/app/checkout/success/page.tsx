@@ -1,9 +1,5 @@
 'use client';
-import {
-  Suspense,
-  useEffect,
-  useState,
-} from 'react';
+import { Suspense, useState } from 'react';
 import {
   Button,
   Modal,
@@ -17,14 +13,15 @@ import {
 import Link from 'next/link';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
+import { motion } from 'framer-motion';
 
-function SuccessContent() {
-  const [open, setOpen] = useState(false);
+function SuccessContent({
+  onConfirm,
+}: {
+  onConfirm: () => void;
+}) {
+  const [open, setOpen] = useState(true);
   const theme = useTheme();
-
-  useEffect(() => {
-    setOpen(true);
-  }, []);
 
   const modalStyle = {
     position: 'absolute',
@@ -39,9 +36,19 @@ function SuccessContent() {
     outline: 'none',
   };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleReturnToDashboard = () => {
+    onConfirm();
+    handleClose();
+  };
+
   return (
     <Modal
       open={open}
+      onClose={handleClose}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
       slotProps={{
@@ -59,7 +66,7 @@ function SuccessContent() {
               top: 16,
               color: theme.palette.grey[500],
             }}
-            onClick={() => setOpen(false)}
+            onClick={handleClose}
           >
             <CloseIcon />
           </IconButton>
@@ -73,13 +80,30 @@ function SuccessContent() {
               pt: 2,
             }}
           >
-            <CheckCircleOutlineIcon
-              sx={{
-                fontSize: 64,
-                color: theme.palette.success.main,
-                mb: 2,
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                type: 'spring',
+                stiffness: 260,
+                damping: 20,
+                duration: 0.6,
               }}
-            />
+              whileHover={{
+                scale: 1.1,
+                rotate: [0, 10, -10, 10, -10, 0],
+                transition: { duration: 0.5 },
+              }}
+            >
+              <CheckCircleOutlineIcon
+                sx={{
+                  fontSize: 64,
+                  color:
+                    theme.palette.success.main,
+                  mb: 2,
+                }}
+              />
+            </motion.div>
 
             <Typography
               variant="h5"
@@ -117,6 +141,7 @@ function SuccessContent() {
                 textTransform: 'none',
                 fontSize: 16,
               }}
+              onClick={handleReturnToDashboard}
             >
               Return to Dashboard
             </Button>
@@ -128,9 +153,13 @@ function SuccessContent() {
 }
 
 export default function SuccessPage() {
+  const handleConfirm = () => {
+    console.log('Confirmed!');
+  };
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <SuccessContent />
+      <SuccessContent onConfirm={handleConfirm} />
     </Suspense>
   );
 }

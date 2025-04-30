@@ -13,7 +13,6 @@ import keycloakInstance from '@/auth/keycloak';
 import { Box, Typography } from '@mui/material';
 import LoadingDots from '@/components/LoadingDots';
 
-// Global flag to track Keycloak initialization
 let keycloakInitialized = false;
 
 export interface AuthContextProps {
