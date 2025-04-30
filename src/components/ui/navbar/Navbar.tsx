@@ -98,19 +98,14 @@ const Navbar: React.FC<NavbarProps> = memo(
           position="sticky"
           className={styles.navbar}
         >
-          <Toolbar
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
             {/* Left section - Logo and title */}
             <Box
               onClick={handleLogoClick}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                cursor: 'pointer',
+                cursor: 'pointer'
               }}
             >
               <IconButton
@@ -141,19 +136,9 @@ const Navbar: React.FC<NavbarProps> = memo(
             </Box>
 
             {/* Right section - Test period and icons */}
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-              }}
-            >
-              <Box
-                className={styles.testPeriodBox}
-              >
-                <TimeIcon
-                  className={styles.icon}
-                />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box className={styles.testPeriodBox}>
+                <TimeIcon className={styles.icon} />
                 <Typography
                   variant="body2"
                   sx={{
@@ -216,6 +201,9 @@ const Navbar: React.FC<NavbarProps> = memo(
             </Box>
           </Toolbar>
         </AppBar>
+
+        {/* Remove the LoginForm from here */}
+
         <CartSidebar
           open={isCartOpen}
           onClose={handleCartClose}

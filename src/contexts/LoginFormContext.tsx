@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogContent,
 } from '@mui/material';
+import { SpinnerProvider } from '@/contexts/SpinnerContext';
 
 interface LoginFormContextProps {
   toggleLoginForm: () => void;
@@ -48,7 +49,9 @@ export const LoginFormProvider: React.FC<{
         onClose={toggleLoginForm}
       >
         <DialogContent>
-          <LoginForm />
+          <SpinnerProvider>
+            <LoginForm />
+          </SpinnerProvider>
         </DialogContent>
       </Dialog>
     </LoginFormContext.Provider>
