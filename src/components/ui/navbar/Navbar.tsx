@@ -217,8 +217,6 @@ const Navbar: React.FC<NavbarProps> = memo(
           </Toolbar>
         </AppBar>
 
-        {/* Remove the LoginForm from here */}
-
         <CartSidebar
           open={isCartOpen}
           onClose={handleCartClose}
