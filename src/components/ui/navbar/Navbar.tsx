@@ -48,9 +48,7 @@ const Navbar: React.FC<NavbarProps> = memo(
       useState(testPeriod * 24 * 60 * 60);
     const [isCartOpen, setIsCartOpen] =
       useState(false);
-    const { cartItems } = useCart();
-
-    const cartCount = cartItems.length;
+    const { cartCount } = useCart();
 
     useEffect(() => {
       setRemainingTime(testPeriod * 24 * 60 * 60);
