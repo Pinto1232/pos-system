@@ -1,5 +1,10 @@
 'use client';
-import { Suspense, useState } from 'react';
+import {
+  Suspense,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   Button,
   Modal,
@@ -14,6 +19,7 @@ import Link from 'next/link';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import { motion } from 'framer-motion';
+import { useCart } from '@/contexts/CartContext';
 
 function SuccessContent({
   onConfirm,
@@ -22,6 +28,15 @@ function SuccessContent({
 }) {
   const [open, setOpen] = useState(true);
   const theme = useTheme();
+  const { clearCart } = useCart();
+  const hasCleared = useRef(false);
+
+  useEffect(() => {
+    if (!hasCleared.current) {
+      clearCart();
+      hasCleared.current = true;
+    }
+  }, [clearCart]);
 
   const modalStyle = {
     position: 'absolute',

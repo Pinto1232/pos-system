@@ -1,91 +1,50 @@
 'use client';
-
 import React, {
   createContext,
   useContext,
   useState,
-  useEffect,
   ReactNode,
 } from 'react';
 
-export interface CartItem {
-  id: number;
+interface CartItem {
+  id: string | number;
   name: string;
   price: number;
-  quantity: number;
-  features?: string[];
-  addOns?: string[];
-  packageType?: string;
-  stripePriceId: string;
+  quantity?: number;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
+  cartCount: number;
   addToCart: (item: CartItem) => void;
-  removeFromCart: (id: number) => void;
+  removeFromCart: (
+    itemId: string | number
+  ) => void;
   clearCart: () => void;
-  getCartCount: () => number;
 }
 
 const CartContext = createContext<
   CartContextType | undefined
 >(undefined);
 
-export const CartProvider: React.FC<{
+export function CartProvider({
+  children,
+}: {
   children: ReactNode;
-}> = ({ children }) => {
+}) {
   const [cartItems, setCartItems] = useState<
     CartItem[]
   >([]);
 
-  useEffect(() => {
-    const storedItems = JSON.parse(
-      localStorage.getItem('cartItems') || '[]'
-    );
-    setCartItems(storedItems);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(
-      'cartItems',
-      JSON.stringify(cartItems)
-    );
-  }, [cartItems]);
-
   const addToCart = (item: CartItem) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find(
-        (cartItem) => cartItem.id === item.id
-      );
-
-      if (existingItem) {
-        const updatedCartItems = prevItems.map(
-          (cartItem) =>
-            cartItem.id === item.id
-              ? {
-                  ...cartItem,
-                  quantity:
-                    cartItem.quantity +
-                    item.quantity,
-                }
-              : cartItem
-        );
-        return updatedCartItems;
-      } else {
-        return [
-          ...prevItems,
-          {
-            ...item,
-            quantity: item.quantity || 1,
-          },
-        ]; // Ensure quantity is set, default to 1
-      }
-    });
+    setCartItems((prev) => [...prev, item]);
   };
 
-  const removeFromCart = (id: number) => {
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => item.id !== id)
+  const removeFromCart = (
+    itemId: string | number
+  ) => {
+    setCartItems((prev) =>
+      prev.filter((item) => item.id !== itemId)
     );
   };
 
@@ -93,26 +52,22 @@ export const CartProvider: React.FC<{
     setCartItems([]);
   };
 
-  const getCartCount = () => {
-    return cartItems.length;
-  };
-
   return (
     <CartContext.Provider
       value={{
         cartItems,
+        cartCount: cartItems.length,
         addToCart,
         removeFromCart,
         clearCart,
-        getCartCount,
       }}
     >
       {children}
     </CartContext.Provider>
   );
-};
+}
 
-export const useCart = (): CartContextType => {
+export function useCart() {
   const context = useContext(CartContext);
   if (context === undefined) {
     throw new Error(
@@ -120,4 +75,4 @@ export const useCart = (): CartContextType => {
     );
   }
   return context;
-};
+}

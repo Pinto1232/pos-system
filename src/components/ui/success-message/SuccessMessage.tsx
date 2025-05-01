@@ -24,131 +24,120 @@ interface SuccessMessageProps {
 }
 
 const SuccessMessage: React.FC<SuccessMessageProps> =
-  memo(
-    ({
-      open,
-      onClose,
-      message,
-      onConfirm,
-      onReturn,
-    }) => {
-      const { addToCart } = useCart();
+  memo(({ open, onClose, message, onReturn }) => {
+    const { addToCart } = useCart();
 
-      const handleAddToCart = useCallback(() => {
-        const packageType = 'custom';
-        const stripePriceId =
-          STRIPE_PRICE_IDS?.[packageType] ||
-          'default_price_id';
+    const handleAddToCart = useCallback(() => {
+      const packageType = 'custom';
+      const stripePriceId =
+        STRIPE_PRICE_IDS?.[packageType] ||
+        'default_price_id';
 
-        const cartItem = {
-          id: Date.now(),
-          name: 'Custom',
-          price: 29.99,
-          quantity: 1,
-          packageType,
-          stripePriceId,
-        };
+      const cartItem = {
+        id: Date.now(),
+        name: 'Custom',
+        price: 29.99,
+        quantity: 1,
+        packageType,
+        stripePriceId,
+      };
 
-        addToCart?.(cartItem);
-        onConfirm?.(true);
+      addToCart?.(cartItem);
 
-        setTimeout(() => {}, 30);
-      }, [addToCart, onConfirm]);
+      setTimeout(() => {}, 30);
+    }, [addToCart]);
 
-      if (!open) return null;
+    if (!open) return null;
 
-      return (
+    return (
+      <div
+        className={styles.successMessageOverlay}
+      >
         <div
-          className={styles.successMessageOverlay}
+          className={
+            styles.successMessageContainer
+          }
         >
+          <IconButton
+            className={styles.closeButton}
+            onClick={onClose}
+          >
+            <CloseIcon />
+          </IconButton>
+
           <div
             className={
-              styles.successMessageContainer
+              styles.successIconContainer
             }
           >
-            <IconButton
-              className={styles.closeButton}
-              onClick={onClose}
+            <motion.div
+              animate={{
+                rotate: [0, 10, -10, 10, -10, 0],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5,
+                repeat: 0,
+              }}
             >
-              <CloseIcon />
-            </IconButton>
+              <CheckCircleIcon
+                className={styles.successIcon}
+              />
+            </motion.div>
+          </div>
 
-            <div
-              className={
-                styles.successIconContainer
-              }
-            >
-              <motion.div
-                animate={{
-                  rotate: [
-                    0, 10, -10, 10, -10, 0,
-                  ],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 0.5,
-                  delay: 0.5,
-                  repeat: 0,
-                }}
-              >
-                <CheckCircleIcon
-                  className={styles.successIcon}
-                />
-              </motion.div>
-            </div>
+          <Typography
+            variant="h6"
+            className={styles.successTitle}
+          >
+            Success
+          </Typography>
+          <Typography
+            className={styles.successText}
+          >
+            {message ||
+              'Please proceed with payment'}
+          </Typography>
 
-            <Typography
-              variant="h6"
-              className={styles.successTitle}
+          <div
+            className={
+              styles.successMessageActions
+            }
+          >
+            <Button
+              variant="contained"
+              style={{
+                backgroundColor: '#1e3a8a',
+              }}
+              onClick={onReturn}
+              startIcon={<ArrowBackIcon />}
+              sx={{
+                width: '150px',
+                whiteSpace: 'nowrap',
+              }}
             >
-              Success
-            </Typography>
-            <Typography
-              className={styles.successText}
+              Return
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                backgroundColor: '#1e3a8a',
+              }}
+              onClick={handleAddToCart}
+              startIcon={<HiShoppingCart />}
+              sx={{
+                width: '150px',
+                whiteSpace: 'nowrap',
+              }}
             >
-              {message ||
-                'Please proceed with payment'}
-            </Typography>
-
-            <div
-              className={
-                styles.successMessageActions
-              }
-            >
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: '#1e3a8a',
-                }}
-                onClick={onReturn}
-                startIcon={<ArrowBackIcon />}
-                sx={{
-                  width: '150px',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                Return
-              </Button>
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: '#1e3a8a',
-                }}
-                onClick={handleAddToCart}
-                startIcon={<HiShoppingCart />}
-                sx={{
-                  width: '150px',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                Add to Cart
-              </Button>
-            </div>
+              Add to Cart
+            </Button>
           </div>
         </div>
-      );
-    }
-  );
+      </div>
+    );
+  });
 
 SuccessMessage.displayName = 'SuccessMessage';
 
