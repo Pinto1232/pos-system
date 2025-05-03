@@ -36,9 +36,10 @@ const AfterAuth = () => {
       }
 
       if (!code) {
-        router.replace(
-          '/?error=missing_auth_code'
+        console.log(
+          'No authorization code found, redirecting to home page'
         );
+        router.replace('/');
         return;
       }
 
@@ -49,7 +50,10 @@ const AfterAuth = () => {
         const response = await apiClient.post(
           '/auth/keycloak/callback',
           { code },
-          { signal: controller.signal }
+          {
+            signal: controller.signal,
+            suppressAuthErrors: true,
+          }
         );
 
         if (response.data?.accessToken) {

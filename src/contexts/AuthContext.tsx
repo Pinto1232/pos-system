@@ -10,8 +10,44 @@ import React, {
 } from 'react';
 import { KeycloakInstance } from 'keycloak-js';
 import keycloakInstance from '@/auth/keycloak';
-import { Box, Typography } from '@mui/material';
-import LoadingDots from '@/components/LoadingDots';
+import { isKeycloakError } from '@/types/keycloak';
+import { validateAuthEnvVars } from '@/utils/envValidation';
+
+const MAX_REFRESH_RETRIES = 3;
+const RETRY_DELAY_MS = 2000;
+
+// Define fallback values to ensure we always have something
+const FALLBACK_CONFIG = {
+  url: 'http://localhost:8282',
+  realm: 'pisval-pos-realm',
+  clientId: 'pos-backend',
+  redirectUri: 'http://localhost:3000/after-auth',
+  loginRedirect:
+    'http://localhost:3000/dashboard',
+  logoutRedirect: 'http://localhost:3000/login',
+};
+
+// Get environment variables with fallbacks
+const getKeycloakConfig = () => ({
+  url:
+    process.env.NEXT_PUBLIC_KEYCLOAK_URL ||
+    FALLBACK_CONFIG.url,
+  realm:
+    process.env.NEXT_PUBLIC_KEYCLOAK_REALM ||
+    FALLBACK_CONFIG.realm,
+  clientId:
+    process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID ||
+    FALLBACK_CONFIG.clientId,
+  redirectUri:
+    process.env.NEXT_PUBLIC_REDIRECT_URI ||
+    FALLBACK_CONFIG.redirectUri,
+  loginRedirect:
+    process.env.NEXT_PUBLIC_LOGIN_REDIRECT ||
+    FALLBACK_CONFIG.loginRedirect,
+  logoutRedirect:
+    process.env.NEXT_PUBLIC_LOGOUT_REDIRECT ||
+    FALLBACK_CONFIG.logoutRedirect,
+});
 
 let keycloakInitialized = false;
 
@@ -21,6 +57,7 @@ export interface AuthContextProps {
   logout: () => Promise<void>;
   authenticated: boolean;
   error: string | null;
+  isInitialized: boolean;
 }
 
 export const AuthContext =
@@ -30,7 +67,83 @@ export const AuthContext =
     logout: async () => {},
     authenticated: false,
     error: null,
+    isInitialized: false,
   });
+
+const calculateRefreshTime = (
+  token: string
+): number => {
+  try {
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      return 60000;
+    }
+
+    const payload = JSON.parse(
+      atob(tokenParts[1])
+    );
+
+    if (payload.exp) {
+      const expiryTimeInSeconds = payload.exp;
+      const currentTimeInSeconds = Math.floor(
+        Date.now() / 1000
+      );
+      const timeUntilExpiryInSeconds =
+        expiryTimeInSeconds -
+        currentTimeInSeconds;
+
+      const refreshTimeInMs = Math.min(
+        Math.max(
+          timeUntilExpiryInSeconds * 0.7 * 1000,
+          10000
+        ),
+        300000
+      );
+
+      return refreshTimeInMs;
+    }
+  } catch (error) {
+    console.error(
+      'Error calculating token refresh time:',
+      error
+    );
+  }
+
+  return 60000;
+};
+
+const setTokenCookie = (token: string) => {
+  const tokenExpiry = new Date();
+  tokenExpiry.setTime(
+    tokenExpiry.getTime() + 24 * 60 * 60 * 1000
+  );
+
+  fetch('/api/auth-token/set-token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token }),
+    credentials: 'include',
+  }).catch((err) => {
+    console.error(
+      'Failed to set token cookie:',
+      err
+    );
+  });
+};
+
+const clearTokenCookie = () => {
+  fetch('/api/auth-token/clear-token', {
+    method: 'POST',
+    credentials: 'include',
+  }).catch((err) => {
+    console.error(
+      'Failed to clear token cookie:',
+      err
+    );
+  });
+};
 
 const AuthProvider = ({
   children,
@@ -51,31 +164,48 @@ const AuthProvider = ({
     keycloakInstance
   );
 
+  // Store the config in a ref to ensure it's consistent
+  const configRef = useRef(getKeycloakConfig());
+
   const initStartedRef = useRef(false);
 
   useEffect(() => {
     setIsMounted(true);
+
+    // Log the config we're using
+    console.log(
+      'Using Keycloak config from AuthContext:',
+      configRef.current
+    );
+
+    // Validate but don't block on missing env vars since we have fallbacks
+    const envValidation = validateAuthEnvVars();
+    if (!envValidation.isValid) {
+      console.warn(
+        `Using fallback values for: ${envValidation.missingVars.join(', ')}`
+      );
+    }
   }, []);
 
   const handleCleanLogout =
     useCallback(async () => {
       try {
         localStorage.removeItem('accessToken');
+        clearTokenCookie();
         setToken(null);
 
         if (isMounted) {
+          const config = configRef.current;
           const logoutRedirect =
             window.encodeURIComponent(
-              process.env
-                .NEXT_PUBLIC_LOGOUT_REDIRECT ||
-                window.location.origin + '/login'
+              config.logoutRedirect
             );
           console.log(
             'Logout redirect URI:',
             logoutRedirect
           );
 
-          const logoutUrl = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/logout`;
+          const logoutUrl = `${config.url}/realms/${config.realm}/protocol/openid-connect/logout`;
 
           const createFormInput = (
             name: string,
@@ -96,17 +226,13 @@ const AuthProvider = ({
           form.appendChild(
             createFormInput(
               'client_id',
-              process.env
-                .NEXT_PUBLIC_KEYCLOAK_CLIENT_ID ||
-                ''
+              config.clientId
             )
           );
           form.appendChild(
             createFormInput(
               'post_logout_redirect_uri',
-              process.env
-                .NEXT_PUBLIC_LOGOUT_REDIRECT ||
-                window.location.origin + '/login'
+              config.logoutRedirect
             )
           );
 
@@ -120,9 +246,7 @@ const AuthProvider = ({
         );
         if (isMounted) {
           window.location.href =
-            process.env
-              .NEXT_PUBLIC_LOGOUT_REDIRECT ||
-            '/login';
+            configRef.current.logoutRedirect;
         }
       }
     }, [isMounted]);
@@ -131,10 +255,9 @@ const AuthProvider = ({
     console.log('Login requested');
     try {
       if (isMounted) {
+        const config = configRef.current;
         const loginRedirect =
-          process.env
-            .NEXT_PUBLIC_LOGIN_REDIRECT ||
-          process.env.NEXT_PUBLIC_REDIRECT_URI;
+          config.loginRedirect;
         console.log(
           'Using login redirect:',
           loginRedirect
@@ -154,64 +277,107 @@ const AuthProvider = ({
     }
   }, [isMounted]);
 
+  const handleTokenRefresh = useCallback(
+    async (
+      kc: KeycloakInstance,
+      retryCount = 0
+    ) => {
+      try {
+        console.log('Attempting token refresh');
+        const refreshed =
+          await kc.updateToken(70);
+
+        if (refreshed && kc.token) {
+          console.log(
+            'Token refreshed successfully'
+          );
+          setToken(kc.token);
+          localStorage.setItem(
+            'accessToken',
+            kc.token
+          );
+          setTokenCookie(kc.token);
+
+          // Schedule the next refresh based on the new token
+          const refreshTime =
+            calculateRefreshTime(kc.token);
+          console.log(
+            `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+          );
+
+          setTimeout(() => {
+            handleTokenRefresh(kc);
+          }, refreshTime);
+        } else {
+          // Token didn't need refreshing yet, schedule next check
+          if (kc.token) {
+            const refreshTime =
+              calculateRefreshTime(kc.token);
+            console.log(
+              `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+            );
+
+            setTimeout(() => {
+              handleTokenRefresh(kc);
+            }, refreshTime);
+          }
+        }
+      } catch (refreshError) {
+        console.error(
+          'Token refresh failed:',
+          refreshError
+        );
+
+        if (retryCount < MAX_REFRESH_RETRIES) {
+          console.log(
+            `Retrying token refresh (${retryCount + 1}/${MAX_REFRESH_RETRIES}) in ${RETRY_DELAY_MS * Math.pow(2, retryCount)}ms`
+          );
+          setTimeout(
+            () => {
+              handleTokenRefresh(
+                kc,
+                retryCount + 1
+              );
+            },
+            RETRY_DELAY_MS *
+              Math.pow(2, retryCount)
+          );
+          return;
+        }
+
+        await handleCleanLogout();
+      }
+    },
+    [handleCleanLogout]
+  );
+
   const initializeAuth =
     useCallback(async (): Promise<() => void> => {
       if (!isMounted) return () => {};
 
       const kc = keycloakRef.current;
-      let refreshInterval: NodeJS.Timeout | null =
+      let refreshTimeout: NodeJS.Timeout | null =
         null;
 
-      if (refreshInterval) {
-        clearInterval(refreshInterval);
-        refreshInterval = null;
+      if (refreshTimeout) {
+        clearTimeout(refreshTimeout);
+        refreshTimeout = null;
       }
 
       console.log(
         'Starting Keycloak initialization...'
       );
-      console.log('Environment variables:', {
-        redirectUri:
-          process.env.NEXT_PUBLIC_REDIRECT_URI,
-        loginRedirect:
-          process.env.NEXT_PUBLIC_LOGIN_REDIRECT,
-        logoutRedirect:
-          process.env.NEXT_PUBLIC_LOGOUT_REDIRECT,
-      });
 
-      const handleTokenRefresh = async () => {
-        try {
-          console.log('Attempting token refresh');
-          const refreshed =
-            await kc.updateToken(70);
-          if (refreshed && kc.token) {
-            console.log(
-              'Token refreshed successfully'
-            );
-            setToken(kc.token);
-            localStorage.setItem(
-              'accessToken',
-              kc.token
-            );
-          }
-        } catch (refreshError) {
-          console.error(
-            'Token refresh failed:',
-            refreshError
-          );
-          if (refreshInterval) {
-            clearInterval(refreshInterval);
-            refreshInterval = null;
-          }
-          await handleCleanLogout();
-        }
-      };
+      const config = configRef.current;
+      console.log(
+        'Using Keycloak config:',
+        config
+      );
 
       try {
         const authenticated = await kc.init({
           onLoad: 'check-sso',
-          redirectUri:
-            process.env.NEXT_PUBLIC_REDIRECT_URI,
+          redirectUri: config.redirectUri,
           checkLoginIframe: false,
           pkceMethod: 'S256',
           responseMode: 'query',
@@ -224,19 +390,31 @@ const AuthProvider = ({
 
         console.log(
           'Redirect URI:',
-          process.env.NEXT_PUBLIC_REDIRECT_URI
+          config.redirectUri
         );
 
         if (authenticated) {
           if (kc.token) {
             console.log(
-              'Setting token in state and localStorage'
+              'Setting token in state and cookie'
             );
             setToken(kc.token);
             localStorage.setItem(
               'accessToken',
               kc.token
             );
+            setTokenCookie(kc.token);
+
+            // Schedule token refresh based on token expiration
+            const refreshTime =
+              calculateRefreshTime(kc.token);
+            console.log(
+              `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+            );
+
+            refreshTimeout = setTimeout(() => {
+              handleTokenRefresh(kc);
+            }, refreshTime);
           } else {
             console.warn(
               'Authenticated but no token available'
@@ -244,11 +422,6 @@ const AuthProvider = ({
           }
 
           setInitialized(true);
-
-          refreshInterval = setInterval(
-            handleTokenRefresh,
-            60000
-          );
         } else {
           console.log(
             'Not authenticated, redirecting to login'
@@ -256,7 +429,7 @@ const AuthProvider = ({
           setInitialized(true);
           await login();
         }
-      } catch (err) {
+      } catch (err: unknown) {
         console.error(
           'Authentication Error Raw:',
           err
@@ -270,23 +443,20 @@ const AuthProvider = ({
 
         if (err instanceof Error) {
           errorMessage = `Authentication error: ${err.message}`;
+        } else if (isKeycloakError(err)) {
+          if (
+            err.error &&
+            err.error_description
+          ) {
+            errorMessage = `Keycloak Error: ${err.error} - ${err.error_description}`;
+          } else if (err.error) {
+            errorMessage = `Keycloak Error: ${err.error}`;
+          }
         } else if (
           typeof err === 'object' &&
           err !== null
         ) {
           errorMessage = `Authentication error: ${JSON.stringify(err)}`;
-          const kcError = err as {
-            error?: string;
-            error_description?: string;
-          };
-          if (
-            kcError.error &&
-            kcError.error_description
-          ) {
-            errorMessage = `Keycloak Error: ${kcError.error} - ${kcError.error_description}`;
-          } else if (kcError.error) {
-            errorMessage = `Keycloak Error: ${kcError.error}`;
-          }
         }
 
         console.error(
@@ -295,31 +465,62 @@ const AuthProvider = ({
         );
         setError(errorMessage);
         localStorage.removeItem('accessToken');
+        clearTokenCookie();
         setInitialized(true);
       }
 
       return () => {
-        if (refreshInterval) {
+        if (refreshTimeout) {
           console.log(
-            'Cleaning up refresh interval'
+            'Cleaning up refresh timeout'
           );
-          clearInterval(refreshInterval);
-          refreshInterval = null;
+          clearTimeout(refreshTimeout);
+          refreshTimeout = null;
         }
       };
-    }, [handleCleanLogout, login, isMounted]);
+    }, [handleTokenRefresh, login, isMounted]);
 
   useEffect(() => {
-    // Only run this effect after component is mounted and if initialization hasn't started
     if (isMounted && !initStartedRef.current) {
-      // First check if we already have a session via localStorage
-      const storedToken = localStorage.getItem(
-        'accessToken'
-      );
-      if (storedToken) {
-        setToken(storedToken);
-        setInitialized(true);
-      }
+      console.log('Fetching token from API...');
+      fetch('/api/auth-token/get-token', {
+        credentials: 'include',
+      })
+        .then((response) => {
+          console.log(
+            'Token API response status:',
+            response.status
+          );
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Failed to get token');
+        })
+        .then((data) => {
+          console.log(
+            'Token API response data:',
+            data
+          );
+          if (data.token) {
+            setToken(data.token);
+            localStorage.setItem(
+              'accessToken',
+              data.token
+            );
+            setInitialized(true);
+            console.log('Token set from API');
+          } else {
+            console.log(
+              'No token in API response'
+            );
+          }
+        })
+        .catch((err) => {
+          console.error(
+            'Error fetching token:',
+            err
+          );
+        });
 
       if (!keycloakInitialized) {
         console.log(
@@ -356,57 +557,11 @@ const AuthProvider = ({
     logout,
     authenticated: !!token,
     error,
+    isInitialized: initialized,
   };
 
-  // Prevent hydration errors by returning null on the server
   if (!isMounted) {
     return null;
-  }
-
-  if (error) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-        }}
-      >
-        <Typography variant="h6" color="error">
-          Authentication Error: {error}
-        </Typography>
-      </Box>
-    );
-  }
-
-  if (!initialized) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-          gap: 2,
-        }}
-      >
-        <Typography
-          variant="h5"
-          component="div"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            fontWeight: 500,
-            color: 'text.primary',
-          }}
-        >
-          Initializing authentication
-          <LoadingDots />
-        </Typography>
-      </Box>
-    );
   }
 
   return (

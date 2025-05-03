@@ -34,6 +34,20 @@ const nextConfig: NextConfig = {
       'via.placeholder.com',
     ],
   },
+  env: {
+    NEXT_PUBLIC_KEYCLOAK_URL:
+      process.env.NEXT_PUBLIC_KEYCLOAK_URL,
+    NEXT_PUBLIC_KEYCLOAK_REALM:
+      process.env.NEXT_PUBLIC_KEYCLOAK_REALM,
+    NEXT_PUBLIC_KEYCLOAK_CLIENT_ID:
+      process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID,
+    NEXT_PUBLIC_REDIRECT_URI:
+      process.env.NEXT_PUBLIC_REDIRECT_URI,
+    NEXT_PUBLIC_LOGIN_REDIRECT:
+      process.env.NEXT_PUBLIC_LOGIN_REDIRECT,
+    NEXT_PUBLIC_LOGOUT_REDIRECT:
+      process.env.NEXT_PUBLIC_LOGOUT_REDIRECT,
+  },
 };
 
 export default nextConfig;

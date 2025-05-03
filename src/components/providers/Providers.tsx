@@ -10,6 +10,7 @@ import AuthProvider from '@/contexts/AuthContext';
 import { ProductProvider } from '@/contexts/ProductContext';
 import { CustomizationProvider } from '@/contexts/CustomizationContext';
 import { AxiosError } from 'axios';
+import AuthWrapper from '@/contexts/AuthWrapper';
 
 const defaultQueryOptions: DefaultOptions = {
   queries: {
@@ -63,15 +64,17 @@ export default function Providers({
 }) {
   return (
     <AuthProvider>
-      <ProductProvider>
-        <CustomizationProvider userId="current-user">
-          <QueryClientProvider
-            client={queryClient}
-          >
-            {children}
-          </QueryClientProvider>
-        </CustomizationProvider>
-      </ProductProvider>
+      <AuthWrapper>
+        <ProductProvider>
+          <CustomizationProvider userId="current-user">
+            <QueryClientProvider
+              client={queryClient}
+            >
+              {children}
+            </QueryClientProvider>
+          </CustomizationProvider>
+        </ProductProvider>
+      </AuthWrapper>
     </AuthProvider>
   );
 }
