@@ -7,6 +7,7 @@ import React, {
   ReactNode,
   useRef,
   useCallback,
+  useMemo,
 } from 'react';
 import { KeycloakInstance } from 'keycloak-js';
 import keycloakInstance from '@/auth/keycloak';
@@ -16,7 +17,6 @@ import { validateAuthEnvVars } from '@/utils/envValidation';
 const MAX_REFRESH_RETRIES = 3;
 const RETRY_DELAY_MS = 2000;
 
-// Define fallback values to ensure we always have something
 const FALLBACK_CONFIG = {
   url: 'http://localhost:8282',
   realm: 'pisval-pos-realm',
@@ -27,7 +27,6 @@ const FALLBACK_CONFIG = {
   logoutRedirect: 'http://localhost:3000/login',
 };
 
-// Get environment variables with fallbacks
 const getKeycloakConfig = () => ({
   url:
     process.env.NEXT_PUBLIC_KEYCLOAK_URL ||
@@ -164,7 +163,6 @@ const AuthProvider = ({
     keycloakInstance
   );
 
-  // Store the config in a ref to ensure it's consistent
   const configRef = useRef(getKeycloakConfig());
 
   const initStartedRef = useRef(false);
@@ -172,13 +170,11 @@ const AuthProvider = ({
   useEffect(() => {
     setIsMounted(true);
 
-    // Log the config we're using
     console.log(
       'Using Keycloak config from AuthContext:',
       configRef.current
     );
 
-    // Validate but don't block on missing env vars since we have fallbacks
     const envValidation = validateAuthEnvVars();
     if (!envValidation.isValid) {
       console.warn(
@@ -298,7 +294,6 @@ const AuthProvider = ({
           );
           setTokenCookie(kc.token);
 
-          // Schedule the next refresh based on the new token
           const refreshTime =
             calculateRefreshTime(kc.token);
           console.log(
@@ -309,7 +304,6 @@ const AuthProvider = ({
             handleTokenRefresh(kc);
           }, refreshTime);
         } else {
-          // Token didn't need refreshing yet, schedule next check
           if (kc.token) {
             const refreshTime =
               calculateRefreshTime(kc.token);
@@ -405,7 +399,6 @@ const AuthProvider = ({
             );
             setTokenCookie(kc.token);
 
-            // Schedule token refresh based on token expiration
             const refreshTime =
               calculateRefreshTime(kc.token);
             console.log(
@@ -551,14 +544,17 @@ const AuthProvider = ({
     await handleCleanLogout();
   }, [handleCleanLogout]);
 
-  const contextValue = {
-    token,
-    login,
-    logout,
-    authenticated: !!token,
-    error,
-    isInitialized: initialized,
-  };
+  const contextValue = useMemo(
+    () => ({
+      token,
+      login,
+      logout,
+      authenticated: !!token,
+      error,
+      isInitialized: initialized,
+    }),
+    [token, login, logout, error, initialized]
+  );
 
   if (!isMounted) {
     return null;
