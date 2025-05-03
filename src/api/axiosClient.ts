@@ -193,7 +193,6 @@ const useApiClient = () => {
     });
   };
 
-  // Define useUpdateCustomization hook.
   const useUpdateCustomization = <
     TData = unknown,
   >() => {
