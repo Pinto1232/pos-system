@@ -3,6 +3,7 @@
 import React, {
   useEffect,
   useState,
+  useContext,
 } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useApiClient } from '@/api/axiosClient';
@@ -15,10 +16,27 @@ import {
 import { AxiosInstance } from 'axios';
 import { PricePackages } from '@/components/pricing-packages/types';
 import { fetchCurrencyAndRate } from '@/utils/currencyUtils';
+import { AuthContext } from '@/contexts/AuthContext';
+import { AxiosError } from 'axios';
+
+interface PackageData {
+  id: string | number;
+  title?: string;
+  description?: string;
+  icon?: string;
+  extraDescription?: string;
+  price?: number;
+  testPeriodDays?: number;
+  type?: string;
+  packageType?: string;
+  [key: string]: unknown;
+}
 
 const PricingPackagesContainer: React.FC = () => {
   const { apiClient } = useApiClient();
   const { selectPackage } = usePackageSelection();
+  const { authenticated, token } =
+    useContext(AuthContext);
   const [currencyInfo, setCurrencyInfo] =
     useState<{
       currency: string;
@@ -28,15 +46,50 @@ const PricingPackagesContainer: React.FC = () => {
       rate: 1,
     });
 
+  useEffect(() => {
+    console.log('Authentication state:', {
+      authenticated,
+      hasToken: !!token,
+      localStorageToken: !!localStorage.getItem(
+        'accessToken'
+      ),
+    });
+  }, [authenticated, token]);
+
   const fetchPricingPackages = async (
     axiosClient: AxiosInstance,
     pageNumber: number,
     pageSize: number
   ): Promise<PricePackages> => {
-    const response = await axiosClient.get(
-      `/api/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`
-    );
-    return response.data;
+    try {
+      console.log(
+        'Request headers for pricing packages:',
+        {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')?.substring(0, 10)}...`,
+        }
+      );
+
+      const response = await axiosClient.get(
+        `/api/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      );
+      return response.data;
+    } catch (error: unknown) {
+      if (
+        error instanceof AxiosError &&
+        error.response?.status === 401
+      ) {
+        console.error(
+          'Authentication error when fetching pricing packages:',
+          error
+        );
+        return {
+          data: [],
+          pageSize,
+          pageNumber,
+        } as PricePackages;
+      }
+      throw error;
+    }
   };
 
   const { data, error, isLoading, refetch } =
@@ -44,9 +97,10 @@ const PricingPackagesContainer: React.FC = () => {
       queryKey: ['pricingPackages'],
       queryFn: () =>
         fetchPricingPackages(apiClient, 1, 10),
-      retry: 3,
+      retry: authenticated ? 3 : 0,
       retryDelay: (attemptIndex) =>
         Math.min(1000 * 2 ** attemptIndex, 30000),
+      enabled: authenticated,
     });
 
   useEffect(() => {
@@ -73,12 +127,23 @@ const PricingPackagesContainer: React.FC = () => {
     }
   }, [data]);
 
+  if (!authenticated) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.message}>
+          Sign in to view pricing packages
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading)
     return (
       <div className={styles.loading}>
         Loading pricing packages...
       </div>
     );
+
   if (error) {
     return (
       <div className={styles.error}>
@@ -86,14 +151,14 @@ const PricingPackagesContainer: React.FC = () => {
           onClick={() => refetch()}
           className={styles.retryButton}
         >
-          {/* Retry */}
+          Retry
         </button>
       </div>
     );
   }
 
   const packages = (data?.data ?? []).map(
-    (pkg) => {
+    (pkg: PackageData) => {
       const type =
         pkg.type || pkg.packageType || 'starter';
       const validType = [
@@ -104,11 +169,11 @@ const PricingPackagesContainer: React.FC = () => {
         'premium',
       ].includes(type)
         ? (type as
-            | 'starter'
-            | 'growth'
-            | 'enterprise'
-            | 'custom'
-            | 'premium')
+          | 'starter'
+          | 'growth'
+          | 'enterprise'
+          | 'custom'
+          | 'premium')
         : 'starter';
 
       return {
@@ -127,15 +192,22 @@ const PricingPackagesContainer: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      {packages.map((pkg) => (
-        <PricingPackageCard
-          key={pkg.id}
-          packageData={pkg}
-          onBuyNow={() => selectPackage(pkg)}
-          currency={currencyInfo.currency}
-          rate={currencyInfo.rate}
-        />
-      ))}
+      {packages.length > 0 ? (
+        packages.map((pkg: Package) => (
+          <PricingPackageCard
+            key={pkg.id}
+            packageData={pkg}
+            onBuyNow={() => selectPackage(pkg)}
+            currency={currencyInfo.currency}
+            rate={currencyInfo.rate}
+          />
+        ))
+      ) : (
+        <div className={styles.message}>
+          No pricing packages available at this
+          time.
+        </div>
+      )}
     </div>
   );
 };

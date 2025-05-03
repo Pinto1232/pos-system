@@ -11,7 +11,6 @@ export const useLogout = () => {
       await new Promise((resolve) =>
         setTimeout(resolve, 2000)
       );
-      // Redirect using window.location for client-side navigation
       window.location.href = '/';
     } catch (error) {
       console.error('Logout failed:', error);

@@ -6,15 +6,47 @@ import {
   useMutation,
   useQueryClient,
   UseMutationResult,
+  QueryKey,
 } from '@tanstack/react-query';
+
+export interface ApiResponse<T = unknown> {
+  data: T;
+  message?: string;
+  status?: number;
+}
+
+interface RequestConfig {
+  timeout?: number;
+  suppressAuthErrors?: boolean;
+}
+
+const DEFAULT_TIMEOUT = 10000;
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
-  timeout: 10000,
+  timeout: DEFAULT_TIMEOUT,
 });
 
-// Hook to setup axios interceptors
+const getErrorMessageForStatus = (
+  status: number
+): string => {
+  switch (status) {
+    case 400:
+      return 'Invalid request. Please check your input.';
+    case 401:
+      return 'Your session has expired. Please log in again.';
+    case 403:
+      return 'You do not have permission to access this resource.';
+    case 404:
+      return 'The requested resource was not found.';
+    case 500:
+      return 'The server encountered an error. Please try again later.';
+    default:
+      return 'An unexpected error occurred.';
+  }
+};
+
 const useApiClient = () => {
   const spinnerContext = useContext(
     SpinnerContext
@@ -31,6 +63,15 @@ const useApiClient = () => {
             );
             if (token) {
               config.headers.Authorization = `Bearer ${token}`;
+              console.log(
+                'Added token to request:',
+                config.url
+              );
+            } else {
+              console.log(
+                'No token available for request:',
+                config.url
+              );
             }
           } catch (error) {
             console.error(
@@ -72,10 +113,29 @@ const useApiClient = () => {
               setTimeout(resolve, 500)
             );
             spinnerContext.setLoading(false);
-            spinnerContext.setError(
-              'Failed to load data from the server.'
-            );
+
+            const suppressAuthError =
+              error.config?.suppressAuthErrors ===
+                true &&
+              error.response?.status === 401;
+
+            if (
+              !suppressAuthError &&
+              error.response
+            ) {
+              const { status, data } =
+                error.response;
+              spinnerContext.setError(
+                data?.message ||
+                  `Error (${status}): ${getErrorMessageForStatus(status)}`
+              );
+            } else if (!error.response) {
+              spinnerContext.setError(
+                'Network error. Please check your backend server connection.'
+              );
+            }
           }
+
           if (!error.response) {
             console.error(
               'Network Error or Server Unreachable:',
@@ -87,6 +147,7 @@ const useApiClient = () => {
               )
             );
           }
+
           const { status, data } = error.response;
           switch (status) {
             case 400:
@@ -99,9 +160,6 @@ const useApiClient = () => {
             case 401:
               console.warn(
                 'Unauthorized: Token may be expired.'
-              );
-              localStorage.removeItem(
-                'accessToken'
               );
               return Promise.reject(
                 new Error(
@@ -157,33 +215,51 @@ const useApiClient = () => {
   }, [spinnerContext]);
 
   const useFetchData = <TData = unknown>(
-    queryKey: string,
-    url: string
+    queryKey: QueryKey,
+    url: string,
+    config?: RequestConfig
   ) => {
     return useQuery<TData, Error>({
-      queryKey: [queryKey],
+      queryKey: Array.isArray(queryKey)
+        ? queryKey
+        : [queryKey],
       queryFn: async () => {
-        const { data } = await apiClient.get(url);
+        const { data } = await apiClient.get(
+          url,
+          {
+            timeout:
+              config?.timeout || DEFAULT_TIMEOUT,
+            suppressAuthErrors:
+              config?.suppressAuthErrors,
+          }
+        );
         return data;
       },
     });
   };
 
-  const usePostData = <TData = unknown>(
-    url: string
+  const usePostData = <
+    TData = unknown,
+    TVariables = Record<string, unknown>,
+  >(
+    url: string,
+    config?: RequestConfig
   ) => {
-    return useMutation<
-      TData,
-      Error,
-      Record<string, unknown>
-    >({
+    return useMutation<TData, Error, TVariables>({
       mutationFn: async (
-        postData: Record<string, unknown>
+        postData: TVariables
       ) => {
         const { data } =
           await apiClient.post<TData>(
             url,
-            postData
+            postData,
+            {
+              timeout:
+                config?.timeout ||
+                DEFAULT_TIMEOUT,
+              suppressAuthErrors:
+                config?.suppressAuthErrors,
+            }
           );
         return data;
       },
@@ -195,19 +271,26 @@ const useApiClient = () => {
 
   const useUpdateCustomization = <
     TData = unknown,
-  >() => {
-    return useMutation<
-      TData,
-      Error,
-      Record<string, unknown>
-    >({
+    TVariables = Record<string, unknown>,
+  >(
+    endpoint = '/api/UserCustomization',
+    config?: RequestConfig
+  ) => {
+    return useMutation<TData, Error, TVariables>({
       mutationFn: async (
-        customization: Record<string, unknown>
+        customization: TVariables
       ) => {
         const { data } =
           await apiClient.post<TData>(
-            '/api/UserCustomization',
-            customization
+            endpoint,
+            customization,
+            {
+              timeout:
+                config?.timeout ||
+                DEFAULT_TIMEOUT,
+              suppressAuthErrors:
+                config?.suppressAuthErrors,
+            }
           );
         return data;
       },
@@ -228,13 +311,25 @@ const useApiClient = () => {
 };
 
 export { apiClient, useApiClient };
-// Export useUpdateCustomization
-export const useUpdateCustomization =
-  (): UseMutationResult<
-    unknown,
-    Error,
-    Record<string, unknown>,
-    unknown
-  > => {
-    return useApiClient().useUpdateCustomization();
-  };
+
+export const useUpdateCustomization = <
+  TData = unknown,
+  TVariables = Record<string, unknown>,
+>(
+  endpoint = '/api/UserCustomization',
+  config?: RequestConfig
+): UseMutationResult<
+  TData,
+  Error,
+  TVariables,
+  unknown
+> => {
+  const {
+    useUpdateCustomization:
+      updateCustomizationHook,
+  } = useApiClient();
+  return updateCustomizationHook<
+    TData,
+    TVariables
+  >(endpoint, config);
+};
