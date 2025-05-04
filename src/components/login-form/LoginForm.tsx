@@ -121,183 +121,171 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     return (
       <>
         {!isLoggedIn && (
-          <Box
-            className={`${styles.LoginContainer} ${
-              isFadingOut ? styles.fadeOut : ''
-            }`}
-            sx={{
-              position: 'relative',
-              zIndex: isFadingOut ? 0 : 1,
-              boxShadow: isFadingOut
-                ? 'none'
-                : '0px 0px 20px rgba(0, 0, 0, 0.1)',
-              transition: 'all 0.3s ease-in-out',
-            }}
+          <div
+            className={`${styles.LoginContent} ${isFadingOut ? styles.fadeOut : ''}`}
           >
-            <Box className={styles.formBox}>
-              {onClose && (
-                <IconButton
-                  aria-label="Close login form"
-                  className={styles.closeButton}
-                  onClick={onClose}
-                >
-                  <CloseIcon />
-                </IconButton>
-              )}
-              <Box
-                className={styles.logoContainer}
+            {onClose && (
+              <IconButton
+                aria-label="Close login form"
+                className={styles.closeButton}
+                onClick={onClose}
               >
-                {logoError ? (
-                  <Box
-                    sx={{
-                      width: 60,
-                      height: 60,
-                      backgroundColor: 'grey.300',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 1,
-                      color: 'text.secondary',
-                    }}
-                  >
-                    <Typography variant="caption">
-                      Logo
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Image
-                    src="/Pisval_Logo.jpg"
-                    alt="POS Logo"
-                    width={60}
-                    height={60}
-                    className={styles.logoImage}
-                    onError={handleLogoError}
-                    priority
-                  />
-                )}
+                <CloseIcon />
+              </IconButton>
+            )}
+            <Box
+              className={styles.logoContainer}
+            >
+              {logoError ? (
+                <Box
+                  sx={{
+                    width: 60,
+                    height: 60,
+                    backgroundColor: 'grey.300',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 1,
+                    color: 'text.secondary',
+                  }}
+                >
+                  <Typography variant="caption">
+                    Logo
+                  </Typography>
+                </Box>
+              ) : (
+                <Image
+                  src="/Pisval_Logo.jpg"
+                  alt="POS Logo"
+                  width={60}
+                  height={60}
+                  className={styles.logoImage}
+                  onError={handleLogoError}
+                  priority
+                />
+              )}
+            </Box>
+
+            <Typography
+              variant="h6"
+              className={styles.heading}
+            >
+              {title}
+            </Typography>
+            <Typography
+              variant="body1"
+              className={styles.subtext}
+            >
+              {subtitle}
+            </Typography>
+
+            <form
+              className={styles.form}
+              onSubmit={handleLogin}
+            >
+              <Box mb={2}>
+                <TextField
+                  id="email"
+                  name="email"
+                  type="email"
+                  label="Email"
+                  variant="outlined"
+                  fullWidth
+                  value={email}
+                  onChange={(e) =>
+                    setEmail(e.target.value)
+                  }
+                  className={styles.textField}
+                  required
+                  InputLabelProps={{
+                    shrink:
+                      !!email || undefined,
+                  }}
+                />
               </Box>
 
-              <Typography
-                variant="h6"
-                className={styles.heading}
-              >
-                {title}
-              </Typography>
-              <Typography
-                variant="body1"
-                className={styles.subtext}
-              >
-                {subtitle}
-              </Typography>
-
-              <form
-                className={styles.form}
-                onSubmit={handleLogin}
-              >
-                <Box mb={2}>
-                  <TextField
-                    id="email"
-                    name="email"
-                    type="email"
-                    label="Email"
-                    variant="outlined"
-                    fullWidth
-                    value={email}
-                    onChange={(e) =>
-                      setEmail(e.target.value)
-                    }
-                    className={styles.textField}
-                    required
-                    InputLabelProps={{
-                      shrink:
-                        !!email || undefined,
-                    }}
-                  />
-                </Box>
-
-                <Box mb={2}>
-                  <TextField
-                    id="password"
-                    name="password"
-                    label="Password"
-                    type={
-                      showPassword
-                        ? 'text'
-                        : 'password'
-                    }
-                    variant="outlined"
-                    fullWidth
-                    value={password}
-                    onChange={(e) =>
-                      setPassword(e.target.value)
-                    }
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label={
-                              showPassword
-                                ? 'Hide password'
-                                : 'Show password'
-                            }
-                            onClick={() =>
-                              setShowPassword(
-                                !showPassword
-                              )
-                            }
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <VisibilityOffIcon />
-                            ) : (
-                              <VisibilityIcon />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    className={styles.textField}
-                    required
-                    InputLabelProps={{
-                      shrink:
-                        !!password || undefined,
-                    }}
-                  />
-                </Box>
-
-                <Box className={styles.options}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        className={
-                          styles.checkbox
-                        }
-                      />
-                    }
-                    label="Remember me"
-                    className={styles.rememberMe}
-                  />
-                  <Link
-                    href="#"
-                    className={
-                      styles.forgotPassword
-                    }
-                  >
-                    Forgot password?
-                  </Link>
-                </Box>
-
-                <Button
-                  type="submit"
-                  variant="contained"
+              <Box mb={2}>
+                <TextField
+                  id="password"
+                  name="password"
+                  label="Password"
+                  type={
+                    showPassword
+                      ? 'text'
+                      : 'password'
+                  }
+                  variant="outlined"
                   fullWidth
-                  className={styles.loginButton}
+                  value={password}
+                  onChange={(e) =>
+                    setPassword(e.target.value)
+                  }
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={
+                            showPassword
+                              ? 'Hide password'
+                              : 'Show password'
+                          }
+                          onClick={() =>
+                            setShowPassword(
+                              !showPassword
+                            )
+                          }
+                          edge="end"
+                        >
+                          {showPassword ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  className={styles.textField}
+                  required
+                  InputLabelProps={{
+                    shrink:
+                      !!password || undefined,
+                  }}
+                />
+              </Box>
+
+              <Box className={styles.options}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      className={
+                        styles.checkbox
+                      }
+                    />
+                  }
+                  label="Remember me"
+                  className={styles.rememberMe}
+                />
+                <Link
+                  href="#"
+                  className={
+                    styles.forgotPassword
+                  }
                 >
-                  {buttonText}
-                </Button>
-              </form>
-            </Box>
-          </Box>
+                  Forgot password?
+                </Link>
+              </Box>
+
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                className={styles.loginButton}
+              >
+                {buttonText}
+              </Button>
+            </form>
+          </div>
         )}
         <Snackbar
           open={snackbarOpen}
