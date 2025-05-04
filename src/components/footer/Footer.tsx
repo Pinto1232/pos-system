@@ -54,9 +54,9 @@ const Footer: React.FC = memo(() => {
                   fontSize: '16px',
                 },
                 '& .MuiOutlinedInput-notchedOutline':
-                  {
-                    border: 'none',
-                  },
+                {
+                  border: 'none',
+                },
               }}
             />
             <Button className={styles.sendButton}>
@@ -143,7 +143,7 @@ const Footer: React.FC = memo(() => {
               361 Avisco Green St,
             </Typography>
             <Typography className={styles.text}>
-              Lovasa Avenue, Los Angeles
+              Lovasa Avenue, Cape Town,
             </Typography>
             <Typography className={styles.text}>
               90251, US
