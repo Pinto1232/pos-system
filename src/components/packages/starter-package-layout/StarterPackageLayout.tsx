@@ -14,13 +14,13 @@ import {
 import iconMap from '../../../utils/icons';
 import SuccessMessage from '../../ui/success-message/SuccessMessage';
 import LazyLoginForm from '../../login-form/LoginForm';
-import CheckoutForm from '../../checkout/CheckoutForm'; 
+import CheckoutForm from '../../checkout/CheckoutForm';
 import styles from './StarterPackageLayout.module.css';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
 import {
   CheckoutField,
   OrderSummaryItem,
-} from '../../checkout/CheckoutFormInterfaces'; 
+} from '../../checkout/CheckoutFormInterfaces';
 import { useSpinner } from '@/contexts/SpinnerContext';
 
 interface StarterPackageLayoutProps {
@@ -67,8 +67,10 @@ const StarterPackageLayout: React.FC<
   const { setLoading: setSpinnerLoading } =
     useSpinner();
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarOpen, setSnackbarOpen] =
+    useState(false);
+  const [snackbarMessage, setSnackbarMessage] =
+    useState('');
 
   const IconComponent =
     iconMap[selectedPackage.icon] ||
@@ -102,11 +104,11 @@ const StarterPackageLayout: React.FC<
   ) => {
     console.log('Confirmed', isSignup);
     setSuccess(false);
-  
+
     if (isSignup) {
       setShowLoginForm(true);
     }
-    
+
     setTestPeriod(selectedPackage.testPeriodDays);
   };
 
@@ -481,11 +483,14 @@ const StarterPackageLayout: React.FC<
         open={snackbarOpen}
         autoHideDuration={4000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity="success" 
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
           sx={{ width: '100%' }}
         >
           {snackbarMessage}

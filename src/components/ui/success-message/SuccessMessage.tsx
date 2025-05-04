@@ -1,6 +1,11 @@
 'use client';
 
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import {
   Typography,
   Button,
@@ -27,11 +32,11 @@ interface SuccessMessageProps {
     id: number;
     title: string;
     type:
-    | 'starter'
-    | 'growth'
-    | 'enterprise'
-    | 'custom'
-    | 'premium';
+      | 'starter'
+      | 'growth'
+      | 'enterprise'
+      | 'custom'
+      | 'premium';
     price: number;
     currency?: string;
   };
@@ -76,16 +81,48 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
 
       useEffect(() => {
         if (open && formData) {
-          console.log('===== ORDER SUMMARY DATA =====');
-          console.log('Customer Information:', formData);
-          console.log('Selected Package:', selectedPackage);
-          console.log('Selected Features:', selectedFeatures);
-          console.log('Selected Add-ons:', selectedAddOns);
-          console.log('Usage Quantities:', usageQuantities);
-          console.log('Total Price:', calculatedPrice, currentCurrency);
-          console.log('=============================');
+          console.log(
+            '===== ORDER SUMMARY DATA ====='
+          );
+          console.log(
+            'Customer Information:',
+            formData
+          );
+          console.log(
+            'Selected Package:',
+            selectedPackage
+          );
+          console.log(
+            'Selected Features:',
+            selectedFeatures
+          );
+          console.log(
+            'Selected Add-ons:',
+            selectedAddOns
+          );
+          console.log(
+            'Usage Quantities:',
+            usageQuantities
+          );
+          console.log(
+            'Total Price:',
+            calculatedPrice,
+            currentCurrency
+          );
+          console.log(
+            '============================='
+          );
         }
-      }, [open, formData, selectedPackage, selectedFeatures, selectedAddOns, usageQuantities, calculatedPrice, currentCurrency]);
+      }, [
+        open,
+        formData,
+        selectedPackage,
+        selectedFeatures,
+        selectedAddOns,
+        usageQuantities,
+        calculatedPrice,
+        currentCurrency,
+      ]);
 
       const handleAddToCart = useCallback(() => {
         if (!selectedPackage) return;
@@ -100,8 +137,11 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
           name:
             selectedPackage.title ||
             packageType.charAt(0).toUpperCase() +
-            packageType.slice(1),
-          price: calculatedPrice || selectedPackage.price || 29.99,
+              packageType.slice(1),
+          price:
+            calculatedPrice ||
+            selectedPackage.price ||
+            29.99,
           quantity: 1,
           packageType,
           stripePriceId,
@@ -141,8 +181,14 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
       if (!open) return null;
 
       return (
-        <div className={styles.successMessageOverlay}>
-          <div className={styles.successMessageContainer}>
+        <div
+          className={styles.successMessageOverlay}
+        >
+          <div
+            className={
+              styles.successMessageContainer
+            }
+          >
             <IconButton
               className={styles.closeButton}
               onClick={onClose}
@@ -150,10 +196,16 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
               <CloseIcon />
             </IconButton>
 
-            <div className={styles.successIconContainer}>
+            <div
+              className={
+                styles.successIconContainer
+              }
+            >
               <motion.div
                 animate={{
-                  rotate: [0, 10, -10, 10, -10, 0],
+                  rotate: [
+                    0, 10, -10, 10, -10, 0,
+                  ],
                   scale: [1, 1.1, 1],
                 }}
                 transition={{
@@ -162,33 +214,55 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                   repeat: 0,
                 }}
               >
-                <CheckCircleIcon className={styles.successIcon} />
+                <CheckCircleIcon
+                  className={styles.successIcon}
+                />
               </motion.div>
             </div>
 
-            <Typography variant="h6" className={styles.successTitle}>
+            <Typography
+              variant="h6"
+              className={styles.successTitle}
+            >
               Success
             </Typography>
-            <Typography className={styles.successText}>
-              {message || 'Please proceed with payment'}
+            <Typography
+              className={styles.successText}
+            >
+              {message ||
+                'Please proceed with payment'}
             </Typography>
 
-            <div className={styles.successMessageActions}>
+            <div
+              className={
+                styles.successMessageActions
+              }
+            >
               <Button
                 variant="contained"
-                style={{ backgroundColor: '#1e3a8a' }}
+                style={{
+                  backgroundColor: '#1e3a8a',
+                }}
                 onClick={onReturn}
                 startIcon={<ArrowBackIcon />}
-                sx={{ width: '150px', whiteSpace: 'nowrap' }}
+                sx={{
+                  width: '150px',
+                  whiteSpace: 'nowrap',
+                }}
               >
                 Return
               </Button>
               <Button
                 variant="contained"
-                style={{ backgroundColor: '#1e3a8a' }}
+                style={{
+                  backgroundColor: '#1e3a8a',
+                }}
                 onClick={handleAddToCart}
                 startIcon={<HiShoppingCart />}
-                sx={{ width: '150px', whiteSpace: 'nowrap' }}
+                sx={{
+                  width: '150px',
+                  whiteSpace: 'nowrap',
+                }}
               >
                 Add to Cart
               </Button>

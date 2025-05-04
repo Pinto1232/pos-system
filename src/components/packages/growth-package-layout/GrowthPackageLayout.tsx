@@ -71,10 +71,12 @@ const GrowthPackageLayout: React.FC<
     city: '',
     postal: '',
   });
-  
+
   // Add state for notification
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarOpen, setSnackbarOpen] =
+    useState(false);
+  const [snackbarMessage, setSnackbarMessage] =
+    useState('');
 
   const IconComponent =
     iconMap[selectedPackage.icon] ||
@@ -107,20 +109,20 @@ const GrowthPackageLayout: React.FC<
   ) => {
     console.log('Confirmed', isSignup);
     setSuccess(false);
-    
+
     if (isSignup) {
       setShowLoginForm(true);
     }
-    
+
     setTestPeriod(selectedPackage.testPeriodDays);
   };
-  
+
   // Add handler for cart notification
   const handleAddToCart = (message: string) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
-  
+
   // Add handler to close snackbar
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
@@ -371,17 +373,20 @@ const GrowthPackageLayout: React.FC<
           </Grid>
         </Grid>
       )}
-      
+
       {/* Add Snackbar for notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={4000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity="success" 
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
           sx={{ width: '100%' }}
         >
           {snackbarMessage}

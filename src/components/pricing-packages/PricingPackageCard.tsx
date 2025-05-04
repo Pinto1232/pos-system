@@ -41,9 +41,12 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
       currency,
       rate,
     }) => {
-      const { isPackageDisabled } = usePackageSelection();
-      const isDisabled = isPackageDisabled(packageData.id);
-      
+      const { isPackageDisabled } =
+        usePackageSelection();
+      const isDisabled = isPackageDisabled(
+        packageData.id
+      );
+
       const IconComponent =
         iconMap[packageData.icon] ||
         iconMap['MUI:DefaultIcon'];

@@ -40,13 +40,17 @@ export function CartProvider({
 
   // Load cart items from localStorage on initial render
   useEffect(() => {
-    const storedCart = localStorage.getItem('cartItems');
+    const storedCart =
+      localStorage.getItem('cartItems');
     if (storedCart) {
       try {
         const parsedCart = JSON.parse(storedCart);
         setCartItems(parsedCart);
       } catch (error) {
-        console.error('Failed to parse cart from localStorage:', error);
+        console.error(
+          'Failed to parse cart from localStorage:',
+          error
+        );
         localStorage.removeItem('cartItems');
       }
     }
@@ -54,7 +58,10 @@ export function CartProvider({
 
   // Save cart items to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    localStorage.setItem(
+      'cartItems',
+      JSON.stringify(cartItems)
+    );
   }, [cartItems]);
 
   const addToCart = (item: CartItem) => {

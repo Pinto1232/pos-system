@@ -16,25 +16,20 @@ export async function POST(req: Request) {
     await req.json();
 
   try {
-    console.log(
-      'Received cart items:',
-      JSON.stringify(cartItems, null, 2)
-    );
-
     const lineItems = cartItems.map((item) => {
       if (
         !item.stripePriceId ||
         !item.stripePriceId.startsWith('price_')
       ) {
-        console.log(
-          `Creating custom price for ${item.name} at $${item.price}`
-        );
-
         return {
           price_data: {
             currency: 'usd',
             product_data: {
               name: item.name || 'Custom Product',
+              description: `${item.name} package with all selected features`,
+              images: [
+                `${process.env.NEXT_PUBLIC_BASE_URL}/images/product-image.png`,
+              ],
             },
             unit_amount: Math.round(
               (item.price || 0) * 100
@@ -43,21 +38,12 @@ export async function POST(req: Request) {
           quantity: item.quantity || 1,
         };
       } else {
-        console.log(
-          `Using existing price ID: ${item.stripePriceId}`
-        );
-
         return {
           price: item.stripePriceId,
           quantity: item.quantity || 1,
         };
       }
     });
-
-    console.log(
-      'Line items:',
-      JSON.stringify(lineItems, null, 2)
-    );
 
     const session =
       await stripe.checkout.sessions.create({
@@ -69,17 +55,28 @@ export async function POST(req: Request) {
         metadata: {
           cartItems: JSON.stringify(cartItems),
         },
+        billing_address_collection: 'required',
+        shipping_address_collection: {
+          allowed_countries: [
+            'US',
+            'CA',
+            'GB',
+            'AU',
+            'ZA',
+          ],
+        },
+        phone_number_collection: {
+          enabled: true,
+        },
+        allow_promotion_codes: true,
+        locale: 'auto',
       });
 
     return NextResponse.json({
       sessionId: session.id,
+      url: session.url,
     });
   } catch (error) {
-    console.error(
-      'Checkout Session Error:',
-      error
-    );
-
     if (error instanceof Error) {
       return NextResponse.json(
         { error: error.message },

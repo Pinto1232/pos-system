@@ -103,7 +103,10 @@ const CustomPackageLayoutContainer: React.FC<
     bulkDataImport: false,
   });
 
-  const [currentPackageData, setCurrentPackageData] = useState<any>(null);
+  const [
+    currentPackageData,
+    setCurrentPackageData,
+  ] = useState<any>(null);
 
   const defaultStepsCustom = React.useMemo(
     () => [
@@ -450,15 +453,15 @@ const CustomPackageLayoutContainer: React.FC<
       const calculatePrice = debounce(
         async () => {
           const requestBody: PriceCalculationRequest =
-          {
-            packageId: selectedPackage.id,
-            selectedFeatures:
-              selectedFeatures.map((f) => f.id),
-            selectedAddOns: selectedAddOns.map(
-              (a) => a.id
-            ),
-            usageLimits: usageQuantities,
-          };
+            {
+              packageId: selectedPackage.id,
+              selectedFeatures:
+                selectedFeatures.map((f) => f.id),
+              selectedAddOns: selectedAddOns.map(
+                (a) => a.id
+              ),
+              usageLimits: usageQuantities,
+            };
 
           console.log(
             'Calculating price with request body:',
@@ -564,7 +567,7 @@ const CustomPackageLayoutContainer: React.FC<
             );
             setUsageQuantities(quantities);
           }}
-          setSelectedCurrency={() => { }}
+          setSelectedCurrency={() => {}}
           enterpriseFeatures={enterpriseFeatures}
           onEnterpriseFeatureToggle={
             handleEnterpriseFeatureToggle
@@ -578,12 +581,22 @@ const CustomPackageLayoutContainer: React.FC<
         onConfirm={handleModalConfirm}
         onReturn={handleReturnToPackage}
         selectedPackage={selectedPackage}
-        currentCurrency={currentPackageData?.selectedCurrency}
+        currentCurrency={
+          currentPackageData?.selectedCurrency
+        }
         formData={currentPackageData?.formData}
-        selectedFeatures={currentPackageData?.selectedFeatures}
-        selectedAddOns={currentPackageData?.selectedAddOns}
-        usageQuantities={currentPackageData?.usageQuantities}
-        calculatedPrice={currentPackageData?.calculatedPrice}
+        selectedFeatures={
+          currentPackageData?.selectedFeatures
+        }
+        selectedAddOns={
+          currentPackageData?.selectedAddOns
+        }
+        usageQuantities={
+          currentPackageData?.usageQuantities
+        }
+        calculatedPrice={
+          currentPackageData?.calculatedPrice
+        }
       />
       <Snackbar
         open={snackbarOpen}

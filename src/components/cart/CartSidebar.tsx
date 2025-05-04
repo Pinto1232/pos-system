@@ -125,22 +125,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   const handleCheckout = async () => {
     setIsLoading(true);
     try {
-      console.log(
-        'Cart Items being sent:',
-        cartItems
-      );
-
-      cartItems.forEach((item) => {
-        console.log(
-          `Item ID: ${item.id}, stripePriceId: ${item.stripePriceId}`
-        );
-      });
-      console.log(
-        'Stripe Publishable Key:',
-        process.env
-          .NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-      );
-
       const response = await fetch(
         '/api/create-checkout-session',
         {
@@ -152,41 +136,16 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
         }
       );
 
-      console.log(
-        'Response from server:',
-        response
-      );
-
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Server Error:', errorData);
         throw new Error(
           errorData.error ||
             'Network response was not ok'
         );
       }
 
-      const { sessionId } = await response.json();
-      const stripe = await loadStripe(
-        process.env
-          .NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-      );
-
-      if (!stripe)
-        throw new Error(
-          'Stripe failed to initialize'
-        );
-
-      const { error } =
-        await stripe.redirectToCheckout({
-          sessionId,
-        });
-
-      if (error)
-        throw new Error(
-          error.message ||
-            'Redirect to checkout failed'
-        );
+      const { url } = await response.json();
+      window.location.href = url;
     } catch (error) {
       console.error('Checkout Error:', error);
       alert(

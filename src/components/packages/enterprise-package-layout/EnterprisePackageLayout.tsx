@@ -72,8 +72,10 @@ const EnterprisePackageLayout: React.FC<
     postal: '',
   });
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarOpen, setSnackbarOpen] =
+    useState(false);
+  const [snackbarMessage, setSnackbarMessage] =
+    useState('');
 
   const IconComponent =
     iconMap[selectedPackage.icon] ||
@@ -105,11 +107,11 @@ const EnterprisePackageLayout: React.FC<
   ) => {
     console.log('Confirmed', isSignup);
     setSuccess(false);
-    
+
     if (isSignup) {
       setShowLoginForm(true);
     }
-    
+
     setTestPeriod(selectedPackage.testPeriodDays);
   };
 
@@ -373,11 +375,14 @@ const EnterprisePackageLayout: React.FC<
         open={snackbarOpen}
         autoHideDuration={4000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity="success" 
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
           sx={{ width: '100%' }}
         >
           {snackbarMessage}
