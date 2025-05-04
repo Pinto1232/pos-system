@@ -61,6 +61,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     const [password, setPassword] = useState('');
     const [logoError, setLogoError] =
       useState(false);
+
     const handleLogin = async (
       event: React.FormEvent
     ) => {
@@ -83,10 +84,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       try {
         const response = await axios.post(
           'http://localhost:5107/api/auth/login',
-          {
-            email,
-            password,
-          }
+          { email, password }
         );
         const { access_token } = response.data;
         localStorage.setItem(
@@ -113,7 +111,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
     const handleLogoError = () => {
       console.warn(
-        "Logo image '/logo-placeholder.png' failed to load."
+        "Logo image '/Pisval_Logo.jpg' failed to load."
       );
       setLogoError(true);
     };
@@ -133,9 +131,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 <CloseIcon />
               </IconButton>
             )}
-            <Box
-              className={styles.logoContainer}
-            >
+            <Box className={styles.logoContainer}>
               {logoError ? (
                 <Box
                   sx={{
@@ -198,8 +194,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                   className={styles.textField}
                   required
                   InputLabelProps={{
-                    shrink:
-                      !!email || undefined,
+                    shrink: !!email || undefined,
                   }}
                 />
               </Box>
@@ -257,14 +252,23 @@ const LoginForm: React.FC<LoginFormProps> = memo(
               <Box className={styles.options}>
                 <FormControlLabel
                   control={
-                    <Checkbox
-                      className={
-                        styles.checkbox
-                      }
-                    />
+                    <Checkbox defaultChecked />
                   }
                   label="Remember me"
-                  className={styles.rememberMe}
+                  sx={{
+                    '& .MuiFormControlLabel-label':
+                      {
+                        fontSize: '0.75rem',
+                        color: '#64748b',
+                      },
+                    '& .MuiSvgIcon-root': {
+                      fontSize: '1.2rem',
+                      color: '#3b82f6',
+                    },
+                  }}
+                  className={
+                    styles.rememberMeContainer
+                  }
                 />
                 <Link
                   href="#"

@@ -63,7 +63,7 @@
   font-size: 10px;
   margin-bottom: 32px;
   line-height: 1.5;
-  width: 80%;
+  width: 70%;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -152,7 +152,8 @@
 }
 
 .form {
-  margin-top: 0;
+  margin-top: 16px;
+  width: 100;
   width: 100%;
 }
 
@@ -206,4 +207,20 @@
   .heading {
     font-size: 1.25rem !important;
   }
+}
+
+.rememberMe label {
+  color: #64748b;
+  font-size: 0.5rem;
+  text-transform: none;
+}
+
+.rememberMe .MuiCheckbox-root {
+  color: #3b82f6;
+  padding: 0;
+  margin-right: 8px;
+}
+
+.rememberMe .MuiSvgIcon-root {
+  font-size: 1.2rem;
 }
