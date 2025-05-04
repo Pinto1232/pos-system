@@ -4,6 +4,7 @@ import React, {
   useContext,
   useState,
   ReactNode,
+  useEffect,
 } from 'react';
 
 interface CartItem {
@@ -36,6 +37,25 @@ export function CartProvider({
   const [cartItems, setCartItems] = useState<
     CartItem[]
   >([]);
+
+  // Load cart items from localStorage on initial render
+  useEffect(() => {
+    const storedCart = localStorage.getItem('cartItems');
+    if (storedCart) {
+      try {
+        const parsedCart = JSON.parse(storedCart);
+        setCartItems(parsedCart);
+      } catch (error) {
+        console.error('Failed to parse cart from localStorage:', error);
+        localStorage.removeItem('cartItems');
+      }
+    }
+  }, []);
+
+  // Save cart items to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (item: CartItem) => {
     setCartItems((prev) => [...prev, item]);
