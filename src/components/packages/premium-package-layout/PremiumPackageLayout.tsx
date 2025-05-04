@@ -136,6 +136,8 @@ const PremiumPackageLayout: React.FC<
           onClose={handleCloseSuccessMessage}
           onConfirm={handleConfirmSuccessMessage}
           onReturn={handleReturnSuccessMessage}
+          selectedPackage={selectedPackage}
+          currentCurrency={currentCurrency}
         />
       )}
       {!loading && !success && (
