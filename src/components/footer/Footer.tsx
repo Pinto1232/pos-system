@@ -54,9 +54,9 @@ const Footer: React.FC = memo(() => {
                   fontSize: '16px',
                 },
                 '& .MuiOutlinedInput-notchedOutline':
-                {
-                  border: 'none',
-                },
+                  {
+                    border: 'none',
+                  },
               }}
             />
             <Button className={styles.sendButton}>
