@@ -62,8 +62,8 @@ export interface AuthContextProps {
 export const AuthContext =
   createContext<AuthContextProps>({
     token: null,
-    login: async () => {},
-    logout: async () => {},
+    login: async () => { },
+    logout: async () => { },
     authenticated: false,
     error: null,
     isInitialized: false,
@@ -334,7 +334,7 @@ const AuthProvider = ({
               );
             },
             RETRY_DELAY_MS *
-              Math.pow(2, retryCount)
+            Math.pow(2, retryCount)
           );
           return;
         }
@@ -347,7 +347,7 @@ const AuthProvider = ({
 
   const initializeAuth =
     useCallback(async (): Promise<() => void> => {
-      if (!isMounted) return () => {};
+      if (!isMounted) return () => { };
 
       const kc = keycloakRef.current;
       let refreshTimeout: NodeJS.Timeout | null =

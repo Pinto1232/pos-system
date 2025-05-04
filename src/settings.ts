@@ -2,12 +2,12 @@ import HomeIcon from '@mui/icons-material/Home';
 import { MdProductionQuantityLimits } from 'react-icons/md';
 import { RiCustomerService2Fill } from 'react-icons/ri';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { BsMegaphone } from "react-icons/bs";
 import {
   FaCreditCard,
   FaUsers,
   FaChartLine,
   FaMoneyBillWave,
-  FaPercent,
 } from 'react-icons/fa';
 import {
   TbReorder,
@@ -253,7 +253,7 @@ export const sidebarItems = [
   },
   {
     label: 'Promotions & Discounts',
-    icon: FaPercent,
+    icon: BsMegaphone,
     expandable: true,
     subItems: [
       {
