@@ -103,6 +103,11 @@ const CustomPackageLayoutContainer: React.FC<
     bulkDataImport: false,
   });
 
+  const [
+    currentPackageData,
+    setCurrentPackageData,
+  ] = useState<any>(null);
+
   const defaultStepsCustom = React.useMemo(
     () => [
       'Package Details',
@@ -413,10 +418,30 @@ const CustomPackageLayoutContainer: React.FC<
   };
 
   const handleShowSuccessMessage = (
-    message: string
+    message: string,
+    packageData?: {
+      formData?: {
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+        phone?: string;
+        address?: string;
+        country?: string;
+        state?: string;
+        city?: string;
+        zipCode?: string;
+        [key: string]: any;
+      };
+      selectedFeatures?: Feature[];
+      selectedAddOns?: AddOn[];
+      usageQuantities?: Record<number, number>;
+      calculatedPrice?: number;
+      selectedCurrency?: string;
+    }
   ) => {
     setModalMessage(message);
     setIsModalOpen(true);
+    setCurrentPackageData(packageData);
   };
 
   const handleReturnToPackage = () => {
@@ -555,6 +580,23 @@ const CustomPackageLayoutContainer: React.FC<
         message={modalMessage}
         onConfirm={handleModalConfirm}
         onReturn={handleReturnToPackage}
+        selectedPackage={selectedPackage}
+        currentCurrency={
+          currentPackageData?.selectedCurrency
+        }
+        formData={currentPackageData?.formData}
+        selectedFeatures={
+          currentPackageData?.selectedFeatures
+        }
+        selectedAddOns={
+          currentPackageData?.selectedAddOns
+        }
+        usageQuantities={
+          currentPackageData?.usageQuantities
+        }
+        calculatedPrice={
+          currentPackageData?.calculatedPrice
+        }
       />
       <Snackbar
         open={snackbarOpen}

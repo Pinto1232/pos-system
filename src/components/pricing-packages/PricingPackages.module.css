@@ -254,3 +254,29 @@
   background: #2563eb;
   box-shadow: 0 4px 12px rgba(66, 135, 245, 0.3);
 }
+
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  filter: grayscale(0.7);
+  transform: none !important;
+  box-shadow: none !important;
+  border: 1px solid #e5e7eb;
+}
+
+.disabled:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.disabled .button {
+  background: #a0a0a0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.disabled .button:hover {
+  background: #a0a0a0;
+  box-shadow: none;
+  transform: none;
+}

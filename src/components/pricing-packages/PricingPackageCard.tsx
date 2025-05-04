@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card/Card';
 import { Button } from '@/components/ui/button/Button';
 import iconMap from '@/utils/icons';
+import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 
 interface PricingPackageProps {
   packageData: {
@@ -40,6 +41,12 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
       currency,
       rate,
     }) => {
+      const { isPackageDisabled } =
+        usePackageSelection();
+      const isDisabled = isPackageDisabled(
+        packageData.id
+      );
+
       const IconComponent =
         iconMap[packageData.icon] ||
         iconMap['MUI:DefaultIcon'];
@@ -53,7 +60,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
 
       return (
         <Card
-          className={`${styles.card} ${isCustom ? styles.custom : ''}`}
+          className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''}`}
         >
           {isCustom && (
             <div className={styles.customBadge}>
@@ -111,6 +118,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
                   : ''
               }`}
               onClick={onBuyNow}
+              disabled={isDisabled}
             >
               {isCustom ? 'Buy Now' : 'Buy Now'}
             </Button>

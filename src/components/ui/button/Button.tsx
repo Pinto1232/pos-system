@@ -11,6 +11,7 @@ interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   variant?: 'contained' | 'outlined' | 'text';
   fullWidth?: boolean;
+  disabled?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -21,14 +22,16 @@ export const Button: React.FC<ButtonProps> = ({
   type = 'button',
   variant = 'contained',
   fullWidth = false,
+  disabled = false,
 }) => {
   return (
     <button
       className={`${styles.button} ${className} ${styles[variant]} ${
         fullWidth ? styles.fullWidth : ''
-      }`}
+      } ${disabled ? styles.disabled : ''}`}
       onClick={onClick}
       type={type}
+      disabled={disabled}
     >
       {startIcon && (
         <span className={styles.startIcon}>

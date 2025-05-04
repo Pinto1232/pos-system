@@ -1,10 +1,17 @@
 'use client';
 
-import React, { memo, useCallback } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import {
   Typography,
   Button,
   IconButton,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -25,15 +32,32 @@ interface SuccessMessageProps {
     id: number;
     title: string;
     type:
-    | 'starter'
-    | 'growth'
-    | 'enterprise'
-    | 'custom'
-    | 'premium';
+      | 'starter'
+      | 'growth'
+      | 'enterprise'
+      | 'custom'
+      | 'premium';
     price: number;
     currency?: string;
   };
   currentCurrency?: string;
+  formData?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    country?: string;
+    state?: string;
+    city?: string;
+    zipCode?: string;
+    [key: string]: any;
+  };
+  selectedFeatures?: Array<any>;
+  selectedAddOns?: Array<any>;
+  usageQuantities?: Record<number, number>;
+  calculatedPrice?: number;
+  onAddToCart?: (message: string) => void;
 }
 
 const SuccessMessage: React.FC<SuccessMessageProps> =
@@ -46,8 +70,59 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
       onConfirm,
       selectedPackage,
       currentCurrency = 'USD',
+      formData,
+      selectedFeatures,
+      selectedAddOns,
+      usageQuantities,
+      calculatedPrice,
+      onAddToCart,
     }) => {
       const { addToCart } = useCart();
+
+      useEffect(() => {
+        if (open && formData) {
+          console.log(
+            '===== ORDER SUMMARY DATA ====='
+          );
+          console.log(
+            'Customer Information:',
+            formData
+          );
+          console.log(
+            'Selected Package:',
+            selectedPackage
+          );
+          console.log(
+            'Selected Features:',
+            selectedFeatures
+          );
+          console.log(
+            'Selected Add-ons:',
+            selectedAddOns
+          );
+          console.log(
+            'Usage Quantities:',
+            usageQuantities
+          );
+          console.log(
+            'Total Price:',
+            calculatedPrice,
+            currentCurrency
+          );
+          console.log(
+            '============================='
+          );
+        }
+      }, [
+        open,
+        formData,
+        selectedPackage,
+        selectedFeatures,
+        selectedAddOns,
+        usageQuantities,
+        calculatedPrice,
+        currentCurrency,
+      ]);
 
       const handleAddToCart = useCallback(() => {
         if (!selectedPackage) return;
@@ -62,8 +137,11 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
           name:
             selectedPackage.title ||
             packageType.charAt(0).toUpperCase() +
-            packageType.slice(1),
-          price: selectedPackage.price || 29.99,
+              packageType.slice(1),
+          price:
+            calculatedPrice ||
+            selectedPackage.price ||
+            29.99,
           quantity: 1,
           packageType,
           stripePriceId,
@@ -71,15 +149,33 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
             currentCurrency ||
             selectedPackage.currency ||
             'USD',
+          formData,
+          selectedFeatures,
+          selectedAddOns,
+          usageQuantities,
         };
+        console.log('Adding to cart:', cartItem);
 
         addToCart?.(cartItem);
-        onConfirm(false); // Close the success message after adding to cart
+
+        const notificationMessage = `${selectedPackage.title} package added to cart!`;
+
+        if (onAddToCart) {
+          onAddToCart(notificationMessage);
+        }
+
+        onConfirm(false);
       }, [
         addToCart,
         selectedPackage,
         currentCurrency,
         onConfirm,
+        formData,
+        selectedFeatures,
+        selectedAddOns,
+        usageQuantities,
+        calculatedPrice,
+        onAddToCart,
       ]);
 
       if (!open) return null;

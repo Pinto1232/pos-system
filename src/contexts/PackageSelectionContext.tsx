@@ -28,6 +28,8 @@ type PackageSelectionContextType = {
   isModalOpen: boolean;
   selectPackage: (pkg: Package) => void;
   closeModal: () => void;
+  isPackageBeingCustomized: boolean;
+  isPackageDisabled: (pkgId: number) => boolean;
 };
 
 const PackageSelectionContext =
@@ -36,6 +38,8 @@ const PackageSelectionContext =
     isModalOpen: false,
     selectPackage: () => {},
     closeModal: () => {},
+    isPackageBeingCustomized: false,
+    isPackageDisabled: () => false,
   });
 
 export const PackageSelectionProvider: React.FC<{
@@ -45,15 +49,31 @@ export const PackageSelectionProvider: React.FC<{
     useState<Package | null>(null);
   const [isModalOpen, setIsModalOpen] =
     useState(false);
+  const [
+    isPackageBeingCustomized,
+    setIsPackageBeingCustomized,
+  ] = useState(false);
 
   const selectPackage = (pkg: Package) => {
     setSelectedPackage(pkg);
     setIsModalOpen(true);
+    setIsPackageBeingCustomized(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedPackage(null);
+    setIsPackageBeingCustomized(false);
+  };
+
+  const isPackageDisabled = (
+    pkgId: number
+  ): boolean => {
+    return (
+      isPackageBeingCustomized &&
+      selectedPackage !== null &&
+      selectedPackage.id !== pkgId
+    );
   };
 
   return (
@@ -63,6 +83,8 @@ export const PackageSelectionProvider: React.FC<{
         isModalOpen,
         selectPackage,
         closeModal,
+        isPackageBeingCustomized,
+        isPackageDisabled,
       }}
     >
       {children}

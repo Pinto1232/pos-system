@@ -9,6 +9,8 @@ import {
   Checkbox,
   FormGroup,
   FormControlLabel,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import iconMap from '../../../utils/icons';
 import SuccessMessage from '../../ui/success-message/SuccessMessage';
@@ -58,6 +60,22 @@ const EnterprisePackageLayout: React.FC<
     useState<string>(
       selectedPackage.currency || 'USD'
     );
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    country: 'USA',
+    state: 'California',
+    city: '',
+    postal: '',
+  });
+
+  const [snackbarOpen, setSnackbarOpen] =
+    useState(false);
+  const [snackbarMessage, setSnackbarMessage] =
+    useState('');
 
   const IconComponent =
     iconMap[selectedPackage.icon] ||
@@ -89,7 +107,11 @@ const EnterprisePackageLayout: React.FC<
   ) => {
     console.log('Confirmed', isSignup);
     setSuccess(false);
-    setShowLoginForm(true);
+
+    if (isSignup) {
+      setShowLoginForm(true);
+    }
+
     setTestPeriod(selectedPackage.testPeriodDays);
   };
 
@@ -102,6 +124,15 @@ const EnterprisePackageLayout: React.FC<
     currency: string
   ) => {
     setCurrentCurrency(currency);
+  };
+
+  const handleAddToCart = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   // Parse multiCurrencyPrices if provided
@@ -137,6 +168,9 @@ const EnterprisePackageLayout: React.FC<
           onReturn={handleReturnSuccessMessage}
           selectedPackage={selectedPackage}
           currentCurrency={currentCurrency}
+          formData={formData}
+          calculatedPrice={displayPrice}
+          onAddToCart={handleAddToCart}
         />
       )}
       {!loading && !success && (
@@ -337,6 +371,23 @@ const EnterprisePackageLayout: React.FC<
           </Grid>
         </Grid>
       )}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
