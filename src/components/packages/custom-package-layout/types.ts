@@ -85,7 +85,26 @@ export interface CustomPackageLayoutProps {
   selectedAddOns: AddOn[];
   usageQuantities: Record<number, number>;
   onShowSuccessMessage?: (
-    message: string
+    message: string,
+    packageData?: {
+      formData?: {
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+        phone?: string;
+        address?: string;
+        country?: string;
+        state?: string;
+        city?: string;
+        zipCode?: string;
+        [key: string]: any;
+      };
+      selectedFeatures?: Feature[];
+      selectedAddOns?: AddOn[];
+      usageQuantities?: Record<number, number>;
+      calculatedPrice?: number;
+      selectedCurrency?: string;
+    }
   ) => void;
   basePrice: number;
   calculatedPrice: number;

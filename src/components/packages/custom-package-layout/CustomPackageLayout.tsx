@@ -3488,8 +3488,19 @@ const CustomPackageLayout: React.FC<
                             if (
                               onShowSuccessMessage
                             ) {
+                              // Pass all form data to the success message
+                              const packageData = {
+                                formData,
+                                selectedFeatures,
+                                selectedAddOns,
+                                usageQuantities,
+                                calculatedPrice,
+                                selectedCurrency
+                              };
+                              
                               onShowSuccessMessage(
-                                'Package successfully configured! Proceed with payment.'
+                                'Package successfully configured! Proceed with payment.',
+                                packageData
                               );
                             }
                           }}

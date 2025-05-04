@@ -8,18 +8,20 @@ import {
   Checkbox,
   FormControlLabel,
   FormGroup,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import iconMap from '../../../utils/icons';
 import SuccessMessage from '../../ui/success-message/SuccessMessage';
 import LazyLoginForm from '../../login-form/LoginForm';
-import CheckoutForm from '../../checkout/CheckoutForm'; // Import CheckoutForm
+import CheckoutForm from '../../checkout/CheckoutForm'; 
 import styles from './StarterPackageLayout.module.css';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
 import {
   CheckoutField,
   OrderSummaryItem,
-} from '../../checkout/CheckoutFormInterfaces'; // Import interfaces
-import { useSpinner } from '@/contexts/SpinnerContext'; // Import useSpinner
+} from '../../checkout/CheckoutFormInterfaces'; 
+import { useSpinner } from '@/contexts/SpinnerContext';
 
 interface StarterPackageLayoutProps {
   selectedPackage: {
@@ -65,6 +67,9 @@ const StarterPackageLayout: React.FC<
   const { setLoading: setSpinnerLoading } =
     useSpinner();
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
   const IconComponent =
     iconMap[selectedPackage.icon] ||
     iconMap['MUI:DefaultIcon'];
@@ -97,8 +102,11 @@ const StarterPackageLayout: React.FC<
   ) => {
     console.log('Confirmed', isSignup);
     setSuccess(false);
-    setShowCheckoutForm(true);
-    setShowLoginForm(false);
+  
+    if (isSignup) {
+      setShowLoginForm(true);
+    }
+    
     setTestPeriod(selectedPackage.testPeriodDays);
   };
 
@@ -111,6 +119,15 @@ const StarterPackageLayout: React.FC<
     currency: string
   ) => {
     setCurrentCurrency(currency);
+  };
+
+  const handleAddToCart = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   const multiCurrency: Record<
@@ -209,7 +226,17 @@ const StarterPackageLayout: React.FC<
 
   const [formData, setFormData] = useState<
     Record<string, string>
-  >({});
+  >({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    country: 'USA',
+    state: 'California',
+    city: '',
+    postal: '',
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -260,6 +287,9 @@ const StarterPackageLayout: React.FC<
           onReturn={handleReturnSuccessMessage}
           selectedPackage={selectedPackage}
           currentCurrency={currentCurrency}
+          formData={formData}
+          calculatedPrice={displayPrice}
+          onAddToCart={handleAddToCart}
         />
       )}
       {!loading && !success && (
@@ -447,6 +477,20 @@ const StarterPackageLayout: React.FC<
           </Grid>
         </Grid>
       )}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity="success" 
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
