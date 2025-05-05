@@ -1,6 +1,10 @@
 'use client';
 
-import { useState, useEffect, useContext } from 'react';
+import {
+  useState,
+  useEffect,
+  useContext,
+} from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 
 interface UserInfo {
@@ -13,10 +17,15 @@ interface UserInfo {
 }
 
 export const useKeycloakUser = () => {
-  const { token, authenticated } = useContext(AuthContext);
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { token, authenticated } =
+    useContext(AuthContext);
+  const [userInfo, setUserInfo] =
+    useState<UserInfo | null>(null);
+  const [isLoading, setIsLoading] =
+    useState(true);
+  const [error, setError] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     const extractUserInfo = () => {
@@ -37,22 +46,32 @@ export const useKeycloakUser = () => {
         }
 
         // Decode the payload (second part of the token)
-        const payload = JSON.parse(atob(tokenParts[1]));
-        
+        const payload = JSON.parse(
+          atob(tokenParts[1])
+        );
+
         // Extract user information
         const extractedUserInfo: UserInfo = {
           name: payload.name || 'Unknown User',
           email: payload.email || '',
-          preferred_username: payload.preferred_username || '',
+          preferred_username:
+            payload.preferred_username || '',
           given_name: payload.given_name,
           family_name: payload.family_name,
-          sub: payload.sub
+          sub: payload.sub,
         };
 
         setUserInfo(extractedUserInfo);
       } catch (err) {
-        console.error('Error extracting user info from token:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        console.error(
+          'Error extracting user info from token:',
+          err
+        );
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Unknown error'
+        );
       } finally {
         setIsLoading(false);
       }

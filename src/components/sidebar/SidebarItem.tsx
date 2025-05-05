@@ -50,15 +50,20 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           transform: 'translateX(4px)',
           boxShadow: isActive
             ? '0 4px 12px rgba(52, 211, 153, 0.25)'
-            : 'none'
+            : 'none',
         },
         transition: 'all 0.3s ease-in-out',
-        justifyContent: isCollapsed ? 'center' : 'flex-start',
+        justifyContent: isCollapsed
+          ? 'center'
+          : 'flex-start',
         py: 1.5,
         borderRadius: '12px',
         margin: '4px 8px',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: isActive ? '0 2px 8px rgba(52, 211, 153, 0.2)' : 'none',
+        transition:
+          'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        boxShadow: isActive
+          ? '0 2px 8px rgba(52, 211, 153, 0.2)'
+          : 'none',
       }}
     >
       <ListItemIcon
@@ -74,7 +79,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             transition: 'transform 0.3s ease',
-            transform: isActive ? 'scale(1.1)' : 'scale(1)',
+            transform: isActive
+              ? 'scale(1.1)'
+              : 'scale(1)',
           },
         }}
       >
@@ -86,39 +93,54 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           <ListItemText
             primary={item.label}
             sx={{
-              color: isActive ? '#fff' : textColor,
+              color: isActive
+                ? '#fff'
+                : textColor,
               opacity: 1,
               transition: 'all 0.3s ease',
               '& .MuiTypography-root': {
                 fontWeight: isActive ? 600 : 400,
                 fontSize: '0.95rem',
-              }
+              },
             }}
           />
           {isActive && (
             <ChevronRight
               sx={{
                 color: '#fff',
-                animation: 'pulseRight 1.5s infinite ease-in-out',
+                animation:
+                  'pulseRight 1.5s infinite ease-in-out',
                 '@keyframes pulseRight': {
-                  '0%': { transform: 'translateX(0)' },
-                  '50%': { transform: 'translateX(3px)' },
-                  '100%': { transform: 'translateX(0)' }
-                }
+                  '0%': {
+                    transform: 'translateX(0)',
+                  },
+                  '50%': {
+                    transform: 'translateX(3px)',
+                  },
+                  '100%': {
+                    transform: 'translateX(0)',
+                  },
+                },
               }}
             />
           )}
           {item.expandable &&
             (isExpanded ? (
-              <ExpandLess sx={{
-                transition: 'transform 0.3s ease',
-                transform: 'rotate(0deg)'
-              }} />
+              <ExpandLess
+                sx={{
+                  transition:
+                    'transform 0.3s ease',
+                  transform: 'rotate(0deg)',
+                }}
+              />
             ) : (
-              <ExpandMore sx={{
-                transition: 'transform 0.3s ease',
-                transform: 'rotate(0deg)'
-              }} />
+              <ExpandMore
+                sx={{
+                  transition:
+                    'transform 0.3s ease',
+                  transform: 'rotate(0deg)',
+                }}
+              />
             ))}
         </>
       )}
@@ -135,16 +157,18 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           enterDelay={500}
           sx={{
             '& .MuiTooltip-tooltip': {
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              backgroundColor:
+                'rgba(0, 0, 0, 0.8)',
               color: '#fff',
               fontSize: '0.85rem',
               borderRadius: '8px',
               padding: '8px 12px',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+              boxShadow:
+                '0 4px 12px rgba(0, 0, 0, 0.15)',
             },
             '& .MuiTooltip-arrow': {
-              color: 'rgba(0, 0, 0, 0.8)'
-            }
+              color: 'rgba(0, 0, 0, 0.8)',
+            },
           }}
         >
           {listItem}
@@ -153,16 +177,20 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         listItem
       )}
 
-      {!isCollapsed && item.expandable && item.subItems && (
-        <SubItems
-          parentLabel={item.label}
-          subItems={item.subItems}
-          isExpanded={isExpanded}
-          activeItem={isActive ? item.label : ''}
-          textColor={textColor}
-          onItemClick={onItemClick}
-        />
-      )}
+      {!isCollapsed &&
+        item.expandable &&
+        item.subItems && (
+          <SubItems
+            parentLabel={item.label}
+            subItems={item.subItems}
+            isExpanded={isExpanded}
+            activeItem={
+              isActive ? item.label : ''
+            }
+            textColor={textColor}
+            onItemClick={onItemClick}
+          />
+        )}
     </>
   );
 };

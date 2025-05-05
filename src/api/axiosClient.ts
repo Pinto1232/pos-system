@@ -39,6 +39,9 @@ const apiClient = axios.create({
   timeout: DEFAULT_TIMEOUT,
 });
 
+// Log the API URL for debugging
+console.log('API Client initialized with baseURL:', process.env.NEXT_PUBLIC_API_URL);
+
 const getErrorMessageForStatus = (
   status: number
 ): string => {
@@ -361,21 +364,27 @@ const useApiClient = () => {
       mutationFn: async (
         customization: TVariables
       ) => {
-        const { data } =
-          await apiClient.post<TData>(
+        console.log('Updating customization with endpoint:', endpoint);
+        console.log('Customization data:', customization);
+
+        try {
+          const { data } = await apiClient.post<TData>(
             endpoint,
             customization,
             {
-              timeout:
-                config?.timeout ||
-                DEFAULT_TIMEOUT,
-              suppressAuthErrors:
-                config?.suppressAuthErrors,
+              timeout: config?.timeout || DEFAULT_TIMEOUT,
+              suppressAuthErrors: config?.suppressAuthErrors,
             }
           );
-        return data;
+          console.log('Customization update successful, received data:', data);
+          return data;
+        } catch (error) {
+          console.error('Error updating customization:', error);
+          throw error;
+        }
       },
       onSuccess: () => {
+        console.log('Invalidating customization queries after successful update');
         queryClient.invalidateQueries({
           queryKey: ['customization'],
         });

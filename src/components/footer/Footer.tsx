@@ -19,14 +19,21 @@ const Footer: React.FC = memo(() => {
   return (
     <Box
       sx={{
-        backgroundColor: customization?.navbarColor || '#111',
+        backgroundColor:
+          customization?.navbarColor || '#111',
         display: 'block',
         width: '100%',
         margin: 0,
         padding: 0,
       }}
     >
-      <footer className={styles.footer} style={{ backgroundColor: customization?.navbarColor || '#111' }}>
+      <footer
+        className={styles.footer}
+        style={{
+          backgroundColor:
+            customization?.navbarColor || '#111',
+        }}
+      >
         <Container maxWidth="lg">
           <Box className={styles.subscription}>
             <Typography
@@ -66,9 +73,9 @@ const Footer: React.FC = memo(() => {
                     fontSize: '16px',
                   },
                   '& .MuiOutlinedInput-notchedOutline':
-                  {
-                    border: 'none',
-                  },
+                    {
+                      border: 'none',
+                    },
                 }}
               />
               <Button

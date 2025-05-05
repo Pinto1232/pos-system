@@ -98,7 +98,9 @@ const Navbar: React.FC<NavbarProps> = memo(
           position="sticky"
           className={styles.navbar}
           sx={{
-            backgroundColor: customization?.navbarColor || '#1e3a8a'
+            backgroundColor:
+              customization?.navbarColor ||
+              '#1e3a8a',
           }}
         >
           <Toolbar

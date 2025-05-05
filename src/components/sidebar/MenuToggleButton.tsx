@@ -27,7 +27,7 @@ const MenuToggleButton: React.FC<
       alignItems: 'center',
       '&:hover': {
         bgcolor: 'rgba(255, 255, 255, 0.15)',
-        transform: 'translateX(2px)'
+        transform: 'translateX(2px)',
       },
       '&:active': {
         transform: 'scale(0.95)',

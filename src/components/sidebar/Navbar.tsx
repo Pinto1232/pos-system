@@ -76,7 +76,9 @@ const Navbar: React.FC<NavbarProps> = ({
           width: isMobile
             ? '100%'
             : `calc(100% - ${drawerWidth === 80 ? 80 : drawerWidth}px)`,
-          ml: isMobile ? 0 : `${drawerWidth === 80 ? 80 : drawerWidth}px`,
+          ml: isMobile
+            ? 0
+            : `${drawerWidth === 80 ? 80 : drawerWidth}px`,
           transition:
             'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           border: 'none',
@@ -100,29 +102,37 @@ const Navbar: React.FC<NavbarProps> = ({
             onClick={onDrawerToggle}
             sx={{
               mr: 2,
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              backgroundColor:
+                'rgba(255, 255, 255, 0.05)',
               width: 40,
               height: 40,
               borderRadius: '8px',
               transition: 'all 0.3s ease',
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                transform: 'translateX(2px)'
+                backgroundColor:
+                  'rgba(255, 255, 255, 0.15)',
+                transform: 'translateX(2px)',
               },
               '&:active': {
-                transform: 'scale(0.95)'
+                transform: 'scale(0.95)',
               },
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+              boxShadow:
+                '0 2px 8px rgba(0, 0, 0, 0.15)',
             }}
           >
-            <ChevronLeftIcon sx={{
-              fontSize: '1.5rem',
-              transition: 'transform 0.3s ease',
-              transform: drawerWidth === 80 ? 'rotate(0deg)' : 'rotate(180deg)'
-            }} />
+            <ChevronLeftIcon
+              sx={{
+                fontSize: '1.5rem',
+                transition: 'transform 0.3s ease',
+                transform:
+                  drawerWidth === 80
+                    ? 'rotate(0deg)'
+                    : 'rotate(180deg)',
+              }}
+            />
           </IconButton>
           <Box
             sx={{
