@@ -1,6 +1,7 @@
 import React, {
   useEffect,
   useState,
+  useMemo,
 } from 'react';
 import {
   Box,
@@ -210,6 +211,12 @@ const ProductTable: React.FC<
     priceFilter,
   ]);
 
+  // Calculate paginated products
+  const paginatedProducts = useMemo(() => {
+    const startIndex = page * rowsPerPage;
+    return displayProducts.slice(startIndex, startIndex + rowsPerPage);
+  }, [displayProducts, page, rowsPerPage]);
+
   const renderProductImage = (
     imageSrc: string | undefined,
     productName: string,
@@ -407,7 +414,7 @@ const ProductTable: React.FC<
           <TableHead>
             <TableRow>
               <TableCell sx={tableCellStyles}>
-                Product Name
+                Product
               </TableCell>
               <TableCell sx={tableCellStyles}>
                 ID Code
@@ -419,19 +426,16 @@ const ProductTable: React.FC<
                 Price
               </TableCell>
               <TableCell sx={tableCellStyles}>
-                Status Product
+                Status
               </TableCell>
               <TableCell sx={tableCellStyles}>
                 Rating
               </TableCell>
               <TableCell sx={tableCellStyles}>
-                Created At
+                Created
               </TableCell>
-              <TableCell
-                align="center"
-                sx={tableCellStyles}
-              >
-                View
+              <TableCell sx={tableCellStyles}>
+                Actions
               </TableCell>
             </TableRow>
           </TableHead>
@@ -441,7 +445,9 @@ const ProductTable: React.FC<
                 <TableCell
                   colSpan={8}
                   align="center"
-                  sx={{ py: 4 }}
+                  sx={{
+                    py: 8,
+                  }}
                 >
                   <Box sx={noProductsStyles}>
                     <Typography
@@ -455,13 +461,12 @@ const ProductTable: React.FC<
                       sx={noProductsSubtextStyles}
                     >
                       Try adjusting your filters
-                      or search criteria
                     </Typography>
                   </Box>
                 </TableCell>
               </TableRow>
             ) : (
-              displayProducts.map(
+              paginatedProducts.map(
                 (product, index) => (
                   <TableRow
                     key={index}
@@ -625,27 +630,17 @@ const ProductTable: React.FC<
             )}
           </TableBody>
         </Table>
-        <TablePagination
-          rowsPerPageOptions={[8]}
-          component="div"
-          count={displayProducts.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={onPageChange}
-          onRowsPerPageChange={
-            onRowsPerPageChange
-          }
-          sx={{
-            borderTop: '1px solid #e0e0e0',
-            '& .MuiTablePagination-selectLabel': {
-              fontSize: '0.875rem',
-            },
-            '& .MuiTablePagination-displayedRows':
-              {
-                fontSize: '0.875rem',
-              },
-          }}
-        />
+        {displayProducts.length > 9 && (
+          <TablePagination
+            rowsPerPageOptions={[9, 18, 27]}
+            component="div"
+            count={displayProducts.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={onPageChange}
+            onRowsPerPageChange={onRowsPerPageChange}
+          />
+        )}
       </TableContainer>
 
       {/* View Modal */}

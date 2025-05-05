@@ -8,12 +8,16 @@ import {
   IconButton,
   Avatar,
   Switch,
+  TablePagination,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
 } from '@mui/x-data-grid';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import AddIcon from '@mui/icons-material/Add';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -26,6 +30,8 @@ import {
 import * as S from './styles';
 import ProductEditModal from './ProductEditModal';
 import { useProductContext } from '@/contexts/ProductContext';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const ProductEdit: React.FC<ProductEditProps> = ({
   products,
@@ -37,8 +43,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   onCancelSession,
   subTotal,
   discount,
-  total,
-  itemNo,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  total, // Not used directly, we use totalProductsPrice instead
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  itemNo, // Not used directly, we use products.length instead
   onDeleteItem,
 }) => {
   const [isModalOpen, setIsModalOpen] =
@@ -49,6 +57,36 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     React.useState<Product | null>(null);
   const { updateProduct, addProduct } =
     useProductContext();
+
+  // Pagination state
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(9);
+
+  // Snackbar state
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+
+  // Handle page change
+  const handleChangePage = (
+    _: unknown, // Unused parameter
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  // Handle rows per page change
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // Calculate paginated products
+  const paginatedProducts = React.useMemo(() => {
+    const startIndex = page * rowsPerPage;
+    return products.slice(startIndex, startIndex + rowsPerPage);
+  }, [products, page, rowsPerPage]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -193,17 +231,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           size="small"
           sx={{
             '& .MuiSwitch-switchBase.Mui-checked':
-              {
-                color: '#52B788',
-                '&:hover': {
-                  backgroundColor:
-                    'rgba(82, 183, 136, 0.08)',
-                },
+            {
+              color: '#52B788',
+              '&:hover': {
+                backgroundColor:
+                  'rgba(82, 183, 136, 0.08)',
               },
+            },
             '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
-              {
-                backgroundColor: '#52B788',
-              },
+            {
+              backgroundColor: '#52B788',
+            },
           }}
         />
       ),
@@ -310,17 +348,109 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     );
   }, [products]);
 
-  const totalProductCount = React.useMemo(() => {
-    return products.length;
-  }, [products]);
+  // We're now using products.length directly in the UI
 
+  // Function to handle PDF export
+  const handleExportPDF = () => {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    // Add title
+    doc.setFontSize(16);
+    doc.text('Product Inventory', 14, 15);
+
+    // Add date
+    doc.setFontSize(10);
+    doc.text(
+      `Generated on: ${new Date().toLocaleDateString()}`,
+      14,
+      22
+    );
+
+    // Prepare data for the table
+    const tableData = products.map(
+      (product) => [
+        product.productName,
+        product.sku || '-',
+        product.barcode || '-',
+        `R${(product.price || 0).toFixed(2)}`,
+        product.status ? 'Active' : 'Inactive',
+        product.rating?.toString() || '-',
+        new Date(
+          product.createdAt || new Date()
+        ).toLocaleDateString(),
+      ]
+    );
+
+    // Add the table
+    autoTable(doc, {
+      startY: 30,
+      head: [
+        [
+          'Product Name',
+          'SKU',
+          'ID Code',
+          'Price',
+          'Status',
+          'Rating',
+          'Created At',
+        ],
+      ],
+      body: tableData,
+      theme: 'grid',
+      headStyles: {
+        fillColor: [30, 42, 59],
+        textColor: 255,
+        fontStyle: 'bold',
+        fontSize: 10,
+        cellPadding: 3,
+      },
+      styles: {
+        fontSize: 9,
+        cellPadding: 3,
+        overflow: 'linebreak',
+        cellWidth: 'wrap',
+      },
+      columnStyles: {
+        0: { cellWidth: 50, overflow: 'linebreak' },
+        1: { cellWidth: 25 },
+        2: { cellWidth: 25 },
+        3: { cellWidth: 20 },
+        4: { cellWidth: 20 },
+        5: { cellWidth: 15 },
+        6: { cellWidth: 25 },
+      },
+      margin: { left: 10, right: 10 },
+      tableWidth: 'auto',
+      horizontalPageBreak: true,
+      showHead: 'everyPage',
+      pageBreak: 'auto',
+    });
+
+    doc.save('product-inventory.pdf');
+
+    // Show success notification
+    setSnackbarMessage('PDF exported successfully!');
+    setSnackbarOpen(true);
+  };
+
+  // Handle closing the snackbar
+  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
+  // Use the subTotal prop if provided, otherwise calculate from products
   const calculatedSubTotal = React.useMemo(() => {
-    return totalProductsPrice;
-  }, [totalProductsPrice]);
+    return subTotal !== undefined ? subTotal : totalProductsPrice;
+  }, [totalProductsPrice, subTotal]);
 
-  const calculatedTotal = React.useMemo(() => {
-    return calculatedSubTotal - discount;
-  }, [calculatedSubTotal, discount]);
+  // We're now using totalProductsPrice directly for the total display
 
   return (
     <Box
@@ -347,9 +477,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 Inventory
               </Typography>
               <S.ExportButton
-                startIcon={<QrCodeScannerIcon />}
+                startIcon={<PictureAsPdfIcon />}
+                onClick={handleExportPDF}
               >
-                Export Product
+                Export as PDF
               </S.ExportButton>
             </S.HeaderWrapper>
           </S.HeaderSection>
@@ -416,10 +547,59 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           ) : (
             <S.ProductTable>
               <DataGrid
-                rows={products}
+                rows={paginatedProducts}
                 columns={columns}
-                autoHeight
-                hideFooter
+                sx={{
+                  height: 'auto',
+                  ...{
+                    border: 'none',
+                    '& .MuiDataGrid-root': {
+                      border: 'none',
+                    },
+                    '& .MuiDataGrid-row:hover': {
+                      backgroundColor: '#F8F9FA',
+                    },
+                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell': {
+                      borderBottomLeftRadius: 0,
+                      borderBottomRightRadius: 0,
+                    },
+                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type': {
+                      borderBottomLeftRadius: 0,
+                    },
+                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type': {
+                      borderBottomRightRadius: 0,
+                    },
+                    '& .MuiDataGrid-cell:focus': {
+                      outline: 'none',
+                    },
+                    '& .MuiDataGrid-columnHeader:focus':
+                    {
+                      outline: 'none',
+                    },
+                    '& .MuiDataGrid-main': {
+                      width: '100%',
+                      overflow: 'visible',
+                    },
+                    '& .MuiDataGrid-virtualScroller':
+                    {
+                      overflow: 'auto !important',
+                      '&::-webkit-scrollbar': {
+                        width: '8px',
+                        height: '0px',
+                      },
+                      '&::-webkit-scrollbar-track':
+                      {
+                        background: '#f1f1f1',
+                      },
+                      '&::-webkit-scrollbar-thumb':
+                      {
+                        background: '#888',
+                        borderRadius: '4px',
+                      },
+                    },
+                  }
+                }}
+                hideFooter={true}
                 disableRowSelectionOnClick
                 checkboxSelection={false}
                 disableColumnMenu
@@ -436,54 +616,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     products
                   );
                 }}
-                sx={{
-                  border: 'none',
-                  '& .MuiDataGrid-root': {
-                    border: 'none',
-                  },
-                  '& .MuiDataGrid-row:hover': {
-                    backgroundColor: '#F8F9FA',
-                  },
-                  '& .MuiDataGrid-cell:focus': {
-                    outline: 'none',
-                  },
-                  '& .MuiDataGrid-columnHeader:focus':
-                    {
-                      outline: 'none',
-                    },
-                  '& .MuiDataGrid-main': {
-                    width: '100%',
-                    overflow: 'visible',
-                  },
-                  '& .MuiDataGrid-virtualScroller':
-                    {
-                      overflow: 'auto !important',
-                      '&::-webkit-scrollbar': {
-                        width: '8px',
-                        height: '0px', // Hide horizontal scrollbar
-                      },
-                      '&::-webkit-scrollbar-track':
-                        {
-                          background: '#f1f1f1',
-                        },
-                      '&::-webkit-scrollbar-thumb':
-                        {
-                          background: '#888',
-                          borderRadius: '4px',
-                        },
-                    },
-                }}
+
                 slotProps={{
                   basePopper: {
                     sx: {
                       zIndex: 1300,
-                    },
-                  },
-                }}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 10,
                     },
                   },
                 }}
@@ -500,6 +637,57 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   return newRow;
                 }}
                 aria-label="Product inventory table"
+              />
+              <TablePagination
+                component="div"
+                count={products.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[9, 18, 27]}
+                sx={{
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '0 0 10px 10px',
+                  borderTop: '1px solid rgba(224, 224, 224, 0.5)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.03)',
+                  '& .MuiToolbar-root': {
+                    padding: '0 20px',
+                    minHeight: '56px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                  },
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                    color: 'rgba(0, 0, 0, 0.7)',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    margin: '0 8px',
+                  },
+                  '& .MuiTablePagination-select': {
+                    paddingTop: '2px',
+                    paddingBottom: '2px',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '4px',
+                    marginRight: '8px',
+                    '&:focus': {
+                      backgroundColor: '#f0f2f5',
+                    },
+                  },
+                  '& .MuiTablePagination-actions': {
+                    marginLeft: '16px',
+                    '& .MuiIconButton-root': {
+                      padding: '6px',
+                      color: 'rgba(0, 0, 0, 0.6)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                      },
+                      '&.Mui-disabled': {
+                        color: 'rgba(0, 0, 0, 0.26)',
+                      },
+                    },
+                  },
+                }}
               />
             </S.ProductTable>
           )}
@@ -527,7 +715,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                {totalProductCount}
+                {products.length} Products
               </Typography>
             </Box>
 
@@ -575,7 +763,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                R{calculatedSubTotal.toFixed(2)}
+                R{calculatedSubTotal.toFixed(2)} (Subtotal)
               </Typography>
             </Box>
 
@@ -599,7 +787,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                ${discount.toFixed(2)}
+                R{discount.toFixed(2)}
               </Typography>
             </Box>
 
@@ -623,7 +811,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                ${calculatedTotal.toFixed(2)}
+                R{totalProductsPrice.toFixed(2)} (Total Price)
               </Typography>
             </Box>
 
@@ -687,6 +875,25 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 : 'add'
           }
         />
+
+        {/* Success notification */}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={4000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+        >
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="success"
+            sx={{ width: '100%' }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </S.Container>
     </Box>
   );

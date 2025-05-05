@@ -81,12 +81,16 @@ export const ExportButton = styled(Button)({
   padding: '8px 16px',
   fontWeight: 500,
   fontSize: '14px',
+  backgroundColor: '#f8f9fa',
+  transition: 'all 0.2s ease',
   '&:hover': {
     borderColor: '#1E2A3B',
-    backgroundColor: 'transparent',
+    backgroundColor: '#e9ecef',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
   },
   '& .MuiSvgIcon-root': {
     fontSize: '20px',
+    marginRight: '4px',
   },
 });
 
@@ -140,6 +144,16 @@ export const ProductTable = styled(Box)({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
+  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell': {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type': {
+    borderBottomLeftRadius: 0,
+  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type': {
+    borderBottomRightRadius: 0,
   },
   '& .MuiCheckbox-root': {
     color: '#1E2A3B',
