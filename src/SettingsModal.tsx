@@ -120,7 +120,6 @@ const SettingsModal: React.FC<
       }
     }, [data, open]);
 
-    // Add effect for file handling
     useEffect(() => {
       if (selectedFile) {
         const previewUrl =
