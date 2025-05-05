@@ -143,29 +143,66 @@ const Navbar: React.FC<NavbarProps> = ({
             }}
           >
             <NotificationDropdown />
-            <Typography
-              variant="body1"
-              sx={{ cursor: 'pointer' }}
-            >
-              <FiUser
-                style={{
-                  border: '2px solid #ffffff',
-                  padding: '5px',
-                  borderRadius: '50%',
-                  cursor: 'pointer',
-                  fontSize: isMobile
-                    ? '1.5rem'
-                    : '1.9rem',
-                }}
-              />
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{ cursor: 'pointer' }}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                cursor: 'pointer',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  backgroundColor:
+                    'rgba(255, 255, 255, 0.1)',
+                },
+              }}
               onClick={handleClick}
             >
-              Profile
-            </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: isMobile
+                    ? '32px'
+                    : '36px',
+                  height: isMobile
+                    ? '32px'
+                    : '36px',
+                  borderRadius: '50%',
+                  backgroundColor:
+                    'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(8px)',
+                  boxShadow:
+                    '0 2px 6px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <FiUser
+                  style={{
+                    fontSize: isMobile
+                      ? '1.1rem'
+                      : '1.3rem',
+                    color: '#ffffff',
+                  }}
+                />
+              </Box>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 500,
+                  fontSize: isMobile
+                    ? '0.875rem'
+                    : '0.95rem',
+                  display: {
+                    xs: 'none',
+                    sm: 'block',
+                  },
+                }}
+              >
+                Profile
+              </Typography>
+            </Box>
             <Menu
               anchorEl={anchorEl}
               open={open}
@@ -178,47 +215,206 @@ const Navbar: React.FC<NavbarProps> = ({
                 horizontal: 'right',
                 vertical: 'bottom',
               }}
+              slotProps={{
+                paper: {
+                  style: {
+                    transition:
+                      'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  },
+                },
+              }}
+              transitionDuration={{
+                enter: 250,
+                exit: 200,
+              }}
               sx={{
-                marginTop: '25px',
+                marginTop: '10px',
                 '& .MuiPaper-root': {
-                  minWidth: '200px',
+                  minWidth: '220px',
                   maxHeight: '400px',
                   overflowY: 'auto',
+                  borderRadius: '12px',
+                  boxShadow:
+                    '0 8px 24px rgba(0,0,0,0.12)',
+                  animation:
+                    'fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  overflow: 'hidden',
+                  border:
+                    '1px solid rgba(0,0,0,0.05)',
+                  transform: 'translateY(0)',
+                  opacity: 1,
+                  transition:
+                    'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                 },
                 '& .MuiList-root': {
-                  padding: 0,
+                  padding: '8px',
+                },
+                '@keyframes fadeIn': {
+                  from: {
+                    opacity: 0,
+                    transform:
+                      'translateY(-12px) scale(0.98)',
+                  },
+                  to: {
+                    opacity: 1,
+                    transform:
+                      'translateY(0) scale(1)',
+                  },
                 },
               }}
             >
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
+              <MenuItem
+                onClick={handleClose}
+                sx={{
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  margin: '2px 0',
+                  transition: 'all 0.15s ease',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animationDelay: '0.05s',
+                  opacity: 0,
+                  transform: 'translateY(8px)',
+                  '&:hover': {
+                    backgroundColor:
+                      'rgba(0,0,0,0.04)',
+                    transform: 'translateY(-1px)',
+                  },
+                  '@keyframes fadeInItem': {
+                    from: {
+                      opacity: 0,
+                      transform:
+                        'translateY(8px)',
+                    },
+                    to: {
+                      opacity: 1,
+                      transform: 'translateY(0)',
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: '36px',
+                    color: '#64748b',
+                  }}
+                >
                   <FiUser fontSize="small" />
                 </ListItemIcon>
-                My Profile
+                <Typography
+                  sx={{
+                    fontWeight: 500,
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  My Profile
+                </Typography>
               </MenuItem>
+
               <MenuItem
                 onClick={handleSettingsClick}
+                sx={{
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  margin: '2px 0',
+                  transition: 'all 0.15s ease',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animationDelay: '0.1s',
+                  opacity: 0,
+                  transform: 'translateY(8px)',
+                  '&:hover': {
+                    backgroundColor:
+                      'rgba(0,0,0,0.04)',
+                    transform: 'translateY(-1px)',
+                  },
+                  '@keyframes fadeInItem': {
+                    from: {
+                      opacity: 0,
+                      transform:
+                        'translateY(8px)',
+                    },
+                    to: {
+                      opacity: 1,
+                      transform: 'translateY(0)',
+                    },
+                  },
+                }}
               >
-                <ListItemIcon>
+                <ListItemIcon
+                  sx={{
+                    minWidth: '36px',
+                    color: '#64748b',
+                  }}
+                >
                   <FiSettings fontSize="small" />
                 </ListItemIcon>
-                Settings
+                <Typography
+                  sx={{
+                    fontWeight: 500,
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  Settings
+                </Typography>
               </MenuItem>
+
+              <Box
+                sx={{
+                  padding: '0 8px',
+                  my: 1,
+                  borderTop:
+                    '1px solid rgba(0,0,0,0.06)',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animationDelay: '0.15s',
+                  opacity: 0,
+                  '@keyframes fadeInItem': {
+                    from: {
+                      opacity: 0,
+                    },
+                    to: {
+                      opacity: 1,
+                    },
+                  },
+                }}
+              />
+
               <MenuItem
                 onClick={handleLogout}
                 disabled={isLoggingOut}
                 sx={{
                   backgroundColor: '#173a79',
                   color: 'white',
-                  padding: '8px 16px',
-                  margin: 0,
-                  borderRadius: 0,
+                  padding: '10px 16px',
+                  margin: '2px 0',
+                  borderRadius: '8px',
+                  transition: 'all 0.2s ease',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animationDelay: '0.2s',
+                  opacity: 0,
+                  transform: 'translateY(8px)',
                   '&:hover': {
                     backgroundColor: '#1a4589',
+                    transform: 'translateY(-1px)',
+                    boxShadow:
+                      '0 4px 12px rgba(23, 58, 121, 0.2)',
                   },
                   '&.Mui-disabled': {
                     opacity: 0.7,
                     color: 'white',
+                  },
+                  '@keyframes fadeInItem': {
+                    from: {
+                      opacity: 0,
+                      transform:
+                        'translateY(8px)',
+                    },
+                    to: {
+                      opacity: 1,
+                      transform: 'translateY(0)',
+                    },
                   },
                 }}
               >
@@ -237,13 +433,25 @@ const Navbar: React.FC<NavbarProps> = ({
                   </Box>
                 ) : (
                   <>
-                    <ListItemIcon>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: '36px',
+                        color: 'white',
+                      }}
+                    >
                       <FiLogOut
                         fontSize="small"
                         style={{ color: 'white' }}
                       />
                     </ListItemIcon>
-                    Logout
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: '0.95rem',
+                      }}
+                    >
+                      Logout
+                    </Typography>
                   </>
                 )}
               </MenuItem>

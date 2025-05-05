@@ -1070,10 +1070,9 @@ const Sales: React.FC<SalesProps> = ({
               elevation={0}
               sx={{
                 p: { xs: 1, sm: 2 },
-                backgroundColor: '#ffffff',
+                backgroundColor: 'transparent',
                 borderRadius: '12px',
-                border:
-                  '1px solid rgba(0, 0, 0, 0.08)',
+                border: 'none',
               }}
             >
               <Stack spacing={1}>

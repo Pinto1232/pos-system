@@ -1,17 +1,23 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import {
   useNotifications,
   useMarkNotificationsAsRead,
   useMarkAllNotificationsAsRead,
   useCreateNotification,
-  useUnreadNotificationsCount
+  useUnreadNotificationsCount,
 } from '@/hooks/useNotifications';
 import {
   Notification,
   NotificationFilters,
-  CreateNotificationRequest
+  CreateNotificationRequest,
 } from '@/types/notification';
 
 interface NotificationContextType {
@@ -20,48 +26,68 @@ interface NotificationContextType {
   totalCount: number;
   isLoading: boolean;
   error: Error | null;
-  markAsRead: (notificationIds: string[]) => Promise<void>;
+  markAsRead: (
+    notificationIds: string[]
+  ) => Promise<void>;
   markAllAsRead: () => Promise<void>;
-  createNotification: (notification: CreateNotificationRequest) => Promise<Notification>;
+  createNotification: (
+    notification: CreateNotificationRequest
+  ) => Promise<Notification>;
   refreshNotifications: () => void;
   filters: NotificationFilters;
-  setFilters: (filters: NotificationFilters) => void;
+  setFilters: (
+    filters: NotificationFilters
+  ) => void;
 }
 
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+const NotificationContext = createContext<
+  NotificationContextType | undefined
+>(undefined);
 
-export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [filters, setFilters] = useState<NotificationFilters>({ limit: 10 });
+export const NotificationProvider: React.FC<{
+  children: ReactNode;
+}> = ({ children }) => {
+  const [filters, setFilters] =
+    useState<NotificationFilters>({ limit: 10 });
 
   // Fetch notifications with filters
-  const {
-    data,
-    isLoading,
-    error,
-    refetch
-  } = useNotifications(filters);
+  const { data, isLoading, error, refetch } =
+    useNotifications(filters);
 
   // Get unread count
-  const unreadCountQuery = useUnreadNotificationsCount();
+  const unreadCountQuery =
+    useUnreadNotificationsCount();
 
   // Mutations
-  const markAsReadMutation = useMarkNotificationsAsRead();
-  const markAllAsReadMutation = useMarkAllNotificationsAsRead();
-  const createNotificationMutation = useCreateNotification();
+  const markAsReadMutation =
+    useMarkNotificationsAsRead();
+  const markAllAsReadMutation =
+    useMarkAllNotificationsAsRead();
+  const createNotificationMutation =
+    useCreateNotification();
 
   // Mark notifications as read
-  const markAsRead = async (notificationIds: string[]): Promise<void> => {
-    await markAsReadMutation.mutateAsync({ notificationIds });
+  const markAsRead = async (
+    notificationIds: string[]
+  ): Promise<void> => {
+    await markAsReadMutation.mutateAsync({
+      notificationIds,
+    });
   };
 
   // Mark all notifications as read
-  const markAllAsRead = async (): Promise<void> => {
-    await markAllAsReadMutation.mutateAsync();
-  };
+  const markAllAsRead =
+    async (): Promise<void> => {
+      await markAllAsReadMutation.mutateAsync();
+    };
 
   // Create a new notification
-  const addNotification = async (notification: CreateNotificationRequest): Promise<Notification> => {
-    return await createNotificationMutation.mutateAsync(notification);
+  const addNotification = async (
+    notification: CreateNotificationRequest
+  ): Promise<Notification> => {
+    return await createNotificationMutation.mutateAsync(
+      notification
+    );
   };
 
   // Refresh notifications
@@ -90,7 +116,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     createNotification: addNotification,
     refreshNotifications,
     filters,
-    setFilters
+    setFilters,
   };
 
   return (
@@ -100,10 +126,15 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   );
 };
 
-export const useNotificationContext = (): NotificationContextType => {
-  const context = useContext(NotificationContext);
-  if (context === undefined) {
-    throw new Error('useNotificationContext must be used within a NotificationProvider');
-  }
-  return context;
-};
+export const useNotificationContext =
+  (): NotificationContextType => {
+    const context = useContext(
+      NotificationContext
+    );
+    if (context === undefined) {
+      throw new Error(
+        'useNotificationContext must be used within a NotificationProvider'
+      );
+    }
+    return context;
+  };

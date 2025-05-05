@@ -114,3 +114,14 @@ a {
 .MuiStepConnector-line {
   margin-top: 3px !important;
 }
+
+/* Override for specific MuiDialogContent-root that causes issues */
+.MuiDialogContent-root.css-kw13he-MuiDialogContent-root {
+  display: none !important;
+}
+
+/* Make sure login dialog is visible */
+.MuiDialog-root .MuiDialog-container .MuiPaper-root {
+  background-color: #ffffff !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+}

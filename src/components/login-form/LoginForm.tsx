@@ -15,7 +15,7 @@ import {
   Alert,
   InputAdornment,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Image from 'next/image';
@@ -33,7 +33,6 @@ interface LoginFormProps {
     email: string,
     password: string
   ) => void;
-  onClose?: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = memo(
@@ -42,10 +41,10 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     subtitle = 'Please enter your credentials to access your account',
     buttonText = 'Sign In',
     onSubmit,
-    onClose,
   }) => {
     const router = useRouter();
-    const { setLoading } = useSpinner();
+    const { startLoading, stopLoading } =
+      useSpinner();
     const [error, setError] = useState<
       string | null
     >(null);
@@ -66,14 +65,15 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       event: React.FormEvent
     ) => {
       event.preventDefault();
+
+      startLoading({ timeout: 8000 });
       setIsFadingOut(true);
-      setLoading(true);
 
       if (!email || !password) {
         setError('Please fill in all fields');
         setSnackbarOpen(true);
         setIsFadingOut(false);
-        setLoading(false);
+        stopLoading();
         return;
       }
 
@@ -86,17 +86,20 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           'http://localhost:5107/api/auth/login',
           { email, password }
         );
+
         const { access_token } = response.data;
         localStorage.setItem(
           'accessToken',
           access_token
         );
-        console.log(
-          'Login successful:',
-          response.data
-        );
-        setIsFadingOut(false);
+
         setIsLoggedIn(true);
+        setIsFadingOut(false);
+
+        sessionStorage.setItem(
+          'freshLogin',
+          'true'
+        );
         router.push('/dashboard');
       } catch (err) {
         console.error('Login failed:', err);
@@ -105,7 +108,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
         );
         setSnackbarOpen(true);
         setIsFadingOut(false);
-        setLoading(false);
+        stopLoading();
       }
     };
 
@@ -122,15 +125,6 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           <div
             className={`${styles.LoginContent} ${isFadingOut ? styles.fadeOut : ''}`}
           >
-            {onClose && (
-              <IconButton
-                aria-label="Close login form"
-                className={styles.closeButton}
-                onClick={onClose}
-              >
-                <CloseIcon />
-              </IconButton>
-            )}
             <Box className={styles.logoContainer}>
               {logoError ? (
                 <Box
@@ -193,8 +187,11 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                   }
                   className={styles.textField}
                   required
-                  InputLabelProps={{
-                    shrink: !!email || undefined,
+                  slotProps={{
+                    inputLabel: {
+                      shrink:
+                        !!email || undefined,
+                    },
                   }}
                 />
               </Box>
@@ -215,37 +212,39 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                   onChange={(e) =>
                     setPassword(e.target.value)
                   }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label={
-                            showPassword
-                              ? 'Hide password'
-                              : 'Show password'
-                          }
-                          onClick={() =>
-                            setShowPassword(
-                              !showPassword
-                            )
-                          }
-                          edge="end"
-                        >
-                          {showPassword ? (
-                            <VisibilityOffIcon />
-                          ) : (
-                            <VisibilityIcon />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label={
+                              showPassword
+                                ? 'Hide password'
+                                : 'Show password'
+                            }
+                            onClick={() =>
+                              setShowPassword(
+                                !showPassword
+                              )
+                            }
+                            edge="end"
+                          >
+                            {showPassword ? (
+                              <VisibilityOffIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    },
+                    inputLabel: {
+                      shrink:
+                        !!password || undefined,
+                    },
                   }}
                   className={styles.textField}
                   required
-                  InputLabelProps={{
-                    shrink:
-                      !!password || undefined,
-                  }}
                 />
               </Box>
 

@@ -3,6 +3,7 @@
   z-index: 1;
   text-align: center;
   padding: 32px;
+  padding-top: 40px;
   margin: 0 auto;
   max-width: 400px;
   overflow: visible;
@@ -11,19 +12,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.closeButton {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  color: #64748b !important;
-  z-index: 1000;
-  transition: color 0.2s ease;
-}
-
-.closeButton:hover {
-  color: #1e293b !important;
+  background-color: white;
+  border-radius: 16px;
 }
 
 .logoContainer {
@@ -32,6 +22,7 @@
   justify-content: center;
   margin-bottom: 24px;
   width: 100%;
+  position: relative;
 }
 
 .logoImage {
@@ -40,6 +31,7 @@
   height: 60px;
   border-radius: 50%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: -10px;
 }
 
 .logoText {
