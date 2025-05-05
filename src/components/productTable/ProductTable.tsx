@@ -1,4 +1,7 @@
-import React from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 import {
   Box,
   Table,
@@ -35,6 +38,7 @@ import {
   FiRefreshCw,
 } from 'react-icons/fi';
 import { ProductTableProps } from './types';
+import { useProductContext } from '@/contexts/ProductContext';
 import {
   containerStyles,
   titleStyles,
@@ -108,7 +112,7 @@ const prices = [
 const ProductTable: React.FC<
   ProductTableProps
 > = ({
-  products,
+  products: propProducts,
   filteredProducts,
   selectedProduct,
   isViewModalOpen,
@@ -132,6 +136,80 @@ const ProductTable: React.FC<
   onResetFilters,
   onExportPDF,
 }) => {
+  // Get products from context for real-time updates
+  const { products: contextProducts } =
+    useProductContext();
+
+  // Use context products if available, otherwise fall back to prop products
+  const [displayProducts, setDisplayProducts] =
+    useState(propProducts);
+
+  // Update displayProducts whenever contextProducts or propProducts change
+  useEffect(() => {
+    if (
+      contextProducts &&
+      contextProducts.length > 0
+    ) {
+      // Apply the same filters that would be applied to propProducts
+      // This ensures we're showing the same filtered view but with updated data
+      const updatedFilteredProducts =
+        contextProducts
+          .map((product) => {
+            // Ensure each product has both status and statusProduct fields properly set
+            return {
+              ...product,
+              status: product.status,
+              statusProduct: product.status
+                ? 'Active'
+                : 'Inactive',
+            };
+          })
+          .filter((product) => {
+            // Apply the same filtering logic as in the parent component
+            if (
+              searchQuery &&
+              !product.productName
+                .toLowerCase()
+                .includes(
+                  searchQuery.toLowerCase()
+                )
+            ) {
+              return false;
+            }
+            if (
+              categoryFilter !== 'All' &&
+              product.color !== categoryFilter
+            ) {
+              return false;
+            }
+            // Add other filters as needed
+            return true;
+          });
+
+      setDisplayProducts(updatedFilteredProducts);
+    } else {
+      // Ensure all products have both status and statusProduct fields properly set
+      const updatedFilteredProducts =
+        filteredProducts.map((product) => ({
+          ...product,
+          status: product.status,
+          statusProduct: product.status
+            ? 'Active'
+            : 'Inactive',
+        }));
+      setDisplayProducts(updatedFilteredProducts);
+    }
+  }, [
+    contextProducts,
+    propProducts,
+    filteredProducts,
+    searchQuery,
+    categoryFilter,
+    ratingFilter,
+    statusFilter,
+    priceFilter,
+  ]);
+
   const renderProductImage = (
     imageSrc: string | undefined,
     productName: string,
@@ -358,7 +436,7 @@ const ProductTable: React.FC<
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.length === 0 ? (
+            {displayProducts.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={8}
@@ -383,166 +461,174 @@ const ProductTable: React.FC<
                 </TableCell>
               </TableRow>
             ) : (
-              products.map((product, index) => (
-                <TableRow
-                  key={index}
-                  hover
-                  onClick={() => onView(product)}
-                  sx={{
-                    cursor: 'pointer',
-                    '&:hover': {
-                      backgroundColor:
-                        'rgba(0, 0, 0, 0.04)',
-                    },
-                  }}
-                >
-                  <TableCell>
-                    <Stack
-                      direction="row"
-                      spacing={2}
-                      alignItems="center"
-                    >
-                      <Box
-                        sx={productImageStyles}
+              displayProducts.map(
+                (product, index) => (
+                  <TableRow
+                    key={index}
+                    hover
+                    onClick={() =>
+                      onView(product)
+                    }
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor:
+                          'rgba(0, 0, 0, 0.04)',
+                      },
+                    }}
+                  >
+                    <TableCell>
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        alignItems="center"
                       >
-                        {renderProductImage(
-                          product.image,
-                          product.productName,
-                          40,
-                          40
-                        )}
-                      </Box>
+                        <Box
+                          sx={productImageStyles}
+                        >
+                          {renderProductImage(
+                            product.image,
+                            product.productName,
+                            40,
+                            40
+                          )}
+                        </Box>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          alignItems="center"
+                        >
+                          <Typography variant="body1">
+                            {product.productName}
+                          </Typography>
+                          {product.color && (
+                            <Chip
+                              label={
+                                product.color
+                              }
+                              size="small"
+                              sx={{
+                                height: 20,
+                                minWidth: 60,
+                                padding:
+                                  '2px 4px',
+                                fontSize:
+                                  '0.7rem',
+                                fontWeight: 500,
+                                display: 'flex',
+                                alignItems:
+                                  'center',
+                                justifyContent:
+                                  'center',
+                                bgcolor:
+                                  getColorStyles(
+                                    product.color
+                                  ).bg,
+                                color:
+                                  getColorStyles(
+                                    product.color
+                                  ).text,
+                                border:
+                                  '1px solid #e2e8f0',
+                              }}
+                            />
+                          )}
+                        </Stack>
+                      </Stack>
+                    </TableCell>
+                    <TableCell>
+                      {product.barcode}
+                    </TableCell>
+                    <TableCell>
+                      {product.sku || '-'}
+                    </TableCell>
+                    <TableCell>
+                      R
+                      {(
+                        product.price || 0
+                      ).toFixed(2)}
+                    </TableCell>
+                    <TableCell>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={
+                              product.status ??
+                              false
+                            }
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              onStatusToggle(
+                                product
+                              );
+                            }}
+                            sx={switchStyles}
+                            size="small"
+                          />
+                        }
+                        label={
+                          <Typography
+                            sx={statusTextStyles(
+                              product.status ??
+                                false
+                            )}
+                          >
+                            {product.status
+                              ? 'In Stock'
+                              : 'Out of Stock'}
+                          </Typography>
+                        }
+                        onClick={(e) =>
+                          e.stopPropagation()
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Rating
+                        value={product.rating}
+                        readOnly
+                        precision={0.5}
+                        size="medium"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {new Date(
+                        product.createdAt
+                      ).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
                       <Stack
                         direction="row"
                         spacing={1}
-                        alignItems="center"
+                        justifyContent="center"
                       >
-                        <Typography variant="body1">
-                          {product.productName}
-                        </Typography>
-                        {product.color && (
-                          <Chip
-                            label={product.color}
-                            size="small"
-                            sx={{
-                              height: 20,
-                              minWidth: 60,
-                              padding: '2px 4px',
-                              fontSize: '0.7rem',
-                              fontWeight: 500,
-                              display: 'flex',
-                              alignItems:
-                                'center',
-                              justifyContent:
-                                'center',
-                              bgcolor:
-                                getColorStyles(
-                                  product.color
-                                ).bg,
-                              color:
-                                getColorStyles(
-                                  product.color
-                                ).text,
-                              border:
-                                '1px solid #e2e8f0',
-                            }}
-                          />
-                        )}
-                      </Stack>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    {product.barcode}
-                  </TableCell>
-                  <TableCell>
-                    {product.sku || '-'}
-                  </TableCell>
-                  <TableCell>
-                    R
-                    {(product.price || 0).toFixed(
-                      2
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={
-                            product.status ??
-                            false
+                        <IconButton
+                          size="medium"
+                          onClick={() =>
+                            onView(product)
                           }
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            onStatusToggle(
-                              product
-                            );
+                          sx={{
+                            color: 'primary.main',
+                            '&:hover': {
+                              backgroundColor:
+                                'primary.lighter',
+                            },
                           }}
-                          sx={switchStyles}
-                          size="small"
-                        />
-                      }
-                      label={
-                        <Typography
-                          sx={statusTextStyles(
-                            product.status ??
-                              false
-                          )}
                         >
-                          {product.status
-                            ? 'In Stock'
-                            : 'Out of Stock'}
-                        </Typography>
-                      }
-                      onClick={(e) =>
-                        e.stopPropagation()
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Rating
-                      value={product.rating}
-                      readOnly
-                      precision={0.5}
-                      size="medium"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {new Date(
-                      product.createdAt
-                    ).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      justifyContent="center"
-                    >
-                      <IconButton
-                        size="medium"
-                        onClick={() =>
-                          onView(product)
-                        }
-                        sx={{
-                          color: 'primary.main',
-                          '&:hover': {
-                            backgroundColor:
-                              'primary.lighter',
-                          },
-                        }}
-                      >
-                        <FiEye size={20} />
-                      </IconButton>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))
+                          <FiEye size={20} />
+                        </IconButton>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                )
+              )
             )}
           </TableBody>
         </Table>
         <TablePagination
           rowsPerPageOptions={[8]}
           component="div"
-          count={filteredProducts.length}
+          count={displayProducts.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={onPageChange}

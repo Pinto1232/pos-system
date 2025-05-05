@@ -25,6 +25,7 @@ import {
 } from './types';
 import * as S from './styles';
 import ProductEditModal from './ProductEditModal';
+import { useProductContext } from '@/contexts/ProductContext';
 
 const ProductEdit: React.FC<ProductEditProps> = ({
   products,
@@ -46,6 +47,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     React.useState<Product | null>(null);
   const [editingProduct, setEditingProduct] =
     React.useState<Product | null>(null);
+  const { updateProduct, addProduct } =
+    useProductContext();
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -78,10 +81,24 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       'ProductEdit - Received data from modal:',
       data
     );
+
+    const productWithStatus = {
+      ...data,
+      status: data.status,
+      statusProduct: data.status
+        ? 'Active'
+        : 'Inactive',
+    };
+
     if (editingProduct) {
-      onUpdateItem(data);
+      onUpdateItem(productWithStatus);
+      updateProduct(productWithStatus);
     } else {
-      onAddItem(data, handleCloseModal);
+      onAddItem(
+        productWithStatus,
+        handleCloseModal
+      );
+      addProduct(productWithStatus);
     }
     handleCloseModal();
   };
@@ -167,8 +184,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               statusProduct: e.target.checked
                 ? 'Active'
                 : 'Inactive',
+              status: e.target.checked,
             };
             onUpdateItem(updatedProduct);
+            updateProduct(updatedProduct);
           }}
           color="primary"
           size="small"
@@ -282,6 +301,26 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       ),
     },
   ];
+
+  const totalProductsPrice = React.useMemo(() => {
+    return products.reduce(
+      (sum, product) =>
+        sum + (product.price || 0),
+      0
+    );
+  }, [products]);
+
+  const totalProductCount = React.useMemo(() => {
+    return products.length;
+  }, [products]);
+
+  const calculatedSubTotal = React.useMemo(() => {
+    return totalProductsPrice;
+  }, [totalProductsPrice]);
+
+  const calculatedTotal = React.useMemo(() => {
+    return calculatedSubTotal - discount;
+  }, [calculatedSubTotal, discount]);
 
   return (
     <Box
@@ -488,7 +527,31 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                {itemNo}
+                {totalProductCount}
+              </Typography>
+            </Box>
+
+            <Box>
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                gutterBottom
+                sx={{
+                  fontSize: '13px',
+                  marginBottom: '8px',
+                }}
+              >
+                Total Products Price
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '24px',
+                  color: '#1E2A3B',
+                }}
+              >
+                R{totalProductsPrice.toFixed(2)}
               </Typography>
             </Box>
 
@@ -512,7 +575,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                R{subTotal.toFixed(2)}
+                R{calculatedSubTotal.toFixed(2)}
               </Typography>
             </Box>
 
@@ -560,7 +623,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                ${total.toFixed(2)}
+                ${calculatedTotal.toFixed(2)}
               </Typography>
             </Box>
 
