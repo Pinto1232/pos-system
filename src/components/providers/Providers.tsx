@@ -36,9 +36,13 @@ const defaultQueryOptions: DefaultOptions = {
 
       return failureCount < 3;
     },
-
     staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+  },
+  mutations: {
+    retry: 2,
   },
 };
 
@@ -52,7 +56,7 @@ queryClient.getQueryCache().subscribe((event) => {
     event.query.state.status === 'error'
   ) {
     console.error(
-      'A query error occurred:',
+      `Query error [${event.query.queryKey.join(',')}]:`,
       event.query.state.error
     );
   }

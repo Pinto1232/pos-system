@@ -21,6 +21,17 @@ interface RequestConfig {
 }
 
 const DEFAULT_TIMEOUT = 10000;
+const CACHE_MAX_AGE = 5 * 60 * 1000;
+
+interface CacheEntry<T = unknown> {
+  data: T;
+  timestamp: number;
+}
+
+const requestCache = new Map<
+  string,
+  CacheEntry
+>();
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -217,13 +228,34 @@ const useApiClient = () => {
   const useFetchData = <TData = unknown>(
     queryKey: QueryKey,
     url: string,
-    config?: RequestConfig
+    config?: RequestConfig & {
+      skipCache?: boolean;
+      cacheTTL?: number;
+    }
   ) => {
     return useQuery<TData, Error>({
       queryKey: Array.isArray(queryKey)
         ? queryKey
         : [queryKey],
       queryFn: async () => {
+        if (!config?.skipCache) {
+          const cacheKey = `${url}-${JSON.stringify(queryKey)}`;
+          const cachedResponse =
+            requestCache.get(cacheKey);
+
+          if (
+            cachedResponse &&
+            Date.now() -
+              cachedResponse.timestamp <
+              (config?.cacheTTL || CACHE_MAX_AGE)
+          ) {
+            console.log(`Cache hit for ${url}`);
+            return cachedResponse.data as TData;
+          }
+        }
+
+        const startTime = performance.now();
+
         const { data } = await apiClient.get(
           url,
           {
@@ -233,6 +265,23 @@ const useApiClient = () => {
               config?.suppressAuthErrors,
           }
         );
+
+        if (!config?.skipCache) {
+          const cacheKey = `${url}-${JSON.stringify(queryKey)}`;
+          requestCache.set(cacheKey, {
+            data,
+            timestamp: Date.now(),
+          });
+        }
+
+        const requestTime =
+          performance.now() - startTime;
+        if (requestTime > 500) {
+          console.warn(
+            `Slow request detected: ${url} took ${requestTime.toFixed(2)}ms`
+          );
+        }
+
         return data;
       },
     });
@@ -243,12 +292,20 @@ const useApiClient = () => {
     TVariables = Record<string, unknown>,
   >(
     url: string,
-    config?: RequestConfig
+    config?: RequestConfig & {
+      invalidateQueries?: QueryKey[];
+      optimisticUpdate?: (
+        oldData: unknown,
+        newData: TVariables
+      ) => unknown;
+    }
   ) => {
     return useMutation<TData, Error, TVariables>({
       mutationFn: async (
         postData: TVariables
       ) => {
+        const startTime = performance.now();
+
         const { data } =
           await apiClient.post<TData>(
             url,
@@ -261,10 +318,34 @@ const useApiClient = () => {
                 config?.suppressAuthErrors,
             }
           );
+
+        const requestTime =
+          performance.now() - startTime;
+        if (requestTime > 500) {
+          console.warn(
+            `Slow mutation detected: ${url} took ${requestTime.toFixed(2)}ms`
+          );
+        }
+
         return data;
       },
       onSuccess: () => {
-        queryClient.invalidateQueries();
+        if (
+          config?.invalidateQueries &&
+          config.invalidateQueries.length > 0
+        ) {
+          config.invalidateQueries.forEach(
+            (queryKey) => {
+              queryClient.invalidateQueries({
+                queryKey: Array.isArray(queryKey)
+                  ? queryKey
+                  : [queryKey],
+              });
+            }
+          );
+        } else {
+          queryClient.invalidateQueries();
+        }
       },
     });
   };
