@@ -9,6 +9,7 @@ import {
 import AuthProvider from '@/contexts/AuthContext';
 import { ProductProvider } from '@/contexts/ProductContext';
 import { CustomizationProvider } from '@/contexts/CustomizationContext';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 import { AxiosError } from 'axios';
 import AuthWrapper from '@/contexts/AuthWrapper';
 
@@ -70,7 +71,9 @@ export default function Providers({
             <QueryClientProvider
               client={queryClient}
             >
-              {children}
+              <NotificationProvider>
+                {children}
+              </NotificationProvider>
             </QueryClientProvider>
           </CustomizationProvider>
         </ProductProvider>

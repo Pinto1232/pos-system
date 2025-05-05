@@ -145,16 +145,19 @@ export const ProductTable = styled(Box)({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell': {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type': {
-    borderBottomLeftRadius: 0,
-  },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type': {
-    borderBottomRightRadius: 0,
-  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell':
+    {
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+    },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type':
+    {
+      borderBottomLeftRadius: 0,
+    },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type':
+    {
+      borderBottomRightRadius: 0,
+    },
   '& .MuiCheckbox-root': {
     color: '#1E2A3B',
   },

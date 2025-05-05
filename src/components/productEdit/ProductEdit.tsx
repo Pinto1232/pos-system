@@ -60,11 +60,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({
 
   // Pagination state
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(9);
+  const [rowsPerPage, setRowsPerPage] =
+    React.useState(9);
 
   // Snackbar state
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarOpen, setSnackbarOpen] =
+    React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] =
+    React.useState('');
 
   // Handle page change
   const handleChangePage = (
@@ -78,14 +81,19 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(
+      parseInt(event.target.value, 10)
+    );
     setPage(0);
   };
 
   // Calculate paginated products
   const paginatedProducts = React.useMemo(() => {
     const startIndex = page * rowsPerPage;
-    return products.slice(startIndex, startIndex + rowsPerPage);
+    return products.slice(
+      startIndex,
+      startIndex + rowsPerPage
+    );
   }, [products, page, rowsPerPage]);
 
   const handleOpenModal = () => {
@@ -231,17 +239,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           size="small"
           sx={{
             '& .MuiSwitch-switchBase.Mui-checked':
-            {
-              color: '#52B788',
-              '&:hover': {
-                backgroundColor:
-                  'rgba(82, 183, 136, 0.08)',
+              {
+                color: '#52B788',
+                '&:hover': {
+                  backgroundColor:
+                    'rgba(82, 183, 136, 0.08)',
+                },
               },
-            },
             '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
-            {
-              backgroundColor: '#52B788',
-            },
+              {
+                backgroundColor: '#52B788',
+              },
           }}
         />
       ),
@@ -370,10 +378,22 @@ const ProductEdit: React.FC<ProductEditProps> = ({
 
     // Add business information
     doc.setFontSize(10);
-    doc.text('Pisval Tech Point of Sale System', 14, 35);
+    doc.text(
+      'Pisval Tech Point of Sale System',
+      14,
+      35
+    );
     doc.text('Business Information:', 14, 40);
-    doc.text('Email: info@pisvaltech.com', 14, 45);
-    doc.text('Website: www.pisvaltech.com', 14, 50);
+    doc.text(
+      'Email: info@pisvaltech.com',
+      14,
+      45
+    );
+    doc.text(
+      'Website: www.pisvaltech.com',
+      14,
+      50
+    );
     doc.text('Phone: +27 123 456 789', 14, 55);
 
     // Add date and time
@@ -385,19 +405,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     );
 
     // Prepare data for the table
-    const tableData = products.map(
-      (product) => [
-        product.productName,
-        product.sku || '-',
-        product.barcode || '-',
-        `R${(product.price || 0).toFixed(2)}`,
-        product.status ? 'Active' : 'Inactive',
-        product.rating?.toString() || '-',
-        new Date(
-          product.createdAt || new Date()
-        ).toLocaleDateString(),
-      ]
-    );
+    const tableData = products.map((product) => [
+      product.productName,
+      product.sku || '-',
+      product.barcode || '-',
+      `R${(product.price || 0).toFixed(2)}`,
+      product.status ? 'Active' : 'Inactive',
+      product.rating?.toString() || '-',
+      new Date(
+        product.createdAt || new Date()
+      ).toLocaleDateString(),
+    ]);
 
     // Add the table
     autoTable(doc, {
@@ -429,7 +447,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
         cellWidth: 'wrap',
       },
       columnStyles: {
-        0: { cellWidth: 50, overflow: 'linebreak' },
+        0: {
+          cellWidth: 50,
+          overflow: 'linebreak',
+        },
         1: { cellWidth: 25 },
         2: { cellWidth: 25 },
         3: { cellWidth: 20 },
@@ -447,12 +468,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     doc.save('product-inventory.pdf');
 
     // Show success notification
-    setSnackbarMessage('PDF exported successfully!');
+    setSnackbarMessage(
+      'PDF exported successfully!'
+    );
     setSnackbarOpen(true);
   };
 
   // Handle closing the snackbar
-  const handleCloseSnackbar = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleCloseSnackbar = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -461,7 +487,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
 
   // Use the subTotal prop if provided, otherwise calculate from products
   const calculatedSubTotal = React.useMemo(() => {
-    return subTotal !== undefined ? subTotal : totalProductsPrice;
+    return subTotal !== undefined
+      ? subTotal
+      : totalProductsPrice;
   }, [totalProductsPrice, subTotal]);
 
   // We're now using totalProductsPrice directly for the total display
@@ -573,45 +601,49 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     '& .MuiDataGrid-row:hover': {
                       backgroundColor: '#F8F9FA',
                     },
-                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell': {
-                      borderBottomLeftRadius: 0,
-                      borderBottomRightRadius: 0,
-                    },
-                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type': {
-                      borderBottomLeftRadius: 0,
-                    },
-                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type': {
-                      borderBottomRightRadius: 0,
-                    },
+                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell':
+                      {
+                        borderBottomLeftRadius: 0,
+                        borderBottomRightRadius: 0,
+                      },
+                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type':
+                      {
+                        borderBottomLeftRadius: 0,
+                      },
+                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type':
+                      {
+                        borderBottomRightRadius: 0,
+                      },
                     '& .MuiDataGrid-cell:focus': {
                       outline: 'none',
                     },
                     '& .MuiDataGrid-columnHeader:focus':
-                    {
-                      outline: 'none',
-                    },
+                      {
+                        outline: 'none',
+                      },
                     '& .MuiDataGrid-main': {
                       width: '100%',
                       overflow: 'visible',
                     },
                     '& .MuiDataGrid-virtualScroller':
-                    {
-                      overflow: 'auto !important',
-                      '&::-webkit-scrollbar': {
-                        width: '8px',
-                        height: '0px',
-                      },
-                      '&::-webkit-scrollbar-track':
                       {
-                        background: '#f1f1f1',
+                        overflow:
+                          'auto !important',
+                        '&::-webkit-scrollbar': {
+                          width: '8px',
+                          height: '0px',
+                        },
+                        '&::-webkit-scrollbar-track':
+                          {
+                            background: '#f1f1f1',
+                          },
+                        '&::-webkit-scrollbar-thumb':
+                          {
+                            background: '#888',
+                            borderRadius: '4px',
+                          },
                       },
-                      '&::-webkit-scrollbar-thumb':
-                      {
-                        background: '#888',
-                        borderRadius: '4px',
-                      },
-                    },
-                  }
+                  },
                 }}
                 hideFooter={true}
                 disableRowSelectionOnClick
@@ -630,7 +662,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     products
                   );
                 }}
-
                 slotProps={{
                   basePopper: {
                     sx: {
@@ -658,13 +689,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                onRowsPerPageChange={
+                  handleChangeRowsPerPage
+                }
                 rowsPerPageOptions={[9, 18, 27]}
                 sx={{
                   backgroundColor: '#FFFFFF',
                   borderRadius: '0 0 10px 10px',
-                  borderTop: '1px solid rgba(224, 224, 224, 0.5)',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.03)',
+                  borderTop:
+                    '1px solid rgba(224, 224, 224, 0.5)',
+                  boxShadow:
+                    '0 2px 4px rgba(0,0,0,0.03)',
                   '& .MuiToolbar-root': {
                     padding: '0 20px',
                     minHeight: '56px',
@@ -672,35 +707,42 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     alignItems: 'center',
                     justifyContent: 'flex-end',
                   },
-                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                    color: 'rgba(0, 0, 0, 0.7)',
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    margin: '0 8px',
-                  },
-                  '& .MuiTablePagination-select': {
-                    paddingTop: '2px',
-                    paddingBottom: '2px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '4px',
-                    marginRight: '8px',
-                    '&:focus': {
-                      backgroundColor: '#f0f2f5',
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
+                    {
+                      color: 'rgba(0, 0, 0, 0.7)',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      margin: '0 8px',
                     },
-                  },
-                  '& .MuiTablePagination-actions': {
-                    marginLeft: '16px',
-                    '& .MuiIconButton-root': {
-                      padding: '6px',
-                      color: 'rgba(0, 0, 0, 0.6)',
-                      '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                      },
-                      '&.Mui-disabled': {
-                        color: 'rgba(0, 0, 0, 0.26)',
+                  '& .MuiTablePagination-select':
+                    {
+                      paddingTop: '2px',
+                      paddingBottom: '2px',
+                      backgroundColor: '#f8f9fa',
+                      borderRadius: '4px',
+                      marginRight: '8px',
+                      '&:focus': {
+                        backgroundColor:
+                          '#f0f2f5',
                       },
                     },
-                  },
+                  '& .MuiTablePagination-actions':
+                    {
+                      marginLeft: '16px',
+                      '& .MuiIconButton-root': {
+                        padding: '6px',
+                        color:
+                          'rgba(0, 0, 0, 0.6)',
+                        '&:hover': {
+                          backgroundColor:
+                            'rgba(0, 0, 0, 0.04)',
+                        },
+                        '&.Mui-disabled': {
+                          color:
+                            'rgba(0, 0, 0, 0.26)',
+                        },
+                      },
+                    },
                 }}
               />
             </S.ProductTable>
@@ -777,7 +819,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                R{calculatedSubTotal.toFixed(2)} (Subtotal)
+                R{calculatedSubTotal.toFixed(2)}{' '}
+                (Subtotal)
               </Typography>
             </Box>
 
@@ -825,7 +868,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                R{totalProductsPrice.toFixed(2)} (Total Price)
+                R{totalProductsPrice.toFixed(2)}{' '}
+                (Total Price)
               </Typography>
             </Box>
 
