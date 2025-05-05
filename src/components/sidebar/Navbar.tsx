@@ -75,14 +75,15 @@ const Navbar: React.FC<NavbarProps> = ({
         sx={{
           width: isMobile
             ? '100%'
-            : `calc(100% - ${drawerWidth}px)`,
-          ml: isMobile ? 0 : `${drawerWidth}px`,
+            : `calc(100% - ${drawerWidth === 80 ? 80 : drawerWidth}px)`,
+          ml: isMobile ? 0 : `${drawerWidth === 80 ? 80 : drawerWidth}px`,
           transition:
-            'margin-left 0.3s ease, width 0.3s ease',
+            'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           border: 'none',
+          zIndex: 1200, // Higher than drawer (1100)
           backgroundColor:
             customization?.navbarColor ||
-            '#000000',
+            '#173a79',
         }}
       >
         <Toolbar
@@ -94,12 +95,34 @@ const Navbar: React.FC<NavbarProps> = ({
         >
           <IconButton
             color="inherit"
-            aria-label="open drawer"
+            aria-label="toggle drawer"
             edge="start"
             onClick={onDrawerToggle}
-            sx={{ mr: 2 }}
+            sx={{
+              mr: 2,
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              width: 40,
+              height: 40,
+              borderRadius: '8px',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                transform: 'translateX(2px)'
+              },
+              '&:active': {
+                transform: 'scale(0.95)'
+              },
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+            }}
           >
-            <ChevronLeftIcon />
+            <ChevronLeftIcon sx={{
+              fontSize: '1.5rem',
+              transition: 'transform 0.3s ease',
+              transform: drawerWidth === 80 ? 'rotate(0deg)' : 'rotate(180deg)'
+            }} />
           </IconButton>
           <Box
             sx={{

@@ -51,20 +51,40 @@ const SubItems: React.FC<SubItemsProps> = ({
       }}
       unmountOnExit
     >
-      <List component="div" disablePadding>
+      <List
+        component="div"
+        disablePadding
+        sx={{
+          padding: '4px 8px',
+          marginLeft: '8px',
+          borderLeft: '1px dashed rgba(255, 255, 255, 0.2)',
+        }}
+      >
         {subItems.map((subItem) => (
           <ListItem
             key={subItem.label}
             sx={{
-              pl: 4,
+              pl: 3,
               cursor: 'pointer',
               backgroundColor:
                 activeSubItem === subItem.label
-                  ? '#34D399'
-                  : '#ccd9ff',
+                  ? 'rgba(52, 211, 153, 0.9)'
+                  : 'rgba(204, 217, 255, 0.1)',
               '&:hover': {
-                backgroundColor: '#ebf2ff',
+                backgroundColor: activeSubItem === subItem.label
+                  ? 'rgba(52, 211, 153, 0.95)'
+                  : 'rgba(235, 242, 255, 0.2)',
+                transform: 'translateX(4px)',
+                boxShadow: activeSubItem === subItem.label
+                  ? '0 4px 12px rgba(52, 211, 153, 0.25)'
+                  : 'none'
               },
+              borderRadius: '10px',
+              margin: '4px 0',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: activeSubItem === subItem.label
+                ? '0 2px 8px rgba(52, 211, 153, 0.2)'
+                : 'none',
             }}
             onClick={() =>
               handleSubItemClick(subItem.label)
@@ -73,20 +93,44 @@ const SubItems: React.FC<SubItemsProps> = ({
             <ListItemIcon
               sx={{
                 minWidth: '30px',
-                color: '#173A79',
+                color: activeSubItem === subItem.label
+                  ? '#fff'
+                  : 'rgba(255, 255, 255, 0.7)',
               }}
             >
               <FiberManualRecordIcon
-                sx={{ fontSize: '8px' }}
+                sx={{
+                  fontSize: '6px',
+                  transition: 'transform 0.3s ease',
+                  transform: activeSubItem === subItem.label
+                    ? 'scale(1.3)'
+                    : 'scale(1)'
+                }}
               />
             </ListItemIcon>
             <ListItemText
               primary={subItem.label}
-              sx={{ color: '#000' }}
+              sx={{
+                color: activeSubItem === subItem.label
+                  ? '#fff'
+                  : 'rgba(255, 255, 255, 0.9)',
+                '& .MuiTypography-root': {
+                  fontWeight: activeSubItem === subItem.label ? 600 : 400,
+                  fontSize: '0.9rem',
+                }
+              }}
             />
             {activeSubItem === subItem.label && (
               <ChevronRight
-                sx={{ color: textColor }}
+                sx={{
+                  color: '#fff',
+                  animation: 'pulseRight 1.5s infinite ease-in-out',
+                  '@keyframes pulseRight': {
+                    '0%': { transform: 'translateX(0)' },
+                    '50%': { transform: 'translateX(3px)' },
+                    '100%': { transform: 'translateX(0)' }
+                  }
+                }}
               />
             )}
           </ListItem>

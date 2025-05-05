@@ -44,108 +44,110 @@ const DashboardLayout: React.FC<
   iconColor = '#fff',
   navbarBgColor,
 }) => {
-  const userId = '1';
+    const userId = '1';
 
-  const { data, isSuccess } = useQuery<
-    UserCustomization,
-    Error
-  >({
-    queryKey: ['userCustomization', userId],
-    queryFn: () => fetchCustomization(userId),
-  });
+    const { data, isSuccess } = useQuery<
+      UserCustomization,
+      Error
+    >({
+      queryKey: ['userCustomization', userId],
+      queryFn: () => fetchCustomization(userId),
+    });
 
-  const [customization, setCustomization] =
-    useState<UserCustomization | null>(null);
-  const [
-    openSettingsModal,
-    setOpenSettingsModal,
-  ] = useState(false);
-  const [activeSection, setActiveSection] =
-    useState('Dashboard');
+    const [customization, setCustomization] =
+      useState<UserCustomization | null>(null);
+    const [
+      openSettingsModal,
+      setOpenSettingsModal,
+    ] = useState(false);
+    const [activeSection, setActiveSection] =
+      useState('Dashboard');
 
-  useEffect(() => {
-    if (isSuccess && data) {
-      setCustomization(data);
-    }
-  }, [isSuccess, data]);
+    useEffect(() => {
+      if (isSuccess && data) {
+        setCustomization(data);
+      }
+    }, [isSuccess, data]);
 
-  const handleSettingsClick = () => {
-    setOpenSettingsModal(true);
-  };
+    const handleSettingsClick = () => {
+      setOpenSettingsModal(true);
+    };
 
-  const handleCloseSettings = () => {
-    setOpenSettingsModal(false);
-  };
+    const handleCloseSettings = () => {
+      setOpenSettingsModal(false);
+    };
 
-  const sidebarBackground =
-    customization?.sidebarColor ||
-    backgroundColor ||
-    '#173A79';
-  const logoUrl =
-    customization?.logoUrl || '/Pisval_Logo.jpg';
-  const navbarBg =
-    customization?.navbarColor ||
-    navbarBgColor ||
-    '#000000';
+    const sidebarBackground =
+      customization?.sidebarColor ||
+      backgroundColor ||
+      '#173A79';
+    const logoUrl =
+      customization?.logoUrl || '/Pisval_Logo.jpg';
+    const navbarBg =
+      customization?.navbarColor ||
+      navbarBgColor ||
+      '#000000';
 
-  const handleCustomizationUpdated = (
-    updated: UserCustomization
-  ) => {
-    setCustomization(updated);
-  };
+    const handleCustomizationUpdated = (
+      updated: UserCustomization
+    ) => {
+      setCustomization(updated);
+    };
 
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        minHeight: '100vh',
-        bgcolor: '#F3F4F6',
-      }}
-    >
-      <Sidebar
-        drawerWidth={300}
-        isDrawerOpen={isDrawerOpen}
-        onDrawerToggle={onDrawerToggle}
-        backgroundColor={sidebarBackground}
-        textColor={textColor}
-        iconColor={iconColor}
-        onSettingsClick={handleSettingsClick}
-        onSectionSelect={setActiveSection}
-        handleItemClick={(item) =>
-          console.log(`Item clicked: ${item}`)
-        }
-        logoUrl={logoUrl}
-      />
+    return (
       <Box
-        component="main"
         sx={{
-          flexGrow: 1,
           display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
+          minHeight: '100vh',
+          bgcolor: '#F3F4F6',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <Navbar
-          drawerWidth={isDrawerOpen ? 300 : 60}
+        <Sidebar
+          drawerWidth={320}
+          isDrawerOpen={isDrawerOpen}
           onDrawerToggle={onDrawerToggle}
-          backgroundColor={navbarBg}
+          backgroundColor={sidebarBackground}
+          textColor={textColor}
+          iconColor={iconColor}
+          onSettingsClick={handleSettingsClick}
+          onSectionSelect={setActiveSection}
+          handleItemClick={(item) =>
+            console.log(`Item clicked: ${item}`)
+          }
+          logoUrl={logoUrl}
         />
-        <Box sx={{ p: 2 }}>
-          <DashboardMainContainer
-            activeSection={activeSection}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <Navbar
+            drawerWidth={isDrawerOpen ? 320 : 80}
+            onDrawerToggle={onDrawerToggle}
+            backgroundColor={navbarBg}
           />
+          <Box sx={{ p: 2 }}>
+            <DashboardMainContainer
+              activeSection={activeSection}
+            />
+          </Box>
         </Box>
+        <SettingsModal
+          open={openSettingsModal}
+          onClose={handleCloseSettings}
+          userId={userId}
+          onCustomizationUpdated={
+            handleCustomizationUpdated
+          }
+        />
       </Box>
-      <SettingsModal
-        open={openSettingsModal}
-        onClose={handleCloseSettings}
-        userId={userId}
-        onCustomizationUpdated={
-          handleCustomizationUpdated
-        }
-      />
-    </Box>
-  );
-};
+    );
+  };
 
 export default DashboardLayout;

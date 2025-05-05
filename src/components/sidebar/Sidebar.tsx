@@ -14,7 +14,6 @@ import Image from 'next/image';
 import { sidebarItems } from '@/settings';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { SidebarProps } from './types';
-import MenuToggleButton from './MenuToggleButton';
 import SidebarItem from './SidebarItem';
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -26,8 +25,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   textColor = '#fff',
   iconColor = '#fff',
   logoUrl = '/Pisval_Logo.jpg',
-  handleItemClick = () => {},
-  onDrawerToggle = () => {},
+  handleItemClick = () => { },
+  onDrawerToggle = () => { },
 }) => {
   const { setLoading } = useSpinner();
   const [expandedItems, setExpandedItems] =
@@ -47,16 +46,12 @@ const Sidebar: React.FC<SidebarProps> = ({
     setLocalDrawerOpen(isDrawerOpen);
   }, [isDrawerOpen]);
 
-  const handleDrawerToggle = () => {
-    const newState = !localDrawerOpen;
-    setLocalDrawerOpen(newState);
-    onDrawerToggle();
-  };
-
   const handleDrawerClose = () => {
     if (isSmallScreen) {
       setLocalDrawerOpen(false);
-      onDrawerToggle();
+      if (onDrawerToggle) {
+        onDrawerToggle();
+      }
     }
   };
 
@@ -174,62 +169,38 @@ const Sidebar: React.FC<SidebarProps> = ({
     }, 500);
   };
 
-  if (isSmallScreen && !localDrawerOpen) {
-    return (
-      <MenuToggleButton
-        onClick={handleDrawerToggle}
-        isOpen={false}
-      />
-    );
-  }
-
-  if (!isSmallScreen && !localDrawerOpen)
-    return null;
-
+  // Use a single drawer approach with different widths based on state
   return (
     <>
-      {isSmallScreen && (
-        <MenuToggleButton
-          onClick={handleDrawerToggle}
-          isOpen={true}
-        />
-      )}
-
       <Drawer
-        variant={
-          isSmallScreen
-            ? 'temporary'
-            : 'permanent'
-        }
-        open={localDrawerOpen}
+        variant={isSmallScreen ? 'temporary' : 'permanent'}
+        open={isSmallScreen ? localDrawerOpen : true}
         onClose={handleDrawerClose}
         ModalProps={{
           keepMounted: true,
         }}
         sx={{
-          width: localDrawerOpen
-            ? drawerWidth
-            : 60,
+          width: !isSmallScreen && !localDrawerOpen ? 80 : drawerWidth,
           flexShrink: 0,
-          transition: 'width 0.3s ease',
+          transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          zIndex: 1100, // Lower than AppBar (1200) but higher than most content
           '& .MuiDrawer-paper': {
-            width: localDrawerOpen
-              ? drawerWidth
-              : 60,
+            width: !isSmallScreen && !localDrawerOpen ? 80 : drawerWidth,
+            transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             boxSizing: 'border-box',
-            boxShadow:
-              '0px 4px 6px rgba(0, 0, 0, 0.1)',
+            boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
             backgroundColor,
             color: textColor,
             height: '100%',
             border: 'none',
+            overflowX: 'hidden',
             overflowY: 'auto',
-            transition: 'width 0.3s ease',
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
             '&::-webkit-scrollbar': {
               display: 'none',
             },
+            whiteSpace: 'nowrap',
           },
           display: {
             xs: 'block',
@@ -238,34 +209,62 @@ const Sidebar: React.FC<SidebarProps> = ({
           },
         }}
       >
-        <Box sx={{ textAlign: 'center', p: 2 }}>
-          <Image
-            src={logoUrl}
-            alt="Logo"
-            width={80}
-            height={80}
-            style={{ borderRadius: '50%' }}
-          />
-          <Typography
-            variant="h6"
-            sx={{
-              color: '#000',
-              background: '#ffffff',
-              borderRadius: '6px',
-              mt: 2,
-              p: 0.2,
-              fontWeight: 'semibold',
-              textAlign: 'center',
+        <Box sx={{
+          textAlign: 'center',
+          p: 2,
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {!isSmallScreen && !localDrawerOpen ? (
+            // Mini drawer header
+            <Box sx={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: isSmallScreen
-                ? '0.875rem'
-                : '1rem',
-            }}
-          >
-            Pinto Manuel
-          </Typography>
+              animation: 'fadeIn 0.4s ease-out'
+            }}>
+              <Image
+                src={logoUrl}
+                alt="Logo"
+                width={40}
+                height={40}
+                style={{
+                  borderRadius: '50%',
+                  boxShadow: '0 3px 8px rgba(0, 0, 0, 0.15)'
+                }}
+              />
+            </Box>
+          ) : (
+            // Full drawer header
+            <>
+              <Image
+                src={logoUrl}
+                alt="Logo"
+                width={90}
+                height={90}
+                style={{ borderRadius: '50%' }}
+              />
+              <Typography
+                variant="h6"
+                sx={{
+                  color: '#000',
+                  background: '#ffffff',
+                  borderRadius: '6px',
+                  mt: 2,
+                  p: 0.2,
+                  fontWeight: 'semibold',
+                  textAlign: 'center',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  fontSize: isSmallScreen
+                    ? '0.875rem'
+                    : '1.1rem',
+                }}
+              >
+                Pinto Manuel
+              </Typography>
+            </>
+          )}
         </Box>
 
         <List>
@@ -286,6 +285,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 handleItemClickInternal
               }
               onSettingsClick={onSettingsClick}
+              isCollapsed={!isSmallScreen && !localDrawerOpen}
             />
           ))}
         </List>

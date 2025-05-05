@@ -137,751 +137,751 @@ const ProductTable: React.FC<
   onResetFilters,
   onExportPDF,
 }) => {
-  // Get products from context for real-time updates
-  const { products: contextProducts } =
-    useProductContext();
+    // Get products from context for real-time updates
+    const { products: contextProducts } =
+      useProductContext();
 
-  // Use context products if available, otherwise fall back to prop products
-  const [displayProducts, setDisplayProducts] =
-    useState(propProducts);
+    // Use context products if available, otherwise fall back to prop products
+    const [displayProducts, setDisplayProducts] =
+      useState(propProducts);
 
-  // Update displayProducts whenever contextProducts or propProducts change
-  useEffect(() => {
-    if (
-      contextProducts &&
-      contextProducts.length > 0
-    ) {
-      // Apply the same filters that would be applied to propProducts
-      // This ensures we're showing the same filtered view but with updated data
-      const updatedFilteredProducts =
-        contextProducts
-          .map((product) => {
-            // Ensure each product has both status and statusProduct fields properly set
-            return {
-              ...product,
-              status: product.status,
-              statusProduct: product.status
-                ? 'Active'
-                : 'Inactive',
-            };
-          })
-          .filter((product) => {
-            // Apply the same filtering logic as in the parent component
-            if (
-              searchQuery &&
-              !product.productName
-                .toLowerCase()
-                .includes(
-                  searchQuery.toLowerCase()
-                )
-            ) {
-              return false;
-            }
-            if (
-              categoryFilter !== 'All' &&
-              product.color !== categoryFilter
-            ) {
-              return false;
-            }
-            // Add other filters as needed
-            return true;
-          });
+    // Update displayProducts whenever contextProducts or propProducts change
+    useEffect(() => {
+      if (
+        contextProducts &&
+        contextProducts.length > 0
+      ) {
+        // Apply the same filters that would be applied to propProducts
+        // This ensures we're showing the same filtered view but with updated data
+        const updatedFilteredProducts =
+          contextProducts
+            .map((product) => {
+              // Ensure each product has both status and statusProduct fields properly set
+              return {
+                ...product,
+                status: product.status,
+                statusProduct: product.status
+                  ? 'Active'
+                  : 'Inactive',
+              };
+            })
+            .filter((product) => {
+              // Apply the same filtering logic as in the parent component
+              if (
+                searchQuery &&
+                !product.productName
+                  .toLowerCase()
+                  .includes(
+                    searchQuery.toLowerCase()
+                  )
+              ) {
+                return false;
+              }
+              if (
+                categoryFilter !== 'All' &&
+                product.color !== categoryFilter
+              ) {
+                return false;
+              }
+              // Add other filters as needed
+              return true;
+            });
 
-      setDisplayProducts(updatedFilteredProducts);
-    } else {
-      // Ensure all products have both status and statusProduct fields properly set
-      const updatedFilteredProducts =
-        filteredProducts.map((product) => ({
-          ...product,
-          status: product.status,
-          statusProduct: product.status
-            ? 'Active'
-            : 'Inactive',
-        }));
-      setDisplayProducts(updatedFilteredProducts);
-    }
-  }, [
-    contextProducts,
-    propProducts,
-    filteredProducts,
-    searchQuery,
-    categoryFilter,
-    ratingFilter,
-    statusFilter,
-    priceFilter,
-  ]);
+        setDisplayProducts(updatedFilteredProducts);
+      } else {
+        // Ensure all products have both status and statusProduct fields properly set
+        const updatedFilteredProducts =
+          filteredProducts.map((product) => ({
+            ...product,
+            status: product.status,
+            statusProduct: product.status
+              ? 'Active'
+              : 'Inactive',
+          }));
+        setDisplayProducts(updatedFilteredProducts);
+      }
+    }, [
+      contextProducts,
+      propProducts,
+      filteredProducts,
+      searchQuery,
+      categoryFilter,
+      ratingFilter,
+      statusFilter,
+      priceFilter,
+    ]);
 
-  // Calculate paginated products
-  const paginatedProducts = useMemo(() => {
-    const startIndex = page * rowsPerPage;
-    return displayProducts.slice(
-      startIndex,
-      startIndex + rowsPerPage
-    );
-  }, [displayProducts, page, rowsPerPage]);
-
-  const renderProductImage = (
-    imageSrc: string | undefined,
-    productName: string,
-    width: number,
-    height: number
-  ) => {
-    if (imageSrc) {
-      return (
-        <Image
-          src={imageSrc}
-          alt={`${productName} product image`}
-          width={width}
-          height={height}
-          style={{
-            objectFit: 'cover',
-          }}
-          priority
-        />
+    // Calculate paginated products
+    const paginatedProducts = useMemo(() => {
+      const startIndex = page * rowsPerPage;
+      return displayProducts.slice(
+        startIndex,
+        startIndex + rowsPerPage
       );
-    } else {
-      return (
-        <Box
-          sx={{
-            width: width,
-            height: height,
-            bgcolor: '#f0f0f0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Typography variant="caption">
-            No Image
-          </Typography>
-        </Box>
-      );
-    }
-  };
+    }, [displayProducts, page, rowsPerPage]);
 
-  return (
-    <Box sx={containerStyles}>
-      <Typography variant="h5" sx={titleStyles}>
-        Product List
-      </Typography>
-      {/* Filters Section */}
-      <Box sx={filtersWrapperStyles}>
-        <Box sx={filtersContainerStyles}>
-          <Box sx={filtersBoxStyles}>
-            <TextField
-              placeholder="Search Product"
-              size="small"
-              value={searchQuery}
-              onChange={onSearchChange}
-              sx={searchFieldStyles}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon
-                      sx={{ color: '#64748b' }}
-                    />
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <FormControl
-              size="small"
-              sx={{
-                minWidth: { xs: '100%', sm: 180 },
-              }}
-            >
-              <InputLabel sx={inputLabelStyles}>
-                Category
-              </InputLabel>
-              <Select
-                value={categoryFilter}
-                onChange={onCategoryChange}
-                label="Category"
-                sx={{ ...selectStyles }}
-              >
-                {categories.map((category) => (
-                  <MenuItem
-                    key={`category-${category}`}
-                    value={category}
-                  >
-                    {String(category)}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl
-              size="small"
-              sx={{
-                minWidth: { xs: '100%', sm: 180 },
-              }}
-            >
-              <InputLabel sx={inputLabelStyles}>
-                Rating
-              </InputLabel>
-              <Select
-                value={ratingFilter}
-                onChange={onRatingChange}
-                label="Rating"
-                sx={{ ...selectStyles }}
-              >
-                {ratings.map((rating) => (
-                  <MenuItem
-                    key={`rating-${rating}`}
-                    value={rating}
-                  >
-                    {typeof rating === 'string' &&
-                    rating === 'All'
-                      ? 'All'
-                      : `${rating} Stars`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl
-              size="small"
-              sx={{
-                minWidth: { xs: '100%', sm: 180 },
-              }}
-            >
-              <InputLabel sx={inputLabelStyles}>
-                Status
-              </InputLabel>
-              <Select
-                value={statusFilter}
-                onChange={onStatusChange}
-                label="Status"
-                sx={{ ...selectStyles }}
-              >
-                {statuses.map((status) => (
-                  <MenuItem
-                    key={status}
-                    value={status}
-                  >
-                    {status}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <FormControl
-              size="small"
-              sx={{
-                minWidth: { xs: '100%', sm: 180 },
-              }}
-            >
-              <InputLabel sx={inputLabelStyles}>
-                Price Range
-              </InputLabel>
-              <Select
-                value={priceFilter}
-                onChange={onPriceChange}
-                label="Price Range"
-                sx={{ ...selectStyles }}
-              >
-                {prices.map((price) => (
-                  <MenuItem
-                    key={price}
-                    value={price}
-                  >
-                    {price}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+    const renderProductImage = (
+      imageSrc: string | undefined,
+      productName: string,
+      width: number,
+      height: number
+    ) => {
+      if (imageSrc) {
+        return (
+          <Image
+            src={imageSrc}
+            alt={`${productName} product image`}
+            width={width}
+            height={height}
+            style={{
+              objectFit: 'cover',
+            }}
+            priority
+          />
+        );
+      } else {
+        return (
+          <Box
+            sx={{
+              width: width,
+              height: height,
+              bgcolor: '#f0f0f0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography variant="caption">
+              No Image
+            </Typography>
           </Box>
-          <Box sx={actionsBoxStyles}>
-            <IconButton
-              onClick={onResetFilters}
-              sx={resetButtonStyles}
-            >
-              <FiRefreshCw size={20} />
-            </IconButton>
-            <Button
-              variant="contained"
-              startIcon={<FiDownload />}
-              onClick={onExportPDF}
-              sx={exportButtonStyles}
-            >
-              Export PDF
-            </Button>
-          </Box>
-        </Box>
-      </Box>
+        );
+      }
+    };
 
-      {/* Table */}
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={tableCellStyles}>
-                Product
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                ID Code
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                SKU
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Price
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Status
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Rating
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Created
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Actions
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {displayProducts.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={8}
-                  align="center"
-                  sx={{
-                    py: 8,
-                  }}
+    return (
+      <Box sx={containerStyles}>
+        <Typography variant="h5" sx={titleStyles}>
+          Product List
+        </Typography>
+        {/* Filters Section */}
+        <Box sx={filtersWrapperStyles}>
+          <Box sx={filtersContainerStyles}>
+            <Box sx={filtersBoxStyles}>
+              <TextField
+                placeholder="Search Product"
+                size="small"
+                value={searchQuery}
+                onChange={onSearchChange}
+                sx={searchFieldStyles}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon
+                        sx={{ color: '#64748b' }}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <FormControl
+                size="small"
+                sx={{
+                  minWidth: { xs: '100%', sm: 180 },
+                }}
+              >
+                <InputLabel sx={inputLabelStyles}>
+                  Category
+                </InputLabel>
+                <Select
+                  value={categoryFilter}
+                  onChange={onCategoryChange}
+                  label="Category"
+                  sx={{ ...selectStyles }}
                 >
-                  <Box sx={noProductsStyles}>
-                    <Typography
-                      variant="h6"
-                      sx={noProductsTextStyles}
+                  {categories.map((category) => (
+                    <MenuItem
+                      key={`category-${category}`}
+                      value={category}
                     >
-                      No products found
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={noProductsSubtextStyles}
+                      {String(category)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl
+                size="small"
+                sx={{
+                  minWidth: { xs: '100%', sm: 180 },
+                }}
+              >
+                <InputLabel sx={inputLabelStyles}>
+                  Rating
+                </InputLabel>
+                <Select
+                  value={ratingFilter}
+                  onChange={onRatingChange}
+                  label="Rating"
+                  sx={{ ...selectStyles }}
+                >
+                  {ratings.map((rating) => (
+                    <MenuItem
+                      key={`rating-${rating}`}
+                      value={rating}
                     >
-                      Try adjusting your filters
-                    </Typography>
-                  </Box>
+                      {typeof rating === 'string' &&
+                        rating === 'All'
+                        ? 'All'
+                        : `${rating} Stars`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl
+                size="small"
+                sx={{
+                  minWidth: { xs: '100%', sm: 180 },
+                }}
+              >
+                <InputLabel sx={inputLabelStyles}>
+                  Status
+                </InputLabel>
+                <Select
+                  value={statusFilter}
+                  onChange={onStatusChange}
+                  label="Status"
+                  sx={{ ...selectStyles }}
+                >
+                  {statuses.map((status) => (
+                    <MenuItem
+                      key={status}
+                      value={status}
+                    >
+                      {status}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl
+                size="small"
+                sx={{
+                  minWidth: { xs: '100%', sm: 180 },
+                }}
+              >
+                <InputLabel sx={inputLabelStyles}>
+                  Price Range
+                </InputLabel>
+                <Select
+                  value={priceFilter}
+                  onChange={onPriceChange}
+                  label="Price Range"
+                  sx={{ ...selectStyles }}
+                >
+                  {prices.map((price) => (
+                    <MenuItem
+                      key={price}
+                      value={price}
+                    >
+                      {price}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+            <Box sx={actionsBoxStyles}>
+              <IconButton
+                onClick={onResetFilters}
+                sx={resetButtonStyles}
+              >
+                <FiRefreshCw size={20} />
+              </IconButton>
+              <Button
+                variant="contained"
+                startIcon={<FiDownload />}
+                onClick={onExportPDF}
+                sx={exportButtonStyles}
+              >
+                Export PDF
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Table */}
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={tableCellStyles}>
+                  Product
+                </TableCell>
+                <TableCell sx={tableCellStyles}>
+                  ID Code
+                </TableCell>
+                <TableCell sx={tableCellStyles}>
+                  SKU
+                </TableCell>
+                <TableCell sx={tableCellStyles}>
+                  Price
+                </TableCell>
+                <TableCell sx={tableCellStyles}>
+                  Status
+                </TableCell>
+                <TableCell sx={tableCellStyles}>
+                  Rating
+                </TableCell>
+                <TableCell sx={tableCellStyles}>
+                  Created
+                </TableCell>
+                <TableCell sx={tableCellStyles}>
+                  Actions
                 </TableCell>
               </TableRow>
-            ) : (
-              paginatedProducts.map(
-                (product, index) => (
-                  <TableRow
-                    key={index}
-                    hover
-                    onClick={() =>
-                      onView(product)
-                    }
+            </TableHead>
+            <TableBody>
+              {displayProducts.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={8}
+                    align="center"
                     sx={{
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor:
-                          'rgba(0, 0, 0, 0.04)',
-                      },
+                      py: 8,
                     }}
                   >
-                    <TableCell>
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        alignItems="center"
+                    <Box sx={noProductsStyles}>
+                      <Typography
+                        variant="h6"
+                        sx={noProductsTextStyles}
                       >
-                        <Box
-                          sx={productImageStyles}
+                        No products found
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={noProductsSubtextStyles}
+                      >
+                        Try adjusting your filters
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                paginatedProducts.map(
+                  (product, index) => (
+                    <TableRow
+                      key={index}
+                      hover
+                      onClick={() =>
+                        onView(product)
+                      }
+                      sx={{
+                        cursor: 'pointer',
+                        '&:hover': {
+                          backgroundColor:
+                            'rgba(0, 0, 0, 0.04)',
+                        },
+                      }}
+                    >
+                      <TableCell>
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          alignItems="center"
                         >
-                          {renderProductImage(
-                            product.image,
-                            product.productName,
-                            40,
-                            40
-                          )}
-                        </Box>
+                          <Box
+                            sx={productImageStyles}
+                          >
+                            {renderProductImage(
+                              product.image,
+                              product.productName,
+                              40,
+                              40
+                            )}
+                          </Box>
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                          >
+                            <Typography variant="body1">
+                              {product.productName}
+                            </Typography>
+                            {product.color && (
+                              <Chip
+                                label={
+                                  product.color
+                                }
+                                size="small"
+                                sx={{
+                                  height: 20,
+                                  minWidth: 60,
+                                  padding:
+                                    '2px 4px',
+                                  fontSize:
+                                    '0.7rem',
+                                  fontWeight: 500,
+                                  display: 'flex',
+                                  alignItems:
+                                    'center',
+                                  justifyContent:
+                                    'center',
+                                  bgcolor:
+                                    getColorStyles(
+                                      product.color
+                                    ).bg,
+                                  color:
+                                    getColorStyles(
+                                      product.color
+                                    ).text,
+                                  border:
+                                    '1px solid #e2e8f0',
+                                }}
+                              />
+                            )}
+                          </Stack>
+                        </Stack>
+                      </TableCell>
+                      <TableCell>
+                        {product.barcode}
+                      </TableCell>
+                      <TableCell>
+                        {product.sku || '-'}
+                      </TableCell>
+                      <TableCell>
+                        R
+                        {(
+                          product.price || 0
+                        ).toFixed(2)}
+                      </TableCell>
+                      <TableCell>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={
+                                product.status ??
+                                false
+                              }
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                onStatusToggle(
+                                  product
+                                );
+                              }}
+                              sx={switchStyles}
+                              size="small"
+                            />
+                          }
+                          label={
+                            <Typography
+                              sx={statusTextStyles(
+                                product.status ??
+                                false
+                              )}
+                            >
+                              {product.status
+                                ? 'In Stock'
+                                : 'Out of Stock'}
+                            </Typography>
+                          }
+                          onClick={(e) =>
+                            e.stopPropagation()
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Rating
+                          value={product.rating}
+                          readOnly
+                          precision={0.5}
+                          size="medium"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {new Date(
+                          product.createdAt
+                        ).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
                         <Stack
                           direction="row"
                           spacing={1}
-                          alignItems="center"
+                          justifyContent="center"
                         >
-                          <Typography variant="body1">
-                            {product.productName}
-                          </Typography>
-                          {product.color && (
-                            <Chip
-                              label={
-                                product.color
-                              }
-                              size="small"
-                              sx={{
-                                height: 20,
-                                minWidth: 60,
-                                padding:
-                                  '2px 4px',
-                                fontSize:
-                                  '0.7rem',
-                                fontWeight: 500,
-                                display: 'flex',
-                                alignItems:
-                                  'center',
-                                justifyContent:
-                                  'center',
-                                bgcolor:
-                                  getColorStyles(
-                                    product.color
-                                  ).bg,
-                                color:
-                                  getColorStyles(
-                                    product.color
-                                  ).text,
-                                border:
-                                  '1px solid #e2e8f0',
-                              }}
-                            />
-                          )}
-                        </Stack>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>
-                      {product.barcode}
-                    </TableCell>
-                    <TableCell>
-                      {product.sku || '-'}
-                    </TableCell>
-                    <TableCell>
-                      R
-                      {(
-                        product.price || 0
-                      ).toFixed(2)}
-                    </TableCell>
-                    <TableCell>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={
-                              product.status ??
-                              false
+                          <IconButton
+                            size="medium"
+                            onClick={() =>
+                              onView(product)
                             }
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              onStatusToggle(
-                                product
-                              );
+                            sx={{
+                              color: 'primary.main',
+                              '&:hover': {
+                                backgroundColor:
+                                  'primary.lighter',
+                              },
                             }}
-                            sx={switchStyles}
-                            size="small"
-                          />
-                        }
-                        label={
-                          <Typography
-                            sx={statusTextStyles(
-                              product.status ??
-                                false
-                            )}
                           >
-                            {product.status
-                              ? 'In Stock'
-                              : 'Out of Stock'}
-                          </Typography>
-                        }
-                        onClick={(e) =>
-                          e.stopPropagation()
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Rating
-                        value={product.rating}
-                        readOnly
-                        precision={0.5}
-                        size="medium"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {new Date(
-                        product.createdAt
-                      ).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        justifyContent="center"
-                      >
-                        <IconButton
-                          size="medium"
-                          onClick={() =>
-                            onView(product)
-                          }
-                          sx={{
-                            color: 'primary.main',
-                            '&:hover': {
-                              backgroundColor:
-                                'primary.lighter',
-                            },
-                          }}
-                        >
-                          <FiEye size={20} />
-                        </IconButton>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
+                            <FiEye size={20} />
+                          </IconButton>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  )
                 )
-              )
-            )}
-          </TableBody>
-        </Table>
-        {displayProducts.length > 9 && (
-          <TablePagination
-            rowsPerPageOptions={[9, 18, 27]}
-            component="div"
-            count={displayProducts.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={onPageChange}
-            onRowsPerPageChange={
-              onRowsPerPageChange
-            }
-          />
-        )}
-      </TableContainer>
+              )}
+            </TableBody>
+          </Table>
+          {displayProducts.length > 9 && (
+            <TablePagination
+              rowsPerPageOptions={[9, 18, 27]}
+              component="div"
+              count={displayProducts.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={onPageChange}
+              onRowsPerPageChange={
+                onRowsPerPageChange
+              }
+            />
+          )}
+        </TableContainer>
 
-      {/* View Modal */}
-      <Dialog
-        open={isViewModalOpen}
-        onClose={onCloseModal}
-        maxWidth="sm"
-        fullWidth
-        PaperProps={{
-          sx: modalPaperStyles,
-        }}
-      >
-        {selectedProduct && (
-          <Box sx={modalImageStyles}>
-            {renderProductImage(
-              selectedProduct.image,
-              selectedProduct.productName,
-              120,
-              120
-            )}
-          </Box>
-        )}
-        <DialogTitle sx={modalTitleStyles}>
-          Product Details
-        </DialogTitle>
-        <DialogContent>
+        {/* View Modal */}
+        <Dialog
+          open={isViewModalOpen}
+          onClose={onCloseModal}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: modalPaperStyles,
+          }}
+        >
           {selectedProduct && (
-            <Stack spacing={3} sx={{ px: 2 }}>
-              <Box
-                sx={{
-                  textAlign: 'center',
-                  mb: 2,
-                }}
-              >
-                <Typography
-                  variant="h5"
+            <Box sx={modalImageStyles}>
+              {renderProductImage(
+                selectedProduct.image,
+                selectedProduct.productName,
+                120,
+                120
+              )}
+            </Box>
+          )}
+          <DialogTitle sx={modalTitleStyles}>
+            Product Details
+          </DialogTitle>
+          <DialogContent>
+            {selectedProduct && (
+              <Stack spacing={3} sx={{ px: 2 }}>
+                <Box
                   sx={{
-                    fontWeight: 600,
-                    color: '#1a1a1a',
-                    mb: 0.5,
+                    textAlign: 'center',
+                    mb: 2,
                   }}
                 >
-                  {selectedProduct.productName}
-                </Typography>
-                {selectedProduct.color && (
                   <Typography
-                    variant="body2"
+                    variant="h5"
                     sx={{
-                      color: 'text.secondary',
-                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      color: '#1a1a1a',
+                      mb: 0.5,
                     }}
                   >
-                    {selectedProduct.color}
+                    {selectedProduct.productName}
                   </Typography>
-                )}
-              </Box>
-              <Box
-                sx={{
-                  bgcolor: '#f8f9fa',
-                  borderRadius: '12px',
-                  p: 3,
-                }}
-              >
-                <Stack spacing={2.5}>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{
-                      pb: 2,
-                      borderBottom:
-                        '1px solid #e0e0e0',
-                    }}
-                  >
+                  {selectedProduct.color && (
                     <Typography
+                      variant="body2"
                       sx={{
                         color: 'text.secondary',
                         fontSize: '0.875rem',
                       }}
                     >
-                      ID Code
+                      {selectedProduct.color}
                     </Typography>
-                    <Typography
+                  )}
+                </Box>
+                <Box
+                  sx={{
+                    bgcolor: '#f8f9fa',
+                    borderRadius: '12px',
+                    p: 3,
+                  }}
+                >
+                  <Stack spacing={2.5}>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
                       sx={{
-                        fontWeight: 500,
-                        color: '#1a1a1a',
+                        pb: 2,
+                        borderBottom:
+                          '1px solid #e0e0e0',
                       }}
                     >
-                      {selectedProduct.barcode}
-                    </Typography>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{
-                      pb: 2,
-                      borderBottom:
-                        '1px solid #e0e0e0',
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        color: 'text.secondary',
-                        fontSize: '0.875rem',
-                      }}
-                    >
-                      Price
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontWeight: 600,
-                        color: '#1a1a1a',
-                        fontSize: '1.1rem',
-                      }}
-                    >
-                      R
-                      {(
-                        selectedProduct?.price ||
-                        0
-                      ).toFixed(2)}
-                    </Typography>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{
-                      pb: 2,
-                      borderBottom:
-                        '1px solid #e0e0e0',
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        color: 'text.secondary',
-                        fontSize: '0.875rem',
-                      }}
-                    >
-                      Status
-                    </Typography>
-                    <Box
-                      sx={{
-                        px: 2,
-                        py: 0.5,
-                        borderRadius: '16px',
-                        bgcolor:
-                          selectedProduct?.status
-                            ? '#e8f5e9'
-                            : '#ffebee',
-                        color:
-                          selectedProduct?.status
-                            ? '#2e7d32'
-                            : '#c62828',
-                      }}
-                    >
-                      <Typography
-                        sx={{
-                          fontSize: '0.875rem',
-                          fontWeight: 500,
-                        }}
-                      >
-                        {selectedProduct?.status
-                          ? 'In Stock'
-                          : 'Out of Stock'}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography
-                      sx={{
-                        color: 'text.secondary',
-                        fontSize: '0.875rem',
-                      }}
-                    >
-                      Rating
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                      }}
-                    >
-                      <Rating
-                        value={
-                          selectedProduct.rating
-                        }
-                        readOnly
-                        precision={0.5}
-                        size="large"
-                        sx={{ color: '#f59e0b' }}
-                      />
                       <Typography
                         sx={{
                           color: 'text.secondary',
                           fontSize: '0.875rem',
                         }}
                       >
-                        ({selectedProduct.rating}
-                        /5)
+                        ID Code
                       </Typography>
-                    </Box>
+                      <Typography
+                        sx={{
+                          fontWeight: 500,
+                          color: '#1a1a1a',
+                        }}
+                      >
+                        {selectedProduct.barcode}
+                      </Typography>
+                    </Stack>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{
+                        pb: 2,
+                        borderBottom:
+                          '1px solid #e0e0e0',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          color: 'text.secondary',
+                          fontSize: '0.875rem',
+                        }}
+                      >
+                        Price
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 600,
+                          color: '#1a1a1a',
+                          fontSize: '1.1rem',
+                        }}
+                      >
+                        R
+                        {(
+                          selectedProduct?.price ||
+                          0
+                        ).toFixed(2)}
+                      </Typography>
+                    </Stack>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{
+                        pb: 2,
+                        borderBottom:
+                          '1px solid #e0e0e0',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          color: 'text.secondary',
+                          fontSize: '0.875rem',
+                        }}
+                      >
+                        Status
+                      </Typography>
+                      <Box
+                        sx={{
+                          px: 2,
+                          py: 0.5,
+                          borderRadius: '16px',
+                          bgcolor:
+                            selectedProduct?.status
+                              ? '#e8f5e9'
+                              : '#ffebee',
+                          color:
+                            selectedProduct?.status
+                              ? '#2e7d32'
+                              : '#c62828',
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: '0.875rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          {selectedProduct?.status
+                            ? 'In Stock'
+                            : 'Out of Stock'}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Typography
+                        sx={{
+                          color: 'text.secondary',
+                          fontSize: '0.875rem',
+                        }}
+                      >
+                        Rating
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Rating
+                          value={
+                            selectedProduct.rating
+                          }
+                          readOnly
+                          precision={0.5}
+                          size="large"
+                          sx={{ color: '#f59e0b' }}
+                        />
+                        <Typography
+                          sx={{
+                            color: 'text.secondary',
+                            fontSize: '0.875rem',
+                          }}
+                        >
+                          ({selectedProduct.rating}
+                          /5)
+                        </Typography>
+                      </Box>
+                    </Stack>
                   </Stack>
-                </Stack>
-              </Box>
-            </Stack>
-          )}
-        </DialogContent>
-        <DialogActions
-          sx={{ p: 3, justifyContent: 'center' }}
-        >
-          <Button
-            onClick={onCloseModal}
-            variant="contained"
-            sx={{
-              bgcolor: '#3b82f6',
-              color: 'white',
-              px: 4,
-              py: 1,
-              borderRadius: '8px',
-              '&:hover': {
-                bgcolor: '#2563eb',
-              },
-            }}
+                </Box>
+              </Stack>
+            )}
+          </DialogContent>
+          <DialogActions
+            sx={{ p: 3, justifyContent: 'center' }}
           >
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
-  );
-};
+            <Button
+              onClick={onCloseModal}
+              variant="contained"
+              sx={{
+                bgcolor: '#3b82f6',
+                color: 'white',
+                px: 4,
+                py: 1,
+                borderRadius: '8px',
+                '&:hover': {
+                  bgcolor: '#2563eb',
+                },
+              }}
+            >
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    );
+  };
 
 export default ProductTable;
