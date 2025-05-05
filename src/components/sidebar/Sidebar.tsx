@@ -9,12 +9,16 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Avatar,
+  Skeleton,
+  Tooltip,
 } from '@mui/material';
 import Image from 'next/image';
 import { sidebarItems } from '@/settings';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { SidebarProps } from './types';
 import SidebarItem from './SidebarItem';
+import useKeycloakUser from '@/hooks/useKeycloakUser';
 
 const Sidebar: React.FC<SidebarProps> = ({
   drawerWidth,
@@ -29,12 +33,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   onDrawerToggle = () => { },
 }) => {
   const { setLoading } = useSpinner();
+  const { userInfo, isLoading: isUserLoading } = useKeycloakUser();
   const [expandedItems, setExpandedItems] =
     useState<{
       [key: string]: boolean;
     }>({});
   const [activeItemState, setActiveItemState] =
-    useState<string>('');
+    useState<string>('Dashboard');
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(
     theme.breakpoints.down('sm')
@@ -45,6 +50,28 @@ const Sidebar: React.FC<SidebarProps> = ({
   useEffect(() => {
     setLocalDrawerOpen(isDrawerOpen);
   }, [isDrawerOpen]);
+
+  // Sync active item with the section from props
+  useEffect(() => {
+    // Find the matching sidebar item for the current section
+    const matchingSidebarItem = sidebarItems.find(item =>
+      item.label === 'Dashboard' ||
+      (item.subItems && item.subItems.some(subItem => subItem.label === 'Dashboard'))
+    );
+
+    if (matchingSidebarItem) {
+      if (matchingSidebarItem.label === 'Dashboard') {
+        setActiveItemState('Dashboard');
+      } else if (matchingSidebarItem.subItems) {
+        // If it's in a submenu, expand the parent and set the active item
+        const subItem = matchingSidebarItem.subItems.find(sub => sub.label === 'Dashboard');
+        if (subItem) {
+          setExpandedItems(prev => ({ ...prev, [matchingSidebarItem.label]: true }));
+          setActiveItemState('Dashboard');
+        }
+      }
+    }
+  }, []);
 
   const handleDrawerClose = () => {
     if (isSmallScreen) {
@@ -184,6 +211,11 @@ const Sidebar: React.FC<SidebarProps> = ({
           flexShrink: 0,
           transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           zIndex: 1100, // Lower than AppBar (1200) but higher than most content
+          '@keyframes pulse': {
+            '0%': { opacity: 0.6, transform: 'scale(0.9)' },
+            '50%': { opacity: 1, transform: 'scale(1.1)' },
+            '100%': { opacity: 0.6, transform: 'scale(0.9)' }
+          },
           '& .MuiDrawer-paper': {
             width: !isSmallScreen && !localDrawerOpen ? 80 : drawerWidth,
             transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -243,26 +275,107 @@ const Sidebar: React.FC<SidebarProps> = ({
                 height={90}
                 style={{ borderRadius: '50%' }}
               />
-              <Typography
-                variant="h6"
-                sx={{
-                  color: '#000',
-                  background: '#ffffff',
-                  borderRadius: '6px',
-                  mt: 2,
-                  p: 0.2,
-                  fontWeight: 'semibold',
-                  textAlign: 'center',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  fontSize: isSmallScreen
-                    ? '0.875rem'
-                    : '1.1rem',
-                }}
-              >
-                Pinto Manuel
-              </Typography>
+              <Box sx={{
+                mt: 2,
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 0.5,
+                position: 'relative'
+              }}>
+                {isUserLoading ? (
+                  <Skeleton
+                    variant="rectangular"
+                    width="80%"
+                    height={36}
+                    sx={{
+                      borderRadius: '6px',
+                      bgcolor: 'rgba(255, 255, 255, 0.2)'
+                    }}
+                  />
+                ) : (
+                  <Box sx={{ position: 'relative', width: '90%' }}>
+                    <Tooltip title={userInfo?.email || ''} placement="bottom" arrow>
+                      <Box
+                        sx={{
+                          background: 'linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)',
+                          borderRadius: '8px',
+                          padding: '8px 16px',
+                          width: '100%',
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                          transition: 'all 0.3s ease',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1.5,
+                          '&:hover': {
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                            transform: 'translateY(-2px)'
+                          }
+                        }}
+                      >
+                        <Avatar
+                          sx={{
+                            width: 32,
+                            height: 32,
+                            bgcolor: '#1E3A8A',
+                            fontSize: '0.9rem',
+                            fontWeight: 'bold',
+                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                          }}
+                        >
+                          {userInfo?.name?.charAt(0) || userInfo?.preferred_username?.charAt(0) || 'U'}
+                        </Avatar>
+                        <Box sx={{ position: 'relative', flexGrow: 1 }}>
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              color: '#000',
+                              fontWeight: 600,
+                              fontSize: isSmallScreen ? '0.875rem' : '1.1rem',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            {userInfo?.name || userInfo?.preferred_username || 'User'}
+                          </Typography>
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              right: -8,
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              bgcolor: '#4CAF50',
+                              boxShadow: '0 0 4px #4CAF50',
+                              animation: 'pulse 2s infinite'
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    </Tooltip>
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        bottom: -6,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        fontSize: '0.7rem',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                        padding: '1px 8px',
+                        borderRadius: '4px',
+                        letterSpacing: '0.5px'
+                      }}
+                    >
+                      Online
+                    </Box>
+                  </Box>
+                )}
+              </Box>
             </>
           )}
         </Box>

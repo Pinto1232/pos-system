@@ -12,6 +12,7 @@ import { useSpinner } from '@/contexts/SpinnerContext';
 const DashboardContainer = () => {
   const [isDrawerOpen, setIsDrawerOpen] =
     useState(true);
+  // Initialize with Dashboard as the active section
   const [activeSection, setActiveSection] =
     useState<string>('Dashboard');
   const { stopLoading } = useSpinner();

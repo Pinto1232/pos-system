@@ -11,19 +11,22 @@ import {
 } from '@mui/material';
 import SocialIcons from '@/components/ui/socialIcons/SocialIcons';
 import { Button } from '../ui/button/Button';
+import { useCustomization } from '@/contexts/CustomizationContext';
 
 const Footer: React.FC = memo(() => {
+  const { customization } = useCustomization();
+
   return (
     <Box
       sx={{
-        backgroundColor: '#111',
+        backgroundColor: customization?.navbarColor || '#111',
         display: 'block',
         width: '100%',
         margin: 0,
         padding: 0,
       }}
     >
-      <footer className={styles.footer}>
+      <footer className={styles.footer} style={{ backgroundColor: customization?.navbarColor || '#111' }}>
         <Container maxWidth="lg">
           <Box className={styles.subscription}>
             <Typography
@@ -63,9 +66,9 @@ const Footer: React.FC = memo(() => {
                     fontSize: '16px',
                   },
                   '& .MuiOutlinedInput-notchedOutline':
-                    {
-                      border: 'none',
-                    },
+                  {
+                    border: 'none',
+                  },
                 }}
               />
               <Button

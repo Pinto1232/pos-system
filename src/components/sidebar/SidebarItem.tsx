@@ -52,6 +52,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             ? '0 4px 12px rgba(52, 211, 153, 0.25)'
             : 'none'
         },
+        transition: 'all 0.3s ease-in-out',
         justifyContent: isCollapsed ? 'center' : 'flex-start',
         py: 1.5,
         borderRadius: '12px',

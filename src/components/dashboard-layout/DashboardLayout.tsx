@@ -113,9 +113,10 @@ const DashboardLayout: React.FC<
           iconColor={iconColor}
           onSettingsClick={handleSettingsClick}
           onSectionSelect={setActiveSection}
-          handleItemClick={(item) =>
-            console.log(`Item clicked: ${item}`)
-          }
+          handleItemClick={(item) => {
+            console.log(`Item clicked: ${item}`);
+            setActiveSection(item);
+          }}
           logoUrl={logoUrl}
         />
         <Box

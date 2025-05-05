@@ -28,6 +28,7 @@ import styles from './Navbar.module.css';
 import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
+import { useCustomization } from '@/contexts/CustomizationContext';
 
 export interface NavbarProps {
   title: string;
@@ -49,6 +50,7 @@ const Navbar: React.FC<NavbarProps> = memo(
     const [isCartOpen, setIsCartOpen] =
       useState(false);
     const { cartCount } = useCart();
+    const { customization } = useCustomization();
 
     useEffect(() => {
       setRemainingTime(testPeriod * 24 * 60 * 60);
@@ -95,6 +97,9 @@ const Navbar: React.FC<NavbarProps> = memo(
         <AppBar
           position="sticky"
           className={styles.navbar}
+          sx={{
+            backgroundColor: customization?.navbarColor || '#1e3a8a'
+          }}
         >
           <Toolbar
             sx={{
