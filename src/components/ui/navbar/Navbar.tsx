@@ -191,7 +191,12 @@ const Navbar: React.FC<NavbarProps> = memo(
 
               <IconButton
                 color="inherit"
-                onClick={toggleLoginForm}
+                onClick={() => {
+                  console.log(
+                    'Login button clicked'
+                  );
+                  toggleLoginForm();
+                }}
               >
                 <LoginIcon />
               </IconButton>

@@ -13,15 +13,25 @@ const Dashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] =
     useState(true);
   const drawerWidth = 240;
-  const { setLoading } = useSpinner();
+  const { stopLoading } = useSpinner();
 
   useEffect(() => {
-    // Ensure spinner is stopped when dashboard page mounts
-    setLoading(false);
-    console.log(
-      'User redirected to dashboard successfully.'
-    );
-  }, [setLoading]);
+    const isFreshLogin =
+      sessionStorage.getItem('freshLogin') ===
+      'true';
+
+    if (isFreshLogin) {
+      sessionStorage.removeItem('freshLogin');
+
+      const loadingTimeout = setTimeout(() => {
+        stopLoading();
+      }, 3000);
+
+      return () => clearTimeout(loadingTimeout);
+    } else {
+      stopLoading();
+    }
+  }, [stopLoading]);
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen((prev) => !prev);

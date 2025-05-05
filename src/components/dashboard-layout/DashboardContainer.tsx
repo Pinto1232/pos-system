@@ -14,15 +14,15 @@ const DashboardContainer = () => {
     useState(true);
   const [activeSection, setActiveSection] =
     useState<string>('Dashboard');
-  const { setLoading } = useSpinner();
+  const { stopLoading } = useSpinner();
 
   useEffect(() => {
-    // Stop the spinner when dashboard mounts
-    setLoading(false);
-    console.log(
-      'User redirected to dashboard successfully.'
-    );
-  }, [setLoading]);
+    const dataLoadedTimeout = setTimeout(() => {
+      stopLoading();
+    }, 1000);
+
+    return () => clearTimeout(dataLoadedTimeout);
+  }, [stopLoading]);
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);

@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { 
-  Notification, 
-  NotificationResponse, 
-  NotificationFilters, 
+import {
+  Notification,
+  NotificationResponse,
+  NotificationFilters,
   MarkAsReadRequest,
-  CreateNotificationRequest
+  CreateNotificationRequest,
 } from '@/types/notification';
 
 // Mock data for development until backend is implemented
@@ -12,9 +12,12 @@ const MOCK_NOTIFICATIONS: Notification[] = [
   {
     id: '1',
     title: 'Low Stock Alert',
-    message: 'Product inventory is running low for Premium Widget',
+    message:
+      'Product inventory is running low for Premium Widget',
     type: 'warning',
-    createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    createdAt: new Date(
+      Date.now() - 5 * 60 * 1000
+    ).toISOString(),
     status: 'unread',
     link: '/inventory',
     data: {
@@ -23,16 +26,19 @@ const MOCK_NOTIFICATIONS: Notification[] = [
       minimumRequired: 20,
       lastRestock: '7 days ago',
       salesRate: '10 units/day',
-      timeToDepletion: '12 hours'
+      timeToDepletion: '12 hours',
     },
-    tags: ['Urgent', 'Inventory']
+    tags: ['Urgent', 'Inventory'],
   },
   {
     id: '2',
     title: 'Payment Failed',
-    message: 'Transaction #67890 could not be processed',
+    message:
+      'Transaction #67890 could not be processed',
     type: 'error',
-    createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+    createdAt: new Date(
+      Date.now() - 10 * 60 * 1000
+    ).toISOString(),
     status: 'unread',
     link: '/transactions/67890',
     data: {
@@ -41,16 +47,19 @@ const MOCK_NOTIFICATIONS: Notification[] = [
       customer: 'Jane Smith',
       errorCode: 402,
       reason: 'Insufficient Funds',
-      retryAttempts: '2/3'
+      retryAttempts: '2/3',
     },
-    tags: ['Payment', 'Failed']
+    tags: ['Payment', 'Failed'],
   },
   {
     id: '3',
     title: 'System Update',
-    message: 'New features available in your dashboard',
+    message:
+      'New features available in your dashboard',
     type: 'info',
-    createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+    createdAt: new Date(
+      Date.now() - 15 * 60 * 1000
+    ).toISOString(),
     status: 'unread',
     link: '/updates',
     data: {
@@ -59,103 +68,147 @@ const MOCK_NOTIFICATIONS: Notification[] = [
       newFeatures: 5,
       bugFixes: 12,
       performanceImprovements: 3,
-      securityUpdates: 2
+      securityUpdates: 2,
     },
-    tags: ['Update', 'System']
+    tags: ['Update', 'System'],
   },
   {
     id: '4',
     title: 'Order Completed',
-    message: 'Order #12345 has been successfully processed',
+    message:
+      'Order #12345 has been successfully processed',
     type: 'success',
-    createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+    createdAt: new Date(
+      Date.now() - 30 * 60 * 1000
+    ).toISOString(),
     status: 'read',
     link: '/orders/12345',
     data: {
       orderId: '12345',
       customer: 'John Doe',
       amount: 'R1,250.00',
-      items: 3
+      items: 3,
     },
-    tags: ['Order', 'Completed']
-  }
+    tags: ['Order', 'Completed'],
+  },
 ];
 
 // API endpoints
 const API_ENDPOINTS = {
   GET_NOTIFICATIONS: '/api/notifications',
   MARK_AS_READ: '/api/notifications/mark-read',
-  CREATE_NOTIFICATION: '/api/notifications/create',
+  CREATE_NOTIFICATION:
+    '/api/notifications/create',
 };
 
 // Function to get notifications with filters
-export const getNotifications = async (filters: NotificationFilters = {}): Promise<NotificationResponse> => {
+export const getNotifications = async (
+  filters: NotificationFilters = {}
+): Promise<NotificationResponse> => {
   try {
     // For development, use mock data
     if (process.env.NODE_ENV === 'development') {
       // Apply filters to mock data
-      let filteredNotifications = [...MOCK_NOTIFICATIONS];
-      
+      let filteredNotifications = [
+        ...MOCK_NOTIFICATIONS,
+      ];
+
       if (filters.status) {
-        filteredNotifications = filteredNotifications.filter(n => n.status === filters.status);
+        filteredNotifications =
+          filteredNotifications.filter(
+            (n) => n.status === filters.status
+          );
       }
-      
+
       if (filters.type) {
-        filteredNotifications = filteredNotifications.filter(n => n.type === filters.type);
+        filteredNotifications =
+          filteredNotifications.filter(
+            (n) => n.type === filters.type
+          );
       }
-      
+
       // Sort by createdAt (newest first)
-      filteredNotifications.sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      filteredNotifications.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() -
+          new Date(a.createdAt).getTime()
       );
-      
+
       // Apply pagination
-      const limit = filters.limit || filteredNotifications.length;
+      const limit =
+        filters.limit ||
+        filteredNotifications.length;
       const offset = filters.offset || 0;
-      const paginatedNotifications = filteredNotifications.slice(offset, offset + limit);
-      
-      const unreadCount = MOCK_NOTIFICATIONS.filter(n => n.status === 'unread').length;
-      
+      const paginatedNotifications =
+        filteredNotifications.slice(
+          offset,
+          offset + limit
+        );
+
+      const unreadCount =
+        MOCK_NOTIFICATIONS.filter(
+          (n) => n.status === 'unread'
+        ).length;
+
       return {
         notifications: paginatedNotifications,
         unreadCount,
-        totalCount: MOCK_NOTIFICATIONS.length
+        totalCount: MOCK_NOTIFICATIONS.length,
       };
     }
-    
+
     // For production, use actual API
-    const { data } = await axios.get(API_ENDPOINTS.GET_NOTIFICATIONS, { params: filters });
+    const { data } = await axios.get(
+      API_ENDPOINTS.GET_NOTIFICATIONS,
+      { params: filters }
+    );
     return data;
   } catch (error) {
-    console.error('Error fetching notifications:', error);
+    console.error(
+      'Error fetching notifications:',
+      error
+    );
     throw error;
   }
 };
 
 // Function to mark notifications as read
-export const markNotificationsAsRead = async (request: MarkAsReadRequest): Promise<void> => {
+export const markNotificationsAsRead = async (
+  request: MarkAsReadRequest
+): Promise<void> => {
   try {
     // For development, update mock data
     if (process.env.NODE_ENV === 'development') {
-      request.notificationIds.forEach(id => {
-        const notification = MOCK_NOTIFICATIONS.find(n => n.id === id);
+      request.notificationIds.forEach((id) => {
+        const notification =
+          MOCK_NOTIFICATIONS.find(
+            (n) => n.id === id
+          );
         if (notification) {
           notification.status = 'read';
         }
       });
       return;
     }
-    
+
     // For production, use actual API
-    await axios.post(API_ENDPOINTS.MARK_AS_READ, request);
+    await axios.post(
+      API_ENDPOINTS.MARK_AS_READ,
+      request
+    );
   } catch (error) {
-    console.error('Error marking notifications as read:', error);
+    console.error(
+      'Error marking notifications as read:',
+      error
+    );
     throw error;
   }
 };
 
 // Function to create a new notification
-export const createNotification = async (request: CreateNotificationRequest): Promise<Notification> => {
+export const createNotification = async (
+  request: CreateNotificationRequest
+): Promise<Notification> => {
   try {
     // For development, add to mock data
     if (process.env.NODE_ENV === 'development') {
@@ -168,37 +221,53 @@ export const createNotification = async (request: CreateNotificationRequest): Pr
         status: 'unread',
         link: request.link,
         data: request.data,
-        tags: request.tags
+        tags: request.tags,
       };
-      
+
       MOCK_NOTIFICATIONS.unshift(newNotification);
       return newNotification;
     }
-    
+
     // For production, use actual API
-    const { data } = await axios.post(API_ENDPOINTS.CREATE_NOTIFICATION, request);
+    const { data } = await axios.post(
+      API_ENDPOINTS.CREATE_NOTIFICATION,
+      request
+    );
     return data;
   } catch (error) {
-    console.error('Error creating notification:', error);
+    console.error(
+      'Error creating notification:',
+      error
+    );
     throw error;
   }
 };
 
 // Function to mark all notifications as read
-export const markAllNotificationsAsRead = async (): Promise<void> => {
-  try {
-    // For development, update all mock data
-    if (process.env.NODE_ENV === 'development') {
-      MOCK_NOTIFICATIONS.forEach(notification => {
-        notification.status = 'read';
-      });
-      return;
+export const markAllNotificationsAsRead =
+  async (): Promise<void> => {
+    try {
+      // For development, update all mock data
+      if (
+        process.env.NODE_ENV === 'development'
+      ) {
+        MOCK_NOTIFICATIONS.forEach(
+          (notification) => {
+            notification.status = 'read';
+          }
+        );
+        return;
+      }
+
+      // For production, use actual API
+      await axios.post(
+        `${API_ENDPOINTS.MARK_AS_READ}/all`
+      );
+    } catch (error) {
+      console.error(
+        'Error marking all notifications as read:',
+        error
+      );
+      throw error;
     }
-    
-    // For production, use actual API
-    await axios.post(`${API_ENDPOINTS.MARK_AS_READ}/all`);
-  } catch (error) {
-    console.error('Error marking all notifications as read:', error);
-    throw error;
-  }
-};
+  };

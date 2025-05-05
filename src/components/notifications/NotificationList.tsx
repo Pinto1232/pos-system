@@ -1,29 +1,37 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Button, CircularProgress, Divider } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Divider,
+} from '@mui/material';
 import NotificationItem from './NotificationItem';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { styled } from '@mui/material/styles';
 
-const NotificationListContainer = styled(Box)(({ theme }) => ({
-  maxHeight: '400px',
-  overflowY: 'auto',
-  padding: theme.spacing(1),
-  '&::-webkit-scrollbar': {
-    width: '4px',
-  },
-  '&::-webkit-scrollbar-track': {
-    background: 'transparent',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: theme.palette.divider,
-    borderRadius: '4px',
-  },
-  '&::-webkit-scrollbar-thumb:hover': {
-    background: theme.palette.text.disabled,
-  },
-}));
+const NotificationListContainer = styled(Box)(
+  ({ theme }) => ({
+    maxHeight: '400px',
+    overflowY: 'auto',
+    padding: theme.spacing(1),
+    '&::-webkit-scrollbar': {
+      width: '4px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: theme.palette.divider,
+      borderRadius: '4px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      background: theme.palette.text.disabled,
+    },
+  })
+);
 
 const EmptyState = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -42,7 +50,7 @@ const NotificationList: React.FC = () => {
     markAsRead,
     markAllAsRead,
     refreshNotifications,
-    unreadCount
+    unreadCount,
   } = useNotificationContext();
 
   const handleMarkAsRead = async (id: string) => {
@@ -55,7 +63,13 @@ const NotificationList: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          p: 3,
+        }}
+      >
         <CircularProgress size={24} />
       </Box>
     );
@@ -64,7 +78,11 @@ const NotificationList: React.FC = () => {
   if (error) {
     return (
       <EmptyState>
-        <Typography variant="body2" color="error" gutterBottom>
+        <Typography
+          variant="body2"
+          color="error"
+          gutterBottom
+        >
           Error loading notifications
         </Typography>
         <Button
@@ -85,8 +103,12 @@ const NotificationList: React.FC = () => {
         <Typography variant="body2" gutterBottom>
           No notifications yet
         </Typography>
-        <Typography variant="caption" color="text.disabled">
-          We'll notify you when something important happens
+        <Typography
+          variant="caption"
+          color="text.disabled"
+        >
+          We'll notify you when something
+          important happens
         </Typography>
       </EmptyState>
     );
@@ -94,9 +116,19 @@ const NotificationList: React.FC = () => {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', px: 2, py: 1 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          px: 2,
+          py: 1,
+        }}
+      >
         <Typography variant="subtitle2">
-          Notifications {unreadCount > 0 && `(${unreadCount} unread)`}
+          Notifications{' '}
+          {unreadCount > 0 &&
+            `(${unreadCount} unread)`}
         </Typography>
         {unreadCount > 0 && (
           <Button

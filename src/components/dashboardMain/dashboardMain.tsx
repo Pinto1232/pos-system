@@ -1,11 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 import {
   Box,
   Typography,
   useTheme,
   useMediaQuery,
+  Skeleton,
 } from '@mui/material';
 import { AuthContext } from '@/contexts/AuthContext';
 import styles from './dashboardMain.module.css';
@@ -28,11 +32,22 @@ const DashboardMain: React.FC<
 > = ({ activeSection }) => {
   const { authenticated } =
     React.useContext(AuthContext);
-  useSpinner();
+  const { stopLoading } = useSpinner();
   const theme = useTheme();
   const isMobile = useMediaQuery(
     theme.breakpoints.down('sm')
   );
+  const [isDataLoaded, setIsDataLoaded] =
+    useState(false);
+
+  useEffect(() => {
+    const dataLoadingTimer = setTimeout(() => {
+      setIsDataLoaded(true);
+      stopLoading();
+    }, 1500);
+
+    return () => clearTimeout(dataLoadingTimer);
+  }, [stopLoading]);
 
   const renderSection = () => {
     let sectionToRender;
@@ -99,7 +114,39 @@ const DashboardMain: React.FC<
 
   return (
     <div className={styles.container}>
-      {renderSection()}
+      {isDataLoaded ? (
+        renderSection()
+      ) : (
+        <Box sx={{ width: '100%' }}>
+          <Skeleton
+            variant="text"
+            sx={{
+              fontSize: '2.5rem',
+              width: '30%',
+              mb: 2,
+            }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={60}
+            sx={{ mb: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={300}
+            sx={{ mb: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={200}
+            sx={{ mb: 2 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={200}
+          />
+        </Box>
+      )}
     </div>
   );
 };
