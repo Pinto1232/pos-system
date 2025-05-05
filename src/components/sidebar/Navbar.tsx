@@ -15,7 +15,6 @@ import {
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { navbarLinks } from '../../settings';
-import { FaRegBell } from 'react-icons/fa';
 import {
   FiUser,
   FiSettings,
@@ -24,6 +23,7 @@ import {
 import { useLogout } from '@/hooks/useLogout';
 import SettingsModal from '@/SettingsModal';
 import { useCustomization } from '@/contexts/CustomizationContext';
+import NotificationDropdown from '@/components/notifications/NotificationDropdown';
 
 interface NavbarProps {
   drawerWidth: number;
@@ -142,20 +142,7 @@ const Navbar: React.FC<NavbarProps> = ({
               justifyContent: 'center',
             }}
           >
-            <Typography
-              variant="body1"
-              sx={{ cursor: 'pointer' }}
-            >
-              <FaRegBell
-                style={{
-                  padding: '5px',
-                  cursor: 'pointer',
-                  fontSize: isMobile
-                    ? '1.5rem'
-                    : '2.3rem',
-                }}
-              />
-            </Typography>
+            <NotificationDropdown />
             <Typography
               variant="body1"
               sx={{ cursor: 'pointer' }}

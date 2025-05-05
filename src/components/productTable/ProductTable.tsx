@@ -214,7 +214,10 @@ const ProductTable: React.FC<
   // Calculate paginated products
   const paginatedProducts = useMemo(() => {
     const startIndex = page * rowsPerPage;
-    return displayProducts.slice(startIndex, startIndex + rowsPerPage);
+    return displayProducts.slice(
+      startIndex,
+      startIndex + rowsPerPage
+    );
   }, [displayProducts, page, rowsPerPage]);
 
   const renderProductImage = (
@@ -638,7 +641,9 @@ const ProductTable: React.FC<
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={onPageChange}
-            onRowsPerPageChange={onRowsPerPageChange}
+            onRowsPerPageChange={
+              onRowsPerPageChange
+            }
           />
         )}
       </TableContainer>

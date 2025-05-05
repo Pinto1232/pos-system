@@ -14,7 +14,6 @@ import {
   Badge,
 } from '@mui/material';
 import {
-  Notifications as NotificationsIcon,
   AccessTime as TimeIcon,
   Login as LoginIcon,
 } from '@mui/icons-material';
@@ -22,6 +21,7 @@ import { useSidebar } from '@/contexts/SidebarContext';
 import { useLoginForm } from '@/contexts/LoginFormContext';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import NotificationDropdown from '@/components/notifications/NotificationDropdown';
 import { IoCartOutline } from 'react-icons/io5';
 import CartSidebar from '@/components/cart/CartSidebar';
 import styles from './Navbar.module.css';
@@ -187,9 +187,7 @@ const Navbar: React.FC<NavbarProps> = memo(
                 </Typography>
               </Box>
 
-              <IconButton color="inherit">
-                <NotificationsIcon />
-              </IconButton>
+              <NotificationDropdown />
 
               <IconButton
                 color="inherit"
