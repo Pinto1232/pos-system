@@ -153,7 +153,8 @@ const Navbar: React.FC<NavbarProps> = ({
                 borderRadius: '8px',
                 transition: 'all 0.2s ease',
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backgroundColor:
+                    'rgba(255, 255, 255, 0.1)',
                 },
               }}
               onClick={handleClick}
@@ -163,17 +164,25 @@ const Navbar: React.FC<NavbarProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: isMobile ? '32px' : '36px',
-                  height: isMobile ? '32px' : '36px',
+                  width: isMobile
+                    ? '32px'
+                    : '36px',
+                  height: isMobile
+                    ? '32px'
+                    : '36px',
                   borderRadius: '50%',
-                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  backgroundColor:
+                    'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(8px)',
-                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                  boxShadow:
+                    '0 2px 6px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <FiUser
                   style={{
-                    fontSize: isMobile ? '1.1rem' : '1.3rem',
+                    fontSize: isMobile
+                      ? '1.1rem'
+                      : '1.3rem',
                     color: '#ffffff',
                   }}
                 />
@@ -182,8 +191,13 @@ const Navbar: React.FC<NavbarProps> = ({
                 variant="body1"
                 sx={{
                   fontWeight: 500,
-                  fontSize: isMobile ? '0.875rem' : '0.95rem',
-                  display: { xs: 'none', sm: 'block' }
+                  fontSize: isMobile
+                    ? '0.875rem'
+                    : '0.95rem',
+                  display: {
+                    xs: 'none',
+                    sm: 'block',
+                  },
                 }}
               >
                 Profile
@@ -204,13 +218,14 @@ const Navbar: React.FC<NavbarProps> = ({
               slotProps={{
                 paper: {
                   style: {
-                    transition: 'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1)'
-                  }
-                }
+                    transition:
+                      'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  },
+                },
               }}
               transitionDuration={{
                 enter: 250,
-                exit: 200
+                exit: 200,
               }}
               sx={{
                 marginTop: '10px',
@@ -219,13 +234,17 @@ const Navbar: React.FC<NavbarProps> = ({
                   maxHeight: '400px',
                   overflowY: 'auto',
                   borderRadius: '12px',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                  animation: 'fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  boxShadow:
+                    '0 8px 24px rgba(0,0,0,0.12)',
+                  animation:
+                    'fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   overflow: 'hidden',
-                  border: '1px solid rgba(0,0,0,0.05)',
+                  border:
+                    '1px solid rgba(0,0,0,0.05)',
                   transform: 'translateY(0)',
                   opacity: 1,
-                  transition: 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                  transition:
+                    'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                 },
                 '& .MuiList-root': {
                   padding: '8px',
@@ -233,11 +252,13 @@ const Navbar: React.FC<NavbarProps> = ({
                 '@keyframes fadeIn': {
                   from: {
                     opacity: 0,
-                    transform: 'translateY(-12px) scale(0.98)',
+                    transform:
+                      'translateY(-12px) scale(0.98)',
                   },
                   to: {
                     opacity: 1,
-                    transform: 'translateY(0) scale(1)',
+                    transform:
+                      'translateY(0) scale(1)',
                   },
                 },
               }}
@@ -249,18 +270,21 @@ const Navbar: React.FC<NavbarProps> = ({
                   padding: '10px 16px',
                   margin: '2px 0',
                   transition: 'all 0.15s ease',
-                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.05s',
                   opacity: 0,
                   transform: 'translateY(8px)',
                   '&:hover': {
-                    backgroundColor: 'rgba(0,0,0,0.04)',
+                    backgroundColor:
+                      'rgba(0,0,0,0.04)',
                     transform: 'translateY(-1px)',
                   },
                   '@keyframes fadeInItem': {
                     from: {
                       opacity: 0,
-                      transform: 'translateY(8px)',
+                      transform:
+                        'translateY(8px)',
                     },
                     to: {
                       opacity: 1,
@@ -269,10 +293,20 @@ const Navbar: React.FC<NavbarProps> = ({
                   },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: '36px', color: '#64748b' }}>
+                <ListItemIcon
+                  sx={{
+                    minWidth: '36px',
+                    color: '#64748b',
+                  }}
+                >
                   <FiUser fontSize="small" />
                 </ListItemIcon>
-                <Typography sx={{ fontWeight: 500, fontSize: '0.95rem' }}>
+                <Typography
+                  sx={{
+                    fontWeight: 500,
+                    fontSize: '0.95rem',
+                  }}
+                >
                   My Profile
                 </Typography>
               </MenuItem>
@@ -284,18 +318,21 @@ const Navbar: React.FC<NavbarProps> = ({
                   padding: '10px 16px',
                   margin: '2px 0',
                   transition: 'all 0.15s ease',
-                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.1s',
                   opacity: 0,
                   transform: 'translateY(8px)',
                   '&:hover': {
-                    backgroundColor: 'rgba(0,0,0,0.04)',
+                    backgroundColor:
+                      'rgba(0,0,0,0.04)',
                     transform: 'translateY(-1px)',
                   },
                   '@keyframes fadeInItem': {
                     from: {
                       opacity: 0,
-                      transform: 'translateY(8px)',
+                      transform:
+                        'translateY(8px)',
                     },
                     to: {
                       opacity: 1,
@@ -304,30 +341,44 @@ const Navbar: React.FC<NavbarProps> = ({
                   },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: '36px', color: '#64748b' }}>
+                <ListItemIcon
+                  sx={{
+                    minWidth: '36px',
+                    color: '#64748b',
+                  }}
+                >
                   <FiSettings fontSize="small" />
                 </ListItemIcon>
-                <Typography sx={{ fontWeight: 500, fontSize: '0.95rem' }}>
+                <Typography
+                  sx={{
+                    fontWeight: 500,
+                    fontSize: '0.95rem',
+                  }}
+                >
                   Settings
                 </Typography>
               </MenuItem>
 
-              <Box sx={{
-                padding: '0 8px',
-                my: 1,
-                borderTop: '1px solid rgba(0,0,0,0.06)',
-                animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
-                animationDelay: '0.15s',
-                opacity: 0,
-                '@keyframes fadeInItem': {
-                  from: {
-                    opacity: 0,
+              <Box
+                sx={{
+                  padding: '0 8px',
+                  my: 1,
+                  borderTop:
+                    '1px solid rgba(0,0,0,0.06)',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animationDelay: '0.15s',
+                  opacity: 0,
+                  '@keyframes fadeInItem': {
+                    from: {
+                      opacity: 0,
+                    },
+                    to: {
+                      opacity: 1,
+                    },
                   },
-                  to: {
-                    opacity: 1,
-                  },
-                },
-              }} />
+                }}
+              />
 
               <MenuItem
                 onClick={handleLogout}
@@ -339,14 +390,16 @@ const Navbar: React.FC<NavbarProps> = ({
                   margin: '2px 0',
                   borderRadius: '8px',
                   transition: 'all 0.2s ease',
-                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.2s',
                   opacity: 0,
                   transform: 'translateY(8px)',
                   '&:hover': {
                     backgroundColor: '#1a4589',
                     transform: 'translateY(-1px)',
-                    boxShadow: '0 4px 12px rgba(23, 58, 121, 0.2)',
+                    boxShadow:
+                      '0 4px 12px rgba(23, 58, 121, 0.2)',
                   },
                   '&.Mui-disabled': {
                     opacity: 0.7,
@@ -355,7 +408,8 @@ const Navbar: React.FC<NavbarProps> = ({
                   '@keyframes fadeInItem': {
                     from: {
                       opacity: 0,
-                      transform: 'translateY(8px)',
+                      transform:
+                        'translateY(8px)',
                     },
                     to: {
                       opacity: 1,
@@ -379,13 +433,23 @@ const Navbar: React.FC<NavbarProps> = ({
                   </Box>
                 ) : (
                   <>
-                    <ListItemIcon sx={{ minWidth: '36px', color: 'white' }}>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: '36px',
+                        color: 'white',
+                      }}
+                    >
                       <FiLogOut
                         fontSize="small"
                         style={{ color: 'white' }}
                       />
                     </ListItemIcon>
-                    <Typography sx={{ fontWeight: 500, fontSize: '0.95rem' }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: '0.95rem',
+                      }}
+                    >
                       Logout
                     </Typography>
                   </>
