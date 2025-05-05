@@ -10,7 +10,7 @@ import { PackageSelectionProvider } from '@/contexts/PackageSelectionContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
 import { SpinnerProvider } from '@/contexts/SpinnerContext';
 import { TestPeriodProvider } from '@/contexts/TestPeriodContext';
-import TestLoginButton from '@/components/ui/TestLoginButton';
+import ChatbotContainer from '@/components/ui/chatbot/ChatbotContainer';
 import {
   QueryClient,
   QueryClientProvider,
@@ -51,7 +51,7 @@ const Layout = ({
                 {!isDashboard && (
                   <FooterContainer />
                 )}
-                <TestLoginButton />
+                <ChatbotContainer />
               </TestPeriodProvider>
             </SidebarProvider>
           </PackageSelectionProvider>
