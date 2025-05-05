@@ -16,10 +16,12 @@ import {
   Paper,
   Avatar,
   InputAdornment,
+  Button,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useChatbot } from '@/contexts/ChatbotContext';
+import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 import Image from 'next/image';
 
 const ChatbotDialog = () => {
@@ -28,7 +30,12 @@ const ChatbotDialog = () => {
     toggleChatbot,
     messages,
     sendMessage,
+    handleSuggestedResponse,
+    handleCtaButtonClick,
+    themeColor,
   } = useChatbot();
+  const { selectedPackage } =
+    usePackageSelection();
   const [input, setInput] = useState('');
   const messagesEndRef =
     useRef<HTMLDivElement>(null);
@@ -63,10 +70,11 @@ const ChatbotDialog = () => {
       open={isOpen}
       onClose={toggleChatbot}
       maxWidth="sm"
-      fullWidth
+      fullWidth={false}
       PaperProps={{
         sx: {
           borderRadius: '16px',
+          borderBottomRightRadius: '0',
           overflow: 'hidden',
           maxWidth: '380px',
           height: '500px',
@@ -75,8 +83,10 @@ const ChatbotDialog = () => {
           flexDirection: 'column',
           boxShadow:
             '0 8px 32px rgba(0, 0, 0, 0.2)',
+          marginRight: 0,
           '@media (max-width: 480px)': {
             margin: '16px',
+            marginRight: 0,
             maxWidth: 'calc(100% - 32px)',
           },
         },
@@ -86,6 +96,16 @@ const ChatbotDialog = () => {
         '& .MuiBackdrop-root': {
           backgroundColor: 'rgba(0, 0, 0, 0.7)',
         },
+        '& .MuiDialog-container': {
+          justifyContent: 'flex-end',
+          alignItems: 'flex-end',
+          paddingRight: '20px',
+          paddingBottom: '80px', // Space for the button
+        },
+        '& .MuiPaper-root': {
+          margin: 0,
+          marginBottom: '10px',
+        },
       }}
     >
       <DialogTitle
@@ -94,7 +114,7 @@ const ChatbotDialog = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '16px',
-          backgroundColor: '#1976d2',
+          backgroundColor: themeColor,
           color: 'white',
         }}
       >
@@ -115,8 +135,13 @@ const ChatbotDialog = () => {
               objectFit: 'cover',
             }}
           />
-          <Typography variant="h6">
-            Pisval Assistant
+          <Typography
+            variant="h6"
+            sx={{ transition: 'all 0.3s ease' }}
+          >
+            {selectedPackage
+              ? `Pisval Assistant - ${selectedPackage.title}`
+              : 'Pisval Assistant'}
           </Typography>
         </Box>
         <IconButton
@@ -171,7 +196,7 @@ const ChatbotDialog = () => {
                     width: 32,
                     height: 32,
                     mr: 1,
-                    bgcolor: '#1976d2',
+                    bgcolor: themeColor,
                   }}
                   alt="Bot"
                 >
@@ -198,7 +223,7 @@ const ChatbotDialog = () => {
                       : '18px 18px 18px 0',
                   backgroundColor:
                     message.sender === 'user'
-                      ? '#1976d2'
+                      ? themeColor
                       : 'white',
                   color:
                     message.sender === 'user'
@@ -209,6 +234,135 @@ const ChatbotDialog = () => {
                 <Typography variant="body1">
                   {message.text}
                 </Typography>
+
+                {/* Display features if available */}
+                {message.sender === 'bot' &&
+                  message.features &&
+                  message.features.length > 0 && (
+                    <Box sx={{ mt: 2, mb: 1 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          fontWeight: 'bold',
+                          mb: 0.5,
+                        }}
+                      >
+                        Key Features:
+                      </Typography>
+                      <Box
+                        component="ul"
+                        sx={{ pl: 2, m: 0 }}
+                      >
+                        {message.features.map(
+                          (feature, index) => (
+                            <Typography
+                              component="li"
+                              variant="body2"
+                              key={index}
+                              sx={{ mb: 0.5 }}
+                            >
+                              {feature}
+                            </Typography>
+                          )
+                        )}
+                      </Box>
+                    </Box>
+                  )}
+
+                {/* Display pricing if available */}
+                {message.sender === 'bot' &&
+                  message.pricing && (
+                    <Box
+                      sx={{
+                        mt: 2,
+                        mb: 1,
+                        p: 1,
+                        bgcolor:
+                          'rgba(0,0,0,0.03)',
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          fontWeight: 'bold',
+                          mb: 0.5,
+                        }}
+                      >
+                        Pricing:
+                      </Typography>
+                      <Typography variant="body2">
+                        Monthly:{' '}
+                        {message.pricing.currency}
+                        {message.pricing.monthly}
+                      </Typography>
+                      <Typography variant="body2">
+                        Annual:{' '}
+                        {message.pricing.currency}
+                        {message.pricing.annual}
+                        <Typography
+                          component="span"
+                          variant="caption"
+                          sx={{
+                            color: 'success.main',
+                          }}
+                        >
+                          {' '}
+                          (Save{' '}
+                          {Math.round(
+                            (1 -
+                              message.pricing
+                                .annual /
+                                (message.pricing
+                                  .monthly *
+                                  12)) *
+                              100
+                          )}
+                          %)
+                        </Typography>
+                      </Typography>
+                    </Box>
+                  )}
+
+                {/* Display CTA buttons if available */}
+                {message.sender === 'bot' &&
+                  message.ctaButtons &&
+                  message.ctaButtons.length >
+                    0 && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 1,
+                        mt: 2,
+                      }}
+                    >
+                      {message.ctaButtons.map(
+                        (button, index) => (
+                          <Button
+                            key={index}
+                            variant="contained"
+                            size="small"
+                            onClick={() =>
+                              handleCtaButtonClick(
+                                button.action,
+                                button.data
+                              )
+                            }
+                            sx={{
+                              bgcolor: themeColor,
+                              '&:hover': {
+                                bgcolor: `${themeColor}dd`,
+                              },
+                            }}
+                          >
+                            {button.text}
+                          </Button>
+                        )
+                      )}
+                    </Box>
+                  )}
+
                 <Typography
                   variant="caption"
                   sx={{
@@ -250,6 +404,51 @@ const ChatbotDialog = () => {
         </Box>
       </DialogContent>
 
+      {/* Suggested responses */}
+      {messages.length > 0 &&
+        messages[messages.length - 1]
+          .suggestedResponses && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 1,
+              p: 2,
+              borderTop:
+                '1px solid rgba(0, 0, 0, 0.12)',
+              backgroundColor: 'white',
+            }}
+          >
+            {messages[
+              messages.length - 1
+            ].suggestedResponses.map(
+              (response, index) => (
+                <Button
+                  key={index}
+                  variant="outlined"
+                  size="small"
+                  onClick={() =>
+                    handleSuggestedResponse(
+                      response
+                    )
+                  }
+                  sx={{
+                    borderColor: themeColor,
+                    color: themeColor,
+                    '&:hover': {
+                      borderColor: themeColor,
+                      backgroundColor: `${themeColor}10`,
+                    },
+                  }}
+                >
+                  {response}
+                </Button>
+              )
+            )}
+          </Box>
+        )}
+
+      {/* Message input */}
       <Box
         component="form"
         sx={{
@@ -279,7 +478,7 @@ const ChatbotDialog = () => {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  color="primary"
+                  sx={{ color: themeColor }}
                   onClick={handleSend}
                   edge="end"
                   disabled={!input.trim()}
@@ -292,6 +491,9 @@ const ChatbotDialog = () => {
           sx={{
             '& .MuiOutlinedInput-root': {
               borderRadius: '24px',
+              '&.Mui-focused fieldset': {
+                borderColor: themeColor,
+              },
             },
           }}
         />
