@@ -2,12 +2,12 @@
   background-color: #111;
   color: #ffffff;
   padding: 60px 0 0;
-  /* Removed bottom padding */
   text-align: center;
   margin-bottom: 0;
-  /* Ensure no margin at bottom */
   position: relative;
   z-index: 1;
+  margin-top: 0;
+  display: block;
 }
 
 .subscription {
@@ -194,9 +194,8 @@
   color: #666;
   text-align: center;
   padding-top: 10px;
-  padding-bottom: 20px;
-  /* Increased padding to ensure no white space */
-  /* Add padding at bottom instead of margin */
+  padding-bottom: 0;
+  margin-bottom: 0;
   font-size: 12px;
 }
 
@@ -205,9 +204,24 @@
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
-  /* Reduced from 40px */
+  margin-bottom: 0;
+  padding-bottom: 0;
   gap: 8px;
   position: relative;
   z-index: 2;
-  /* Higher than footer to ensure it's above any potential issues */
+}
+
+/* Add this to ensure no white space at the bottom */
+:global(body) {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+:global(#__next) {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }

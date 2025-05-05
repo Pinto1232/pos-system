@@ -15,7 +15,6 @@ import {
   Typography,
   Paper,
   Avatar,
-  InputAdornment,
   Button,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -52,15 +51,6 @@ const ChatbotDialog = () => {
     if (input.trim()) {
       sendMessage(input);
       setInput('');
-    }
-  };
-
-  const handleKeyPress = (
-    e: React.KeyboardEvent
-  ) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
     }
   };
 
@@ -405,47 +395,50 @@ const ChatbotDialog = () => {
 
       {/* Suggested responses */}
       {messages.length > 0 &&
-        messages[messages.length - 1]
-          .suggestedResponses && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 1,
-              p: 2,
-              borderTop:
-                '1px solid rgba(0, 0, 0, 0.12)',
-              backgroundColor: 'white',
-            }}
-          >
-            {messages[
-              messages.length - 1
-            ].suggestedResponses.map(
-              (response, index) => (
-                <Button
-                  key={index}
-                  variant="outlined"
-                  size="small"
-                  onClick={() =>
-                    handleSuggestedResponse(
-                      response
-                    )
-                  }
-                  sx={{
-                    borderColor: themeColor,
-                    color: themeColor,
-                    '&:hover': {
+        (() => {
+          const lastMessage =
+            messages[messages.length - 1];
+          return lastMessage?.suggestedResponses &&
+            lastMessage.suggestedResponses
+              .length > 0 ? (
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 1,
+                p: 2,
+                borderTop:
+                  '1px solid rgba(0, 0, 0, 0.12)',
+                backgroundColor: 'white',
+              }}
+            >
+              {lastMessage.suggestedResponses.map(
+                (response, index) => (
+                  <Button
+                    key={index}
+                    variant="outlined"
+                    size="small"
+                    onClick={() =>
+                      handleSuggestedResponse(
+                        response
+                      )
+                    }
+                    sx={{
                       borderColor: themeColor,
-                      backgroundColor: `${themeColor}10`,
-                    },
-                  }}
-                >
-                  {response}
-                </Button>
-              )
-            )}
-          </Box>
-        )}
+                      color: themeColor,
+                      '&:hover': {
+                        borderColor: themeColor,
+                        backgroundColor: `${themeColor}10`,
+                      },
+                    }}
+                  >
+                    {response}
+                  </Button>
+                )
+              )}
+            </Box>
+          ) : null;
+        })()}
 
       {/* Message input */}
       <Box
@@ -469,25 +462,23 @@ const ChatbotDialog = () => {
           onChange={(e) =>
             setInput(e.target.value)
           }
-          onKeyPress={handleKeyPress}
+          onKeyDown={(e) => {
+            if (
+              e.key === 'Enter' &&
+              !e.shiftKey
+            ) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
           variant="outlined"
           size="small"
           autoComplete="off"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  sx={{ color: themeColor }}
-                  onClick={handleSend}
-                  edge="end"
-                  disabled={!input.trim()}
-                >
-                  <SendIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
+          inputProps={{
+            style: { paddingRight: '48px' },
           }}
           sx={{
+            position: 'relative',
             '& .MuiOutlinedInput-root': {
               borderRadius: '24px',
               '&.Mui-focused fieldset': {
@@ -496,6 +487,19 @@ const ChatbotDialog = () => {
             },
           }}
         />
+        <IconButton
+          sx={{
+            color: themeColor,
+            position: 'absolute',
+            right: '24px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+          }}
+          onClick={handleSend}
+          disabled={!input.trim()}
+        >
+          <SendIcon />
+        </IconButton>
       </Box>
     </Dialog>
   );

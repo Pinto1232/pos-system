@@ -9,7 +9,19 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  swcMinify: true,
+  compiler: {
+    reactRemoveProperties:
+      process.env.NODE_ENV === 'production',
+    removeConsole:
+      process.env.NODE_ENV === 'production'
+        ? {
+            exclude: ['error', 'warn'],
+          }
+        : false,
+  },
   experimental: {
+    optimizeCss: true,
     turbo: {
       resolveAlias: {
         '@components': './src/components',
@@ -23,6 +35,10 @@ const nextConfig: NextConfig = {
         '@types': './src/types',
       },
     },
+    serverActions: {
+      bodySizeLimit: '2mb',
+      allowedOrigins: ['localhost:3000'],
+    },
   },
   transpilePackages: ['next-auth'],
   productionBrowserSourceMaps: false,
@@ -33,7 +49,11 @@ const nextConfig: NextConfig = {
       'picsum.photos',
       'via.placeholder.com',
     ],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
   },
+  poweredByHeader: false,
+  compress: true,
   env: {
     NEXT_PUBLIC_KEYCLOAK_URL:
       process.env.NEXT_PUBLIC_KEYCLOAK_URL,

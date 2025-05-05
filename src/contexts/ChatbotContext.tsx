@@ -70,9 +70,9 @@ const getPackageColor = (
     case 'growth':
       return '#2196f3';
     case 'premium':
-      return '#9c27b0';
+      return '#da4792';
     case 'enterprise':
-      return '#f44336';
+      return '#9772e5';
     case 'custom':
       return '#ff9800';
     default:
