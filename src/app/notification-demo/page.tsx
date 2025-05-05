@@ -17,13 +17,10 @@ import {
   Card,
   CardContent,
   Alert,
-  Snackbar,
+  Snackbar
 } from '@mui/material';
 import { useNotificationContext } from '@/contexts/NotificationContext';
-import {
-  NotificationType,
-  CreateNotificationRequest,
-} from '@/types/notification';
+import { NotificationType, CreateNotificationRequest } from '@/types/notification';
 import NotificationItem from '@/components/notifications/NotificationItem';
 
 const NotificationDemo = () => {
@@ -34,65 +31,44 @@ const NotificationDemo = () => {
     createNotification,
     markAsRead,
     markAllAsRead,
-    refreshNotifications,
+    refreshNotifications
   } = useNotificationContext();
 
-  const [formData, setFormData] =
-    useState<CreateNotificationRequest>({
-      title: '',
-      message: '',
-      type: 'info',
-      link: '',
-      tags: [],
-    });
+  const [formData, setFormData] = useState<CreateNotificationRequest>({
+    title: '',
+    message: '',
+    type: 'info',
+    link: '',
+    tags: []
+  });
 
   const [tagInput, setTagInput] = useState('');
-  const [snackbarOpen, setSnackbarOpen] =
-    useState(false);
-  const [snackbarMessage, setSnackbarMessage] =
-    useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleTypeChange = (e: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      type: e.target.value as NotificationType,
-    }));
+    setFormData(prev => ({ ...prev, type: e.target.value as NotificationType }));
   };
 
   const handleAddTag = () => {
-    if (
-      tagInput.trim() &&
-      !formData.tags?.includes(tagInput.trim())
-    ) {
-      setFormData((prev) => ({
+    if (tagInput.trim() && !formData.tags?.includes(tagInput.trim())) {
+      setFormData(prev => ({
         ...prev,
-        tags: [
-          ...(prev.tags || []),
-          tagInput.trim(),
-        ],
+        tags: [...(prev.tags || []), tagInput.trim()]
       }));
       setTagInput('');
     }
   };
 
-  const handleRemoveTag = (
-    tagToRemove: string
-  ) => {
-    setFormData((prev) => ({
+  const handleRemoveTag = (tagToRemove: string) => {
+    setFormData(prev => ({
       ...prev,
-      tags: prev.tags?.filter(
-        (tag) => tag !== tagToRemove
-      ),
+      tags: prev.tags?.filter(tag => tag !== tagToRemove)
     }));
   };
 
@@ -104,21 +80,14 @@ const NotificationDemo = () => {
         message: '',
         type: 'info',
         link: '',
-        tags: [],
+        tags: []
       });
-      setSnackbarMessage(
-        'Notification created successfully!'
-      );
+      setSnackbarMessage('Notification created successfully!');
       setSnackbarOpen(true);
       refreshNotifications();
     } catch (error) {
-      console.error(
-        'Error creating notification:',
-        error
-      );
-      setSnackbarMessage(
-        'Failed to create notification'
-      );
+      console.error('Error creating notification:', error);
+      setSnackbarMessage('Failed to create notification');
       setSnackbarOpen(true);
     }
   };
@@ -136,9 +105,7 @@ const NotificationDemo = () => {
   };
 
   return (
-    <Box
-      sx={{ p: 3, maxWidth: 1200, mx: 'auto' }}
-    >
+    <Box sx={{ p: 3, maxWidth: 1200, mx: 'auto' }}>
       <Typography variant="h4" gutterBottom>
         Notification Service Demo
       </Typography>
@@ -173,28 +140,17 @@ const NotificationDemo = () => {
                 required
               />
 
-              <FormControl
-                fullWidth
-                margin="normal"
-              >
+              <FormControl fullWidth margin="normal">
                 <InputLabel>Type</InputLabel>
                 <Select
                   value={formData.type}
                   onChange={handleTypeChange}
                   label="Type"
                 >
-                  <MenuItem value="info">
-                    Info
-                  </MenuItem>
-                  <MenuItem value="success">
-                    Success
-                  </MenuItem>
-                  <MenuItem value="warning">
-                    Warning
-                  </MenuItem>
-                  <MenuItem value="error">
-                    Error
-                  </MenuItem>
+                  <MenuItem value="info">Info</MenuItem>
+                  <MenuItem value="success">Success</MenuItem>
+                  <MenuItem value="warning">Warning</MenuItem>
+                  <MenuItem value="error">Error</MenuItem>
                 </Select>
               </FormControl>
 
@@ -209,23 +165,16 @@ const NotificationDemo = () => {
               />
 
               <Box sx={{ mt: 2, mb: 1 }}>
-                <Typography
-                  variant="subtitle2"
-                  gutterBottom
-                >
+                <Typography variant="subtitle2" gutterBottom>
                   Tags
                 </Typography>
 
-                <Box
-                  sx={{ display: 'flex', mb: 1 }}
-                >
+                <Box sx={{ display: 'flex', mb: 1 }}>
                   <TextField
                     size="small"
                     label="Add tag"
                     value={tagInput}
-                    onChange={(e) =>
-                      setTagInput(e.target.value)
-                    }
+                    onChange={(e) => setTagInput(e.target.value)}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
@@ -243,20 +192,12 @@ const NotificationDemo = () => {
                   </Button>
                 </Box>
 
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: 1,
-                  }}
-                >
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                   {formData.tags?.map((tag) => (
                     <Chip
                       key={tag}
                       label={tag}
-                      onDelete={() =>
-                        handleRemoveTag(tag)
-                      }
+                      onDelete={() => handleRemoveTag(tag)}
                       size="small"
                     />
                   ))}
@@ -269,10 +210,7 @@ const NotificationDemo = () => {
                 fullWidth
                 sx={{ mt: 3 }}
                 onClick={handleCreateNotification}
-                disabled={
-                  !formData.title ||
-                  !formData.message
-                }
+                disabled={!formData.title || !formData.message}
               >
                 Create Notification
               </Button>
@@ -281,42 +219,18 @@ const NotificationDemo = () => {
 
           <Card>
             <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-              >
+              <Typography variant="h6" gutterBottom>
                 Notification Stats
               </Typography>
 
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  mb: 2,
-                }}
-              >
-                <Typography>
-                  Total Notifications:
-                </Typography>
-                <Typography fontWeight="bold">
-                  {totalCount}
-                </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Typography>Total Notifications:</Typography>
+                <Typography fontWeight="bold">{totalCount}</Typography>
               </Box>
 
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  mb: 2,
-                }}
-              >
-                <Typography>
-                  Unread Notifications:
-                </Typography>
-                <Typography
-                  fontWeight="bold"
-                  color="error"
-                >
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Typography>Unread Notifications:</Typography>
+                <Typography fontWeight="bold" color="error">
                   {unreadCount}
                 </Typography>
               </Box>
@@ -334,26 +248,10 @@ const NotificationDemo = () => {
         </Grid>
 
         <Grid item xs={12} md={7}>
-          <Paper
-            sx={{
-              p: 3,
-              height: '100%',
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mb: 2,
-              }}
-            >
+          <Paper sx={{ p: 3, height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6">
-                Notifications (
-                {notifications.length})
+                Notifications ({notifications.length})
               </Typography>
 
               <Button
@@ -366,47 +264,33 @@ const NotificationDemo = () => {
 
             <Divider sx={{ mb: 2 }} />
 
-            <Box
-              sx={{
-                flex: 1,
-                overflowY: 'auto',
-                '&::-webkit-scrollbar': {
-                  width: '4px',
-                },
-                '&::-webkit-scrollbar-track': {
-                  background: 'transparent',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  background: 'rgba(0,0,0,0.2)',
-                  borderRadius: '4px',
-                },
-              }}
-            >
+            <Box sx={{
+              flex: 1,
+              overflowY: 'auto',
+              '&::-webkit-scrollbar': {
+                width: '4px',
+              },
+              '&::-webkit-scrollbar-track': {
+                background: 'transparent',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: 'rgba(0,0,0,0.2)',
+                borderRadius: '4px',
+              },
+            }}>
               {notifications.length === 0 ? (
-                <Alert
-                  severity="info"
-                  sx={{ mt: 2 }}
-                >
+                <Alert severity="info" sx={{ mt: 2 }}>
                   No notifications to display
                 </Alert>
               ) : (
-                notifications.map(
-                  (notification) => (
-                    <Box
-                      key={notification.id}
-                      sx={{ mb: 2 }}
-                    >
-                      <NotificationItem
-                        notification={
-                          notification
-                        }
-                        onMarkAsRead={
-                          handleMarkAsRead
-                        }
-                      />
-                    </Box>
-                  )
-                )
+                notifications.map((notification) => (
+                  <Box key={notification.id} sx={{ mb: 2 }}>
+                    <NotificationItem
+                      notification={notification}
+                      onMarkAsRead={handleMarkAsRead}
+                    />
+                  </Box>
+                ))
               )}
             </Box>
           </Paper>
