@@ -20,7 +20,6 @@ const ChatbotButton = () => {
   const [showNotification, setShowNotification] =
     useState(false);
 
-  // Show notification when a package is selected and chatbot is closed
   useEffect(() => {
     if (selectedPackage && !isOpen) {
       setShowNotification(true);
@@ -55,7 +54,8 @@ const ChatbotButton = () => {
             position: 'fixed',
             bottom: '20px',
             right: '20px',
-            zIndex: 9998, // Slightly lower than dialog to ensure proper layering
+            zIndex: 9998,
+            margin: 0,
           }}
           aria-label="chat"
         >

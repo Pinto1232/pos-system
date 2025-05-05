@@ -40,7 +40,6 @@ const ChatbotDialog = () => {
   const messagesEndRef =
     useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom of messages when new messages are added
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({
@@ -100,7 +99,7 @@ const ChatbotDialog = () => {
           justifyContent: 'flex-end',
           alignItems: 'flex-end',
           paddingRight: '20px',
-          paddingBottom: '80px', // Space for the button
+          paddingBottom: '80px',
         },
         '& .MuiPaper-root': {
           margin: 0,

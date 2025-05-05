@@ -7,7 +7,6 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
-// No Material UI imports needed here
 import { usePackageSelection } from './PackageSelectionContext';
 
 interface ChatMessage {
@@ -62,27 +61,25 @@ export const useChatbot = () => {
   return context;
 };
 
-// Get package-specific color theme
 const getPackageColor = (
   packageType: string
 ): string => {
   switch (packageType) {
     case 'starter':
-      return '#4caf50'; // Green
+      return '#4caf50';
     case 'growth':
-      return '#2196f3'; // Blue
+      return '#2196f3';
     case 'premium':
-      return '#9c27b0'; // Purple
+      return '#9c27b0';
     case 'enterprise':
-      return '#f44336'; // Red
+      return '#f44336';
     case 'custom':
-      return '#ff9800'; // Orange
+      return '#ff9800';
     default:
-      return '#1976d2'; // Default blue
+      return '#1976d2';
   }
 };
 
-// Get package-specific features
 const getPackageFeatures = (
   packageType: string
 ): string[] => {
@@ -143,7 +140,6 @@ const getPackageFeatures = (
   }
 };
 
-// Get package-specific pricing
 const getPackagePricing = (
   packageType: string
 ): {
@@ -178,8 +174,8 @@ const getPackagePricing = (
       };
     case 'custom':
       return {
-        monthly: 0, // Custom pricing
-        annual: 0, // Custom pricing
+        monthly: 0,
+        annual: 0,
         currency: 'USD',
       };
     default:
@@ -191,7 +187,6 @@ const getPackagePricing = (
   }
 };
 
-// Get suggested responses based on package type
 const getSuggestedResponses = (
   packageType: string
 ): string[] => {
@@ -258,17 +253,14 @@ export const ChatbotProvider: React.FC<{
   const { selectedPackage } =
     usePackageSelection();
 
-  // Track previous package to avoid duplicate messages
   const [
     previousPackageId,
     setPreviousPackageId,
   ] = useState<number | null>(null);
 
-  // Theme color based on selected package
   const [themeColor, setThemeColor] =
     useState<string>('#1976d2');
 
-  // Load chat history from localStorage
   useEffect(() => {
     if (selectedPackage) {
       const savedHistory = localStorage.getItem(
@@ -276,7 +268,6 @@ export const ChatbotProvider: React.FC<{
       );
       if (savedHistory) {
         try {
-          // Parse saved history but only use it if we're not already in a conversation about this package
           const parsedHistory =
             JSON.parse(savedHistory);
           if (
@@ -284,8 +275,6 @@ export const ChatbotProvider: React.FC<{
               selectedPackage.id &&
             parsedHistory.length > 0
           ) {
-            // We'll handle this in the package selection effect instead
-            // setMessages(parsedHistory);
           }
         } catch (e) {
           console.error(
@@ -297,19 +286,16 @@ export const ChatbotProvider: React.FC<{
     }
   }, [selectedPackage, previousPackageId]);
 
-  // Listen for package selection changes
   useEffect(() => {
     if (
       selectedPackage &&
       selectedPackage.id !== previousPackageId
     ) {
-      // Update theme color based on package type
       const newThemeColor = getPackageColor(
         selectedPackage.type
       );
       setThemeColor(newThemeColor);
 
-      // Reset messages when a new package is selected
       const welcomeMessage: ChatMessage = {
         id: Date.now().toString(),
         text: 'Hello! How can I help you with Pisval Tech POS today?',
@@ -322,26 +308,20 @@ export const ChatbotProvider: React.FC<{
         ],
       };
 
-      // Clear previous messages and set welcome message
       setMessages([welcomeMessage]);
-
-      // Get package-specific features
       const packageFeatures = getPackageFeatures(
         selectedPackage.type
       );
 
-      // Get package-specific pricing
       const packagePricing = getPackagePricing(
         selectedPackage.type
       );
 
-      // Get suggested responses for this package
       const suggestedResponses =
         getSuggestedResponses(
           selectedPackage.type
         );
 
-      // Send a message about the selected package after a short delay
       setTimeout(() => {
         const packageMessage =
           getPackageDescription(
@@ -378,7 +358,6 @@ export const ChatbotProvider: React.FC<{
           botMessage,
         ]);
 
-        // Save to localStorage
         localStorage.setItem(
           `chat_history_${selectedPackage.id}`,
           JSON.stringify([
@@ -388,10 +367,8 @@ export const ChatbotProvider: React.FC<{
         );
       }, 500);
 
-      // Update previous package ID
       setPreviousPackageId(selectedPackage.id);
 
-      // Open the chatbot if it's not already open
       if (!isOpen) {
         setIsOpen(true);
       }
@@ -407,15 +384,8 @@ export const ChatbotProvider: React.FC<{
       'Toggling chatbot, current state:',
       isOpen
     );
-
-    // If we're closing the chatbot and there's a selected package,
-    // we'll keep the messages for now. Otherwise, we'll reset them
-    // when the chatbot is reopened.
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
-
-    // If we're closing the chatbot, don't reset messages
-    // They'll be reset when a new package is selected
   };
 
   const sendBotMessage = (
@@ -440,7 +410,6 @@ export const ChatbotProvider: React.FC<{
   };
 
   const sendMessage = (message: string) => {
-    // Add user message
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       text: message,
@@ -450,7 +419,6 @@ export const ChatbotProvider: React.FC<{
 
     setMessages((prev) => [...prev, userMessage]);
 
-    // Simulate bot response after a short delay
     setTimeout(() => {
       const responseText =
         getBotResponse(message);
@@ -471,9 +439,7 @@ export const ChatbotProvider: React.FC<{
         botMessage,
       ]);
 
-      // Save to localStorage if we have a selected package
       if (selectedPackage) {
-        // Create a copy of the current messages to avoid stale closure issues
         const currentMessages = [
           ...messages,
           userMessage,
@@ -487,15 +453,12 @@ export const ChatbotProvider: React.FC<{
     }, 1000);
   };
 
-  // Handle suggested response clicks
   const handleSuggestedResponse = (
     response: string
   ) => {
-    // Just send the suggested response as a user message
     sendMessage(response);
   };
 
-  // Handle CTA button clicks
   const handleCtaButtonClick = (
     action: string,
     data?: Record<string, unknown>
@@ -507,21 +470,18 @@ export const ChatbotProvider: React.FC<{
 
     switch (action) {
       case 'startTrial':
-        // Add a user message indicating they want to start a trial
         sendMessage(
           "I'd like to start a free trial"
         );
         break;
 
       case 'viewPricing':
-        // Add a user message asking about pricing
         sendMessage(
           'Can you tell me more about pricing?'
         );
         break;
 
       case 'upgradePackage': {
-        // Logic to upgrade package would go here
         const packageName =
           data && 'packageName' in data
             ? String(data.packageName)
@@ -533,14 +493,12 @@ export const ChatbotProvider: React.FC<{
       }
 
       default:
-        // For any other actions
         sendMessage(
           `I'm interested in the ${action} option`
         );
     }
   };
 
-  // Get package-specific descriptions
   const getPackageDescription = (
     packageType: string
   ): string => {
@@ -565,7 +523,6 @@ export const ChatbotProvider: React.FC<{
     }
   };
 
-  // Simple bot response logic - can be expanded later
   const getBotResponse = (
     message: string
   ): string => {
