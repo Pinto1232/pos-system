@@ -21,7 +21,7 @@ import { useSidebar } from '@/contexts/SidebarContext';
 import { useLoginForm } from '@/contexts/LoginFormContext';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
-import NotificationDropdown from '@/components/notifications/NotificationDropdown';
+import LanguageDropdown from '@/components/language/LanguageDropdown';
 import { IoCartOutline } from 'react-icons/io5';
 import CartSidebar from '@/components/cart/CartSidebar';
 import styles from './Navbar.module.css';
@@ -187,7 +187,7 @@ const Navbar: React.FC<NavbarProps> = memo(
                 </Typography>
               </Box>
 
-              <NotificationDropdown />
+              <LanguageDropdown />
 
               <IconButton
                 color="inherit"

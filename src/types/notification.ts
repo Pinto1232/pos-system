@@ -1,12 +1,6 @@
-export type NotificationType =
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+export type NotificationType = 'success' | 'warning' | 'error' | 'info';
 
-export type NotificationStatus =
-  | 'read'
-  | 'unread';
+export type NotificationStatus = 'read' | 'unread';
 
 export interface Notification {
   id: string;
@@ -16,7 +10,7 @@ export interface Notification {
   createdAt: string;
   status: NotificationStatus;
   link?: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   tags?: string[];
 }
 
@@ -42,6 +36,6 @@ export interface CreateNotificationRequest {
   message: string;
   type: NotificationType;
   link?: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   tags?: string[];
 }
