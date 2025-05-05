@@ -33,7 +33,6 @@ interface LoginFormProps {
     email: string,
     password: string
   ) => void;
-
 }
 
 const LoginForm: React.FC<LoginFormProps> = memo(
@@ -190,8 +189,9 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                   required
                   slotProps={{
                     inputLabel: {
-                      shrink: !!email || undefined,
-                    }
+                      shrink:
+                        !!email || undefined,
+                    },
                   }}
                 />
               </Box>
@@ -236,11 +236,12 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                             )}
                           </IconButton>
                         </InputAdornment>
-                      )
+                      ),
                     },
                     inputLabel: {
-                      shrink: !!password || undefined,
-                    }
+                      shrink:
+                        !!password || undefined,
+                    },
                   }}
                   className={styles.textField}
                   required
@@ -255,10 +256,10 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                   label="Remember me"
                   sx={{
                     '& .MuiFormControlLabel-label':
-                    {
-                      fontSize: '0.75rem',
-                      color: '#64748b',
-                    },
+                      {
+                        fontSize: '0.75rem',
+                        color: '#64748b',
+                      },
                     '& .MuiSvgIcon-root': {
                       fontSize: '1.2rem',
                       color: '#3b82f6',
