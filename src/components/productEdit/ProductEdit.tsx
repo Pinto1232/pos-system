@@ -358,16 +358,30 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       format: 'a4',
     });
 
+    // Add company logo/name
+    doc.setFontSize(20);
+    doc.setTextColor(23, 58, 121); // Dark blue color
+    doc.text('Pisval Tech', 14, 15);
+
     // Add title
     doc.setFontSize(16);
-    doc.text('Product Inventory', 14, 15);
+    doc.setTextColor(30, 42, 59); // Reset to dark text
+    doc.text('Product Inventory Report', 14, 25);
 
-    // Add date
+    // Add business information
+    doc.setFontSize(10);
+    doc.text('Pisval Tech Point of Sale System', 14, 35);
+    doc.text('Business Information:', 14, 40);
+    doc.text('Email: info@pisvaltech.com', 14, 45);
+    doc.text('Website: www.pisvaltech.com', 14, 50);
+    doc.text('Phone: +27 123 456 789', 14, 55);
+
+    // Add date and time
     doc.setFontSize(10);
     doc.text(
-      `Generated on: ${new Date().toLocaleDateString()}`,
+      `Generated on: ${new Date().toLocaleString()}`,
       14,
-      22
+      65
     );
 
     // Prepare data for the table
@@ -387,7 +401,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
 
     // Add the table
     autoTable(doc, {
-      startY: 30,
+      startY: 70,
       head: [
         [
           'Product Name',
