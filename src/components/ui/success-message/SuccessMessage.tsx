@@ -77,7 +77,19 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
       calculatedPrice,
       onAddToCart,
     }) => {
-      const { addToCart } = useCart();
+      const { addToCart, cartItems } = useCart();
+      const [snackbarOpen, setSnackbarOpen] =
+        useState(false);
+      const [
+        snackbarMessage,
+        setSnackbarMessage,
+      ] = useState('');
+      const [
+        snackbarSeverity,
+        setSnackbarSeverity,
+      ] = useState<
+        'success' | 'warning' | 'error'
+      >('success');
 
       useEffect(() => {
         if (open && formData) {
@@ -132,8 +144,44 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
           STRIPE_PRICE_IDS?.[packageType] ||
           'default_price_id';
 
+        const packageId =
+          selectedPackage.id || Date.now();
+
+        console.log(
+          'Checking if package exists in cart:',
+          packageId
+        );
+        console.log(
+          'Current cart items:',
+          cartItems
+        );
+
+        const isPackageInCart = cartItems.some(
+          (item) => {
+            console.log(
+              'Comparing item.id:',
+              item.id,
+              'with packageId:',
+              packageId
+            );
+            return item.id === packageId;
+          }
+        );
+
+        if (isPackageInCart) {
+          console.log(
+            'Package already in cart, showing warning'
+          );
+          setSnackbarMessage(
+            `${selectedPackage.title} package is already in your cart!`
+          );
+          setSnackbarSeverity('warning');
+          setSnackbarOpen(true);
+          return;
+        }
+
         const cartItem = {
-          id: selectedPackage.id || Date.now(),
+          id: packageId,
           name:
             selectedPackage.title ||
             packageType.charAt(0).toUpperCase() +
@@ -159,6 +207,9 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
         addToCart?.(cartItem);
 
         const notificationMessage = `${selectedPackage.title} package added to cart!`;
+        setSnackbarMessage(notificationMessage);
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
 
         if (onAddToCart) {
           onAddToCart(notificationMessage);
@@ -176,99 +227,134 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
         usageQuantities,
         calculatedPrice,
         onAddToCart,
+        cartItems,
       ]);
+
+      const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
+      };
 
       if (!open) return null;
 
       return (
-        <div
-          className={styles.successMessageOverlay}
-        >
+        <>
           <div
             className={
-              styles.successMessageContainer
+              styles.successMessageOverlay
             }
           >
-            <IconButton
-              className={styles.closeButton}
-              onClick={onClose}
-            >
-              <CloseIcon />
-            </IconButton>
-
             <div
               className={
-                styles.successIconContainer
+                styles.successMessageContainer
               }
             >
-              <motion.div
-                animate={{
-                  rotate: [
-                    0, 10, -10, 10, -10, 0,
-                  ],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 0.5,
-                  delay: 0.5,
-                  repeat: 0,
-                }}
+              <IconButton
+                className={styles.closeButton}
+                onClick={onClose}
               >
-                <CheckCircleIcon
-                  className={styles.successIcon}
-                />
-              </motion.div>
-            </div>
+                <CloseIcon />
+              </IconButton>
 
-            <Typography
-              variant="h6"
-              className={styles.successTitle}
-            >
-              Success
-            </Typography>
-            <Typography
-              className={styles.successText}
-            >
-              {message ||
-                'Please proceed with payment'}
-            </Typography>
+              <div
+                className={
+                  styles.successIconContainer
+                }
+              >
+                <motion.div
+                  animate={{
+                    rotate: [
+                      0, 10, -10, 10, -10, 0,
+                    ],
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.5,
+                    repeat: 0,
+                  }}
+                >
+                  <CheckCircleIcon
+                    className={styles.successIcon}
+                  />
+                </motion.div>
+              </div>
 
-            <div
-              className={
-                styles.successMessageActions
-              }
-            >
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: '#1e3a8a',
-                }}
-                onClick={onReturn}
-                startIcon={<ArrowBackIcon />}
-                sx={{
-                  width: '150px',
-                  whiteSpace: 'nowrap',
-                }}
+              <Typography
+                variant="h6"
+                className={styles.successTitle}
               >
-                Return
-              </Button>
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: '#1e3a8a',
-                }}
-                onClick={handleAddToCart}
-                startIcon={<HiShoppingCart />}
-                sx={{
-                  width: '150px',
-                  whiteSpace: 'nowrap',
-                }}
+                Success
+              </Typography>
+              <Typography
+                className={styles.successText}
               >
-                Add to Cart
-              </Button>
+                {message ||
+                  'Please proceed with payment'}
+              </Typography>
+
+              <div
+                className={
+                  styles.successMessageActions
+                }
+              >
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: '#1e3a8a',
+                  }}
+                  onClick={onReturn}
+                  startIcon={<ArrowBackIcon />}
+                  sx={{
+                    width: '150px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Return
+                </Button>
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: '#1e3a8a',
+                  }}
+                  onClick={handleAddToCart}
+                  startIcon={<HiShoppingCart />}
+                  sx={{
+                    width: '150px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Add to Cart
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            sx={{
+              zIndex: 9999,
+              '& .MuiAlert-root': {
+                width: '100%',
+                minWidth: '300px',
+              },
+            }}
+          >
+            <Alert
+              onClose={handleSnackbarClose}
+              severity={snackbarSeverity}
+              variant="filled"
+              sx={{ width: '100%' }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
+        </>
       );
     }
   );
