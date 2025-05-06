@@ -185,13 +185,17 @@ export const switchStyles: SxProps<Theme> = {
 
 export const modalPaperStyles: SxProps<Theme> = {
   borderRadius: '16px',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+  boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
   overflow: 'visible',
   maxWidth: { xs: '90%', sm: 500 },
   width: '100%',
   mx: 'auto',
   position: 'relative',
   pt: { xs: 6, sm: 8 },
+  backgroundColor: '#ffffff !important', // Force white background
+  display: 'block !important', // Force display
+  opacity: 1,
+  visibility: 'visible',
 };
 
 export const modalImageStyles: SxProps<Theme> = {

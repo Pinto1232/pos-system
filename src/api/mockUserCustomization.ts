@@ -1,7 +1,7 @@
 import {
   UserCustomization,
   TaxSettings,
-  TaxCategory,
+  //TaxCategory,
   RegionalSettings,
 } from '@/SettingsModal';
 
@@ -10,7 +10,6 @@ const STORAGE_KEY = 'userCustomization';
 export const mockFetchCustomization = async (
   userId: string
 ): Promise<UserCustomization> => {
-  // Check if we're running in a browser environment
   if (typeof window !== 'undefined') {
     try {
       const storedData =
@@ -29,7 +28,6 @@ export const mockFetchCustomization = async (
     }
   }
 
-  // Return default values if no customization exists
   const defaultTaxSettings: TaxSettings = {
     enableTaxCalculation: true,
     defaultTaxRate: 15.0,

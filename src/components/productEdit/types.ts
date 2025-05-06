@@ -12,6 +12,7 @@ export interface Product {
   stock?: number;
   sales?: number;
   discount?: number;
+  statusProduct?: string; // Added to ensure compatibility between components
 }
 
 export interface ProductEditProps {

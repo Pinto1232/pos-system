@@ -7,7 +7,6 @@ import {
   CreateNotificationRequest,
 } from '@/types/notification';
 
-// Mock data for development until backend is implemented
 const MOCK_NOTIFICATIONS: Notification[] = [
   {
     id: '1',
