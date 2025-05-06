@@ -6,17 +6,11 @@ import { Box } from '@mui/material';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Navbar from '@/components/sidebar/Navbar';
 import DashboardMainContainer from '../dashboardMain/dashboardMainContainer';
-import SettingsModal from '@/SettingsModal';
+import SettingsModal, {
+  UserCustomization,
+} from '@/SettingsModal';
 import { useQuery } from '@tanstack/react-query';
 import { mockFetchCustomization } from '@/api/mockUserCustomization';
-
-export interface UserCustomization {
-  id: number;
-  userId: string;
-  sidebarColor: string;
-  logoUrl: string;
-  navbarColor: string;
-}
 
 const fetchCustomization = async (
   userId: string
@@ -65,6 +59,14 @@ const DashboardLayout: React.FC<
 
   useEffect(() => {
     if (isSuccess && data) {
+      console.log(
+        'Dashboard received customization data:',
+        data
+      );
+      console.log(
+        'Tax settings in dashboard:',
+        data.taxSettings
+      );
       setCustomization(data);
     }
   }, [isSuccess, data]);
@@ -91,6 +93,14 @@ const DashboardLayout: React.FC<
   const handleCustomizationUpdated = (
     updated: UserCustomization
   ) => {
+    console.log(
+      'Customization updated in dashboard:',
+      updated
+    );
+    console.log(
+      'Updated tax settings:',
+      updated.taxSettings
+    );
     setCustomization(updated);
   };
 
@@ -100,10 +110,12 @@ const DashboardLayout: React.FC<
         display: 'flex',
         minHeight: '100vh',
         bgcolor: '#F3F4F6',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
       <Sidebar
-        drawerWidth={300}
+        drawerWidth={320}
         isDrawerOpen={isDrawerOpen}
         onDrawerToggle={onDrawerToggle}
         backgroundColor={sidebarBackground}
@@ -111,9 +123,10 @@ const DashboardLayout: React.FC<
         iconColor={iconColor}
         onSettingsClick={handleSettingsClick}
         onSectionSelect={setActiveSection}
-        handleItemClick={(item) =>
-          console.log(`Item clicked: ${item}`)
-        }
+        handleItemClick={(item) => {
+          console.log(`Item clicked: ${item}`);
+          setActiveSection(item);
+        }}
         logoUrl={logoUrl}
       />
       <Box
@@ -126,7 +139,7 @@ const DashboardLayout: React.FC<
         }}
       >
         <Navbar
-          drawerWidth={isDrawerOpen ? 300 : 60}
+          drawerWidth={isDrawerOpen ? 320 : 80}
           onDrawerToggle={onDrawerToggle}
           backgroundColor={navbarBg}
         />

@@ -27,6 +27,7 @@ export interface SidebarItemProps {
   onToggle: (label: string) => void;
   onItemClick: (label: string) => void;
   onSettingsClick?: () => void;
+  isCollapsed?: boolean;
 }
 
 export interface SubItemsProps {

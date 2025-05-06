@@ -12,14 +12,16 @@ import { useSpinner } from '@/contexts/SpinnerContext';
 const DashboardContainer = () => {
   const [isDrawerOpen, setIsDrawerOpen] =
     useState(true);
+  // Initialize with Dashboard as the active section
   const [activeSection, setActiveSection] =
     useState<string>('Dashboard');
   const { stopLoading } = useSpinner();
 
   useEffect(() => {
+    // Use a slightly longer timeout to ensure smooth loading
     const dataLoadedTimeout = setTimeout(() => {
       stopLoading();
-    }, 1000);
+    }, 1500);
 
     return () => clearTimeout(dataLoadedTimeout);
   }, [stopLoading]);
@@ -43,17 +45,9 @@ const DashboardContainer = () => {
       iconColor="#FFFFFF"
       navbarBgColor="#1F2937"
     >
-      <div style={{ display: 'flex' }}>
-        <Sidebar
-          drawerWidth={240}
-          isDrawerOpen={isDrawerOpen}
-          onSectionSelect={handleSectionSelect}
-          handleItemClick={handleSectionSelect}
-        />
-        <DashboardMain
-          activeSection={activeSection}
-        />
-      </div>
+      <DashboardMain
+        activeSection={activeSection}
+      />
     </DashboardLayout>
   );
 };

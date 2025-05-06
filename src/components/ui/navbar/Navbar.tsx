@@ -4,7 +4,11 @@ import React, {
   Suspense,
   useEffect,
   useState,
+  useRef,
 } from 'react';
+import eventBus, {
+  UI_EVENTS,
+} from '@/utils/eventBus';
 import {
   AppBar,
   Toolbar,
@@ -28,6 +32,7 @@ import styles from './Navbar.module.css';
 import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
+import { useCustomization } from '@/contexts/CustomizationContext';
 
 export interface NavbarProps {
   title: string;
@@ -49,6 +54,7 @@ const Navbar: React.FC<NavbarProps> = memo(
     const [isCartOpen, setIsCartOpen] =
       useState(false);
     const { cartCount } = useCart();
+    const { navbarColor } = useCustomization();
 
     useEffect(() => {
       setRemainingTime(testPeriod * 24 * 60 * 60);
@@ -63,6 +69,36 @@ const Navbar: React.FC<NavbarProps> = memo(
 
       return () => clearInterval(timer);
     }, []);
+
+    const appBarRef =
+      useRef<HTMLDivElement>(null);
+    useEffect(() => {
+      const handleCustomizationUpdate = (data: {
+        navbarColor?: string;
+      }) => {
+        if (
+          appBarRef.current &&
+          data.navbarColor
+        ) {
+          appBarRef.current.style.backgroundColor =
+            data.navbarColor;
+        }
+      };
+
+      eventBus.on(
+        UI_EVENTS.CUSTOMIZATION_UPDATED,
+        handleCustomizationUpdate
+      );
+
+      handleCustomizationUpdate({ navbarColor });
+
+      return () => {
+        eventBus.off(
+          UI_EVENTS.CUSTOMIZATION_UPDATED,
+          handleCustomizationUpdate
+        );
+      };
+    }, [navbarColor]);
 
     const formatTime = (seconds: number) => {
       const hrs = Math.floor(seconds / 3600);
@@ -90,11 +126,24 @@ const Navbar: React.FC<NavbarProps> = memo(
       router.push('/');
     };
 
+    useEffect(() => {
+      if (appBarRef.current) {
+        appBarRef.current.style.backgroundColor =
+          navbarColor;
+      }
+    }, [navbarColor]);
+
     return (
       <>
         <AppBar
           position="sticky"
           className={styles.navbar}
+          ref={appBarRef}
+          sx={{
+            backgroundColor: navbarColor,
+            transition:
+              'background-color 0.3s ease',
+          }}
         >
           <Toolbar
             sx={{
@@ -192,9 +241,6 @@ const Navbar: React.FC<NavbarProps> = memo(
               <IconButton
                 color="inherit"
                 onClick={() => {
-                  console.log(
-                    'Login button clicked'
-                  );
                   toggleLoginForm();
                 }}
               >
