@@ -1,41 +1,61 @@
 import { NextResponse } from 'next/server';
 
 // Define the backend API URL
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5000';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+  'http://localhost:5000';
 
 export async function GET(
   request: Request,
   { params }: { params: { userId: string } }
 ) {
   const userId = params.userId;
-  
+
   try {
-    console.log(`Proxying GET request to backend for user: ${userId}`);
-    
+    console.log(
+      `Proxying GET request to backend for user: ${userId}`
+    );
+
     // Forward the request to the backend API
-    const response = await fetch(`${BACKEND_API_URL}/api/UserCustomization/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${BACKEND_API_URL}/api/UserCustomization/${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     if (!response.ok) {
-      console.warn(`Backend API returned status: ${response.status}`);
+      console.warn(
+        `Backend API returned status: ${response.status}`
+      );
       return NextResponse.json(
-        { error: 'Failed to fetch user customization from backend' },
+        {
+          error:
+            'Failed to fetch user customization from backend',
+        },
         { status: response.status }
       );
     }
 
     const data = await response.json();
-    console.log('Successfully fetched user customization from backend');
-    
+    console.log(
+      'Successfully fetched user customization from backend'
+    );
+
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error proxying request to backend:', error);
+    console.error(
+      'Error proxying request to backend:',
+      error
+    );
     return NextResponse.json(
-      { error: 'Failed to connect to backend service' },
+      {
+        error:
+          'Failed to connect to backend service',
+      },
       { status: 500 }
     );
   }

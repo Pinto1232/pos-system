@@ -27,7 +27,31 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       item.label === 'Settings' &&
       onSettingsClick
     ) {
-      onSettingsClick();
+      // Pre-fetch customization data before opening settings modal
+      // to reduce perceived loading time
+      const queryClient = window.queryClient;
+      if (queryClient) {
+        queryClient.prefetchQuery({
+          queryKey: [
+            'userCustomization',
+            'current-user',
+          ],
+          queryFn: () =>
+            import(
+              '@/api/mockUserCustomization'
+            ).then((module) =>
+              module.mockFetchCustomization(
+                'current-user'
+              )
+            ),
+          staleTime: 60000,
+        });
+      }
+
+      // Small timeout to allow prefetch to start
+      setTimeout(() => {
+        onSettingsClick();
+      }, 10);
     } else if (item.expandable) {
       onToggle(item.label);
     } else {

@@ -10,10 +10,23 @@ const STORAGE_KEY = 'userCustomization';
 export const mockFetchCustomization = async (
   userId: string
 ): Promise<UserCustomization> => {
-  const storedData =
-    localStorage.getItem(STORAGE_KEY);
-  if (storedData) {
-    return JSON.parse(storedData);
+  // Check if we're running in a browser environment
+  if (typeof window !== 'undefined') {
+    try {
+      const storedData =
+        localStorage.getItem(STORAGE_KEY);
+      if (storedData) {
+        console.log(
+          'Found stored customization data in localStorage'
+        );
+        return JSON.parse(storedData);
+      }
+    } catch (error) {
+      console.error(
+        'Error accessing localStorage:',
+        error
+      );
+    }
   }
 
   // Return default values if no customization exists
@@ -56,17 +69,23 @@ export const mockFetchCustomization = async (
   };
 
   // Create default regional settings
-  const defaultRegionalSettings: RegionalSettings = {
-    defaultCurrency: 'ZAR',
-    dateFormat: 'DD/MM/YYYY',
-    timeFormat: '24h',
-    timezone: 'Africa/Johannesburg',
-    numberFormat: '#,###.##',
-    language: 'en-ZA',
-    autoDetectLocation: true,
-    enableMultiCurrency: true,
-    supportedCurrencies: ['ZAR', 'USD', 'EUR', 'GBP'],
-  };
+  const defaultRegionalSettings: RegionalSettings =
+    {
+      defaultCurrency: 'ZAR',
+      dateFormat: 'DD/MM/YYYY',
+      timeFormat: '24h',
+      timezone: 'Africa/Johannesburg',
+      numberFormat: '#,###.##',
+      language: 'en-ZA',
+      autoDetectLocation: true,
+      enableMultiCurrency: true,
+      supportedCurrencies: [
+        'ZAR',
+        'USD',
+        'EUR',
+        'GBP',
+      ],
+    };
 
   console.log(
     'Creating default user customization with tax and regional settings'
@@ -117,11 +136,27 @@ export const mockUpdateCustomization = async (
       defaultData.regionalSettings;
   }
 
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(customization)
-  );
+  // Check if we're running in a browser environment
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(customization)
+      );
+      console.log(
+        'Customization saved successfully to localStorage'
+      );
+    } catch (error) {
+      console.error(
+        'Error saving to localStorage:',
+        error
+      );
+    }
+  } else {
+    console.log(
+      'Not in browser environment, skipping localStorage save'
+    );
+  }
 
-  console.log('Customization saved successfully');
   return customization;
 };

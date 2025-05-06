@@ -50,6 +50,11 @@ const queryClient = new QueryClient({
   defaultOptions: defaultQueryOptions,
 });
 
+// Make queryClient globally available for prefetching
+if (typeof window !== 'undefined') {
+  window.queryClient = queryClient;
+}
+
 queryClient.getQueryCache().subscribe((event) => {
   if (
     event?.query.getObserversCount() > 0 &&

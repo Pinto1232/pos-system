@@ -1,6 +1,11 @@
 'use client';
 
-import React, { memo, Suspense } from 'react';
+import React, {
+  memo,
+  Suspense,
+  useEffect,
+  useRef,
+} from 'react';
 import styles from './Footer.module.css';
 import {
   Container,
@@ -12,26 +17,83 @@ import {
 import SocialIcons from '@/components/ui/socialIcons/SocialIcons';
 import { Button } from '../ui/button/Button';
 import { useCustomization } from '@/contexts/CustomizationContext';
+import eventBus, {
+  UI_EVENTS,
+} from '@/utils/eventBus';
 
 const Footer: React.FC = memo(() => {
-  const { customization } = useCustomization();
+  const { navbarColor } = useCustomization();
+
+  const footerBoxRef =
+    useRef<HTMLDivElement>(null);
+  const footerElementRef =
+    useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleCustomizationUpdate = (data: {
+      navbarColor?: string;
+    }) => {
+      if (
+        footerBoxRef.current &&
+        data.navbarColor
+      ) {
+        footerBoxRef.current.style.backgroundColor =
+          data.navbarColor;
+      }
+
+      if (
+        footerElementRef.current &&
+        data.navbarColor
+      ) {
+        footerElementRef.current.style.backgroundColor =
+          data.navbarColor;
+      }
+    };
+
+    eventBus.on(
+      UI_EVENTS.CUSTOMIZATION_UPDATED,
+      handleCustomizationUpdate
+    );
+
+    handleCustomizationUpdate({ navbarColor });
+
+    return () => {
+      eventBus.off(
+        UI_EVENTS.CUSTOMIZATION_UPDATED,
+        handleCustomizationUpdate
+      );
+    };
+  }, [navbarColor]);
+
+  useEffect(() => {
+    if (footerBoxRef.current) {
+      footerBoxRef.current.style.backgroundColor =
+        navbarColor;
+    }
+    if (footerElementRef.current) {
+      footerElementRef.current.style.backgroundColor =
+        navbarColor;
+    }
+  }, [navbarColor]);
 
   return (
     <Box
+      ref={footerBoxRef}
       sx={{
-        backgroundColor:
-          customization?.navbarColor || '#111',
+        backgroundColor: navbarColor,
         display: 'block',
         width: '100%',
         margin: 0,
         padding: 0,
+        transition: 'background-color 0.3s ease',
       }}
     >
       <footer
+        ref={footerElementRef}
         className={styles.footer}
         style={{
-          backgroundColor:
-            customization?.navbarColor || '#111',
+          backgroundColor: navbarColor,
+          transition:
+            'background-color 0.3s ease',
         }}
       >
         <Container maxWidth="lg">

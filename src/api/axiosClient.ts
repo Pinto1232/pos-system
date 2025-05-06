@@ -40,7 +40,10 @@ const apiClient = axios.create({
 });
 
 // Log the API URL for debugging
-console.log('API Client initialized with baseURL:', process.env.NEXT_PUBLIC_API_URL);
+console.log(
+  'API Client initialized with baseURL:',
+  process.env.NEXT_PUBLIC_API_URL
+);
 
 const getErrorMessageForStatus = (
   status: number
@@ -364,27 +367,45 @@ const useApiClient = () => {
       mutationFn: async (
         customization: TVariables
       ) => {
-        console.log('Updating customization with endpoint:', endpoint);
-        console.log('Customization data:', customization);
+        console.log(
+          'Updating customization with endpoint:',
+          endpoint
+        );
+        console.log(
+          'Customization data:',
+          customization
+        );
 
         try {
-          const { data } = await apiClient.post<TData>(
-            endpoint,
-            customization,
-            {
-              timeout: config?.timeout || DEFAULT_TIMEOUT,
-              suppressAuthErrors: config?.suppressAuthErrors,
-            }
+          const { data } =
+            await apiClient.post<TData>(
+              endpoint,
+              customization,
+              {
+                timeout:
+                  config?.timeout ||
+                  DEFAULT_TIMEOUT,
+                suppressAuthErrors:
+                  config?.suppressAuthErrors,
+              }
+            );
+          console.log(
+            'Customization update successful, received data:',
+            data
           );
-          console.log('Customization update successful, received data:', data);
           return data;
         } catch (error) {
-          console.error('Error updating customization:', error);
+          console.error(
+            'Error updating customization:',
+            error
+          );
           throw error;
         }
       },
       onSuccess: () => {
-        console.log('Invalidating customization queries after successful update');
+        console.log(
+          'Invalidating customization queries after successful update'
+        );
         queryClient.invalidateQueries({
           queryKey: ['customization'],
         });

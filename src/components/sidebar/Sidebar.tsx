@@ -1,6 +1,7 @@
 import React, {
   useState,
   useEffect,
+  useRef,
 } from 'react';
 import {
   Drawer,
@@ -19,6 +20,10 @@ import { useSpinner } from '@/contexts/SpinnerContext';
 import { SidebarProps } from './types';
 import SidebarItem from './SidebarItem';
 import useKeycloakUser from '@/hooks/useKeycloakUser';
+import { useCustomization } from '@/contexts/CustomizationContext';
+import eventBus, {
+  UI_EVENTS,
+} from '@/utils/eventBus';
 
 const Sidebar: React.FC<SidebarProps> = ({
   drawerWidth,
@@ -35,6 +40,38 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { setLoading } = useSpinner();
   const { userInfo, isLoading: isUserLoading } =
     useKeycloakUser();
+  const {
+    sidebarColor,
+    logoUrl: contextLogoUrl,
+  } = useCustomization();
+
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleCustomizationUpdate = (data: {
+      sidebarColor?: string;
+    }) => {
+      if (
+        drawerRef.current &&
+        data.sidebarColor
+      ) {
+        drawerRef.current.style.backgroundColor =
+          data.sidebarColor;
+      }
+    };
+
+    eventBus.on(
+      UI_EVENTS.CUSTOMIZATION_UPDATED,
+      handleCustomizationUpdate
+    );
+
+    return () => {
+      eventBus.off(
+        UI_EVENTS.CUSTOMIZATION_UPDATED,
+        handleCustomizationUpdate
+      );
+    };
+  }, []);
   const [expandedItems, setExpandedItems] =
     useState<{
       [key: string]: boolean;
@@ -52,9 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     setLocalDrawerOpen(isDrawerOpen);
   }, [isDrawerOpen]);
 
-  // Sync active item with the section from props
   useEffect(() => {
-    // Find the matching sidebar item for the current section
     const matchingSidebarItem = sidebarItems.find(
       (item) =>
         item.label === 'Dashboard' ||
@@ -71,7 +106,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       ) {
         setActiveItemState('Dashboard');
       } else if (matchingSidebarItem.subItems) {
-        // If it's in a submenu, expand the parent and set the active item
         const subItem =
           matchingSidebarItem.subItems.find(
             (sub) => sub.label === 'Dashboard'
@@ -199,7 +233,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
 
     setTimeout(() => {
-      // Always use the subItem label for navigation
       handleItemClick(label);
       onSectionSelect(label);
       setLoading(false);
@@ -210,7 +243,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     }, 500);
   };
 
-  // Use a single drawer approach with different widths based on state
   return (
     <>
       <Drawer
@@ -226,6 +258,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         ModalProps={{
           keepMounted: true,
         }}
+        slotProps={{
+          paper: {
+            ref: drawerRef,
+          },
+        }}
         sx={{
           width:
             !isSmallScreen && !localDrawerOpen
@@ -234,7 +271,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           flexShrink: 0,
           transition:
             'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 1100, // Lower than AppBar (1200) but higher than most content
+          zIndex: 1100,
           '@keyframes pulse': {
             '0%': {
               opacity: 0.6,
@@ -255,11 +292,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                 ? 80
                 : drawerWidth,
             transition:
-              'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
             boxSizing: 'border-box',
             boxShadow:
               '0px 2px 10px rgba(0, 0, 0, 0.1)',
-            backgroundColor,
+            backgroundColor:
+              sidebarColor || backgroundColor,
             color: textColor,
             height: '100%',
             border: 'none',
@@ -288,7 +326,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           }}
         >
           {!isSmallScreen && !localDrawerOpen ? (
-            // Mini drawer header
             <Box
               sx={{
                 display: 'flex',
@@ -297,7 +334,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               }}
             >
               <Image
-                src={logoUrl}
+                src={contextLogoUrl || logoUrl}
                 alt="Logo"
                 width={40}
                 height={40}
@@ -309,10 +346,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               />
             </Box>
           ) : (
-            // Full drawer header
             <>
               <Image
-                src={logoUrl}
+                src={contextLogoUrl || logoUrl}
                 alt="Logo"
                 width={90}
                 height={90}

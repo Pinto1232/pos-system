@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import Link from 'next/link';
 import {
   AppBar,
@@ -22,6 +26,9 @@ import {
 } from 'react-icons/fi';
 import { useLogout } from '@/hooks/useLogout';
 import SettingsModal from '@/SettingsModal';
+import eventBus, {
+  UI_EVENTS,
+} from '@/utils/eventBus';
 import { useCustomization } from '@/contexts/CustomizationContext';
 import NotificationDropdown from '@/components/notifications/NotificationDropdown';
 
@@ -45,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({
   const isMobile = useMediaQuery(
     theme.breakpoints.down('sm')
   );
-  const { customization, updateCustomization } =
+  const { navbarColor, updateCustomization } =
     useCustomization();
 
   const handleClick = (
@@ -68,10 +75,47 @@ const Navbar: React.FC<NavbarProps> = ({
     handleClose();
   };
 
+  const appBarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleCustomizationUpdate = (data: {
+      navbarColor?: string;
+      sidebarColor?: string;
+      logoUrl?: string;
+    }) => {
+      if (appBarRef.current && data.navbarColor) {
+        appBarRef.current.style.backgroundColor =
+          data.navbarColor;
+      }
+    };
+
+    eventBus.on(
+      UI_EVENTS.CUSTOMIZATION_UPDATED,
+      handleCustomizationUpdate
+    );
+
+    handleCustomizationUpdate({ navbarColor });
+
+    return () => {
+      eventBus.off(
+        UI_EVENTS.CUSTOMIZATION_UPDATED,
+        handleCustomizationUpdate
+      );
+    };
+  }, [navbarColor]);
+
+  useEffect(() => {
+    if (appBarRef.current) {
+      appBarRef.current.style.backgroundColor =
+        navbarColor;
+    }
+  }, [navbarColor]);
+
   return (
     <>
       <AppBar
         position="fixed"
+        ref={appBarRef}
         sx={{
           width: isMobile
             ? '100%'
@@ -80,12 +124,10 @@ const Navbar: React.FC<NavbarProps> = ({
             ? 0
             : `${drawerWidth === 80 ? 80 : drawerWidth}px`,
           transition:
-            'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
           border: 'none',
-          zIndex: 1200, // Higher than drawer (1100)
-          backgroundColor:
-            customization?.navbarColor ||
-            '#173a79',
+          zIndex: 1200,
+          backgroundColor: navbarColor,
         }}
       >
         <Toolbar
