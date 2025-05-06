@@ -187,11 +187,10 @@ const Sales: React.FC<SalesProps> = ({
       case 'deals':
         return {
           title: 'Deals Overview',
-          content: `Total Deals: ${
-            data.deals.count
-          }\nWin Rate: ${formatPercentage(
-            data.deals.winRate
-          )}\nGrowth: ${formatPercentage(data.deals.growth)}`,
+          content: `Total Deals: ${data.deals.count
+            }\nWin Rate: ${formatPercentage(
+              data.deals.winRate
+            )}\nGrowth: ${formatPercentage(data.deals.growth)}`,
         };
       case 'winRate':
         return {
@@ -659,11 +658,10 @@ const Sales: React.FC<SalesProps> = ({
                 ).toFixed(0)}
               </Typography>
               <Chip
-                label={`${
-                  data.growthPercentage > 0
+                label={`${data.growthPercentage > 0
                     ? '+'
                     : ''
-                }${formatPercentage(data.growthPercentage)}`}
+                  }${formatPercentage(data.growthPercentage)}`}
                 icon={
                   data.growthPercentage > 0 ? (
                     <ArrowUpwardIcon />

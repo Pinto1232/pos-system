@@ -145,10 +145,11 @@ export const exportButtonStyles: SxProps<Theme> =
 
 export const tableCellStyles: SxProps<Theme> = {
   fontWeight: 600,
-  color: '#64748b',
-  fontSize: { xs: '0.7rem', sm: '0.875rem' },
-  py: { xs: 1, sm: 1.5 },
-  px: { xs: 1, sm: 2 },
+  color: '#1E2A3B',
+  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+  py: { xs: 1.5, sm: 2 },
+  px: { xs: 1.5, sm: 2.5 },
+  borderBottom: '1px solid #E0E0E0',
 };
 
 export const productImageStyles: SxProps<Theme> =
@@ -159,28 +160,34 @@ export const productImageStyles: SxProps<Theme> =
     borderRadius: '6px',
     overflow: 'hidden',
     border: '1px solid #e0e0e0',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
   };
 
 export const statusTextStyles = (
   status: boolean
 ): SxProps<Theme> => ({
-  fontSize: { xs: '0.7rem', sm: '0.875rem' },
-  color: status ? '#22c55e' : 'error.main',
+  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+  color: status ? '#22c55e' : '#d32f2f',
   fontWeight: 600,
+  ml: 0.5,
 });
 
 export const switchStyles: SxProps<Theme> = {
   '& .MuiSwitch-switchBase.Mui-checked': {
-    color: '#173a79',
+    color: '#52B788',
     '&:hover': {
-      backgroundColor: 'rgba(23, 58, 121, 0.04)',
+      backgroundColor: 'rgba(82, 183, 136, 0.08)',
     },
   },
-  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
-    {
-      backgroundColor: '#173a79',
-    },
+  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+    backgroundColor: '#52B788',
+  },
   transform: { xs: 'scale(0.8)', sm: 'scale(1)' },
+  mr: 0.5,
 };
 
 export const modalPaperStyles: SxProps<Theme> = {

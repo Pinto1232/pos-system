@@ -16,13 +16,34 @@ const SubItems: React.FC<SubItemsProps> = ({
   isExpanded,
   textColor,
   onItemClick,
+  activeItem,
 }) => {
-  const [activeSubItem, setActiveSubItem] =
-    React.useState<string>('');
+  // Initialize activeSubItem from localStorage or props
+  const [activeSubItem, setActiveSubItem] = React.useState<string>(() => {
+    try {
+      const savedActiveItem = localStorage.getItem('sidebarActiveItem');
+      // Check if the saved active item is one of this parent's subitems
+      if (savedActiveItem && subItems.some(item => item.label === savedActiveItem)) {
+        return savedActiveItem;
+      }
+    } catch (error) {
+      console.error('Error reading from localStorage:', error);
+    }
+    return activeItem || '';
+  });
+
+  // Update activeSubItem when activeItem prop changes
+  React.useEffect(() => {
+    if (activeItem && subItems.some(item => item.label === activeItem)) {
+      setActiveSubItem(activeItem);
+    }
+  }, [activeItem, subItems]);
 
   const handleSubItemClick = (label: string) => {
     onItemClick(label, parentLabel);
     setActiveSubItem(label);
+    // Save to localStorage (redundant but for safety)
+    localStorage.setItem('sidebarActiveItem', label);
   };
 
   return (
@@ -111,7 +132,7 @@ const SubItems: React.FC<SubItemsProps> = ({
                     'transform 0.3s ease',
                   transform:
                     activeSubItem ===
-                    subItem.label
+                      subItem.label
                       ? 'scale(1.3)'
                       : 'scale(1)',
                 }}
@@ -127,7 +148,7 @@ const SubItems: React.FC<SubItemsProps> = ({
                 '& .MuiTypography-root': {
                   fontWeight:
                     activeSubItem ===
-                    subItem.label
+                      subItem.label
                       ? 600
                       : 400,
                   fontSize: '0.9rem',

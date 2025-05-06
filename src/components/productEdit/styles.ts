@@ -123,6 +123,7 @@ export const ProductTable = styled(Box)({
     borderRadius: '12px',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
     maxWidth: '100%',
+    overflowX: 'auto',
   },
   '& .MuiDataGrid-columnHeaders': {
     backgroundColor: '#fff',
@@ -132,34 +133,80 @@ export const ProductTable = styled(Box)({
     lineHeight: '56px',
     '& .MuiDataGrid-columnHeader': {
       fontWeight: 600,
+      padding: '0 16px',
+      '& .MuiDataGrid-columnHeaderTitleContainer': {
+        padding: '0 8px',
+      },
+    },
+    '& .MuiDataGrid-columnHeaderTitle': {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
+      fontWeight: 600,
+      color: '#1E2A3B',
     },
   },
   '& .MuiDataGrid-cell': {
     borderBottom: '1px solid #E0E0E0',
     color: '#1E2A3B',
     fontSize: '14px',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+    padding: '0 16px',
+    display: 'flex',
+    alignItems: 'center',
+    '&:focus': {
+      outline: 'none',
+    },
+    '&:focus-within': {
+      outline: 'none',
+    },
   },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell':
-    {
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
+  '& .MuiDataGrid-row': {
+    '&:hover': {
+      backgroundColor: '#F8F9FA',
     },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type':
-    {
-      borderBottomLeftRadius: 0,
+    '&.Mui-selected': {
+      backgroundColor: 'rgba(82, 183, 136, 0.08)',
+      '&:hover': {
+        backgroundColor: 'rgba(82, 183, 136, 0.12)',
+      },
     },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type':
-    {
-      borderBottomRightRadius: 0,
-    },
+  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell': {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type': {
+    borderBottomLeftRadius: 0,
+  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type': {
+    borderBottomRightRadius: 0,
+  },
   '& .MuiCheckbox-root': {
     color: '#1E2A3B',
+    padding: '4px',
+  },
+  '& .MuiDataGrid-virtualScroller': {
+    '&::-webkit-scrollbar': {
+      width: '8px',
+      height: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: '#f1f1f1',
+      borderRadius: '4px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: '#c1c1c1',
+      borderRadius: '4px',
+      '&:hover': {
+        background: '#a8a8a8',
+      },
+    },
+  },
+  '& .MuiDataGrid-footerContainer': {
+    borderTop: '1px solid #E0E0E0',
+  },
+  '& .MuiDataGrid-columnSeparator': {
+    display: 'none',
   },
 });
 
