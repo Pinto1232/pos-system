@@ -29,26 +29,27 @@ const ProductTableContainer: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] =
     useState(8);
 
-  // Memoize the filtered products to prevent unnecessary recalculations
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
-    // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(
         (product) =>
-          product.productName
-            .toLowerCase()
-            .includes(
-              searchQuery.toLowerCase()
-            ) ||
-          product.barcode
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
+          (product.productName &&
+            product.productName
+              .toLowerCase()
+              .includes(
+                searchQuery.toLowerCase()
+              )) ||
+          (product.barcode &&
+            product.barcode
+              .toLowerCase()
+              .includes(
+                searchQuery.toLowerCase()
+              ))
       );
     }
 
-    // Apply category filter
     if (categoryFilter !== 'All') {
       filtered = filtered.filter(
         (product) =>
@@ -56,32 +57,23 @@ const ProductTableContainer: React.FC = () => {
       );
     }
 
-    // Apply rating filter
     if (ratingFilter !== 'All') {
       const ratingValue = parseInt(ratingFilter);
       filtered = filtered.filter(
         (product) =>
-          Math.floor(product.rating) ===
+          Math.floor(product.rating || 0) ===
           ratingValue
       );
     }
 
-    // Apply status filter
     if (statusFilter !== 'All') {
-      if (statusFilter === 'Available') {
-        filtered = filtered.filter(
-          (product) => product.status === true
-        );
-      } else if (
-        statusFilter === 'Out of Stock'
-      ) {
-        filtered = filtered.filter(
-          (product) => product.status === false
-        );
-      }
+      filtered = filtered.filter((product) =>
+        statusFilter === 'Available'
+          ? product.status === true
+          : product.status === false
+      );
     }
 
-    // Apply price filter
     if (priceFilter !== 'All') {
       switch (priceFilter) {
         case 'R10-R100':
@@ -123,7 +115,6 @@ const ProductTableContainer: React.FC = () => {
     priceFilter,
   ]);
 
-  // Memoize paginated products
   const paginatedProducts = useMemo(() => {
     const startIndex = page * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
@@ -134,13 +125,73 @@ const ProductTableContainer: React.FC = () => {
   }, [filteredProducts, page, rowsPerPage]);
 
   const handleView = (product: Product) => {
-    setSelectedProduct(product);
-    setIsViewModalOpen(true);
+    console.log(
+      'ProductTableContainer - handleView called with product:',
+      product
+    );
+    if (!product) {
+      console.error(
+        'ProductTableContainer - handleView called with null/undefined product'
+      );
+      return;
+    }
+
+    const completeProduct = {
+      ...product,
+      id: product.id || 0,
+      productName:
+        product.productName || 'Unknown Product',
+      barcode: product.barcode || 'N/A',
+      sku: product.sku || '-',
+      price:
+        typeof product.price === 'number'
+          ? product.price
+          : 0,
+      status:
+        typeof product.status === 'boolean'
+          ? product.status
+          : false,
+      rating:
+        typeof product.rating === 'number'
+          ? product.rating
+          : 0,
+      createdAt:
+        product.createdAt ||
+        new Date().toISOString(),
+      color: product.color || 'N/A',
+      statusProduct: product.status
+        ? 'Active'
+        : 'Inactive',
+      image:
+        product.image || '/placeholder-image.png',
+    } as Product;
+
+    console.log(
+      'ProductTableContainer - Opening modal with complete product data:',
+      completeProduct
+    );
+
+    setSelectedProduct(completeProduct);
+    setTimeout(() => {
+      setIsViewModalOpen(true);
+      console.log(
+        'ProductTableContainer - Modal should now be open, isViewModalOpen:',
+        true
+      );
+    }, 0);
   };
 
   const handleCloseModal = () => {
+    console.log(
+      'ProductTableContainer - handleCloseModal called'
+    );
     setIsViewModalOpen(false);
-    setSelectedProduct(null);
+    setTimeout(() => {
+      setSelectedProduct(null);
+      console.log(
+        'ProductTableContainer - Modal closed and product reset'
+      );
+    }, 100);
   };
 
   const handlePriceChange = (
@@ -184,12 +235,44 @@ const ProductTableContainer: React.FC = () => {
     const updatedProduct = {
       ...product,
       status: !product.status,
+      statusProduct: !product.status
+        ? 'Active'
+        : 'Inactive',
     };
+
     updateProduct(updatedProduct);
+
+    try {
+      const storedData =
+        localStorage.getItem('products');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        if (Array.isArray(parsedData)) {
+          const updatedProducts = parsedData.map(
+            (p) =>
+              p.id === updatedProduct.id
+                ? updatedProduct
+                : p
+          );
+          localStorage.setItem(
+            'products',
+            JSON.stringify(updatedProducts)
+          );
+          console.log(
+            'ProductTableContainer - Updated product status in localStorage'
+          );
+        }
+      }
+    } catch (error) {
+      console.error(
+        'Failed to update product status in localStorage:',
+        error
+      );
+    }
   };
 
   const handleChangePage = (
-    event: unknown,
+    _event: unknown,
     newPage: number
   ) => {
     setPage(newPage);
@@ -219,12 +302,8 @@ const ProductTableContainer: React.FC = () => {
       unit: 'mm',
       format: 'a4',
     });
-
-    // Add title
     doc.setFontSize(16);
     doc.text('Product List', 14, 15);
-
-    // Add date
     doc.setFontSize(10);
     doc.text(
       `Generated on: ${new Date().toLocaleDateString()}`,
@@ -232,7 +311,6 @@ const ProductTableContainer: React.FC = () => {
       22
     );
 
-    // Prepare data for the table
     const tableData = filteredProducts.map(
       (product) => [
         product.productName,
@@ -250,7 +328,6 @@ const ProductTableContainer: React.FC = () => {
       ]
     );
 
-    // Add the table
     autoTable(doc, {
       startY: 30,
       head: [
@@ -306,7 +383,6 @@ const ProductTableContainer: React.FC = () => {
   return (
     <ProductTable
       products={paginatedProducts}
-      filteredProducts={filteredProducts}
       selectedProduct={selectedProduct}
       isViewModalOpen={isViewModalOpen}
       page={page}

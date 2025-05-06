@@ -1,11 +1,15 @@
 import { Product as ProductEditProduct } from '../productEdit/types';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-export type Product = ProductEditProduct;
+export interface ExtendedProduct
+  extends ProductEditProduct {
+  statusProduct?: string;
+}
+
+export type Product = ExtendedProduct;
 
 export interface ProductTableProps {
   products: Product[];
-  filteredProducts: Product[];
   selectedProduct: Product | null;
   isViewModalOpen: boolean;
   page: number;

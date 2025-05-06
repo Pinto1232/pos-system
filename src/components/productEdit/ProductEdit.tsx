@@ -11,6 +11,7 @@ import {
   TablePagination,
   Snackbar,
   Alert,
+  Chip,
 } from '@mui/material';
 import {
   DataGrid,
@@ -30,6 +31,7 @@ import {
 import * as S from './styles';
 import ProductEditModal from './ProductEditModal';
 import { useProductContext } from '@/contexts/ProductContext';
+import { getColorStyles } from '@/utils/colorUtils';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -43,10 +45,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   onCancelSession,
   subTotal,
   discount,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  total, // Not used directly, we use totalProductsPrice instead
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  itemNo, // Not used directly, we use products.length instead
   onDeleteItem,
 }) => {
   const [isModalOpen, setIsModalOpen] =
@@ -58,26 +56,22 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   const { updateProduct, addProduct } =
     useProductContext();
 
-  // Pagination state
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] =
     React.useState(9);
 
-  // Snackbar state
   const [snackbarOpen, setSnackbarOpen] =
     React.useState(false);
   const [snackbarMessage, setSnackbarMessage] =
     React.useState('');
 
-  // Handle page change
   const handleChangePage = (
-    _: unknown, // Unused parameter
+    _: unknown,
     newPage: number
   ) => {
     setPage(newPage);
   };
 
-  // Handle rows per page change
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -87,7 +81,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     setPage(0);
   };
 
-  // Calculate paginated products
   const paginatedProducts = React.useMemo(() => {
     const startIndex = page * rowsPerPage;
     return products.slice(
@@ -127,25 +120,84 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       'ProductEdit - Received data from modal:',
       data
     );
-
     const productWithStatus = {
       ...data,
-      status: data.status,
-      statusProduct: data.status
+      id: data.id || Date.now(),
+      productName:
+        data.productName || 'Unnamed Product',
+      color: data.color || 'Black',
+      barcode: data.barcode || `BC-${Date.now()}`,
+      sku: data.sku || `SKU-${Date.now()}`,
+      price:
+        typeof data.price === 'number'
+          ? data.price
+          : 0,
+      status: Boolean(data.status),
+      rating:
+        typeof data.rating === 'number'
+          ? data.rating
+          : 0,
+      createdAt:
+        data.createdAt ||
+        new Date().toISOString(),
+      image:
+        data.image || '/placeholder-image.png',
+      statusProduct: Boolean(data.status)
         ? 'Active'
         : 'Inactive',
     };
 
+    console.log(
+      'ProductEdit - Enhanced product data:',
+      productWithStatus
+    );
+
     if (editingProduct) {
       onUpdateItem(productWithStatus);
       updateProduct(productWithStatus);
+
+      setSnackbarMessage(
+        'Product updated successfully!'
+      );
+      setSnackbarOpen(true);
     } else {
       onAddItem(
         productWithStatus,
         handleCloseModal
       );
       addProduct(productWithStatus);
+
+      setSnackbarMessage(
+        'Product added successfully!'
+      );
+      setSnackbarOpen(true);
     }
+
+    try {
+      const existingProducts = JSON.parse(
+        localStorage.getItem('products') || '[]'
+      );
+      const updatedProducts = editingProduct
+        ? existingProducts.map((p: Product) =>
+            p.id === productWithStatus.id
+              ? productWithStatus
+              : p
+          )
+        : [
+            ...existingProducts,
+            productWithStatus,
+          ];
+      localStorage.setItem(
+        'products',
+        JSON.stringify(updatedProducts)
+      );
+    } catch (error) {
+      console.error(
+        'Error saving product to localStorage:',
+        error
+      );
+    }
+
     handleCloseModal();
   };
 
@@ -184,7 +236,38 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'productName',
       headerName: 'Product Name',
       flex: 2,
-      minWidth: 90,
+      minWidth: 150,
+      renderCell: (params) => (
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+        >
+          <Typography variant="body2">
+            {params.value}
+          </Typography>
+          {params.row.color && (
+            <Chip
+              label={params.row.color}
+              size="small"
+              sx={{
+                height: 20,
+                minWidth: 60,
+                padding: '2px 4px',
+                fontSize: '0.7rem',
+                fontWeight: 500,
+                bgcolor: getColorStyles(
+                  params.row.color
+                ).bg,
+                color: getColorStyles(
+                  params.row.color
+                ).text,
+                border: '1px solid #e2e8f0',
+              }}
+            />
+          )}
+        </Stack>
+      ),
     },
     {
       field: 'sku',
@@ -356,9 +439,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     );
   }, [products]);
 
-  // We're now using products.length directly in the UI
-
-  // Function to handle PDF export
   const handleExportPDF = () => {
     const doc = new jsPDF({
       orientation: 'landscape',
@@ -366,17 +446,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       format: 'a4',
     });
 
-    // Add company logo/name
     doc.setFontSize(20);
-    doc.setTextColor(23, 58, 121); // Dark blue color
+    doc.setTextColor(23, 58, 121);
     doc.text('Pisval Tech', 14, 15);
 
-    // Add title
     doc.setFontSize(16);
-    doc.setTextColor(30, 42, 59); // Reset to dark text
+    doc.setTextColor(30, 42, 59);
     doc.text('Product Inventory Report', 14, 25);
 
-    // Add business information
     doc.setFontSize(10);
     doc.text(
       'Pisval Tech Point of Sale System',
@@ -396,7 +473,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     );
     doc.text('Phone: +27 123 456 789', 14, 55);
 
-    // Add date and time
     doc.setFontSize(10);
     doc.text(
       `Generated on: ${new Date().toLocaleString()}`,
@@ -404,7 +480,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       65
     );
 
-    // Prepare data for the table
     const tableData = products.map((product) => [
       product.productName,
       product.sku || '-',
@@ -417,7 +492,6 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       ).toLocaleDateString(),
     ]);
 
-    // Add the table
     autoTable(doc, {
       startY: 70,
       head: [

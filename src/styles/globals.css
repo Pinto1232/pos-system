@@ -1,12 +1,13 @@
 /* Global styles */
 
-/* Override for MuiDialogContent-root */
+/*
+These styles were causing issues with dialogs
 .MuiDialogContent-root.css-kw13he-MuiDialogContent-root {
   display: none !important;
 }
 
-/* Hide any unwanted dialog content */
 .MuiDialog-root .MuiDialog-container .MuiPaper-root {
   background-color: transparent !important;
   box-shadow: none !important;
 }
+*/

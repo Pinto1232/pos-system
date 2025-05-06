@@ -30,6 +30,7 @@ import {
   FormControlLabel,
   TablePagination,
   Chip,
+  Alert,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image';
@@ -38,8 +39,12 @@ import {
   FiDownload,
   FiRefreshCw,
 } from 'react-icons/fi';
-import { ProductTableProps } from './types';
+import {
+  ProductTableProps,
+  Product,
+} from './types';
 import { useProductContext } from '@/contexts/ProductContext';
+import { getColorStyles } from '@/utils/colorUtils';
 import {
   containerStyles,
   titleStyles,
@@ -64,30 +69,6 @@ import {
   noProductsSubtextStyles,
 } from './styles';
 
-const getColorStyles = (color: string) => {
-  const colorMap: Record<
-    string,
-    { bg: string; text: string }
-  > = {
-    Black: { bg: '#000000', text: '#ffffff' },
-    White: { bg: '#ffffff', text: '#000000' },
-    Green: { bg: '#4caf50', text: '#ffffff' },
-    Silver: { bg: '#c0c0c0', text: '#000000' },
-    Gold: { bg: '#ffd700', text: '#000000' },
-    'Space Gray': {
-      bg: '#2f4f4f',
-      text: '#ffffff',
-    },
-  };
-
-  return (
-    colorMap[color] || {
-      bg: '#f8fafc',
-      text: '#64748b',
-    }
-  );
-};
-
 const categories = [
   'All',
   'Black',
@@ -104,6 +85,7 @@ const statuses = [
   'Out of Stock',
 ];
 const prices = [
+  'All',
   'R10-R100',
   'R100-R500',
   'R500-R1000',
@@ -114,7 +96,6 @@ const ProductTable: React.FC<
   ProductTableProps
 > = ({
   products: propProducts,
-  filteredProducts,
   selectedProduct,
   isViewModalOpen,
   page,
@@ -137,73 +118,129 @@ const ProductTable: React.FC<
   onResetFilters,
   onExportPDF,
 }) => {
-  // Get products from context for real-time updates
   const { products: contextProducts } =
     useProductContext();
-
-  // Use context products if available, otherwise fall back to prop products
   const [displayProducts, setDisplayProducts] =
-    useState(propProducts);
+    useState<Product[]>([]);
 
-  // Update displayProducts whenever contextProducts or propProducts change
   useEffect(() => {
-    if (
-      contextProducts &&
-      contextProducts.length > 0
-    ) {
-      // Apply the same filters that would be applied to propProducts
-      // This ensures we're showing the same filtered view but with updated data
-      const updatedFilteredProducts =
-        contextProducts
-          .map((product) => {
-            // Ensure each product has both status and statusProduct fields properly set
-            return {
-              ...product,
-              status: product.status,
-              statusProduct: product.status
-                ? 'Active'
-                : 'Inactive',
-            };
-          })
-          .filter((product) => {
-            // Apply the same filtering logic as in the parent component
-            if (
-              searchQuery &&
-              !product.productName
-                .toLowerCase()
-                .includes(
-                  searchQuery.toLowerCase()
-                )
-            ) {
-              return false;
-            }
-            if (
-              categoryFilter !== 'All' &&
-              product.color !== categoryFilter
-            ) {
-              return false;
-            }
-            // Add other filters as needed
-            return true;
-          });
-
-      setDisplayProducts(updatedFilteredProducts);
-    } else {
-      // Ensure all products have both status and statusProduct fields properly set
-      const updatedFilteredProducts =
-        filteredProducts.map((product) => ({
-          ...product,
-          status: product.status,
-          statusProduct: product.status
-            ? 'Active'
-            : 'Inactive',
-        }));
-      setDisplayProducts(updatedFilteredProducts);
+    let localStorageProducts: Product[] = [];
+    try {
+      const storedData =
+        localStorage.getItem('products');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        if (
+          Array.isArray(parsedData) &&
+          parsedData.length > 0
+        ) {
+          localStorageProducts = parsedData;
+          console.log(
+            'ProductTable - Loaded products from localStorage:',
+            localStorageProducts.length
+          );
+        }
+      }
+    } catch (error) {
+      console.error(
+        'Failed to load products from localStorage:',
+        error
+      );
     }
+    const sourceProducts =
+      localStorageProducts.length > 0
+        ? localStorageProducts
+        : contextProducts &&
+            contextProducts.length > 0
+          ? contextProducts
+          : propProducts || [];
+    const updatedFilteredProducts = sourceProducts
+      .map((product) => ({
+        ...product,
+        id: product.id || 0,
+        productName:
+          product.productName ||
+          'Unknown Product',
+        barcode: product.barcode || 'N/A',
+        sku: product.sku || '-',
+        price:
+          typeof product.price === 'number'
+            ? product.price
+            : 0,
+        status:
+          typeof product.status === 'boolean'
+            ? product.status
+            : false,
+        rating:
+          typeof product.rating === 'number'
+            ? product.rating
+            : 0,
+        createdAt:
+          product.createdAt ||
+          new Date().toISOString(),
+        color: product.color || 'N/A',
+        statusProduct: product.status
+          ? 'Active'
+          : 'Inactive',
+        image:
+          product.image ||
+          '/placeholder-image.png',
+      }))
+      .filter((product) => {
+        if (
+          searchQuery &&
+          (!product.productName ||
+            !product.productName
+              .toLowerCase()
+              .includes(
+                searchQuery.toLowerCase()
+              ))
+        )
+          return false;
+        if (
+          categoryFilter !== 'All' &&
+          product.color !== categoryFilter
+        )
+          return false;
+        if (
+          ratingFilter !== 'All' &&
+          Math.floor(product.rating || 0) !==
+            parseInt(ratingFilter, 10)
+        )
+          return false;
+        if (statusFilter !== 'All') {
+          const currentStatus = product.status
+            ? 'Available'
+            : 'Out of Stock';
+          if (currentStatus !== statusFilter)
+            return false;
+        }
+        if (priceFilter !== 'All') {
+          const price = product.price || 0;
+          switch (priceFilter) {
+            case 'R10-R100':
+              if (price < 10 || price > 100)
+                return false;
+              break;
+            case 'R100-R500':
+              if (price < 100 || price > 500)
+                return false;
+              break;
+            case 'R500-R1000':
+              if (price < 500 || price > 1000)
+                return false;
+              break;
+            case 'R1000+':
+              if (price < 1000) return false;
+              break;
+          }
+        }
+        return true;
+      });
+    setDisplayProducts(updatedFilteredProducts);
   }, [
     contextProducts,
     propProducts,
-    filteredProducts,
     searchQuery,
     categoryFilter,
     ratingFilter,
@@ -211,7 +248,6 @@ const ProductTable: React.FC<
     priceFilter,
   ]);
 
-  // Calculate paginated products
   const paginatedProducts = useMemo(() => {
     const startIndex = page * rowsPerPage;
     return displayProducts.slice(
@@ -220,31 +256,123 @@ const ProductTable: React.FC<
     );
   }, [displayProducts, page, rowsPerPage]);
 
+  useEffect(() => {
+    console.log(
+      'Modal state changed - isViewModalOpen:',
+      isViewModalOpen,
+      'selectedProduct:',
+      selectedProduct
+    );
+    if (isViewModalOpen) {
+      if (selectedProduct) {
+        console.log(
+          'MODAL DEBUG: Product data available for modal:',
+          JSON.stringify(selectedProduct, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product ID:',
+          selectedProduct.id
+        );
+        console.log(
+          'MODAL DEBUG: Product Name:',
+          selectedProduct.productName
+        );
+        console.log(
+          'MODAL DEBUG: Product Barcode:',
+          selectedProduct.barcode
+        );
+        console.log(
+          'MODAL DEBUG: Product SKU:',
+          selectedProduct.sku
+        );
+        console.log(
+          'MODAL DEBUG: Product Price:',
+          selectedProduct.price
+        );
+        console.log(
+          'MODAL DEBUG: Product Status:',
+          selectedProduct.status
+        );
+        console.log(
+          'MODAL DEBUG: Product Rating:',
+          selectedProduct.rating
+        );
+        console.log(
+          'MODAL DEBUG: Product Color:',
+          selectedProduct.color
+        );
+        console.log(
+          'MODAL DEBUG: Product Image:',
+          selectedProduct.image
+            ? 'Image exists'
+            : 'No image'
+        );
+      } else {
+        console.error(
+          'MODAL DEBUG: Product data missing when modal opened'
+        );
+      }
+    }
+  }, [isViewModalOpen, selectedProduct]);
+
   const renderProductImage = (
     imageSrc: string | undefined,
     productName: string,
     width: number,
     height: number
   ) => {
+    console.log(
+      'ProductTable - Rendering image for product:',
+      productName,
+      'Image source:',
+      imageSrc ? 'Image exists' : 'No image'
+    );
+
     if (imageSrc) {
-      return (
-        <Image
-          src={imageSrc}
-          alt={`${productName} product image`}
-          width={width}
-          height={height}
-          style={{
-            objectFit: 'cover',
-          }}
-          priority
-        />
-      );
+      try {
+        return (
+          <Image
+            src={imageSrc}
+            alt={`${productName} product image`}
+            width={width}
+            height={height}
+            style={{
+              objectFit: 'cover',
+              display: 'block',
+              visibility: 'visible',
+              opacity: 1,
+            }}
+            priority
+          />
+        );
+      } catch (error) {
+        console.error(
+          'ProductTable - Error rendering image:',
+          error
+        );
+        return (
+          <Box
+            sx={{
+              width,
+              height,
+              bgcolor: '#f0f0f0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Typography variant="caption">
+              Image Error
+            </Typography>
+          </Box>
+        );
+      }
     } else {
       return (
         <Box
           sx={{
-            width: width,
-            height: height,
+            width,
+            height,
             bgcolor: '#f0f0f0',
             display: 'flex',
             alignItems: 'center',
@@ -264,7 +392,6 @@ const ProductTable: React.FC<
       <Typography variant="h5" sx={titleStyles}>
         Product List
       </Typography>
-      {/* Filters Section */}
       <Box sx={filtersWrapperStyles}>
         <Box sx={filtersContainerStyles}>
           <Box sx={filtersBoxStyles}>
@@ -284,7 +411,6 @@ const ProductTable: React.FC<
                 ),
               }}
             />
-
             <FormControl
               size="small"
               sx={{
@@ -298,7 +424,7 @@ const ProductTable: React.FC<
                 value={categoryFilter}
                 onChange={onCategoryChange}
                 label="Category"
-                sx={{ ...selectStyles }}
+                sx={selectStyles}
               >
                 {categories.map((category) => (
                   <MenuItem
@@ -310,7 +436,6 @@ const ProductTable: React.FC<
                 ))}
               </Select>
             </FormControl>
-
             <FormControl
               size="small"
               sx={{
@@ -324,22 +449,20 @@ const ProductTable: React.FC<
                 value={ratingFilter}
                 onChange={onRatingChange}
                 label="Rating"
-                sx={{ ...selectStyles }}
+                sx={selectStyles}
               >
                 {ratings.map((rating) => (
                   <MenuItem
                     key={`rating-${rating}`}
                     value={rating}
                   >
-                    {typeof rating === 'string' &&
-                    rating === 'All'
+                    {rating === 'All'
                       ? 'All'
                       : `${rating} Stars`}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-
             <FormControl
               size="small"
               sx={{
@@ -353,7 +476,7 @@ const ProductTable: React.FC<
                 value={statusFilter}
                 onChange={onStatusChange}
                 label="Status"
-                sx={{ ...selectStyles }}
+                sx={selectStyles}
               >
                 {statuses.map((status) => (
                   <MenuItem
@@ -365,7 +488,6 @@ const ProductTable: React.FC<
                 ))}
               </Select>
             </FormControl>
-
             <FormControl
               size="small"
               sx={{
@@ -379,7 +501,7 @@ const ProductTable: React.FC<
                 value={priceFilter}
                 onChange={onPriceChange}
                 label="Price Range"
-                sx={{ ...selectStyles }}
+                sx={selectStyles}
               >
                 {prices.map((price) => (
                   <MenuItem
@@ -410,8 +532,6 @@ const ProductTable: React.FC<
           </Box>
         </Box>
       </Box>
-
-      {/* Table */}
       <TableContainer>
         <Table>
           <TableHead>
@@ -443,14 +563,12 @@ const ProductTable: React.FC<
             </TableRow>
           </TableHead>
           <TableBody>
-            {displayProducts.length === 0 ? (
+            {paginatedProducts.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={8}
                   align="center"
-                  sx={{
-                    py: 8,
-                  }}
+                  sx={{ py: 8 }}
                 >
                   <Box sx={noProductsStyles}>
                     <Typography
@@ -472,11 +590,8 @@ const ProductTable: React.FC<
               paginatedProducts.map(
                 (product, index) => (
                   <TableRow
-                    key={index}
+                    key={product.id || index}
                     hover
-                    onClick={() =>
-                      onView(product)
-                    }
                     sx={{
                       cursor: 'pointer',
                       '&:hover': {
@@ -496,7 +611,8 @@ const ProductTable: React.FC<
                         >
                           {renderProductImage(
                             product.image,
-                            product.productName,
+                            product.productName ||
+                              '',
                             40,
                             40
                           )}
@@ -523,11 +639,6 @@ const ProductTable: React.FC<
                                 fontSize:
                                   '0.7rem',
                                 fontWeight: 500,
-                                display: 'flex',
-                                alignItems:
-                                  'center',
-                                justifyContent:
-                                  'center',
                                 bgcolor:
                                   getColorStyles(
                                     product.color
@@ -545,7 +656,7 @@ const ProductTable: React.FC<
                       </Stack>
                     </TableCell>
                     <TableCell>
-                      {product.barcode}
+                      {product.barcode || 'N/A'}
                     </TableCell>
                     <TableCell>
                       {product.sku || '-'}
@@ -593,16 +704,20 @@ const ProductTable: React.FC<
                     </TableCell>
                     <TableCell>
                       <Rating
-                        value={product.rating}
+                        value={
+                          product.rating || 0
+                        }
                         readOnly
                         precision={0.5}
                         size="medium"
                       />
                     </TableCell>
                     <TableCell>
-                      {new Date(
-                        product.createdAt
-                      ).toLocaleDateString()}
+                      {product.createdAt
+                        ? new Date(
+                            product.createdAt
+                          ).toLocaleDateString()
+                        : '-'}
                     </TableCell>
                     <TableCell>
                       <Stack
@@ -612,9 +727,15 @@ const ProductTable: React.FC<
                       >
                         <IconButton
                           size="medium"
-                          onClick={() =>
-                            onView(product)
-                          }
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            console.log(
+                              'ProductTable - View icon clicked for product:',
+                              product.productName
+                            );
+                            onView(product);
+                          }}
                           sx={{
                             color: 'primary.main',
                             '&:hover': {
@@ -633,7 +754,7 @@ const ProductTable: React.FC<
             )}
           </TableBody>
         </Table>
-        {displayProducts.length > 9 && (
+        {displayProducts.length > rowsPerPage && (
           <TablePagination
             rowsPerPageOptions={[9, 18, 27]}
             component="div"
@@ -647,33 +768,136 @@ const ProductTable: React.FC<
           />
         )}
       </TableContainer>
-
-      {/* View Modal */}
       <Dialog
         open={isViewModalOpen}
         onClose={onCloseModal}
         maxWidth="sm"
         fullWidth
-        PaperProps={{
-          sx: modalPaperStyles,
+        slotProps={{
+          paper: {
+            sx: {
+              ...modalPaperStyles,
+              zIndex: 1400,
+              position: 'relative',
+              margin: '32px',
+              borderRadius: '16px',
+              boxShadow:
+                '0 8px 32px rgba(0,0,0,0.2)',
+              backgroundColor:
+                '#ffffff !important',
+              display: 'block !important',
+              opacity: 1,
+              visibility: 'visible',
+            },
+          },
+        }}
+        aria-labelledby="product-details-title"
+        aria-describedby="product-details-content"
+        disableEnforceFocus
+        disableAutoFocus
+        keepMounted
+        sx={{
+          zIndex: 1300,
+          '& .MuiDialog-container': {
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+          '& .MuiDialogContent-root': {
+            display: 'block !important',
+            padding: '16px',
+            overflowY: 'auto',
+          },
+          '& .MuiBackdrop-root': {
+            backdropFilter: 'blur(4px)',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          },
         }}
       >
-        {selectedProduct && (
-          <Box sx={modalImageStyles}>
-            {renderProductImage(
-              selectedProduct.image,
-              selectedProduct.productName,
-              120,
-              120
-            )}
+        {!selectedProduct ? (
+          <Box
+            sx={{
+              p: 3,
+              textAlign: 'center',
+              borderRadius: '16px',
+            }}
+          >
+            <Alert
+              severity="error"
+              sx={{ mb: 2 }}
+            >
+              Product data could not be loaded
+            </Alert>
+            <Typography>
+              There was a problem loading the
+              product details. Please try again.
+            </Typography>
+            <Box
+              sx={{ mt: 3, textAlign: 'center' }}
+            >
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log(
+                    'ProductTable - Error close button clicked'
+                  );
+                  onCloseModal();
+                }}
+                variant="contained"
+                sx={{
+                  bgcolor: '#3b82f6',
+                  color: 'white',
+                  px: 4,
+                  py: 1,
+                  borderRadius: '8px',
+                  '&:hover': {
+                    bgcolor: '#2563eb',
+                  },
+                  display:
+                    'inline-flex !important',
+                  visibility: 'visible',
+                  opacity: 1,
+                }}
+              >
+                Close
+              </Button>
+            </Box>
           </Box>
-        )}
-        <DialogTitle sx={modalTitleStyles}>
-          Product Details
-        </DialogTitle>
-        <DialogContent>
-          {selectedProduct && (
-            <Stack spacing={3} sx={{ px: 2 }}>
+        ) : (
+          <>
+            <Box sx={modalImageStyles}>
+              {renderProductImage(
+                selectedProduct.image,
+                selectedProduct.productName ||
+                  'Product',
+                120,
+                120
+              )}
+            </Box>
+            <DialogTitle
+              sx={{
+                ...modalTitleStyles,
+                display: 'block !important',
+                backgroundColor: '#ffffff',
+                opacity: 1,
+                visibility: 'visible',
+                padding: '16px 24px 0 24px',
+              }}
+              id="product-details-title"
+            >
+              Product Details
+            </DialogTitle>
+            <DialogContent
+              id="product-details-content"
+              sx={{
+                display: 'block !important',
+                padding: '16px 24px',
+                overflowY: 'auto',
+                backgroundColor: '#ffffff',
+                opacity: 1,
+                visibility: 'visible',
+              }}
+            >
               <Box
                 sx={{
                   textAlign: 'center',
@@ -688,144 +912,220 @@ const ProductTable: React.FC<
                     mb: 0.5,
                   }}
                 >
-                  {selectedProduct.productName}
+                  {selectedProduct.productName ||
+                    'Unknown Product'}
                 </Typography>
                 {selectedProduct.color && (
-                  <Typography
-                    variant="body2"
+                  <Chip
+                    label={selectedProduct.color}
+                    size="small"
                     sx={{
-                      color: 'text.secondary',
-                      fontSize: '0.875rem',
+                      mt: 1,
+                      fontSize: '0.75rem',
+                      height: '24px',
+                      backgroundColor:
+                        getColorStyles(
+                          selectedProduct.color
+                        ).bg,
+                      color: getColorStyles(
+                        selectedProduct.color
+                      ).text,
+                      fontWeight: 500,
                     }}
-                  >
-                    {selectedProduct.color}
-                  </Typography>
+                  />
                 )}
               </Box>
               <Box
                 sx={{
+                  mt: 2,
+                  p: 2,
                   bgcolor: '#f8f9fa',
-                  borderRadius: '12px',
-                  p: 3,
+                  borderRadius: '8px',
                 }}
               >
-                <Stack spacing={2.5}>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    mb: 2,
+                    fontWeight: 600,
+                    fontSize: '1rem',
+                  }}
+                >
+                  Product Information
+                </Typography>
+                <Box
+                  sx={{
+                    maxHeight: '250px',
+                    overflowY: 'auto',
+                    pr: 1,
+                    '&::-webkit-scrollbar': {
+                      width: '0px',
+                      background: 'transparent',
+                    },
+                    msOverflowStyle: 'none',
+                    scrollbarWidth: 'none',
+                  }}
+                >
+                  <Box
                     sx={{
-                      pb: 2,
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                      mb: 1.5,
+                      pb: 1.5,
                       borderBottom:
                         '1px solid #e0e0e0',
                     }}
                   >
                     <Typography
                       sx={{
+                        fontWeight: 500,
                         color: 'text.secondary',
                         fontSize: '0.875rem',
                       }}
                     >
-                      ID Code
+                      ID Code:
                     </Typography>
                     <Typography
                       sx={{
                         fontWeight: 500,
-                        color: '#1a1a1a',
+                        fontSize: '0.875rem',
                       }}
                     >
-                      {selectedProduct.barcode}
+                      {selectedProduct.barcode ||
+                        'N/A'}
                     </Typography>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
+                  </Box>
+                  <Box
                     sx={{
-                      pb: 2,
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                      mb: 1.5,
+                      pb: 1.5,
                       borderBottom:
                         '1px solid #e0e0e0',
                     }}
                   >
                     <Typography
                       sx={{
+                        fontWeight: 500,
                         color: 'text.secondary',
                         fontSize: '0.875rem',
                       }}
                     >
-                      Price
+                      SKU:
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      {selectedProduct.sku || '-'}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                      mb: 1.5,
+                      pb: 1.5,
+                      borderBottom:
+                        '1px solid #e0e0e0',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        color: 'text.secondary',
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      Price:
                     </Typography>
                     <Typography
                       sx={{
                         fontWeight: 600,
-                        color: '#1a1a1a',
-                        fontSize: '1.1rem',
+                        fontSize: '1rem',
                       }}
                     >
                       R
                       {(
-                        selectedProduct?.price ||
-                        0
+                        selectedProduct.price || 0
                       ).toFixed(2)}
                     </Typography>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
+                  </Box>
+                  <Box
                     sx={{
-                      pb: 2,
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                      alignItems: 'center',
+                      mb: 1.5,
+                      pb: 1.5,
                       borderBottom:
                         '1px solid #e0e0e0',
                     }}
                   >
                     <Typography
                       sx={{
+                        fontWeight: 500,
                         color: 'text.secondary',
                         fontSize: '0.875rem',
                       }}
                     >
-                      Status
+                      Status:
                     </Typography>
                     <Box
                       sx={{
                         px: 2,
                         py: 0.5,
                         borderRadius: '16px',
+                        display: 'inline-block',
                         bgcolor:
-                          selectedProduct?.status
+                          selectedProduct.status
                             ? '#e8f5e9'
                             : '#ffebee',
                         color:
-                          selectedProduct?.status
+                          selectedProduct.status
                             ? '#2e7d32'
                             : '#c62828',
                       }}
                     >
                       <Typography
                         sx={{
-                          fontSize: '0.875rem',
+                          fontSize: '0.8rem',
                           fontWeight: 500,
                         }}
                       >
-                        {selectedProduct?.status
+                        {selectedProduct.status
                           ? 'In Stock'
                           : 'Out of Stock'}
                       </Typography>
                     </Box>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                      alignItems: 'center',
+                      mb: 1.5,
+                      pb: 1.5,
+                      borderBottom:
+                        '1px solid #e0e0e0',
+                    }}
                   >
                     <Typography
                       sx={{
+                        fontWeight: 500,
                         color: 'text.secondary',
                         fontSize: '0.875rem',
                       }}
                     >
-                      Rating
+                      Rating:
                     </Typography>
                     <Box
                       sx={{
@@ -836,49 +1136,133 @@ const ProductTable: React.FC<
                     >
                       <Rating
                         value={
-                          selectedProduct.rating
+                          selectedProduct.rating ||
+                          0
                         }
                         readOnly
                         precision={0.5}
-                        size="large"
+                        size="small"
                         sx={{ color: '#f59e0b' }}
                       />
                       <Typography
                         sx={{
                           color: 'text.secondary',
-                          fontSize: '0.875rem',
+                          fontSize: '0.8rem',
                         }}
                       >
-                        ({selectedProduct.rating}
+                        (
+                        {selectedProduct.rating ||
+                          0}
                         /5)
                       </Typography>
                     </Box>
-                  </Stack>
-                </Stack>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                      mb: 1.5,
+                      pb: 1.5,
+                      borderBottom:
+                        '1px solid #e0e0e0',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        color: 'text.secondary',
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      Status Product:
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      {selectedProduct.statusProduct ||
+                        (selectedProduct.status
+                          ? 'Active'
+                          : 'Inactive')}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        color: 'text.secondary',
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      Created:
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      {selectedProduct.createdAt
+                        ? new Date(
+                            selectedProduct.createdAt
+                          ).toLocaleDateString()
+                        : '-'}
+                    </Typography>
+                  </Box>
+                </Box>
               </Box>
-            </Stack>
-          )}
-        </DialogContent>
-        <DialogActions
-          sx={{ p: 3, justifyContent: 'center' }}
-        >
-          <Button
-            onClick={onCloseModal}
-            variant="contained"
-            sx={{
-              bgcolor: '#3b82f6',
-              color: 'white',
-              px: 4,
-              py: 1,
-              borderRadius: '8px',
-              '&:hover': {
-                bgcolor: '#2563eb',
-              },
-            }}
-          >
-            Close
-          </Button>
-        </DialogActions>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                p: 3,
+                justifyContent: 'center',
+                display: 'flex !important',
+                backgroundColor: '#ffffff',
+                opacity: 1,
+                visibility: 'visible',
+                borderBottomLeftRadius: '16px',
+                borderBottomRightRadius: '16px',
+              }}
+            >
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log(
+                    'ProductTable - Close button clicked'
+                  );
+                  onCloseModal();
+                }}
+                variant="contained"
+                sx={{
+                  bgcolor: '#3b82f6',
+                  color: 'white',
+                  px: 4,
+                  py: 1,
+                  borderRadius: '8px',
+                  '&:hover': {
+                    bgcolor: '#2563eb',
+                  },
+                  display:
+                    'inline-flex !important',
+                  visibility: 'visible',
+                  opacity: 1,
+                }}
+              >
+                Close
+              </Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
     </Box>
   );

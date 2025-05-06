@@ -5,6 +5,7 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useCallback,
 } from 'react';
 import { Product as ProductType } from '../components/productEdit/types';
 import Image from 'next/image';
@@ -73,7 +74,76 @@ export const ProductProvider: React.FC<{
   >(initialProducts);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const validateAndNormalizeProduct = useCallback(
+    (product: Product): Product => {
+      return {
+        ...product,
+        id: product.id || Date.now(),
+        productName:
+          product.productName ||
+          'Unnamed Product',
+        color: product.color || 'Black',
+        barcode:
+          product.barcode || `BC-${Date.now()}`,
+        sku: product.sku || `SKU-${Date.now()}`,
+        price:
+          typeof product.price === 'number'
+            ? product.price
+            : 0,
+        status: Boolean(product.status),
+        rating:
+          typeof product.rating === 'number'
+            ? product.rating
+            : 0,
+        createdAt:
+          product.createdAt ||
+          new Date().toISOString(),
+        image:
+          product.image ||
+          '/placeholder-image.png',
+        statusProduct: product.status
+          ? 'Active'
+          : 'Inactive',
+      };
+    },
+    []
+  );
+
   useEffect(() => {
+    const validateProduct = (
+      product: Product
+    ): Product => {
+      return {
+        ...product,
+        id: product.id || Date.now(),
+        productName:
+          product.productName ||
+          'Unnamed Product',
+        color: product.color || 'Black',
+        barcode:
+          product.barcode || `BC-${Date.now()}`,
+        sku: product.sku || `SKU-${Date.now()}`,
+        price:
+          typeof product.price === 'number'
+            ? product.price
+            : 0,
+        status: Boolean(product.status),
+        rating:
+          typeof product.rating === 'number'
+            ? product.rating
+            : 0,
+        createdAt:
+          product.createdAt ||
+          new Date().toISOString(),
+        image:
+          product.image ||
+          '/placeholder-image.png',
+        statusProduct: product.status
+          ? 'Active'
+          : 'Inactive',
+      };
+    };
+
     try {
       const storedData =
         localStorage.getItem('products');
@@ -84,7 +154,15 @@ export const ProductProvider: React.FC<{
           Array.isArray(parsedData) &&
           parsedData.length > 0
         ) {
-          setProducts(parsedData);
+          const validatedProducts =
+            parsedData.map((product) =>
+              validateProduct(product)
+            );
+          console.log(
+            'ProductContext - Loaded and validated products from localStorage:',
+            validatedProducts
+          );
+          setProducts(validatedProducts);
         }
       }
     } catch (error) {
@@ -114,15 +192,12 @@ export const ProductProvider: React.FC<{
   }, [products, isLoaded]);
 
   const addProduct = (newProduct: Product) => {
-    const productToAdd = {
-      ...newProduct,
-      id:
-        newProduct.id ||
-        Math.max(
-          0,
-          ...products.map((p) => p.id)
-        ) + 1,
-    };
+    const productToAdd =
+      validateAndNormalizeProduct(newProduct);
+    console.log(
+      'ProductContext - Adding validated product:',
+      productToAdd
+    );
 
     setProducts((currentProducts) => [
       ...currentProducts,
@@ -133,10 +208,17 @@ export const ProductProvider: React.FC<{
   const updateProduct = (
     updatedProduct: Product
   ) => {
+    const validatedProduct =
+      validateAndNormalizeProduct(updatedProduct);
+    console.log(
+      'ProductContext - Updating with validated product:',
+      validatedProduct
+    );
+
     setProducts((currentProducts) =>
       currentProducts.map((product) =>
-        product.id === updatedProduct.id
-          ? updatedProduct
+        product.id === validatedProduct.id
+          ? validatedProduct
           : product
       )
     );

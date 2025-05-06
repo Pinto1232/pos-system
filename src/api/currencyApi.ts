@@ -32,11 +32,10 @@ export const fetchUserLocation =
 export const fetchAvailableCurrencies =
   async (): Promise<Currency[]> => {
     try {
-      // Add a timeout to the request to prevent long waiting times
       const { data } = await apiClient.get<
         Currency[]
       >('/api/currency/available', {
-        timeout: 5000, // 5 seconds timeout
+        timeout: 5000,
       });
       return data;
     } catch (error: unknown) {
