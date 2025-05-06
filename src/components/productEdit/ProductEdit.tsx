@@ -179,14 +179,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       );
       const updatedProducts = editingProduct
         ? existingProducts.map((p: Product) =>
-            p.id === productWithStatus.id
-              ? productWithStatus
-              : p
-          )
+          p.id === productWithStatus.id
+            ? productWithStatus
+            : p
+        )
         : [
-            ...existingProducts,
-            productWithStatus,
-          ];
+          ...existingProducts,
+          productWithStatus,
+        ];
       localStorage.setItem(
         'products',
         JSON.stringify(updatedProducts)
@@ -203,20 +203,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
 
   const columns: GridColDef[] = [
     {
-      field: 'select',
-      headerName: '',
-      width: 70,
-      renderHeader: () => (
-        <Checkbox size="small" />
-      ),
-      renderCell: () => <Checkbox size="small" />,
-      sortable: false,
-      filterable: false,
-    },
-    {
       field: 'image',
-      headerName: 'Image',
-      width: 100,
+      headerName: 'Icon',
+      width: 80,
       renderCell: (params) => (
         <Avatar
           src={
@@ -228,22 +217,40 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             width: 40,
             height: 40,
             borderRadius: '4px',
+            border: '1px solid #f0f0f0',
           }}
+          variant="rounded"
         />
       ),
+      sortable: false,
+      disableColumnMenu: true,
     },
     {
       field: 'productName',
       headerName: 'Product Name',
       flex: 2,
-      minWidth: 150,
+      minWidth: 180,
       renderCell: (params) => (
         <Stack
           direction="row"
           spacing={1}
           alignItems="center"
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            width: '100%'
+          }}
         >
-          <Typography variant="body2">
+          <Typography
+            variant="body2"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              fontWeight: 500
+            }}
+          >
             {params.value}
           </Typography>
           {params.row.color && (
@@ -263,6 +270,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   params.row.color
                 ).text,
                 border: '1px solid #e2e8f0',
+                flexShrink: 0
               }}
             />
           )}
@@ -273,19 +281,45 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'sku',
       headerName: 'SKU',
       flex: 1,
-      minWidth: 90,
+      minWidth: 100,
+      renderCell: (params) => (
+        <Typography
+          variant="body2"
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            width: '100%'
+          }}
+        >
+          {params.value || '-'}
+        </Typography>
+      ),
     },
     {
       field: 'barcode',
       headerName: 'ID Code',
       flex: 1,
-      minWidth: 100,
+      minWidth: 110,
+      renderCell: (params) => (
+        <Typography
+          variant="body2"
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            width: '100%'
+          }}
+        >
+          {params.value || '-'}
+        </Typography>
+      ),
     },
     {
       field: 'price',
       headerName: 'Price',
       flex: 1,
-      minWidth: 90,
+      minWidth: 100,
       type: 'number',
       align: 'left',
       headerAlign: 'left',
@@ -295,33 +329,42 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             ? params.row.price
             : 0;
         return (
-          <span>R{Number(price).toFixed(2)}</span>
+          <Typography
+            variant="body2"
+            sx={{
+              fontWeight: 500,
+              color: '#1E2A3B'
+            }}
+          >
+            R{Number(price).toFixed(2)}
+          </Typography>
         );
       },
     },
     {
       field: 'statusProduct',
-      headerName: 'Status Product',
+      headerName: 'Status',
       flex: 1,
-      minWidth: 130,
+      minWidth: 120,
       renderCell: (params) => (
-        <Switch
-          checked={params.value === 'Active'}
-          onChange={(e) => {
-            const updatedProduct = {
-              ...params.row,
-              statusProduct: e.target.checked
-                ? 'Active'
-                : 'Inactive',
-              status: e.target.checked,
-            };
-            onUpdateItem(updatedProduct);
-            updateProduct(updatedProduct);
-          }}
-          color="primary"
-          size="small"
-          sx={{
-            '& .MuiSwitch-switchBase.Mui-checked':
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Switch
+            checked={params.value === 'Active'}
+            onChange={(e) => {
+              const updatedProduct = {
+                ...params.row,
+                statusProduct: e.target.checked
+                  ? 'Active'
+                  : 'Inactive',
+                status: e.target.checked,
+              };
+              onUpdateItem(updatedProduct);
+              updateProduct(updatedProduct);
+            }}
+            color="primary"
+            size="small"
+            sx={{
+              '& .MuiSwitch-switchBase.Mui-checked':
               {
                 color: '#52B788',
                 '&:hover': {
@@ -329,22 +372,43 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     'rgba(82, 183, 136, 0.08)',
                 },
               },
-            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
               {
                 backgroundColor: '#52B788',
               },
-          }}
-        />
+            }}
+          />
+          <Typography
+            variant="body2"
+            sx={{
+              ml: 0.5,
+              fontSize: '0.75rem',
+              color: params.value === 'Active' ? '#52B788' : '#9e9e9e',
+            }}
+          >
+            {params.value}
+          </Typography>
+        </Box>
       ),
     },
     {
       field: 'rating',
       headerName: 'Rating',
-      flex: 1,
-      minWidth: 20,
+      flex: 0.7,
+      minWidth: 80,
       type: 'number',
       align: 'left',
       headerAlign: 'left',
+      renderCell: (params) => (
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 500
+          }}
+        >
+          {params.value || '0'}
+        </Typography>
+      ),
     },
     {
       field: 'createdAt',
@@ -357,19 +421,19 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             params.row.createdAt
           );
           return (
-            <span>
+            <Typography variant="body2">
               {date.toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric',
               })}
-            </span>
+            </Typography>
           );
         } catch {
           return (
-            <span>
+            <Typography variant="body2">
               {params.row.createdAt || '-'}
-            </span>
+            </Typography>
           );
         }
       },
@@ -378,13 +442,22 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'actions',
       headerName: 'Actions',
       flex: 1,
-      minWidth: 150,
+      minWidth: 130,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
       renderCell: (params) => (
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{
+          display: 'flex',
+          gap: 0.5,
+          justifyContent: 'center',
+          width: '100%'
+        }}>
           <IconButton
             size="small"
             color="primary"
             sx={{
+              padding: '4px',
               '&:hover': {
                 backgroundColor:
                   'rgba(25, 118, 210, 0.08)',
@@ -400,6 +473,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             size="small"
             color="primary"
             sx={{
+              padding: '4px',
               '&:hover': {
                 backgroundColor:
                   'rgba(25, 118, 210, 0.08)',
@@ -415,6 +489,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             size="small"
             color="error"
             sx={{
+              padding: '4px',
               '&:hover': {
                 backgroundColor:
                   'rgba(211, 47, 47, 0.08)',
@@ -550,7 +625,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
 
   // Handle closing the snackbar
   const handleCloseSnackbar = (
-    event?: React.SyntheticEvent | Event,
+    _?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
     if (reason === 'clickaway') {
@@ -667,56 +742,37 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 columns={columns}
                 sx={{
                   height: 'auto',
-                  ...{
-                    border: 'none',
-                    '& .MuiDataGrid-root': {
-                      border: 'none',
+                  border: 'none',
+                  borderRadius: '12px',
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
+                  '& .MuiDataGrid-main': {
+                    width: '100%',
+                    overflow: 'hidden',
+                  },
+                  '& .MuiDataGrid-columnHeaders': {
+                    backgroundColor: '#f8f9fa',
+                    borderBottom: '1px solid #E0E0E0',
+                  },
+                  '& .MuiDataGrid-cell': {
+                    borderBottom: '1px solid #E0E0E0',
+                  },
+                  '& .MuiDataGrid-virtualScroller': {
+                    overflow: 'auto',
+                    '&::-webkit-scrollbar': {
+                      width: '8px',
+                      height: '8px',
                     },
-                    '& .MuiDataGrid-row:hover': {
-                      backgroundColor: '#F8F9FA',
+                    '&::-webkit-scrollbar-track': {
+                      background: '#f1f1f1',
+                      borderRadius: '4px',
                     },
-                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell':
-                      {
-                        borderBottomLeftRadius: 0,
-                        borderBottomRightRadius: 0,
-                      },
-                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type':
-                      {
-                        borderBottomLeftRadius: 0,
-                      },
-                    '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type':
-                      {
-                        borderBottomRightRadius: 0,
-                      },
-                    '& .MuiDataGrid-cell:focus': {
-                      outline: 'none',
+                    '&::-webkit-scrollbar-thumb': {
+                      background: '#c1c1c1',
+                      borderRadius: '4px',
                     },
-                    '& .MuiDataGrid-columnHeader:focus':
-                      {
-                        outline: 'none',
-                      },
-                    '& .MuiDataGrid-main': {
-                      width: '100%',
-                      overflow: 'visible',
+                    '&::-webkit-scrollbar-thumb:hover': {
+                      background: '#a8a8a8',
                     },
-                    '& .MuiDataGrid-virtualScroller':
-                      {
-                        overflow:
-                          'auto !important',
-                        '&::-webkit-scrollbar': {
-                          width: '8px',
-                          height: '0px',
-                        },
-                        '&::-webkit-scrollbar-track':
-                          {
-                            background: '#f1f1f1',
-                          },
-                        '&::-webkit-scrollbar-thumb':
-                          {
-                            background: '#888',
-                            borderRadius: '4px',
-                          },
-                      },
                   },
                 }}
                 hideFooter={true}
@@ -726,34 +782,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 rowHeight={60}
                 columnHeaderHeight={56}
                 getRowId={(row) => row.id}
-                onStateChange={(state) => {
-                  console.log(
-                    'ProductEdit - DataGrid state:',
-                    state
-                  );
-                  console.log(
-                    'ProductEdit - Current products in DataGrid:',
-                    products
-                  );
-                }}
+                density="standard"
+                disableColumnFilter
                 slotProps={{
                   basePopper: {
                     sx: {
                       zIndex: 1300,
                     },
                   },
-                }}
-                processRowUpdate={(
-                  newRow,
-                  oldRow
-                ) => {
-                  if (!newRow || !oldRow)
-                    return oldRow;
-                  console.log('Updating row:', {
-                    newRow,
-                    oldRow,
-                  });
-                  return newRow;
                 }}
                 aria-label="Product inventory table"
               />
@@ -763,60 +799,58 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={
-                  handleChangeRowsPerPage
-                }
+                onRowsPerPageChange={handleChangeRowsPerPage}
                 rowsPerPageOptions={[9, 18, 27]}
                 sx={{
                   backgroundColor: '#FFFFFF',
-                  borderRadius: '0 0 10px 10px',
-                  borderTop:
-                    '1px solid rgba(224, 224, 224, 0.5)',
-                  boxShadow:
-                    '0 2px 4px rgba(0,0,0,0.03)',
+                  borderRadius: '0 0 12px 12px',
+                  borderTop: '1px solid rgba(224, 224, 224, 0.5)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.03)',
                   '& .MuiToolbar-root': {
-                    padding: '0 20px',
-                    minHeight: '56px',
+                    padding: '0 24px',
+                    minHeight: '60px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-end',
                   },
-                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
-                    {
-                      color: 'rgba(0, 0, 0, 0.7)',
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
-                      margin: '0 8px',
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                    color: '#1E2A3B',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    margin: '0 12px',
+                  },
+                  '& .MuiTablePagination-select': {
+                    paddingTop: '4px',
+                    paddingBottom: '4px',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '6px',
+                    marginRight: '8px',
+                    border: '1px solid #e0e0e0',
+                    '&:focus': {
+                      backgroundColor: '#f0f2f5',
+                      borderColor: '#3b82f6',
                     },
-                  '& .MuiTablePagination-select':
-                    {
-                      paddingTop: '2px',
-                      paddingBottom: '2px',
+                  },
+                  '& .MuiTablePagination-actions': {
+                    marginLeft: '16px',
+                    '& .MuiIconButton-root': {
+                      padding: '8px',
+                      color: '#1E2A3B',
                       backgroundColor: '#f8f9fa',
-                      borderRadius: '4px',
-                      marginRight: '8px',
-                      '&:focus': {
-                        backgroundColor:
-                          '#f0f2f5',
+                      border: '1px solid #e0e0e0',
+                      borderRadius: '6px',
+                      margin: '0 2px',
+                      '&:hover': {
+                        backgroundColor: '#f0f2f5',
+                        borderColor: '#3b82f6',
+                      },
+                      '&.Mui-disabled': {
+                        color: 'rgba(0, 0, 0, 0.26)',
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #e0e0e0',
                       },
                     },
-                  '& .MuiTablePagination-actions':
-                    {
-                      marginLeft: '16px',
-                      '& .MuiIconButton-root': {
-                        padding: '6px',
-                        color:
-                          'rgba(0, 0, 0, 0.6)',
-                        '&:hover': {
-                          backgroundColor:
-                            'rgba(0, 0, 0, 0.04)',
-                        },
-                        '&.Mui-disabled': {
-                          color:
-                            'rgba(0, 0, 0, 0.26)',
-                        },
-                      },
-                    },
+                  },
                 }}
               />
             </S.ProductTable>

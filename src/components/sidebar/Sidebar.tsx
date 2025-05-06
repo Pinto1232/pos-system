@@ -34,8 +34,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   textColor = '#fff',
   iconColor = '#fff',
   logoUrl = '/Pisval_Logo.jpg',
-  handleItemClick = () => {},
-  onDrawerToggle = () => {},
+  handleItemClick = () => { },
+  onDrawerToggle = () => { },
 }) => {
   const { setLoading } = useSpinner();
   const { userInfo, isLoading: isUserLoading } =
@@ -85,37 +85,81 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [localDrawerOpen, setLocalDrawerOpen] =
     useState(isDrawerOpen);
 
+  // Load active menu item and expanded state from localStorage on mount
+  useEffect(() => {
+    try {
+      // Get active item from localStorage
+      const savedActiveItem = localStorage.getItem('sidebarActiveItem');
+      if (savedActiveItem) {
+        setActiveItemState(savedActiveItem);
+      }
+
+      // Get expanded items from localStorage
+      const savedExpandedItems = localStorage.getItem('sidebarExpandedItems');
+      if (savedExpandedItems) {
+        setExpandedItems(JSON.parse(savedExpandedItems));
+      }
+
+      // If we have a saved active item that's a sub-item, make sure its parent is expanded
+      if (savedActiveItem) {
+        // Find if this is a sub-item
+        for (const item of sidebarItems) {
+          if (item.expandable && item.subItems) {
+            const isSubItem = item.subItems.some(subItem => subItem.label === savedActiveItem);
+            if (isSubItem) {
+              setExpandedItems(prev => ({
+                ...prev,
+                [item.label]: true
+              }));
+              break;
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading sidebar state from localStorage:', error);
+      // Fall back to default Dashboard
+      setActiveItemState('Dashboard');
+    }
+  }, []);
+
   useEffect(() => {
     setLocalDrawerOpen(isDrawerOpen);
   }, [isDrawerOpen]);
 
+  // Default to Dashboard if no saved state
   useEffect(() => {
-    const matchingSidebarItem = sidebarItems.find(
-      (item) =>
-        item.label === 'Dashboard' ||
-        (item.subItems &&
-          item.subItems.some(
-            (subItem) =>
-              subItem.label === 'Dashboard'
-          ))
-    );
+    if (!localStorage.getItem('sidebarActiveItem')) {
+      const matchingSidebarItem = sidebarItems.find(
+        (item) =>
+          item.label === 'Dashboard' ||
+          (item.subItems &&
+            item.subItems.some(
+              (subItem) =>
+                subItem.label === 'Dashboard'
+            ))
+      );
 
-    if (matchingSidebarItem) {
-      if (
-        matchingSidebarItem.label === 'Dashboard'
-      ) {
-        setActiveItemState('Dashboard');
-      } else if (matchingSidebarItem.subItems) {
-        const subItem =
-          matchingSidebarItem.subItems.find(
-            (sub) => sub.label === 'Dashboard'
-          );
-        if (subItem) {
-          setExpandedItems((prev) => ({
-            ...prev,
-            [matchingSidebarItem.label]: true,
-          }));
+      if (matchingSidebarItem) {
+        if (
+          matchingSidebarItem.label === 'Dashboard'
+        ) {
           setActiveItemState('Dashboard');
+          localStorage.setItem('sidebarActiveItem', 'Dashboard');
+        } else if (matchingSidebarItem.subItems) {
+          const subItem =
+            matchingSidebarItem.subItems.find(
+              (sub) => sub.label === 'Dashboard'
+            );
+          if (subItem) {
+            const newExpandedItems = {
+              [matchingSidebarItem.label]: true
+            };
+            setExpandedItems(newExpandedItems);
+            localStorage.setItem('sidebarExpandedItems', JSON.stringify(newExpandedItems));
+            setActiveItemState('Dashboard');
+            localStorage.setItem('sidebarActiveItem', 'Dashboard');
+          }
         }
       }
     }
@@ -145,6 +189,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         newState[label] = true;
       }
 
+      // Save expanded state to localStorage
+      localStorage.setItem('sidebarExpandedItems', JSON.stringify(newState));
+
       return newState;
     });
   };
@@ -156,11 +203,21 @@ const Sidebar: React.FC<SidebarProps> = ({
     setLoading(true);
     setActiveItemState(label);
 
+    // Save active item to localStorage
+    localStorage.setItem('sidebarActiveItem', label);
+
     setExpandedItems((prev) => {
+      let newState;
       if (parentLabel) {
-        return { ...prev, [parentLabel]: true };
+        newState = { ...prev, [parentLabel]: true };
+      } else {
+        newState = {};
       }
-      return {};
+
+      // Save expanded state to localStorage
+      localStorage.setItem('sidebarExpandedItems', JSON.stringify(newState));
+
+      return newState;
     });
 
     const validSections = [
