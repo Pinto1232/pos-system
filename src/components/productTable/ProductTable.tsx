@@ -807,6 +807,10 @@ const ProductTable: React.FC<
             padding: '16px',
             overflowY: 'auto',
           },
+          '& .MuiBackdrop-root': {
+            backdropFilter: 'blur(4px)',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          },
         }}
       >
         {!selectedProduct ? (
