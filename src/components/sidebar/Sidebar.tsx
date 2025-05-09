@@ -2,6 +2,7 @@ import React, {
   useState,
   useEffect,
   useRef,
+  useCallback,
 } from 'react';
 import {
   Drawer,
@@ -84,6 +85,57 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
   const [localDrawerOpen, setLocalDrawerOpen] =
     useState(isDrawerOpen);
+
+  // User activity tracking
+  const [isUserActive, setIsUserActive] = useState(true);
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const INACTIVITY_TIMEOUT = 30000; // 30 seconds of inactivity before status changes
+
+  // User activity tracking logic
+  const resetInactivityTimer = useCallback(() => {
+    // Clear any existing timer
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current);
+    }
+
+    // Set user as active
+    setIsUserActive(true);
+
+    // Start a new timer
+    inactivityTimerRef.current = setTimeout(() => {
+      setIsUserActive(false);
+    }, INACTIVITY_TIMEOUT);
+  }, [INACTIVITY_TIMEOUT]);
+
+  // Set up event listeners for user activity
+  useEffect(() => {
+    // Events to track for user activity
+    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+
+    // Event handler
+    const handleUserActivity = () => {
+      resetInactivityTimer();
+    };
+
+    // Add event listeners
+    activityEvents.forEach(event => {
+      window.addEventListener(event, handleUserActivity);
+    });
+
+    // Initialize the timer
+    resetInactivityTimer();
+
+    // Cleanup
+    return () => {
+      activityEvents.forEach(event => {
+        window.removeEventListener(event, handleUserActivity);
+      });
+
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+    };
+  }, [resetInactivityTimer]);
 
   // Load active menu item and expanded state from localStorage on mount
   useEffect(() => {
@@ -525,11 +577,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                               width: 8,
                               height: 8,
                               borderRadius: '50%',
-                              bgcolor: '#4CAF50',
-                              boxShadow:
-                                '0 0 4px #4CAF50',
+                              bgcolor: isUserActive ? '#4CAF50' : '#F44336',
+                              boxShadow: isUserActive
+                                ? '0 0 4px #4CAF50'
+                                : '0 0 4px #F44336',
                               animation:
                                 'pulse 2s infinite',
+                              transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
                             }}
                           />
                         </Box>
@@ -543,13 +597,16 @@ const Sidebar: React.FC<SidebarProps> = ({
                         transform:
                           'translateX(-50%)',
                         fontSize: '0.7rem',
-                        color:
-                          'rgba(255, 255, 255, 0.8)',
+                        color: isUserActive
+                          ? '#4CAF50' // Green when active
+                          : '#F44336', // Red when inactive
                         backgroundColor:
                           'rgba(0, 0, 0, 0.2)',
                         padding: '1px 8px',
                         borderRadius: '4px',
                         letterSpacing: '0.5px',
+                        transition: 'color 0.3s ease',
+                        fontWeight: 600,
                       }}
                     >
                       Online
