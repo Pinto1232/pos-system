@@ -12,9 +12,7 @@ import {
   Stack,
   Chip,
   IconButton,
-  Switch,
   Avatar,
-  AvatarGroup,
   Tooltip,
   LinearProgress,
   Tabs,
@@ -27,9 +25,6 @@ import StarIcon from '@mui/icons-material/Star';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ShuffleIcon from '@mui/icons-material/Shuffle';
-import DownloadIcon from '@mui/icons-material/Download';
-import ShareIcon from '@mui/icons-material/Share';
 import InfoIcon from '@mui/icons-material/Info';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import {
@@ -82,7 +77,6 @@ const Sales: React.FC<SalesProps> = ({
     },
   },
   timeframe = '',
-  onTimeframeChange,
   className,
 }) => {
   const [selectedMetric, setSelectedMetric] =
@@ -312,300 +306,101 @@ const Sales: React.FC<SalesProps> = ({
     >
       {/* Header Section */}
       <Stack
-        direction={{ xs: 'column', sm: 'row' }}
+        direction="row"
         justifyContent="space-between"
-        alignItems={{
-          xs: 'flex-start',
-          sm: 'center',
+        alignItems="center"
+        spacing={2}
+        mb={3}
+        sx={{
+          borderBottom: '1px solid rgba(230, 235, 245, 0.6)',
+          pb: 2,
         }}
-        spacing={{ xs: 2, sm: 0 }}
-        mb={5}
       >
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            gap: 2,
-            width: { xs: '100%', sm: 'auto' },
-            justifyContent: {
-              xs: 'space-between',
-              sm: 'flex-start',
-            },
+            gap: 1,
           }}
         >
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#6366f1',
+              color: 'white',
+              fontWeight: 600,
+              fontSize: '1.1rem',
+            }}
+          >
+            E
+          </Box>
           <Typography
             variant="h4"
             sx={{
-              fontWeight: 800,
-              color: '#1a1a1a',
+              fontWeight: 700,
               fontSize: {
                 xs: '1.25rem',
                 sm: '1.5rem',
-                md: '1.75rem',
+                md: '1.6rem',
               },
-              background: 'linear-gradient(135deg, #4338ca, #6366f1)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              whiteSpace: 'nowrap',
-              letterSpacing: '-0.02em',
-              position: 'relative',
-              display: 'inline-block',
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                bottom: '-4px',
-                left: '0',
-                width: '40%',
-                height: '2px',
-                background: 'linear-gradient(90deg, #4338ca, transparent)',
-                borderRadius: '2px',
-              }
+              color: '#6366f1',
+              letterSpacing: '-0.01em',
             }}
           >
             New Sales Report
           </Typography>
-          <AvatarGroup
-            max={4}
-            sx={{
-              display: { xs: 'none', sm: 'flex' },
-              '& .MuiAvatar-root': {
-                width: { xs: 28, sm: 32, md: 36 },
-                height: { xs: 28, sm: 32, md: 36 },
-                fontSize: {
-                  xs: '0.75rem',
-                  sm: '0.85rem',
-                  md: '0.9rem',
-                },
-                border: '2px solid #fff',
-                boxShadow: '0 2px 10px rgba(99, 102, 241, 0.15)',
-                transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                '&:hover': {
-                  transform: 'translateY(-3px) scale(1.05)',
-                  boxShadow: '0 6px 15px rgba(99, 102, 241, 0.2)',
-                  zIndex: 10,
-                },
-              },
-            }}
-          >
-            {data.teamPerformance.map(
-              (member: TeamMember) => (
-                <Tooltip
-                  key={member.name}
-                  title={`${member.name}: ${formatCurrency(member.revenue)}`}
-                >
-                  <Avatar
-                    sx={{
-                      background: 'linear-gradient(135deg, #4338ca, #6366f1)',
-                      color: 'white',
-                      fontWeight: 600,
-                      '&:hover': {
-                        background: 'linear-gradient(135deg, #3730a3, #4f46e5)',
-                      },
-                    }}
-                  >
-                    {member.name.charAt(0)}
-                  </Avatar>
-                </Tooltip>
-              )
-            )}
-          </AvatarGroup>
         </Box>
-        <Stack
-          direction="row"
-          spacing={2}
-          alignItems="center"
-          width={{ xs: '100%', sm: 'auto' }}
-          justifyContent={{
-            xs: 'space-between',
-            sm: 'flex-end',
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 0.5,
           }}
         >
-          <Stack direction="row" spacing={1}>
-            <Tooltip title="Refresh data">
-              <IconButton
-                size="small"
-                sx={{
-                  color: '#64748b',
-                  backgroundColor: 'rgba(241, 245, 249, 0.8)',
-                  width: { xs: 32, sm: 36 },
-                  height: { xs: 32, sm: 36 },
-                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  '&:hover': {
-                    color: '#4f46e5',
-                    transform: 'translateY(-2px)',
-                    backgroundColor: 'rgba(99, 102, 241, 0.08)',
-                    boxShadow: '0 4px 12px rgba(99, 102, 241, 0.2)',
-                  },
-                }}
-              >
-                <ShuffleIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Download report">
-              <IconButton
-                size="small"
-                sx={{
-                  color: '#64748b',
-                  backgroundColor: 'rgba(241, 245, 249, 0.8)',
-                  width: { xs: 32, sm: 36 },
-                  height: { xs: 32, sm: 36 },
-                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  '&:hover': {
-                    color: '#4f46e5',
-                    transform: 'translateY(-2px)',
-                    backgroundColor: 'rgba(99, 102, 241, 0.08)',
-                    boxShadow: '0 4px 12px rgba(99, 102, 241, 0.2)',
-                  },
-                }}
-              >
-                <DownloadIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Share report">
-              <IconButton
-                size="small"
-                sx={{
-                  color: '#64748b',
-                  backgroundColor: 'rgba(241, 245, 249, 0.8)',
-                  width: { xs: 32, sm: 36 },
-                  height: { xs: 32, sm: 36 },
-                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  '&:hover': {
-                    color: '#4f46e5',
-                    transform: 'translateY(-2px)',
-                    backgroundColor: 'rgba(99, 102, 241, 0.08)',
-                    boxShadow: '0 4px 12px rgba(99, 102, 241, 0.2)',
-                  },
-                }}
-              >
-                <ShareIcon />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-          <Box
+          <Avatar
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              background: 'linear-gradient(135deg, #4338ca, #6366f1)',
-              padding: {
-                xs: '6px 10px',
-                sm: '8px 16px',
-              },
-              borderRadius: '12px',
-              border: '1px solid rgba(99, 102, 241, 0.3)',
-              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.2)',
-              transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              '&:hover': {
-                transform: 'translateY(-3px)',
-                boxShadow: '0 8px 20px rgba(99, 102, 241, 0.25)',
-              },
-            }}
-          >
-            <Typography
-              sx={{
-                color: '#ffffff',
-                fontSize: {
-                  xs: '0.75rem',
-                  sm: '0.875rem',
-                },
-                fontWeight: 500,
-                display: {
-                  xs: 'none',
-                  sm: 'block',
-                },
-              }}
-            >
-              Timeframe
-            </Typography>
-            <Switch
-              size="small"
-              checked={true}
-              onChange={() =>
-                onTimeframeChange?.(timeframe)
-              }
-              sx={{
-                '& .MuiSwitch-thumb': {
-                  backgroundColor: '#ffffff',
-                },
-                '& .MuiSwitch-track': {
-                  backgroundColor:
-                    'rgba(255, 255, 255, 0.3)',
-                },
-              }}
-            />
-            <Typography
-              sx={{
-                fontSize: {
-                  xs: '0.75rem',
-                  sm: '0.875rem',
-                },
-                color: '#ffffff',
-                fontWeight: 500,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: {
-                  xs: '100px',
-                  sm: '150px',
-                  md: '200px',
-                },
-              }}
-            >
-              {timeframe}
-            </Typography>
-          </Box>
-        </Stack>
-      </Stack>
-
-      {/* Mobile Avatar Group */}
-      <Box
-        sx={{
-          display: { xs: 'block', sm: 'none' },
-          mb: 3,
-        }}
-      >
-        <AvatarGroup
-          max={4}
-          sx={{
-            '& .MuiAvatar-root': {
               width: 36,
               height: 36,
-              fontSize: '0.9rem',
-              border: '2px solid #fff',
-              boxShadow: '0 2px 10px rgba(99, 102, 241, 0.15)',
-              transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              '&:hover': {
-                transform: 'translateY(-3px) scale(1.05)',
-                boxShadow: '0 6px 15px rgba(99, 102, 241, 0.2)',
-                zIndex: 10,
-              },
-            },
-          }}
-        >
-          {data.teamPerformance.map(
-            (member: TeamMember) => (
-              <Tooltip
-                key={member.name}
-                title={`${member.name}: ${formatCurrency(member.revenue)}`}
-              >
-                <Avatar
-                  sx={{
-                    background: 'linear-gradient(135deg, #4338ca, #6366f1)',
-                    color: 'white',
-                    fontWeight: 600,
-                    '&:hover': {
-                      background: 'linear-gradient(135deg, #3730a3, #4f46e5)',
-                    },
-                  }}
-                >
-                  {member.name.charAt(0)}
-                </Avatar>
-              </Tooltip>
-            )
-          )}
-        </AvatarGroup>
-      </Box>
+              bgcolor: '#6366f1',
+              color: 'white',
+              fontWeight: 600,
+              fontSize: '1rem',
+            }}
+          >
+            A
+          </Avatar>
+          <Avatar
+            sx={{
+              width: 36,
+              height: 36,
+              bgcolor: '#6366f1',
+              color: 'white',
+              fontWeight: 600,
+              fontSize: '1rem',
+            }}
+          >
+            M
+          </Avatar>
+          <Avatar
+            sx={{
+              width: 36,
+              height: 36,
+              bgcolor: '#6366f1',
+              color: 'white',
+              fontWeight: 600,
+              fontSize: '1rem',
+            }}
+          >
+            E
+          </Avatar>
+        </Box>
+
+      </Stack>
 
       {/* Revenue Section */}
       <Box mb={5}>
