@@ -2,7 +2,7 @@ import Keycloak from 'keycloak-js';
 import { validateAuthEnvVars } from '@/utils/envValidation';
 
 const FALLBACK_CONFIG = {
-  url: 'http://localhost:8282',
+  url: 'http://localhost:8282/auth',
   realm: 'pisval-pos-realm',
   clientId: 'pos-backend',
 };
