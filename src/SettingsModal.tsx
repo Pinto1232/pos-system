@@ -47,24 +47,33 @@ interface SettingsModalProps {
   onClose: () => void;
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
+const SettingsModal: React.FC<
+  SettingsModalProps
+> = ({ open, onClose }) => {
   const { theme, toggleTheme } = useTheme();
-  const { settings, updateSettings } = useSettings();
-  const [selectedSetting, setSelectedSetting] = useState('General Settings');
-  const [generalSettings, setGeneralSettings] = useState({
-    companyName: settings.companyName,
-    dateFormat: settings.dateFormat,
-    timeFormat: settings.timeFormat,
-    defaultLanguage: settings.defaultLanguage,
-  });
-  const [regionalSettings, setRegionalSettings] = useState({
-    defaultCurrency: settings.defaultCurrency,
-    defaultCountry: settings.defaultCountry,
-    defaultTimezone: settings.defaultTimezone,
-  });
+  const { settings, updateSettings } =
+    useSettings();
+  const [selectedSetting, setSelectedSetting] =
+    useState('General Settings');
+  const [generalSettings, setGeneralSettings] =
+    useState({
+      companyName: settings.companyName,
+      dateFormat: settings.dateFormat,
+      timeFormat: settings.timeFormat,
+      defaultLanguage: settings.defaultLanguage,
+    });
+  const [regionalSettings, setRegionalSettings] =
+    useState({
+      defaultCurrency: settings.defaultCurrency,
+      defaultCountry: settings.defaultCountry,
+      defaultTimezone: settings.defaultTimezone,
+    });
 
   const handleGeneralSettingsChange = (
-    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
+    e: React.ChangeEvent<
+      | HTMLInputElement
+      | { name?: string; value: unknown }
+    >
   ) => {
     const { name, value } = e.target;
     if (name) {
@@ -77,7 +86,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
   };
 
   const handleRegionalSettingsChange = (
-    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
+    e: React.ChangeEvent<
+      | HTMLInputElement
+      | { name?: string; value: unknown }
+    >
   ) => {
     const { name, value } = e.target;
     if (name) {
@@ -146,10 +158,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
               '&::-webkit-scrollbar-thumb': {
                 background: 'transparent',
               },
-              '&:hover::-webkit-scrollbar-thumb': {
-                background: 'rgba(0, 0, 0, 0.2)',
-                borderRadius: '4px',
-              },
+              '&:hover::-webkit-scrollbar-thumb':
+                {
+                  background:
+                    'rgba(0, 0, 0, 0.2)',
+                  borderRadius: '4px',
+                },
             }}
           >
             <Typography
@@ -193,8 +207,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
                 <TextField
                   label="Company Name"
                   name="companyName"
-                  value={generalSettings.companyName}
-                  onChange={handleGeneralSettingsChange}
+                  value={
+                    generalSettings.companyName
+                  }
+                  onChange={
+                    handleGeneralSettingsChange
+                  }
                   fullWidth
                   variant="outlined"
                   size="small"
@@ -229,32 +247,60 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
                   gap: 2,
                 }}
               >
-                <FormControl fullWidth size="small">
-                  <InputLabel id="date-format-label">Date Format</InputLabel>
+                <FormControl
+                  fullWidth
+                  size="small"
+                >
+                  <InputLabel id="date-format-label">
+                    Date Format
+                  </InputLabel>
                   <Select
                     labelId="date-format-label"
                     name="dateFormat"
-                    value={generalSettings.dateFormat}
-                    onChange={handleGeneralSettingsChange}
+                    value={
+                      generalSettings.dateFormat
+                    }
+                    onChange={
+                      handleGeneralSettingsChange
+                    }
                     label="Date Format"
                   >
-                    <MenuItem value="MM/DD/YYYY">MM/DD/YYYY</MenuItem>
-                    <MenuItem value="DD/MM/YYYY">DD/MM/YYYY</MenuItem>
-                    <MenuItem value="YYYY-MM-DD">YYYY-MM-DD</MenuItem>
+                    <MenuItem value="MM/DD/YYYY">
+                      MM/DD/YYYY
+                    </MenuItem>
+                    <MenuItem value="DD/MM/YYYY">
+                      DD/MM/YYYY
+                    </MenuItem>
+                    <MenuItem value="YYYY-MM-DD">
+                      YYYY-MM-DD
+                    </MenuItem>
                   </Select>
                 </FormControl>
 
-                <FormControl fullWidth size="small">
-                  <InputLabel id="time-format-label">Time Format</InputLabel>
+                <FormControl
+                  fullWidth
+                  size="small"
+                >
+                  <InputLabel id="time-format-label">
+                    Time Format
+                  </InputLabel>
                   <Select
                     labelId="time-format-label"
                     name="timeFormat"
-                    value={generalSettings.timeFormat}
-                    onChange={handleGeneralSettingsChange}
+                    value={
+                      generalSettings.timeFormat
+                    }
+                    onChange={
+                      handleGeneralSettingsChange
+                    }
                     label="Time Format"
                   >
-                    <MenuItem value="12h">12-hour (AM/PM)</MenuItem>
-                    <MenuItem value="24h">24-hour</MenuItem>
+                    <MenuItem value="12h">
+                      12-hour (AM/PM)
+                    </MenuItem>
+                    <MenuItem value="24h">
+                      24-hour
+                    </MenuItem>
                   </Select>
                 </FormControl>
               </Box>
@@ -286,20 +332,39 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
                   gap: 2,
                 }}
               >
-                <FormControl fullWidth size="small">
-                  <InputLabel id="language-label">Default Language</InputLabel>
+                <FormControl
+                  fullWidth
+                  size="small"
+                >
+                  <InputLabel id="language-label">
+                    Default Language
+                  </InputLabel>
                   <Select
                     labelId="language-label"
                     name="defaultLanguage"
-                    value={generalSettings.defaultLanguage}
-                    onChange={handleGeneralSettingsChange}
+                    value={
+                      generalSettings.defaultLanguage
+                    }
+                    onChange={
+                      handleGeneralSettingsChange
+                    }
                     label="Default Language"
                   >
-                    <MenuItem value="en">English</MenuItem>
-                    <MenuItem value="es">Spanish</MenuItem>
-                    <MenuItem value="fr">French</MenuItem>
-                    <MenuItem value="de">German</MenuItem>
-                    <MenuItem value="pt">Portuguese</MenuItem>
+                    <MenuItem value="en">
+                      English
+                    </MenuItem>
+                    <MenuItem value="es">
+                      Spanish
+                    </MenuItem>
+                    <MenuItem value="fr">
+                      French
+                    </MenuItem>
+                    <MenuItem value="de">
+                      German
+                    </MenuItem>
+                    <MenuItem value="pt">
+                      Portuguese
+                    </MenuItem>
                   </Select>
                 </FormControl>
               </Box>
@@ -326,10 +391,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
               '&::-webkit-scrollbar-thumb': {
                 background: 'transparent',
               },
-              '&:hover::-webkit-scrollbar-thumb': {
-                background: 'rgba(0, 0, 0, 0.2)',
-                borderRadius: '4px',
-              },
+              '&:hover::-webkit-scrollbar-thumb':
+                {
+                  background:
+                    'rgba(0, 0, 0, 0.2)',
+                  borderRadius: '4px',
+                },
             }}
           >
             <Typography
@@ -370,14 +437,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
                   justifyContent: 'space-between',
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                  }}
+                >
                   {theme === 'light' ? (
                     <LightModeIcon color="primary" />
                   ) : (
                     <DarkModeIcon color="primary" />
                   )}
                   <Typography>
-                    {theme === 'light' ? 'Light Mode' : 'Dark Mode'}
+                    {theme === 'light'
+                      ? 'Light Mode'
+                      : 'Dark Mode'}
                   </Typography>
                 </Box>
                 <FormControlLabel
@@ -414,10 +489,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
               '&::-webkit-scrollbar-thumb': {
                 background: 'transparent',
               },
-              '&:hover::-webkit-scrollbar-thumb': {
-                background: 'rgba(0, 0, 0, 0.2)',
-                borderRadius: '4px',
-              },
+              '&:hover::-webkit-scrollbar-thumb':
+                {
+                  background:
+                    'rgba(0, 0, 0, 0.2)',
+                  borderRadius: '4px',
+                },
             }}
           >
             <Typography
@@ -458,41 +535,87 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
                   gap: 2,
                 }}
               >
-                <FormControl fullWidth size="small">
-                  <InputLabel id="currency-label">Default Currency</InputLabel>
+                <FormControl
+                  fullWidth
+                  size="small"
+                >
+                  <InputLabel id="currency-label">
+                    Default Currency
+                  </InputLabel>
                   <Select
                     labelId="currency-label"
                     name="defaultCurrency"
-                    value={regionalSettings.defaultCurrency}
-                    onChange={handleRegionalSettingsChange}
+                    value={
+                      regionalSettings.defaultCurrency
+                    }
+                    onChange={
+                      handleRegionalSettingsChange
+                    }
                     label="Default Currency"
                   >
-                    <MenuItem value="USD">US Dollar (USD)</MenuItem>
-                    <MenuItem value="EUR">Euro (EUR)</MenuItem>
-                    <MenuItem value="GBP">British Pound (GBP)</MenuItem>
-                    <MenuItem value="JPY">Japanese Yen (JPY)</MenuItem>
-                    <MenuItem value="CAD">Canadian Dollar (CAD)</MenuItem>
-                    <MenuItem value="AUD">Australian Dollar (AUD)</MenuItem>
-                    <MenuItem value="BRL">Brazilian Real (BRL)</MenuItem>
+                    <MenuItem value="USD">
+                      US Dollar (USD)
+                    </MenuItem>
+                    <MenuItem value="EUR">
+                      Euro (EUR)
+                    </MenuItem>
+                    <MenuItem value="GBP">
+                      British Pound (GBP)
+                    </MenuItem>
+                    <MenuItem value="JPY">
+                      Japanese Yen (JPY)
+                    </MenuItem>
+                    <MenuItem value="CAD">
+                      Canadian Dollar (CAD)
+                    </MenuItem>
+                    <MenuItem value="AUD">
+                      Australian Dollar (AUD)
+                    </MenuItem>
+                    <MenuItem value="BRL">
+                      Brazilian Real (BRL)
+                    </MenuItem>
                   </Select>
                 </FormControl>
 
-                <FormControl fullWidth size="small">
-                  <InputLabel id="country-label">Default Country</InputLabel>
+                <FormControl
+                  fullWidth
+                  size="small"
+                >
+                  <InputLabel id="country-label">
+                    Default Country
+                  </InputLabel>
                   <Select
                     labelId="country-label"
                     name="defaultCountry"
-                    value={regionalSettings.defaultCountry}
-                    onChange={handleRegionalSettingsChange}
+                    value={
+                      regionalSettings.defaultCountry
+                    }
+                    onChange={
+                      handleRegionalSettingsChange
+                    }
                     label="Default Country"
                   >
-                    <MenuItem value="US">United States</MenuItem>
-                    <MenuItem value="GB">United Kingdom</MenuItem>
-                    <MenuItem value="CA">Canada</MenuItem>
-                    <MenuItem value="AU">Australia</MenuItem>
-                    <MenuItem value="DE">Germany</MenuItem>
-                    <MenuItem value="FR">France</MenuItem>
-                    <MenuItem value="BR">Brazil</MenuItem>
+                    <MenuItem value="US">
+                      United States
+                    </MenuItem>
+                    <MenuItem value="GB">
+                      United Kingdom
+                    </MenuItem>
+                    <MenuItem value="CA">
+                      Canada
+                    </MenuItem>
+                    <MenuItem value="AU">
+                      Australia
+                    </MenuItem>
+                    <MenuItem value="DE">
+                      Germany
+                    </MenuItem>
+                    <MenuItem value="FR">
+                      France
+                    </MenuItem>
+                    <MenuItem value="BR">
+                      Brazil
+                    </MenuItem>
                   </Select>
                 </FormControl>
               </Box>
@@ -524,23 +647,49 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
                   gap: 2,
                 }}
               >
-                <FormControl fullWidth size="small">
-                  <InputLabel id="timezone-label">Default Time Zone</InputLabel>
+                <FormControl
+                  fullWidth
+                  size="small"
+                >
+                  <InputLabel id="timezone-label">
+                    Default Time Zone
+                  </InputLabel>
                   <Select
                     labelId="timezone-label"
                     name="defaultTimezone"
-                    value={regionalSettings.defaultTimezone}
-                    onChange={handleRegionalSettingsChange}
+                    value={
+                      regionalSettings.defaultTimezone
+                    }
+                    onChange={
+                      handleRegionalSettingsChange
+                    }
                     label="Default Time Zone"
                   >
-                    <MenuItem value="UTC-8">Pacific Time (UTC-8)</MenuItem>
-                    <MenuItem value="UTC-7">Mountain Time (UTC-7)</MenuItem>
-                    <MenuItem value="UTC-6">Central Time (UTC-6)</MenuItem>
-                    <MenuItem value="UTC-5">Eastern Time (UTC-5)</MenuItem>
-                    <MenuItem value="UTC+0">Greenwich Mean Time (UTC+0)</MenuItem>
-                    <MenuItem value="UTC+1">Central European Time (UTC+1)</MenuItem>
-                    <MenuItem value="UTC+8">China Standard Time (UTC+8)</MenuItem>
-                    <MenuItem value="UTC+9">Japan Standard Time (UTC+9)</MenuItem>
+                    <MenuItem value="UTC-8">
+                      Pacific Time (UTC-8)
+                    </MenuItem>
+                    <MenuItem value="UTC-7">
+                      Mountain Time (UTC-7)
+                    </MenuItem>
+                    <MenuItem value="UTC-6">
+                      Central Time (UTC-6)
+                    </MenuItem>
+                    <MenuItem value="UTC-5">
+                      Eastern Time (UTC-5)
+                    </MenuItem>
+                    <MenuItem value="UTC+0">
+                      Greenwich Mean Time (UTC+0)
+                    </MenuItem>
+                    <MenuItem value="UTC+1">
+                      Central European Time
+                      (UTC+1)
+                    </MenuItem>
+                    <MenuItem value="UTC+8">
+                      China Standard Time (UTC+8)
+                    </MenuItem>
+                    <MenuItem value="UTC+9">
+                      Japan Standard Time (UTC+9)
+                    </MenuItem>
                   </Select>
                 </FormControl>
               </Box>
@@ -567,10 +716,12 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
               '&::-webkit-scrollbar-thumb': {
                 background: 'transparent',
               },
-              '&:hover::-webkit-scrollbar-thumb': {
-                background: 'rgba(0, 0, 0, 0.2)',
-                borderRadius: '4px',
-              },
+              '&:hover::-webkit-scrollbar-thumb':
+                {
+                  background:
+                    'rgba(0, 0, 0, 0.2)',
+                  borderRadius: '4px',
+                },
             }}
           >
             <UserManagementContainer />
@@ -579,19 +730,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
       case 'Email & Notification Settings':
         return (
           <Typography>
-            Email & Notification Settings will be available soon.
+            Email & Notification Settings will be
+            available soon.
           </Typography>
         );
       case 'System Backup & Restore':
         return (
           <Typography>
-            System Backup & Restore options will be available soon.
+            System Backup & Restore options will
+            be available soon.
           </Typography>
         );
       case 'API & Third-Party Integrations':
         return (
           <Typography>
-            API & Third-Party Integrations settings will be available soon.
+            API & Third-Party Integrations
+            settings will be available soon.
           </Typography>
         );
       default:
@@ -643,7 +797,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
             position: 'absolute',
             right: 16,
             top: 16,
-            color: (theme) => theme.palette.grey[500],
+            color: (theme) =>
+              theme.palette.grey[500],
           }}
         >
           <CloseIcon />
@@ -675,15 +830,24 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
                 sx={{ mb: 0.5 }}
               >
                 <ListItemButton
-                  selected={selectedSetting === option.name}
-                  onClick={() => setSelectedSetting(option.name)}
+                  selected={
+                    selectedSetting ===
+                    option.name
+                  }
+                  onClick={() =>
+                    setSelectedSetting(
+                      option.name
+                    )
+                  }
                   sx={{
                     borderRadius: 2,
                     '&.Mui-selected': {
-                      backgroundColor: '#173A7920',
+                      backgroundColor:
+                        '#173A7920',
                       color: '#173A79',
                       '&:hover': {
-                        backgroundColor: '#173A7930',
+                        backgroundColor:
+                          '#173A7930',
                       },
                     },
                   }}
@@ -692,7 +856,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
                     sx={{
                       minWidth: 40,
                       color:
-                        selectedSetting === option.name
+                        selectedSetting ===
+                        option.name
                           ? '#173A79'
                           : 'inherit',
                     }}
@@ -704,7 +869,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
                     primaryTypographyProps={{
                       fontSize: '0.9rem',
                       fontWeight:
-                        selectedSetting === option.name ? 'bold' : 'normal',
+                        selectedSetting ===
+                        option.name
+                          ? 'bold'
+                          : 'normal',
                     }}
                   />
                 </ListItemButton>

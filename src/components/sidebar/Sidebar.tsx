@@ -35,8 +35,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   textColor = '#fff',
   iconColor = '#fff',
   logoUrl = '/Pisval_Logo.jpg',
-  handleItemClick = () => { },
-  onDrawerToggle = () => { },
+  handleItemClick = () => {},
+  onDrawerToggle = () => {},
 }) => {
   const { setLoading } = useSpinner();
   const { userInfo, isLoading: isUserLoading } =
@@ -87,8 +87,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     useState(isDrawerOpen);
 
   // User activity tracking
-  const [isUserActive, setIsUserActive] = useState(true);
-  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isUserActive, setIsUserActive] =
+    useState(true);
+  const inactivityTimerRef =
+    useRef<NodeJS.Timeout | null>(null);
   const INACTIVITY_TIMEOUT = 30000; // 30 seconds of inactivity before status changes
 
   // User activity tracking logic
@@ -102,15 +104,24 @@ const Sidebar: React.FC<SidebarProps> = ({
     setIsUserActive(true);
 
     // Start a new timer
-    inactivityTimerRef.current = setTimeout(() => {
-      setIsUserActive(false);
-    }, INACTIVITY_TIMEOUT);
+    inactivityTimerRef.current = setTimeout(
+      () => {
+        setIsUserActive(false);
+      },
+      INACTIVITY_TIMEOUT
+    );
   }, [INACTIVITY_TIMEOUT]);
 
   // Set up event listeners for user activity
   useEffect(() => {
     // Events to track for user activity
-    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    const activityEvents = [
+      'mousedown',
+      'mousemove',
+      'keypress',
+      'scroll',
+      'touchstart',
+    ];
 
     // Event handler
     const handleUserActivity = () => {
@@ -118,8 +129,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     };
 
     // Add event listeners
-    activityEvents.forEach(event => {
-      window.addEventListener(event, handleUserActivity);
+    activityEvents.forEach((event) => {
+      window.addEventListener(
+        event,
+        handleUserActivity
+      );
     });
 
     // Initialize the timer
@@ -127,8 +141,11 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     // Cleanup
     return () => {
-      activityEvents.forEach(event => {
-        window.removeEventListener(event, handleUserActivity);
+      activityEvents.forEach((event) => {
+        window.removeEventListener(
+          event,
+          handleUserActivity
+        );
       });
 
       if (inactivityTimerRef.current) {
@@ -141,15 +158,21 @@ const Sidebar: React.FC<SidebarProps> = ({
   useEffect(() => {
     try {
       // Get active item from localStorage
-      const savedActiveItem = localStorage.getItem('sidebarActiveItem');
+      const savedActiveItem =
+        localStorage.getItem('sidebarActiveItem');
       if (savedActiveItem) {
         setActiveItemState(savedActiveItem);
       }
 
       // Get expanded items from localStorage
-      const savedExpandedItems = localStorage.getItem('sidebarExpandedItems');
+      const savedExpandedItems =
+        localStorage.getItem(
+          'sidebarExpandedItems'
+        );
       if (savedExpandedItems) {
-        setExpandedItems(JSON.parse(savedExpandedItems));
+        setExpandedItems(
+          JSON.parse(savedExpandedItems)
+        );
       }
 
       // If we have a saved active item that's a sub-item, make sure its parent is expanded
@@ -157,11 +180,14 @@ const Sidebar: React.FC<SidebarProps> = ({
         // Find if this is a sub-item
         for (const item of sidebarItems) {
           if (item.expandable && item.subItems) {
-            const isSubItem = item.subItems.some(subItem => subItem.label === savedActiveItem);
+            const isSubItem = item.subItems.some(
+              (subItem) =>
+                subItem.label === savedActiveItem
+            );
             if (isSubItem) {
-              setExpandedItems(prev => ({
+              setExpandedItems((prev) => ({
                 ...prev,
-                [item.label]: true
+                [item.label]: true,
               }));
               break;
             }
@@ -169,7 +195,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         }
       }
     } catch (error) {
-      console.error('Error loading sidebar state from localStorage:', error);
+      console.error(
+        'Error loading sidebar state from localStorage:',
+        error
+      );
       // Fall back to default Dashboard
       setActiveItemState('Dashboard');
     }
@@ -181,23 +210,30 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   // Default to Dashboard if no saved state
   useEffect(() => {
-    if (!localStorage.getItem('sidebarActiveItem')) {
-      const matchingSidebarItem = sidebarItems.find(
-        (item) =>
-          item.label === 'Dashboard' ||
-          (item.subItems &&
-            item.subItems.some(
-              (subItem) =>
-                subItem.label === 'Dashboard'
-            ))
-      );
+    if (
+      !localStorage.getItem('sidebarActiveItem')
+    ) {
+      const matchingSidebarItem =
+        sidebarItems.find(
+          (item) =>
+            item.label === 'Dashboard' ||
+            (item.subItems &&
+              item.subItems.some(
+                (subItem) =>
+                  subItem.label === 'Dashboard'
+              ))
+        );
 
       if (matchingSidebarItem) {
         if (
-          matchingSidebarItem.label === 'Dashboard'
+          matchingSidebarItem.label ===
+          'Dashboard'
         ) {
           setActiveItemState('Dashboard');
-          localStorage.setItem('sidebarActiveItem', 'Dashboard');
+          localStorage.setItem(
+            'sidebarActiveItem',
+            'Dashboard'
+          );
         } else if (matchingSidebarItem.subItems) {
           const subItem =
             matchingSidebarItem.subItems.find(
@@ -205,12 +241,18 @@ const Sidebar: React.FC<SidebarProps> = ({
             );
           if (subItem) {
             const newExpandedItems = {
-              [matchingSidebarItem.label]: true
+              [matchingSidebarItem.label]: true,
             };
             setExpandedItems(newExpandedItems);
-            localStorage.setItem('sidebarExpandedItems', JSON.stringify(newExpandedItems));
+            localStorage.setItem(
+              'sidebarExpandedItems',
+              JSON.stringify(newExpandedItems)
+            );
             setActiveItemState('Dashboard');
-            localStorage.setItem('sidebarActiveItem', 'Dashboard');
+            localStorage.setItem(
+              'sidebarActiveItem',
+              'Dashboard'
+            );
           }
         }
       }
@@ -242,7 +284,10 @@ const Sidebar: React.FC<SidebarProps> = ({
       }
 
       // Save expanded state to localStorage
-      localStorage.setItem('sidebarExpandedItems', JSON.stringify(newState));
+      localStorage.setItem(
+        'sidebarExpandedItems',
+        JSON.stringify(newState)
+      );
 
       return newState;
     });
@@ -256,18 +301,27 @@ const Sidebar: React.FC<SidebarProps> = ({
     setActiveItemState(label);
 
     // Save active item to localStorage
-    localStorage.setItem('sidebarActiveItem', label);
+    localStorage.setItem(
+      'sidebarActiveItem',
+      label
+    );
 
     setExpandedItems((prev) => {
       let newState;
       if (parentLabel) {
-        newState = { ...prev, [parentLabel]: true };
+        newState = {
+          ...prev,
+          [parentLabel]: true,
+        };
       } else {
         newState = {};
       }
 
       // Save expanded state to localStorage
-      localStorage.setItem('sidebarExpandedItems', JSON.stringify(newState));
+      localStorage.setItem(
+        'sidebarExpandedItems',
+        JSON.stringify(newState)
+      );
 
       return newState;
     });
@@ -577,13 +631,18 @@ const Sidebar: React.FC<SidebarProps> = ({
                               width: 8,
                               height: 8,
                               borderRadius: '50%',
-                              bgcolor: isUserActive ? '#4CAF50' : '#F44336',
-                              boxShadow: isUserActive
-                                ? '0 0 4px #4CAF50'
-                                : '0 0 4px #F44336',
+                              bgcolor:
+                                isUserActive
+                                  ? '#4CAF50'
+                                  : '#F44336',
+                              boxShadow:
+                                isUserActive
+                                  ? '0 0 4px #4CAF50'
+                                  : '0 0 4px #F44336',
                               animation:
                                 'pulse 2s infinite',
-                              transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+                              transition:
+                                'background-color 0.3s ease, box-shadow 0.3s ease',
                             }}
                           />
                         </Box>
@@ -605,7 +664,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                         padding: '1px 8px',
                         borderRadius: '4px',
                         letterSpacing: '0.5px',
-                        transition: 'color 0.3s ease',
+                        transition:
+                          'color 0.3s ease',
                         fontWeight: 600,
                       }}
                     >

@@ -21,10 +21,14 @@ import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 
 const ChatbotButton = () => {
   const { toggleChatbot, isOpen } = useChatbot();
-  const { selectedPackage } = usePackageSelection();
-  const [showNotification, setShowNotification] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { selectedPackage } =
+    usePackageSelection();
+  const [showNotification, setShowNotification] =
+    useState(false);
+  const [isVisible, setIsVisible] =
+    useState(true);
+  const showTimeoutRef =
+    useRef<NodeJS.Timeout | null>(null);
 
   // Constants for timing (in milliseconds)
   const AUTO_SHOW_DELAY = 10000; // 10 seconds before showing again after manual close
@@ -46,10 +50,13 @@ const ChatbotButton = () => {
   }, [AUTO_SHOW_DELAY]);
 
   // Function to manually close the button
-  const handleClose = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering the Fab onClick
-    hideButton();
-  }, [hideButton]);
+  const handleClose = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation(); // Prevent triggering the Fab onClick
+      hideButton();
+    },
+    [hideButton]
+  );
 
   // Since we're not using auto-hide anymore, we only need to handle the show timeout
   // in the hideButton function. No need for a separate cleanup effect.
@@ -109,12 +116,14 @@ const ChatbotButton = () => {
                   position: 'absolute',
                   top: '-10px',
                   right: '-10px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  backgroundColor:
+                    'rgba(255, 255, 255, 0.9)',
                   border: '1px solid #e0e0e0',
                   zIndex: 9999,
                   padding: '4px',
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 1)',
+                    backgroundColor:
+                      'rgba(255, 255, 255, 1)',
                   },
                 }}
                 aria-label="close chatbot"
@@ -126,7 +135,9 @@ const ChatbotButton = () => {
               <Fab
                 color="primary"
                 onClick={() => {
-                  console.log('Chatbot button clicked');
+                  console.log(
+                    'Chatbot button clicked'
+                  );
                   toggleChatbot();
                   setShowNotification(false);
                 }}

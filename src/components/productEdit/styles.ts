@@ -134,9 +134,10 @@ export const ProductTable = styled(Box)({
     '& .MuiDataGrid-columnHeader': {
       fontWeight: 600,
       padding: '0 16px',
-      '& .MuiDataGrid-columnHeaderTitleContainer': {
-        padding: '0 8px',
-      },
+      '& .MuiDataGrid-columnHeaderTitleContainer':
+        {
+          padding: '0 8px',
+        },
     },
     '& .MuiDataGrid-columnHeaderTitle': {
       overflow: 'hidden',
@@ -167,20 +168,24 @@ export const ProductTable = styled(Box)({
     '&.Mui-selected': {
       backgroundColor: 'rgba(82, 183, 136, 0.08)',
       '&:hover': {
-        backgroundColor: 'rgba(82, 183, 136, 0.12)',
+        backgroundColor:
+          'rgba(82, 183, 136, 0.12)',
       },
     },
   },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell': {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type': {
-    borderBottomLeftRadius: 0,
-  },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type': {
-    borderBottomRightRadius: 0,
-  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell':
+    {
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+    },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type':
+    {
+      borderBottomLeftRadius: 0,
+    },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type':
+    {
+      borderBottomRightRadius: 0,
+    },
   '& .MuiCheckbox-root': {
     color: '#1E2A3B',
     padding: '4px',

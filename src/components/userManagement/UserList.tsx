@@ -25,17 +25,33 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import { User, Role, UserFormData } from '@/types/userManagement';
+import {
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+} from '@mui/icons-material';
+import {
+  User,
+  Role,
+  UserFormData,
+} from '@/types/userManagement';
 
 interface UserListProps {
   users: User[];
   roles: Role[];
   isLoading: boolean;
-  onCreateUser: (userData: UserFormData) => Promise<User>;
-  onUpdateUser: (id: number, userData: UserFormData) => Promise<void>;
+  onCreateUser: (
+    userData: UserFormData
+  ) => Promise<User>;
+  onUpdateUser: (
+    id: number,
+    userData: UserFormData
+  ) => Promise<void>;
   onDeleteUser: (id: number) => Promise<void>;
-  onAssignRoles: (userId: number, roles: string[]) => Promise<void>;
+  onAssignRoles: (
+    userId: number,
+    roles: string[]
+  ) => Promise<void>;
 }
 
 const UserList: React.FC<UserListProps> = ({
@@ -47,19 +63,25 @@ const UserList: React.FC<UserListProps> = ({
   onDeleteUser,
   onAssignRoles,
 }) => {
-  const [openDialog, setOpenDialog] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
-  const [formData, setFormData] = useState<UserFormData>({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    isActive: true,
-    roles: [],
-  });
+  const [openDialog, setOpenDialog] =
+    useState(false);
+  const [confirmDelete, setConfirmDelete] =
+    useState<number | null>(null);
+  const [formData, setFormData] =
+    useState<UserFormData>({
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      isActive: true,
+      roles: [],
+    });
   const [editMode, setEditMode] = useState(false);
-  const [processing, setProcessing] = useState(false);
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [processing, setProcessing] =
+    useState(false);
+  const [formErrors, setFormErrors] = useState<
+    Record<string, string>
+  >({});
 
   const handleOpenDialog = (user?: User) => {
     if (user) {
@@ -90,11 +112,15 @@ const UserList: React.FC<UserListProps> = ({
     setOpenDialog(false);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value, type, checked } =
+      e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]:
+        type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -114,7 +140,9 @@ const UserList: React.FC<UserListProps> = ({
 
     if (!formData.email.trim()) {
       errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (
+      !/\S+@\S+\.\S+/.test(formData.email)
+    ) {
       errors.email = 'Email is invalid';
     }
 
@@ -122,11 +150,16 @@ const UserList: React.FC<UserListProps> = ({
       if (!formData.password) {
         errors.password = 'Password is required';
       } else if (formData.password.length < 8) {
-        errors.password = 'Password must be at least 8 characters';
+        errors.password =
+          'Password must be at least 8 characters';
       }
 
-      if (formData.password !== formData.confirmPassword) {
-        errors.confirmPassword = 'Passwords do not match';
+      if (
+        formData.password !==
+        formData.confirmPassword
+      ) {
+        errors.confirmPassword =
+          'Passwords do not match';
       }
     }
 
@@ -158,7 +191,10 @@ const UserList: React.FC<UserListProps> = ({
     try {
       await onDeleteUser(id);
     } catch (error) {
-      console.error('Error deleting user:', error);
+      console.error(
+        'Error deleting user:',
+        error
+      );
       // Handle error (show message, etc.)
     } finally {
       setProcessing(false);
@@ -166,7 +202,9 @@ const UserList: React.FC<UserListProps> = ({
     }
   };
 
-  const getRoleColor = (roleName: string): string => {
+  const getRoleColor = (
+    roleName: string
+  ): string => {
     switch (roleName.toLowerCase()) {
       case 'administrator':
         return '#1976d2';
@@ -183,16 +221,39 @@ const UserList: React.FC<UserListProps> = ({
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+        }}
+      >
         <CircularProgress />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+    <Box
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+        }}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 'bold' }}
+        >
           Active Users
         </Typography>
         <Button
@@ -200,7 +261,10 @@ const UserList: React.FC<UserListProps> = ({
           color="primary"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
-          sx={{ borderRadius: 2, textTransform: 'none' }}
+          sx={{
+            borderRadius: 2,
+            textTransform: 'none',
+          }}
         >
           Add New User
         </Button>
@@ -217,7 +281,9 @@ const UserList: React.FC<UserListProps> = ({
       >
         {users.length === 0 ? (
           <Box sx={{ p: 3, textAlign: 'center' }}>
-            <Typography color="text.secondary">No users found</Typography>
+            <Typography color="text.secondary">
+              No users found
+            </Typography>
           </Box>
         ) : (
           users.map((user, index) => (
@@ -228,31 +294,60 @@ const UserList: React.FC<UserListProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                borderBottom: index < users.length - 1 ? '1px solid #e0e0e0' : 'none',
-                bgcolor: user.isActive ? 'white' : 'rgba(0,0,0,0.03)',
+                borderBottom:
+                  index < users.length - 1
+                    ? '1px solid #e0e0e0'
+                    : 'none',
+                bgcolor: user.isActive
+                  ? 'white'
+                  : 'rgba(0,0,0,0.03)',
               }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                }}
+              >
                 <Avatar
                   sx={{
-                    bgcolor: user.isActive ? '#4caf50' : '#9e9e9e',
+                    bgcolor: user.isActive
+                      ? '#4caf50'
+                      : '#9e9e9e',
                     width: 40,
                     height: 40,
                   }}
                 >
-                  {user.username.charAt(0).toUpperCase()}
+                  {user.username
+                    .charAt(0)
+                    .toUpperCase()}
                 </Avatar>
                 <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: 'bold' }}
+                  >
                     {user.username}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                  >
                     {user.email}
                   </Typography>
                 </Box>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ display: 'flex', gap: 1 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                }}
+              >
+                <Box
+                  sx={{ display: 'flex', gap: 1 }}
+                >
                   {user.roles.map((role) => (
                     <Chip
                       key={role}
@@ -267,15 +362,23 @@ const UserList: React.FC<UserListProps> = ({
                     />
                   ))}
                 </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ minWidth: 100 }}>
-                  {user.lastLogin ? `Last login: ${new Date(user.lastLogin).toLocaleString()}` : 'Never logged in'}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ minWidth: 100 }}
+                >
+                  {user.lastLogin
+                    ? `Last login: ${new Date(user.lastLogin).toLocaleString()}`
+                    : 'Never logged in'}
                 </Typography>
                 <Box>
                   <Tooltip title="Edit User">
                     <IconButton
                       size="small"
                       color="primary"
-                      onClick={() => handleOpenDialog(user)}
+                      onClick={() =>
+                        handleOpenDialog(user)
+                      }
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
@@ -284,7 +387,9 @@ const UserList: React.FC<UserListProps> = ({
                     <IconButton
                       size="small"
                       color="error"
-                      onClick={() => setConfirmDelete(user.id)}
+                      onClick={() =>
+                        setConfirmDelete(user.id)
+                      }
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -297,10 +402,25 @@ const UserList: React.FC<UserListProps> = ({
       </Box>
 
       {/* User Form Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>{editMode ? 'Edit User' : 'Add New User'}</DialogTitle>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          {editMode
+            ? 'Edit User'
+            : 'Add New User'}
+        </DialogTitle>
         <DialogContent sx={{ pt: 2 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+            }}
+          >
             <TextField
               name="username"
               label="Username"
@@ -339,39 +459,67 @@ const UserList: React.FC<UserListProps> = ({
                   fullWidth
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  error={!!formErrors.confirmPassword}
-                  helperText={formErrors.confirmPassword}
+                  error={
+                    !!formErrors.confirmPassword
+                  }
+                  helperText={
+                    formErrors.confirmPassword
+                  }
                 />
               </>
             )}
             <FormControl fullWidth>
-              <InputLabel id="roles-label">Roles</InputLabel>
+              <InputLabel id="roles-label">
+                Roles
+              </InputLabel>
               <Select
                 labelId="roles-label"
                 multiple
                 value={formData.roles}
                 onChange={handleRoleChange}
-                input={<OutlinedInput label="Roles" />}
+                input={
+                  <OutlinedInput label="Roles" />
+                }
                 renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {(selected as string[]).map((value) => (
-                      <Chip
-                        key={value}
-                        label={value}
-                        size="small"
-                        sx={{
-                          bgcolor: `${getRoleColor(value)}20`,
-                          color: getRoleColor(value),
-                        }}
-                      />
-                    ))}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 0.5,
+                    }}
+                  >
+                    {(selected as string[]).map(
+                      (value) => (
+                        <Chip
+                          key={value}
+                          label={value}
+                          size="small"
+                          sx={{
+                            bgcolor: `${getRoleColor(value)}20`,
+                            color:
+                              getRoleColor(value),
+                          }}
+                        />
+                      )
+                    )}
                   </Box>
                 )}
               >
                 {roles.map((role) => (
-                  <MenuItem key={role.id} value={role.name}>
-                    <Checkbox checked={formData.roles.indexOf(role.name) > -1} />
-                    <ListItemText primary={role.name} />
+                  <MenuItem
+                    key={role.id}
+                    value={role.name}
+                  >
+                    <Checkbox
+                      checked={
+                        formData.roles.indexOf(
+                          role.name
+                        ) > -1
+                      }
+                    />
+                    <ListItemText
+                      primary={role.name}
+                    />
                   </MenuItem>
                 ))}
               </Select>
@@ -390,7 +538,10 @@ const UserList: React.FC<UserListProps> = ({
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} disabled={processing}>
+          <Button
+            onClick={handleCloseDialog}
+            disabled={processing}
+          >
             Cancel
           </Button>
           <Button
@@ -398,7 +549,11 @@ const UserList: React.FC<UserListProps> = ({
             variant="contained"
             color="primary"
             disabled={processing}
-            startIcon={processing ? <CircularProgress size={20} /> : null}
+            startIcon={
+              processing ? (
+                <CircularProgress size={20} />
+              ) : null
+            }
           >
             {processing ? 'Saving...' : 'Save'}
           </Button>
@@ -406,22 +561,40 @@ const UserList: React.FC<UserListProps> = ({
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={confirmDelete !== null} onClose={() => setConfirmDelete(null)}>
+      <Dialog
+        open={confirmDelete !== null}
+        onClose={() => setConfirmDelete(null)}
+      >
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
-          <Typography>Are you sure you want to delete this user? This action cannot be undone.</Typography>
+          <Typography>
+            Are you sure you want to delete this
+            user? This action cannot be undone.
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmDelete(null)} disabled={processing}>
+          <Button
+            onClick={() => setConfirmDelete(null)}
+            disabled={processing}
+          >
             Cancel
           </Button>
           <Button
-            onClick={() => confirmDelete !== null && handleDeleteUser(confirmDelete)}
+            onClick={() =>
+              confirmDelete !== null &&
+              handleDeleteUser(confirmDelete)
+            }
             color="error"
             disabled={processing}
-            startIcon={processing ? <CircularProgress size={20} /> : null}
+            startIcon={
+              processing ? (
+                <CircularProgress size={20} />
+              ) : null
+            }
           >
-            {processing ? 'Deleting...' : 'Delete'}
+            {processing
+              ? 'Deleting...'
+              : 'Delete'}
           </Button>
         </DialogActions>
       </Dialog>

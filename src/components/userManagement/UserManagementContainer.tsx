@@ -3,7 +3,10 @@
 import React from 'react';
 import { UserManagementProvider } from '@/contexts/UserManagementContext';
 import UserManagement from './UserManagement';
-import { Box, CircularProgress } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+} from '@mui/material';
 
 // Mock data for development
 const mockUsers = [
@@ -15,7 +18,12 @@ const mockUsers = [
     createdAt: '2023-01-01T00:00:00Z',
     lastLogin: '2023-05-15T10:30:00Z',
     roles: ['Administrator'],
-    permissions: ['users.view', 'users.create', 'users.edit', 'users.delete']
+    permissions: [
+      'users.view',
+      'users.create',
+      'users.edit',
+      'users.delete',
+    ],
   },
   {
     id: 2,
@@ -25,8 +33,12 @@ const mockUsers = [
     createdAt: '2023-02-15T00:00:00Z',
     lastLogin: '2023-05-14T14:20:00Z',
     roles: ['Manager'],
-    permissions: ['users.view', 'products.view', 'products.edit']
-  }
+    permissions: [
+      'users.view',
+      'products.view',
+      'products.edit',
+    ],
+  },
 ];
 
 const mockRoles = [
@@ -36,7 +48,12 @@ const mockRoles = [
     description: 'Full system access',
     isSystemRole: true,
     userCount: 1,
-    permissions: ['users.view', 'users.create', 'users.edit', 'users.delete']
+    permissions: [
+      'users.view',
+      'users.create',
+      'users.edit',
+      'users.delete',
+    ],
   },
   {
     id: 2,
@@ -44,7 +61,11 @@ const mockRoles = [
     description: 'Department management',
     isSystemRole: false,
     userCount: 1,
-    permissions: ['users.view', 'products.view', 'products.edit']
+    permissions: [
+      'users.view',
+      'products.view',
+      'products.edit',
+    ],
   },
   {
     id: 3,
@@ -52,8 +73,11 @@ const mockRoles = [
     description: 'Sales operations',
     isSystemRole: false,
     userCount: 0,
-    permissions: ['sales.create', 'products.view']
-  }
+    permissions: [
+      'sales.create',
+      'products.view',
+    ],
+  },
 ];
 
 const mockPermissions = [
@@ -63,7 +87,7 @@ const mockPermissions = [
     code: 'users.view',
     description: 'Can view user list',
     module: 'User Management',
-    isActive: true
+    isActive: true,
   },
   {
     id: 2,
@@ -71,7 +95,7 @@ const mockPermissions = [
     code: 'users.create',
     description: 'Can create new users',
     module: 'User Management',
-    isActive: true
+    isActive: true,
   },
   {
     id: 3,
@@ -79,7 +103,7 @@ const mockPermissions = [
     code: 'users.edit',
     description: 'Can edit existing users',
     module: 'User Management',
-    isActive: true
+    isActive: true,
   },
   {
     id: 4,
@@ -87,7 +111,7 @@ const mockPermissions = [
     code: 'users.delete',
     description: 'Can delete users',
     module: 'User Management',
-    isActive: true
+    isActive: true,
   },
   {
     id: 5,
@@ -95,7 +119,7 @@ const mockPermissions = [
     code: 'products.view',
     description: 'Can view product list',
     module: 'Product Management',
-    isActive: true
+    isActive: true,
   },
   {
     id: 6,
@@ -103,7 +127,7 @@ const mockPermissions = [
     code: 'products.edit',
     description: 'Can edit products',
     module: 'Product Management',
-    isActive: true
+    isActive: true,
   },
   {
     id: 7,
@@ -111,12 +135,14 @@ const mockPermissions = [
     code: 'sales.create',
     description: 'Can create sales',
     module: 'Sales',
-    isActive: true
-  }
+    isActive: true,
+  },
 ];
 
 // Override the UserManagementProvider with a simplified version for the Settings Modal
-class MockUserManagementProvider extends React.Component<{ children: React.ReactNode }> {
+class MockUserManagementProvider extends React.Component<{
+  children: React.ReactNode;
+}> {
   render() {
     return (
       <UserManagementProvider>
@@ -138,9 +164,20 @@ const UserManagementContainer: React.FC = () => {
       </MockUserManagementProvider>
     );
   } catch (error) {
-    console.error("Error rendering UserManagement:", error);
+    console.error(
+      'Error rendering UserManagement:',
+      error
+    );
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '300px',
+        }}
+      >
         <CircularProgress sx={{ mb: 2 }} />
         <div>Loading User Management...</div>
       </Box>

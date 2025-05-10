@@ -1,7 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Typography, Tabs, Tab } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Tabs,
+  Tab,
+} from '@mui/material';
 import { useUserManagement } from '@/contexts/UserManagementContext';
 import UserList from './UserList';
 import RoleList from './RoleList';
@@ -15,7 +20,8 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, ...other } =
+    props;
 
   return (
     <div
@@ -44,9 +50,9 @@ function a11yProps(index: number) {
 
 const UserManagement: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
-  const { 
-    users, 
-    roles, 
+  const {
+    users,
+    roles,
     permissions,
     isLoadingUsers,
     isLoadingRoles,
@@ -60,10 +66,13 @@ const UserManagement: React.FC = () => {
     deleteRole,
     assignPermissionsToRole,
     securitySettings,
-    updateSecuritySettings
+    updateSecuritySettings,
   } = useUserManagement();
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (
+    event: React.SyntheticEvent,
+    newValue: number
+  ) => {
     setTabValue(newValue);
   };
 
@@ -88,10 +97,15 @@ const UserManagement: React.FC = () => {
         User & Role Management
       </Typography>
 
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs 
-          value={tabValue} 
-          onChange={handleTabChange} 
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: 'divider',
+        }}
+      >
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
           aria-label="user management tabs"
           sx={{
             '& .MuiTab-root': {
@@ -108,17 +122,31 @@ const UserManagement: React.FC = () => {
             },
           }}
         >
-          <Tab label="User Management" {...a11yProps(0)} />
-          <Tab label="Role Management" {...a11yProps(1)} />
-          <Tab label="Permission Management" {...a11yProps(2)} />
-          <Tab label="Security Settings" {...a11yProps(3)} />
+          <Tab
+            label="User Management"
+            {...a11yProps(0)}
+          />
+          <Tab
+            label="Role Management"
+            {...a11yProps(1)}
+          />
+          <Tab
+            label="Permission Management"
+            {...a11yProps(2)}
+          />
+          <Tab
+            label="Security Settings"
+            {...a11yProps(3)}
+          />
         </Tabs>
       </Box>
 
-      <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
+      <Box
+        sx={{ flexGrow: 1, overflow: 'hidden' }}
+      >
         <TabPanel value={tabValue} index={0}>
-          <UserList 
-            users={users} 
+          <UserList
+            users={users}
             roles={roles}
             isLoading={isLoadingUsers}
             onCreateUser={createUser}
@@ -128,26 +156,30 @@ const UserManagement: React.FC = () => {
           />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <RoleList 
-            roles={roles} 
+          <RoleList
+            roles={roles}
             permissions={permissions}
             isLoading={isLoadingRoles}
             onCreateRole={createRole}
             onUpdateRole={updateRole}
             onDeleteRole={deleteRole}
-            onAssignPermissions={assignPermissionsToRole}
+            onAssignPermissions={
+              assignPermissionsToRole
+            }
           />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <PermissionManagement 
+          <PermissionManagement
             permissions={permissions}
             isLoading={isLoadingPermissions}
           />
         </TabPanel>
         <TabPanel value={tabValue} index={3}>
-          <SecuritySettings 
+          <SecuritySettings
             settings={securitySettings}
-            onUpdateSettings={updateSecuritySettings}
+            onUpdateSettings={
+              updateSecuritySettings
+            }
           />
         </TabPanel>
       </Box>

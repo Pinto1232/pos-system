@@ -169,11 +169,11 @@ const PricingPackagesContainer: React.FC = () => {
         'premium',
       ].includes(type)
         ? (type as
-          | 'starter'
-          | 'growth'
-          | 'enterprise'
-          | 'custom'
-          | 'premium')
+            | 'starter'
+            | 'growth'
+            | 'enterprise'
+            | 'custom'
+            | 'premium')
         : 'starter';
 
       return {
