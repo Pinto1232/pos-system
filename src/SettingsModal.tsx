@@ -26,6 +26,8 @@ import {
   IconButton,
   CircularProgress,
 } from '@mui/material';
+import { UserManagementProvider } from '@/contexts/UserManagementContext';
+import { KeycloakRolesProvider } from '@/contexts/KeycloakRolesContext';
 import {
   Settings as SettingsIcon,
   Language as LanguageIcon,
@@ -724,7 +726,11 @@ const SettingsModal: React.FC<
                 },
             }}
           >
-            <UserManagementContainer />
+            <KeycloakRolesProvider>
+              <UserManagementProvider>
+                <UserManagementContainer />
+              </UserManagementProvider>
+            </KeycloakRolesProvider>
           </Box>
         );
       case 'Email & Notification Settings':

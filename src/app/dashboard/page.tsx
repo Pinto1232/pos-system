@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import DashboardContainer from '@/components/dashboard-layout/DashboardContainer';
 import { useSpinner } from '@/contexts/SpinnerContext';
+import { updateLoginStatus } from '@/api/userManagementApi';
 
 const Dashboard = () => {
   const { stopLoading } = useSpinner();
@@ -14,6 +15,25 @@ const Dashboard = () => {
 
     if (isFreshLogin) {
       sessionStorage.removeItem('freshLogin');
+
+      // Update login status in the database
+      console.log(
+        '[DEBUG] Attempting to update login status from Dashboard'
+      );
+      updateLoginStatus()
+        .then((result) => {
+          console.log(
+            '[DEBUG] Dashboard login status update response:',
+            result
+          );
+        })
+        .catch((error) => {
+          console.error(
+            '[DEBUG] Failed to update login status from Dashboard:',
+            error
+          );
+          // Don't block dashboard loading if this fails
+        });
 
       const loadingTimeout = setTimeout(() => {
         stopLoading();

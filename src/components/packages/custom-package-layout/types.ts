@@ -65,6 +65,8 @@ export interface PriceCalculationRequest {
 
 export interface PriceCalculationResponse {
   totalPrice: number;
+  currency?: string;
+  basePrice?: number;
 }
 
 export interface PackageSelectionRequest {
@@ -84,6 +86,7 @@ export interface CustomPackageLayoutProps {
   selectedFeatures: Feature[];
   selectedAddOns: AddOn[];
   usageQuantities: Record<number, number>;
+  currency?: string;
   onShowSuccessMessage?: (
     message: string,
     packageData?: {

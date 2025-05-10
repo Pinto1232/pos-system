@@ -71,6 +71,8 @@ const CustomPackageLayoutContainer: React.FC<
     useState(true);
   const [calculatedPrice, setCalculatedPrice] =
     useState<number>(selectedPackage.price);
+  const [currency, setCurrency] =
+    useState<string>('USD');
   const [isModalOpen, setIsModalOpen] =
     useState(false);
   const [modalMessage, setModalMessage] =
@@ -481,6 +483,10 @@ const CustomPackageLayoutContainer: React.FC<
             setCalculatedPrice(
               response.data.totalPrice
             );
+            // Set currency if it's available in the response
+            if (response.data.currency) {
+              setCurrency(response.data.currency);
+            }
           } catch (error) {
             console.error(
               'Failed to calculate price:',
@@ -535,6 +541,7 @@ const CustomPackageLayoutContainer: React.FC<
           usageQuantities={usageQuantities}
           basePrice={selectedPackage.price}
           calculatedPrice={calculatedPrice}
+          currency={currency}
           packageDetails={{
             title: selectedPackage.title,
             description:

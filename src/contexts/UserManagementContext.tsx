@@ -4,7 +4,6 @@ import React, {
   createContext,
   useContext,
   useState,
-  useEffect,
   ReactNode,
 } from 'react';
 import {
@@ -24,18 +23,18 @@ import * as api from '@/api/userManagementApi';
 
 // Default security settings
 const defaultSecuritySettings: SecuritySettings =
-  {
-    passwordPolicy: {
-      minLength: 8,
-      requireSpecialChars: true,
-      expiryDays: 90,
-      twoFactorEnabled: false,
-    },
-    sessionSettings: {
-      autoLogoutMinutes: 30,
-      maxConcurrentSessions: 1,
-    },
-  };
+{
+  passwordPolicy: {
+    minLength: 8,
+    requireSpecialChars: true,
+    expiryDays: 90,
+    twoFactorEnabled: false,
+  },
+  sessionSettings: {
+    autoLogoutMinutes: 30,
+    maxConcurrentSessions: 1,
+  },
+};
 
 interface UserManagementContextType {
   // Data
@@ -248,13 +247,75 @@ export const UserManagementProvider: React.FC<{
     queryKey: ['users'],
     queryFn: async () => {
       try {
-        return await api.fetchUsers();
+        console.log(
+          '[DEBUG] Fetching users from API'
+        );
+        const fetchedUsers =
+          await api.fetchUsers();
+        console.log(
+          '[DEBUG] Fetched users:',
+          fetchedUsers
+        );
+
+        // Log each user's lastLogin status
+        fetchedUsers.forEach((user) => {
+          console.log(
+            `[DEBUG] Context: User ${user.username} (${user.email}) lastLogin:`,
+            user.lastLogin
+          );
+          console.log(
+            `[DEBUG] Context: User ${user.username} lastLogin type:`,
+            typeof user.lastLogin
+          );
+
+          if (user.lastLogin) {
+            try {
+              const date = new Date(
+                user.lastLogin
+              );
+              console.log(
+                `[DEBUG] Context: User ${user.username} parsed date:`,
+                date
+              );
+              console.log(
+                `[DEBUG] Context: User ${user.username} formatted date:`,
+                date.toLocaleString()
+              );
+
+              // Check if the date is valid
+              if (isNaN(date.getTime())) {
+                console.error(
+                  `[DEBUG] Context: User ${user.username} has invalid date:`,
+                  user.lastLogin
+                );
+              }
+            } catch (error) {
+              console.error(
+                `[DEBUG] Context: User ${user.username} date parsing error:`,
+                error
+              );
+            }
+          } else {
+            console.log(
+              `[DEBUG] Context: User ${user.username} has no lastLogin value`
+            );
+          }
+        });
+
+        return fetchedUsers;
       } catch (error) {
-        console.log('Using mock user data');
+        console.error(
+          '[DEBUG] Error fetching users:',
+          error
+        );
+        console.log(
+          '[DEBUG] Using mock user data'
+        );
         return mockUsers;
       }
     },
     retry: false,
+    refetchInterval: 30000, // Refetch every 30 seconds to ensure data is fresh
   });
 
   // Fetch roles with fallback to mock data
@@ -267,7 +328,7 @@ export const UserManagementProvider: React.FC<{
     queryFn: async () => {
       try {
         return await api.fetchRoles();
-      } catch (error) {
+      } catch {
         console.log('Using mock role data');
         return mockRoles;
       }
@@ -285,7 +346,7 @@ export const UserManagementProvider: React.FC<{
     queryFn: async () => {
       try {
         return await api.fetchPermissions();
-      } catch (error) {
+      } catch {
         console.log('Using mock permission data');
         return mockPermissions;
       }
@@ -300,7 +361,7 @@ export const UserManagementProvider: React.FC<{
       queryFn: async () => {
         try {
           return await api.fetchModules();
-        } catch (error) {
+        } catch {
           console.log('Using mock module data');
           return mockModules;
         }
@@ -419,30 +480,12 @@ export const UserManagementProvider: React.FC<{
       return await createUserMutation.mutateAsync(
         userData
       );
-    } catch (error) {
+    } catch {
+      // Use the API function which handles localStorage persistence
       console.log(
-        'Using mock createUser implementation'
+        'Using mock createUser implementation with localStorage persistence'
       );
-      // Create a mock user with the provided data
-      const newUser: User = {
-        id: mockUsers.length + 1,
-        username: userData.username,
-        email: userData.email,
-        isActive: userData.isActive,
-        createdAt: new Date().toISOString(),
-        roles: userData.roles,
-        permissions: [],
-      };
-
-      // Update the mock data
-      mockUsers.push(newUser);
-
-      // Invalidate queries to refresh the UI
-      queryClient.invalidateQueries({
-        queryKey: ['users'],
-      });
-
-      return newUser;
+      return await api.createUser(userData);
     }
   };
 
@@ -454,29 +497,12 @@ export const UserManagementProvider: React.FC<{
       return await updateUserMutation.mutateAsync(
         { id, userData }
       );
-    } catch (error) {
+    } catch {
+      // Use the API function which handles localStorage persistence
       console.log(
-        'Using mock updateUser implementation'
+        'Using mock updateUser implementation with localStorage persistence'
       );
-
-      // Find and update the user in mock data
-      const userIndex = mockUsers.findIndex(
-        (u) => u.id === id
-      );
-      if (userIndex >= 0) {
-        mockUsers[userIndex] = {
-          ...mockUsers[userIndex],
-          username: userData.username,
-          email: userData.email,
-          isActive: userData.isActive,
-          roles: userData.roles,
-        };
-      }
-
-      // Invalidate queries to refresh the UI
-      queryClient.invalidateQueries({
-        queryKey: ['users'],
-      });
+      return await api.updateUser(id, userData);
     }
   };
 
@@ -487,23 +513,12 @@ export const UserManagementProvider: React.FC<{
       return await deleteUserMutation.mutateAsync(
         id
       );
-    } catch (error) {
+    } catch {
+      // Use the API function which handles localStorage persistence
       console.log(
-        'Using mock deleteUser implementation'
+        'Using mock deleteUser implementation with localStorage persistence'
       );
-
-      // Remove the user from mock data
-      const userIndex = mockUsers.findIndex(
-        (u) => u.id === id
-      );
-      if (userIndex >= 0) {
-        mockUsers.splice(userIndex, 1);
-      }
-
-      // Invalidate queries to refresh the UI
-      queryClient.invalidateQueries({
-        queryKey: ['users'],
-      });
+      return await api.deleteUser(id);
     }
   };
 
@@ -515,23 +530,12 @@ export const UserManagementProvider: React.FC<{
       return await assignRolesToUserMutation.mutateAsync(
         { userId, roles }
       );
-    } catch (error) {
+    } catch {
+      // Use the API function which handles localStorage persistence
       console.log(
-        'Using mock assignRolesToUser implementation'
+        'Using mock assignRolesToUser implementation with localStorage persistence'
       );
-
-      // Find and update the user's roles in mock data
-      const userIndex = mockUsers.findIndex(
-        (u) => u.id === userId
-      );
-      if (userIndex >= 0) {
-        mockUsers[userIndex].roles = roles;
-      }
-
-      // Invalidate queries to refresh the UI
-      queryClient.invalidateQueries({
-        queryKey: ['users'],
-      });
+      return await api.assignRolesToUser(userId, roles);
     }
   };
 
@@ -542,7 +546,7 @@ export const UserManagementProvider: React.FC<{
       return await createRoleMutation.mutateAsync(
         roleData
       );
-    } catch (error) {
+    } catch {
       console.log(
         'Using mock createRole implementation'
       );
@@ -577,7 +581,7 @@ export const UserManagementProvider: React.FC<{
       return await updateRoleMutation.mutateAsync(
         { id, roleData }
       );
-    } catch (error) {
+    } catch {
       console.log(
         'Using mock updateRole implementation'
       );
@@ -609,7 +613,7 @@ export const UserManagementProvider: React.FC<{
       return await deleteRoleMutation.mutateAsync(
         id
       );
-    } catch (error) {
+    } catch {
       console.log(
         'Using mock deleteRole implementation'
       );
@@ -637,7 +641,7 @@ export const UserManagementProvider: React.FC<{
       return await assignPermissionsToRoleMutation.mutateAsync(
         { roleId, permissions }
       );
-    } catch (error) {
+    } catch {
       console.log(
         'Using mock assignPermissionsToRole implementation'
       );
@@ -666,29 +670,29 @@ export const UserManagementProvider: React.FC<{
   };
 
   const contextValue: UserManagementContextType =
-    {
-      users,
-      roles,
-      permissions,
-      modules,
-      securitySettings,
-      isLoadingUsers,
-      isLoadingRoles,
-      isLoadingPermissions,
-      usersError: usersError as Error | null,
-      rolesError: rolesError as Error | null,
-      permissionsError:
-        permissionsError as Error | null,
-      createUser,
-      updateUser,
-      deleteUser,
-      assignRolesToUser,
-      createRole,
-      updateRole,
-      deleteRole,
-      assignPermissionsToRole,
-      updateSecuritySettings,
-    };
+  {
+    users,
+    roles,
+    permissions,
+    modules,
+    securitySettings,
+    isLoadingUsers,
+    isLoadingRoles,
+    isLoadingPermissions,
+    usersError: usersError as Error | null,
+    rolesError: rolesError as Error | null,
+    permissionsError:
+      permissionsError as Error | null,
+    createUser,
+    updateUser,
+    deleteUser,
+    assignRolesToUser,
+    createRole,
+    updateRole,
+    deleteRole,
+    assignPermissionsToRole,
+    updateSecuritySettings,
+  };
 
   return (
     <UserManagementContext.Provider

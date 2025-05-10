@@ -5,6 +5,7 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   lastLogin?: string;
+  lastLoginFormatted?: string; // Additional field from backend
   roles: string[];
   permissions: string[];
 }

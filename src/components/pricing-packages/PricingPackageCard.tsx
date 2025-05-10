@@ -50,13 +50,31 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
       const IconComponent =
         iconMap[packageData.icon] ||
         iconMap['MUI:DefaultIcon'];
-      const convertedPrice = (
-        packageData.price * rate
-      ).toFixed(2);
+      // The price is already converted on the backend, so we don't need to apply the rate again
+      const convertedPrice =
+        packageData.price.toFixed(2);
       const isCustom =
         packageData.type === 'custom';
+
+      // Get the appropriate currency symbol
+      const currencySymbols: Record<
+        string,
+        string
+      > = {
+        USD: '$',
+        ZAR: 'R',
+        GBP: '£',
+        EUR: '€',
+        JPY: '¥',
+        CNY: '¥',
+        INR: '₹',
+        AUD: 'A$',
+        CAD: 'C$',
+        BRL: 'R$',
+      };
+
       const displayCurrency =
-        currency === 'ZAR' ? 'R' : currency;
+        currencySymbols[currency] || currency;
 
       return (
         <Card

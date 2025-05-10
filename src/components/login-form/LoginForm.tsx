@@ -22,6 +22,7 @@ import Image from 'next/image';
 import { Button } from '../ui/button/Button';
 import axios from 'axios';
 import { useSpinner } from '@/contexts/SpinnerContext';
+import { updateLoginStatus } from '@/api/userManagementApi';
 
 interface LoginFormProps {
   title?: string;
@@ -95,6 +96,25 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
         setIsLoggedIn(true);
         setIsFadingOut(false);
+
+        // Update login status in the database
+        try {
+          console.log(
+            '[DEBUG] Attempting to update login status from LoginForm'
+          );
+          const result =
+            await updateLoginStatus();
+          console.log(
+            '[DEBUG] Login status update response:',
+            result
+          );
+        } catch (updateError) {
+          console.error(
+            '[DEBUG] Failed to update login status from LoginForm:',
+            updateError
+          );
+          // Don't block login if this fails
+        }
 
         sessionStorage.setItem(
           'freshLogin',

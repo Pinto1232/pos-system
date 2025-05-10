@@ -104,19 +104,28 @@ const PricingPackagesContainer: React.FC = () => {
     });
 
   useEffect(() => {
-    fetchCurrencyAndRate()
-      .then(setCurrencyInfo)
-      .catch((error: Error) => {
-        console.error(
-          'Error fetching currency info:',
-          error
-        );
-        setCurrencyInfo({
-          currency: 'USD',
-          rate: 1,
-        });
+    // We'll use the currency info from the backend if available
+    if (data?.currency) {
+      setCurrencyInfo({
+        currency: data.currency,
+        rate: 1, // Rate is already applied on the backend
       });
-  }, []);
+    } else {
+      // Fallback to client-side detection
+      fetchCurrencyAndRate()
+        .then(setCurrencyInfo)
+        .catch((error: Error) => {
+          console.error(
+            'Error fetching currency info:',
+            error
+          );
+          setCurrencyInfo({
+            currency: 'USD',
+            rate: 1,
+          });
+        });
+    }
+  }, [data?.currency]);
 
   useEffect(() => {
     if (data) {

@@ -84,12 +84,14 @@ const CustomPackageLayout: React.FC<
   enterpriseFeatures,
   onEnterpriseFeatureToggle,
   onShowSuccessMessage,
+  currency,
 }) => {
   const [loading, setLoading] = useState(false);
   const [backLoading, setBackLoading] =
     useState(false);
-  const [selectedCurrency] =
-    useState<string>('USD');
+  const [selectedCurrency] = useState<string>(
+    currency || 'USD'
+  );
   const { setTestPeriod } = useTestPeriod();
   const [
     totalFeaturePrice,
@@ -315,18 +317,24 @@ const CustomPackageLayout: React.FC<
   const getCurrencySymbol = (
     currency: string
   ) => {
-    switch (currency) {
-      case 'USD':
-        return 'R';
-      case 'EUR':
-        return '€';
-      case 'GBP':
-        return '£';
-      case 'Kz':
-        return 'Kz';
-      default:
-        return currency;
-    }
+    const currencySymbols: Record<
+      string,
+      string
+    > = {
+      USD: '$',
+      ZAR: 'R',
+      GBP: '£',
+      EUR: '€',
+      JPY: '¥',
+      CNY: '¥',
+      INR: '₹',
+      AUD: 'A$',
+      CAD: 'C$',
+      BRL: 'R$',
+      Kz: 'Kz',
+    };
+
+    return currencySymbols[currency] || currency;
   };
 
   const formatPrice = (
@@ -467,7 +475,11 @@ const CustomPackageLayout: React.FC<
 
             <Box className={styles.priceDisplay}>
               <Typography variant="h5">
-                Base Price: R{displayPrice}
+                Base Price:{' '}
+                {formatPrice(
+                  selectedCurrency,
+                  displayPrice
+                )}
               </Typography>
             </Box>
 

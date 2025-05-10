@@ -8,10 +8,12 @@ import {
   Tab,
 } from '@mui/material';
 import { useUserManagement } from '@/contexts/UserManagementContext';
+import { useKeycloakRoles } from '@/contexts/KeycloakRolesContext';
 import UserList from './UserList';
 import RoleList from './RoleList';
 import PermissionManagement from './PermissionManagement';
 import SecuritySettings from './SecuritySettings';
+import KeycloakRoleManagement from './KeycloakRoleManagement';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -131,12 +133,16 @@ const UserManagement: React.FC = () => {
             {...a11yProps(1)}
           />
           <Tab
-            label="Permission Management"
+            label="Keycloak Roles"
             {...a11yProps(2)}
           />
           <Tab
-            label="Security Settings"
+            label="Permission Management"
             {...a11yProps(3)}
+          />
+          <Tab
+            label="Security Settings"
+            {...a11yProps(4)}
           />
         </Tabs>
       </Box>
@@ -169,12 +175,15 @@ const UserManagement: React.FC = () => {
           />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
+          <KeycloakRoleManagement />
+        </TabPanel>
+        <TabPanel value={tabValue} index={3}>
           <PermissionManagement
             permissions={permissions}
             isLoading={isLoadingPermissions}
           />
         </TabPanel>
-        <TabPanel value={tabValue} index={3}>
+        <TabPanel value={tabValue} index={4}>
           <SecuritySettings
             settings={securitySettings}
             onUpdateSettings={
