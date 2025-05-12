@@ -229,11 +229,11 @@ const PricingPackagesContainer: React.FC = () => {
           'premium',
         ].includes(type)
           ? (type as
-              | 'starter'
-              | 'growth'
-              | 'enterprise'
-              | 'custom'
-              | 'premium')
+            | 'starter'
+            | 'growth'
+            | 'enterprise'
+            | 'custom'
+            | 'premium')
           : 'starter';
 
         return {
@@ -251,9 +251,6 @@ const PricingPackagesContainer: React.FC = () => {
 
     return (
       <div className={styles.wrapper}>
-        <h2 className={styles.sectionTitle}>
-          Choose Your Plan
-        </h2>
         <div className={styles.container}>
           {fallbackProcessedPackages.map(
             (pkg: Package) => (
@@ -293,11 +290,11 @@ const PricingPackagesContainer: React.FC = () => {
         'premium',
       ].includes(type)
         ? (type as
-            | 'starter'
-            | 'growth'
-            | 'enterprise'
-            | 'custom'
-            | 'premium')
+          | 'starter'
+          | 'growth'
+          | 'enterprise'
+          | 'custom'
+          | 'premium')
         : 'starter';
 
       return {
@@ -316,9 +313,6 @@ const PricingPackagesContainer: React.FC = () => {
 
   return (
     <div className={styles.wrapper}>
-      <h2 className={styles.sectionTitle}>
-        Choose Your Plan
-      </h2>
       <div className={styles.container}>
         {packages.length > 0 ? (
           packages.map((pkg: Package) => (

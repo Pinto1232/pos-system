@@ -5,7 +5,7 @@ import TestimonialContainer from '@/components/testimonial/TestimonialContainer'
 import FeaturesSlider from '@/components/slider/FeaturesSlider';
 
 export default function Home() {
-  const heading = `Packages`;
+  const heading = `Choose Your Plan`;
   const description =
     'Choose the perfect package that suits your business needs. Our flexible pricing options are designed to scale with your growth.';
 
