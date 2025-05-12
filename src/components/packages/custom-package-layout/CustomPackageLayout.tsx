@@ -475,6 +475,11 @@ const CustomPackageLayout: React.FC<
               sx={{
                 overflowY: 'auto',
                 maxHeight: '400px',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                '&::-webkit-scrollbar': {
+                  display: 'none',
+                },
               }}
             >
               <Box
@@ -628,6 +633,7 @@ const CustomPackageLayout: React.FC<
                   </Box>
                   <Box
                     className={styles.planColumn}
+                    data-label="Business"
                     sx={{
                       backgroundColor:
                         checkboxStates[
@@ -654,6 +660,7 @@ const CustomPackageLayout: React.FC<
                   </Box>
                   <Box
                     className={styles.planColumn}
+                    data-label="Startup"
                     sx={{
                       backgroundColor:
                         checkboxStates[
@@ -680,6 +687,7 @@ const CustomPackageLayout: React.FC<
                   </Box>
                   <Box
                     className={styles.planColumn}
+                    data-label="Personal"
                     sx={{
                       backgroundColor:
                         checkboxStates[
@@ -1560,6 +1568,7 @@ const CustomPackageLayout: React.FC<
                       }
                       error={!!usageError}
                       helperText={usageError}
+                      // Using InputProps for now as it's still supported
                       InputProps={{
                         inputProps: {
                           min: usage.minValue,
@@ -1589,15 +1598,23 @@ const CustomPackageLayout: React.FC<
         );
       case 'Select Payment Plan':
         return (
-          <Box sx={{ width: '100%', p: 2 }}>
-            <Box sx={{ mb: 3 }}>
+          <Box
+            sx={{
+              width: '100%',
+              p: { xs: 1, sm: 2 },
+            }}
+          >
+            <Box sx={{ mb: 2 }}>
               <Typography
                 variant="h5"
                 sx={{
                   fontSize: '1.25rem',
                   fontWeight: 600,
-                  color: '#173a79',
+                  color: '#1e293b',
                   mb: 1,
+                  borderBottom:
+                    '1px solid #f1f5f9',
+                  paddingBottom: '0.5rem',
                 }}
               >
                 Select Payment Plan
@@ -1607,6 +1624,7 @@ const CustomPackageLayout: React.FC<
                 sx={{
                   fontSize: '0.875rem',
                   color: '#64748b',
+                  mb: 1,
                 }}
               >
                 Choose your preferred payment plan
@@ -1616,11 +1634,6 @@ const CustomPackageLayout: React.FC<
               className={
                 styles.paymentPlansContainer
               }
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 2,
-              }}
             >
               {[
                 {
@@ -1637,7 +1650,7 @@ const CustomPackageLayout: React.FC<
                     'No Commitment',
                     'Easy Upgrade',
                   ],
-                  buttonText: 'Select Plan',
+                  buttonText: 'SELECT PLAN',
                 },
                 {
                   title: 'Biannual Plan',
@@ -1653,7 +1666,7 @@ const CustomPackageLayout: React.FC<
                     'Flexible Billing',
                     'Mid-term Adjustments',
                   ],
-                  buttonText: 'Select Plan',
+                  buttonText: 'SELECT PLAN',
                 },
                 {
                   title: 'Annual Plan',
@@ -1669,7 +1682,7 @@ const CustomPackageLayout: React.FC<
                     'Priority Support',
                     'Free Setup',
                   ],
-                  buttonText: 'Select Plan',
+                  buttonText: 'SELECT PLAN',
                 },
                 {
                   title: 'Enterprise Plan',
@@ -1681,7 +1694,7 @@ const CustomPackageLayout: React.FC<
                     'Custom Features',
                     'SLA Guarantee',
                   ],
-                  buttonText: 'Select Plan',
+                  buttonText: 'SELECT PLAN',
                 },
               ].map((plan, index) => (
                 <Box
@@ -1697,7 +1710,7 @@ const CustomPackageLayout: React.FC<
                       selectedPlanIndex !==
                         null &&
                       selectedPlanIndex !== index
-                        ? 0.5
+                        ? 0.7
                         : 1,
                     pointerEvents:
                       selectedPlanIndex !==
@@ -1707,7 +1720,11 @@ const CustomPackageLayout: React.FC<
                         : 'auto',
                   }}
                 >
-                  <Typography variant="h6">
+                  <Typography
+                    className={
+                      styles.paymentTitle
+                    }
+                  >
                     {plan.title}
                   </Typography>
                   <Typography
@@ -1731,8 +1748,22 @@ const CustomPackageLayout: React.FC<
                   >
                     {plan.features.map(
                       (feature, idx) => (
-                        <Typography key={idx}>
-                          ✓ {feature}
+                        <Typography
+                          key={idx}
+                          component="li"
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            '&::before': {
+                              content: '"✓"',
+                              color: '#2563eb',
+                              marginRight:
+                                '0.5rem',
+                              fontWeight: 'bold',
+                            },
+                          }}
+                        >
+                          {feature}
                         </Typography>
                       )
                     )}
@@ -1754,20 +1785,20 @@ const CustomPackageLayout: React.FC<
                       backgroundColor:
                         selectedPlanIndex ===
                         index
-                          ? 'green'
-                          : '',
+                          ? '#15803d'
+                          : '#2563eb',
                       '&:hover': {
                         backgroundColor:
                           selectedPlanIndex ===
                           index
-                            ? 'darkgreen'
-                            : '',
+                            ? '#166534'
+                            : '#1d4ed8',
                       },
                     }}
                   >
                     {selectedPlanIndex === index
-                      ? 'Selected'
-                      : 'Select Plan'}
+                      ? 'SELECTED'
+                      : plan.buttonText}
                   </Button>
                 </Box>
               ))}
@@ -3594,11 +3625,33 @@ const CustomPackageLayout: React.FC<
   );
 
   return (
-    <Card className={styles.container}>
-      <CardContent>
+    <Card
+      className={styles.container}
+      elevation={0}
+      sx={{ borderRadius: 0 }}
+    >
+      <CardContent
+        sx={{
+          padding: { xs: '1rem', sm: '1.5rem' },
+          '&:last-child': {
+            paddingBottom: {
+              xs: '1rem',
+              sm: '1.5rem',
+            },
+          },
+        }}
+      >
         <Stepper
           activeStep={currentStep}
           alternativeLabel
+          className={styles.stepperContainer}
+          sx={{
+            borderBottom: 'none',
+            '& .MuiStepConnector-line': {
+              borderColor: '#e2e8f0',
+              borderTopWidth: '1px',
+            },
+          }}
         >
           {steps.map((label, index) => (
             <Step key={index}>
@@ -3612,6 +3665,7 @@ const CustomPackageLayout: React.FC<
           key={currentStep}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
           className={styles.stepContent}
         >
           {getStepContent()}

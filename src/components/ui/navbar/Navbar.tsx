@@ -136,19 +136,34 @@ const Navbar: React.FC<NavbarProps> = memo(
     return (
       <>
         <AppBar
-          position="sticky"
+          position="fixed"
           className={styles.navbar}
           ref={appBarRef}
           sx={{
             backgroundColor: navbarColor,
             transition:
               'background-color 0.3s ease',
+            boxShadow:
+              '0 2px 4px rgba(0,0,0,0.1)',
+            height: { xs: '56px', sm: '64px' },
+            width: '100%',
+            left: 0,
+            right: 0,
           }}
         >
           <Toolbar
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
+              padding: {
+                xs: '0 4px',
+                sm: '0 8px',
+                md: '0 16px',
+              },
+              minHeight: {
+                xs: '56px',
+                sm: '64px',
+              },
             }}
           >
             <Box
@@ -166,21 +181,39 @@ const Navbar: React.FC<NavbarProps> = memo(
                   e.stopPropagation();
                   toggleSidebar();
                 }}
+                sx={{
+                  padding: {
+                    xs: '4px',
+                    sm: '8px',
+                  },
+                  marginRight: {
+                    xs: '0',
+                    sm: '4px',
+                  },
+                }}
               ></IconButton>
               <Image
                 src="/Pisval_Logo.jpg"
                 alt="Pisval Logo"
-                width={45}
-                height={45}
+                width={40}
+                height={40}
                 style={{
                   marginRight: 8,
                   objectFit: 'contain',
                   borderRadius: '50%',
                 }}
+                sizes="(max-width: 600px) 32px, (max-width: 768px) 36px, 40px"
               />
               <Typography
                 variant="h6"
                 className={styles.brand}
+                sx={{
+                  fontSize: {
+                    xs: '1rem',
+                    sm: '1.1rem',
+                    md: '1.25rem',
+                  },
+                }}
               >
                 {title}
               </Typography>
@@ -190,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = memo(
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 2,
+                gap: { xs: 0.5, sm: 1, md: 2 },
               }}
             >
               <Box
@@ -211,18 +244,13 @@ const Navbar: React.FC<NavbarProps> = memo(
                   }}
                 >
                   <span
-                    style={{
-                      fontWeight: 700,
-                      opacity: 0.95,
-                    }}
+                    className={styles.timeLabel}
                   >
                     Test Period:
                   </span>
                   <span
+                    className={styles.timeValue}
                     style={{
-                      fontWeight: 800,
-                      fontSize: '1.125rem',
-                      letterSpacing: '0.5px',
                       color: selectedPackage
                         ? '#F59E0B'
                         : '#ffffff',
@@ -230,32 +258,65 @@ const Navbar: React.FC<NavbarProps> = memo(
                   >
                     {formatTime(remainingTime)}
                   </span>
-                  <span style={{ opacity: 0.85 }}>
+                  <span
+                    className={
+                      styles.timeRemaining
+                    }
+                  >
                     remaining
                   </span>
                 </Typography>
               </Box>
 
-              <LanguageDropdown />
+              <Box
+                sx={{
+                  display: {
+                    xs: 'none',
+                    sm: 'block',
+                  },
+                }}
+              >
+                <LanguageDropdown />
+              </Box>
 
               <IconButton
                 color="inherit"
                 onClick={() => {
                   toggleLoginForm();
                 }}
+                sx={{
+                  padding: {
+                    xs: '8px',
+                    sm: '12px',
+                  },
+                  fontSize: {
+                    xs: '1.2rem',
+                    sm: '1.4rem',
+                  },
+                }}
               >
-                <LoginIcon />
+                <LoginIcon fontSize="inherit" />
               </IconButton>
 
               <IconButton
                 color="inherit"
                 onClick={handleCartClick}
+                sx={{
+                  padding: {
+                    xs: '8px',
+                    sm: '12px',
+                  },
+                  fontSize: {
+                    xs: '1.2rem',
+                    sm: '1.4rem',
+                  },
+                }}
               >
                 <Badge
                   badgeContent={cartCount}
                   color="error"
                 >
-                  <IoCartOutline />
+                  <IoCartOutline size="1em" />
                 </Badge>
               </IconButton>
             </Box>

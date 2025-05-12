@@ -5,6 +5,7 @@ import FooterContainer from '@/components/footer/FooterContainer';
 import LazyJumbotron from '@/components/jumbotron/Jumbotron';
 import PackageSelectionModal from '@/components/packages/PackageSelectionModal';
 import NavbarContainer from '@/components/ui/navbar/NavbarContainer';
+import NavbarSpacer from '@/components/ui/navbar/NavbarSpacer';
 import SidebarContainer from '@/components/ui/sidebar/homeSidebarContainer';
 import { PackageSelectionProvider } from '@/contexts/PackageSelectionContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
@@ -37,6 +38,7 @@ const Layout = ({
                 {!isDashboard && (
                   <>
                     <NavbarContainer />
+                    <NavbarSpacer />
                     <LazyJumbotron
                       heading="Pisval Tech Point of Sale System"
                       subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
