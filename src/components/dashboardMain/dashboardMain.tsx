@@ -55,7 +55,13 @@ const DashboardMain: React.FC<
     switch (activeSection) {
       case 'Dashboard':
         sectionToRender = (
-          <Box>
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: '100%',
+              overflow: 'hidden',
+            }}
+          >
             <Typography
               variant={isMobile ? 'h4' : 'h1'}
               color="#000"
@@ -65,31 +71,57 @@ const DashboardMain: React.FC<
                   ? 'center'
                   : 'left',
                 fontSize: isMobile
-                  ? '1rem'
+                  ? '1.25rem'
                   : '2.5rem',
                 fontWeight: 600,
+                mb: isMobile ? 2 : 3,
+                px: isMobile ? 1 : 2,
               }}
             >
               Dashboard
             </Typography>
-            <SearchBarContainer />
-            <SalesContainer />
-            <AnalyticsCardContainer />
-            <FullOverviewContainer />
-            <SaleTableContainer />
+            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+              <SearchBarContainer />
+            </Box>
+            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+              <SalesContainer />
+            </Box>
+            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+              <AnalyticsCardContainer />
+            </Box>
+            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+              <FullOverviewContainer />
+            </Box>
+            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+              <SaleTableContainer />
+            </Box>
           </Box>
         );
         break;
       case 'Products List':
         sectionToRender = (
-          <Box>
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: '100%',
+              overflow: 'hidden',
+              px: isMobile ? 1 : 2,
+            }}
+          >
             <ProductTableContainer />
           </Box>
         );
         break;
       case 'Add/Edit Product':
         sectionToRender = (
-          <Box>
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: '100%',
+              overflow: 'hidden',
+              px: isMobile ? 1 : 2,
+            }}
+          >
             <ProductEditContainer />
           </Box>
         );
@@ -117,33 +149,43 @@ const DashboardMain: React.FC<
       {isDataLoaded ? (
         renderSection()
       ) : (
-        <Box sx={{ width: '100%' }}>
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: '100%',
+            overflow: 'hidden',
+            px: isMobile ? 1 : 2,
+          }}
+        >
           <Skeleton
             variant="text"
             sx={{
-              fontSize: '2.5rem',
-              width: '30%',
+              fontSize: isMobile
+                ? '1.5rem'
+                : '2.5rem',
+              width: isMobile ? '50%' : '30%',
               mb: 2,
             }}
           />
           <Skeleton
             variant="rectangular"
-            height={60}
-            sx={{ mb: 2 }}
+            height={isMobile ? 50 : 60}
+            sx={{ mb: 2, borderRadius: 1 }}
           />
           <Skeleton
             variant="rectangular"
-            height={300}
-            sx={{ mb: 2 }}
+            height={isMobile ? 200 : 300}
+            sx={{ mb: 2, borderRadius: 1 }}
           />
           <Skeleton
             variant="rectangular"
-            height={200}
-            sx={{ mb: 2 }}
+            height={isMobile ? 150 : 200}
+            sx={{ mb: 2, borderRadius: 1 }}
           />
           <Skeleton
             variant="rectangular"
-            height={200}
+            height={isMobile ? 150 : 200}
+            sx={{ borderRadius: 1 }}
           />
         </Box>
       )}

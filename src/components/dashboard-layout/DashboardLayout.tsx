@@ -148,47 +148,72 @@ const DashboardLayout: React.FC<
   return (
     <Box
       sx={{
-        display: 'flex',
+        display: 'grid',
+        gridTemplateColumns: {
+          xs: '1fr',
+          sm: isDrawerOpen
+            ? '320px 1fr'
+            : '80px 1fr',
+        },
+        gridTemplateRows: '1fr',
         minHeight: '100vh',
         bgcolor: '#F3F4F6',
-        position: 'relative',
-        overflow: 'hidden',
+        transition:
+          'grid-template-columns 0.3s ease',
       }}
     >
-      <Sidebar
-        drawerWidth={320}
-        isDrawerOpen={isDrawerOpen}
-        onDrawerToggle={onDrawerToggle}
-        backgroundColor={sidebarBackground}
-        textColor={textColor}
-        iconColor={iconColor}
-        onSettingsClick={handleSettingsClick}
-        onSectionSelect={(section) => {
-          setActiveSection(section);
-          // Update localStorage (redundant but for safety)
-          localStorage.setItem(
-            'sidebarActiveItem',
-            section
-          );
+      {/* Sidebar in its own grid column */}
+      <Box
+        sx={{
+          gridColumn: '1 / 2',
+          gridRow: '1 / 2',
+          position: 'sticky',
+          top: 0,
+          height: '100vh',
+          zIndex: 1200,
         }}
-        handleItemClick={(item) => {
-          console.log(`Item clicked: ${item}`);
-          setActiveSection(item);
-          // Update localStorage (redundant but for safety)
-          localStorage.setItem(
-            'sidebarActiveItem',
-            item
-          );
-        }}
-        logoUrl={logoUrl}
-      />
+      >
+        <Sidebar
+          drawerWidth={320}
+          isDrawerOpen={isDrawerOpen}
+          onDrawerToggle={onDrawerToggle}
+          backgroundColor={sidebarBackground}
+          textColor={textColor}
+          iconColor={iconColor}
+          onSettingsClick={handleSettingsClick}
+          onSectionSelect={(section) => {
+            setActiveSection(section);
+            localStorage.setItem(
+              'sidebarActiveItem',
+              section
+            );
+          }}
+          handleItemClick={(item) => {
+            console.log(`Item clicked: ${item}`);
+            setActiveSection(item);
+            localStorage.setItem(
+              'sidebarActiveItem',
+              item
+            );
+          }}
+          logoUrl={logoUrl}
+        />
+      </Box>
+
+      {/* Main content in its own grid column */}
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
+          gridColumn: {
+            xs: '1 / 2', // On mobile, take full width
+            sm: '2 / 3', // On desktop, take second column
+          },
+          gridRow: '1 / 2',
           display: 'flex',
           flexDirection: 'column',
+          overflow: 'hidden',
           width: '100%',
+          height: '100vh',
         }}
       >
         <Navbar
@@ -196,7 +221,18 @@ const DashboardLayout: React.FC<
           onDrawerToggle={onDrawerToggle}
           backgroundColor={navbarBg}
         />
-        <Box sx={{ p: 2 }}>
+
+        <Box
+          sx={{
+            flexGrow: 1,
+            overflow: 'auto',
+            pt: 8, // Space for fixed navbar
+            pb: 2,
+            px: { xs: 1, sm: 2 },
+            boxSizing: 'border-box',
+            width: '100%',
+          }}
+        >
           <DashboardMainContainer
             activeSection={activeSection}
           />

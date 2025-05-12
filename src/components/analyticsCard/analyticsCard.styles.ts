@@ -8,37 +8,35 @@ import {
 export const StyledCard = styled(Card)(
   ({ theme }) => ({
     padding: theme.spacing(3),
-    borderRadius: 16,
+    borderRadius: 12,
     backgroundColor: '#fff',
     transition:
       'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.05)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
     border: '1px solid rgba(230, 232, 240, 0.8)',
     '&:hover': {
       transform: 'translateY(-4px)',
-      boxShadow:
-        '0 12px 28px rgba(0, 0, 0, 0.08)',
+      boxShadow: '0 8px 20px rgba(0, 0, 0, 0.08)',
       borderColor: 'rgba(210, 215, 235, 1)',
     },
-    width: 370,
-    height: 320, // Adjusted height to fit all elements perfectly
+    width: '100%',
+    height: 'auto',
+    minHeight: 320,
     cursor: 'pointer',
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden', // Ensure nothing spills outside the card
-    position: 'relative', // For proper positioning of elements
+    overflow: 'hidden',
+    position: 'relative',
+    justifyContent: 'space-between',
 
     // Responsive styles
     [theme.breakpoints.down('md')]: {
-      width: 320,
-      height: 'auto',
-      minHeight: 300, // Adjusted minimum height
+      minHeight: 300,
+      padding: theme.spacing(2.5),
     },
     [theme.breakpoints.down('sm')]: {
-      width: '100%',
-      height: 'auto',
-      minHeight: 340, // Adjusted for mobile
-      padding: theme.spacing(2.5),
+      minHeight: 280,
+      padding: theme.spacing(2),
     },
   })
 );
@@ -94,10 +92,11 @@ export const BulletList = styled('ul')({
   margin: 0,
   paddingLeft: 0,
   listStyle: 'none',
-  maxHeight: '120px', // Reduced max height
+  maxHeight: '80px',
   overflow: 'auto',
-  marginTop: '12px', // Reduced top margin
-  marginBottom: '12px', // Reduced bottom margin
+  marginTop: '8px',
+  marginBottom: '8px',
+  width: '100%',
   '&::-webkit-scrollbar': {
     width: '3px',
   },
@@ -116,11 +115,16 @@ export const BulletList = styled('ul')({
 
 export const DataPoint = styled('li')(
   ({ theme }) => ({
-    marginBottom: '10px',
-    fontSize: '0.9rem',
+    marginBottom: '6px',
+    fontSize: '0.85rem',
     position: 'relative',
     paddingLeft: theme.spacing(1.5),
     color: '#475569',
+    lineHeight: 1.3,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    maxWidth: '100%',
     '&::before': {
       content: '"•"',
       position: 'absolute',
@@ -135,7 +139,6 @@ export const DataPoint = styled('li')(
       transition: 'all 0.2s ease',
       '&:hover': {
         color: '#4338ca',
-        paddingLeft: '2px',
       },
     },
   })

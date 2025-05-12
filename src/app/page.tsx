@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import PricingPackagesContainer from '@/components/pricing-packages/PricingPackagesContainer';
 import HeroContainer from '@/components/features/HeroContainer';
+import TestimonialContainer from '@/components/testimonial/TestimonialContainer';
 import FeaturesSlider from '@/components/slider/FeaturesSlider';
 
 export default function Home() {
@@ -41,6 +42,7 @@ export default function Home() {
         </Box>
         <PricingPackagesContainer />
         <HeroContainer />
+        <TestimonialContainer />
         <FeaturesSlider />
       </Box>
     </div>

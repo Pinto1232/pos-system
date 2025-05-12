@@ -225,7 +225,7 @@ const Footer: React.FC = memo(() => {
               gridTemplateColumns: {
                 xs: '1fr',
                 sm: 'repeat(2, 1fr)',
-                md: 'repeat(auto-fit, minmax(250px, 1fr))',
+                md: 'repeat(4, 1fr)',
               },
               gap: {
                 xs: '30px',
@@ -237,24 +237,20 @@ const Footer: React.FC = memo(() => {
                 sm: '20px 20px 10px',
                 md: '30px 20px 20px',
               },
+              justifyContent: 'center',
+              textAlign: 'center',
             }}
           >
             <Box
               sx={{
-                textAlign: {
-                  xs: 'center',
-                  md: 'left',
-                },
+                textAlign: 'center',
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 Company
@@ -262,10 +258,7 @@ const Footer: React.FC = memo(() => {
               <ul
                 className={styles.list}
                 style={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 <li>
@@ -305,20 +298,14 @@ const Footer: React.FC = memo(() => {
 
             <Box
               sx={{
-                textAlign: {
-                  xs: 'center',
-                  md: 'left',
-                },
+                textAlign: 'center',
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 Contact
@@ -326,10 +313,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 Tel: +1 5263 2540 981
@@ -337,10 +321,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 Tel: +1 5263 5720 450
@@ -348,10 +329,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 Email: info@info.com
@@ -359,10 +337,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 Email: career@career.com
@@ -371,20 +346,14 @@ const Footer: React.FC = memo(() => {
 
             <Box
               sx={{
-                textAlign: {
-                  xs: 'center',
-                  md: 'left',
-                },
+                textAlign: 'center',
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 Cape Town Office
@@ -392,10 +361,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 361 Avisco Green St,
@@ -403,10 +369,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 Lovasa Avenue, Cape Town,
@@ -414,10 +377,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 90251, US
@@ -427,20 +387,18 @@ const Footer: React.FC = memo(() => {
             <Box
               className={styles.socialContainer}
               sx={{
-                alignItems: {
-                  xs: 'center',
-                  md: 'flex-start',
-                },
+                alignItems: 'center',
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: {
-                    xs: 'center',
-                    md: 'left',
-                  },
+                  textAlign: 'center',
                 }}
               >
                 Follow Us On

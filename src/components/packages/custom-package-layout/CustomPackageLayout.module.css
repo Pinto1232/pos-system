@@ -1,4 +1,3 @@
-/* Original CSS content up until line 1241 */
 .container {
   display: flex;
   flex-direction: column;
@@ -685,17 +684,19 @@
 }
 
 .paymentPlansContainer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 1rem;
   margin: 1rem 0 2rem 0;
   width: 100%;
+  justify-content: space-between;
 }
 
 .paymentPlanItem {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
+  padding: 1rem 0.75rem;
   border: 1px solid #e5e7eb;
   border-radius: 0;
   background: #fff;
@@ -704,6 +705,10 @@
   box-sizing: border-box;
   box-shadow: none;
   position: relative;
+  flex: 1;
+  min-width: 0;
+  max-width: calc(20% - 0.8rem);
+  /* Account for the gap between items - 20% for 5 equal columns */
 }
 
 .paymentPlanItem[data-selected='true'] {
@@ -728,34 +733,42 @@
 }
 
 .paymentTitle {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #1e293b;
   margin-bottom: 0.5rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .paymentDescription {
   color: #64748b;
   margin: 0.5rem 0;
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: 0.75rem;
+  line-height: 1.3;
   font-weight: 400;
+  height: 2.6em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .paymentPrice {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1e293b;
-  margin: 1rem 0;
+  margin: 0.75rem 0;
   display: flex;
   align-items: baseline;
   gap: 0.25rem;
 }
 
 .paymentFeatures {
-  margin: 1rem 0;
+  margin: 0.75rem 0;
   padding: 0;
   list-style: none;
   flex-grow: 1;
@@ -764,25 +777,25 @@
 .paymentFeatures li {
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   color: #475569;
-  font-size: 0.875rem;
-  line-height: 1.4;
+  font-size: 0.75rem;
+  line-height: 1.2;
   font-weight: 500;
 }
 
 .paymentFeatures li:before {
   content: '✓';
   color: #2563eb;
-  margin-right: 0.5rem;
+  margin-right: 0.25rem;
   font-weight: bold;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
 }
 
 .selectPlanButton {
   width: 100%;
   margin-top: auto;
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.875rem;
   background-color: #2563eb;
   color: white;
   border: none;
@@ -790,9 +803,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   text-transform: none;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
 }
 
 .selectPlanButton:hover {
@@ -809,21 +822,28 @@
   background-color: #15803d;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .paymentPlansContainer {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .paymentPlanItem {
+    max-width: calc(33.33% - 0.67rem);
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .paymentPlanItem {
+    max-width: calc(50% - 0.5rem);
   }
 }
 
 @media (max-width: 768px) {
-  .paymentPlansContainer {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
   .paymentPlanItem {
     padding: 1.25rem;
+    max-width: 100%;
   }
 
   .paymentTitle {

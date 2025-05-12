@@ -1653,6 +1653,22 @@ const CustomPackageLayout: React.FC<
                   buttonText: 'SELECT PLAN',
                 },
                 {
+                  title: 'Quarterly Plan',
+                  description:
+                    'Save 10% with quarterly billing',
+                  price:
+                    formatPrice(
+                      selectedCurrency,
+                      calculatedPrice * 3 * 0.9
+                    ) + '/3 months',
+                  features: [
+                    '10% Discount',
+                    'Quarterly Reviews',
+                    'Email Support',
+                  ],
+                  buttonText: 'SELECT PLAN',
+                },
+                {
                   title: 'Biannual Plan',
                   description:
                     'Save 15% with biannual billing',

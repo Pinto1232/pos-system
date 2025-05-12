@@ -49,22 +49,34 @@ const AnalyticsCard: React.FC<
   return (
     <StyledCard
       sx={{
-        width: { xs: '100%', sm: 370 },
-        height: { xs: 'auto', sm: 315 },
-        p: { xs: 2.5, sm: 3 },
+        width: '100%',
+        height: {
+          xs: 'auto',
+          sm: 'auto',
+          md: 'auto',
+        },
+        minHeight: {
+          xs: 'auto',
+          sm: 320,
+          md: 320,
+        },
+        p: { xs: 2, sm: 2.5, md: 3 },
         boxShadow:
-          '0 8px 24px rgba(0, 0, 0, 0.05)',
+          '0 4px 12px rgba(0, 0, 0, 0.05)',
         background: '#ffffff',
-        borderRadius: '16px',
+        borderRadius: '12px',
         border:
           '1px solid rgba(230, 232, 240, 0.8)',
         transition:
           'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-        overflow: 'visible',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         '&:hover': {
           transform: 'translateY(-4px)',
           boxShadow:
-            '0 12px 28px rgba(0, 0, 0, 0.08)',
+            '0 8px 20px rgba(0, 0, 0, 0.08)',
           borderColor: 'rgba(210, 215, 235, 1)',
         },
       }}
@@ -73,33 +85,29 @@ const AnalyticsCard: React.FC<
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: {
-            xs: 'flex-start',
-            sm: 'center',
-          },
-          flexDirection: {
-            xs: 'column',
-            sm: 'row',
-          },
-          gap: 1,
+          alignItems: 'center',
+          width: '100%',
+          mb: 1.5,
         }}
       >
         <CircleNumber
           sx={{
-            width: { xs: 40, sm: 48 },
-            height: { xs: 40, sm: 48 },
-            mb: { xs: 0.5, sm: 1 },
+            width: { xs: 36, sm: 40, md: 44 },
+            height: { xs: 36, sm: 40, md: 44 },
+            mb: 0,
             background:
               'linear-gradient(135deg, #4338ca, #6366f1)',
             boxShadow:
               '0 4px 12px rgba(99, 102, 241, 0.25)',
             fontSize: {
-              xs: '0.9rem',
-              sm: '1.1rem',
+              xs: '0.85rem',
+              sm: '0.9rem',
+              md: '1rem',
             },
             fontWeight: 700,
             border:
               '2px solid rgba(255, 255, 255, 0.8)',
+            flexShrink: 0,
           }}
         >
           {circleText}
@@ -108,14 +116,18 @@ const AnalyticsCard: React.FC<
         <Percentage
           sx={{
             fontSize: {
-              xs: '1.1rem',
-              sm: '1.3rem',
+              xs: '1rem',
+              sm: '1.1rem',
+              md: '1.2rem',
             },
             color: '#64748b',
+            textAlign: 'right',
+            flexShrink: 0,
             '& span:first-of-type': {
               fontSize: {
-                xs: '1.5rem',
-                sm: '1.8rem',
+                xs: '1.3rem',
+                sm: '1.5rem',
+                md: '1.7rem',
               },
               fontWeight: 700,
               color: '#1e293b',
@@ -123,8 +135,9 @@ const AnalyticsCard: React.FC<
             },
             '& span:last-of-type': {
               fontSize: {
-                xs: '0.9rem',
-                sm: '1rem',
+                xs: '0.8rem',
+                sm: '0.9rem',
+                md: '1rem',
               },
               fontWeight: 500,
               color: '#64748b',
@@ -142,15 +155,21 @@ const AnalyticsCard: React.FC<
         variant="h6"
         sx={{
           fontSize: {
-            xs: '1rem',
-            sm: '1.1rem',
+            xs: '0.95rem',
+            sm: '1rem',
+            md: '1.05rem',
           },
-          mt: { xs: 0.5, sm: 0.5 },
-          mb: { xs: 1, sm: 1 },
+          mt: 1,
+          mb: 1.5,
           fontWeight: 600,
           letterSpacing: '-0.01em',
           color: '#1e293b',
           position: 'relative',
+          height: '1.5em',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          width: '100%',
           '&::after': {
             content: '""',
             position: 'absolute',
@@ -169,12 +188,13 @@ const AnalyticsCard: React.FC<
 
       <BulletList
         sx={{
-          pl: { xs: 2, sm: 2.5 },
-          mb: { xs: 1, sm: 1 },
-          mt: { xs: 1, sm: 1 },
-          maxHeight: '90px', // Reduced height to fit better
+          pl: { xs: 1.5, sm: 2, md: 2.5 },
+          mb: 1.5,
+          mt: 1,
+          maxHeight: '80px',
           overflowY: 'auto',
           overflowX: 'hidden',
+          width: '100%',
           '&::-webkit-scrollbar': {
             width: '3px',
           },
@@ -189,19 +209,25 @@ const AnalyticsCard: React.FC<
             key={index}
             sx={{
               fontSize: {
-                xs: '0.8rem',
-                sm: '0.85rem',
+                xs: '0.75rem',
+                sm: '0.8rem',
+                md: '0.85rem',
               },
-              mb: 0.8, // Reduced margin bottom
-              py: 0.2, // Added vertical padding
+              mb: 0.6,
+              py: 0.2,
               color: '#475569',
-              lineHeight: 1.4, // Tighter line height
+              lineHeight: 1.3,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%',
               '&::before': {
                 color: '#6366f1',
               },
               '& a': {
                 color: '#475569',
                 fontWeight: 500,
+                textDecoration: 'none',
                 '&:hover': {
                   color: '#4338ca',
                 },
@@ -217,18 +243,20 @@ const AnalyticsCard: React.FC<
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 1.5,
+          gap: 1,
           mt: 'auto',
           pt: 1.5,
           borderTop: '1px solid #f1f5f9',
+          width: '100%',
         }}
       >
         {/* Action buttons row */}
         <Box
           sx={{
             display: 'flex',
-            gap: '4px',
+            gap: '2px',
             width: '100%',
+            justifyContent: 'space-between',
           }}
         >
           {Array.from({ length: 5 }, (_, i) => {
@@ -238,23 +266,28 @@ const AnalyticsCard: React.FC<
                 key={i}
                 size="small"
                 sx={{
-                  flex: 1,
-                  minWidth: {
-                    xs: 'auto',
-                    sm: 34,
+                  flex: '1 1 0',
+                  minWidth: 'auto',
+                  height: {
+                    xs: 24,
+                    sm: 26,
+                    md: 28,
                   },
-                  height: { xs: 28, sm: 26 },
-                  p: { xs: '2px', sm: '2px 4px' },
+                  p: {
+                    xs: '1px',
+                    sm: '2px',
+                    md: '2px 4px',
+                  },
                   bgcolor: 'transparent',
                   color: buttonColors[i],
                   border: `1px solid ${buttonColors[i]}`,
-                  gap: { xs: '4px', sm: '6px' },
                   fontSize: {
-                    xs: '0.75rem',
+                    xs: '0.65rem',
                     sm: '0.7rem',
+                    md: '0.75rem',
                   },
-                  borderRadius: '6px',
-                  margin: '0 2px',
+                  borderRadius: '4px',
+                  margin: '0 1px',
                   transition: 'all 0.2s ease',
                   '&:hover': {
                     bgcolor: `${buttonColors[i]}10`,
@@ -263,21 +296,16 @@ const AnalyticsCard: React.FC<
                   },
                 }}
               >
-                <Icon
-                  size={
-                    theme.breakpoints.up('sm')
-                      ? 14
-                      : 16
-                  }
-                />
+                <Icon size={12} />
                 <Box
                   component="span"
                   sx={{
                     display: {
                       xs: 'none',
-                      sm: 'inline',
+                      md: 'inline',
                     },
                     fontWeight: 600,
+                    ml: 0.5,
                   }}
                 >
                   {i + 1}
@@ -293,18 +321,23 @@ const AnalyticsCard: React.FC<
             width: '100%',
             display: 'flex',
             justifyContent: 'center',
-            mb: 1, // Add bottom margin to ensure it's not too close to the edge
+            mt: 1,
           }}
         >
           <a
             href="#"
-            style={{ textDecoration: 'none' }}
+            style={{
+              textDecoration: 'none',
+              width: '100%',
+              textAlign: 'center',
+            }}
           >
             <ViewDetails
               sx={{
                 fontSize: {
-                  xs: '0.875rem',
-                  sm: '0.9rem',
+                  xs: '0.75rem',
+                  sm: '0.8rem',
+                  md: '0.85rem',
                 },
                 fontWeight: 600,
                 color: '#4f46e5',
@@ -312,8 +345,9 @@ const AnalyticsCard: React.FC<
                   'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
                 display: 'inline-flex',
                 alignItems: 'center',
-                padding: '4px 12px',
-                borderRadius: '20px',
+                justifyContent: 'center',
+                padding: '4px 10px',
+                borderRadius: '16px',
                 backgroundColor:
                   'rgba(79, 70, 229, 0.08)',
                 border:
@@ -332,13 +366,13 @@ const AnalyticsCard: React.FC<
                 },
                 '&::after': {
                   content: '"→"',
-                  marginLeft: '6px',
+                  marginLeft: '4px',
                   transition:
                     'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                  fontSize: '1.1rem',
+                  fontSize: '1rem',
                 },
                 '&:hover::after': {
-                  marginLeft: '10px',
+                  marginLeft: '8px',
                   transform: 'translateX(2px)',
                 },
               }}

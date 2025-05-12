@@ -6,6 +6,8 @@
   margin-top: 60px;
   overflow-x: hidden;
   box-sizing: border-box;
+  padding: 0 8px;
+  gap: 24px;
 }
 
 .header {
@@ -20,4 +22,20 @@
   flex-direction: row;
   gap: 16px;
   max-width: 100%;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .container {
+    margin-top: 40px;
+    gap: 16px;
+    padding: 0 4px;
+  }
+}
+
+/* Ensure child components don't overflow */
+.container > div {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }

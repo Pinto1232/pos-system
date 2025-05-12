@@ -9,7 +9,12 @@ import {
 
 const SocialIcons: React.FC = () => {
   return (
-    <Box display="flex" gap={2}>
+    <Box
+      display="flex"
+      gap={2}
+      justifyContent="center"
+      width="100%"
+    >
       <IconButton>
         <Facebook style={{ color: 'white' }} />
       </IconButton>

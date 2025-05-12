@@ -434,7 +434,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           flexShrink: 0,
           transition:
             'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 1100,
+          zIndex: 1200, // Higher than navbar to ensure it stays on top
+          position: 'fixed',
+          height: '100%',
           '@keyframes pulse': {
             '0%': {
               opacity: 0.6,
@@ -454,6 +456,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               !isSmallScreen && !localDrawerOpen
                 ? 80
                 : drawerWidth,
+            minWidth: isSmallScreen
+              ? 250
+              : undefined, // Ensure minimum width on small screens
             transition:
               'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
             boxSizing: 'border-box',
@@ -472,6 +477,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               display: 'none',
             },
             whiteSpace: 'nowrap',
+            position: 'fixed', // Keep sidebar fixed
+            left: 0,
+            top: 0,
           },
           display: {
             xs: 'block',
@@ -483,9 +491,12 @@ const Sidebar: React.FC<SidebarProps> = ({
         <Box
           sx={{
             textAlign: 'center',
-            p: 2,
+            p: isSmallScreen ? 1 : 1.5,
+            pt: isSmallScreen ? 2 : 2.5,
             position: 'relative',
-            overflow: 'hidden',
+            overflow: 'visible',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
           }}
         >
           {!isSmallScreen && !localDrawerOpen ? (
@@ -494,38 +505,82 @@ const Sidebar: React.FC<SidebarProps> = ({
                 display: 'flex',
                 justifyContent: 'center',
                 animation: 'fadeIn 0.4s ease-out',
+                width: 40,
+                height: 40,
+                position: 'relative',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                boxShadow:
+                  '0 3px 8px rgba(0, 0, 0, 0.15)',
+                margin: '0 auto',
               }}
             >
               <Image
                 src={contextLogoUrl || logoUrl}
                 alt="Logo"
-                width={40}
-                height={40}
+                fill
                 style={{
-                  borderRadius: '50%',
-                  boxShadow:
-                    '0 3px 8px rgba(0, 0, 0, 0.15)',
+                  objectFit: 'cover',
                 }}
+                priority
+                sizes="40px"
               />
             </Box>
           ) : (
             <>
-              <Image
-                src={contextLogoUrl || logoUrl}
-                alt="Logo"
-                width={90}
-                height={90}
-                style={{ borderRadius: '50%' }}
-              />
               <Box
                 sx={{
-                  mt: 2,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '100%',
+                  maxWidth: drawerWidth - 40, // Account for padding
+                  margin: '0 auto',
+                  overflow: 'visible',
+                  position: 'relative',
+                  height: isSmallScreen ? 50 : 70,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: isSmallScreen
+                      ? 50
+                      : 70,
+                    height: isSmallScreen
+                      ? 50
+                      : 70,
+                    position: 'relative',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    boxShadow:
+                      '0 3px 8px rgba(0, 0, 0, 0.15)',
+                  }}
+                >
+                  <Image
+                    src={
+                      contextLogoUrl || logoUrl
+                    }
+                    alt="Logo"
+                    fill
+                    style={{
+                      objectFit: 'cover',
+                    }}
+                    priority
+                    sizes="(max-width: 600px) 50px, 70px"
+                  />
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  mt: isSmallScreen ? 1.5 : 2.5,
                   width: '100%',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   gap: 0.5,
                   position: 'relative',
+                  px: isSmallScreen ? 1 : 2,
+                  boxSizing: 'border-box',
                 }}
               >
                 {isUserLoading ? (
@@ -543,7 +598,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                   <Box
                     sx={{
                       position: 'relative',
-                      width: '90%',
+                      width: '100%',
+                      maxWidth: isSmallScreen
+                        ? 220
+                        : 280,
+                      mx: 'auto',
                     }}
                   >
                     <Tooltip
@@ -558,15 +617,20 @@ const Sidebar: React.FC<SidebarProps> = ({
                           background:
                             'linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)',
                           borderRadius: '8px',
-                          padding: '8px 16px',
+                          padding: isSmallScreen
+                            ? '6px 12px'
+                            : '8px 16px',
                           width: '100%',
+                          maxWidth: '100%',
                           boxShadow:
                             '0 2px 8px rgba(0, 0, 0, 0.1)',
                           transition:
                             'all 0.3s ease',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: 1.5,
+                          gap: isSmallScreen
+                            ? 1
+                            : 1.5,
                           '&:hover': {
                             boxShadow:
                               '0 4px 12px rgba(0, 0, 0, 0.15)',
@@ -577,10 +641,17 @@ const Sidebar: React.FC<SidebarProps> = ({
                       >
                         <Avatar
                           sx={{
-                            width: 32,
-                            height: 32,
+                            width: isSmallScreen
+                              ? 28
+                              : 32,
+                            height: isSmallScreen
+                              ? 28
+                              : 32,
                             bgcolor: '#1E3A8A',
-                            fontSize: '0.9rem',
+                            fontSize:
+                              isSmallScreen
+                                ? '0.8rem'
+                                : '0.9rem',
                             fontWeight: 'bold',
                             boxShadow:
                               '0 2px 4px rgba(0, 0, 0, 0.1)',
@@ -598,6 +669,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                           sx={{
                             position: 'relative',
                             flexGrow: 1,
+                            maxWidth:
+                              'calc(100% - 40px)',
                           }}
                         >
                           <Typography
@@ -607,13 +680,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                               fontWeight: 600,
                               fontSize:
                                 isSmallScreen
-                                  ? '0.875rem'
-                                  : '1.1rem',
+                                  ? '0.75rem'
+                                  : '1rem',
                               overflow: 'hidden',
                               textOverflow:
                                 'ellipsis',
                               whiteSpace:
                                 'nowrap',
+                              maxWidth: '100%',
                             }}
                           >
                             {userInfo?.name ||
@@ -624,12 +698,19 @@ const Sidebar: React.FC<SidebarProps> = ({
                             sx={{
                               position:
                                 'absolute',
-                              right: -8,
+                              right: isSmallScreen
+                                ? -6
+                                : -8,
                               top: '50%',
                               transform:
                                 'translateY(-50%)',
-                              width: 8,
-                              height: 8,
+                              width: isSmallScreen
+                                ? 6
+                                : 8,
+                              height:
+                                isSmallScreen
+                                  ? 6
+                                  : 8,
                               borderRadius: '50%',
                               bgcolor:
                                 isUserActive
@@ -651,17 +732,23 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <Box
                       sx={{
                         position: 'absolute',
-                        bottom: -6,
+                        bottom: isSmallScreen
+                          ? -4
+                          : -6,
                         left: '50%',
                         transform:
                           'translateX(-50%)',
-                        fontSize: '0.7rem',
+                        fontSize: isSmallScreen
+                          ? '0.6rem'
+                          : '0.7rem',
                         color: isUserActive
                           ? '#4CAF50' // Green when active
                           : '#F44336', // Red when inactive
                         backgroundColor:
                           'rgba(0, 0, 0, 0.2)',
-                        padding: '1px 8px',
+                        padding: isSmallScreen
+                          ? '0px 6px'
+                          : '1px 8px',
                         borderRadius: '4px',
                         letterSpacing: '0.5px',
                         transition:

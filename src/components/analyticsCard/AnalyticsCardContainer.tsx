@@ -55,18 +55,28 @@ const AnalyticsCardContainer = () => {
   ];
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box
+      sx={{
+        p: { xs: 2, sm: 3, md: 4 },
+        backgroundColor: '#f8f9fa',
+        borderRadius: '12px',
+        boxShadow:
+          '0 2px 8px rgba(0, 0, 0, 0.05)',
+        overflow: 'hidden',
+      }}
+    >
       <Typography
         variant="h5"
         sx={{
           mb: 3,
           fontWeight: 'bold',
           color: '#000',
+          px: { xs: 1, sm: 1, md: 0 },
         }}
       >
         Sales Overview & Analytics
       </Typography>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         {cardsData.map((card, index) => (
           <Grid
             item
@@ -74,6 +84,10 @@ const AnalyticsCardContainer = () => {
             sm={6}
             md={3}
             key={index}
+            sx={{
+              display: 'flex',
+              width: '100%',
+            }}
           >
             <AnalyticsCard
               circleText={card.circleText}
