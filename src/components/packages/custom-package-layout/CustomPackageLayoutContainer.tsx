@@ -106,7 +106,7 @@ const CustomPackageLayoutContainer: React.FC<
   const [
     currentPackageData,
     setCurrentPackageData,
-  ] = useState<any>(null);
+  ] = useState<PackageDataType>(null);
 
   const defaultStepsCustom = React.useMemo(
     () => [
@@ -417,31 +417,38 @@ const CustomPackageLayoutContainer: React.FC<
     }
   };
 
+  type PackageDataType = {
+    formData?: {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      phone?: string;
+      address?: string;
+      country?: string;
+      state?: string;
+      city?: string;
+      zipCode?: string;
+      [key: string]: string | undefined;
+    };
+    selectedFeatures?: Feature[];
+    selectedAddOns?: AddOn[];
+    usageQuantities?: Record<number, number>;
+    calculatedPrice?: number;
+    selectedCurrency?: string;
+  } | null;
+
   const handleShowSuccessMessage = (
     message: string,
-    packageData?: {
-      formData?: {
-        firstName?: string;
-        lastName?: string;
-        email?: string;
-        phone?: string;
-        address?: string;
-        country?: string;
-        state?: string;
-        city?: string;
-        zipCode?: string;
-        [key: string]: any;
-      };
-      selectedFeatures?: Feature[];
-      selectedAddOns?: AddOn[];
-      usageQuantities?: Record<number, number>;
-      calculatedPrice?: number;
-      selectedCurrency?: string;
-    }
+    packageData?: PackageDataType
   ) => {
     setModalMessage(message);
     setIsModalOpen(true);
-    setCurrentPackageData(packageData);
+    // Explicitly handle the undefined case
+    if (packageData === undefined) {
+      setCurrentPackageData(null);
+    } else {
+      setCurrentPackageData(packageData);
+    }
   };
 
   const handleReturnToPackage = () => {

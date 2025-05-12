@@ -36,14 +36,31 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             'userCustomization',
             'current-user',
           ],
-          queryFn: () =>
-            import(
-              '@/api/mockUserCustomization'
-            ).then((module) =>
-              module.mockFetchCustomization(
-                'current-user'
-              )
-            ),
+          queryFn: async () => {
+            try {
+              const response = await fetch(
+                '/api/UserCustomization/current-user'
+              );
+              if (response.ok) {
+                return response.json();
+              }
+              throw new Error(
+                'Failed to fetch customization'
+              );
+            } catch (error) {
+              console.warn(
+                'Prefetch failed, falling back to mock data:',
+                error
+              );
+              return import(
+                '@/api/mockUserCustomization'
+              ).then((module) =>
+                module.mockFetchCustomization(
+                  'current-user'
+                )
+              );
+            }
+          },
           staleTime: 60000,
         });
       }

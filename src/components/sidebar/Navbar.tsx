@@ -125,7 +125,7 @@ const Navbar: React.FC<NavbarProps> = ({
           transition:
             'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
           border: 'none',
-          zIndex: 1100, // Lower than sidebar to prevent overlap issues
+          zIndex: 1050, // Lower than sidebar to prevent overlap issues
           backgroundColor: navbarColor,
           boxShadow:
             '0 2px 10px rgba(0, 0, 0, 0.1)',

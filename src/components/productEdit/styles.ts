@@ -7,15 +7,23 @@ import {
 
 export const Container = styled(Box)({
   display: 'grid',
-  gridTemplateColumns: 'minmax(0, 1fr) 360px',
-  gap: '24px',
-  padding: '24px',
+  gridTemplateColumns: 'minmax(0, 1fr) 340px', // Increased from 320px to 340px
+  gap: '28px',
+  padding: '28px',
   backgroundColor: '#f5f5f5',
   minHeight: '100vh',
   width: '100%',
   boxSizing: 'border-box',
   '@media (max-width: 1200px)': {
     gridTemplateColumns: '1fr',
+  },
+  '@media (max-width: 768px)': {
+    padding: '20px',
+    gap: '20px',
+  },
+  '@media (max-width: 480px)': {
+    padding: '16px',
+    gap: '16px',
   },
 });
 
@@ -30,17 +38,30 @@ export const ProductListSection = styled(Box)({
 export const TotalSection = styled(Paper)({
   width: '100%',
   height: 'fit-content',
-  padding: '24px',
+  padding: '28px',
   display: 'flex',
   flexDirection: 'column',
   gap: '24px',
   borderRadius: '12px',
   backgroundColor: '#fff',
-  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
+  boxShadow: '0px 6px 16px rgba(0, 0, 0, 0.08)',
   position: 'sticky',
   top: '24px',
+  border: '1px solid rgba(0, 0, 0, 0.03)',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.12)',
+  },
   '@media (max-width: 1200px)': {
     position: 'static',
+  },
+  '@media (max-width: 768px)': {
+    padding: '24px',
+    gap: '20px',
+  },
+  '@media (max-width: 480px)': {
+    padding: '20px',
+    gap: '16px',
   },
 });
 
@@ -48,13 +69,22 @@ export const HeaderSection = styled(Box)({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  marginBottom: '24px',
+  marginBottom: '16px',
 });
 
 export const ButtonGroup = styled(Box)({
   display: 'flex',
-  gap: '8px',
+  gap: '10px',
   width: '100%',
+  marginBottom: '16px',
+  '@media (max-width: 768px)': {
+    flexWrap: 'wrap',
+    gap: '10px',
+  },
+  '@media (max-width: 480px)': {
+    flexDirection: 'column',
+    gap: '8px',
+  },
 });
 
 export const AddItemButton = styled(Button)({
@@ -82,6 +112,8 @@ export const ExportButton = styled(Button)({
   fontWeight: 500,
   fontSize: '14px',
   backgroundColor: '#f8f9fa',
+  border: '1px solid #E0E0E0',
+  borderRadius: '6px',
   transition: 'all 0.2s ease',
   '&:hover': {
     borderColor: '#1E2A3B',
@@ -90,7 +122,11 @@ export const ExportButton = styled(Button)({
   },
   '& .MuiSvgIcon-root': {
     fontSize: '20px',
-    marginRight: '4px',
+    marginRight: '6px',
+  },
+  '@media (max-width: 480px)': {
+    padding: '6px 12px',
+    fontSize: '13px',
   },
 });
 
@@ -107,16 +143,30 @@ export const CollectPaymentButton = styled(
 )({
   backgroundColor: '#52B788',
   color: '#fff',
-  fontSize: '15px',
-  borderRadius: '1',
-  padding: '5px',
+  fontSize: '16px',
+  fontWeight: 600,
+  borderRadius: '8px',
+  padding: '14px',
+  boxShadow: '0 4px 12px rgba(82, 183, 136, 0.2)',
+  transition: 'all 0.3s ease',
   '&:hover': {
     backgroundColor: '#429670',
+    boxShadow:
+      '0 6px 16px rgba(82, 183, 136, 0.3)',
+    transform: 'translateY(-2px)',
+  },
+  '&:active': {
+    transform: 'translateY(1px)',
+    boxShadow:
+      '0 2px 8px rgba(82, 183, 136, 0.2)',
   },
 });
 
 export const ProductTable = styled(Box)({
   width: '100%',
+  overflowX: 'auto',
+  position: 'relative',
+  zIndex: 1,
   '& .MuiDataGrid-root': {
     border: 'none',
     backgroundColor: '#fff',
@@ -279,9 +329,10 @@ export const TableHeaderRow = styled(Box)({
   padding: '12px 16px',
   height: '48px',
   backgroundColor: '#f5f5f5',
-  marginTop: '-26px',
-  marginBottom: '8px',
+  marginTop: '0',
+  marginBottom: '12px',
   borderBottom: '1px solid #1E2A3B',
+  borderRadius: '8px 8px 0 0',
   '& > *': {
     color: '#1E2A3B',
     fontSize: '14px',
@@ -296,6 +347,7 @@ export const HeaderCell = styled(Box)({
 
 export const CheckboxCell = styled(HeaderCell)({
   width: '70px',
+  justifyContent: 'center',
 });
 
 export const BarcodeCell = styled(HeaderCell)({
@@ -305,23 +357,29 @@ export const BarcodeCell = styled(HeaderCell)({
 
 export const ProductNameCell = styled(HeaderCell)(
   {
-    flex: 2,
-    minWidth: '200px',
+    flex: 1.8,
+    minWidth: '160px',
   }
 );
 
 export const StandardCell = styled(HeaderCell)({
-  flex: 1,
-  minWidth: '100px',
+  flex: 0.8,
+  minWidth: '90px',
 });
 
 export const HeaderWrapper = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: '12px 16px',
+  padding: '16px 20px',
   backgroundColor: '#fff',
   borderRadius: '8px',
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
   width: '100%',
+  '@media (max-width: 768px)': {
+    padding: '14px 16px',
+  },
+  '@media (max-width: 480px)': {
+    padding: '12px 14px',
+  },
 });

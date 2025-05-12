@@ -60,7 +60,7 @@ const GrowthPackageLayout: React.FC<
     useState<string>(
       selectedPackage.currency || 'USD'
     );
-  const [formData, setFormData] = useState({
+  const formData = {
     firstName: '',
     lastName: '',
     email: '',
@@ -70,7 +70,7 @@ const GrowthPackageLayout: React.FC<
     state: 'California',
     city: '',
     postal: '',
-  });
+  };
 
   // Add state for notification
   const [snackbarOpen, setSnackbarOpen] =

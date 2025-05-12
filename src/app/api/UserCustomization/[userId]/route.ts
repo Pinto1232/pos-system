@@ -7,9 +7,9 @@ const BACKEND_API_URL =
 
 export async function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  context: { params: { userId: string } }
 ) {
-  const userId = params.userId;
+  const { userId } = context.params;
 
   try {
     console.log(

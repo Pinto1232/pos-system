@@ -34,7 +34,9 @@ const requestCache = new Map<
 >();
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL:
+    process.env.NEXT_PUBLIC_API_URL ||
+    'http://localhost:5107',
   withCredentials: true,
   timeout: DEFAULT_TIMEOUT,
 });
@@ -158,9 +160,16 @@ const useApiClient = () => {
               'Network Error or Server Unreachable:',
               error.message
             );
+            // Check if the backend server is running
+            const baseUrl =
+              apiClient.defaults.baseURL ||
+              'http://localhost:5107';
+            console.error(
+              `Unable to connect to backend server at ${baseUrl}. Please ensure the server is running.`
+            );
             return Promise.reject(
               new Error(
-                'Network error. Please try again.'
+                `Network error: Unable to connect to backend server at ${baseUrl}. Please ensure the server is running and try again.`
               )
             );
           }

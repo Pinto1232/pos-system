@@ -28,6 +28,7 @@ export const mockFetchCustomization = async (
     }
   }
 
+  // Import the default settings from SettingsModal to ensure consistency
   const defaultTaxSettings: TaxSettings = {
     enableTaxCalculation: true,
     defaultTaxRate: 15.0,

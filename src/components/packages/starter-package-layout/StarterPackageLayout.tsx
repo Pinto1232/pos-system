@@ -92,7 +92,8 @@ const StarterPackageLayout: React.FC<
 
       setSpinnerLoading(false); // Hide spinner
       setLoading(false);
-      setSuccess(true);
+      // Instead of showing success message, show checkout form
+      setShowCheckoutForm(true);
     };
 
   const handleCloseSuccessMessage = () => {
@@ -253,6 +254,9 @@ const StarterPackageLayout: React.FC<
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
+    // After form submission, show success message
+    setShowCheckoutForm(false);
+    setSuccess(true);
   };
 
   if (showLoginForm) {

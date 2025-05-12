@@ -60,7 +60,7 @@ const EnterprisePackageLayout: React.FC<
     useState<string>(
       selectedPackage.currency || 'USD'
     );
-  const [formData, setFormData] = useState({
+  const formData = {
     firstName: '',
     lastName: '',
     email: '',
@@ -70,7 +70,7 @@ const EnterprisePackageLayout: React.FC<
     state: 'California',
     city: '',
     postal: '',
-  });
+  };
 
   const [snackbarOpen, setSnackbarOpen] =
     useState(false);

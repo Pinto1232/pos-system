@@ -64,6 +64,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     React.useState(false);
   const [snackbarMessage, setSnackbarMessage] =
     React.useState('');
+  const [selectedRows, setSelectedRows] =
+    React.useState<string[]>([]);
 
   const handleChangePage = (
     _: unknown,
@@ -205,7 +207,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'image',
       headerName: 'Icon',
-      width: 80,
+      width: 70, // Reduced from 80
       renderCell: (params) => (
         <Avatar
           src={
@@ -214,8 +216,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           }
           alt={params.row.productName}
           sx={{
-            width: 40,
-            height: 40,
+            width: 36, // Reduced from 40
+            height: 36, // Reduced from 40
             borderRadius: '4px',
             border: '1px solid #f0f0f0',
           }}
@@ -228,8 +230,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'productName',
       headerName: 'Product Name',
-      flex: 2,
-      minWidth: 180,
+      flex: 1.8, // Reduced from 2
+      minWidth: 160, // Reduced from 180
       renderCell: (params) => (
         <Stack
           direction="row"
@@ -271,6 +273,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 ).text,
                 border: '1px solid #e2e8f0',
                 flexShrink: 0,
+                '@media (max-width: 768px)': {
+                  minWidth: 40,
+                  fontSize: '0.65rem',
+                },
               }}
             />
           )}
@@ -280,8 +286,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'sku',
       headerName: 'SKU',
-      flex: 1,
-      minWidth: 100,
+      flex: 0.8, // Reduced from 1
+      minWidth: 90, // Reduced from 100
       renderCell: (params) => (
         <Typography
           variant="body2"
@@ -299,8 +305,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'barcode',
       headerName: 'ID Code',
-      flex: 1,
-      minWidth: 110,
+      flex: 0.8, // Reduced from 1
+      minWidth: 90, // Reduced from 110
       renderCell: (params) => (
         <Typography
           variant="body2"
@@ -318,8 +324,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'price',
       headerName: 'Price',
-      flex: 1,
-      minWidth: 100,
+      flex: 0.8, // Reduced from 1
+      minWidth: 80, // Reduced from 100
       type: 'number',
       align: 'left',
       headerAlign: 'left',
@@ -344,8 +350,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'statusProduct',
       headerName: 'Status',
-      flex: 1,
-      minWidth: 120,
+      flex: 0.9, // Reduced from 1
+      minWidth: 100, // Reduced from 120
       renderCell: (params) => (
         <Box
           sx={{
@@ -392,6 +398,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 params.value === 'Active'
                   ? '#52B788'
                   : '#9e9e9e',
+              '@media (max-width: 768px)': {
+                display: 'none', // Hide text on smaller screens
+              },
             }}
           >
             {params.value}
@@ -402,8 +411,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'rating',
       headerName: 'Rating',
-      flex: 0.7,
-      minWidth: 80,
+      flex: 0.6, // Reduced from 0.7
+      minWidth: 70, // Reduced from 80
       type: 'number',
       align: 'left',
       headerAlign: 'left',
@@ -421,8 +430,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'createdAt',
       headerName: 'Created At',
-      flex: 1,
-      minWidth: 120,
+      flex: 0.9, // Reduced from 1
+      minWidth: 110, // Reduced from 120
       renderCell: (params) => {
         try {
           const date = new Date(
@@ -449,8 +458,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'actions',
       headerName: 'Actions',
-      flex: 1,
-      minWidth: 130,
+      flex: 0.8, // Reduced from 1
+      minWidth: 110, // Reduced from 130
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
@@ -523,6 +532,29 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       0
     );
   }, [products]);
+
+  const selectedProductsPrice =
+    React.useMemo(() => {
+      if (selectedRows.length === 0) return 0;
+
+      return products
+        .filter((product) =>
+          selectedRows.includes(
+            product.id.toString()
+          )
+        )
+        .reduce(
+          (sum, product) =>
+            sum + (product.price || 0),
+          0
+        );
+    }, [products, selectedRows]);
+
+  const selectedProducts = React.useMemo(() => {
+    return products.filter((product) =>
+      selectedRows.includes(product.id.toString())
+    );
+  }, [products, selectedRows]);
 
   const handleExportPDF = () => {
     const doc = new jsPDF({
@@ -671,8 +703,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 variant="h6"
                 sx={{
                   fontWeight: 600,
-                  fontSize: '20px',
+                  fontSize: '22px',
                   color: '#1E2A3B',
+                  letterSpacing: '0.2px',
                 }}
               >
                 Inventory
@@ -700,7 +733,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             </S.StandardCell>
             <S.StandardCell>Price</S.StandardCell>
             <S.StandardCell>
-              Status Product
+              Status
             </S.StandardCell>
             <S.StandardCell>
               Rating
@@ -756,9 +789,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   borderRadius: '12px',
                   boxShadow:
                     '0px 4px 8px rgba(0, 0, 0, 0.04)',
+                  position: 'relative',
+                  zIndex: 1,
                   '& .MuiDataGrid-main': {
                     width: '100%',
-                    overflow: 'hidden',
+                    overflow: 'auto',
                   },
                   '& .MuiDataGrid-columnHeaders':
                     {
@@ -792,10 +827,26 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                           background: '#a8a8a8',
                         },
                     },
+                  '@media (max-width: 768px)': {
+                    '& .MuiDataGrid-columnHeaders':
+                      {
+                        fontSize: '0.8rem',
+                      },
+                    '& .MuiDataGrid-cell': {
+                      fontSize: '0.8rem',
+                    },
+                  },
                 }}
                 hideFooter={true}
-                disableRowSelectionOnClick
-                checkboxSelection={false}
+                checkboxSelection
+                onRowSelectionModelChange={(
+                  newSelectionModel
+                ) => {
+                  setSelectedRows(
+                    newSelectionModel as string[]
+                  );
+                }}
+                rowSelectionModel={selectedRows}
                 disableColumnMenu
                 rowHeight={60}
                 columnHeaderHeight={56}
@@ -805,7 +856,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 slotProps={{
                   basePopper: {
                     sx: {
-                      zIndex: 1300,
+                      zIndex: 1500,
                     },
                   },
                 }}
@@ -834,6 +885,15 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-end',
+                    '@media (max-width: 768px)': {
+                      padding: '0 16px',
+                      minHeight: '50px',
+                    },
+                    '@media (max-width: 480px)': {
+                      padding: '0 8px',
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                    },
                   },
                   '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
                     {
@@ -841,6 +901,16 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                       fontSize: '0.875rem',
                       fontWeight: 500,
                       margin: '0 12px',
+                      '@media (max-width: 768px)':
+                        {
+                          fontSize: '0.8rem',
+                          margin: '0 8px',
+                        },
+                      '@media (max-width: 480px)':
+                        {
+                          fontSize: '0.75rem',
+                          margin: '0 4px',
+                        },
                     },
                   '& .MuiTablePagination-select':
                     {
@@ -859,6 +929,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   '& .MuiTablePagination-actions':
                     {
                       marginLeft: '16px',
+                      '@media (max-width: 480px)':
+                        {
+                          marginLeft: '8px',
+                        },
                       '& .MuiIconButton-root': {
                         padding: '8px',
                         color: '#1E2A3B',
@@ -881,6 +955,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                           border:
                             '1px solid #e0e0e0',
                         },
+                        '@media (max-width: 480px)':
+                          {
+                            padding: '6px',
+                          },
                       },
                     },
                 }}
@@ -891,170 +969,416 @@ const ProductEdit: React.FC<ProductEditProps> = ({
 
         <S.TotalSection>
           <Stack spacing={3}>
-            <Box>
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                gutterBottom
-                sx={{
-                  fontSize: '13px',
-                  marginBottom: '8px',
-                }}
-              >
-                Item No.
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: '24px',
-                  color: '#1E2A3B',
-                }}
-              >
-                {products.length} Products
-              </Typography>
-            </Box>
-
-            <Box>
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                gutterBottom
-                sx={{
-                  fontSize: '13px',
-                  marginBottom: '8px',
-                }}
-              >
-                Total Products Price
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: '24px',
-                  color: '#1E2A3B',
-                }}
-              >
-                R{totalProductsPrice.toFixed(2)}
-              </Typography>
-            </Box>
-
-            <Box>
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                gutterBottom
-                sx={{
-                  fontSize: '13px',
-                  marginBottom: '8px',
-                }}
-              >
-                Sub Total (Incld. Tax)
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: '24px',
-                  color: '#1E2A3B',
-                }}
-              >
-                R{calculatedSubTotal.toFixed(2)}{' '}
-                (Subtotal)
-              </Typography>
-            </Box>
-
-            <Box>
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                gutterBottom
-                sx={{
-                  fontSize: '13px',
-                  marginBottom: '8px',
-                }}
-              >
-                Discount
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: '24px',
-                  color: '#1E2A3B',
-                }}
-              >
-                R{discount.toFixed(2)}
-              </Typography>
-            </Box>
-
-            <Box>
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                gutterBottom
-                sx={{
-                  fontSize: '13px',
-                  marginBottom: '8px',
-                }}
-              >
-                Total
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  fontSize: '24px',
-                  color: '#1E2A3B',
-                }}
-              >
-                R{totalProductsPrice.toFixed(2)}{' '}
-                (Total Price)
-              </Typography>
-            </Box>
-
-            <S.CollectPaymentButton
-              variant="contained"
-              onClick={onCollectPayment}
+            <Box
+              sx={{
+                borderBottom:
+                  '1px solid rgba(0,0,0,0.06)',
+                paddingBottom: '16px',
+                marginBottom: '8px',
+              }}
             >
-              Collect Payment
-            </S.CollectPaymentButton>
-
-            <Stack direction="row" spacing={1}>
-              <Button
-                variant="contained"
-                color="inherit"
-                fullWidth
-                onClick={onAddDiscount}
+              <Typography
+                variant="h5"
                 sx={{
-                  textTransform: 'none',
-                  fontSize: '14px',
-                  flexWrap: 'nowrap',
-                  backgroundColor: '#F8F9FA',
+                  fontWeight: 700,
+                  fontSize: '22px',
                   color: '#1E2A3B',
-                  '&:hover': {
-                    backgroundColor: '#E9ECEF',
-                  },
+                  marginBottom: '4px',
                 }}
               >
-                Add Discount
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                fullWidth
-                onClick={onCancelSession}
+                {selectedRows.length > 0
+                  ? 'Selected Items'
+                  : 'Order Summary'}
+              </Typography>
+              <Typography
+                variant="body2"
                 sx={{
-                  textTransform: 'none',
-                  backgroundColor: '#DC3545',
-                  '&:hover': {
-                    backgroundColor: '#C82333',
+                  color: 'text.secondary',
+                  fontSize: '14px',
+                }}
+              >
+                {selectedRows.length > 0
+                  ? `${selectedRows.length} of ${products.length} items selected`
+                  : `${products.length} ${products.length === 1 ? 'item' : 'items'} in cart`}
+              </Typography>
+            </Box>
+
+            {selectedRows.length > 0 && (
+              <Box
+                sx={{
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                  pr: 1,
+                  '&::-webkit-scrollbar': {
+                    width: '6px',
+                    height: '6px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: '#f1f1f1',
+                    borderRadius: '4px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: '#c1c1c1',
+                    borderRadius: '4px',
+                    '&:hover': {
+                      background: '#a8a8a8',
+                    },
                   },
                 }}
               >
-                Cancel Session
-              </Button>
-            </Stack>
+                {selectedProducts.map(
+                  (product) => (
+                    <Box
+                      key={product.id}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent:
+                          'space-between',
+                        py: 1,
+                        borderBottom:
+                          '1px solid rgba(0,0,0,0.04)',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1.5,
+                          width: '70%',
+                        }}
+                      >
+                        <Avatar
+                          src={
+                            product.image ||
+                            '/placeholder-image.png'
+                          }
+                          alt={
+                            product.productName
+                          }
+                          sx={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: '4px',
+                            border:
+                              '1px solid #f0f0f0',
+                          }}
+                          variant="rounded"
+                        />
+                        <Box
+                          sx={{
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                              fontSize: '14px',
+                              color: '#1E2A3B',
+                              overflow: 'hidden',
+                              textOverflow:
+                                'ellipsis',
+                              whiteSpace:
+                                'nowrap',
+                            }}
+                          >
+                            {product.productName}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: '#64748B',
+                              fontSize: '12px',
+                            }}
+                          >
+                            {product.sku}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 600,
+                          fontSize: '14px',
+                          color: '#1E2A3B',
+                        }}
+                      >
+                        R
+                        {(
+                          product.price || 0
+                        ).toFixed(2)}
+                      </Typography>
+                    </Box>
+                  )
+                )}
+              </Box>
+            )}
+
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontSize: '15px',
+                  color: '#64748B',
+                }}
+              >
+                {selectedRows.length > 0
+                  ? 'Selected Items'
+                  : 'Items'}{' '}
+                (
+                {selectedRows.length > 0
+                  ? selectedRows.length
+                  : products.length}
+                )
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 600,
+                  fontSize: '16px',
+                  color: '#1E2A3B',
+                }}
+              >
+                R
+                {(selectedRows.length > 0
+                  ? selectedProductsPrice
+                  : totalProductsPrice
+                ).toFixed(2)}
+              </Typography>
+            </Box>
+
+            {!selectedRows.length && (
+              <>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent:
+                      'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontSize: '15px',
+                      color: '#64748B',
+                    }}
+                  >
+                    Sub Total (Incl. Tax)
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: '16px',
+                      color: '#1E2A3B',
+                    }}
+                  >
+                    R
+                    {calculatedSubTotal.toFixed(
+                      2
+                    )}
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent:
+                      'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontSize: '15px',
+                      color:
+                        discount > 0
+                          ? '#52B788'
+                          : '#64748B',
+                    }}
+                  >
+                    Discount
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: '16px',
+                      color:
+                        discount > 0
+                          ? '#52B788'
+                          : '#1E2A3B',
+                    }}
+                  >
+                    {discount > 0 ? '-' : ''}R
+                    {discount.toFixed(2)}
+                  </Typography>
+                </Box>
+              </>
+            )}
+
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                borderTop:
+                  '1px solid rgba(0,0,0,0.06)',
+                borderBottom:
+                  '1px solid rgba(0,0,0,0.06)',
+                paddingTop: '16px',
+                paddingBottom: '16px',
+                marginTop: '8px',
+                marginBottom: '8px',
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: '18px',
+                  color: '#1E2A3B',
+                }}
+              >
+                {selectedRows.length > 0
+                  ? 'Selected Total'
+                  : 'Total'}
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: '24px',
+                  color: '#1E2A3B',
+                }}
+              >
+                R
+                {(selectedRows.length > 0
+                  ? selectedProductsPrice
+                  : totalProductsPrice
+                ).toFixed(2)}
+              </Typography>
+            </Box>
+
+            {selectedRows.length > 0 ? (
+              <Stack spacing={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() =>
+                    setSelectedRows([])
+                  }
+                  sx={{
+                    textTransform: 'none',
+                    fontSize: '15px',
+                    fontWeight: 600,
+                    padding: '12px',
+                    backgroundColor: '#1E2A3B',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#2C3E50',
+                    },
+                  }}
+                >
+                  Clear Selection
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    // Add selected items to cart logic would go here
+                    setSnackbarMessage(
+                      `${selectedRows.length} items added to cart`
+                    );
+                    setSnackbarOpen(true);
+                  }}
+                  sx={{
+                    textTransform: 'none',
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    padding: '12px',
+                    borderColor: '#1E2A3B',
+                    color: '#1E2A3B',
+                    '&:hover': {
+                      backgroundColor:
+                        'rgba(30, 42, 59, 0.04)',
+                    },
+                  }}
+                >
+                  Add Selected to Cart
+                </Button>
+              </Stack>
+            ) : (
+              <>
+                <S.CollectPaymentButton
+                  variant="contained"
+                  onClick={onCollectPayment}
+                >
+                  Collect Payment
+                </S.CollectPaymentButton>
+
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{ marginTop: '8px' }}
+                >
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={onAddDiscount}
+                    sx={{
+                      textTransform: 'none',
+                      fontSize: '15px',
+                      fontWeight: 500,
+                      padding: '10px',
+                      borderColor: '#E0E0E0',
+                      color: '#1E2A3B',
+                      backgroundColor:
+                        'transparent',
+                      '&:hover': {
+                        backgroundColor:
+                          'rgba(0,0,0,0.02)',
+                        borderColor: '#1E2A3B',
+                      },
+                    }}
+                  >
+                    Add Discount
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    fullWidth
+                    onClick={onCancelSession}
+                    sx={{
+                      textTransform: 'none',
+                      fontSize: '15px',
+                      fontWeight: 500,
+                      padding: '10px',
+                      borderColor: '#DC3545',
+                      color: '#DC3545',
+                      backgroundColor:
+                        'transparent',
+                      '&:hover': {
+                        backgroundColor:
+                          'rgba(220, 53, 69, 0.04)',
+                        borderColor: '#C82333',
+                      },
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Stack>
+              </>
+            )}
           </Stack>
         </S.TotalSection>
 
