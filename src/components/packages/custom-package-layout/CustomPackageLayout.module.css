@@ -132,12 +132,30 @@
   padding: 1rem;
   margin-bottom: 1.5rem;
   border: 1px solid #e5e7eb;
+  border-left: 4px solid #2563eb;
 }
 
 .priceDisplay h5 {
   margin: 0;
   font-weight: 600;
   color: #1e293b;
+}
+
+.currentPriceContainer {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(37, 99, 235, 0.3);
+}
+
+.currentPrice {
+  color: #2563eb !important;
+  font-weight: 600 !important;
+}
+
+.priceNote {
+  color: #64748b !important;
+  font-size: 0.8rem !important;
+  margin-top: 0.25rem !important;
 }
 
 .featuresTable {

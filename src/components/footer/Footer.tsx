@@ -185,32 +185,6 @@ const Footer: React.FC = memo(() => {
               />
               <Button
                 className={styles.sendButton}
-                sx={{
-                  height: {
-                    xs: '44px',
-                    sm: '48px',
-                  },
-                  fontSize: {
-                    xs: '14px',
-                    sm: '16px',
-                  },
-                  padding: {
-                    xs: '12px 20px',
-                    sm: '14px 24px',
-                  },
-                  width: {
-                    xs: '100%',
-                    sm: 'auto',
-                  },
-                  maxWidth: {
-                    xs: '100%',
-                    sm: '120px',
-                  },
-                  marginLeft: {
-                    xs: '0',
-                    sm: '4px',
-                  },
-                }}
               >
                 SUBSCRIBE
               </Button>
@@ -238,19 +212,19 @@ const Footer: React.FC = memo(() => {
                 md: '30px 20px 20px',
               },
               justifyContent: 'center',
-              textAlign: 'center',
+              textAlign: 'start',
             }}
           >
             <Box
               sx={{
-                textAlign: 'center',
+                textAlign: 'start',
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 Company
@@ -258,7 +232,7 @@ const Footer: React.FC = memo(() => {
               <ul
                 className={styles.list}
                 style={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 <li>
@@ -298,14 +272,14 @@ const Footer: React.FC = memo(() => {
 
             <Box
               sx={{
-                textAlign: 'center',
+                textAlign: 'start',
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 Contact
@@ -313,7 +287,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 Tel: +1 5263 2540 981
@@ -321,7 +295,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 Tel: +1 5263 5720 450
@@ -329,7 +303,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 Email: info@info.com
@@ -337,7 +311,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 Email: career@career.com
@@ -346,14 +320,14 @@ const Footer: React.FC = memo(() => {
 
             <Box
               sx={{
-                textAlign: 'center',
+                textAlign: 'start',
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 Cape Town Office
@@ -361,7 +335,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 361 Avisco Green St,
@@ -369,7 +343,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 Lovasa Avenue, Cape Town,
@@ -377,7 +351,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'center',
+                  textAlign: 'start',
                 }}
               >
                 90251, US

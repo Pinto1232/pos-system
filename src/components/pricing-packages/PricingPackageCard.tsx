@@ -86,7 +86,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
           <CardContent className={styles.content}>
             <ul>
               {packageData.description
-                .split('. ')
+                .split(';')
                 .map((desc, index) => (
                   <li key={index}>
                     {desc.trim()}
@@ -103,15 +103,60 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
               </div>
             )}
             <div className={styles.price}>
-              <span className={styles.currency}>
-                {displayCurrency}
-              </span>
-              <span className={styles.priceValue}>
-                {convertedPrice}
-              </span>
-              <span className={styles.period}>
-                /month
-              </span>
+              {isCustom ? (
+                <div
+                  className={
+                    styles.customPriceContainer
+                  }
+                >
+                  <span
+                    className={
+                      styles.customPriceLabel
+                    }
+                  >
+                    Starting at
+                  </span>
+                  <div
+                    className={
+                      styles.customPriceWrapper
+                    }
+                  >
+                    <span
+                      className={styles.currency}
+                    >
+                      {displayCurrency}
+                    </span>
+                    <span
+                      className={
+                        styles.priceValue
+                      }
+                    >
+                      {convertedPrice}
+                    </span>
+                    <span
+                      className={styles.period}
+                    >
+                      /month
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <span
+                    className={styles.currency}
+                  >
+                    {displayCurrency}
+                  </span>
+                  <span
+                    className={styles.priceValue}
+                  >
+                    {convertedPrice}
+                  </span>
+                  <span className={styles.period}>
+                    /month
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
@@ -125,7 +170,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
               onClick={onBuyNow}
               disabled={isDisabled}
             >
-              {isCustom ? 'Buy Now' : 'Buy Now'}
+              {isCustom ? 'Customize' : 'Buy Now'}
             </Button>
           </CardFooter>
         </Card>
