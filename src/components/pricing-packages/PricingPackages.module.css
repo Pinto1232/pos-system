@@ -6,6 +6,23 @@
   padding: 48px 24px;
   max-width: 1600px;
   margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    gap: 24px;
+    padding: 32px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    padding: 24px 16px;
+  }
 }
 
 .card {
@@ -20,6 +37,14 @@
   flex-direction: column;
   position: relative;
   border: 1px solid #e5e7eb;
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+    max-width: 350px;
+    min-height: 450px;
+  }
 }
 
 .card:hover {
@@ -38,6 +63,18 @@
 .custom:hover {
   transform: translateY(-12px);
   box-shadow: 0 8px 30px rgba(66, 135, 245, 0.2);
+}
+
+@media (max-width: 768px) {
+  .custom {
+    transform: translateY(0);
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  .custom:hover {
+    transform: translateY(-4px);
+  }
 }
 
 .customBadge {
@@ -208,6 +245,14 @@
   text-align: center;
 }
 
+@media (max-width: 768px) {
+  .price {
+    font-size: 2rem;
+    word-break: break-word;
+    flex-wrap: wrap;
+  }
+}
+
 .currency {
   font-size: 1.25rem;
   font-weight: 600;
@@ -216,12 +261,29 @@
   align-items: baseline;
 }
 
+.priceValue {
+  display: inline-block;
+  word-break: break-word;
+}
+
 .period {
   font-size: 1rem;
   font-weight: 500;
   color: #6b7280;
   display: inline-flex;
   align-items: baseline;
+}
+
+@media (max-width: 768px) {
+  .price {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .priceValue {
+    max-width: 100%;
+    text-align: center;
+  }
 }
 
 .footer {
@@ -279,4 +341,75 @@
   background: #a0a0a0;
   box-shadow: none;
   transform: none;
+}
+
+/* Message, loading and error states */
+.message,
+.loading,
+.error {
+  width: 100%;
+  text-align: center;
+  padding: 32px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.error {
+  color: #ef4444;
+}
+
+.retryButton {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: #4287f5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.retryButton:hover {
+  background: #2563eb;
+}
+
+/* Additional responsive styles */
+@media (max-width: 480px) {
+  .card {
+    min-height: auto;
+    padding-bottom: 16px;
+  }
+
+  .header {
+    padding: 24px 16px 12px;
+  }
+
+  .content {
+    padding: 0 16px;
+  }
+
+  .priceSection {
+    padding: 16px;
+  }
+
+  .footer {
+    padding: 0 16px 16px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .iconWrapper {
+    width: 48px;
+    height: 48px;
+  }
+
+  .icon {
+    width: 32px;
+    height: 32px;
+  }
 }

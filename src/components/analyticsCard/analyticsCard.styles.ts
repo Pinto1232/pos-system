@@ -10,12 +10,14 @@ export const StyledCard = styled(Card)(
     padding: theme.spacing(3),
     borderRadius: 16,
     backgroundColor: '#fff',
-    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+    transition:
+      'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
     boxShadow: '0 8px 24px rgba(0, 0, 0, 0.05)',
     border: '1px solid rgba(230, 232, 240, 0.8)',
     '&:hover': {
       transform: 'translateY(-4px)',
-      boxShadow: '0 12px 28px rgba(0, 0, 0, 0.08)',
+      boxShadow:
+        '0 12px 28px rgba(0, 0, 0, 0.08)',
       borderColor: 'rgba(210, 215, 235, 1)',
     },
     width: 370,
@@ -53,7 +55,8 @@ export const CircleNumber = styled(Box)(
     justifyContent: 'center',
     fontWeight: 700,
     marginBottom: theme.spacing(2),
-    boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
+    boxShadow:
+      '0 4px 12px rgba(99, 102, 241, 0.25)',
     border: '2px solid rgba(255, 255, 255, 0.8)',
   })
 );
@@ -73,8 +76,9 @@ export const Title = styled(Typography)(
       width: '40px',
       height: '3px',
       borderRadius: '2px',
-      background: 'linear-gradient(90deg, #6366f1, #a5b4fc)',
-    }
+      background:
+        'linear-gradient(90deg, #6366f1, #a5b4fc)',
+    },
   })
 );
 
@@ -170,7 +174,8 @@ export const ViewDetails = styled(Typography)(
     alignItems: 'center',
     textDecoration: 'none',
     color: '#4f46e5',
-    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+    transition:
+      'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
     display: 'inline-flex',
     padding: '6px 12px',
     borderRadius: '20px',
@@ -187,12 +192,13 @@ export const ViewDetails = styled(Typography)(
     '&::after': {
       content: '"→"',
       marginLeft: '6px',
-      transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+      transition:
+        'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
       fontSize: '1.1rem',
     },
     '&:hover::after': {
       marginLeft: '10px',
       transform: 'translateX(2px)',
-    }
+    },
   })
 );

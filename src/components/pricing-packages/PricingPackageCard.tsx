@@ -50,9 +50,12 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
       const IconComponent =
         iconMap[packageData.icon] ||
         iconMap['MUI:DefaultIcon'];
-      const convertedPrice = (
-        packageData.price * rate
-      ).toFixed(2);
+      // Format price with commas for thousands and limit to 2 decimal places
+      const convertedPrice =
+        new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(packageData.price * rate);
       const isCustom =
         packageData.type === 'custom';
       const displayCurrency =
@@ -103,7 +106,9 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
               <span className={styles.currency}>
                 {displayCurrency}
               </span>
-              {convertedPrice}
+              <span className={styles.priceValue}>
+                {convertedPrice}
+              </span>
               <span className={styles.period}>
                 /month
               </span>

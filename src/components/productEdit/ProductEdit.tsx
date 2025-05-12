@@ -179,14 +179,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       );
       const updatedProducts = editingProduct
         ? existingProducts.map((p: Product) =>
-          p.id === productWithStatus.id
-            ? productWithStatus
-            : p
-        )
+            p.id === productWithStatus.id
+              ? productWithStatus
+              : p
+          )
         : [
-          ...existingProducts,
-          productWithStatus,
-        ];
+            ...existingProducts,
+            productWithStatus,
+          ];
       localStorage.setItem(
         'products',
         JSON.stringify(updatedProducts)
@@ -239,7 +239,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            width: '100%'
+            width: '100%',
           }}
         >
           <Typography
@@ -248,7 +248,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-              fontWeight: 500
+              fontWeight: 500,
             }}
           >
             {params.value}
@@ -270,7 +270,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   params.row.color
                 ).text,
                 border: '1px solid #e2e8f0',
-                flexShrink: 0
+                flexShrink: 0,
               }}
             />
           )}
@@ -289,7 +289,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            width: '100%'
+            width: '100%',
           }}
         >
           {params.value || '-'}
@@ -308,7 +308,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            width: '100%'
+            width: '100%',
           }}
         >
           {params.value || '-'}
@@ -333,7 +333,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             variant="body2"
             sx={{
               fontWeight: 500,
-              color: '#1E2A3B'
+              color: '#1E2A3B',
             }}
           >
             R{Number(price).toFixed(2)}
@@ -347,7 +347,12 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       flex: 1,
       minWidth: 120,
       renderCell: (params) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <Switch
             checked={params.value === 'Active'}
             onChange={(e) => {
@@ -365,17 +370,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             size="small"
             sx={{
               '& .MuiSwitch-switchBase.Mui-checked':
-              {
-                color: '#52B788',
-                '&:hover': {
-                  backgroundColor:
-                    'rgba(82, 183, 136, 0.08)',
+                {
+                  color: '#52B788',
+                  '&:hover': {
+                    backgroundColor:
+                      'rgba(82, 183, 136, 0.08)',
+                  },
                 },
-              },
               '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
-              {
-                backgroundColor: '#52B788',
-              },
+                {
+                  backgroundColor: '#52B788',
+                },
             }}
           />
           <Typography
@@ -383,7 +388,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             sx={{
               ml: 0.5,
               fontSize: '0.75rem',
-              color: params.value === 'Active' ? '#52B788' : '#9e9e9e',
+              color:
+                params.value === 'Active'
+                  ? '#52B788'
+                  : '#9e9e9e',
             }}
           >
             {params.value}
@@ -403,7 +411,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
         <Typography
           variant="body2"
           sx={{
-            fontWeight: 500
+            fontWeight: 500,
           }}
         >
           {params.value || '0'}
@@ -447,12 +455,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       filterable: false,
       disableColumnMenu: true,
       renderCell: (params) => (
-        <Box sx={{
-          display: 'flex',
-          gap: 0.5,
-          justifyContent: 'center',
-          width: '100%'
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 0.5,
+            justifyContent: 'center',
+            width: '100%',
+          }}
+        >
           <IconButton
             size="small"
             color="primary"
@@ -744,36 +754,44 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   height: 'auto',
                   border: 'none',
                   borderRadius: '12px',
-                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
+                  boxShadow:
+                    '0px 4px 8px rgba(0, 0, 0, 0.04)',
                   '& .MuiDataGrid-main': {
                     width: '100%',
                     overflow: 'hidden',
                   },
-                  '& .MuiDataGrid-columnHeaders': {
-                    backgroundColor: '#f8f9fa',
-                    borderBottom: '1px solid #E0E0E0',
-                  },
+                  '& .MuiDataGrid-columnHeaders':
+                    {
+                      backgroundColor: '#f8f9fa',
+                      borderBottom:
+                        '1px solid #E0E0E0',
+                    },
                   '& .MuiDataGrid-cell': {
-                    borderBottom: '1px solid #E0E0E0',
+                    borderBottom:
+                      '1px solid #E0E0E0',
                   },
-                  '& .MuiDataGrid-virtualScroller': {
-                    overflow: 'auto',
-                    '&::-webkit-scrollbar': {
-                      width: '8px',
-                      height: '8px',
+                  '& .MuiDataGrid-virtualScroller':
+                    {
+                      overflow: 'auto',
+                      '&::-webkit-scrollbar': {
+                        width: '8px',
+                        height: '8px',
+                      },
+                      '&::-webkit-scrollbar-track':
+                        {
+                          background: '#f1f1f1',
+                          borderRadius: '4px',
+                        },
+                      '&::-webkit-scrollbar-thumb':
+                        {
+                          background: '#c1c1c1',
+                          borderRadius: '4px',
+                        },
+                      '&::-webkit-scrollbar-thumb:hover':
+                        {
+                          background: '#a8a8a8',
+                        },
                     },
-                    '&::-webkit-scrollbar-track': {
-                      background: '#f1f1f1',
-                      borderRadius: '4px',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: '#c1c1c1',
-                      borderRadius: '4px',
-                    },
-                    '&::-webkit-scrollbar-thumb:hover': {
-                      background: '#a8a8a8',
-                    },
-                  },
                 }}
                 hideFooter={true}
                 disableRowSelectionOnClick
@@ -799,13 +817,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                onRowsPerPageChange={
+                  handleChangeRowsPerPage
+                }
                 rowsPerPageOptions={[9, 18, 27]}
                 sx={{
                   backgroundColor: '#FFFFFF',
                   borderRadius: '0 0 12px 12px',
-                  borderTop: '1px solid rgba(224, 224, 224, 0.5)',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.03)',
+                  borderTop:
+                    '1px solid rgba(224, 224, 224, 0.5)',
+                  boxShadow:
+                    '0 2px 4px rgba(0,0,0,0.03)',
                   '& .MuiToolbar-root': {
                     padding: '0 24px',
                     minHeight: '60px',
@@ -813,44 +835,54 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     alignItems: 'center',
                     justifyContent: 'flex-end',
                   },
-                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                    color: '#1E2A3B',
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    margin: '0 12px',
-                  },
-                  '& .MuiTablePagination-select': {
-                    paddingTop: '4px',
-                    paddingBottom: '4px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '6px',
-                    marginRight: '8px',
-                    border: '1px solid #e0e0e0',
-                    '&:focus': {
-                      backgroundColor: '#f0f2f5',
-                      borderColor: '#3b82f6',
-                    },
-                  },
-                  '& .MuiTablePagination-actions': {
-                    marginLeft: '16px',
-                    '& .MuiIconButton-root': {
-                      padding: '8px',
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
+                    {
                       color: '#1E2A3B',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      margin: '0 12px',
+                    },
+                  '& .MuiTablePagination-select':
+                    {
+                      paddingTop: '4px',
+                      paddingBottom: '4px',
                       backgroundColor: '#f8f9fa',
-                      border: '1px solid #e0e0e0',
                       borderRadius: '6px',
-                      margin: '0 2px',
-                      '&:hover': {
-                        backgroundColor: '#f0f2f5',
+                      marginRight: '8px',
+                      border: '1px solid #e0e0e0',
+                      '&:focus': {
+                        backgroundColor:
+                          '#f0f2f5',
                         borderColor: '#3b82f6',
                       },
-                      '&.Mui-disabled': {
-                        color: 'rgba(0, 0, 0, 0.26)',
-                        backgroundColor: '#f8f9fa',
-                        border: '1px solid #e0e0e0',
+                    },
+                  '& .MuiTablePagination-actions':
+                    {
+                      marginLeft: '16px',
+                      '& .MuiIconButton-root': {
+                        padding: '8px',
+                        color: '#1E2A3B',
+                        backgroundColor:
+                          '#f8f9fa',
+                        border:
+                          '1px solid #e0e0e0',
+                        borderRadius: '6px',
+                        margin: '0 2px',
+                        '&:hover': {
+                          backgroundColor:
+                            '#f0f2f5',
+                          borderColor: '#3b82f6',
+                        },
+                        '&.Mui-disabled': {
+                          color:
+                            'rgba(0, 0, 0, 0.26)',
+                          backgroundColor:
+                            '#f8f9fa',
+                          border:
+                            '1px solid #e0e0e0',
+                        },
                       },
                     },
-                  },
                 }}
               />
             </S.ProductTable>

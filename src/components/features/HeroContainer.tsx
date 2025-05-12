@@ -7,8 +7,11 @@ function HeroContainer() {
     <>
       <span className={styles.highlightedText}>
         Change for a more
-      </span>{' '}
-      Fast, Reliable,and
+      </span>
+      <span className={styles.regularText}>
+        {' '}
+        Fast, Reliable, and{' '}
+      </span>
       <span className={styles.emphasis}>
         Smart Point of Sale System.
       </span>

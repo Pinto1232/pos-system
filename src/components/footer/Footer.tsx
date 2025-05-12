@@ -97,16 +97,50 @@ const Footer: React.FC = memo(() => {
         }}
       >
         <Container maxWidth="lg">
-          <Box className={styles.subscription}>
+          <Box
+            className={styles.subscription}
+            sx={{
+              gap: {
+                xs: '16px',
+                sm: '20px',
+                md: '24px',
+              },
+              marginBottom: {
+                xs: '30px',
+                sm: '40px',
+                md: '60px',
+              },
+              padding: {
+                xs: '0 15px',
+                sm: '0 20px',
+              },
+            }}
+          >
             <Typography
               variant="h5"
               className={styles.heading}
+              sx={{
+                fontSize: {
+                  xs: '24px',
+                  sm: '28px',
+                  md: '32px',
+                },
+              }}
             >
               SUBSCRIBE NOW
               <br />
               FOR UPDATES AND EXCLUSIVE OFFERS!
             </Typography>
-            <Box className={styles.inputBox}>
+            <Box
+              className={styles.inputBox}
+              sx={{
+                flexDirection: {
+                  xs: 'column',
+                  sm: 'row',
+                },
+                gap: { xs: '8px', sm: '0' },
+              }}
+            >
               <TextField
                 variant="outlined"
                 placeholder="Enter your email"
@@ -116,7 +150,10 @@ const Footer: React.FC = memo(() => {
                     color: '#000000',
                     backgroundColor: '#ffffff',
                     borderRadius: '4px',
-                    height: '48px',
+                    height: {
+                      xs: '44px',
+                      sm: '48px',
+                    },
                     boxShadow:
                       '0 2px 8px rgba(0, 0, 0, 0.1)',
                     transition: 'all 0.3s ease',
@@ -131,8 +168,14 @@ const Footer: React.FC = memo(() => {
                   },
                   '& .MuiOutlinedInput-input': {
                     color: '#000000',
-                    padding: '14px 20px',
-                    fontSize: '16px',
+                    padding: {
+                      xs: '12px 16px',
+                      sm: '14px 20px',
+                    },
+                    fontSize: {
+                      xs: '14px',
+                      sm: '16px',
+                    },
                   },
                   '& .MuiOutlinedInput-notchedOutline':
                     {
@@ -142,6 +185,32 @@ const Footer: React.FC = memo(() => {
               />
               <Button
                 className={styles.sendButton}
+                sx={{
+                  height: {
+                    xs: '44px',
+                    sm: '48px',
+                  },
+                  fontSize: {
+                    xs: '14px',
+                    sm: '16px',
+                  },
+                  padding: {
+                    xs: '12px 20px',
+                    sm: '14px 24px',
+                  },
+                  width: {
+                    xs: '100%',
+                    sm: 'auto',
+                  },
+                  maxWidth: {
+                    xs: '100%',
+                    sm: '120px',
+                  },
+                  marginLeft: {
+                    xs: '0',
+                    sm: '4px',
+                  },
+                }}
               >
                 SUBSCRIBE
               </Button>
@@ -150,15 +219,55 @@ const Footer: React.FC = memo(() => {
 
           <Box className={styles.divider} />
 
-          <Box className={styles.footerContent}>
-            <Box>
+          <Box
+            className={styles.footerContent}
+            sx={{
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(auto-fit, minmax(250px, 1fr))',
+              },
+              gap: {
+                xs: '30px',
+                sm: '30px',
+                md: '40px',
+              },
+              padding: {
+                xs: '20px 15px 10px',
+                sm: '20px 20px 10px',
+                md: '30px 20px 20px',
+              },
+            }}
+          >
+            <Box
+              sx={{
+                textAlign: {
+                  xs: 'center',
+                  md: 'left',
+                },
+              }}
+            >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
               >
                 Company
               </Typography>
-              <ul className={styles.list}>
+              <ul
+                className={styles.list}
+                style={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
+              >
                 <li>
                   <Link
                     href="#"
@@ -194,51 +303,145 @@ const Footer: React.FC = memo(() => {
               </ul>
             </Box>
 
-            <Box>
+            <Box
+              sx={{
+                textAlign: {
+                  xs: 'center',
+                  md: 'left',
+                },
+              }}
+            >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
               >
                 Contact
               </Typography>
-              <Typography className={styles.text}>
+              <Typography
+                className={styles.text}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
+              >
                 Tel: +1 5263 2540 981
               </Typography>
-              <Typography className={styles.text}>
+              <Typography
+                className={styles.text}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
+              >
                 Tel: +1 5263 5720 450
               </Typography>
-              <Typography className={styles.text}>
+              <Typography
+                className={styles.text}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
+              >
                 Email: info@info.com
               </Typography>
-              <Typography className={styles.text}>
+              <Typography
+                className={styles.text}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
+              >
                 Email: career@career.com
               </Typography>
             </Box>
 
-            <Box>
+            <Box
+              sx={{
+                textAlign: {
+                  xs: 'center',
+                  md: 'left',
+                },
+              }}
+            >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
               >
                 Cape Town Office
               </Typography>
-              <Typography className={styles.text}>
+              <Typography
+                className={styles.text}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
+              >
                 361 Avisco Green St,
               </Typography>
-              <Typography className={styles.text}>
+              <Typography
+                className={styles.text}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
+              >
                 Lovasa Avenue, Cape Town,
               </Typography>
-              <Typography className={styles.text}>
+              <Typography
+                className={styles.text}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
+              >
                 90251, US
               </Typography>
             </Box>
 
             <Box
               className={styles.socialContainer}
+              sx={{
+                alignItems: {
+                  xs: 'center',
+                  md: 'flex-start',
+                },
+              }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
+                sx={{
+                  textAlign: {
+                    xs: 'center',
+                    md: 'left',
+                  },
+                }}
               >
                 Follow Us On
               </Typography>
@@ -248,16 +451,44 @@ const Footer: React.FC = memo(() => {
 
           <Box
             className={styles.copyrightContainer}
+            sx={{
+              padding: {
+                xs: '0 15px 15px',
+                sm: '0 20px 10px',
+              },
+              marginTop: {
+                xs: '15px',
+                sm: '20px',
+              },
+              gap: { xs: '10px', sm: '8px' },
+            }}
           >
             <Link
               href="#"
               className={styles.privacy}
+              sx={{
+                fontSize: {
+                  xs: '13px',
+                  sm: '14px',
+                },
+              }}
             >
               Privacy Policy
             </Link>
             <Typography
               variant="body2"
               className={styles.copyright}
+              sx={{
+                fontSize: {
+                  xs: '11px',
+                  sm: '12px',
+                },
+                padding: {
+                  xs: '10px 15px',
+                  sm: '10px',
+                },
+                lineHeight: 1.4,
+              }}
             >
               © {new Date().getFullYear()} Pisval
               Tech. All rights reserved.

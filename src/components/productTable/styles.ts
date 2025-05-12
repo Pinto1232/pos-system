@@ -183,9 +183,10 @@ export const switchStyles: SxProps<Theme> = {
       backgroundColor: 'rgba(82, 183, 136, 0.08)',
     },
   },
-  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-    backgroundColor: '#52B788',
-  },
+  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+    {
+      backgroundColor: '#52B788',
+    },
   transform: { xs: 'scale(0.8)', sm: 'scale(1)' },
   mr: 0.5,
 };

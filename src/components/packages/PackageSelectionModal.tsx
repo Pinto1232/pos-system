@@ -1,7 +1,13 @@
 'use client';
 
 import React, { memo, Suspense } from 'react';
-import { Modal, Box } from '@mui/material';
+import {
+  Modal,
+  Box,
+  Typography,
+  IconButton,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import styles from './PackageSelectionModal.module.css';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 import { Package as CustomPackage } from '@/components/packages/custom-package-layout/types';
@@ -78,10 +84,44 @@ const PackageSelectionModal: React.FC = memo(
       <Modal
         open={isModalOpen}
         onClose={closeModal}
+        slotProps={{
+          backdrop: {
+            style: {
+              backgroundColor:
+                'rgba(0, 0, 0, 0.5)',
+            },
+          },
+        }}
       >
         <Box
           className={`${styles.modal} ${styles[`${selectedPackage.type}Modal`]}`}
+          aria-labelledby="package-selection-modal-title"
+          aria-describedby="package-selection-modal-description"
         >
+          <Box
+            className={styles.modalHeader}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography
+              variant="h6"
+              component="h2"
+              fontWeight={600}
+            >
+              {selectedPackage.title ||
+                'Package Selection'}
+            </Typography>
+            <IconButton
+              onClick={closeModal}
+              size="small"
+              sx={{
+                color: 'rgba(0, 0, 0, 0.54)',
+              }}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Box>
           <div className={styles.modalContent}>
             {renderPackageLayout()}
           </div>
