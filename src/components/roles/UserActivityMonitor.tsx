@@ -55,8 +55,6 @@ const UserActivityMonitor: React.FC = () => {
       queryKey: ['userActivity'],
       queryFn: async () => {
         try {
-          // This would be replaced with a real API call in production
-          // For now, return mock data for demonstration
           return mockActivityLogs;
         } catch (err) {
           console.error(
@@ -68,7 +66,6 @@ const UserActivityMonitor: React.FC = () => {
       },
     });
 
-  // Filter activity logs based on search query and filters
   const filteredLogs = React.useMemo(() => {
     if (!activityLogs) return [];
 
@@ -149,7 +146,6 @@ const UserActivityMonitor: React.FC = () => {
         'MMM dd, yyyy HH:mm:ss'
       );
     } catch {
-      // Return the original timestamp if formatting fails
       return timestamp;
     }
   };
@@ -350,15 +346,15 @@ const UserActivityMonitor: React.FC = () => {
                         {log.description}
                         {log.status ===
                           'failed' && (
-                          <Tooltip title="This action failed and may require attention">
-                            <IconButton size="small">
-                              <InfoIcon
-                                fontSize="small"
-                                color="error"
-                              />
-                            </IconButton>
-                          </Tooltip>
-                        )}
+                            <Tooltip title="This action failed and may require attention">
+                              <IconButton size="small">
+                                <InfoIcon
+                                  fontSize="small"
+                                  color="error"
+                                />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                       </Box>
                     </TableCell>
                     <TableCell>
