@@ -6,7 +6,7 @@ import Testimonial from './Testimonial';
 const TestimonialContainer: React.FC = () => {
   // About us data
   const aboutUsData = {
-    videoSrc: '/testimonial-video.mp4', // Replace with your actual video path
+    videoSrc: '/testimonial-video.mp4',
     clientName: 'Pinto Manuel',
     clientPosition: 'CEO',
     clientCompany: 'Pisval Tech',
