@@ -13,6 +13,10 @@ import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styles from './FloatingPriceDisplay.module.css';
+import {
+  useCurrency,
+  currencySymbols,
+} from '@/contexts/CurrencyContext';
 
 interface FloatingPriceDisplayProps {
   basePrice: number;
@@ -53,14 +57,27 @@ const FloatingPriceDisplay: React.FC<
   steps,
 }) => {
   const [expanded, setExpanded] = useState(true);
+  const {
+    formatPrice: formatCurrencyPrice,
+    rate,
+  } = useCurrency();
   const displayCurrency =
-    currency === 'ZAR' ? 'R' : currency;
-
+    currency === 'ZAR'
+      ? 'R'
+      : currency === 'Kz'
+        ? 'Kz'
+        : currencySymbols[currency] || currency;
   const formatPrice = (price: number): string => {
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(price);
+    return formatCurrencyPrice(price);
+  };
+
+  const convertPrice = (
+    price: number
+  ): number => {
+    if (currency !== 'USD') {
+      return price * rate;
+    }
+    return price;
   };
 
   // Calculate feature prices
@@ -129,7 +146,9 @@ const FloatingPriceDisplay: React.FC<
             className={styles.totalPrice}
           >
             {displayCurrency}
-            {formatPrice(calculatedPrice)}
+            {formatPrice(
+              convertPrice(calculatedPrice)
+            )}
             <span className={styles.perMonth}>
               /month
             </span>
@@ -142,7 +161,9 @@ const FloatingPriceDisplay: React.FC<
               </Typography>
               <Typography variant="body2">
                 {displayCurrency}
-                {formatPrice(basePrice)}
+                {formatPrice(
+                  convertPrice(basePrice)
+                )}
               </Typography>
             </Box>
 
@@ -156,7 +177,9 @@ const FloatingPriceDisplay: React.FC<
                 </Typography>
                 <Typography variant="body2">
                   +{displayCurrency}
-                  {formatPrice(featurePrice)}
+                  {formatPrice(
+                    convertPrice(featurePrice)
+                  )}
                 </Typography>
               </Box>
             )}
@@ -171,7 +194,9 @@ const FloatingPriceDisplay: React.FC<
                 </Typography>
                 <Typography variant="body2">
                   +{displayCurrency}
-                  {formatPrice(addOnPrice)}
+                  {formatPrice(
+                    convertPrice(addOnPrice)
+                  )}
                 </Typography>
               </Box>
             )}
@@ -185,7 +210,9 @@ const FloatingPriceDisplay: React.FC<
                 </Typography>
                 <Typography variant="body2">
                   +{displayCurrency}
-                  {formatPrice(usagePrice)}
+                  {formatPrice(
+                    convertPrice(usagePrice)
+                  )}
                 </Typography>
               </Box>
             )}
@@ -204,7 +231,9 @@ const FloatingPriceDisplay: React.FC<
                 fontWeight="bold"
               >
                 {displayCurrency}
-                {formatPrice(calculatedPrice)}
+                {formatPrice(
+                  convertPrice(calculatedPrice)
+                )}
               </Typography>
             </Box>
           </Box>
@@ -243,7 +272,9 @@ const FloatingPriceDisplay: React.FC<
                       <Typography variant="caption">
                         +{displayCurrency}
                         {formatPrice(
-                          feature.basePrice
+                          convertPrice(
+                            feature.basePrice
+                          )
                         )}
                       </Typography>
                     </Box>
@@ -285,7 +316,9 @@ const FloatingPriceDisplay: React.FC<
                     </Typography>
                     <Typography variant="caption">
                       +{displayCurrency}
-                      {formatPrice(addon.price)}
+                      {formatPrice(
+                        convertPrice(addon.price)
+                      )}
                     </Typography>
                   </Box>
                 ))}

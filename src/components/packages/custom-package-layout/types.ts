@@ -19,6 +19,7 @@ export interface Package {
     | UsagePricing[]
     | null;
   multiCurrencyPrices: string;
+  currency?: string;
 }
 
 export interface Feature {
@@ -146,4 +147,5 @@ export interface CustomPackageLayoutProps {
   onEnterpriseFeatureToggle?: (
     featureId: string
   ) => void;
+  currentCurrency?: string;
 }

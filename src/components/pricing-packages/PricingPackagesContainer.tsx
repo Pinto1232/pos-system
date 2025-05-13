@@ -2,7 +2,6 @@
 
 import React, {
   useEffect,
-  useState,
   useContext,
 } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -15,9 +14,7 @@ import {
 } from '@/contexts/PackageSelectionContext';
 import { AxiosInstance } from 'axios';
 import { PricePackages } from '@/components/pricing-packages/types';
-import { fetchCurrencyAndRate } from '@/utils/currencyUtils';
 import { AuthContext } from '@/contexts/AuthContext';
-import { AxiosError } from 'axios';
 
 interface PackageData {
   id: string | number;
@@ -29,6 +26,8 @@ interface PackageData {
   testPeriodDays?: number;
   type?: string;
   packageType?: string;
+  currency?: string;
+  multiCurrencyPrices?: string;
   [key: string]: unknown;
 }
 
@@ -45,6 +44,9 @@ const fallbackPackages: PackageData[] = [
     price: 29.99,
     testPeriodDays: 14,
     type: 'starter',
+    currency: 'USD',
+    multiCurrencyPrices:
+      '{"ZAR": 549.99, "EUR": 27.99, "GBP": 23.99}',
   },
   {
     id: 2,
@@ -57,18 +59,24 @@ const fallbackPackages: PackageData[] = [
     price: 59.99,
     testPeriodDays: 14,
     type: 'growth',
+    currency: 'USD',
+    multiCurrencyPrices:
+      '{"ZAR": 999.99, "EUR": 54.99, "GBP": 47.99}',
   },
   {
-    id: 3,
-    title: 'Premium',
+    id: 5,
+    title: 'Custom',
     description:
-      'Everything in Growth;Advanced inventory forecasting;Custom branding;24/7 support;API access;Advanced analytics;Multi-currency support',
-    icon: 'MUI:DiamondIcon',
+      'Build your own package;Select only the features you need;Add modules as your business grows;Flexible pricing based on selections;Pay only for what you use;Scalable solution for any business size',
+    icon: 'MUI:SettingsIcon',
     extraDescription:
-      'For established businesses requiring advanced features',
-    price: 99.99,
+      'Create a custom solution that fits your exact needs',
+    price: 49.99,
     testPeriodDays: 14,
-    type: 'premium',
+    type: 'custom',
+    currency: 'USD',
+    multiCurrencyPrices:
+      '{"ZAR": 899.99, "EUR": 45.99, "GBP": 39.99}',
   },
   {
     id: 4,
@@ -81,18 +89,24 @@ const fallbackPackages: PackageData[] = [
     price: 199.99,
     testPeriodDays: 30,
     type: 'enterprise',
+    currency: 'USD',
+    multiCurrencyPrices:
+      '{"ZAR": 3499.99, "EUR": 179.99, "GBP": 159.99}',
   },
   {
-    id: 5,
-    title: 'Custom',
+    id: 3,
+    title: 'Premium',
     description:
-      'Build your own package;Select only the features you need;Add modules as your business grows;Flexible pricing based on selections;Pay only for what you use;Scalable solution for any business size',
-    icon: 'MUI:SettingsIcon',
+      'Everything in Growth;Advanced inventory forecasting;Custom branding;24/7 support;API access;Advanced analytics;Multi-currency support',
+    icon: 'MUI:DiamondIcon',
     extraDescription:
-      'Create a custom solution that fits your exact needs',
-    price: 0.0,
+      'For established businesses requiring advanced features',
+    price: 99.99,
     testPeriodDays: 14,
-    type: 'custom',
+    type: 'premium',
+    currency: 'USD',
+    multiCurrencyPrices:
+      '{"ZAR": 1799.99, "EUR": 89.99, "GBP": 79.99}',
   },
 ];
 
@@ -101,14 +115,6 @@ const PricingPackagesContainer: React.FC = () => {
   const { selectPackage } = usePackageSelection();
   const { authenticated, token } =
     useContext(AuthContext);
-  const [currencyInfo, setCurrencyInfo] =
-    useState<{
-      currency: string;
-      rate: number;
-    }>({
-      currency: 'USD',
-      rate: 1,
-    });
 
   useEffect(() => {
     console.log('Authentication state:', {
@@ -167,20 +173,7 @@ const PricingPackagesContainer: React.FC = () => {
       enabled: authenticated,
     });
 
-  useEffect(() => {
-    fetchCurrencyAndRate()
-      .then(setCurrencyInfo)
-      .catch((error: Error) => {
-        console.error(
-          'Error fetching currency info:',
-          error
-        );
-        setCurrencyInfo({
-          currency: 'USD',
-          rate: 1,
-        });
-      });
-  }, []);
+  // Currency is now handled by the CurrencyContext
 
   useEffect(() => {
     if (data) {
@@ -188,6 +181,22 @@ const PricingPackagesContainer: React.FC = () => {
         '📦 Retrieved Pricing Packages:',
         data
       );
+
+      // Log the custom package price specifically
+      const customPackage = data.data.find(
+        (pkg) =>
+          pkg.type?.toLowerCase() === 'custom'
+      );
+      if (customPackage) {
+        console.log(
+          'Custom Package Price:',
+          customPackage.price
+        );
+      } else {
+        console.log(
+          'No custom package found in data'
+        );
+      }
     }
   }, [data]);
 
@@ -229,12 +238,22 @@ const PricingPackagesContainer: React.FC = () => {
           'premium',
         ].includes(type)
           ? (type as
-            | 'starter'
-            | 'growth'
-            | 'enterprise'
-            | 'custom'
-            | 'premium')
+              | 'starter'
+              | 'growth'
+              | 'enterprise'
+              | 'custom'
+              | 'premium')
           : 'starter';
+
+        // Set a fixed price for the Custom package
+        let price = pkg.price || 0;
+        if (validType === 'custom') {
+          price = 49.99;
+          console.log(
+            'Setting custom package price in fallback to:',
+            price
+          );
+        }
 
         return {
           id: pkg.id,
@@ -243,15 +262,25 @@ const PricingPackagesContainer: React.FC = () => {
           icon: pkg.icon || '',
           extraDescription:
             pkg.extraDescription || '',
-          price: pkg.price || 0,
+          price: price,
           testPeriodDays: pkg.testPeriodDays || 0,
           type: validType,
+          currency: pkg.currency || 'USD',
+          multiCurrencyPrices:
+            pkg.multiCurrencyPrices ||
+            '{"ZAR": 549.99, "EUR": 27.99, "GBP": 23.99}',
         } as Package;
       });
 
     return (
       <div className={styles.wrapper}>
-        <div className={styles.container}>
+        <div
+          className={styles.container}
+          style={{
+            width: '100%',
+            margin: '0 auto',
+          }}
+        >
           {fallbackProcessedPackages.map(
             (pkg: Package) => (
               <PricingPackageCard
@@ -260,8 +289,6 @@ const PricingPackagesContainer: React.FC = () => {
                 onBuyNow={() =>
                   selectPackage(pkg)
                 }
-                currency={currencyInfo.currency}
-                rate={currencyInfo.rate}
               />
             )
           )}
@@ -278,7 +305,8 @@ const PricingPackagesContainer: React.FC = () => {
     );
   }
 
-  const packages = (data?.data ?? []).map(
+  // Map the packages from the API
+  const mappedPackages = (data?.data ?? []).map(
     (pkg: PackageData) => {
       const type =
         pkg.type || pkg.packageType || 'starter';
@@ -290,12 +318,22 @@ const PricingPackagesContainer: React.FC = () => {
         'premium',
       ].includes(type)
         ? (type as
-          | 'starter'
-          | 'growth'
-          | 'enterprise'
-          | 'custom'
-          | 'premium')
+            | 'starter'
+            | 'growth'
+            | 'enterprise'
+            | 'custom'
+            | 'premium')
         : 'starter';
+
+      // Set a fixed price for the Custom package
+      let price = pkg.price || 0;
+      if (validType === 'custom') {
+        price = 49.99;
+        console.log(
+          'Setting custom package price to:',
+          price
+        );
+      }
 
       return {
         id: pkg.id,
@@ -304,24 +342,59 @@ const PricingPackagesContainer: React.FC = () => {
         icon: pkg.icon || '',
         extraDescription:
           pkg.extraDescription || '',
-        price: pkg.price || 0,
+        price: price,
         testPeriodDays: pkg.testPeriodDays || 0,
         type: validType,
+        currency: pkg.currency || 'USD',
+        multiCurrencyPrices:
+          pkg.multiCurrencyPrices || '{}',
       } as Package;
     }
   );
 
+  // Reorder packages to swap Premium and Custom positions
+  const packages = [...mappedPackages];
+
+  // Find the Premium and Custom packages
+  const premiumIndex = packages.findIndex(
+    (pkg) => pkg.type === 'premium'
+  );
+  const customIndex = packages.findIndex(
+    (pkg) => pkg.type === 'custom'
+  );
+
+  // Only swap if both packages exist
+  if (premiumIndex !== -1 && customIndex !== -1) {
+    // Determine which should come first based on the current order in the UI
+    // If Premium is currently at position 3 (after Starter and Growth) and Custom is at position 5
+    // We want Custom to be at position 3 and Premium at position 5
+    if (premiumIndex < customIndex) {
+      // Swap the packages
+      [
+        packages[premiumIndex],
+        packages[customIndex],
+      ] = [
+        packages[customIndex],
+        packages[premiumIndex],
+      ];
+    }
+  }
+
   return (
     <div className={styles.wrapper}>
-      <div className={styles.container}>
+      <div
+        className={styles.container}
+        style={{
+          width: '100%',
+          margin: '0 auto',
+        }}
+      >
         {packages.length > 0 ? (
           packages.map((pkg: Package) => (
             <PricingPackageCard
               key={pkg.id}
               packageData={pkg}
               onBuyNow={() => selectPackage(pkg)}
-              currency={currencyInfo.currency}
-              rate={currencyInfo.rate}
             />
           ))
         ) : (

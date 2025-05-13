@@ -12,6 +12,7 @@ import { CustomizationProvider } from '@/contexts/CustomizationContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { AxiosError } from 'axios';
 import AuthWrapper from '@/contexts/AuthWrapper';
+import { CurrencyProvider } from '@/contexts/CurrencyContext';
 
 const defaultQueryOptions: DefaultOptions = {
   queries: {
@@ -77,13 +78,15 @@ export default function Providers({
       <AuthWrapper>
         <ProductProvider>
           <CustomizationProvider userId="current-user">
-            <QueryClientProvider
-              client={queryClient}
-            >
-              <NotificationProvider>
-                {children}
-              </NotificationProvider>
-            </QueryClientProvider>
+            <CurrencyProvider>
+              <QueryClientProvider
+                client={queryClient}
+              >
+                <NotificationProvider>
+                  {children}
+                </NotificationProvider>
+              </QueryClientProvider>
+            </CurrencyProvider>
           </CustomizationProvider>
         </ProductProvider>
       </AuthWrapper>

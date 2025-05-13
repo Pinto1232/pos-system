@@ -12,16 +12,12 @@ import {
   Alert,
 } from '@mui/material';
 import iconMap from '../../../utils/icons';
-import SuccessMessage from '../../ui/success-message/SuccessMessage';
 import LazyLoginForm from '../../login-form/LoginForm';
-import CheckoutForm from '../../checkout/CheckoutForm';
 import styles from './StarterPackageLayout.module.css';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
-import {
-  CheckoutField,
-  OrderSummaryItem,
-} from '../../checkout/CheckoutFormInterfaces';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
+import { useSuccessModal } from '@/contexts/SuccessModalContext';
 
 interface StarterPackageLayoutProps {
   selectedPackage: {
@@ -54,18 +50,19 @@ const StarterPackageLayout: React.FC<
   StarterPackageLayoutProps
 > = ({ selectedPackage }) => {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] =
     useState(false);
-  const [showCheckoutForm, setShowCheckoutForm] =
-    useState(false);
-  const [currentCurrency, setCurrentCurrency] =
-    useState<string>(
-      selectedPackage.currency || 'USD'
-    );
+  const {
+    currency: currentCurrency,
+    setCurrency: setCurrentCurrency,
+    currencySymbol,
+    formatPrice,
+    rate,
+  } = useCurrency();
   const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } =
     useSpinner();
+  const { showSuccessModal } = useSuccessModal();
 
   const [snackbarOpen, setSnackbarOpen] =
     useState(false);
@@ -78,7 +75,7 @@ const StarterPackageLayout: React.FC<
 
   const handleSelectedStarterPackage =
     async () => {
-      setSpinnerLoading(true); // Show spinner
+      setSpinnerLoading(true);
       setLoading(true);
       console.log('Selected package', {
         ...selectedPackage,
@@ -90,21 +87,25 @@ const StarterPackageLayout: React.FC<
         setTimeout(resolve, 2000)
       );
 
-      setSpinnerLoading(false); // Hide spinner
+      setSpinnerLoading(false);
       setLoading(false);
-      // Instead of showing success message, show checkout form
-      setShowCheckoutForm(true);
-    };
 
-  const handleCloseSuccessMessage = () => {
-    setSuccess(false);
-  };
+      showSuccessModal({
+        message: 'Package selected successfully!',
+        onConfirm: handleConfirmSuccessMessage,
+        onReturn: handleReturnSuccessMessage,
+        selectedPackage: selectedPackage,
+        currentCurrency: currentCurrency,
+        formData: formData,
+        calculatedPrice: displayPrice,
+        onAddToCart: handleAddToCart,
+      });
+    };
 
   const handleConfirmSuccessMessage = (
     isSignup: boolean
   ) => {
     console.log('Confirmed', isSignup);
-    setSuccess(false);
 
     if (isSignup) {
       setShowLoginForm(true);
@@ -115,7 +116,6 @@ const StarterPackageLayout: React.FC<
 
   const handleReturnSuccessMessage = () => {
     console.log('Return');
-    setSuccess(false);
   };
 
   const handleCurrencyChange = (
@@ -141,164 +141,46 @@ const StarterPackageLayout: React.FC<
         selectedPackage.multiCurrencyPrices
       )
     : null;
+  let displayPrice = selectedPackage.price;
 
-  const displayPrice =
-    currentCurrency && multiCurrency
-      ? multiCurrency[currentCurrency]
-      : selectedPackage.price;
-  const currencySymbol =
-    currencySymbols[currentCurrency] || '$';
+  if (
+    currentCurrency &&
+    multiCurrency &&
+    multiCurrency[currentCurrency]
+  ) {
+    displayPrice = multiCurrency[currentCurrency];
+  } else {
+    displayPrice = selectedPackage.price * rate;
+  }
 
-  const checkoutFields: CheckoutField[] = [
-    {
-      label: 'First Name',
-      name: 'firstName',
-      type: 'text',
-      required: true,
-    },
-    {
-      label: 'Last Name',
-      name: 'lastName',
-      type: 'text',
-      required: true,
-    },
-    {
-      label: 'Email',
-      name: 'email',
-      type: 'email',
-      required: true,
-    },
-    {
-      label: 'Phone Number',
-      name: 'phone',
-      type: 'text',
-      required: true,
-    },
-    {
-      label: 'Address',
-      name: 'address',
-      type: 'text',
-      required: true,
-    },
-    {
-      label: 'Country',
-      name: 'country',
-      type: 'select',
-      required: true,
-      options: ['USA', 'Canada', 'UK'],
-    },
-    {
-      label: 'State / Province / Region',
-      name: 'state',
-      type: 'select',
-      required: true,
-      options: [
-        'California',
-        'Texas',
-        'New York',
-      ],
-    },
-    {
-      label: 'City',
-      name: 'city',
-      type: 'text',
-      required: true,
-    },
-    {
-      label: 'Postal / Zip Code',
-      name: 'postal',
-      type: 'text',
-      required: true,
-    },
-  ];
+  // For debugging
+  console.log(
+    `StarterPackage modal price: ${displayPrice} ${currentCurrency}, rate: ${rate}`
+  );
 
-  const orderSummaryItems: OrderSummaryItem[] = [
-    {
-      label: 'Package',
-      value: selectedPackage.title,
-    },
-    {
-      label: 'Price',
-      value: `${currencySymbol}${displayPrice}`,
-    },
-    {
-      label: 'Test Period',
-      value: `${selectedPackage.testPeriodDays} days`,
-    },
-  ];
-
-  const [formData, setFormData] = useState<
+  const [formData] = useState<
     Record<string, string>
   >({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@example.com',
+    phone: '123-456-7890',
+    address: '123 Main St',
     country: 'USA',
     state: 'California',
-    city: '',
-    postal: '',
+    city: 'San Francisco',
+    postal: '94105',
   });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    // After form submission, show success message
-    setShowCheckoutForm(false);
-    setSuccess(true);
-  };
 
   if (showLoginForm) {
     return <LazyLoginForm />;
   }
 
-  if (showCheckoutForm) {
-    return (
-      <CheckoutForm
-        title="Enter Your Details"
-        checkoutFields={checkoutFields}
-        orderSummaryTitle="Order Summary"
-        orderSummaryItems={orderSummaryItems}
-        formData={formData}
-        onChange={handleChange}
-        onSubmit={(e) => {
-          handleSubmit(e);
-          console.log(
-            'Checkout form data:',
-            formData
-          );
-        }}
-      />
-    );
-  }
+  // Removed checkout form conditional rendering
 
   return (
     <Box className={styles.container}>
-      {success && (
-        <SuccessMessage
-          open={success}
-          onClose={handleCloseSuccessMessage}
-          onConfirm={handleConfirmSuccessMessage}
-          onReturn={handleReturnSuccessMessage}
-          selectedPackage={selectedPackage}
-          currentCurrency={currentCurrency}
-          formData={formData}
-          calculatedPrice={displayPrice}
-          onAddToCart={handleAddToCart}
-        />
-      )}
-      {!loading && !success && (
+      {!loading && (
         <Grid
           container
           spacing={2}
@@ -351,7 +233,7 @@ const StarterPackageLayout: React.FC<
                   <b>
                     {currentCurrency === 'Kz'
                       ? `${displayPrice}Kz`
-                      : `${currencySymbol}${displayPrice}`}
+                      : `${currencySymbol}${formatPrice(displayPrice)}`}
                   </b>
                   /mo
                 </Typography>
@@ -397,7 +279,7 @@ const StarterPackageLayout: React.FC<
                           >
                             {currency === 'Kz'
                               ? `${price}Kz`
-                              : `${currencySymbols[currency] || '$'}${price}`}
+                              : `${currencySymbols[currency] || '$'}${formatPrice(price)}`}
                           </b>
                         }
                         className={
@@ -454,7 +336,7 @@ const StarterPackageLayout: React.FC<
                 <b>
                   {currentCurrency === 'Kz'
                     ? `${displayPrice}Kz`
-                    : `${currencySymbol}${displayPrice}`}
+                    : `${currencySymbol}${formatPrice(displayPrice)}`}
                 </b>
               </Typography>
 

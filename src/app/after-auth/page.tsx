@@ -62,7 +62,7 @@ const AfterAuth = () => {
             'accessToken',
             response.data.accessToken
           );
-          router.replace('/dashboard');
+          router.replace('/');
         } else {
           throw new Error(
             'Invalid server response'

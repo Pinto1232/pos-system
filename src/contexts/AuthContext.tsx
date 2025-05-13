@@ -22,8 +22,7 @@ const FALLBACK_CONFIG = {
   realm: 'pisval-pos-realm',
   clientId: 'pos-backend',
   redirectUri: 'http://localhost:3000/after-auth',
-  loginRedirect:
-    'http://localhost:3000/dashboard',
+  loginRedirect: 'http://localhost:3000/',
   logoutRedirect: 'http://localhost:3000/login',
 };
 

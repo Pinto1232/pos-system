@@ -12,7 +12,7 @@ interface ButtonProps {
   variant?: 'contained' | 'outlined' | 'text';
   fullWidth?: boolean;
   disabled?: boolean;
-  sx?: any; // Add support for the sx prop
+  sx?: React.CSSProperties; // Add support for the sx prop with proper typing
 }
 
 export const Button: React.FC<ButtonProps> = ({

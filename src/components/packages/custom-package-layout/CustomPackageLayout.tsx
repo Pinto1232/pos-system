@@ -39,6 +39,7 @@ import {
   CustomPackageLayoutProps,
 } from './types';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import {
   FaCheck,
   FaCalendarAlt,
@@ -84,13 +85,21 @@ const CustomPackageLayout: React.FC<
   enterpriseFeatures,
   onEnterpriseFeatureToggle,
   onShowSuccessMessage,
+  currentCurrency: propsCurrency,
 }) => {
   const [loading, setLoading] = useState(false);
   const [backLoading, setBackLoading] =
     useState(false);
-  const [selectedCurrency] =
-    useState<string>('USD');
   const { setTestPeriod } = useTestPeriod();
+  const {
+    currency: contextCurrency,
+    formatPrice: formatCurrencyPrice,
+    rate,
+    currencySymbol,
+  } = useCurrency();
+
+  const selectedCurrency =
+    propsCurrency || contextCurrency;
   const [
     totalFeaturePrice,
     setTotalFeaturePrice,
@@ -315,28 +324,81 @@ const CustomPackageLayout: React.FC<
   const getCurrencySymbol = (
     currency: string
   ) => {
-    switch (currency) {
-      case 'USD':
-        return 'R';
-      case 'EUR':
-        return '€';
-      case 'GBP':
-        return '£';
-      case 'Kz':
-        return 'Kz';
-      default:
-        return currency;
+    if (currency === 'ZAR') {
+      return 'R';
+    } else if (currency === 'Kz') {
+      return 'Kz';
+    } else {
+      const symbols: Record<string, string> = {
+        USD: '$',
+        EUR: '€',
+        GBP: '£',
+        ZAR: 'R',
+        Kz: 'Kz',
+      };
+      return symbols[currency] || currency;
     }
+  };
+
+  const getCurrentCurrencySymbol = () => {
+    return currencySymbol;
+  };
+
+  const convertPrice = (
+    price: number
+  ): number => {
+    if (selectedCurrency !== 'USD') {
+      return price * rate;
+    }
+    return price;
   };
 
   const formatPrice = (
     currency: string,
     price: number
   ) => {
-    const roundedPrice = Math.round(price);
-    return currency === 'Kz'
-      ? `${roundedPrice}${currency}`
-      : `${getCurrencySymbol(currency)} ${roundedPrice}`;
+    let displayPrice = price;
+
+    if (
+      currency !== 'USD' &&
+      selectedPackage.currency === 'USD'
+    ) {
+      let multiCurrency: Record<
+        string,
+        number
+      > | null = null;
+      if (selectedPackage.multiCurrencyPrices) {
+        try {
+          multiCurrency = JSON.parse(
+            selectedPackage.multiCurrencyPrices
+          );
+          if (
+            multiCurrency &&
+            multiCurrency[currency]
+          ) {
+            displayPrice =
+              multiCurrency[currency];
+          } else {
+            displayPrice = price * rate;
+          }
+        } catch (e) {
+          console.error(
+            'Error parsing multiCurrencyPrices:',
+            e
+          );
+
+          displayPrice = price * rate;
+        }
+      } else {
+        displayPrice = price * rate;
+      }
+    }
+
+    if (currency === 'Kz') {
+      return `${Math.round(displayPrice)}${currency}`;
+    } else {
+      return `${getCurrencySymbol(currency)} ${formatCurrencyPrice(displayPrice)}`;
+    }
   };
 
   const handleCheckboxChange = (id: string) => {
@@ -467,7 +529,11 @@ const CustomPackageLayout: React.FC<
 
             <Box className={styles.priceDisplay}>
               <Typography variant="h5">
-                Base Price: R{displayPrice}
+                Base Price:{' '}
+                {formatPrice(
+                  selectedCurrency,
+                  displayPrice
+                )}
               </Typography>
             </Box>
 
@@ -1641,10 +1707,13 @@ const CustomPackageLayout: React.FC<
                   description:
                     'Pay monthly for maximum flexibility',
                   price:
-                    formatPrice(
-                      selectedCurrency,
-                      calculatedPrice
-                    ) + '/month',
+                    getCurrentCurrencySymbol() +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        calculatedPrice
+                      )
+                    ) +
+                    '/month',
                   features: [
                     'Monthly Billing',
                     'No Commitment',
@@ -1657,10 +1726,13 @@ const CustomPackageLayout: React.FC<
                   description:
                     'Save 10% with quarterly billing',
                   price:
-                    formatPrice(
-                      selectedCurrency,
-                      calculatedPrice * 3 * 0.9
-                    ) + '/3 months',
+                    getCurrentCurrencySymbol() +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        calculatedPrice * 3 * 0.9
+                      )
+                    ) +
+                    '/3 months',
                   features: [
                     '10% Discount',
                     'Quarterly Reviews',
@@ -1673,10 +1745,13 @@ const CustomPackageLayout: React.FC<
                   description:
                     'Save 15% with biannual billing',
                   price:
-                    formatPrice(
-                      selectedCurrency,
-                      calculatedPrice * 6 * 0.85
-                    ) + '/6 months',
+                    getCurrentCurrencySymbol() +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        calculatedPrice * 6 * 0.85
+                      )
+                    ) +
+                    '/6 months',
                   features: [
                     '15% Discount',
                     'Flexible Billing',
@@ -1689,10 +1764,13 @@ const CustomPackageLayout: React.FC<
                   description:
                     'Save 20% with annual billing',
                   price:
-                    formatPrice(
-                      selectedCurrency,
-                      calculatedPrice * 12 * 0.8
-                    ) + '/year',
+                    getCurrentCurrencySymbol() +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        calculatedPrice * 12 * 0.8
+                      )
+                    ) +
+                    '/year',
                   features: [
                     '20% Discount',
                     'Priority Support',
@@ -3498,7 +3576,6 @@ const CustomPackageLayout: React.FC<
                       </Typography>
                     </Box>
 
-                    {/* Here's the modified button container with proper spacing */}
                     <Box
                       sx={{
                         display: 'flex',

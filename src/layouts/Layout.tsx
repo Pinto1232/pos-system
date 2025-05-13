@@ -11,6 +11,7 @@ import { PackageSelectionProvider } from '@/contexts/PackageSelectionContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
 import { SpinnerProvider } from '@/contexts/SpinnerContext';
 import { TestPeriodProvider } from '@/contexts/TestPeriodContext';
+import SuccessModalProvider from '@/contexts/SuccessModalContext';
 import ChatbotContainer from '@/components/ui/chatbot/ChatbotContainer';
 import {
   QueryClient,
@@ -32,31 +33,33 @@ const Layout = ({
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <SpinnerProvider>
-          <PackageSelectionProvider>
-            <SidebarProvider>
-              <TestPeriodProvider>
-                {!isDashboard && (
-                  <>
-                    <NavbarContainer />
-                    <NavbarSpacer />
-                    <LazyJumbotron
-                      heading="Pisval Tech Point of Sale System"
-                      subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
-                      backgroundImage="/pos_banner.jpg"
-                      overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
-                    />
-                    <SidebarContainer />
-                  </>
-                )}
-                <main>{children}</main>
-                <PackageSelectionModal />
-                {!isDashboard && (
-                  <FooterContainer />
-                )}
-                <ChatbotContainer />
-              </TestPeriodProvider>
-            </SidebarProvider>
-          </PackageSelectionProvider>
+          <SuccessModalProvider>
+            <PackageSelectionProvider>
+              <SidebarProvider>
+                <TestPeriodProvider>
+                  {!isDashboard && (
+                    <>
+                      <NavbarContainer />
+                      <NavbarSpacer />
+                      <LazyJumbotron
+                        heading="Pisval Tech Point of Sale System"
+                        subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
+                        backgroundImage="/pos_banner.jpg"
+                        overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
+                      />
+                      <SidebarContainer />
+                    </>
+                  )}
+                  <main>{children}</main>
+                  <PackageSelectionModal />
+                  {!isDashboard && (
+                    <FooterContainer />
+                  )}
+                  <ChatbotContainer />
+                </TestPeriodProvider>
+              </SidebarProvider>
+            </PackageSelectionProvider>
+          </SuccessModalProvider>
         </SpinnerProvider>
       </QueryClientProvider>
     </ErrorBoundary>

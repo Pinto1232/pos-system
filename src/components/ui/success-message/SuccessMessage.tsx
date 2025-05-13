@@ -21,6 +21,9 @@ import styles from './SuccessMessage.module.css';
 import { STRIPE_PRICE_IDS } from '@/constants/stripeProducts';
 import { useCart } from '@/contexts/CartContext';
 import { motion } from 'framer-motion';
+import { useSpinner } from '@/contexts/SpinnerContext';
+import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import { useSuccessModal } from '@/contexts/SuccessModalContext';
 
 interface SuccessMessageProps {
   open: boolean;
@@ -78,6 +81,11 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
       onAddToCart,
     }) => {
       const { addToCart, cartItems } = useCart();
+      const { loading } = useSpinner();
+      const { closeModal } =
+        usePackageSelection();
+      const { hideSuccessModal } =
+        useSuccessModal();
       const [snackbarOpen, setSnackbarOpen] =
         useState(false);
       const [
@@ -215,7 +223,10 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
           onAddToCart(notificationMessage);
         }
 
+        // Close both the success modal and the package selection modal
         onConfirm(false);
+        hideSuccessModal(); // Close the success modal
+        closeModal(); // Close the package selection modal
       }, [
         addToCart,
         selectedPackage,
@@ -228,6 +239,8 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
         calculatedPrice,
         onAddToCart,
         cartItems,
+        closeModal,
+        hideSuccessModal,
       ]);
 
       const handleSnackbarClose = () => {
@@ -235,6 +248,9 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
       };
 
       if (!open) return null;
+
+      // Don't show the modal at all when spinner is loading (for any package type)
+      if (loading) return null;
 
       return (
         <>
@@ -250,7 +266,10 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
             >
               <IconButton
                 className={styles.closeButton}
-                onClick={onClose}
+                onClick={() => {
+                  hideSuccessModal();
+                  onReturn();
+                }}
               >
                 <CloseIcon />
               </IconButton>
@@ -261,17 +280,21 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                 }
               >
                 <motion.div
+                  initial={{
+                    scale: 0,
+                    opacity: 0,
+                  }}
                   animate={{
-                    rotate: [
-                      0, 10, -10, 10, -10, 0,
-                    ],
-                    scale: [1, 1.1, 1],
+                    scale: 1,
+                    opacity: 1,
                   }}
                   transition={{
-                    duration: 0.5,
-                    delay: 0.5,
-                    repeat: 0,
+                    type: 'spring',
+                    stiffness: 260,
+                    damping: 20,
+                    delay: 0.2,
                   }}
+                  className="checkmark-animation"
                 >
                   <CheckCircleIcon
                     className={styles.successIcon}
@@ -279,53 +302,95 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                 </motion.div>
               </div>
 
-              <Typography
-                variant="h6"
-                className={styles.successTitle}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.5,
+                  duration: 0.3,
+                }}
               >
-                Success
-              </Typography>
-              <Typography
-                className={styles.successText}
-              >
-                {message ||
-                  'Please proceed with payment'}
-              </Typography>
+                <Typography
+                  variant="h6"
+                  className={styles.successTitle}
+                >
+                  Success
+                </Typography>
+              </motion.div>
 
-              <div
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.7,
+                  duration: 0.3,
+                }}
+              >
+                <Typography
+                  className={styles.successText}
+                >
+                  {message ||
+                    'Please proceed with payment'}
+                </Typography>
+              </motion.div>
+
+              <motion.div
                 className={
                   styles.successMessageActions
                 }
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.9,
+                  duration: 0.3,
+                }}
               >
                 <Button
-                  variant="contained"
-                  style={{
-                    backgroundColor: '#1e3a8a',
+                  variant="outlined"
+                  onClick={() => {
+                    // Just close the success modal, but keep the package selection modal open
+                    hideSuccessModal();
+                    onReturn();
                   }}
-                  onClick={onReturn}
                   startIcon={<ArrowBackIcon />}
                   sx={{
                     width: '150px',
                     whiteSpace: 'nowrap',
+                    borderRadius: 0,
+                    borderColor: '#2563eb',
+                    color: '#2563eb',
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    padding: '8px 16px',
+                    '&:hover': {
+                      borderColor: '#1e40af',
+                      backgroundColor:
+                        'rgba(37, 99, 235, 0.04)',
+                    },
                   }}
                 >
                   Return
                 </Button>
                 <Button
                   variant="contained"
-                  style={{
-                    backgroundColor: '#1e3a8a',
-                  }}
                   onClick={handleAddToCart}
                   startIcon={<HiShoppingCart />}
                   sx={{
                     width: '150px',
                     whiteSpace: 'nowrap',
+                    borderRadius: 0,
+                    backgroundColor: '#2563eb',
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    padding: '8px 16px',
+                    '&:hover': {
+                      backgroundColor: '#1e40af',
+                    },
                   }}
                 >
                   Add to Cart
                 </Button>
-              </div>
+              </motion.div>
             </div>
           </div>
 

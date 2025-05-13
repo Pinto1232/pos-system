@@ -155,10 +155,16 @@ const Sales: React.FC<SalesProps> = ({
     return () => clearInterval(timer);
   }, []); // Run once on mount
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+  const formatCurrency = (
+    amount: number,
+    currencyCode: string = 'USD'
+  ) => {
+    // Use appropriate locale based on currency
+    const locale =
+      currencyCode === 'ZAR' ? 'en-ZA' : 'en-US';
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
-      currency: 'USD',
+      currency: currencyCode,
       maximumFractionDigits: 0,
     }).format(amount);
   };

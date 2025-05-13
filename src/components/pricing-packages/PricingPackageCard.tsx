@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button/Button';
 import iconMap from '@/utils/icons';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface PricingPackageProps {
   packageData: {
@@ -27,121 +28,133 @@ interface PricingPackageProps {
       | 'enterprise'
       | 'custom'
       | 'premium';
+    currency?: string;
+    multiCurrencyPrices?: string;
   };
   onBuyNow: () => void;
-  currency: string;
-  rate: number;
 }
 
 const PricingPackageCard: React.FC<PricingPackageProps> =
-  memo(
-    ({
-      packageData,
-      onBuyNow,
+  memo(({ packageData, onBuyNow }) => {
+    const { isPackageDisabled } =
+      usePackageSelection();
+    const {
       currency,
       rate,
-    }) => {
-      const { isPackageDisabled } =
-        usePackageSelection();
-      const isDisabled = isPackageDisabled(
-        packageData.id
-      );
+      formatPrice,
+      currencySymbol,
+    } = useCurrency();
+    const isDisabled = isPackageDisabled(
+      packageData.id
+    );
 
-      const IconComponent =
-        iconMap[packageData.icon] ||
-        iconMap['MUI:DefaultIcon'];
-      // Format price with commas for thousands and limit to 2 decimal places
-      const convertedPrice =
-        new Intl.NumberFormat('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }).format(packageData.price * rate);
-      const isCustom =
-        packageData.type === 'custom';
-      const displayCurrency =
-        currency === 'ZAR' ? 'R' : currency;
+    const IconComponent =
+      iconMap[packageData.icon] ||
+      iconMap['MUI:DefaultIcon'];
 
-      return (
-        <Card
-          className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''}`}
-        >
-          {isCustom && (
-            <div className={styles.customBadge}>
-              Custom
+    let displayPrice = packageData.price;
+    if (
+      packageData.type === 'custom' &&
+      displayPrice === 0
+    ) {
+      displayPrice = 49.99;
+    }
+
+    let multiCurrency: Record<
+      string,
+      number
+    > | null = null;
+    if (packageData.multiCurrencyPrices) {
+      try {
+        multiCurrency = JSON.parse(
+          packageData.multiCurrencyPrices
+        );
+      } catch (e) {
+        console.error(
+          'Error parsing multiCurrencyPrices:',
+          e
+        );
+      }
+    }
+
+    if (
+      currency &&
+      multiCurrency &&
+      multiCurrency[currency]
+    ) {
+      displayPrice = multiCurrency[currency];
+    } else {
+      displayPrice = packageData.price * rate;
+    }
+
+    const convertedPrice =
+      formatPrice(displayPrice);
+    const isCustom =
+      packageData.type === 'custom';
+
+    const displayCurrency = currencySymbol;
+
+    console.log(
+      `Package card ${packageData.title} (${packageData.type}) price: ${displayPrice}, formatted: ${convertedPrice}, currency: ${currency}`
+    );
+
+    return (
+      <Card
+        className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''}`}
+      >
+        {isCustom && (
+          <div className={styles.customBadge}>
+            Custom
+          </div>
+        )}
+        <CardHeader className={styles.header}>
+          <div className={styles.iconWrapper}>
+            {IconComponent &&
+              React.createElement(IconComponent, {
+                className: styles.icon,
+              })}
+          </div>
+          <h2 className={styles.title}>
+            {packageData.title}
+          </h2>
+        </CardHeader>
+
+        <CardContent className={styles.content}>
+          <ul>
+            {packageData.description
+              .split(';')
+              .map((desc, index) => (
+                <li key={index}>{desc.trim()}</li>
+              ))}
+          </ul>
+        </CardContent>
+
+        <div className={styles.priceSection}>
+          {packageData.testPeriodDays > 0 && (
+            <div className={styles.trial}>
+              {packageData.testPeriodDays} days
+              free trial
             </div>
           )}
-          <CardHeader className={styles.header}>
-            <div className={styles.iconWrapper}>
-              {IconComponent &&
-                React.createElement(
-                  IconComponent,
-                  { className: styles.icon }
-                )}
-            </div>
-            <h2 className={styles.title}>
-              {packageData.title}
-            </h2>
-          </CardHeader>
-
-          <CardContent className={styles.content}>
-            <ul>
-              {packageData.description
-                .split(';')
-                .map((desc, index) => (
-                  <li key={index}>
-                    {desc.trim()}
-                  </li>
-                ))}
-            </ul>
-          </CardContent>
-
-          <div className={styles.priceSection}>
-            {packageData.testPeriodDays > 0 && (
-              <div className={styles.trial}>
-                {packageData.testPeriodDays} days
-                free trial
-              </div>
-            )}
-            <div className={styles.price}>
-              {isCustom ? (
-                <div
+          <div className={styles.price}>
+            {isCustom ? (
+              <div
+                className={
+                  styles.customPriceContainer
+                }
+              >
+                <span
                   className={
-                    styles.customPriceContainer
+                    styles.customPriceLabel
                   }
                 >
-                  <span
-                    className={
-                      styles.customPriceLabel
-                    }
-                  >
-                    Starting at
-                  </span>
-                  <div
-                    className={
-                      styles.customPriceWrapper
-                    }
-                  >
-                    <span
-                      className={styles.currency}
-                    >
-                      {displayCurrency}
-                    </span>
-                    <span
-                      className={
-                        styles.priceValue
-                      }
-                    >
-                      {convertedPrice}
-                    </span>
-                    <span
-                      className={styles.period}
-                    >
-                      /month
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <>
+                  Starting at
+                </span>
+                <div
+                  className={
+                    styles.customPriceWrapper
+                  }
+                >
                   <span
                     className={styles.currency}
                   >
@@ -155,28 +168,40 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
                   <span className={styles.period}>
                     /month
                   </span>
-                </>
-              )}
-            </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <span className={styles.currency}>
+                  {displayCurrency}
+                </span>
+                <span
+                  className={styles.priceValue}
+                >
+                  {convertedPrice}
+                </span>
+                <span className={styles.period}>
+                  /month
+                </span>
+              </>
+            )}
           </div>
+        </div>
 
-          <CardFooter className={styles.footer}>
-            <Button
-              className={`${styles.button} ${
-                isCustom
-                  ? styles.contactButton
-                  : ''
-              }`}
-              onClick={onBuyNow}
-              disabled={isDisabled}
-            >
-              {isCustom ? 'Customize' : 'Buy Now'}
-            </Button>
-          </CardFooter>
-        </Card>
-      );
-    }
-  );
+        <CardFooter className={styles.footer}>
+          <Button
+            className={`${styles.button} ${
+              isCustom ? styles.contactButton : ''
+            }`}
+            onClick={onBuyNow}
+            disabled={isDisabled}
+          >
+            {isCustom ? 'Customize' : 'Buy Now'}
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  });
 
 PricingPackageCard.displayName =
   'PricingPackageCard';

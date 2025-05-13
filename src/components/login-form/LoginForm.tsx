@@ -100,7 +100,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           'freshLogin',
           'true'
         );
-        router.push('/dashboard');
+        router.push('/');
       } catch (err) {
         console.error('Login failed:', err);
         setError(

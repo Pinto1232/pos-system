@@ -13,11 +13,15 @@ import {
   Alert,
 } from '@mui/material';
 import iconMap from '../../../utils/icons';
-import SuccessMessage from '../../ui/success-message/SuccessMessage';
 import styles from './PremiumPackageLayout.module.css';
 import LazyLoginForm from '@/components/login-form/LoginForm';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
+import { useSuccessModal } from '@/contexts/SuccessModalContext';
+import {
+  useCurrency,
+  currencySymbols,
+} from '@/contexts/CurrencyContext';
 
 interface PremiumPackageLayoutProps {
   selectedPackage: {
@@ -39,37 +43,35 @@ interface PremiumPackageLayoutProps {
   };
 }
 
-const currencySymbols: Record<string, string> = {
-  USD: '$',
-  EUR: '€',
-  GBP: '£',
-  Kz: 'Kz',
-};
+// Currency symbols are now handled by the CurrencyContext
 
 const PremiumPackageLayout: React.FC<
   PremiumPackageLayoutProps
 > = ({ selectedPackage }) => {
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [showLoginForm, setShowLoginForm] =
     useState(false);
   const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } =
     useSpinner();
-  const [currentCurrency, setCurrentCurrency] =
-    useState<string>(
-      selectedPackage.currency || 'USD'
-    );
+  const { showSuccessModal } = useSuccessModal();
+  const {
+    currency: currentCurrency,
+    setCurrency: setCurrentCurrency,
+    currencySymbol,
+    formatPrice,
+    rate,
+  } = useCurrency();
   const formData = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john.doe@example.com',
+    phone: '123-456-7890',
+    address: '123 Main St',
     country: 'USA',
     state: 'California',
-    city: '',
-    postal: '',
+    city: 'San Francisco',
+    postal: '94105',
   };
 
   // Add state for notification
@@ -96,18 +98,24 @@ const PremiumPackageLayout: React.FC<
       );
       setLoading(false);
       setSpinnerLoading(false);
-      setSuccess(true);
-    };
 
-  const handleCloseSuccessMessage = () => {
-    setSuccess(false);
-  };
+      // Show success modal using context
+      showSuccessModal({
+        message: 'Package selected successfully!',
+        onConfirm: handleConfirmSuccessMessage,
+        onReturn: handleReturnSuccessMessage,
+        selectedPackage: selectedPackage,
+        currentCurrency: currentCurrency,
+        formData: formData,
+        calculatedPrice: displayPrice,
+        onAddToCart: handleAddToCart,
+      });
+    };
 
   const handleConfirmSuccessMessage = (
     isSignup: boolean
   ) => {
     console.log('Confirmed', isSignup);
-    setSuccess(false);
 
     if (isSignup) {
       setShowLoginForm(true);
@@ -118,7 +126,6 @@ const PremiumPackageLayout: React.FC<
 
   const handleReturnSuccessMessage = () => {
     console.log('Return');
-    setSuccess(false);
   };
 
   const handleCurrencyChange = (
@@ -147,16 +154,22 @@ const PremiumPackageLayout: React.FC<
       )
     : null;
 
-  const displayPrice =
+  let displayPrice = selectedPackage.price;
+
+  if (
     currentCurrency &&
     multiCurrency &&
     multiCurrency[currentCurrency] !== undefined
-      ? multiCurrency[currentCurrency]
-      : selectedPackage.price;
-  const currencySymbol =
-    currentCurrency === 'Kz'
-      ? 'Kz'
-      : currencySymbols[currentCurrency] || '$';
+  ) {
+    displayPrice = multiCurrency[currentCurrency];
+  } else {
+    displayPrice = selectedPackage.price * rate;
+  }
+
+  // For debugging
+  console.log(
+    `PremiumPackage modal price: ${displayPrice} ${currentCurrency}, rate: ${rate}`
+  );
 
   if (showLoginForm) {
     return <LazyLoginForm />;
@@ -164,20 +177,7 @@ const PremiumPackageLayout: React.FC<
 
   return (
     <Box className={styles.container}>
-      {success && (
-        <SuccessMessage
-          open={success}
-          onClose={handleCloseSuccessMessage}
-          onConfirm={handleConfirmSuccessMessage}
-          onReturn={handleReturnSuccessMessage}
-          selectedPackage={selectedPackage}
-          currentCurrency={currentCurrency}
-          formData={formData}
-          calculatedPrice={displayPrice}
-          onAddToCart={handleAddToCart}
-        />
-      )}
-      {!loading && !success && (
+      {!loading && (
         <Grid
           container
           spacing={3}
@@ -233,7 +233,7 @@ const PremiumPackageLayout: React.FC<
                   <b>
                     {currentCurrency === 'Kz'
                       ? `${displayPrice}Kz`
-                      : `${currencySymbol}${displayPrice}`}
+                      : `${currencySymbol}${formatPrice(displayPrice)}`}
                   </b>
                   /mo
                 </Typography>
@@ -286,7 +286,7 @@ const PremiumPackageLayout: React.FC<
                           >
                             {currency === 'Kz'
                               ? `${price}Kz`
-                              : `${currencySymbols[currency] || '$'}${price}`}
+                              : `${currencySymbols[currency] || '$'}${formatPrice(price)}`}
                           </b>
                         }
                         className={
@@ -344,7 +344,7 @@ const PremiumPackageLayout: React.FC<
                 <b>
                   {currentCurrency === 'Kz'
                     ? `${displayPrice}Kz`
-                    : `${currencySymbol}${displayPrice}`}
+                    : `${currencySymbol}${formatPrice(displayPrice)}`}
                 </b>
               </Typography>
 

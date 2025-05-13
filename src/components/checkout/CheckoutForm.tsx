@@ -586,7 +586,10 @@ const CheckoutForm: React.FC<
               className={styles.checkoutButton}
               onClick={(e) => {
                 e.preventDefault();
-                onSubmit(e);
+                // Make sure the form is submitted properly
+                if (onSubmit) {
+                  onSubmit(e);
+                }
               }}
               sx={{
                 mt: 2,

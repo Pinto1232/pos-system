@@ -21,6 +21,8 @@ export type Package = {
     | 'enterprise'
     | 'custom'
     | 'premium';
+  currency?: string;
+  multiCurrencyPrices?: string;
 };
 
 type PackageSelectionContextType = {

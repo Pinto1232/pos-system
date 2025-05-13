@@ -10,6 +10,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './PackageSelectionModal.module.css';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import { useSpinner } from '@/contexts/SpinnerContext';
 import { Package as CustomPackage } from '@/components/packages/custom-package-layout/types';
 import CustomPackageLayoutContainer from '@/components/packages/custom-package-layout/CustomPackageLayoutContainer';
 import StarterPackageLayout from '@/components/packages/starter-package-layout/StarterPackageLayout';
@@ -24,8 +25,10 @@ const PackageSelectionModal: React.FC = memo(
       isModalOpen,
       closeModal,
     } = usePackageSelection();
+    const { loading } = useSpinner();
 
-    if (!selectedPackage) return null;
+    // Don't render the modal at all when loading
+    if (!selectedPackage || loading) return null;
 
     const renderPackageLayout = () => {
       switch (selectedPackage.type) {

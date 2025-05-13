@@ -7,12 +7,13 @@ import React, {
 } from 'react';
 import { apiClient } from '@/api/axiosClient';
 import CustomPackageLayout from './CustomPackageLayout';
-import SuccessMessage from '@/components/ui/success-message/SuccessMessage';
 import WaveLoading from '@/components/ui/WaveLoading/WaveLoading';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, {
   AlertProps,
 } from '@mui/material/Alert';
+import { useSuccessModal } from '@/contexts/SuccessModalContext';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 import {
   Package,
@@ -48,6 +49,8 @@ const Alert = React.forwardRef<
 const CustomPackageLayoutContainer: React.FC<
   CustomPackageLayoutContainerProps
 > = ({ selectedPackage }) => {
+  const { showSuccessModal } = useSuccessModal();
+  const { currency } = useCurrency();
   const [currentStep, setCurrentStep] =
     useState(0);
   const [steps, setSteps] = useState<string[]>(
@@ -71,10 +74,6 @@ const CustomPackageLayoutContainer: React.FC<
     useState(true);
   const [calculatedPrice, setCalculatedPrice] =
     useState<number>(selectedPackage.price);
-  const [isModalOpen, setIsModalOpen] =
-    useState(false);
-  const [modalMessage, setModalMessage] =
-    useState('');
   const [snackbarOpen, setSnackbarOpen] =
     useState(false);
   const [snackbarMessage, setSnackbarMessage] =
@@ -103,10 +102,7 @@ const CustomPackageLayoutContainer: React.FC<
     bulkDataImport: false,
   });
 
-  const [
-    currentPackageData,
-    setCurrentPackageData,
-  ] = useState<PackageDataType>(null);
+  // We don't need to track package data in state anymore as we're using the context
 
   const defaultStepsCustom = React.useMemo(
     () => [
@@ -295,6 +291,63 @@ const CustomPackageLayoutContainer: React.FC<
     });
   }, []);
 
+  const handleModalConfirm = useCallback(
+    (isSignup: boolean) => {
+      const cartItem = {
+        id: Date.now(),
+        name: selectedPackage.title,
+        price: calculatedPrice,
+        quantity: 1,
+        features: selectedFeatures.map(
+          (f) => f.name
+        ),
+        addOns: selectedAddOns.map((a) => a.name),
+        packageType:
+          selectedPackage.isCustomizable
+            ? 'Custom'
+            : 'Standard',
+      };
+
+      const existingCartItems = JSON.parse(
+        localStorage.getItem('cartItems') || '[]'
+      );
+
+      // Add new item to cart
+      const updatedCart = [
+        ...existingCartItems,
+        cartItem,
+      ];
+
+      // Save updated cart to localStorage
+      localStorage.setItem(
+        'cartItems',
+        JSON.stringify(updatedCart)
+      );
+
+      setSnackbarMessage(
+        'Package added to cart successfully!'
+      );
+      setSnackbarOpen(true);
+
+      if (isSignup) {
+        setShowLoginForm(true);
+      }
+    },
+    [
+      selectedPackage,
+      calculatedPrice,
+      selectedFeatures,
+      selectedAddOns,
+      setShowLoginForm,
+    ]
+  );
+
+  const handleReturnToPackage =
+    useCallback(() => {
+      // No need to set modal state as it's handled by the context
+      console.log('Return to package');
+    }, []);
+
   const handleSave = useCallback(
     async (data: {
       selectedFeatures: Feature[];
@@ -318,8 +371,6 @@ const CustomPackageLayoutContainer: React.FC<
         return;
       if (!validateCurrentStep()) return;
 
-      setModalMessage('Saving package...');
-      setIsModalOpen(true);
       setIsLoading(true);
 
       const request: PackageSelectionRequest = {
@@ -350,12 +401,26 @@ const CustomPackageLayoutContainer: React.FC<
         console.log(
           'Package saved successfully!'
         );
-        setModalMessage(
-          'Package saved successfully!'
-        );
+
+        // Show success message using context
+        showSuccessModal({
+          message: 'Package saved successfully!',
+          onConfirm: handleModalConfirm,
+          onReturn: handleReturnToPackage,
+          selectedPackage: selectedPackage,
+          currentCurrency: data.selectedCurrency,
+          formData: data.formData,
+          selectedFeatures: data.selectedFeatures,
+          selectedAddOns: data.selectedAddOns,
+          usageQuantities: data.usageQuantities,
+          calculatedPrice: data.calculatedPrice,
+        });
       } catch (error) {
         console.error('Save failed:', error);
-        setModalMessage('Error saving package!');
+        setSnackbarMessage(
+          'Error saving package!'
+        );
+        setSnackbarOpen(true);
       } finally {
         setIsLoading(false);
       }
@@ -368,54 +433,11 @@ const CustomPackageLayoutContainer: React.FC<
       selectedAddOns,
       usageQuantities,
       validateCurrentStep,
+      showSuccessModal,
+      handleModalConfirm,
+      handleReturnToPackage,
     ]
   );
-
-  const handleModalConfirm = (
-    isSignup: boolean
-  ) => {
-    const cartItem = {
-      id: Date.now(),
-      name: selectedPackage.title,
-      price: calculatedPrice,
-      quantity: 1,
-      features: selectedFeatures.map(
-        (f) => f.name
-      ),
-      addOns: selectedAddOns.map((a) => a.name),
-      packageType: selectedPackage.isCustomizable
-        ? 'Custom'
-        : 'Standard',
-    };
-
-    const existingCartItems = JSON.parse(
-      localStorage.getItem('cartItems') || '[]'
-    );
-
-    // Add new item to cart
-    const updatedCart = [
-      ...existingCartItems,
-      cartItem,
-    ];
-
-    // Save updated cart to localStorage
-    localStorage.setItem(
-      'cartItems',
-      JSON.stringify(updatedCart)
-    );
-
-    // Close the modal
-    setIsModalOpen(false);
-
-    setSnackbarMessage(
-      'Package added to cart successfully!'
-    );
-    setSnackbarOpen(true);
-
-    if (isSignup) {
-      setShowLoginForm(true);
-    }
-  };
 
   type PackageDataType = {
     formData?: {
@@ -441,18 +463,23 @@ const CustomPackageLayoutContainer: React.FC<
     message: string,
     packageData?: PackageDataType
   ) => {
-    setModalMessage(message);
-    setIsModalOpen(true);
-    // Explicitly handle the undefined case
-    if (packageData === undefined) {
-      setCurrentPackageData(null);
-    } else {
-      setCurrentPackageData(packageData);
-    }
-  };
-
-  const handleReturnToPackage = () => {
-    setIsModalOpen(false);
+    // Use the SuccessModalContext to show the success modal
+    showSuccessModal({
+      message: message,
+      onConfirm: handleModalConfirm,
+      onReturn: handleReturnToPackage,
+      selectedPackage: selectedPackage,
+      currentCurrency:
+        packageData?.selectedCurrency,
+      formData: packageData?.formData,
+      selectedFeatures:
+        packageData?.selectedFeatures,
+      selectedAddOns: packageData?.selectedAddOns,
+      usageQuantities:
+        packageData?.usageQuantities,
+      calculatedPrice:
+        packageData?.calculatedPrice,
+    });
   };
 
   useEffect(() => {
@@ -524,86 +551,62 @@ const CustomPackageLayoutContainer: React.FC<
 
   return (
     <>
-      {!isModalOpen && (
-        <CustomPackageLayout
-          isCustomizable={
-            selectedPackage.isCustomizable
-          }
-          currentStep={currentStep}
-          onShowSuccessMessage={
-            handleShowSuccessMessage
-          }
-          steps={steps}
-          features={features}
-          addOns={addOns}
-          usagePricing={usagePricing}
-          selectedFeatures={selectedFeatures}
-          selectedAddOns={selectedAddOns}
-          usageQuantities={usageQuantities}
-          basePrice={selectedPackage.price}
-          calculatedPrice={calculatedPrice}
-          packageDetails={{
-            title: selectedPackage.title,
-            description:
-              selectedPackage.description,
-            testPeriod:
-              selectedPackage.testPeriodDays,
-          }}
-          selectedPackage={selectedPackage}
-          onNext={handleNext}
-          onBack={handleBack}
-          onSave={handleSave}
-          onFeatureToggle={(features) => {
-            console.log(
-              'Toggling features:',
-              features
-            );
-            setSelectedFeatures(features);
-          }}
-          onAddOnToggle={(addOns) => {
-            console.log(
-              'Toggling add-ons:',
-              addOns
-            );
-            setSelectedAddOns(addOns);
-          }}
-          onUsageChange={(quantities) => {
-            console.log(
-              'Updating usage quantities:',
-              quantities
-            );
-            setUsageQuantities(quantities);
-          }}
-          setSelectedCurrency={() => {}}
-          enterpriseFeatures={enterpriseFeatures}
-          onEnterpriseFeatureToggle={
-            handleEnterpriseFeatureToggle
-          }
-        />
-      )}
-      <SuccessMessage
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        message={modalMessage}
-        onConfirm={handleModalConfirm}
-        onReturn={handleReturnToPackage}
+      <CustomPackageLayout
+        isCustomizable={
+          selectedPackage.isCustomizable
+        }
+        currentStep={currentStep}
+        onShowSuccessMessage={
+          handleShowSuccessMessage
+        }
+        steps={steps}
+        features={features}
+        addOns={addOns}
+        usagePricing={usagePricing}
+        selectedFeatures={selectedFeatures}
+        selectedAddOns={selectedAddOns}
+        usageQuantities={usageQuantities}
+        basePrice={selectedPackage.price}
+        calculatedPrice={calculatedPrice}
+        packageDetails={{
+          title: selectedPackage.title,
+          description:
+            selectedPackage.description,
+          testPeriod:
+            selectedPackage.testPeriodDays,
+        }}
         selectedPackage={selectedPackage}
-        currentCurrency={
-          currentPackageData?.selectedCurrency
+        onNext={handleNext}
+        onBack={handleBack}
+        onSave={handleSave}
+        onFeatureToggle={(features) => {
+          console.log(
+            'Toggling features:',
+            features
+          );
+          setSelectedFeatures(features);
+        }}
+        onAddOnToggle={(addOns) => {
+          console.log(
+            'Toggling add-ons:',
+            addOns
+          );
+          setSelectedAddOns(addOns);
+        }}
+        onUsageChange={(quantities) => {
+          console.log(
+            'Updating usage quantities:',
+            quantities
+          );
+          setUsageQuantities(quantities);
+        }}
+        setSelectedCurrency={() => {}}
+        enterpriseFeatures={enterpriseFeatures}
+        onEnterpriseFeatureToggle={
+          handleEnterpriseFeatureToggle
         }
-        formData={currentPackageData?.formData}
-        selectedFeatures={
-          currentPackageData?.selectedFeatures
-        }
-        selectedAddOns={
-          currentPackageData?.selectedAddOns
-        }
-        usageQuantities={
-          currentPackageData?.usageQuantities
-        }
-        calculatedPrice={
-          currentPackageData?.calculatedPrice
-        }
+        // Pass the current currency from CurrencyContext
+        currentCurrency={currency}
       />
       <Snackbar
         open={snackbarOpen}
