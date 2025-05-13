@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import CheckIcon from '@mui/icons-material/Check';
+import { FiGlobe } from 'react-icons/fi';
 import styles from './LanguageDropdown.module.css';
 
 // Define available languages with their flags
@@ -100,8 +101,17 @@ const LanguageDropdown: React.FC = () => {
           outline: 'none',
           padding: '4px 8px',
           height: '32px',
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
+        <FiGlobe
+          style={{
+            fontSize: '18px',
+            color: 'white',
+            marginRight: '4px',
+          }}
+        />
         <span className={styles.flagIcon}>
           {currentLanguage.flag}
         </span>
