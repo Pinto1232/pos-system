@@ -110,6 +110,12 @@ const CustomPackageLayout: React.FC<
     setTotalFeaturePrice,
   ] = useState<number>(0);
   const [featurePrices, setFeaturePrices] = useState<Record<number, number>>({});
+
+  // New state variables for dynamic price calculation
+  const [planDiscount, setPlanDiscount] = useState<number>(0); // Percentage discount (0-1)
+  const [supportPrice, setSupportPrice] = useState<number>(0); // Additional price for support
+  const [totalPrice, setTotalPrice] = useState<number>(basePrice); // Total calculated price
+
   const [checkboxStates, setCheckboxStates] =
     useState<Record<string, boolean>>({
       'business-regular-updates': false,
@@ -209,6 +215,11 @@ const CustomPackageLayout: React.FC<
 
   // Calculate total price when selected features, add-ons, usage quantities, or currency changes
   useEffect(() => {
+    console.log('DEBUG - Price calculation triggered');
+    console.log(`DEBUG - Current currency: ${selectedCurrency}, Rate: ${rate}`);
+    console.log(`DEBUG - Base price (raw): ${basePrice}`);
+    console.log(`DEBUG - Selected package:`, selectedPackage);
+
     // Calculate feature prices
     const featureTotal = selectedFeatures.reduce(
       (sum, feature) => {
@@ -256,14 +267,28 @@ const CustomPackageLayout: React.FC<
       0
     );
 
-    // Set the total price
-    const total = featureTotal + addOnTotal + usageTotal;
-    console.log(`Calculated total price: ${total} (Features: ${featureTotal}, Add-ons: ${addOnTotal}, Usage: ${usageTotal})`);
-    setTotalFeaturePrice(total);
+    // Set the feature price total
+    const featuresSum = featureTotal + addOnTotal + usageTotal;
+    console.log(`Calculated features price: ${featuresSum} (Features: ${featureTotal}, Add-ons: ${addOnTotal}, Usage: ${usageTotal})`);
+    setTotalFeaturePrice(featuresSum);
 
-    // Log the current state for debugging
-    console.log(`Current state - Base price: ${basePrice}, Total feature price: ${total}, Selected currency: ${selectedCurrency}`);
-  }, [selectedFeatures, selectedAddOns, usageQuantities, featurePrices, selectedCurrency, usagePricing, basePrice]);
+    // Calculate the final total price including base price, features, support, and discount
+    const subtotal = basePrice + featuresSum + supportPrice;
+    const discount = subtotal * planDiscount;
+    const finalTotal = subtotal - discount;
+
+    console.log(`Price calculation breakdown:
+    - Base price: ${basePrice}
+    - Features total: ${featuresSum}
+    - Support price: ${supportPrice}
+    - Subtotal: ${subtotal}
+    - Discount (${planDiscount * 100}%): -${discount}
+    - Final total: ${finalTotal}
+    - Currency: ${selectedCurrency}`);
+
+    setTotalPrice(finalTotal);
+
+  }, [selectedFeatures, selectedAddOns, usageQuantities, featurePrices, selectedCurrency, usagePricing, basePrice, planDiscount, supportPrice]);
 
   const handleInfoClick = () => {
     setDialogOpen(true);
@@ -510,19 +535,30 @@ const CustomPackageLayout: React.FC<
   };
 
   const handleSave = () => {
-    // Calculate the final price as the sum of base price and all selected features/add-ons/usage
-    const finalCalculatedPrice = basePrice + totalFeaturePrice;
-
+    // Use our dynamically calculated price that includes base price, features, support, and discounts
     const fullData = {
       selectedFeatures,
       selectedAddOns,
       usageQuantities,
-      calculatedPrice: finalCalculatedPrice, // Use our calculated price instead of the prop
+      calculatedPrice: totalPrice, // Use our dynamically calculated price
       selectedCurrency,
       formData,
+      planDiscount,
+      supportLevel: selectedSupportIndex,
+      supportPrice,
     };
+
+    // Log detailed price breakdown
     console.log('Package data saved:', fullData);
-    console.log(`Final price calculation: Base price (${basePrice}) + Total features (${totalFeaturePrice}) = ${finalCalculatedPrice}`);
+    console.log(`Final price calculation breakdown:
+    - Base price: ${basePrice}
+    - Features total: ${totalFeaturePrice}
+    - Support price: ${supportPrice}
+    - Subtotal: ${basePrice + totalFeaturePrice + supportPrice}
+    - Discount (${planDiscount * 100}%): -${(basePrice + totalFeaturePrice + supportPrice) * planDiscount}
+    - Final total: ${totalPrice}
+    - Currency: ${selectedCurrency}`);
+
     setTestPeriod(selectedPackage.testPeriodDays);
     onSave(fullData);
     onNext();
@@ -565,6 +601,7 @@ const CustomPackageLayout: React.FC<
     price: number
   ) => {
     let displayPrice = price;
+    console.log(`DEBUG - formatPrice called with currency: ${currency}, price: ${price}`);
 
     if (
       currency !== 'USD' &&
@@ -579,14 +616,18 @@ const CustomPackageLayout: React.FC<
           multiCurrency = JSON.parse(
             selectedPackage.multiCurrencyPrices
           );
+          console.log(`DEBUG - multiCurrencyPrices parsed:`, multiCurrency);
+
           if (
             multiCurrency &&
             multiCurrency[currency]
           ) {
             displayPrice =
               multiCurrency[currency];
+            console.log(`DEBUG - Using multiCurrency price: ${displayPrice}`);
           } else {
             displayPrice = price * rate;
+            console.log(`DEBUG - Using rate conversion: ${price} * ${rate} = ${displayPrice}`);
           }
         } catch (e) {
           console.error(
@@ -595,17 +636,25 @@ const CustomPackageLayout: React.FC<
           );
 
           displayPrice = price * rate;
+          console.log(`DEBUG - Error in parsing, using rate conversion: ${price} * ${rate} = ${displayPrice}`);
         }
       } else {
         displayPrice = price * rate;
+        console.log(`DEBUG - No multiCurrencyPrices, using rate conversion: ${price} * ${rate} = ${displayPrice}`);
       }
+    } else {
+      console.log(`DEBUG - No conversion needed, using original price: ${displayPrice}`);
     }
 
+    let result;
     if (currency === 'Kz') {
-      return `${Math.round(displayPrice)}${currency}`;
+      result = `${Math.round(displayPrice)}${currency}`;
     } else {
-      return `${getCurrencySymbol(currency)} ${formatCurrencyPrice(displayPrice)}`;
+      result = `${getCurrencySymbol(currency)} ${formatCurrencyPrice(displayPrice)}`;
     }
+
+    console.log(`DEBUG - Final formatted price: ${result}`);
+    return result;
   };
 
   const handleCheckboxChange = (id: string) => {
@@ -616,18 +665,63 @@ const CustomPackageLayout: React.FC<
   };
 
   const handlePlanSelect = (index: number) => {
+    // Define discount percentages for each plan
+    const planDiscounts = [
+      0,      // Monthly Plan - no discount
+      0.10,   // Quarterly Plan - 10% discount
+      0.15,   // Biannual Plan - 15% discount
+      0.20,   // Annual Plan - 20% discount
+      0       // Enterprise Plan - custom pricing, no standard discount
+    ];
+
     if (selectedPlanIndex === index) {
+      // If deselecting the current plan, reset to no discount
       setSelectedPlanIndex(null);
+      setPlanDiscount(0);
+      console.log(`Payment plan deselected. Discount reset to 0%`);
     } else {
+      // If selecting a new plan, apply the corresponding discount
       setSelectedPlanIndex(index);
+      const newDiscount = index < planDiscounts.length ? planDiscounts[index] : 0;
+      setPlanDiscount(newDiscount);
+
+      // Calculate and log the price impact
+      const subtotal = basePrice + totalFeaturePrice + supportPrice;
+      const discountAmount = subtotal * newDiscount;
+      const newTotal = subtotal - discountAmount;
+
+      console.log(`Payment plan selected: ${index} (${['Monthly', 'Quarterly', 'Biannual', 'Annual', 'Enterprise'][index]})`);
+      console.log(`Discount applied: ${newDiscount * 100}%`);
+      console.log(`Price impact: -${discountAmount} (${subtotal} → ${newTotal})`);
     }
   };
 
   const handleSupportSelect = (index: number) => {
+    // Define support price multipliers for each support level
+    // Standard support (index 0) is included, Premium (index 1) is +20%, Advanced (index 2) is +40%
+    const supportMultipliers = [0, 0.2, 0.4];
+
     if (selectedSupportIndex === index) {
+      // If deselecting the current support level, reset to no additional cost
       setSelectedSupportIndex(null);
+      setSupportPrice(0);
+      console.log(`Support level deselected. Additional support cost reset to 0`);
     } else {
+      // If selecting a new support level, apply the corresponding price
       setSelectedSupportIndex(index);
+
+      // Calculate the base price for support based on the package and features
+      const baseForSupport = basePrice + totalFeaturePrice;
+      const multiplier = index < supportMultipliers.length ? supportMultipliers[index] : 0;
+      const newSupportPrice = baseForSupport * multiplier;
+
+      setSupportPrice(newSupportPrice);
+
+      // Calculate and log the price impact
+      console.log(`Support level selected: ${index} (${['Standard', 'Premium', 'Advanced'][index]})`);
+      console.log(`Support price multiplier: ${multiplier * 100}% of base package`);
+      console.log(`Support price calculation: ${baseForSupport} × ${multiplier} = ${newSupportPrice}`);
+      console.log(`New total with support: ${basePrice + totalFeaturePrice + newSupportPrice}`);
     }
   };
 
@@ -746,7 +840,7 @@ const CustomPackageLayout: React.FC<
               {isCustomizable && (
                 <Box className={styles.currentPriceContainer}>
                   <Typography variant="h5" className={styles.currentPrice}>
-                    Current Total: {formatPrice(selectedCurrency, totalFeaturePrice + displayPrice)}
+                    Current Total: {formatPrice(selectedCurrency, totalPrice)}
                   </Typography>
                   <Typography variant="body2" className={styles.priceNote}>
                     *Price updates as you select or deselect features
@@ -754,6 +848,8 @@ const CustomPackageLayout: React.FC<
                   <Typography variant="body2" sx={{ color: '#2563eb', mt: 1 }}>
                     Base: {formatPrice(selectedCurrency, displayPrice)} +
                     Features: {formatPrice(selectedCurrency, totalFeaturePrice)}
+                    {supportPrice > 0 && ` + Support: ${formatPrice(selectedCurrency, supportPrice)}`}
+                    {planDiscount > 0 && ` - Discount: ${formatPrice(selectedCurrency, (basePrice + totalFeaturePrice + supportPrice) * planDiscount)}`}
                   </Typography>
                 </Box>
               )}
@@ -1235,7 +1331,7 @@ const CustomPackageLayout: React.FC<
                       marginLeft: '8px'
                     }}
                   >
-                    {formatPrice(selectedCurrency, basePrice + totalFeaturePrice)}
+                    {formatPrice(selectedCurrency, totalPrice)}
                   </Typography>
                 </Button>
               </Box>
@@ -1410,7 +1506,7 @@ const CustomPackageLayout: React.FC<
                   >
                     {formatPrice(
                       selectedCurrency,
-                      basePrice + totalFeaturePrice
+                      totalPrice
                     )}
                   </Typography>
                 </Box>
@@ -1648,7 +1744,7 @@ const CustomPackageLayout: React.FC<
                     marginLeft: '8px'
                   }}
                 >
-                  {formatPrice(selectedCurrency, basePrice + totalFeaturePrice)}
+                  {formatPrice(selectedCurrency, totalPrice)}
                 </Typography>
               </Button>
             </Box>
@@ -1791,7 +1887,7 @@ const CustomPackageLayout: React.FC<
                     marginLeft: '8px'
                   }}
                 >
-                  {formatPrice(selectedCurrency, basePrice + totalFeaturePrice)}
+                  {formatPrice(selectedCurrency, totalPrice)}
                 </Typography>
               </Button>
             </Box>
@@ -1845,7 +1941,7 @@ const CustomPackageLayout: React.FC<
                     getCurrentCurrencySymbol() +
                     formatCurrencyPrice(
                       convertPrice(
-                        basePrice + totalFeaturePrice
+                        basePrice + totalFeaturePrice + supportPrice
                       )
                     ) +
                     '/month',
@@ -1855,6 +1951,8 @@ const CustomPackageLayout: React.FC<
                     'Easy Upgrade',
                   ],
                   buttonText: 'SELECT PLAN',
+                  discount: 0,
+                  period: 1,
                 },
                 {
                   title: 'Quarterly Plan',
@@ -1864,16 +1962,26 @@ const CustomPackageLayout: React.FC<
                     getCurrentCurrencySymbol() +
                     formatCurrencyPrice(
                       convertPrice(
-                        (basePrice + totalFeaturePrice) * 3 * 0.9
+                        (basePrice + totalFeaturePrice + supportPrice) * 0.9
                       )
                     ) +
-                    '/3 months',
+                    '/month',
+                  totalPrice:
+                    getCurrentCurrencySymbol() +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        (basePrice + totalFeaturePrice + supportPrice) * 3 * 0.9
+                      )
+                    ) +
+                    ' total',
                   features: [
                     '10% Discount',
                     'Quarterly Reviews',
                     'Email Support',
                   ],
                   buttonText: 'SELECT PLAN',
+                  discount: 0.1,
+                  period: 3,
                 },
                 {
                   title: 'Biannual Plan',
@@ -1883,16 +1991,26 @@ const CustomPackageLayout: React.FC<
                     getCurrentCurrencySymbol() +
                     formatCurrencyPrice(
                       convertPrice(
-                        (basePrice + totalFeaturePrice) * 6 * 0.85
+                        (basePrice + totalFeaturePrice + supportPrice) * 0.85
                       )
                     ) +
-                    '/6 months',
+                    '/month',
+                  totalPrice:
+                    getCurrentCurrencySymbol() +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        (basePrice + totalFeaturePrice + supportPrice) * 6 * 0.85
+                      )
+                    ) +
+                    ' total',
                   features: [
                     '15% Discount',
                     'Flexible Billing',
                     'Mid-term Adjustments',
                   ],
                   buttonText: 'SELECT PLAN',
+                  discount: 0.15,
+                  period: 6,
                 },
                 {
                   title: 'Annual Plan',
@@ -1902,16 +2020,26 @@ const CustomPackageLayout: React.FC<
                     getCurrentCurrencySymbol() +
                     formatCurrencyPrice(
                       convertPrice(
-                        (basePrice + totalFeaturePrice) * 12 * 0.8
+                        (basePrice + totalFeaturePrice + supportPrice) * 0.8
                       )
                     ) +
-                    '/year',
+                    '/month',
+                  totalPrice:
+                    getCurrentCurrencySymbol() +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        (basePrice + totalFeaturePrice + supportPrice) * 12 * 0.8
+                      )
+                    ) +
+                    ' total',
                   features: [
                     '20% Discount',
                     'Priority Support',
                     'Free Setup',
                   ],
                   buttonText: 'SELECT PLAN',
+                  discount: 0.2,
+                  period: 12,
                 },
                 {
                   title: 'Enterprise Plan',
@@ -1963,13 +2091,27 @@ const CustomPackageLayout: React.FC<
                   >
                     {plan.description}
                   </Typography>
-                  <Typography
-                    className={
-                      styles.paymentPrice
-                    }
-                  >
-                    {plan.price}
-                  </Typography>
+                  <Box className={styles.paymentPriceContainer}>
+                    <Typography
+                      className={
+                        styles.paymentPrice
+                      }
+                    >
+                      {plan.price}
+                    </Typography>
+                    {plan.totalPrice && (
+                      <Typography
+                        className={styles.paymentTotalPrice}
+                        sx={{
+                          fontSize: '0.85rem',
+                          color: '#6B7280',
+                          mt: 0.5
+                        }}
+                      >
+                        {plan.totalPrice}
+                      </Typography>
+                    )}
+                  </Box>
                   <Box
                     className={
                       styles.paymentFeatures
@@ -2229,7 +2371,7 @@ const CustomPackageLayout: React.FC<
                   +
                   {formatPrice(
                     selectedCurrency,
-                    calculatedPrice * 0.2
+                    (basePrice + totalFeaturePrice) * 0.2
                   )}
                   /month
                 </Typography>
@@ -2312,7 +2454,7 @@ const CustomPackageLayout: React.FC<
                   +
                   {formatPrice(
                     selectedCurrency,
-                    calculatedPrice * 0.4
+                    (basePrice + totalFeaturePrice) * 0.4
                   )}
                   /month
                 </Typography>
@@ -3495,6 +3637,222 @@ const CustomPackageLayout: React.FC<
 
                   <Box
                     className={styles.section}
+                    sx={{ mb: 3 }}
+                  >
+                    <Typography
+                      className={
+                        styles.sectionTitle
+                      }
+                      sx={{
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        mb: 2,
+                        color: '#4B5563',
+                      }}
+                    >
+                      Price Breakdown
+                    </Typography>
+                    <Box
+                      className={
+                        styles.sectionContent
+                      }
+                      sx={{
+                        backgroundColor:
+                          '#F9FAFB',
+                        borderRadius: '8px',
+                        p: 2,
+                      }}
+                    >
+                      {/* Base Price */}
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent:
+                            'space-between',
+                          alignItems: 'center',
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          Base Price
+                        </Typography>
+                        <Typography
+                          className={
+                            styles.itemValue
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          {`${getCurrencySymbol(selectedCurrency)} ${formatCurrencyPrice(basePrice)}`}
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              color: '#6B7280',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
+                        </Typography>
+                      </Box>
+
+                      {/* Features Total */}
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent:
+                            'space-between',
+                          alignItems: 'center',
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          Features Total
+                        </Typography>
+                        <Typography
+                          className={
+                            styles.itemValue
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          {`${getCurrencySymbol(selectedCurrency)} ${formatCurrencyPrice(totalFeaturePrice)}`}
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              color: '#6B7280',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
+                        </Typography>
+                      </Box>
+
+                      {/* Support Price */}
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent:
+                            'space-between',
+                          alignItems: 'center',
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          Support Price
+                        </Typography>
+                        <Typography
+                          className={
+                            styles.itemValue
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 500,
+                          }}
+                        >
+                          {`${getCurrencySymbol(selectedCurrency)} ${formatCurrencyPrice(supportPrice)}`}
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              color: '#6B7280',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
+                        </Typography>
+                      </Box>
+
+                      <Box
+                        className={styles.divider}
+                        sx={{
+                          height: '1px',
+                          backgroundColor:
+                            '#E5E7EB',
+                          my: 2,
+                        }}
+                      />
+
+                      {/* Subtotal */}
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent:
+                            'space-between',
+                          alignItems: 'center',
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 600,
+                          }}
+                        >
+                          Subtotal (Before Discount)
+                        </Typography>
+                        <Typography
+                          className={
+                            styles.itemValue
+                          }
+                          sx={{
+                            fontSize: '0.95rem',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {`${getCurrencySymbol(selectedCurrency)} ${formatCurrencyPrice(basePrice + totalFeaturePrice + supportPrice)}`}
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              color: '#6B7280',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  <Box
+                    className={styles.section}
                     sx={{ mb: 4 }}
                   >
                     <Typography
@@ -3508,7 +3866,7 @@ const CustomPackageLayout: React.FC<
                         color: '#4B5563',
                       }}
                     >
-                      Savings Overview
+                      Discount & Final Price
                     </Typography>
                     <Box
                       className={
@@ -3521,60 +3879,7 @@ const CustomPackageLayout: React.FC<
                         p: 2,
                       }}
                     >
-                      <Box
-                        className={styles.itemRow}
-                        sx={{
-                          display: 'flex',
-                          justifyContent:
-                            'space-between',
-                          alignItems: 'center',
-                          mb: 2,
-                        }}
-                      >
-                        <Typography
-                          className={
-                            styles.itemLabel
-                          }
-                          sx={{
-                            fontSize: '0.95rem',
-                            fontWeight: 500,
-                          }}
-                        >
-                          Subtotal
-                        </Typography>
-                        <Typography
-                          className={
-                            styles.itemValue
-                          }
-                          sx={{
-                            fontSize: '0.95rem',
-                            fontWeight: 500,
-                          }}
-                        >
-                          {formatPrice(
-                            selectedCurrency,
-                            basePrice + 747
-                          )}
-                          <span
-                            style={{
-                              fontSize: '0.85rem',
-                              color: '#6B7280',
-                              marginLeft: '2px',
-                            }}
-                          >
-                            /mo
-                          </span>
-                        </Typography>
-                      </Box>
-                      <Box
-                        className={styles.divider}
-                        sx={{
-                          height: '1px',
-                          backgroundColor:
-                            '#E5E7EB',
-                          my: 2,
-                        }}
-                      />
+
                       <Box
                         className={styles.itemRow}
                         sx={{
@@ -3597,23 +3902,25 @@ const CustomPackageLayout: React.FC<
                             gap: 1,
                           }}
                         >
-                          Annual Discount
-                          <span
-                            className={
-                              styles.discountTag
-                            }
-                            style={{
-                              backgroundColor:
-                                '#ECFDF5',
-                              color: '#059669',
-                              padding: '4px 8px',
-                              borderRadius: '4px',
-                              fontSize: '0.75rem',
-                              fontWeight: 600,
-                            }}
-                          >
-                            20% Off
-                          </span>
+                          {planDiscount > 0 ? 'Plan Discount' : 'No Discount Applied'}
+                          {planDiscount > 0 && (
+                            <span
+                              className={
+                                styles.discountTag
+                              }
+                              style={{
+                                backgroundColor:
+                                  '#ECFDF5',
+                                color: '#059669',
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                              }}
+                            >
+                              {planDiscount * 100}% Off
+                            </span>
+                          )}
                         </Typography>
                         <Typography
                           className={
@@ -3626,14 +3933,66 @@ const CustomPackageLayout: React.FC<
                           }}
                         >
                           -
-                          {formatPrice(
-                            selectedCurrency,
-                            (basePrice + 747) *
-                              0.2
-                          )}
+                          {`${getCurrencySymbol(selectedCurrency)} ${formatCurrencyPrice((basePrice + totalFeaturePrice + supportPrice) * planDiscount)}`}
                           <span
                             style={{
                               fontSize: '0.85rem',
+                              marginLeft: '2px',
+                            }}
+                          >
+                            /mo
+                          </span>
+                        </Typography>
+                      </Box>
+
+                      <Box
+                        className={styles.divider}
+                        sx={{
+                          height: '1px',
+                          backgroundColor:
+                            '#E5E7EB',
+                          my: 2,
+                        }}
+                      />
+
+                      {/* Final Total Price */}
+                      <Box
+                        className={styles.itemRow}
+                        sx={{
+                          display: 'flex',
+                          justifyContent:
+                            'space-between',
+                          alignItems: 'center',
+                          mb: 1,
+                        }}
+                      >
+                        <Typography
+                          className={
+                            styles.itemLabel
+                          }
+                          sx={{
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            color: '#1a1a1a',
+                          }}
+                        >
+                          Final Total
+                        </Typography>
+                        <Typography
+                          className={
+                            styles.itemValue
+                          }
+                          sx={{
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            color: '#2563eb',
+                          }}
+                        >
+                          {`${getCurrencySymbol(selectedCurrency)} ${formatCurrencyPrice(totalPrice)}`}
+                          <span
+                            style={{
+                              fontSize: '0.85rem',
+                              color: '#6B7280',
                               marginLeft: '2px',
                             }}
                           >
@@ -3676,10 +4035,7 @@ const CustomPackageLayout: React.FC<
                           mb: 1,
                         }}
                       >
-                        {formatPrice(
-                          selectedCurrency,
-                          (basePrice + 747) * 0.7
-                        )}
+                        {`${getCurrencySymbol(selectedCurrency)} ${formatCurrencyPrice(totalPrice)}`}
                         <span
                           style={{
                             fontSize: '1rem',
@@ -3701,12 +4057,7 @@ const CustomPackageLayout: React.FC<
                       >
                         Billed annually • Total
                         savings of{' '}
-                        {formatPrice(
-                          selectedCurrency,
-                          (basePrice + 747) *
-                            0.3 *
-                            12
-                        )}
+                        {`${getCurrencySymbol(selectedCurrency)} ${formatCurrencyPrice((basePrice + totalFeaturePrice + supportPrice) * planDiscount * 12)}`}
                         /year
                       </Typography>
                     </Box>
@@ -3754,8 +4105,11 @@ const CustomPackageLayout: React.FC<
                               selectedFeatures,
                               selectedAddOns,
                               usageQuantities,
-                              calculatedPrice,
+                              calculatedPrice: totalPrice, // Use our dynamically calculated price
                               selectedCurrency,
+                              planDiscount,
+                              supportLevel: selectedSupportIndex,
+                              supportPrice,
                             };
 
                             onShowSuccessMessage(

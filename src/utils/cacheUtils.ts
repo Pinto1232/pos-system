@@ -31,7 +31,7 @@ export const invalidateAddOnQuery = (queryClient: QueryClient, id: number): void
  */
 export const invalidateAddOnListQueries = (
   queryClient: QueryClient,
-  filters?: Record<string, any>
+  filters?: Record<string, unknown>
 ): void => {
   if (filters) {
     console.log(`Invalidating AddOn list queries with filters: ${JSON.stringify(filters)}`);

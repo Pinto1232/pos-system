@@ -50,8 +50,6 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     buttonText = 'Sign In',
     onSubmit,
   }) => {
-    // Router not currently used in this component
-    // const router = useRouter();
     const { startLoading, stopLoading } =
       useSpinner();
     const [error, setError] = useState<
