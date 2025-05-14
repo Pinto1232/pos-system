@@ -13,6 +13,7 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 import { AxiosError } from 'axios';
 import AuthWrapper from '@/contexts/AuthWrapper';
 import { CurrencyProvider } from '@/contexts/CurrencyContext';
+import { UserSubscriptionProvider } from '@/contexts/UserSubscriptionContext';
 
 const defaultQueryOptions: DefaultOptions = {
   queries: {
@@ -37,10 +38,12 @@ const defaultQueryOptions: DefaultOptions = {
 
       return failureCount < 3;
     },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 15 * 60 * 1000,
-    refetchOnWindowFocus: false,
+    // Reduce staleTime to make data refresh more frequently
+    staleTime: 60 * 1000, // 1 minute instead of 5 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes instead of 15 minutes
+    refetchOnWindowFocus: true, // Enable refetching when window regains focus
     refetchOnReconnect: true,
+    refetchOnMount: true, // Refetch when component mounts
   },
   mutations: {
     retry: 2,
@@ -82,9 +85,11 @@ export default function Providers({
               <QueryClientProvider
                 client={queryClient}
               >
-                <NotificationProvider>
-                  {children}
-                </NotificationProvider>
+                <UserSubscriptionProvider>
+                  <NotificationProvider>
+                    {children}
+                  </NotificationProvider>
+                </UserSubscriptionProvider>
               </QueryClientProvider>
             </CurrencyProvider>
           </CustomizationProvider>

@@ -14,6 +14,7 @@ import MuiAlert, {
 } from '@mui/material/Alert';
 import { useSuccessModal } from '@/contexts/SuccessModalContext';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { useAddOns } from '@/hooks/useAddOns';
 
 import {
   Package,
@@ -72,8 +73,12 @@ const CustomPackageLayoutContainer: React.FC<
     useState<Record<number, number>>({});
   const [isLoading, setIsLoading] =
     useState(true);
+  // Initialize with the base price from the selected package
+  // For custom packages, this will typically be 129.99 (set in PricingPackageCard)
   const [calculatedPrice, setCalculatedPrice] =
-    useState<number>(selectedPackage.price);
+    useState<number>(selectedPackage.type.toLowerCase().includes('custom') && selectedPackage.price === 0
+      ? 129.99
+      : selectedPackage.price);
   const [snackbarOpen, setSnackbarOpen] =
     useState(false);
   const [snackbarMessage, setSnackbarMessage] =
@@ -142,28 +147,32 @@ const CustomPackageLayoutContainer: React.FC<
     defaultStepsNonCustom,
   ]);
 
+  // Use the new useAddOns hook to fetch add-ons
+  const { data: addOnsResponse, isLoading: isAddOnsLoading } = useAddOns({
+    isActive: true,
+  });
+
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const response =
+        // Fetch core features from the original endpoint
+        const featuresResponse =
           await apiClient.get<FeaturesResponse>(
             '/api/pricingpackages/custom/features'
           );
         console.log(
-          'Fetched config response:',
-          response.data
+          'Fetched core features response:',
+          featuresResponse.data
         );
 
         const coreFeatures =
-          response.data.coreFeatures || [];
-        const addOnsData =
-          response.data.addOns || [];
+          featuresResponse.data.coreFeatures || [];
         const usageData =
-          response.data.usageBasedPricing || [];
+          featuresResponse.data.usageBasedPricing || [];
 
         setFeatures(coreFeatures);
-        setAddOns(addOnsData);
         setUsagePricing(usageData);
+
         const initialUsageQuantities =
           usageData.reduce(
             (
@@ -217,6 +226,14 @@ const CustomPackageLayoutContainer: React.FC<
       );
     }
   }, [selectedPackage, buildSteps]);
+
+  // Update addOns state when the data from useAddOns hook changes
+  useEffect(() => {
+    if (addOnsResponse?.data) {
+      console.log('AddOns data from React Query:', addOnsResponse.data);
+      setAddOns(addOnsResponse.data);
+    }
+  }, [addOnsResponse]);
 
   const validateCurrentStep =
     useCallback((): boolean => {
@@ -486,9 +503,15 @@ const CustomPackageLayoutContainer: React.FC<
     if (selectedPackage.isCustomizable) {
       const calculatePrice = debounce(
         async () => {
+          // Ensure we're using the correct base price for custom packages
+          const basePrice = selectedPackage.type.toLowerCase().includes('custom') && selectedPackage.price === 0
+            ? 129.99
+            : selectedPackage.price;
+
           const requestBody: PriceCalculationRequest =
             {
               packageId: selectedPackage.id,
+              basePrice: basePrice, // Add the base price to the request
               selectedFeatures:
                 selectedFeatures.map((f) => f.id),
               selectedAddOns: selectedAddOns.map(
@@ -546,7 +569,7 @@ const CustomPackageLayoutContainer: React.FC<
       }));
     }, []);
 
-  if (isLoading) return <WaveLoading />;
+  if (isLoading || isAddOnsLoading) return <WaveLoading />;
   if (showLoginForm) return <LazyLoginForm />;
 
   return (

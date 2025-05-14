@@ -246,32 +246,6 @@ const AuthProvider = ({
       }
     }, [isMounted]);
 
-  const login = useCallback(async () => {
-    console.log('Login requested');
-    try {
-      if (isMounted) {
-        const config = configRef.current;
-        const loginRedirect =
-          config.loginRedirect;
-        console.log(
-          'Using login redirect:',
-          loginRedirect
-        );
-
-        await keycloakRef.current.login({
-          redirectUri: loginRedirect,
-        });
-      }
-    } catch (err) {
-      console.error('Login error:', err);
-      setError(
-        err instanceof Error
-          ? `Login failed: ${err.message}`
-          : 'Login failed'
-      );
-    }
-  }, [isMounted]);
-
   const handleTokenRefresh = useCallback(
     async (
       kc: KeycloakInstance,
@@ -344,6 +318,153 @@ const AuthProvider = ({
     [handleCleanLogout]
   );
 
+  const login = useCallback(async () => {
+    console.log('Login requested');
+    try {
+      if (isMounted) {
+        const config = configRef.current;
+        // Always redirect to home page after login
+        const loginRedirect =
+          window.location.origin + '/';
+        console.log(
+          'Using login redirect:',
+          loginRedirect
+        );
+
+        // Check if we have credentials in sessionStorage
+        const username = sessionStorage.getItem(
+          'kc_username'
+        );
+        const password = sessionStorage.getItem(
+          'kc_password'
+        );
+
+        // If we have credentials, try to use them
+        if (username && password) {
+          console.log(
+            'Using credentials from sessionStorage'
+          );
+
+          try {
+            // Create a direct token request to Keycloak
+            const tokenUrl = `${config.url}/realms/${config.realm}/protocol/openid-connect/token`;
+            const formData =
+              new URLSearchParams();
+            formData.append(
+              'grant_type',
+              'password'
+            );
+            formData.append(
+              'client_id',
+              config.clientId
+            );
+            formData.append('username', username);
+            formData.append('password', password);
+
+            console.log(
+              'Sending direct token request to Keycloak'
+            );
+
+            const response = await fetch(
+              tokenUrl,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type':
+                    'application/x-www-form-urlencoded',
+                },
+                body: formData,
+              }
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              console.log(
+                'Direct token request successful'
+              );
+
+              // Update Keycloak instance with the token
+              keycloakRef.current.token =
+                data.access_token;
+              keycloakRef.current.refreshToken =
+                data.refresh_token;
+              keycloakRef.current.idToken =
+                data.id_token;
+
+              // Store the token
+              setToken(data.access_token);
+              localStorage.setItem(
+                'accessToken',
+                data.access_token
+              );
+              setTokenCookie(data.access_token);
+
+              // Schedule token refresh
+              const refreshTime =
+                calculateRefreshTime(
+                  data.access_token
+                );
+              console.log(
+                `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+              );
+              setTimeout(() => {
+                handleTokenRefresh(
+                  keycloakRef.current
+                );
+              }, refreshTime);
+
+              // Clear credentials from sessionStorage
+              sessionStorage.removeItem(
+                'kc_username'
+              );
+              sessionStorage.removeItem(
+                'kc_password'
+              );
+
+              // Redirect to home page
+              window.location.href =
+                loginRedirect;
+              return;
+            } else {
+              console.error(
+                'Direct token request failed:',
+                response.status
+              );
+              // If direct token request fails, fall back to redirect
+            }
+          } catch (tokenError) {
+            console.error(
+              'Error during direct token request:',
+              tokenError
+            );
+            // If there's an error, fall back to redirect
+          }
+
+          // Clear credentials if we get here (they didn't work)
+          sessionStorage.removeItem(
+            'kc_username'
+          );
+          sessionStorage.removeItem(
+            'kc_password'
+          );
+        }
+
+        // Force redirect to Keycloak login page
+        await keycloakRef.current.login({
+          redirectUri: loginRedirect,
+          prompt: 'login', // Force showing the login page even if already authenticated
+        });
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(
+        err instanceof Error
+          ? `Login failed: ${err.message}`
+          : 'Login failed'
+      );
+    }
+  }, [isMounted, handleTokenRefresh]);
+
   const initializeAuth =
     useCallback(async (): Promise<() => void> => {
       if (!isMounted) return () => {};
@@ -368,9 +489,28 @@ const AuthProvider = ({
       );
 
       try {
+        // Check if this is a new registration that needs to be redirected to login
+        const isNewRegistration =
+          localStorage.getItem(
+            'newRegistration'
+          ) === 'true';
+
+        // If this is a new registration, we want to force the login page
+        const onLoadOption = isNewRegistration
+          ? 'login-required'
+          : 'check-sso';
+
+        console.log(
+          'Keycloak onLoad option:',
+          onLoadOption,
+          'isNewRegistration:',
+          isNewRegistration
+        );
+
         const authenticated = await kc.init({
-          onLoad: 'check-sso',
-          redirectUri: config.redirectUri,
+          onLoad: onLoadOption,
+          redirectUri:
+            window.location.origin + '/',
           checkLoginIframe: false,
           pkceMethod: 'S256',
           responseMode: 'query',
@@ -381,9 +521,16 @@ const AuthProvider = ({
           silentCheckSsoFallback: false,
         });
 
+        // Clear the new registration flag after initialization
+        if (isNewRegistration) {
+          localStorage.removeItem(
+            'newRegistration'
+          );
+        }
+
         console.log(
           'Redirect URI:',
-          config.redirectUri
+          window.location.origin + '/'
         );
 
         if (authenticated) {
@@ -407,6 +554,14 @@ const AuthProvider = ({
             refreshTimeout = setTimeout(() => {
               handleTokenRefresh(kc);
             }, refreshTime);
+
+            // If we're on the after-auth page, redirect to home
+            if (
+              window.location.pathname ===
+              '/after-auth'
+            ) {
+              window.location.href = '/';
+            }
           } else {
             console.warn(
               'Authenticated but no token available'
@@ -470,49 +625,128 @@ const AuthProvider = ({
           refreshTimeout = null;
         }
       };
-    }, [handleTokenRefresh, login, isMounted]);
+    }, [isMounted]);
 
   useEffect(() => {
     if (isMounted && !initStartedRef.current) {
-      console.log('Fetching token from API...');
-      fetch('/api/auth-token/get-token', {
-        credentials: 'include',
-      })
-        .then((response) => {
-          console.log(
-            'Token API response status:',
-            response.status
-          );
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error('Failed to get token');
-        })
-        .then((data) => {
-          console.log(
-            'Token API response data:',
-            data
-          );
-          if (data.token) {
-            setToken(data.token);
-            localStorage.setItem(
-              'accessToken',
-              data.token
-            );
-            setInitialized(true);
-            console.log('Token set from API');
-          } else {
+      console.log(
+        'Checking if we should fetch token from API...'
+      );
+
+      // Check if we should skip the auth API call
+      const skipAuthApi =
+        process.env.NEXT_PUBLIC_SKIP_AUTH_API ===
+        'true';
+
+      if (skipAuthApi) {
+        console.log(
+          'Using mock token API due to NEXT_PUBLIC_SKIP_AUTH_API flag'
+        );
+        // Use mock token API instead
+        const fetchMockToken = async () => {
+          try {
             console.log(
-              'No token in API response'
+              'Making fetch request to /api/auth-token/mock-token'
+            );
+            const response = await fetch(
+              '/api/auth-token/mock-token',
+              {
+                credentials: 'include',
+                headers: {
+                  'Cache-Control': 'no-cache',
+                  Pragma: 'no-cache',
+                },
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(
+                `Failed to get mock token: ${response.status} ${response.statusText}`
+              );
+            }
+
+            const data = await response.json();
+            console.log('Mock token received');
+
+            if (data.token) {
+              setToken(data.token);
+              localStorage.setItem(
+                'accessToken',
+                data.token
+              );
+              setInitialized(true);
+              console.log('Mock token set');
+            }
+          } catch (err) {
+            console.error(
+              'Error fetching mock token:',
+              err
             );
           }
-        })
-        .catch((err) => {
-          console.error(
-            'Error fetching token:',
-            err
-          );
-        });
+        };
+
+        fetchMockToken();
+      } else {
+        // Use async function for better error handling
+        const fetchToken = async () => {
+          try {
+            console.log(
+              'Making fetch request to /api/auth-token/get-token'
+            );
+            const response = await fetch(
+              '/api/auth-token/get-token',
+              {
+                credentials: 'include',
+                headers: {
+                  'Cache-Control': 'no-cache',
+                  Pragma: 'no-cache',
+                },
+              }
+            );
+
+            console.log(
+              'Token API response status:',
+              response.status
+            );
+
+            if (!response.ok) {
+              throw new Error(
+                `Failed to get token: ${response.status} ${response.statusText}`
+              );
+            }
+
+            const data = await response.json();
+            console.log(
+              'Token API response data:',
+              data
+            );
+
+            if (data.token) {
+              setToken(data.token);
+              localStorage.setItem(
+                'accessToken',
+                data.token
+              );
+              setInitialized(true);
+              console.log('Token set from API');
+              return true; // Token was set
+            } else {
+              console.log(
+                'No token in API response, proceeding with Keycloak initialization'
+              );
+            }
+          } catch (err) {
+            console.error(
+              'Error fetching token:',
+              err
+            );
+          }
+          return false; // Token was not set
+        };
+
+        // Call the async function
+        fetchToken();
+      }
 
       if (!keycloakInitialized) {
         console.log(
@@ -536,7 +770,7 @@ const AuthProvider = ({
         setInitialized(true);
       }
     }
-  }, [isMounted, initializeAuth]);
+  }, [isMounted]);
 
   const logout = useCallback(async () => {
     console.log('Logout requested');

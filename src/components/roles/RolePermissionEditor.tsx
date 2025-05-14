@@ -94,7 +94,6 @@ const RolePermissionEditor: React.FC<
     },
   });
 
-  // Update selected permissions when role permissions are loaded
   useEffect(() => {
     if (rolePermissions) {
       setSelectedPermissions(rolePermissions);
@@ -108,29 +107,29 @@ const RolePermissionEditor: React.FC<
 
       const filtered = searchQuery
         ? allPermissions.filter(
-            (p) =>
-              p.name
+          (p) =>
+            p.name
+              .toLowerCase()
+              .includes(
+                searchQuery.toLowerCase()
+              ) ||
+            p.displayName
+              .toLowerCase()
+              .includes(
+                searchQuery.toLowerCase()
+              ) ||
+            p.category
+              .toLowerCase()
+              .includes(
+                searchQuery.toLowerCase()
+              ) ||
+            (p.description &&
+              p.description
                 .toLowerCase()
                 .includes(
                   searchQuery.toLowerCase()
-                ) ||
-              p.displayName
-                .toLowerCase()
-                .includes(
-                  searchQuery.toLowerCase()
-                ) ||
-              p.category
-                .toLowerCase()
-                .includes(
-                  searchQuery.toLowerCase()
-                ) ||
-              (p.description &&
-                p.description
-                  .toLowerCase()
-                  .includes(
-                    searchQuery.toLowerCase()
-                  ))
-          )
+                ))
+        )
         : allPermissions;
 
       return filtered.reduce<
@@ -159,7 +158,6 @@ const RolePermissionEditor: React.FC<
     });
   };
 
-  // Handle category toggle (select/deselect all permissions in a category)
   const handleCategoryToggle = (
     category: string,
     permissions: PermissionInfo[]
@@ -228,7 +226,7 @@ const RolePermissionEditor: React.FC<
     return expandedCategories[category] ?? false;
   };
 
-  // Calculate if all permissions in a category are selected
+
   const isCategoryFullySelected = (
     permissions: PermissionInfo[]
   ) => {
@@ -237,7 +235,6 @@ const RolePermissionEditor: React.FC<
     );
   };
 
-  // Calculate if some permissions in a category are selected
   const isCategoryPartiallySelected = (
     permissions: PermissionInfo[]
   ) => {
@@ -419,9 +416,8 @@ const RolePermissionEditor: React.FC<
                         {category}
                       </Typography>
                       <Chip
-                        label={`${permissions.filter((p) => selectedPermissions.includes(p.name)).length}/${
-                          permissions.length
-                        }`}
+                        label={`${permissions.filter((p) => selectedPermissions.includes(p.name)).length}/${permissions.length
+                          }`}
                         size="small"
                         sx={{ ml: 1 }}
                       />

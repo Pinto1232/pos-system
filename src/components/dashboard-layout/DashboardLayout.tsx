@@ -10,12 +10,49 @@ import SettingsModal, {
   UserCustomization,
 } from '@/SettingsModal';
 import { useQuery } from '@tanstack/react-query';
+import useKeycloakUser from '@/hooks/useKeycloakUser';
 import { mockFetchCustomization } from '@/api/mockUserCustomization';
 
 const fetchCustomization = async (
   userId: string
 ): Promise<UserCustomization> => {
-  return mockFetchCustomization(userId);
+  try {
+    console.log(
+      `Fetching user customization for user ID: ${userId}`
+    );
+
+    // Special handling for current-user endpoint
+    const endpoint =
+      userId === 'current-user'
+        ? '/api/UserCustomization/current-user'
+        : `/api/UserCustomization/${userId}`;
+
+    console.log(`Using endpoint: ${endpoint}`);
+
+    const response = await fetch(endpoint);
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(
+        'Fetched customization from API:',
+        data
+      );
+      return data;
+    } else {
+      console.warn(
+        `API call failed with status ${response.status}, falling back to mock data`
+      );
+      // Fall back to mock data if API call fails
+      return mockFetchCustomization(userId);
+    }
+  } catch (error) {
+    console.error(
+      'Error fetching customization, using mock data:',
+      error
+    );
+    // Fall back to mock data if there's an error
+    return mockFetchCustomization(userId);
+  }
 };
 
 interface DashboardLayoutProps {
@@ -38,7 +75,22 @@ const DashboardLayout: React.FC<
   iconColor = '#fff',
   navbarBgColor,
 }) => {
-  const userId = '1';
+  // Get the authenticated user's information from Keycloak
+  const { userInfo, isLoading: isUserLoading } =
+    useKeycloakUser();
+
+  // Use the user's sub (subject identifier) from Keycloak as the userId
+  // Fall back to 'current-user' if not available
+  const userId = userInfo?.sub || 'current-user';
+
+  console.log(
+    'Current authenticated user:',
+    userInfo?.name || 'Unknown'
+  );
+  console.log(
+    'Using user ID for customization:',
+    userId
+  );
 
   const { data, isSuccess } = useQuery<
     UserCustomization,
@@ -46,6 +98,8 @@ const DashboardLayout: React.FC<
   >({
     queryKey: ['userCustomization', userId],
     queryFn: () => fetchCustomization(userId),
+    // Only fetch when we have user info or know we're using the fallback
+    enabled: !isUserLoading,
   });
 
   const [customization, setCustomization] =
@@ -54,6 +108,10 @@ const DashboardLayout: React.FC<
     openSettingsModal,
     setOpenSettingsModal,
   ] = useState(false);
+  const [
+    initialSettingsTab,
+    setInitialSettingsTab,
+  ] = useState('General Settings');
   const [activeSection, setActiveSection] =
     useState(() => {
       // Initialize from localStorage if available, otherwise default to Dashboard
@@ -111,6 +169,32 @@ const DashboardLayout: React.FC<
       setCustomization(data);
     }
   }, [isSuccess, data]);
+
+  // Listen for events to open settings modal with specific tab
+  useEffect(() => {
+    const handleOpenSettingsModal = (
+      event: CustomEvent
+    ) => {
+      if (event.detail?.initialTab) {
+        setInitialSettingsTab(
+          event.detail.initialTab
+        );
+      }
+      setOpenSettingsModal(true);
+    };
+
+    window.addEventListener(
+      'openSettingsModal',
+      handleOpenSettingsModal as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        'openSettingsModal',
+        handleOpenSettingsModal as EventListener
+      );
+    };
+  }, []);
 
   const handleSettingsClick = () => {
     setOpenSettingsModal(true);
@@ -245,6 +329,7 @@ const DashboardLayout: React.FC<
         onCustomizationUpdated={
           handleCustomizationUpdated
         }
+        initialSetting={initialSettingsTab}
       />
     </Box>
   );

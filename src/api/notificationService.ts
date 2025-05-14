@@ -108,21 +108,24 @@ export const getNotifications = async (
     // For development, use mock data
     if (process.env.NODE_ENV === 'development') {
       // Apply filters to mock data
-      let filteredNotifications = [
-        ...MOCK_NOTIFICATIONS,
-      ];
+      let filteredNotifications = Array.isArray(
+        MOCK_NOTIFICATIONS
+      )
+        ? [...MOCK_NOTIFICATIONS]
+        : [];
 
       if (filters.status) {
         filteredNotifications =
           filteredNotifications.filter(
-            (n) => n.status === filters.status
+            (n) =>
+              n && n.status === filters.status
           );
       }
 
       if (filters.type) {
         filteredNotifications =
           filteredNotifications.filter(
-            (n) => n.type === filters.type
+            (n) => n && n.type === filters.type
           );
       }
 
@@ -144,10 +147,13 @@ export const getNotifications = async (
           offset + limit
         );
 
-      const unreadCount =
-        MOCK_NOTIFICATIONS.filter(
-          (n) => n.status === 'unread'
-        ).length;
+      const unreadCount = Array.isArray(
+        MOCK_NOTIFICATIONS
+      )
+        ? MOCK_NOTIFICATIONS.filter(
+            (n) => n && n.status === 'unread'
+          ).length
+        : 0;
 
       return {
         notifications: paginatedNotifications,
@@ -178,15 +184,25 @@ export const markNotificationsAsRead = async (
   try {
     // For development, update mock data
     if (process.env.NODE_ENV === 'development') {
-      request.notificationIds.forEach((id) => {
-        const notification =
-          MOCK_NOTIFICATIONS.find(
-            (n) => n.id === id
-          );
-        if (notification) {
-          notification.status = 'read';
-        }
-      });
+      if (
+        Array.isArray(request.notificationIds)
+      ) {
+        request.notificationIds.forEach((id) => {
+          if (!id) return;
+
+          const notification = Array.isArray(
+            MOCK_NOTIFICATIONS
+          )
+            ? MOCK_NOTIFICATIONS.find(
+                (n) => n && n.id === id
+              )
+            : undefined;
+
+          if (notification) {
+            notification.status = 'read';
+          }
+        });
+      }
       return;
     }
 
@@ -250,11 +266,15 @@ export const markAllNotificationsAsRead =
       if (
         process.env.NODE_ENV === 'development'
       ) {
-        MOCK_NOTIFICATIONS.forEach(
-          (notification) => {
-            notification.status = 'read';
-          }
-        );
+        if (Array.isArray(MOCK_NOTIFICATIONS)) {
+          MOCK_NOTIFICATIONS.forEach(
+            (notification) => {
+              if (notification) {
+                notification.status = 'read';
+              }
+            }
+          );
+        }
         return;
       }
 

@@ -11,6 +11,10 @@
   border-radius: 0;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   overflow: hidden;
+  /* Accessibility improvements */
+  z-index: 1300; /* Ensure modal is above other content */
+  display: flex;
+  flex-direction: column;
 }
 
 .modalHeader {

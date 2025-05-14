@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo, Suspense } from 'react';
+import React, { memo, Suspense, useRef, useEffect } from 'react';
 import {
   Modal,
   Box,
@@ -26,56 +26,69 @@ const PackageSelectionModal: React.FC = memo(
       closeModal,
     } = usePackageSelection();
     const { loading } = useSpinner();
+    const modalRef = useRef<HTMLDivElement>(null);
+
+    // Focus the modal content when it opens
+    useEffect(() => {
+      if (isModalOpen && modalRef.current) {
+        modalRef.current.focus();
+      }
+    }, [isModalOpen]);
+
+    // Handle keyboard events for accessibility
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    };
 
     // Don't render the modal at all when loading
     if (!selectedPackage || loading) return null;
 
     const renderPackageLayout = () => {
-      switch (selectedPackage.type) {
-        case 'custom':
-          return (
-            <CustomPackageLayoutContainer
-              selectedPackage={
-                selectedPackage as CustomPackage
-              }
-            />
-          );
+      const packageType = selectedPackage.type.toLowerCase();
 
-        case 'starter':
-          return (
-            <StarterPackageLayout
-              selectedPackage={selectedPackage}
-            />
-          );
-        case 'growth':
-          return (
-            <GrowthPackageLayout
-              selectedPackage={selectedPackage}
-            />
-          );
-        case 'enterprise':
-          return (
-            <EnterprisePackageLayout
-              selectedPackage={selectedPackage}
-            />
-          );
-        case 'premium':
-          return (
-            <PremiumPackageLayout
-              selectedPackage={selectedPackage}
-            />
-          );
-        default:
-          return assertUnreachable(
-            selectedPackage.type
-          );
+      // Handle new package types based on their prefix
+      if (packageType.includes('custom')) {
+        return (
+          <CustomPackageLayoutContainer
+            selectedPackage={
+              selectedPackage as CustomPackage
+            }
+          />
+        );
+      } else if (packageType.includes('starter')) {
+        return (
+          <StarterPackageLayout
+            selectedPackage={selectedPackage}
+          />
+        );
+      } else if (packageType.includes('growth')) {
+        return (
+          <GrowthPackageLayout
+            selectedPackage={selectedPackage}
+          />
+        );
+      } else if (packageType.includes('enterprise')) {
+        return (
+          <EnterprisePackageLayout
+            selectedPackage={selectedPackage}
+          />
+        );
+      } else if (packageType.includes('premium')) {
+        return (
+          <PremiumPackageLayout
+            selectedPackage={selectedPackage}
+          />
+        );
+      } else {
+        console.warn(`Unknown package type: ${packageType}. Defaulting to Starter package layout.`);
+        return (
+          <StarterPackageLayout
+            selectedPackage={selectedPackage}
+          />
+        );
       }
-    };
-
-    const assertUnreachable = (
-      x: never
-    ): never => {
-      throw new Error('Unexpected value: ' + x);
     };
 
     console.log(
@@ -87,6 +100,8 @@ const PackageSelectionModal: React.FC = memo(
       <Modal
         open={isModalOpen}
         onClose={closeModal}
+        aria-modal="true"
+        keepMounted={false}
         slotProps={{
           backdrop: {
             style: {
@@ -95,11 +110,18 @@ const PackageSelectionModal: React.FC = memo(
             },
           },
         }}
+        // Let the Modal handle focus management
+        disableEnforceFocus={false}
+        disableAutoFocus={false}
       >
         <Box
+          ref={modalRef}
           className={`${styles.modal} ${styles[`${selectedPackage.type}Modal`]}`}
           aria-labelledby="package-selection-modal-title"
           aria-describedby="package-selection-modal-description"
+          role="dialog"
+          tabIndex={-1}
+          onKeyDown={handleKeyDown}
         >
           <Box
             className={styles.modalHeader}
@@ -111,6 +133,7 @@ const PackageSelectionModal: React.FC = memo(
               variant="h6"
               component="h2"
               fontWeight={600}
+              id="package-selection-modal-title"
             >
               {selectedPackage.title ||
                 'Package Selection'}
@@ -118,6 +141,7 @@ const PackageSelectionModal: React.FC = memo(
             <IconButton
               onClick={closeModal}
               size="small"
+              aria-label="Close modal"
               sx={{
                 color: 'rgba(0, 0, 0, 0.54)',
               }}
@@ -125,7 +149,10 @@ const PackageSelectionModal: React.FC = memo(
               <CloseIcon fontSize="small" />
             </IconButton>
           </Box>
-          <div className={styles.modalContent}>
+          <div
+            className={styles.modalContent}
+            id="package-selection-modal-description"
+          >
             {renderPackageLayout()}
           </div>
         </Box>

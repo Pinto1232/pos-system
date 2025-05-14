@@ -3,6 +3,7 @@ import PricingPackagesContainer from '@/components/pricing-packages/PricingPacka
 import HeroContainer from '@/components/features/HeroContainer';
 import TestimonialContainer from '@/components/testimonial/TestimonialContainer';
 import FeaturesSlider from '@/components/slider/FeaturesSlider';
+import RegistrationHandler from '@/components/auth/RegistrationHandler';
 
 export default function Home() {
   const heading = `Choose Your Plan`;
@@ -11,6 +12,9 @@ export default function Home() {
 
   return (
     <div>
+      {/* Handle registration redirects */}
+      <RegistrationHandler />
+
       <Box>
         <Box textAlign="center" mt={5}>
           <Typography

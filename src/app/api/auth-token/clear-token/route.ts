@@ -3,9 +3,16 @@ import { cookies } from 'next/headers';
 
 export async function POST() {
   try {
+    console.log(
+      'POST /api/auth-token/clear-token - Request received'
+    );
+
     const cookieStore = await cookies();
     cookieStore.delete('auth_token');
 
+    console.log(
+      'Token cookie cleared successfully'
+    );
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(

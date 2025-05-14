@@ -16,10 +16,12 @@ import {
   useTheme,
 } from '@mui/material';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
+import { useSpinner } from '@/contexts/SpinnerContext';
 
 function SuccessContent({
   onConfirm,
@@ -28,7 +30,9 @@ function SuccessContent({
 }) {
   const [open, setOpen] = useState(true);
   const theme = useTheme();
+  const router = useRouter();
   const { clearCart } = useCart();
+  const { setLoading } = useSpinner();
   const hasCleared = useRef(false);
 
   useEffect(() => {
@@ -55,9 +59,26 @@ function SuccessContent({
     setOpen(false);
   };
 
-  const handleReturnToDashboard = () => {
+  const handleReturnToDashboard = (
+    e: React.MouseEvent
+  ) => {
+    e.preventDefault(); // Prevent the default Link navigation
     onConfirm();
     handleClose();
+
+    // Show the loading spinner
+    setLoading(true);
+
+    // Set a flag in sessionStorage to indicate we're coming from payment success
+    sessionStorage.setItem(
+      'fromPaymentSuccess',
+      'true'
+    );
+
+    // Navigate programmatically after a short delay to ensure the spinner is visible
+    setTimeout(() => {
+      router.push('/dashboard');
+    }, 100);
   };
 
   return (

@@ -31,6 +31,11 @@ import {
 import { SelectChangeEvent } from '@mui/material/Select';
 import { motion } from 'framer-motion';
 import InfoIcon from '@mui/icons-material/Info';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import CodeIcon from '@mui/icons-material/Code';
+import BrushIcon from '@mui/icons-material/Brush';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import StorageIcon from '@mui/icons-material/Storage';
 import styles from './CustomPackageLayout.module.css';
 
 import {
@@ -104,6 +109,7 @@ const CustomPackageLayout: React.FC<
     totalFeaturePrice,
     setTotalFeaturePrice,
   ] = useState<number>(0);
+  const [featurePrices, setFeaturePrices] = useState<Record<number, number>>({});
   const [checkboxStates, setCheckboxStates] =
     useState<Record<string, boolean>>({
       'business-regular-updates': false,
@@ -150,21 +156,114 @@ const CustomPackageLayout: React.FC<
     setActiveEnterpriseCategory,
   ] = useState<string | null>(null);
 
+  // Initialize feature prices when features are loaded
   useEffect(() => {
-    const total = selectedFeatures.reduce(
+    if (features.length > 0) {
+      const priceMap: Record<number, number> = {};
+      features.forEach(feature => {
+        const featurePrice = feature.multiCurrencyPrices && feature.multiCurrencyPrices[selectedCurrency]
+          ? feature.multiCurrencyPrices[selectedCurrency]
+          : feature.basePrice;
+        priceMap[feature.id] = featurePrice;
+      });
+      setFeaturePrices(priceMap);
+
+      // Also initialize add-on prices
+      if (addOns.length > 0) {
+        console.log('===== PROCESSING ADD-ONS IN CUSTOM PACKAGE LAYOUT =====');
+        console.log('Total AddOns received:', addOns.length);
+
+        addOns.forEach((addOn, index) => {
+          console.log(`Processing AddOn #${index + 1} (ID: ${addOn.id}):`);
+          console.log('  Name:', addOn.name);
+          console.log('  Description:', addOn.description);
+          console.log('  Price:', addOn.price);
+          console.log('  Currency:', addOn.currency);
+          console.log('  MultiCurrencyPrices:', addOn.multiCurrencyPrices);
+          console.log('  Category:', addOn.category);
+          console.log('  IsActive:', addOn.isActive);
+
+          const addOnPrice = addOn.multiCurrencyPrices && addOn.multiCurrencyPrices[selectedCurrency]
+            ? addOn.multiCurrencyPrices[selectedCurrency]
+            : addOn.price;
+          priceMap[addOn.id] = addOnPrice;
+          console.log(`  Calculated price for currency ${selectedCurrency}:`, addOnPrice);
+        });
+        console.log('===================================================');
+      }
+
+      // Initialize usage-based pricing
+      if (usagePricing.length > 0) {
+        usagePricing.forEach(item => {
+          const usagePrice = item.multiCurrencyPrices && item.multiCurrencyPrices[selectedCurrency]
+            ? item.multiCurrencyPrices[selectedCurrency]
+            : item.pricePerUnit;
+          priceMap[item.id] = usagePrice;
+        });
+      }
+
+      setFeaturePrices(priceMap);
+      console.log('Feature prices initialized:', priceMap);
+    }
+  }, [features, addOns, usagePricing, selectedCurrency]);
+
+  // Calculate total price when selected features, add-ons, usage quantities, or currency changes
+  useEffect(() => {
+    // Calculate feature prices
+    const featureTotal = selectedFeatures.reduce(
       (sum, feature) => {
-        const featurePrice =
-          feature.multiCurrencyPrices
-            ? feature.multiCurrencyPrices[
-                selectedCurrency
-              ]
-            : feature.basePrice;
+        const featurePrice = featurePrices[feature.id] ||
+          (feature.multiCurrencyPrices && feature.multiCurrencyPrices[selectedCurrency]
+            ? feature.multiCurrencyPrices[selectedCurrency]
+            : feature.basePrice);
+
+        console.log(`Feature: ${feature.name}, ID: ${feature.id}, Price: ${featurePrice}`);
         return sum + featurePrice;
       },
       0
     );
+
+    // Calculate add-on prices
+    const addOnTotal = selectedAddOns.reduce(
+      (sum, addOn) => {
+        const addOnPrice = featurePrices[addOn.id] ||
+          (addOn.multiCurrencyPrices && addOn.multiCurrencyPrices[selectedCurrency]
+            ? addOn.multiCurrencyPrices[selectedCurrency]
+            : addOn.price);
+
+        console.log(`Add-on: ${addOn.name}, ID: ${addOn.id}, Price: ${addOnPrice}`);
+        return sum + addOnPrice;
+      },
+      0
+    );
+
+    // Calculate usage-based prices
+    const usageTotal = Object.entries(usageQuantities).reduce(
+      (sum, [idStr, quantity]) => {
+        const id = parseInt(idStr);
+        const usageItem = usagePricing.find(item => item.id === id);
+        if (!usageItem) return sum;
+
+        const usagePrice = featurePrices[id] ||
+          (usageItem.multiCurrencyPrices && usageItem.multiCurrencyPrices[selectedCurrency]
+            ? usageItem.multiCurrencyPrices[selectedCurrency]
+            : usageItem.pricePerUnit);
+
+        const itemTotal = usagePrice * quantity;
+        console.log(`Usage: ${usageItem.name}, ID: ${id}, Quantity: ${quantity}, Price per unit: ${usagePrice}, Total: ${itemTotal}`);
+        return sum + itemTotal;
+      },
+      0
+    );
+
+    // Set the total price
+    const total = featureTotal + addOnTotal + usageTotal;
+    console.log(`Calculated total price: ${total} (Features: ${featureTotal}, Add-ons: ${addOnTotal}, Usage: ${usageTotal})`);
     setTotalFeaturePrice(total);
-  }, [selectedFeatures, selectedCurrency]);
+
+    // Log the current state for debugging
+    console.log(`Current state - Base price: ${basePrice}, Total feature price: ${total}, Selected currency: ${selectedCurrency}`);
+  }, [selectedFeatures, selectedAddOns, usageQuantities, featurePrices, selectedCurrency, usagePricing, basePrice]);
 
   const handleInfoClick = () => {
     setDialogOpen(true);
@@ -247,24 +346,97 @@ const CustomPackageLayout: React.FC<
   const handleFeatureToggle = (
     feature: Feature
   ) => {
-    const newFeatures = selectedFeatures.some(
+    const isSelected = selectedFeatures.some(
       (f) => f.id === feature.id
-    )
-      ? selectedFeatures.filter(
-          (f) => f.id !== feature.id
-        )
+    );
+
+    // Get the feature price from the featurePrices map or calculate it
+    let featurePrice = featurePrices[feature.id];
+
+    // If the price is not in the map, calculate it and update the map
+    if (featurePrice === undefined) {
+      featurePrice = feature.multiCurrencyPrices && feature.multiCurrencyPrices[selectedCurrency]
+        ? feature.multiCurrencyPrices[selectedCurrency]
+        : feature.basePrice;
+
+      // Update the featurePrices map
+      setFeaturePrices(prev => ({
+        ...prev,
+        [feature.id]: featurePrice
+      }));
+    }
+
+    // Update the total price immediately for a responsive UI
+    if (isSelected) {
+      // If feature is already selected, we're removing it, so subtract its price
+      setTotalFeaturePrice(prevTotal => prevTotal - featurePrice);
+      console.log(`Removed feature ${feature.name} (ID: ${feature.id}), price: ${featurePrice}, new total: ${totalFeaturePrice - featurePrice}`);
+    } else {
+      // If feature is not selected, we're adding it, so add its price
+      setTotalFeaturePrice(prevTotal => prevTotal + featurePrice);
+      console.log(`Added feature ${feature.name} (ID: ${feature.id}), price: ${featurePrice}, new total: ${totalFeaturePrice + featurePrice}`);
+    }
+
+    // Update the selected features list
+    const newFeatures = isSelected
+      ? selectedFeatures.filter((f) => f.id !== feature.id)
       : [...selectedFeatures, feature];
+
     onFeatureToggle(newFeatures);
   };
 
   const handleAddOnToggle = (addOn: AddOn) => {
-    const newAddOns = selectedAddOns.some(
+    console.log('===== TOGGLING ADD-ON =====');
+    console.log('AddOn being toggled:', addOn);
+    console.log('  ID:', addOn.id);
+    console.log('  Name:', addOn.name);
+    console.log('  Description:', addOn.description);
+    console.log('  Price:', addOn.price);
+    console.log('  Currency:', addOn.currency);
+    console.log('  MultiCurrencyPrices:', addOn.multiCurrencyPrices);
+    console.log('  Category:', addOn.category);
+    console.log('  IsActive:', addOn.isActive);
+
+    const isSelected = selectedAddOns.some(
       (a) => a.id === addOn.id
-    )
-      ? selectedAddOns.filter(
-          (a) => a.id !== addOn.id
-        )
+    );
+    console.log('  Currently selected:', isSelected);
+
+    // Get the add-on price from the featurePrices map or calculate it
+    let addOnPrice = featurePrices[addOn.id];
+    console.log('  Price from featurePrices map:', addOnPrice);
+
+    // If the price is not in the map, calculate it and update the map
+    if (addOnPrice === undefined) {
+      addOnPrice = addOn.multiCurrencyPrices && addOn.multiCurrencyPrices[selectedCurrency]
+        ? addOn.multiCurrencyPrices[selectedCurrency]
+        : addOn.price;
+      console.log(`  Calculated price for currency ${selectedCurrency}:`, addOnPrice);
+
+      // Update the featurePrices map
+      setFeaturePrices(prev => ({
+        ...prev,
+        [addOn.id]: addOnPrice
+      }));
+    }
+
+    // Update the total price immediately for a responsive UI
+    if (isSelected) {
+      // If add-on is already selected, we're removing it, so subtract its price
+      setTotalFeaturePrice(prevTotal => prevTotal - addOnPrice);
+      console.log(`Removed add-on ${addOn.name} (ID: ${addOn.id}), price: ${addOnPrice}, new total: ${totalFeaturePrice - addOnPrice}`);
+    } else {
+      // If add-on is not selected, we're adding it, so add its price
+      setTotalFeaturePrice(prevTotal => prevTotal + addOnPrice);
+      console.log(`Added add-on ${addOn.name} (ID: ${addOn.id}), price: ${addOnPrice}, new total: ${totalFeaturePrice + addOnPrice}`);
+    }
+    console.log('===========================');
+
+    // Update the selected add-ons list
+    const newAddOns = isSelected
+      ? selectedAddOns.filter((a) => a.id !== addOn.id)
       : [...selectedAddOns, addOn];
+
     onAddOnToggle(newAddOns);
   };
 
@@ -272,9 +444,40 @@ const CustomPackageLayout: React.FC<
     id: number,
     value: string
   ) => {
+    const newValue = Math.max(0, parseInt(value) || 0);
+    const oldValue = usageQuantities[id] || 0;
+
+    // Find the usage pricing item
+    const usageItem = usagePricing.find(item => item.id === id);
+
+    if (usageItem) {
+      // Get the usage price from the featurePrices map or calculate it
+      let usagePrice = featurePrices[id];
+
+      // If the price is not in the map, calculate it and update the map
+      if (usagePrice === undefined) {
+        usagePrice = usageItem.multiCurrencyPrices && usageItem.multiCurrencyPrices[selectedCurrency]
+          ? usageItem.multiCurrencyPrices[selectedCurrency]
+          : usageItem.pricePerUnit;
+
+        // Update the featurePrices map
+        setFeaturePrices(prev => ({
+          ...prev,
+          [id]: usagePrice
+        }));
+      }
+
+      const priceDifference = (newValue - oldValue) * usagePrice;
+
+      // Update the total price
+      setTotalFeaturePrice(prevTotal => prevTotal + priceDifference);
+      console.log(`Updated usage ${usageItem.name} (ID: ${id}) from ${oldValue} to ${newValue}, price difference: ${priceDifference}, new total: ${totalFeaturePrice + priceDifference}`);
+    }
+
+    // Update the usage quantities
     onUsageChange({
       ...usageQuantities,
-      [id]: Math.max(0, parseInt(value) || 0),
+      [id]: newValue,
     });
   };
 
@@ -307,15 +510,19 @@ const CustomPackageLayout: React.FC<
   };
 
   const handleSave = () => {
+    // Calculate the final price as the sum of base price and all selected features/add-ons/usage
+    const finalCalculatedPrice = basePrice + totalFeaturePrice;
+
     const fullData = {
       selectedFeatures,
       selectedAddOns,
       usageQuantities,
-      calculatedPrice,
+      calculatedPrice: finalCalculatedPrice, // Use our calculated price instead of the prop
       selectedCurrency,
       formData,
     };
     console.log('Package data saved:', fullData);
+    console.log(`Final price calculation: Base price (${basePrice}) + Total features (${totalFeaturePrice}) = ${finalCalculatedPrice}`);
     setTestPeriod(selectedPackage.testPeriodDays);
     onSave(fullData);
     onNext();
@@ -535,6 +742,21 @@ const CustomPackageLayout: React.FC<
                   displayPrice
                 )}
               </Typography>
+
+              {isCustomizable && (
+                <Box className={styles.currentPriceContainer}>
+                  <Typography variant="h5" className={styles.currentPrice}>
+                    Current Total: {formatPrice(selectedCurrency, totalFeaturePrice + displayPrice)}
+                  </Typography>
+                  <Typography variant="body2" className={styles.priceNote}>
+                    *Price updates as you select or deselect features
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#2563eb', mt: 1 }}>
+                    Base: {formatPrice(selectedCurrency, displayPrice)} +
+                    Features: {formatPrice(selectedCurrency, totalFeaturePrice)}
+                  </Typography>
+                </Box>
+              )}
             </Box>
 
             <Box
@@ -689,448 +911,75 @@ const CustomPackageLayout: React.FC<
                   </Box>
                 </Box>
 
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={
-                      styles.featureColumn
-                    }
-                  >
-                    Regular Update & Reports
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    data-label="Business"
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'business-regular-updates'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'business-regular-updates'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-regular-updates'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    data-label="Startup"
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'startup-regular-updates'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'startup-regular-updates'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-regular-updates'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    data-label="Personal"
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'personal-regular-updates'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'personal-regular-updates'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-regular-updates'
-                        )
-                      }
-                    />
-                  </Box>
-                </Box>
+                {/* Dynamic Add-on Features Table */}
+                {addOns.map((addOn) => {
+                  // Generate unique IDs for each checkbox based on add-on ID and plan type
+                  const businessKey = `business-${addOn.id}`;
+                  const startupKey = `startup-${addOn.id}`;
+                  const personalKey = `personal-${addOn.id}`;
 
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={
-                      styles.featureColumn
-                    }
-                  >
-                    Cloud Storage & Sharing
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'business-cloud-storage'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'business-cloud-storage'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-cloud-storage'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'startup-cloud-storage'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'startup-cloud-storage'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-cloud-storage'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'personal-cloud-storage'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'personal-cloud-storage'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-cloud-storage'
-                        )
-                      }
-                    />
-                  </Box>
-                </Box>
+                  // Get the add-on price from the featurePrices map or calculate it
+                  const addOnPrice = featurePrices[addOn.id] ||
+                    (addOn.multiCurrencyPrices && addOn.multiCurrencyPrices[selectedCurrency]
+                      ? addOn.multiCurrencyPrices[selectedCurrency]
+                      : addOn.price);
 
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={
-                      styles.featureColumn
-                    }
-                  >
-                    Market Analysis Tools
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'business-market-analysis'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'business-market-analysis'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-market-analysis'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'startup-market-analysis'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'startup-market-analysis'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-market-analysis'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'personal-market-analysis'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'personal-market-analysis'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-market-analysis'
-                        )
-                      }
-                    />
-                  </Box>
-                </Box>
-
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={
-                      styles.featureColumn
-                    }
-                  >
-                    Team Management
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'business-team-management'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'business-team-management'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-team-management'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'startup-team-management'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'startup-team-management'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-team-management'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'personal-team-management'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'personal-team-management'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-team-management'
-                        )
-                      }
-                    />
-                  </Box>
-                </Box>
-
-                <Box className={styles.tableRow}>
-                  <Box
-                    className={
-                      styles.featureColumn
-                    }
-                  >
-                    24/7 Business Support
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'business-support'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'business-support'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'business-support'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'startup-support'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'startup-support'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'startup-support'
-                        )
-                      }
-                    />
-                  </Box>
-                  <Box
-                    className={styles.planColumn}
-                    sx={{
-                      backgroundColor:
-                        checkboxStates[
-                          'personal-support'
-                        ]
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'transparent',
-                      transition:
-                        'background-color 0.3s ease',
-                    }}
-                  >
-                    <Checkbox
-                      checked={
-                        checkboxStates[
-                          'personal-support'
-                        ]
-                      }
-                      onChange={() =>
-                        handleCheckboxChange(
-                          'personal-support'
-                        )
-                      }
-                    />
-                  </Box>
-                </Box>
+                  return (
+                    <Box className={styles.tableRow} key={addOn.id}>
+                      <Box className={styles.featureColumn}>
+                        {addOn.name}
+                        <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontSize: '0.7rem' }}>
+                          {formatPrice(selectedCurrency, addOnPrice)}
+                        </Typography>
+                      </Box>
+                      <Box
+                        className={styles.planColumn}
+                        data-label="Business"
+                        sx={{
+                          backgroundColor: checkboxStates[businessKey]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                          transition: 'background-color 0.3s ease',
+                        }}
+                      >
+                        <Checkbox
+                          checked={checkboxStates[businessKey] || false}
+                          onChange={() => handleCheckboxChange(businessKey)}
+                        />
+                      </Box>
+                      <Box
+                        className={styles.planColumn}
+                        data-label="Startup"
+                        sx={{
+                          backgroundColor: checkboxStates[startupKey]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                          transition: 'background-color 0.3s ease',
+                        }}
+                      >
+                        <Checkbox
+                          checked={checkboxStates[startupKey] || false}
+                          onChange={() => handleCheckboxChange(startupKey)}
+                        />
+                      </Box>
+                      <Box
+                        className={styles.planColumn}
+                        data-label="Personal"
+                        sx={{
+                          backgroundColor: checkboxStates[personalKey]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
+                          transition: 'background-color 0.3s ease',
+                        }}
+                      >
+                        <Checkbox
+                          checked={checkboxStates[personalKey] || false}
+                          onChange={() => handleCheckboxChange(personalKey)}
+                        />
+                      </Box>
+                    </Box>
+                  );
+                })}
               </Box>
             </Box>
 
@@ -1159,7 +1008,7 @@ const CustomPackageLayout: React.FC<
                 onClick={handleSave}
                 disabled={
                   loading ||
-                  !isAnyCheckboxSelected()
+                  (isCustomizable && selectedFeatures.length === 0)
                 }
               >
                 {loading ? (
@@ -1261,10 +1110,25 @@ const CustomPackageLayout: React.FC<
                                   display="flex"
                                   alignItems="center"
                                 >
-                                  {`${feature.name} (${formatPrice(
-                                    selectedCurrency,
-                                    featurePrice
-                                  )})`}
+                                  <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                                    <span>{feature.name}</span>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{
+                                        fontWeight: 600,
+                                        color: '#2563eb',
+                                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                                        padding: '4px 8px',
+                                        borderRadius: '4px',
+                                        marginLeft: '8px'
+                                      }}
+                                    >
+                                      {formatPrice(
+                                        selectedCurrency,
+                                        featurePrice
+                                      )}
+                                    </Typography>
+                                  </Box>
                                   {isSelected && (
                                     <Typography
                                       variant="body2"
@@ -1330,6 +1194,51 @@ const CustomPackageLayout: React.FC<
                   </Box>
                 )}
               </Box>
+
+              {/* Continue button with current price */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  mt: 3,
+                  pt: 2,
+                  borderTop: '1px solid #e2e8f0'
+                }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={onNext}
+                  disabled={selectedFeatures.length === 0}
+                  sx={{
+                    minWidth: '200px',
+                    backgroundColor: '#2563eb',
+                    '&:hover': {
+                      backgroundColor: '#1d4ed8',
+                    },
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 16px',
+                  }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                    Continue
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      marginLeft: '8px'
+                    }}
+                  >
+                    {formatPrice(selectedCurrency, basePrice + totalFeaturePrice)}
+                  </Typography>
+                </Button>
+              </Box>
             </Box>
             <Box>
               <Typography
@@ -1351,6 +1260,33 @@ const CustomPackageLayout: React.FC<
                   styles.purchaseSummaryContainer
                 }
               >
+                {/* Base price row */}
+                <Box
+                  className={styles.billingItem}
+                  sx={{
+                    backgroundColor: '#f8fafc',
+                    borderBottom: '1px solid #e2e8f0',
+                    padding: '12px 16px',
+                  }}
+                >
+                  <Typography
+                    className={styles.itemLabel}
+                    sx={{ fontWeight: 600 }}
+                  >
+                    Base Package
+                  </Typography>
+                  <Typography
+                    className={styles.itemPrice}
+                    sx={{ fontWeight: 600 }}
+                  >
+                    {formatPrice(
+                      selectedCurrency,
+                      basePrice
+                    )}
+                  </Typography>
+                </Box>
+
+                {/* Selected features */}
                 {selectedFeatures.length > 0 ? (
                   selectedFeatures.map(
                     (feature, index) => {
@@ -1399,22 +1335,25 @@ const CustomPackageLayout: React.FC<
                   <Box
                     className={styles.billingItem}
                     sx={{
-                      backgroundColor:
-                        '#3b82f65e',
+                      backgroundColor: '#ffffff',
+                      padding: '12px 16px',
+                      fontStyle: 'italic',
+                      color: '#64748b',
                     }}
                   >
                     <Typography
                       className={styles.itemLabel}
                     >
-                      Billing Module
+                      No features selected
                     </Typography>
                     <Typography
                       className={styles.itemPrice}
                     >
-                      $0.00
+                      {formatPrice(selectedCurrency, 0)}
                     </Typography>
                   </Box>
                 )}
+
                 <Box
                   className={styles.userAgreement}
                 >
@@ -1441,24 +1380,37 @@ const CustomPackageLayout: React.FC<
                     </Link>
                   </Typography>
                 </Box>
+
+                {/* Total price row */}
                 <Box
-                  className={
-                    styles.totalContainer
-                  }
+                  className={styles.totalContainer}
+                  sx={{
+                    backgroundColor: '#f1f5f9',
+                    padding: '16px',
+                    borderRadius: '0 0 8px 8px',
+                    marginTop: '16px',
+                    borderTop: '2px solid #e2e8f0',
+                  }}
                 >
                   <Typography
                     variant="subtitle1"
                     className={styles.totalLabel}
+                    sx={{ fontWeight: 600, fontSize: '1.1rem' }}
                   >
                     Total
                   </Typography>
                   <Typography
                     variant="subtitle1"
                     className={styles.totalPrice}
+                    sx={{
+                      fontWeight: 700,
+                      fontSize: '1.2rem',
+                      color: '#2563eb'
+                    }}
                   >
                     {formatPrice(
                       selectedCurrency,
-                      totalFeaturePrice
+                      basePrice + totalFeaturePrice
                     )}
                   </Typography>
                 </Box>
@@ -1467,6 +1419,11 @@ const CustomPackageLayout: React.FC<
           </Box>
         );
       case 'Choose Add-Ons':
+        console.log('===== RENDERING ADD-ONS SECTION =====');
+        console.log('Total AddOns available:', addOns.length);
+        console.log('Currently selected AddOns:', selectedAddOns);
+        console.log('Selected currency:', selectedCurrency);
+
         return (
           <Box
             className={styles.featuresContainer}
@@ -1488,6 +1445,12 @@ const CustomPackageLayout: React.FC<
             </Box>
             {addOns.length > 0 ? (
               addOns.map((addOn) => {
+                console.log(`Rendering AddOn ID ${addOn.id}:`, addOn);
+                console.log('  Currency:', addOn.currency);
+                console.log('  MultiCurrencyPrices:', addOn.multiCurrencyPrices);
+                console.log('  Category:', addOn.category);
+                console.log('  IsActive:', addOn.isActive);
+
                 const isSelected =
                   selectedAddOns.some(
                     (a) => a.id === addOn.id
@@ -1498,6 +1461,7 @@ const CustomPackageLayout: React.FC<
                         selectedCurrency
                       ]
                     : addOn.price;
+                console.log(`  Calculated price for currency ${selectedCurrency}:`, addOnPrice);
                 return (
                   <Box
                     key={addOn.id}
@@ -1520,36 +1484,112 @@ const CustomPackageLayout: React.FC<
                         handleAddOnToggle(addOn)
                       }
                     >
-                      {addOn.name.replace(
-                        /[^a-zA-Z0-9 ]/g,
-                        ''
-                      )}{' '}
-                      (
-                      {formatPrice(
-                        selectedCurrency,
-                        addOnPrice
-                      )}
-                      )
+                      <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                        <Box display="flex" alignItems="center">
+                          {addOn.icon && (
+                            <Box
+                              component="span"
+                              sx={{
+                                mr: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                color: isSelected ? 'white' : '#2563eb'
+                              }}
+                            >
+                              {/* Display icon if it's a known icon name */}
+                              {addOn.icon === 'analytics_icon' && <BarChartIcon fontSize="small" />}
+                              {addOn.icon === 'api_icon' && <CodeIcon fontSize="small" />}
+                              {addOn.icon === 'branding_icon' && <BrushIcon fontSize="small" />}
+                              {addOn.icon === 'support_icon' && <SupportAgentIcon fontSize="small" />}
+                              {addOn.icon === 'migration_icon' && <StorageIcon fontSize="small" />}
+                              {/* If it's not a known icon, don't display anything */}
+                            </Box>
+                          )}
+                          <span>{addOn.name.replace(/[^a-zA-Z0-9 ]/g, '')}</span>
+                        </Box>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 600,
+                            color: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            marginLeft: '8px'
+                          }}
+                        >
+                          {formatPrice(selectedCurrency, addOnPrice)}
+                        </Typography>
+                      </Box>
                     </Button>
                     {isSelected && (
                       <Box
                         className={
                           styles.featureDescriptionContainer
                         }
+                        sx={{ flexDirection: 'column', gap: '12px' }}
                       >
-                        <InfoIcon
-                          className={
-                            styles.infoIcon
-                          }
-                        />
-                        <Typography
-                          variant="body2"
-                          className={
-                            styles.featureDescription
-                          }
-                        >
-                          {addOn.description}
-                        </Typography>
+                        <Box display="flex" alignItems="flex-start">
+                          <InfoIcon
+                            className={
+                              styles.infoIcon
+                            }
+                          />
+                          <Typography
+                            variant="body2"
+                            className={
+                              styles.featureDescription
+                            }
+                          >
+                            {addOn.description}
+                          </Typography>
+                        </Box>
+
+                        {/* Display features if available */}
+                        {addOn.features && addOn.features.length > 0 && (
+                          <Box sx={{ ml: 4, mt: 1 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                              Features:
+                            </Typography>
+                            <Box component="ul" sx={{ pl: 2, m: 0 }}>
+                              {Array.isArray(addOn.features) ?
+                                addOn.features.map((feature, idx) => (
+                                  <Typography key={idx} component="li" variant="body2" sx={{ mb: 0.5 }}>
+                                    {feature}
+                                  </Typography>
+                                )) :
+                                JSON.parse(addOn.features as string).map((feature: string, idx: number) => (
+                                  <Typography key={idx} component="li" variant="body2" sx={{ mb: 0.5 }}>
+                                    {feature}
+                                  </Typography>
+                                ))
+                              }
+                            </Box>
+                          </Box>
+                        )}
+
+                        {/* Display dependencies if available */}
+                        {addOn.dependencies && addOn.dependencies.length > 0 && (
+                          <Box sx={{ ml: 4, mt: 1 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                              Requirements:
+                            </Typography>
+                            <Box component="ul" sx={{ pl: 2, m: 0 }}>
+                              {Array.isArray(addOn.dependencies) ?
+                                addOn.dependencies.map((dep, idx) => (
+                                  <Typography key={idx} component="li" variant="body2" sx={{ mb: 0.5 }}>
+                                    {dep}
+                                  </Typography>
+                                )) :
+                                JSON.parse(addOn.dependencies as string).map((dep: string, idx: number) => (
+                                  <Typography key={idx} component="li" variant="body2" sx={{ mb: 0.5 }}>
+                                    {dep}
+                                  </Typography>
+                                ))
+                              }
+                            </Box>
+                          </Box>
+                        )}
                       </Box>
                     )}
                   </Box>
@@ -1568,6 +1608,50 @@ const CustomPackageLayout: React.FC<
                 </Button>
               </Box>
             )}
+
+            {/* Continue button with current price */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                mt: 3,
+                pt: 2,
+                borderTop: '1px solid #e2e8f0'
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onNext}
+                sx={{
+                  minWidth: '200px',
+                  backgroundColor: '#2563eb',
+                  '&:hover': {
+                    backgroundColor: '#1d4ed8',
+                  },
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '10px 16px',
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  Continue
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 600,
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    marginLeft: '8px'
+                  }}
+                >
+                  {formatPrice(selectedCurrency, basePrice + totalFeaturePrice)}
+                </Typography>
+              </Button>
+            </Box>
           </Box>
         );
       case 'Configure Usage':
@@ -1612,17 +1696,26 @@ const CustomPackageLayout: React.FC<
                     key={usage.id}
                     className={styles.usageItem}
                   >
-                    <Typography
-                      variant="subtitle1"
-                      gutterBottom
-                    >
-                      {usage.name} (
-                      {formatPrice(
-                        selectedCurrency,
-                        usagePrice
-                      )}
-                      /{usage.unit})
-                    </Typography>
+                    <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
+                      <Typography
+                        variant="subtitle1"
+                      >
+                        {usage.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 600,
+                          color: '#2563eb',
+                          backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          marginLeft: '8px'
+                        }}
+                      >
+                        {formatPrice(selectedCurrency, usagePrice)}/{usage.unit}
+                      </Typography>
+                    </Box>
                     <TextField
                       type="number"
                       value={currentValue}
@@ -1634,12 +1727,10 @@ const CustomPackageLayout: React.FC<
                       }
                       error={!!usageError}
                       helperText={usageError}
-                      // Using InputProps for now as it's still supported
-                      InputProps={{
-                        inputProps: {
-                          min: usage.minValue,
-                          max: usage.maxValue,
-                        },
+                      // Use inputProps directly instead of InputProps
+                      inputProps={{
+                        min: usage.minValue,
+                        max: usage.maxValue,
                       }}
                       fullWidth
                       className={styles.textField}
@@ -1660,6 +1751,50 @@ const CustomPackageLayout: React.FC<
                 </Button>
               </Box>
             )}
+
+            {/* Continue button with current price */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                mt: 3,
+                pt: 2,
+                borderTop: '1px solid #e2e8f0'
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={onNext}
+                sx={{
+                  minWidth: '200px',
+                  backgroundColor: '#2563eb',
+                  '&:hover': {
+                    backgroundColor: '#1d4ed8',
+                  },
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '10px 16px',
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  Continue
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 600,
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    marginLeft: '8px'
+                  }}
+                >
+                  {formatPrice(selectedCurrency, basePrice + totalFeaturePrice)}
+                </Typography>
+              </Button>
+            </Box>
           </Box>
         );
       case 'Select Payment Plan':
@@ -1710,7 +1845,7 @@ const CustomPackageLayout: React.FC<
                     getCurrentCurrencySymbol() +
                     formatCurrencyPrice(
                       convertPrice(
-                        calculatedPrice
+                        basePrice + totalFeaturePrice
                       )
                     ) +
                     '/month',
@@ -1729,7 +1864,7 @@ const CustomPackageLayout: React.FC<
                     getCurrentCurrencySymbol() +
                     formatCurrencyPrice(
                       convertPrice(
-                        calculatedPrice * 3 * 0.9
+                        (basePrice + totalFeaturePrice) * 3 * 0.9
                       )
                     ) +
                     '/3 months',
@@ -1748,7 +1883,7 @@ const CustomPackageLayout: React.FC<
                     getCurrentCurrencySymbol() +
                     formatCurrencyPrice(
                       convertPrice(
-                        calculatedPrice * 6 * 0.85
+                        (basePrice + totalFeaturePrice) * 6 * 0.85
                       )
                     ) +
                     '/6 months',
@@ -1767,7 +1902,7 @@ const CustomPackageLayout: React.FC<
                     getCurrentCurrencySymbol() +
                     formatCurrencyPrice(
                       convertPrice(
-                        calculatedPrice * 12 * 0.8
+                        (basePrice + totalFeaturePrice) * 12 * 0.8
                       )
                     ) +
                     '/year',
@@ -3657,11 +3792,7 @@ const CustomPackageLayout: React.FC<
     }
   };
 
-  const isAnyCheckboxSelected = () => {
-    return Object.values(checkboxStates).some(
-      (value) => value === true
-    );
-  };
+
 
   const isAnyEnterpriseFeatureSelected = () => {
     if (!enterpriseFeatures) return false;
@@ -3734,17 +3865,18 @@ const CustomPackageLayout: React.FC<
           },
         }}
       >
-        <Stepper
-          activeStep={currentStep}
-          alternativeLabel
-          className={styles.stepperContainer}
-          sx={{
-            borderBottom: 'none',
-            '& .MuiStepConnector-line': {
-              borderColor: '#e2e8f0',
-              borderTopWidth: '1px',
-            },
-          }}
+        <div className={styles.stepperWrapper}>
+          <Stepper
+            activeStep={currentStep}
+            alternativeLabel
+            className={styles.stepperContainer}
+            sx={{
+              borderBottom: 'none',
+              '& .MuiStepConnector-line': {
+                borderColor: '#e2e8f0',
+                borderTopWidth: '1px',
+              },
+            }}
         >
           {steps.map((label, index) => (
             <Step key={index}>
@@ -3754,6 +3886,7 @@ const CustomPackageLayout: React.FC<
             </Step>
           ))}
         </Stepper>
+        </div>
         <motion.div
           key={currentStep}
           initial={{ opacity: 0, y: 20 }}

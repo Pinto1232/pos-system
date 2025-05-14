@@ -3,16 +3,26 @@ import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
+    console.log(
+      'POST /api/auth-token/set-token - Request received'
+    );
+
     const { token } = await request.json();
+    console.log(
+      'Token received:',
+      token
+        ? 'Yes (not showing for security)'
+        : 'No'
+    );
 
     if (!token) {
+      console.log('No token provided in request');
       return NextResponse.json(
         { error: 'Token is required' },
         { status: 400 }
       );
     }
 
-    // Add await here
     const cookieStore = await cookies();
     cookieStore.set({
       name: 'auth_token',
@@ -26,6 +36,7 @@ export async function POST(request: Request) {
       maxAge: 60 * 60 * 24,
     });
 
+    console.log('Token cookie set successfully');
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(

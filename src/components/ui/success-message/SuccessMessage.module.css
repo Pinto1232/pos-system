@@ -108,7 +108,7 @@
   }
 }
 
-:global(.checkmark-animation) {
+.checkmarkWrapper :global(.checkmark-animation) {
   animation: wiggle 1.5s ease-in-out 0.5s;
 }
 

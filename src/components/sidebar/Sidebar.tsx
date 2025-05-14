@@ -20,8 +20,10 @@ import { sidebarItems } from '@/settings';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { SidebarProps } from './types';
 import SidebarItem from './SidebarItem';
+import SidebarFeatureGuard from './SidebarFeatureGuard';
 import useKeycloakUser from '@/hooks/useKeycloakUser';
 import { useCustomization } from '@/contexts/CustomizationContext';
+import { useUserSubscription } from '@/contexts/UserSubscriptionContext';
 import eventBus, {
   UI_EVENTS,
 } from '@/utils/eventBus';
@@ -45,6 +47,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     sidebarColor,
     logoUrl: contextLogoUrl,
   } = useCustomization();
+  const { refreshSubscription } =
+    useUserSubscription();
 
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -61,9 +65,23 @@ const Sidebar: React.FC<SidebarProps> = ({
       }
     };
 
+    // Listen for package changes to refresh subscription data
+    const handlePackageChange = () => {
+      console.log(
+        'Package changed, refreshing subscription data'
+      );
+      refreshSubscription();
+    };
+
     eventBus.on(
       UI_EVENTS.CUSTOMIZATION_UPDATED,
       handleCustomizationUpdate
+    );
+
+    // Add event listener for package changes
+    window.addEventListener(
+      'packageChanged',
+      handlePackageChange
     );
 
     return () => {
@@ -71,8 +89,12 @@ const Sidebar: React.FC<SidebarProps> = ({
         UI_EVENTS.CUSTOMIZATION_UPDATED,
         handleCustomizationUpdate
       );
+      window.removeEventListener(
+        'packageChanged',
+        handlePackageChange
+      );
     };
-  }, []);
+  }, [refreshSubscription]);
   const [expandedItems, setExpandedItems] =
     useState<{
       [key: string]: boolean;
@@ -213,16 +235,23 @@ const Sidebar: React.FC<SidebarProps> = ({
     if (
       !localStorage.getItem('sidebarActiveItem')
     ) {
-      const matchingSidebarItem =
-        sidebarItems.find(
-          (item) =>
-            item.label === 'Dashboard' ||
-            (item.subItems &&
-              item.subItems.some(
-                (subItem) =>
-                  subItem.label === 'Dashboard'
-              ))
-        );
+      const matchingSidebarItem = Array.isArray(
+        sidebarItems
+      )
+        ? sidebarItems.find(
+            (item) =>
+              item &&
+              (item.label === 'Dashboard' ||
+                (item.subItems &&
+                  Array.isArray(item.subItems) &&
+                  item.subItems.some(
+                    (subItem) =>
+                      subItem &&
+                      subItem.label ===
+                        'Dashboard'
+                  )))
+          )
+        : undefined;
 
       if (matchingSidebarItem) {
         if (
@@ -236,9 +265,16 @@ const Sidebar: React.FC<SidebarProps> = ({
           );
         } else if (matchingSidebarItem.subItems) {
           const subItem =
-            matchingSidebarItem.subItems.find(
-              (sub) => sub.label === 'Dashboard'
-            );
+            matchingSidebarItem.subItems &&
+            Array.isArray(
+              matchingSidebarItem.subItems
+            )
+              ? matchingSidebarItem.subItems.find(
+                  (sub) =>
+                    sub &&
+                    sub.label === 'Dashboard'
+                )
+              : undefined;
           if (subItem) {
             const newExpandedItems = {
               [matchingSidebarItem.label]: true,
@@ -766,28 +802,62 @@ const Sidebar: React.FC<SidebarProps> = ({
         </Box>
 
         <List>
-          {sidebarItems.map((item) => (
-            <SidebarItem
-              key={item.label}
-              item={item}
-              isActive={
-                activeItemState === item.label
-              }
-              isExpanded={
-                !!expandedItems[item.label]
-              }
-              iconColor={iconColor}
-              textColor={textColor}
-              onToggle={handleToggle}
-              onItemClick={
-                handleItemClickInternal
-              }
-              onSettingsClick={onSettingsClick}
-              isCollapsed={
-                !isSmallScreen && !localDrawerOpen
-              }
-            />
-          ))}
+          {sidebarItems.map((item) =>
+            item.expandable && item.subItems ? (
+              // For items with submenus, don't wrap with SidebarFeatureGuard
+              <SidebarItem
+                key={item.label}
+                item={item}
+                isActive={
+                  activeItemState === item.label
+                }
+                isExpanded={
+                  !!expandedItems[item.label]
+                }
+                iconColor={iconColor}
+                textColor={textColor}
+                onToggle={handleToggle}
+                onItemClick={
+                  handleItemClickInternal
+                }
+                onSettingsClick={onSettingsClick}
+                isCollapsed={
+                  !isSmallScreen &&
+                  !localDrawerOpen
+                }
+              />
+            ) : (
+              // For items without submenus, keep the SidebarFeatureGuard
+              <SidebarFeatureGuard
+                key={item.label}
+                featureName={item.label}
+              >
+                <SidebarItem
+                  key={item.label}
+                  item={item}
+                  isActive={
+                    activeItemState === item.label
+                  }
+                  isExpanded={
+                    !!expandedItems[item.label]
+                  }
+                  iconColor={iconColor}
+                  textColor={textColor}
+                  onToggle={handleToggle}
+                  onItemClick={
+                    handleItemClickInternal
+                  }
+                  onSettingsClick={
+                    onSettingsClick
+                  }
+                  isCollapsed={
+                    !isSmallScreen &&
+                    !localDrawerOpen
+                  }
+                />
+              </SidebarFeatureGuard>
+            )
+          )}
         </List>
       </Drawer>
     </>

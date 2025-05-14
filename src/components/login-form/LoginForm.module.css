@@ -162,6 +162,22 @@
   padding: 12px 14px;
 }
 
+.registerContainer {
+  margin-top: 16px;
+}
+
+.registerLink {
+  color: #3b82f6;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.registerLink:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
 .textField :global(.MuiOutlinedInput-root:-webkit-autofill),
 .textField :global(.MuiOutlinedInput-root:-webkit-autofill:hover),
 .textField :global(.MuiOutlinedInput-root:-webkit-autofill:focus) {

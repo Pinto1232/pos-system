@@ -21,6 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useChatbot } from '@/contexts/ChatbotContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import { useCurrency, currencySymbols } from '@/contexts/CurrencyContext';
 import Image from 'next/image';
 
 const ChatbotDialog = () => {
@@ -35,6 +36,11 @@ const ChatbotDialog = () => {
   } = useChatbot();
   const { selectedPackage } =
     usePackageSelection();
+  const {
+    currency,
+    formatPrice,
+    currencySymbol
+  } = useCurrency();
   const [input, setInput] = useState('');
   const messagesEndRef =
     useRef<HTMLDivElement>(null);
@@ -46,6 +52,48 @@ const ChatbotDialog = () => {
       });
     }
   }, [messages]);
+
+  // Log currency information when it changes
+  useEffect(() => {
+    console.log('Current currency in ChatbotDialog:', {
+      currency,
+      currencySymbol,
+      selectedPackage: selectedPackage ? {
+        id: selectedPackage.id,
+        type: selectedPackage.type,
+        multiCurrencyPrices: selectedPackage.multiCurrencyPrices
+      } : null
+    });
+  }, [currency, currencySymbol, selectedPackage]);
+
+  // Helper function to get localized price from multiCurrencyPrices
+  const getLocalizedPrice = (basePrice: number, multiCurrencyPrices?: string): number => {
+    if (!multiCurrencyPrices) {
+      return basePrice;
+    }
+
+    try {
+      const pricesObj = JSON.parse(multiCurrencyPrices);
+      // If we have a price for the current currency, use it
+      if (pricesObj && pricesObj[currency]) {
+        return pricesObj[currency];
+      }
+    } catch (error) {
+      console.error('Error parsing multiCurrencyPrices:', error);
+    }
+
+    // Fallback to base price if no matching currency found
+    return basePrice;
+  };
+
+  // Format price according to the current currency's format
+  const formatCurrencyValue = (price: number): string => {
+    const locale = currency === 'ZAR' ? 'en-ZA' : 'en-US';
+    return new Intl.NumberFormat(locale, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(price);
+  };
 
   const handleSend = () => {
     if (input.trim()) {
@@ -280,36 +328,48 @@ const ChatbotDialog = () => {
                       >
                         Pricing:
                       </Typography>
-                      <Typography variant="body2">
-                        Monthly:{' '}
-                        {message.pricing.currency}
-                        {message.pricing.monthly}
-                      </Typography>
-                      <Typography variant="body2">
-                        Annual:{' '}
-                        {message.pricing.currency}
-                        {message.pricing.annual}
-                        <Typography
-                          component="span"
-                          variant="caption"
-                          sx={{
-                            color: 'success.main',
-                          }}
-                        >
-                          {' '}
-                          (Save{' '}
-                          {Math.round(
-                            (1 -
-                              message.pricing
-                                .annual /
-                                (message.pricing
-                                  .monthly *
-                                  12)) *
-                              100
-                          )}
-                          %)
-                        </Typography>
-                      </Typography>
+                      {(() => {
+                        // Get localized prices if the selected package has multiCurrencyPrices
+                        const monthlyPrice = selectedPackage?.multiCurrencyPrices
+                          ? getLocalizedPrice(message.pricing.monthly, selectedPackage.multiCurrencyPrices)
+                          : message.pricing.monthly;
+
+                        const annualPrice = selectedPackage?.multiCurrencyPrices
+                          ? getLocalizedPrice(message.pricing.annual, selectedPackage.multiCurrencyPrices)
+                          : message.pricing.annual;
+
+                        // Calculate savings percentage
+                        const savingsPercentage = Math.round(
+                          (1 - annualPrice / (monthlyPrice * 12)) * 100
+                        );
+
+                        return (
+                          <>
+                            <Typography variant="body2">
+                              Monthly:{' '}
+                              {currencySymbol}
+                              {formatCurrencyValue(monthlyPrice)}
+                            </Typography>
+                            <Typography variant="body2">
+                              Annual:{' '}
+                              {currencySymbol}
+                              {formatCurrencyValue(annualPrice)}
+                              <Typography
+                                component="span"
+                                variant="caption"
+                                sx={{
+                                  color: 'success.main',
+                                }}
+                              >
+                                {' '}
+                                (Save{' '}
+                                {savingsPercentage}
+                                %)
+                              </Typography>
+                            </Typography>
+                          </>
+                        );
+                      })()}
                     </Box>
                   )}
 

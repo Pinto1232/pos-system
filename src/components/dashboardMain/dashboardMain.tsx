@@ -22,6 +22,7 @@ import SaleTableContainer from '../saleTable';
 import NotFound from '@/app/404';
 import ProductEditContainer from '../productEdit/ProductEditContainer';
 import SalesContainer from '../sales/salesContainer';
+import FeatureGuard from '../feature-access/FeatureGuard';
 
 interface DashboardMainProps {
   activeSection: string;
@@ -100,30 +101,34 @@ const DashboardMain: React.FC<
         break;
       case 'Products List':
         sectionToRender = (
-          <Box
-            sx={{
-              width: '100%',
-              maxWidth: '100%',
-              overflow: 'hidden',
-              px: isMobile ? 1 : 2,
-            }}
-          >
-            <ProductTableContainer />
-          </Box>
+          <FeatureGuard featureName="Products List">
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                px: isMobile ? 1 : 2,
+              }}
+            >
+              <ProductTableContainer />
+            </Box>
+          </FeatureGuard>
         );
         break;
       case 'Add/Edit Product':
         sectionToRender = (
-          <Box
-            sx={{
-              width: '100%',
-              maxWidth: '100%',
-              overflow: 'hidden',
-              px: isMobile ? 1 : 2,
-            }}
-          >
-            <ProductEditContainer />
-          </Box>
+          <FeatureGuard featureName="Add/Edit Product">
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                px: isMobile ? 1 : 2,
+              }}
+            >
+              <ProductEditContainer />
+            </Box>
+          </FeatureGuard>
         );
         break;
 

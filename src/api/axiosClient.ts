@@ -21,13 +21,16 @@ interface RequestConfig {
 }
 
 const DEFAULT_TIMEOUT = 10000;
-const CACHE_MAX_AGE = 5 * 60 * 1000;
+// Reduce cache max age to 1 minute to prevent stale data issues
+const CACHE_MAX_AGE = 60 * 1000; // 1 minute
 
 interface CacheEntry<T = unknown> {
   data: T;
   timestamp: number;
 }
 
+// This cache is used only as a fallback when React Query is not available
+// or for specific cases where we need more control over caching
 const requestCache = new Map<
   string,
   CacheEntry
@@ -253,52 +256,63 @@ const useApiClient = () => {
         ? queryKey
         : [queryKey],
       queryFn: async () => {
-        if (!config?.skipCache) {
-          const cacheKey = `${url}-${JSON.stringify(queryKey)}`;
-          const cachedResponse =
-            requestCache.get(cacheKey);
-
-          if (
-            cachedResponse &&
-            Date.now() -
-              cachedResponse.timestamp <
-              (config?.cacheTTL || CACHE_MAX_AGE)
-          ) {
-            console.log(`Cache hit for ${url}`);
-            return cachedResponse.data as TData;
-          }
-        }
-
+        // We'll rely primarily on React Query's caching mechanism
+        // and only use our custom cache as a fallback for specific cases
         const startTime = performance.now();
 
-        const { data } = await apiClient.get(
-          url,
-          {
-            timeout:
-              config?.timeout || DEFAULT_TIMEOUT,
-            suppressAuthErrors:
-              config?.suppressAuthErrors,
-          }
-        );
-
-        if (!config?.skipCache) {
-          const cacheKey = `${url}-${JSON.stringify(queryKey)}`;
-          requestCache.set(cacheKey, {
-            data,
-            timestamp: Date.now(),
-          });
-        }
-
-        const requestTime =
-          performance.now() - startTime;
-        if (requestTime > 500) {
-          console.warn(
-            `Slow request detected: ${url} took ${requestTime.toFixed(2)}ms`
+        try {
+          const { data } = await apiClient.get(
+            url,
+            {
+              timeout:
+                config?.timeout || DEFAULT_TIMEOUT,
+              suppressAuthErrors:
+                config?.suppressAuthErrors,
+            }
           );
-        }
 
-        return data;
+          // Only cache if explicitly requested (for fallback purposes)
+          if (!config?.skipCache) {
+            const cacheKey = `${url}-${JSON.stringify(queryKey)}`;
+            requestCache.set(cacheKey, {
+              data,
+              timestamp: Date.now(),
+            });
+          }
+
+          const requestTime =
+            performance.now() - startTime;
+          if (requestTime > 500) {
+            console.warn(
+              `Slow request detected: ${url} took ${requestTime.toFixed(2)}ms`
+            );
+          }
+
+          return data;
+        } catch (error) {
+          // If the request fails, try to use cached data as a fallback
+          if (!config?.skipCache) {
+            const cacheKey = `${url}-${JSON.stringify(queryKey)}`;
+            const cachedResponse =
+              requestCache.get(cacheKey);
+
+            if (
+              cachedResponse &&
+              Date.now() -
+                cachedResponse.timestamp <
+                (config?.cacheTTL || CACHE_MAX_AGE)
+            ) {
+              console.log(`Using cached data as fallback for ${url} due to request failure`);
+              return cachedResponse.data as TData;
+            }
+          }
+
+          // If no cached data or cache is disabled, rethrow the error
+          throw error;
+        }
       },
+      // Allow individual queries to override the global staleTime if needed
+      staleTime: config?.cacheTTL,
     });
   };
 

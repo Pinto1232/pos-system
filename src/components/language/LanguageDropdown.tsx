@@ -135,6 +135,7 @@ const LanguageDropdown: React.FC = () => {
         onClose={handleClose}
         TransitionComponent={Fade}
         transitionDuration={200}
+        className={styles.menuContainer}
         MenuListProps={{
           'aria-labelledby': 'language-button',
           dense: true,

@@ -1,6 +1,11 @@
 'use client';
 
-import React, { memo, useState } from 'react';
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useContext,
+} from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
 import {
@@ -14,6 +19,7 @@ import {
   Snackbar,
   Alert,
   InputAdornment,
+  CircularProgress,
 } from '@mui/material';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -22,6 +28,8 @@ import Image from 'next/image';
 import { Button } from '../ui/button/Button';
 import axios from 'axios';
 import { useSpinner } from '@/contexts/SpinnerContext';
+import { redirectToKeycloakRegistration } from '@/utils/authUtils';
+import { AuthContext } from '@/contexts/AuthContext';
 
 interface LoginFormProps {
   title?: string;
@@ -60,20 +68,110 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     const [password, setPassword] = useState('');
     const [logoError, setLogoError] =
       useState(false);
+    const [loginAttempt, setLoginAttempt] =
+      useState(0);
+    const [loginStatus, setLoginStatus] =
+      useState('');
+
+    // Get the login function from AuthContext
+    const { login, error: authError } =
+      useContext(AuthContext);
+
+    // Check if backend and Keycloak are available on component mount
+    useEffect(() => {
+      const checkServices = async () => {
+        // Check backend status
+        try {
+          console.log(
+            'Checking backend status...'
+          );
+          const backendResponse = await axios.get(
+            'http://localhost:5107/api/test',
+            {
+              timeout: 5000,
+            }
+          );
+          console.log(
+            'Backend status check response:',
+            backendResponse.status
+          );
+        } catch (err) {
+          console.warn(
+            'Backend status check failed:',
+            err
+          );
+          setError(
+            'Backend server may be unavailable. Please try again later or contact support.'
+          );
+          setSnackbarOpen(true);
+          return; // Stop if backend is not available
+        }
+
+        // Check Keycloak status
+        try {
+          console.log(
+            'Checking Keycloak status...'
+          );
+          const keycloakResponse =
+            await axios.get(
+              'http://localhost:8282/realms/pisval-pos-realm/.well-known/openid-configuration',
+              {
+                timeout: 5000,
+              }
+            );
+          console.log(
+            'Keycloak status check response:',
+            keycloakResponse.status
+          );
+        } catch (err) {
+          console.warn(
+            'Keycloak status check failed:',
+            err
+          );
+          setError(
+            'Authentication server (Keycloak) may be unavailable. Please try again later or contact support.'
+          );
+          setSnackbarOpen(true);
+        }
+      };
+
+      checkServices();
+    }, []);
+
+    // Watch for auth errors
+    useEffect(() => {
+      if (authError) {
+        setError(authError);
+        setSnackbarOpen(true);
+        setIsFadingOut(false);
+        stopLoading();
+      }
+    }, [authError, stopLoading]);
 
     const handleLogin = async (
       event: React.FormEvent
     ) => {
       event.preventDefault();
 
-      startLoading({ timeout: 8000 });
+      // Increase timeout for login process
+      startLoading({ timeout: 15000 });
       setIsFadingOut(true);
+      setLoginStatus(
+        'Connecting to authentication server...'
+      );
+
+      // Track login attempt for retry logic
+      setLoginAttempt((prev) => prev + 1);
+      console.log(
+        `Login attempt #${loginAttempt + 1}`
+      );
 
       if (!email || !password) {
         setError('Please fill in all fields');
         setSnackbarOpen(true);
         setIsFadingOut(false);
         stopLoading();
+        setLoginStatus('');
         return;
       }
 
@@ -82,33 +180,49 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       }
 
       try {
-        const response = await axios.post(
-          'http://localhost:5107/api/auth/login',
-          { email, password }
-        );
-
-        const { access_token } = response.data;
-        localStorage.setItem(
-          'accessToken',
-          access_token
-        );
-
-        setIsLoggedIn(true);
-        setIsFadingOut(false);
-
+        // Store credentials in sessionStorage for Keycloak to use
         sessionStorage.setItem(
-          'freshLogin',
-          'true'
+          'kc_username',
+          email
         );
-        router.push('/');
-      } catch (err) {
-        console.error('Login failed:', err);
-        setError(
-          'Login failed. Please check your credentials and try again.'
+        sessionStorage.setItem(
+          'kc_password',
+          password
         );
+
+        console.log(
+          'Initiating Keycloak login...'
+        );
+
+        // Use the direct Keycloak login from AuthContext
+        await login();
+
+        // The rest of the login flow is handled by AuthContext
+        // which will redirect to the dashboard on success
+
+        // We'll still show a loading state here
+        setLoginStatus('Authenticating...');
+
+        // Note: We don't need to manually set tokens or redirect
+        // as that's handled by the AuthContext
+      } catch (err: any) {
+        console.error(
+          'Login initiation failed:',
+          err
+        );
+
+        let errorMessage =
+          'Login failed. Please try again.';
+
+        if (err instanceof Error) {
+          errorMessage = `Login error: ${err.message}`;
+        }
+
+        setError(errorMessage);
         setSnackbarOpen(true);
         setIsFadingOut(false);
         stopLoading();
+        setLoginStatus('');
       }
     };
 
@@ -284,9 +398,54 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 variant="contained"
                 fullWidth
                 className={styles.loginButton}
+                disabled={isFadingOut}
               >
-                {buttonText}
+                {isFadingOut ? (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <CircularProgress
+                      size={20}
+                      color="inherit"
+                      sx={{ mr: 1 }}
+                    />
+                    {loginStatus ||
+                      'Signing in...'}
+                  </Box>
+                ) : (
+                  buttonText
+                )}
               </Button>
+
+              <Box
+                className={
+                  styles.registerContainer
+                }
+                mt={2}
+                textAlign="center"
+              >
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                >
+                  Don't have an account?{' '}
+                  <Link
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      redirectToKeycloakRegistration();
+                    }}
+                    className={
+                      styles.registerLink
+                    }
+                  >
+                    Register now
+                  </Link>
+                </Typography>
+              </Box>
             </form>
           </div>
         )}

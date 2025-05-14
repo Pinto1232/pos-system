@@ -26,18 +26,18 @@
   padding-bottom: 1.5rem;
 }
 
-:global(.MuiStepper-root) {
+.stepperWrapper :global(.MuiStepper-root) {
   overflow-x: auto;
   padding-bottom: 0.5rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
-:global(.MuiStepper-root::-webkit-scrollbar) {
+.stepperWrapper :global(.MuiStepper-root::-webkit-scrollbar) {
   display: none;
 }
 
-:global(.MuiStepLabel-label) {
+.stepperWrapper :global(.MuiStepLabel-label) {
   white-space: nowrap !important;
   font-size: 0.75rem !important;
   margin-top: 4px !important;
@@ -45,42 +45,42 @@
   color: #64748b !important;
 }
 
-:global(.Mui-active .MuiStepLabel-label) {
+.stepperWrapper :global(.Mui-active .MuiStepLabel-label) {
   color: #1e293b !important;
   font-weight: 600 !important;
 }
 
-:global(.MuiStepLabel-iconContainer) {
+.stepperWrapper :global(.MuiStepLabel-iconContainer) {
   transform: scale(1) !important;
 }
 
-:global(.MuiStepIcon-root) {
+.stepperWrapper :global(.MuiStepIcon-root) {
   width: 24px !important;
   height: 24px !important;
   color: #e2e8f0 !important;
 }
 
-:global(.MuiStepConnector-line) {
+.stepperWrapper :global(.MuiStepConnector-line) {
   margin-top: 3px !important;
   border-color: #e2e8f0 !important;
   opacity: 0.5 !important;
 }
 
-:global(.MuiStepIcon-text) {
+.stepperWrapper :global(.MuiStepIcon-text) {
   font-size: 0.7rem !important;
   font-weight: 600 !important;
   fill: #64748b !important;
 }
 
-:global(.Mui-active .MuiStepIcon-root) {
+.stepperWrapper :global(.Mui-active .MuiStepIcon-root) {
   color: #2563eb !important;
 }
 
-:global(.Mui-active .MuiStepIcon-text) {
+.stepperWrapper :global(.Mui-active .MuiStepIcon-text) {
   fill: #ffffff !important;
 }
 
-:global(.Mui-completed .MuiStepIcon-root) {
+.stepperWrapper :global(.Mui-completed .MuiStepIcon-root) {
   color: #2563eb !important;
 }
 
@@ -267,7 +267,7 @@
 }
 
 /* Improve checkbox visibility */
-:global(.MuiCheckbox-root .MuiSvgIcon-root) {
+.planColumn :global(.MuiCheckbox-root .MuiSvgIcon-root) {
   width: 24px;
   height: 24px;
 }
@@ -681,15 +681,15 @@
   }
 
   /* Improve stepper display on mobile */
-  :global(.MuiStepper-root) {
+  .stepperWrapper :global(.MuiStepper-root) {
     margin-bottom: 1.5rem;
   }
 
-  :global(.MuiStepLabel-label) {
+  .stepperWrapper :global(.MuiStepLabel-label) {
     font-size: 0.7rem !important;
   }
 
-  :global(.MuiStepIcon-root) {
+  .stepperWrapper :global(.MuiStepIcon-root) {
     width: 20px !important;
     height: 20px !important;
   }
