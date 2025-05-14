@@ -40,6 +40,8 @@ interface UserActivity {
 }
 
 const UserActivityMonitor: React.FC = () => {
+  console.log('UserActivityMonitor component mounted');
+
   const [searchQuery, setSearchQuery] =
     useState('');
   const [activityFilter, setActivityFilter] =
@@ -55,16 +57,37 @@ const UserActivityMonitor: React.FC = () => {
       queryKey: ['userActivity'],
       queryFn: async () => {
         try {
+          // Try to fetch from backend API
+          console.log('Attempting to fetch user activity logs from backend API');
+
+          // Currently using mock data - in a real implementation, we would fetch from an API
+          // Example of how it might look:
+          // const response = await fetch('/api/user-activity');
+          // const data = await response.json();
+          // console.log('Successfully fetched user activity logs from backend:', data);
+          // return data;
+
+          // For now, using mock data
+          console.log('Using mock data for user activity logs');
           return mockActivityLogs;
         } catch (err) {
           console.error(
             'Error fetching user activity:',
             err
           );
-          throw err;
+          console.log('Falling back to mock data after error');
+          return mockActivityLogs;
         }
       },
     });
+
+  // Log the activity data when it's received
+  React.useEffect(() => {
+    if (activityLogs) {
+      console.log('Activity logs data received:', activityLogs);
+      console.log('Data source:', activityLogs === mockActivityLogs ? 'Using mock data' : 'Using backend data');
+    }
+  }, [activityLogs]);
 
   const filteredLogs = React.useMemo(() => {
     if (!activityLogs) return [];
@@ -184,7 +207,6 @@ const UserActivityMonitor: React.FC = () => {
     );
   }
 
-  // Error handling is now done in the queryFn
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -346,15 +368,15 @@ const UserActivityMonitor: React.FC = () => {
                         {log.description}
                         {log.status ===
                           'failed' && (
-                            <Tooltip title="This action failed and may require attention">
-                              <IconButton size="small">
-                                <InfoIcon
-                                  fontSize="small"
-                                  color="error"
-                                />
-                              </IconButton>
-                            </Tooltip>
-                          )}
+                          <Tooltip title="This action failed and may require attention">
+                            <IconButton size="small">
+                              <InfoIcon
+                                fontSize="small"
+                                color="error"
+                              />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </Box>
                     </TableCell>
                     <TableCell>

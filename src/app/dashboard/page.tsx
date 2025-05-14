@@ -12,9 +12,24 @@ const Dashboard = () => {
       sessionStorage.getItem('freshLogin') ===
       'true';
 
-    if (isFreshLogin) {
-      sessionStorage.removeItem('freshLogin');
+    // Check if we're coming from the payment success page
+    const fromPaymentSuccess =
+      sessionStorage.getItem(
+        'fromPaymentSuccess'
+      ) === 'true';
 
+    if (isFreshLogin || fromPaymentSuccess) {
+      if (isFreshLogin) {
+        sessionStorage.removeItem('freshLogin');
+      }
+
+      if (fromPaymentSuccess) {
+        sessionStorage.removeItem(
+          'fromPaymentSuccess'
+        );
+      }
+
+      // Show loading for 3 seconds
       const loadingTimeout = setTimeout(() => {
         stopLoading();
       }, 3000);

@@ -78,13 +78,13 @@
   }
 }
 
-:global(.MuiMenu-paper) {
+.menuContainer :global(.MuiMenu-paper) {
   animation: fadeIn 0.2s ease-out forwards;
   border-radius: 8px !important;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
-:global(.MuiMenu-list) {
+.menuContainer :global(.MuiMenu-list) {
   padding: 6px 4px !important;
 }

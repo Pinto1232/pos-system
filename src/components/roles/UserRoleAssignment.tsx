@@ -125,30 +125,51 @@ const UserRoleAssignment: React.FC<
 
   // Filter users that are not already in the role
   const availableUsers = React.useMemo(() => {
-    if (!allUsers || !usersInRole) return [];
+    if (
+      !allUsers ||
+      !usersInRole ||
+      !Array.isArray(allUsers) ||
+      !Array.isArray(usersInRole)
+    )
+      return [];
 
-    const userIdsInRole = usersInRole.map(
-      (u) => u.id
-    );
+    const userIdsInRole = usersInRole
+      .map((u) => u && u.id)
+      .filter(Boolean);
+
     return allUsers.filter(
-      (user) => !userIdsInRole.includes(user.id)
+      (user) =>
+        user &&
+        user.id &&
+        !userIdsInRole.includes(user.id)
     );
   }, [allUsers, usersInRole]);
 
   // Filter users based on search query
   const filteredUsers = React.useMemo(() => {
-    if (!usersInRole) return [];
+    if (
+      !usersInRole ||
+      !Array.isArray(usersInRole)
+    )
+      return [];
     if (!searchQuery.trim()) return usersInRole;
 
-    return usersInRole.filter(
-      (user) =>
-        user.userName
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        user.email
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-    );
+    return usersInRole.filter((user) => {
+      if (!user) return false;
+
+      return (
+        (user.userName &&
+          user.userName
+            .toLowerCase()
+            .includes(
+              searchQuery.toLowerCase()
+            )) ||
+        (user.email &&
+          user.email
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()))
+      );
+    });
   }, [usersInRole, searchQuery]);
 
   if (isLoadingUsers) {
@@ -230,49 +251,52 @@ const UserRoleAssignment: React.FC<
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id} hover>
-                  <TableCell>
-                    {user.userName}
-                  </TableCell>
-                  <TableCell>
-                    {user.email}
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={
-                        user.isActive
-                          ? 'Active'
-                          : 'Inactive'
-                      }
-                      color={
-                        user.isActive
-                          ? 'success'
-                          : 'default'
-                      }
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="Remove from Role">
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() =>
-                          handleRemoveUser(
-                            user.id
-                          )
-                        }
-                        disabled={
-                          removeUserMutation.isPending
-                        }
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {Array.isArray(filteredUsers) &&
+                filteredUsers.map((user) =>
+                  user ? (
+                    <TableRow key={user.id} hover>
+                      <TableCell>
+                        {user.userName}
+                      </TableCell>
+                      <TableCell>
+                        {user.email}
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={
+                            user.isActive
+                              ? 'Active'
+                              : 'Inactive'
+                          }
+                          color={
+                            user.isActive
+                              ? 'success'
+                              : 'default'
+                          }
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <Tooltip title="Remove from Role">
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() =>
+                              handleRemoveUser(
+                                user.id
+                              )
+                            }
+                            disabled={
+                              removeUserMutation.isPending
+                            }
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ) : null
+                )}
             </TableBody>
           </Table>
         </TableContainer>

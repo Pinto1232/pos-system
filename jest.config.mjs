@@ -26,11 +26,17 @@ const customJestConfig = {
     ],
   },
   transformIgnorePatterns: [
-    // Corrected pattern
-    '/node_modules/(?!keycloak-js)'
+    // Transform keycloak-js and other ESM modules
+    '/node_modules/(?!(keycloak-js|@babel|@swc)/)'
   ],
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   testPathIgnorePatterns: ['<rootDir>/e2e/'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '\\.(css|less|scss|sass)$': '<rootDir>/src/__mocks__/styleMock.js',
+    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/src/__mocks__/fileMock.js'
+  },
+  moduleDirectories: ['node_modules', '<rootDir>'],
 };
 
 export default createJestConfig(customJestConfig);

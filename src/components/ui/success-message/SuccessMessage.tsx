@@ -25,8 +25,45 @@ import { useSpinner } from '@/contexts/SpinnerContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 import { useSuccessModal } from '@/contexts/SuccessModalContext';
 
+// Define more specific types for features and add-ons
+interface Feature {
+  id: number;
+  name: string;
+  description: string;
+  basePrice: number;
+  isRequired: boolean;
+  multiCurrencyPrices?: Record<string, number>;
+}
+
+interface AddOn {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  multiCurrencyPrices?: Record<string, number>;
+}
+
+// Define form data type
+interface FormData {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | undefined;
+}
+
 interface SuccessMessageProps {
   open: boolean;
+  // onClose is kept for backward compatibility but not used
   onClose: () => void;
   message?: string;
   onConfirm: (isSignup: boolean) => void;
@@ -44,20 +81,9 @@ interface SuccessMessageProps {
     currency?: string;
   };
   currentCurrency?: string;
-  formData?: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phone?: string;
-    address?: string;
-    country?: string;
-    state?: string;
-    city?: string;
-    zipCode?: string;
-    [key: string]: any;
-  };
-  selectedFeatures?: Array<any>;
-  selectedAddOns?: Array<any>;
+  formData?: FormData;
+  selectedFeatures?: Feature[];
+  selectedAddOns?: AddOn[];
   usageQuantities?: Record<number, number>;
   calculatedPrice?: number;
   onAddToCart?: (message: string) => void;
@@ -67,6 +93,7 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
   memo(
     ({
       open,
+      /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
       onClose,
       message,
       onReturn,
@@ -98,6 +125,10 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
       ] = useState<
         'success' | 'warning' | 'error'
       >('success');
+      const [
+        packageAddedSnackbarOpen,
+        setPackageAddedSnackbarOpen,
+      ] = useState(false);
 
       useEffect(() => {
         if (open && formData) {
@@ -212,26 +243,33 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
         };
         console.log('Adding to cart:', cartItem);
 
-        addToCart?.(cartItem);
+        try {
+          // Add to cart
+          addToCart?.(cartItem);
 
-        const notificationMessage = `${selectedPackage.title} package added to cart!`;
-        setSnackbarMessage(notificationMessage);
-        setSnackbarSeverity('success');
-        setSnackbarOpen(true);
+          // Set the package-added snackbar message and show it
+          const notificationMessage = `${selectedPackage.title} package added to cart!`;
+          setSnackbarMessage(notificationMessage);
+          setSnackbarSeverity('success');
 
-        if (onAddToCart) {
-          onAddToCart(notificationMessage);
+          // Use a small delay to avoid focus trap conflicts
+          setTimeout(() => {
+            setPackageAddedSnackbarOpen(true);
+          }, 0);
+
+          if (onAddToCart) {
+            onAddToCart(notificationMessage);
+          }
+        } catch (error) {
+          console.error('Error adding to cart:', error);
+          setSnackbarMessage('Error adding package to cart. Please try again.');
+          setSnackbarSeverity('error');
+          setSnackbarOpen(true);
         }
-
-        // Close both the success modal and the package selection modal
-        onConfirm(false);
-        hideSuccessModal(); // Close the success modal
-        closeModal(); // Close the package selection modal
       }, [
         addToCart,
         selectedPackage,
         currentCurrency,
-        onConfirm,
         formData,
         selectedFeatures,
         selectedAddOns,
@@ -239,13 +277,26 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
         calculatedPrice,
         onAddToCart,
         cartItems,
-        closeModal,
-        hideSuccessModal,
       ]);
 
       const handleSnackbarClose = () => {
         setSnackbarOpen(false);
       };
+
+      const handlePackageAddedSnackbarClose =
+        () => {
+          setPackageAddedSnackbarOpen(false);
+
+          // First close the success modal, then the package selection modal
+          // This prevents focus trap conflicts by ensuring proper cleanup order
+          setTimeout(() => {
+            hideSuccessModal(); // Close the success modal first
+            setTimeout(() => {
+              closeModal(); // Close the package selection modal after a small delay
+              onConfirm(false); // Call onConfirm after both modals are closed
+            }, 50);
+          }, 50);
+        };
 
       if (!open) return null;
 
@@ -266,9 +317,14 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
             >
               <IconButton
                 className={styles.closeButton}
-                onClick={() => {
-                  hideSuccessModal();
-                  onReturn();
+                onClick={(e) => {
+                  // Prevent event bubbling that might cause focus issues
+                  e.stopPropagation();
+                  // Use setTimeout to avoid focus trap conflicts
+                  setTimeout(() => {
+                    hideSuccessModal();
+                    onReturn();
+                  }, 0);
                 }}
               >
                 <CloseIcon />
@@ -279,27 +335,29 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                   styles.successIconContainer
                 }
               >
-                <motion.div
-                  initial={{
-                    scale: 0,
-                    opacity: 0,
-                  }}
-                  animate={{
-                    scale: 1,
-                    opacity: 1,
-                  }}
-                  transition={{
-                    type: 'spring',
-                    stiffness: 260,
-                    damping: 20,
-                    delay: 0.2,
-                  }}
-                  className="checkmark-animation"
-                >
-                  <CheckCircleIcon
-                    className={styles.successIcon}
-                  />
-                </motion.div>
+                <div className={styles.checkmarkWrapper}>
+                  <motion.div
+                    initial={{
+                      scale: 0,
+                      opacity: 0,
+                    }}
+                    animate={{
+                      scale: 1,
+                      opacity: 1,
+                    }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 260,
+                      damping: 20,
+                      delay: 0.2,
+                    }}
+                    className="checkmark-animation"
+                  >
+                    <CheckCircleIcon
+                      className={styles.successIcon}
+                    />
+                  </motion.div>
+                </div>
               </div>
 
               <motion.div
@@ -347,10 +405,15 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
               >
                 <Button
                   variant="outlined"
-                  onClick={() => {
-                    // Just close the success modal, but keep the package selection modal open
-                    hideSuccessModal();
-                    onReturn();
+                  onClick={(e) => {
+                    // Prevent event bubbling that might cause focus issues
+                    e.stopPropagation();
+                    // Use setTimeout to avoid focus trap conflicts
+                    setTimeout(() => {
+                      // Just close the success modal, but keep the package selection modal open
+                      hideSuccessModal();
+                      onReturn();
+                    }, 0);
                   }}
                   startIcon={<ArrowBackIcon />}
                   sx={{
@@ -373,7 +436,14 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                 </Button>
                 <Button
                   variant="contained"
-                  onClick={handleAddToCart}
+                  onClick={(e) => {
+                    // Prevent event bubbling that might cause focus issues
+                    e.stopPropagation();
+                    // Use setTimeout to avoid focus trap conflicts
+                    setTimeout(() => {
+                      handleAddToCart();
+                    }, 0);
+                  }}
                   startIcon={<HiShoppingCart />}
                   sx={{
                     width: '150px',
@@ -415,6 +485,40 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
               severity={snackbarSeverity}
               variant="filled"
               sx={{ width: '100%' }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
+
+          {/* Package Added Snackbar */}
+          <Snackbar
+            open={packageAddedSnackbarOpen}
+            autoHideDuration={3000}
+            onClose={
+              handlePackageAddedSnackbarClose
+            }
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            sx={{
+              zIndex: 10000, // Higher than the success modal
+              '& .MuiAlert-root': {
+                width: '100%',
+                minWidth: '350px',
+              },
+            }}
+          >
+            <Alert
+              onClose={
+                handlePackageAddedSnackbarClose
+              }
+              severity="success"
+              variant="filled"
+              sx={{
+                width: '100%',
+                backgroundColor: '#2563eb',
+              }}
             >
               {snackbarMessage}
             </Alert>

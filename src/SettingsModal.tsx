@@ -29,11 +29,23 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Card,
+  CardContent,
+  CardActions,
+  // Importing but using in Package Management section
+  Switch,
+  FormControlLabel,
+  Grid,
+  Alert,
+  AlertTitle,
 } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// Importing for potential future use
+import CancelIcon from '@mui/icons-material/Cancel';
 import {
   useQuery,
   useQueryClient,
@@ -56,6 +68,8 @@ import {
 import { fetchAvailableCurrencies } from '@/api/currencyApi';
 import RoleManagement from '@/components/roles/RoleManagement';
 import UserActivityMonitor from '@/components/roles/UserActivityMonitor';
+import { useUserSubscription } from '@/contexts/UserSubscriptionContext';
+import CacheControl from '@/components/ui/CacheControl';
 
 export interface TaxSettings {
   enableTaxCalculation: boolean;
@@ -115,6 +129,7 @@ interface SettingsModalProps {
   onCustomizationUpdated: (
     updated: UserCustomization
   ) => void;
+  initialSetting?: string;
 }
 
 const settingsItems: SettingsItem[] = [
@@ -144,6 +159,11 @@ const settingsItems: SettingsItem[] = [
       'Manage users, roles, and permissions for system access',
   },
   {
+    label: 'Package Management',
+    tooltip:
+      'Manage your subscription packages and enable additional features',
+  },
+  {
     label: 'Email & Notification Settings',
     tooltip:
       'Configure email servers, notification preferences, and message templates',
@@ -157,6 +177,11 @@ const settingsItems: SettingsItem[] = [
     label: 'API & Third-Party Integrations',
     tooltip:
       'Manage API keys and configure integrations with external services',
+  },
+  {
+    label: 'Cache Management',
+    tooltip:
+      'Manage application cache settings and refresh data when needed',
   },
   {
     label: 'Change History',
@@ -233,7 +258,6 @@ const fetchCustomization = async (
       `Fetching user customization for user ID: ${userId}`
     );
 
-    // Special handling for current-user endpoint
     const endpoint =
       userId === 'current-user'
         ? '/api/UserCustomization/current-user'
@@ -272,6 +296,7 @@ const SettingsModal: React.FC<
   onClose,
   userId,
   onCustomizationUpdated,
+  initialSetting = 'General Settings',
 }) => {
   const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery<
@@ -299,9 +324,8 @@ const SettingsModal: React.FC<
     showNavbarColorPicker,
     setShowNavbarColorPicker,
   ] = useState(false);
-  // Always default to General Settings
   const [selectedSetting, setSelectedSetting] =
-    useState('General Settings');
+    useState(initialSetting);
   const [searchQuery, setSearchQuery] =
     useState('');
   const [changeHistory, setChangeHistory] =
@@ -313,9 +337,32 @@ const SettingsModal: React.FC<
         newValue: unknown;
       }[]
     >([]);
+
+  useEffect(() => {
+    const handleOpenSettingsModal = (
+      event: CustomEvent
+    ) => {
+      if (event.detail?.initialTab) {
+        setSelectedSetting(
+          event.detail.initialTab
+        );
+      }
+    };
+
+    window.addEventListener(
+      'openSettingsModal',
+      handleOpenSettingsModal as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        'openSettingsModal',
+        handleOpenSettingsModal as EventListener
+      );
+    };
+  }, []);
   const [selectedFile, setSelectedFile] =
     useState<File | null>(null);
-  // Initialize with deep clones of default settings to avoid reference issues
   const [taxSettings, setTaxSettingsDirect] =
     useState<TaxSettings>(() =>
       JSON.parse(
@@ -332,14 +379,11 @@ const SettingsModal: React.FC<
   );
   const [selectedRoleTab, setSelectedRoleTab] =
     useState(0);
-
-  // Wrapper functions to track changes - using refs to avoid dependency cycles
   const taxSettingsRef = useRef(taxSettings);
   const regionalSettingsRef = useRef(
     regionalSettings
   );
 
-  // Update refs when state changes
   useEffect(() => {
     taxSettingsRef.current = taxSettings;
   }, [taxSettings]);
@@ -349,7 +393,6 @@ const SettingsModal: React.FC<
       regionalSettings;
   }, [regionalSettings]);
 
-  // Wrapper functions without dependencies on the state values themselves
   const setTaxSettings = useCallback(
     (newSettings: TaxSettings) => {
       setChangeHistory((prev) => [
@@ -405,7 +448,6 @@ const SettingsModal: React.FC<
           'Fetched currencies:',
           currencies
         );
-        // Currencies fetched but not used in this component
       } catch (error) {
         console.error(
           'Error fetching currencies:',
@@ -423,7 +465,6 @@ const SettingsModal: React.FC<
     console.log('Data received from API:', data);
 
     if (open) {
-      // Always set default values first to ensure UI is populated
       setSidebarColor(DEFAULT_SIDEBAR_COLOR);
       setNavbarColor(DEFAULT_NAVBAR_COLOR);
       setLogoPreview(DEFAULT_LOGO_URL);
@@ -457,11 +498,9 @@ const SettingsModal: React.FC<
             data.taxSettings
           );
 
-          // Ensure all required properties exist by merging with defaults
           const mergedTaxSettings = {
             ...defaultTaxSettings,
             ...data.taxSettings,
-            // Ensure taxCategories is always an array
             taxCategories: Array.isArray(
               data.taxSettings.taxCategories
             )
@@ -478,7 +517,6 @@ const SettingsModal: React.FC<
             data.regionalSettings
           );
 
-          // Ensure all required properties exist by merging with defaults
           const mergedRegionalSettings = {
             ...defaultRegionalSettings,
             ...data.regionalSettings,
@@ -693,6 +731,205 @@ const SettingsModal: React.FC<
     setRegionalSettings(
       DEFAULT_REGIONAL_SETTINGS
     );
+  };
+
+  // Define package type
+  interface Package {
+    id: number;
+    title: string;
+    description: string;
+    type: string;
+    price: number;
+  }
+
+  // Fetch available packages
+  const { data: packages } = useQuery<Package[]>({
+    queryKey: ['pricingPackages'],
+    queryFn: async () => {
+      try {
+        const response = await fetch(
+          '/api/PricingPackages'
+        );
+        if (!response.ok) {
+          throw new Error(
+            'Failed to fetch packages'
+          );
+        }
+        const data = await response.json();
+        // Ensure we return an array even if the API returns something else
+        return Array.isArray(data)
+          ? data
+          : [
+              {
+                id: 1,
+                title: 'Starter',
+                description:
+                  'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting',
+                type: 'starter',
+                price: 29.99,
+              },
+              {
+                id: 2,
+                title: 'Growth',
+                description:
+                  'Everything in Starter;Multi-store support;Customer loyalty program;Priority support;Advanced reporting;Employee management',
+                type: 'growth',
+                price: 59.99,
+              },
+              {
+                id: 3,
+                title: 'Premium',
+                description:
+                  'Everything in Growth;Advanced inventory forecasting;Custom branding;24/7 support;API access;Advanced analytics;Multi-currency support',
+                type: 'premium',
+                price: 99.99,
+              },
+              {
+                id: 4,
+                title: 'Enterprise',
+                description:
+                  'Everything in Premium;Dedicated account manager;Custom development;White-label solution;Unlimited users;Advanced security features;Data migration assistance',
+                type: 'enterprise',
+                price: 199.99,
+              },
+            ];
+      } catch (error) {
+        console.error(
+          'Error fetching packages:',
+          error
+        );
+        // Return mock data
+        return [
+          {
+            id: 1,
+            title: 'Starter',
+            description:
+              'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting',
+            type: 'starter',
+            price: 29.99,
+          },
+          {
+            id: 2,
+            title: 'Growth',
+            description:
+              'Everything in Starter;Multi-store support;Customer loyalty program;Priority support;Advanced reporting;Employee management',
+            type: 'growth',
+            price: 59.99,
+          },
+          {
+            id: 3,
+            title: 'Premium',
+            description:
+              'Everything in Growth;Advanced inventory forecasting;Custom branding;24/7 support;API access;Advanced analytics;Multi-currency support',
+            type: 'premium',
+            price: 99.99,
+          },
+          {
+            id: 4,
+            title: 'Enterprise',
+            description:
+              'Everything in Premium;Dedicated account manager;Custom development;White-label solution;Unlimited users;Advanced security features;Data migration assistance',
+            type: 'enterprise',
+            price: 199.99,
+          },
+        ];
+      }
+    },
+    enabled:
+      open &&
+      selectedSetting === 'Package Management',
+  });
+
+  // Mock subscription data for development
+  const subscription = {
+    id: 1,
+    userId: userId,
+    pricingPackageId: 1,
+    package: {
+      id: 1,
+      title: 'Starter',
+      type: 'starter',
+    },
+    startDate: new Date().toISOString(),
+    isActive: true,
+    enabledFeatures: [
+      'Dashboard',
+      'Products List',
+      'Add/Edit Product',
+      'Sales Reports',
+      'Inventory Management',
+      'Customer Management',
+    ],
+    additionalPackages: [] as number[],
+  };
+
+  // Mock available features
+  const availableFeatures = [
+    'Dashboard',
+    'Products List',
+    'Add/Edit Product',
+    'Sales Reports',
+    'Inventory Management',
+    'Customer Management',
+  ];
+
+  // Import UserSubscriptionContext
+  const {
+    enableAdditionalPackage: enablePackage,
+    disableAdditionalPackage: disablePackage,
+  } = useUserSubscription();
+
+  // Functions for enabling/disabling packages with UI updates
+  const enableAdditionalPackage = async (
+    packageId: number
+  ) => {
+    console.log(`Enable package ${packageId}`);
+    try {
+      // Call the API through the context
+      await enablePackage(packageId);
+
+      // Notify the sidebar to refresh
+      const packageChangedEvent = new CustomEvent(
+        'packageChanged'
+      );
+      window.dispatchEvent(packageChangedEvent);
+
+      // Show success message
+      console.log(
+        `Package ${packageId} enabled successfully`
+      );
+    } catch (error) {
+      console.error(
+        'Error enabling package:',
+        error
+      );
+    }
+  };
+
+  const disableAdditionalPackage = async (
+    packageId: number
+  ) => {
+    console.log(`Disable package ${packageId}`);
+    try {
+      // Call the API through the context
+      await disablePackage(packageId);
+
+      // Notify the sidebar to refresh
+      const packageChangedEvent = new CustomEvent(
+        'packageChanged'
+      );
+      window.dispatchEvent(packageChangedEvent);
+
+      // Show success message
+      console.log(
+        `Package ${packageId} disabled successfully`
+      );
+    } catch (error) {
+      console.error(
+        'Error disabling package:',
+        error
+      );
+    }
   };
 
   // Always render content regardless of data state
@@ -2647,6 +2884,624 @@ const SettingsModal: React.FC<
             </Box>
           </Box>
         );
+      case 'Package Management':
+        return (
+          <Box sx={{ p: 3 }}>
+            <Typography
+              variant="h5"
+              component="div"
+              gutterBottom
+              fontWeight="500"
+              color="#173A79"
+            >
+              Package Management
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 3,
+              }}
+            >
+              {subscription ? (
+                <>
+                  <Box
+                    sx={{
+                      p: 0,
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      boxShadow:
+                        '0 4px 20px rgba(0,0,0,0.05)',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow:
+                          '0 6px 25px rgba(0,0,0,0.1)',
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        p: 2.5,
+                        background:
+                          'linear-gradient(135deg, #173A79 0%, #2a5cbb 100%)',
+                        color: 'white',
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        component="div"
+                        fontWeight="bold"
+                        sx={{
+                          fontSize: '1.1rem',
+                        }}
+                      >
+                        Current Subscription
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        component="div"
+                        sx={{
+                          opacity: 0.85,
+                          mb: 0,
+                        }}
+                      >
+                        Your current active
+                        subscription package
+                      </Typography>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 3,
+                        p: 3,
+                        bgcolor: '#fff',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 60,
+                          height: 60,
+                          borderRadius: '50%',
+                          background:
+                            'linear-gradient(135deg, #173A79 0%, #2a5cbb 100%)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent:
+                            'center',
+                          color: '#fff',
+                          fontSize: '1.5rem',
+                          fontWeight: 'bold',
+                          boxShadow:
+                            '0 4px 10px rgba(23, 58, 121, 0.3)',
+                        }}
+                      >
+                        {subscription.package?.type
+                          .charAt(0)
+                          .toUpperCase()}
+                      </Box>
+                      <Box>
+                        <Typography
+                          variant="h6"
+                          component="div"
+                          fontWeight="500"
+                        >
+                          {subscription.package
+                            ?.title ||
+                            'Starter'}{' '}
+                          Package
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          component="div"
+                          color="text.secondary"
+                        >
+                          Active since:{' '}
+                          {new Date(
+                            subscription.startDate
+                          ).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                      <Chip
+                        label="Active"
+                        color="success"
+                        size="small"
+                        sx={{
+                          ml: 'auto',
+                          fontWeight: 'medium',
+                          px: 1,
+                          '& .MuiChip-label': {
+                            px: 1,
+                          },
+                        }}
+                      />
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ mt: 2 }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                      }}
+                    >
+                      <Box
+                        component="span"
+                        sx={{
+                          width: 4,
+                          height: 24,
+                          background:
+                            'linear-gradient(180deg, #173A79 0%, #2a5cbb 100%)',
+                          borderRadius: 1,
+                          display: 'inline-block',
+                          mr: 1,
+                        }}
+                      ></Box>
+                      <Typography
+                        variant="h6"
+                        component="div"
+                        fontWeight="500"
+                        color="#173A79"
+                      >
+                        Available Packages
+                      </Typography>
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      component="div"
+                      color="text.secondary"
+                      sx={{ mb: 3, ml: 2 }}
+                    >
+                      Enable additional packages
+                      to access more features
+                    </Typography>
+
+                    <Grid container spacing={3}>
+                      {packages?.map((pkg) => {
+                        const isCurrentPackage =
+                          subscription.pricingPackageId ===
+                          pkg.id;
+                        const isAdditionalPackage =
+                          subscription.additionalPackages?.includes(
+                            pkg.id
+                          );
+                        const isEnabled =
+                          isCurrentPackage ||
+                          isAdditionalPackage;
+
+                        return (
+                          <Grid
+                            item
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            key={pkg.id}
+                          >
+                            <Card
+                              sx={{
+                                height: '100%',
+                                display: 'flex',
+                                flexDirection:
+                                  'column',
+                                borderRadius: 2,
+                                overflow:
+                                  'hidden',
+                                boxShadow:
+                                  isEnabled
+                                    ? '0 6px 20px rgba(76, 175, 80, 0.15)'
+                                    : '0 4px 15px rgba(0, 0, 0, 0.05)',
+                                transition:
+                                  'all 0.3s ease',
+                                '&:hover': {
+                                  transform:
+                                    'translateY(-4px)',
+                                  boxShadow:
+                                    isEnabled
+                                      ? '0 8px 25px rgba(76, 175, 80, 0.2)'
+                                      : '0 8px 25px rgba(0, 0, 0, 0.1)',
+                                },
+                                border: isEnabled
+                                  ? '2px solid #4caf50'
+                                  : 'none',
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  p: 2,
+                                  background:
+                                    isEnabled
+                                      ? 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)'
+                                      : 'linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%)',
+                                  borderBottom:
+                                    '1px solid',
+                                  borderColor:
+                                    isEnabled
+                                      ? '#c8e6c9'
+                                      : '#eeeeee',
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    display:
+                                      'flex',
+                                    justifyContent:
+                                      'space-between',
+                                    alignItems:
+                                      'center',
+                                  }}
+                                >
+                                  <Typography
+                                    variant="h6"
+                                    component="div"
+                                    fontWeight="500"
+                                  >
+                                    {pkg.title}
+                                  </Typography>
+                                  {isEnabled && (
+                                    <CheckCircleIcon color="success" />
+                                  )}
+                                </Box>
+                              </Box>
+                              <CardContent
+                                sx={{
+                                  flexGrow: 1,
+                                  p: 3,
+                                }}
+                              >
+                                <Box
+                                  sx={{ mb: 3 }}
+                                >
+                                  {pkg.description
+                                    .split(';')
+                                    .slice(0, 3)
+                                    .map(
+                                      (
+                                        feature,
+                                        index
+                                      ) => (
+                                        <Box
+                                          key={
+                                            index
+                                          }
+                                          sx={{
+                                            display:
+                                              'flex',
+                                            alignItems:
+                                              'center',
+                                            mb: 1,
+                                          }}
+                                        >
+                                          <Box
+                                            component="span"
+                                            sx={{
+                                              width: 6,
+                                              height: 6,
+                                              borderRadius:
+                                                '50%',
+                                              bgcolor:
+                                                'primary.main',
+                                              display:
+                                                'inline-block',
+                                              mr: 1.5,
+                                            }}
+                                          ></Box>
+                                          <Typography
+                                            variant="body2"
+                                            color="text.secondary"
+                                            component="span"
+                                          >
+                                            {feature.trim()}
+                                          </Typography>
+                                        </Box>
+                                      )
+                                    )}
+                                  {pkg.description.split(
+                                    ';'
+                                  ).length >
+                                    3 && (
+                                    <Box
+                                      sx={{
+                                        mt: 1,
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="body2"
+                                        color="primary"
+                                        component="span"
+                                        sx={{
+                                          fontWeight:
+                                            'medium',
+                                          cursor:
+                                            'pointer',
+                                        }}
+                                      >
+                                        +{' '}
+                                        {pkg.description.split(
+                                          ';'
+                                        ).length -
+                                          3}{' '}
+                                        more
+                                        features
+                                      </Typography>
+                                    </Box>
+                                  )}
+                                </Box>
+                                <Box
+                                  sx={{
+                                    display:
+                                      'flex',
+                                    alignItems:
+                                      'center',
+                                  }}
+                                >
+                                  <Typography
+                                    variant="h6"
+                                    component="div"
+                                    color="primary"
+                                    fontWeight="bold"
+                                  >
+                                    <Box
+                                      component="span"
+                                      sx={{
+                                        fontSize:
+                                          '1.8rem',
+                                        mr: 0.5,
+                                      }}
+                                    >
+                                      ${pkg.price}
+                                    </Box>
+                                  </Typography>
+                                  <Typography
+                                    variant="body2"
+                                    component="div"
+                                    sx={{
+                                      fontSize:
+                                        '0.9rem',
+                                      color:
+                                        'text.secondary',
+                                      fontWeight:
+                                        'normal',
+                                    }}
+                                  >
+                                    /month
+                                  </Typography>
+                                </Box>
+                              </CardContent>
+                              <CardActions
+                                sx={{
+                                  p: 2,
+                                  pt: 0,
+                                }}
+                              >
+                                {isCurrentPackage ? (
+                                  <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="success"
+                                    disabled
+                                    sx={{
+                                      py: 1,
+                                      borderRadius: 2,
+                                      textTransform:
+                                        'none',
+                                      fontWeight:
+                                        'medium',
+                                      fontSize:
+                                        '0.95rem',
+                                    }}
+                                  >
+                                    Current
+                                    Package
+                                  </Button>
+                                ) : isAdditionalPackage ? (
+                                  <Button
+                                    fullWidth
+                                    variant="outlined"
+                                    color="error"
+                                    onClick={() =>
+                                      disableAdditionalPackage(
+                                        pkg.id
+                                      )
+                                    }
+                                    startIcon={
+                                      <CancelIcon />
+                                    }
+                                    sx={{
+                                      py: 1,
+                                      borderRadius: 2,
+                                      textTransform:
+                                        'none',
+                                      fontWeight:
+                                        'medium',
+                                      fontSize:
+                                        '0.95rem',
+                                      borderWidth:
+                                        '1.5px',
+                                      '&:hover': {
+                                        borderWidth:
+                                          '1.5px',
+                                        bgcolor:
+                                          'rgba(211, 47, 47, 0.04)',
+                                      },
+                                    }}
+                                  >
+                                    Disable
+                                    Package
+                                  </Button>
+                                ) : (
+                                  <FormControlLabel
+                                    control={
+                                      <Switch
+                                        checked={
+                                          false
+                                        }
+                                        onChange={() =>
+                                          enableAdditionalPackage(
+                                            pkg.id
+                                          )
+                                        }
+                                        color="primary"
+                                        sx={{
+                                          '& .MuiSwitch-switchBase.Mui-checked':
+                                            {
+                                              color:
+                                                '#173A79',
+                                            },
+                                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                                            {
+                                              backgroundColor:
+                                                '#173A79',
+                                            },
+                                        }}
+                                      />
+                                    }
+                                    label="Enable Package"
+                                    sx={{
+                                      width:
+                                        '100%',
+                                      justifyContent:
+                                        'space-between',
+                                      margin: 0,
+                                      '.MuiFormControlLabel-label':
+                                        {
+                                          fontWeight:
+                                            'medium',
+                                          color:
+                                            '#173A79',
+                                        },
+                                    }}
+                                    labelPlacement="start"
+                                  />
+                                )}
+                              </CardActions>
+                            </Card>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      mt: 4,
+                      p: 3,
+                      bgcolor: '#f8f9fa',
+                      borderRadius: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                      }}
+                    >
+                      <Box
+                        component="span"
+                        sx={{
+                          width: 4,
+                          height: 24,
+                          background:
+                            'linear-gradient(180deg, #173A79 0%, #2a5cbb 100%)',
+                          borderRadius: 1,
+                          display: 'inline-block',
+                          mr: 1,
+                        }}
+                      ></Box>
+                      <Typography
+                        variant="h6"
+                        component="div"
+                        fontWeight="500"
+                        color="#173A79"
+                      >
+                        Available Features
+                      </Typography>
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      component="div"
+                      color="text.secondary"
+                      sx={{ mb: 3, ml: 2 }}
+                    >
+                      Features available with your
+                      current subscription
+                    </Typography>
+
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 1.5,
+                      }}
+                    >
+                      {availableFeatures.map(
+                        (feature, index) => (
+                          <Chip
+                            key={index}
+                            label={feature}
+                            color="primary"
+                            variant="outlined"
+                            icon={
+                              <CheckCircleIcon />
+                            }
+                            sx={{
+                              borderRadius:
+                                '16px',
+                              py: 0.5,
+                              px: 0.5,
+                              borderColor:
+                                'rgba(23, 58, 121, 0.3)',
+                              '& .MuiChip-label':
+                                {
+                                  px: 1,
+                                  fontWeight:
+                                    'medium',
+                                },
+                              '& .MuiChip-icon': {
+                                color: '#4caf50',
+                              },
+                              transition:
+                                'all 0.2s ease',
+                              '&:hover': {
+                                bgcolor:
+                                  'rgba(23, 58, 121, 0.08)',
+                                boxShadow:
+                                  '0 2px 8px rgba(0,0,0,0.05)',
+                              },
+                            }}
+                          />
+                        )
+                      )}
+                    </Box>
+                  </Box>
+                </>
+              ) : (
+                <Alert
+                  severity="info"
+                  sx={{
+                    borderRadius: 2,
+                    boxShadow:
+                      '0 4px 15px rgba(0,0,0,0.05)',
+                    '& .MuiAlert-icon': {
+                      color: '#173A79',
+                    },
+                  }}
+                >
+                  <AlertTitle
+                    sx={{ fontWeight: 'medium' }}
+                  >
+                    No Subscription Found
+                  </AlertTitle>
+                  No active subscription found.
+                  Please contact support to set up
+                  your subscription.
+                </Alert>
+              )}
+            </Box>
+          </Box>
+        );
       case 'Email & Notification Settings':
         return (
           <Box sx={{ p: 2 }}>
@@ -3578,6 +4433,80 @@ const SettingsModal: React.FC<
                 provider&apos;s website.
               </Typography>
             </Box>
+          </Box>
+        );
+      case 'Cache Management':
+        return (
+          <Box sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Cache Management
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mb: 3 }}
+            >
+              If you're experiencing issues with data not updating properly,
+              you can use these tools to refresh the application's cache.
+            </Typography>
+
+            <CacheControl variant="full" />
+
+            <Box sx={{ mt: 4 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                About Caching
+              </Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                The application stores data temporarily in cache to improve performance.
+                Sometimes this cached data may become stale and not reflect the latest changes.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                • <strong>Refresh Data</strong>: Updates specific data without clearing everything.<br />
+                • <strong>Reset Cache</strong>: Clears all cached data and fetches fresh data from the server.
+              </Typography>
+            </Box>
+
+            <Box sx={{ mt: 4, p: 2, bgcolor: '#f5f5f5', borderRadius: 2 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                Cache Settings
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography variant="body2">
+                    Cache Duration
+                  </Typography>
+                  <Select
+                    value="60000"
+                    size="small"
+                    sx={{ width: '200px' }}
+                  >
+                    <MenuItem value="30000">30 seconds</MenuItem>
+                    <MenuItem value="60000">1 minute</MenuItem>
+                    <MenuItem value="300000">5 minutes</MenuItem>
+                    <MenuItem value="600000">10 minutes</MenuItem>
+                  </Select>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography variant="body2">
+                    Auto-refresh on Window Focus
+                  </Typography>
+                  <Switch defaultChecked />
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography variant="body2">
+                    Prefetch Important Data
+                  </Typography>
+                  <Switch defaultChecked />
+                </Box>
+              </Box>
+            </Box>
+
+            <Alert severity="info" sx={{ mt: 4 }}>
+              <AlertTitle>Cache Troubleshooting</AlertTitle>
+              If you're still experiencing issues after refreshing the cache, try clearing your browser cache or reloading the application.
+            </Alert>
           </Box>
         );
       default:

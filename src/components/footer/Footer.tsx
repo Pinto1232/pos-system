@@ -78,6 +78,7 @@ const Footer: React.FC = memo(() => {
   return (
     <Box
       ref={footerBoxRef}
+      className={styles.footerRoot}
       sx={{
         backgroundColor: navbarColor,
         display: 'block',

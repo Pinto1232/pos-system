@@ -36,7 +36,16 @@ export interface AddOn {
   name: string;
   description: string;
   price: number;
+  currency?: string;
   multiCurrencyPrices?: Record<string, number>;
+  category?: string;
+  isActive?: boolean;
+  // List of specific capabilities/functionalities that the addon enables
+  features?: string[];
+  // Any requirements or prerequisites needed for the addon to function
+  dependencies?: string[];
+  // Icon or visual indicator for the addon (can be a URL or a class name)
+  icon?: string;
 }
 
 export interface UsagePricing {
@@ -59,6 +68,7 @@ export interface FeaturesResponse {
 
 export interface PriceCalculationRequest {
   packageId: number;
+  basePrice?: number; // Add optional basePrice field
   selectedFeatures: number[];
   selectedAddOns: number[];
   usageLimits: Record<number, number>;

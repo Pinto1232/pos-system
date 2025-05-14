@@ -150,9 +150,11 @@ const mockRoleService = {
       `Using mock role service - getRoleById(${roleId})`
     );
     await delay(300);
-    const role = mockRoles.find(
-      (r) => r.id === roleId
-    );
+    const role = Array.isArray(mockRoles)
+      ? mockRoles.find(
+          (r) => r && r.id === roleId
+        )
+      : undefined;
     if (!role) {
       throw new Error(
         `Role with ID ${roleId} not found`
@@ -169,9 +171,11 @@ const mockRoleService = {
       `Using mock role service - getRoleByName(${roleName})`
     );
     await delay(300);
-    const role = mockRoles.find(
-      (r) => r.name === roleName
-    );
+    const role = Array.isArray(mockRoles)
+      ? mockRoles.find(
+          (r) => r && r.name === roleName
+        )
+      : undefined;
     if (!role) {
       throw new Error(
         `Role with name ${roleName} not found`
@@ -227,9 +231,11 @@ const mockRoleService = {
       `Using mock role service - updateRole(${roleId}, ${JSON.stringify(roleData)})`
     );
     await delay(500);
-    const roleIndex = mockRoles.findIndex(
-      (r) => r.id === roleId
-    );
+    const roleIndex = Array.isArray(mockRoles)
+      ? mockRoles.findIndex(
+          (r) => r && r.id === roleId
+        )
+      : -1;
     if (roleIndex === -1) {
       throw new Error(
         `Role with ID ${roleId} not found`
@@ -257,9 +263,11 @@ const mockRoleService = {
       `Using mock role service - updateRolePermissions(${roleId}, ${JSON.stringify(permissions)})`
     );
     await delay(500);
-    const roleIndex = mockRoles.findIndex(
-      (r) => r.id === roleId
-    );
+    const roleIndex = Array.isArray(mockRoles)
+      ? mockRoles.findIndex(
+          (r) => r && r.id === roleId
+        )
+      : -1;
     if (roleIndex === -1) {
       throw new Error(
         `Role with ID ${roleId} not found`
@@ -310,9 +318,11 @@ const mockRoleService = {
       `Using mock role service - deleteRole(${roleId})`
     );
     await delay(500);
-    const roleIndex = mockRoles.findIndex(
-      (r) => r.id === roleId
-    );
+    const roleIndex = Array.isArray(mockRoles)
+      ? mockRoles.findIndex(
+          (r) => r && r.id === roleId
+        )
+      : -1;
     if (roleIndex === -1) {
       throw new Error(
         `Role with ID ${roleId} not found`

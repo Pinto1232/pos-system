@@ -9,6 +9,7 @@ import {
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import { SubItemsProps } from './types';
+import SubItemFeatureGuard from './SubItemFeatureGuard';
 
 const SubItems: React.FC<SubItemsProps> = ({
   parentLabel,
@@ -18,7 +19,6 @@ const SubItems: React.FC<SubItemsProps> = ({
   onItemClick,
   activeItem,
 }) => {
-  // Initialize activeSubItem from localStorage or props
   const [activeSubItem, setActiveSubItem] =
     React.useState<string>(() => {
       try {
@@ -26,7 +26,6 @@ const SubItems: React.FC<SubItemsProps> = ({
           localStorage.getItem(
             'sidebarActiveItem'
           );
-        // Check if the saved active item is one of this parent's subitems
         if (
           savedActiveItem &&
           subItems.some(
@@ -99,105 +98,118 @@ const SubItems: React.FC<SubItemsProps> = ({
         sx={{
           padding: '4px 8px',
           marginLeft: '8px',
-          borderLeft:
-            '1px dashed rgba(255, 255, 255, 0.2)',
+          borderLeft: `1px dashed ${textColor ? `${textColor}40` : 'rgba(255, 255, 255, 0.2)'}`,
         }}
       >
         {subItems.map((subItem) => (
-          <ListItem
+          <SubItemFeatureGuard
             key={subItem.label}
-            sx={{
-              pl: 3,
-              cursor: 'pointer',
-              backgroundColor:
-                activeSubItem === subItem.label
-                  ? 'rgba(52, 211, 153, 0.9)'
-                  : 'rgba(204, 217, 255, 0.1)',
-              '&:hover': {
+            featureName={subItem.label}
+          >
+            <ListItem
+              key={subItem.label}
+              sx={{
+                pl: 3,
+                cursor: 'pointer',
                 backgroundColor:
                   activeSubItem === subItem.label
-                    ? 'rgba(52, 211, 153, 0.95)'
-                    : 'rgba(235, 242, 255, 0.2)',
-                transform: 'translateX(4px)',
+                    ? 'rgba(52, 211, 153, 0.9)'
+                    : 'rgba(204, 217, 255, 0.1)',
+                '&:hover': {
+                  backgroundColor:
+                    activeSubItem ===
+                    subItem.label
+                      ? 'rgba(52, 211, 153, 0.95)'
+                      : 'rgba(235, 242, 255, 0.2)',
+                  transform: 'translateX(4px)',
+                  boxShadow:
+                    activeSubItem ===
+                    subItem.label
+                      ? '0 4px 12px rgba(52, 211, 153, 0.25)'
+                      : 'none',
+                },
+                borderRadius: '10px',
+                margin: '4px 0',
+                transition:
+                  'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 boxShadow:
                   activeSubItem === subItem.label
-                    ? '0 4px 12px rgba(52, 211, 153, 0.25)'
+                    ? '0 2px 8px rgba(52, 211, 153, 0.2)'
                     : 'none',
-              },
-              borderRadius: '10px',
-              margin: '4px 0',
-              transition:
-                'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              boxShadow:
-                activeSubItem === subItem.label
-                  ? '0 2px 8px rgba(52, 211, 153, 0.2)'
-                  : 'none',
-            }}
-            onClick={() =>
-              handleSubItemClick(subItem.label)
-            }
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: '30px',
-                color:
-                  activeSubItem === subItem.label
-                    ? '#fff'
-                    : 'rgba(255, 255, 255, 0.7)',
               }}
+              onClick={() =>
+                handleSubItemClick(subItem.label)
+              }
             >
-              <FiberManualRecordIcon
+              <ListItemIcon
                 sx={{
-                  fontSize: '6px',
-                  transition:
-                    'transform 0.3s ease',
-                  transform:
+                  minWidth: '30px',
+                  color:
                     activeSubItem ===
                     subItem.label
-                      ? 'scale(1.3)'
-                      : 'scale(1)',
+                      ? '#fff'
+                      : textColor ||
+                        'rgba(255, 255, 255, 0.7)',
                 }}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary={subItem.label}
-              sx={{
-                color:
-                  activeSubItem === subItem.label
-                    ? '#fff'
-                    : 'rgba(255, 255, 255, 0.9)',
-                '& .MuiTypography-root': {
-                  fontWeight:
+              >
+                <FiberManualRecordIcon
+                  sx={{
+                    fontSize: '6px',
+                    transition:
+                      'transform 0.3s ease',
+                    transform:
+                      activeSubItem ===
+                      subItem.label
+                        ? 'scale(1.3)'
+                        : 'scale(1)',
+                  }}
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={subItem.label}
+                sx={{
+                  color:
                     activeSubItem ===
                     subItem.label
-                      ? 600
-                      : 400,
-                  fontSize: '0.9rem',
-                },
-              }}
-            />
-            {activeSubItem === subItem.label && (
-              <ChevronRight
-                sx={{
-                  color: '#fff',
-                  animation:
-                    'pulseRight 1.5s infinite ease-in-out',
-                  '@keyframes pulseRight': {
-                    '0%': {
-                      transform: 'translateX(0)',
-                    },
-                    '50%': {
-                      transform:
-                        'translateX(3px)',
-                    },
-                    '100%': {
-                      transform: 'translateX(0)',
-                    },
+                      ? '#fff'
+                      : textColor ||
+                        'rgba(255, 255, 255, 0.9)',
+                  '& .MuiTypography-root': {
+                    fontWeight:
+                      activeSubItem ===
+                      subItem.label
+                        ? 600
+                        : 400,
+                    fontSize: '0.9rem',
                   },
                 }}
               />
-            )}
-          </ListItem>
+              {activeSubItem ===
+                subItem.label && (
+                <ChevronRight
+                  sx={{
+                    color: '#fff',
+                    animation:
+                      'pulseRight 1.5s infinite ease-in-out',
+                    '@keyframes pulseRight': {
+                      '0%': {
+                        transform:
+                          'translateX(0)',
+                      },
+                      '50%': {
+                        transform:
+                          'translateX(3px)',
+                      },
+                      '100%': {
+                        transform:
+                          'translateX(0)',
+                      },
+                    },
+                  }}
+                />
+              )}
+            </ListItem>
+          </SubItemFeatureGuard>
         ))}
       </List>
     </Collapse>

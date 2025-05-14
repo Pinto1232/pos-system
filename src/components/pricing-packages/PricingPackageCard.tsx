@@ -22,12 +22,7 @@ interface PricingPackageProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type:
-      | 'starter'
-      | 'growth'
-      | 'enterprise'
-      | 'custom'
-      | 'premium';
+    type: string;
     currency?: string;
     multiCurrencyPrices?: string;
   };
@@ -52,14 +47,22 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
       iconMap[packageData.icon] ||
       iconMap['MUI:DefaultIcon'];
 
+    // Start with the base price from the package data
     let displayPrice = packageData.price;
+
+    // Handle custom package base price
     if (
-      packageData.type === 'custom' &&
+      packageData.type.toLowerCase().includes('custom') &&
       displayPrice === 0
     ) {
-      displayPrice = 49.99;
+      // Use 129.99 as the base price in USD
+      const customBasePrice = 129.99;
+
+      // Store this as the display price in USD before any currency conversion
+      displayPrice = customBasePrice;
     }
 
+    // Parse multi-currency prices if available
     let multiCurrency: Record<
       string,
       number
@@ -77,20 +80,25 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
       }
     }
 
+    // Apply currency conversion
     if (
       currency &&
       multiCurrency &&
       multiCurrency[currency]
     ) {
+      // If we have a specific price for this currency, use it directly
       displayPrice = multiCurrency[currency];
-    } else {
-      displayPrice = packageData.price * rate;
+      console.log(`Using specific ${currency} price from multiCurrencyPrices: ${displayPrice}`);
+    } else if (currency !== 'USD') {
+      // Only apply rate conversion if we're not in USD and don't have a specific price
+      displayPrice = displayPrice * rate;
+      console.log(`Converting price from USD to ${currency} using rate ${rate}: ${displayPrice}`);
     }
 
     const convertedPrice =
       formatPrice(displayPrice);
     const isCustom =
-      packageData.type === 'custom';
+      packageData.type.toLowerCase().includes('custom');
 
     const displayCurrency = currencySymbol;
 

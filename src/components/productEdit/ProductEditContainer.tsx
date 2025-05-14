@@ -84,35 +84,49 @@ const ProductEditContainer: React.FC = () => {
       'stock' | 'sales' | 'discount'
     >
   ) => {
-    setProductsState((prevProducts) =>
-      prevProducts.map((product) =>
-        product.id === updatedProduct.id
+    setProductsState((prevProducts) => {
+      if (!Array.isArray(prevProducts)) {
+        return [];
+      }
+
+      return prevProducts.map((product) => {
+        if (!product) return product;
+
+        return product.id === updatedProduct.id
           ? {
               ...updatedProduct,
               stock: product.stock || 0,
               sales: product.sales || 0,
               discount: product.discount || 0,
             }
-          : product
-      )
-    );
+          : product;
+      });
+    });
   };
 
   const handleDeleteItem = (
     productId: number
   ) => {
     setProductsState((prevProducts) => {
+      if (!Array.isArray(prevProducts)) {
+        return [];
+      }
+
       const deletedProduct = prevProducts.find(
-        (p) => p.id === productId
+        (p) => p && p.id === productId
       );
+
       if (deletedProduct) {
         setSubTotalState(
-          (prev) => prev - deletedProduct.price
+          (prev) =>
+            prev - (deletedProduct.price || 0)
         );
         setItemNoState((prev) => prev - 1);
       }
+
       return prevProducts.filter(
-        (product) => product.id !== productId
+        (product) =>
+          product && product.id !== productId
       );
     });
   };

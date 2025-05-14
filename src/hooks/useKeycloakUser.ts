@@ -80,7 +80,15 @@ export const useKeycloakUser = () => {
     extractUserInfo();
   }, [token, authenticated]);
 
-  return { userInfo, isLoading, error };
+  // Return userId and isAuthenticated for convenience
+  return {
+    userInfo,
+    isLoading,
+    error,
+    userId: userInfo?.sub || '',
+    isAuthenticated:
+      !!authenticated && !!userInfo,
+  };
 };
 
 export default useKeycloakUser;
