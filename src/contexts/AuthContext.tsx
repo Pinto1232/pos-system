@@ -625,7 +625,7 @@ const AuthProvider = ({
           refreshTimeout = null;
         }
       };
-    }, [isMounted]);
+    }, [isMounted, handleTokenRefresh, login]);
 
   useEffect(() => {
     if (isMounted && !initStartedRef.current) {
@@ -770,7 +770,7 @@ const AuthProvider = ({
         setInitialized(true);
       }
     }
-  }, [isMounted]);
+  }, [isMounted, initializeAuth]);
 
   const logout = useCallback(async () => {
     console.log('Logout requested');

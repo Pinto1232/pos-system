@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
 import {
   Box,
@@ -50,7 +50,8 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     buttonText = 'Sign In',
     onSubmit,
   }) => {
-    const router = useRouter();
+    // Router not currently used in this component
+    // const router = useRouter();
     const { startLoading, stopLoading } =
       useSpinner();
     const [error, setError] = useState<
@@ -60,8 +61,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       useState(false);
     const [snackbarOpen, setSnackbarOpen] =
       useState(false);
-    const [isLoggedIn, setIsLoggedIn] =
-      useState(false);
+    const [isLoggedIn] = useState(false);
     const [showPassword, setShowPassword] =
       useState(false);
     const [email, setEmail] = useState('');
@@ -205,7 +205,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
         // Note: We don't need to manually set tokens or redirect
         // as that's handled by the AuthContext
-      } catch (err: any) {
+      } catch (err: Error | unknown) {
         console.error(
           'Login initiation failed:',
           err
@@ -431,7 +431,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                   variant="body2"
                   color="textSecondary"
                 >
-                  Don't have an account?{' '}
+                  Don&apos;t have an account?{' '}
                   <Link
                     href="#"
                     onClick={(e) => {
