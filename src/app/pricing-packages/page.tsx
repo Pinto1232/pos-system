@@ -1,0 +1,76 @@
+import { Suspense } from 'react';
+import { fetchPricingPackagesAction, sortPackagesAction } from './actions';
+import PricingPackagesClient from './PricingPackagesClient';
+import { Box, Typography, Skeleton } from '@mui/material';
+
+// Loading component for Suspense fallback
+function PricingPackagesLoading() {
+  return (
+    <Box sx={{ maxWidth: '1600px', margin: '0 auto', padding: '0 40px', width: '100%' }}>
+      <Typography variant="h4" component="h1" sx={{ textAlign: 'center', mb: 4 }}>
+        Pricing Packages
+      </Typography>
+
+      <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexWrap: 'wrap', gap: 2 }}>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Skeleton
+            key={i}
+            variant="rectangular"
+            width={250}
+            height={400}
+            sx={{ borderRadius: 2 }}
+          />
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
+// Error component
+function PricingPackagesError() {
+  return (
+    <Box sx={{ maxWidth: '1600px', margin: '0 auto', padding: '0 40px', width: '100%' }}>
+      <Typography variant="h4" component="h1" sx={{ textAlign: 'center', mb: 4 }}>
+        Pricing Packages
+      </Typography>
+
+      <Box sx={{ textAlign: 'center', p: 4 }}>
+        <Typography variant="h6" color="error">
+          Error loading pricing packages
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          We're having trouble loading our pricing information. Please try again later.
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
+// Server component for the pricing packages page
+export default async function PricingPackagesPage() {
+  try {
+    // Fetch pricing packages data using the server action
+    const packages = await fetchPricingPackagesAction();
+
+    // Sort packages on the server
+    const sortedPackages = sortPackagesAction(packages);
+
+    // Render the client component with the fetched data
+    return (
+      <Suspense fallback={<PricingPackagesLoading />}>
+        <PricingPackagesClient initialPackages={sortedPackages} />
+      </Suspense>
+    );
+  } catch (error) {
+    console.error('Error in PricingPackagesPage:', error);
+    return <PricingPackagesError />;
+  }
+}
+
+// Generate static params for ISR
+export async function generateStaticParams() {
+  return [{}]; // Return an empty object to generate the default route
+}
+
+// Configure ISR with revalidation
+export const revalidate = 3600; // Revalidate every hour

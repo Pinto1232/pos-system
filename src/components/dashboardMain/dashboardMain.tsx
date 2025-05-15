@@ -3,6 +3,8 @@
 import React, {
   useEffect,
   useState,
+  Suspense,
+  lazy,
 } from 'react';
 import {
   Box,
@@ -23,6 +25,9 @@ import NotFound from '@/app/404';
 import ProductEditContainer from '../productEdit/ProductEditContainer';
 import SalesContainer from '../sales/salesContainer';
 import FeatureGuard from '../feature-access/FeatureGuard';
+
+// Lazy load the pricing packages client component
+const PricingPackagesClient = lazy(() => import('@/app/pricing-packages/PricingPackagesClient'));
 
 interface DashboardMainProps {
   activeSection: string;
@@ -131,7 +136,28 @@ const DashboardMain: React.FC<
           </FeatureGuard>
         );
         break;
-
+      case 'Pricing Packages':
+        sectionToRender = (
+          <FeatureGuard featureName="Pricing Packages">
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                px: isMobile ? 1 : 2,
+              }}
+            >
+              <Suspense fallback={
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Skeleton variant="rectangular" height={400} />
+                </Box>
+              }>
+                <PricingPackagesClient initialPackages={[]} />
+              </Suspense>
+            </Box>
+          </FeatureGuard>
+        );
+        break;
       default:
         sectionToRender = <NotFound />;
     }

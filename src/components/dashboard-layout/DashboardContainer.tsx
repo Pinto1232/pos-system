@@ -7,24 +7,14 @@ import React, {
 import DashboardLayout from '@/components/dashboard-layout/DashboardLayout';
 import Sidebar from '@/components/sidebar/Sidebar';
 import DashboardMain from '@/components/dashboardMain/dashboardMain';
-import { useSpinner } from '@/contexts/SpinnerContext';
-
 const DashboardContainer = () => {
   const [isDrawerOpen, setIsDrawerOpen] =
     useState(true);
   // Initialize with Dashboard as the active section
   const [activeSection, setActiveSection] =
     useState<string>('Dashboard');
-  const { stopLoading } = useSpinner();
 
-  useEffect(() => {
-    // Use a slightly longer timeout to ensure smooth loading
-    const dataLoadedTimeout = setTimeout(() => {
-      stopLoading();
-    }, 1500);
-
-    return () => clearTimeout(dataLoadedTimeout);
-  }, [stopLoading]);
+  // We're no longer calling stopLoading here since it's handled in the dashboard page
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);

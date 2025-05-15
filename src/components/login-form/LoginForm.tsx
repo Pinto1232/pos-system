@@ -5,6 +5,7 @@ import React, {
   useState,
   useEffect,
   useContext,
+  useRef,
 } from 'react';
 // import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
@@ -76,8 +77,16 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       useContext(AuthContext);
 
     // Check if backend and Keycloak are available on component mount
+    // Use a ref to track if the check has already been performed
+    const serviceCheckPerformedRef = useRef(false);
+
     useEffect(() => {
+      // Only perform the check once per component instance
+      if (serviceCheckPerformedRef.current) return;
+
       const checkServices = async () => {
+        serviceCheckPerformedRef.current = true;
+
         // Check backend status
         try {
           console.log(
@@ -134,6 +143,11 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       };
 
       checkServices();
+
+      // Cleanup function to handle component unmounting
+      return () => {
+        serviceCheckPerformedRef.current = false;
+      };
     }, []);
 
     // Watch for auth errors
@@ -159,9 +173,10 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       );
 
       // Track login attempt for retry logic
-      setLoginAttempt((prev) => prev + 1);
+      const nextAttempt = loginAttempt + 1;
+      setLoginAttempt(nextAttempt);
       console.log(
-        `Login attempt #${loginAttempt + 1}`
+        `Login attempt #${nextAttempt}`
       );
 
       if (!email || !password) {

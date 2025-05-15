@@ -4,6 +4,8 @@ import React, {
   useState,
   createContext,
   useContext,
+  useCallback,
+  useMemo,
 } from 'react';
 import LoginForm from '@/components/login-form/LoginForm';
 import {
@@ -35,7 +37,8 @@ export const LoginFormProvider: React.FC<{
 }> = ({ children }) => {
   const [open, setOpen] = useState(false);
 
-  const toggleLoginForm = () => {
+  // Use useCallback to memoize the toggleLoginForm function
+  const toggleLoginForm = useCallback(() => {
     console.log(
       'toggleLoginForm called, current state:',
       open
@@ -45,18 +48,16 @@ export const LoginFormProvider: React.FC<{
       'toggleLoginForm new state:',
       !open
     );
-  };
+  }, [open]);
+
+  // Memoize the context value to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({
+    toggleLoginForm,
+  }), [toggleLoginForm]);
 
   return (
     <LoginFormContext.Provider
-      value={{
-        toggleLoginForm: () => {
-          console.log(
-            'toggleLoginForm called from context'
-          );
-          setOpen((prev) => !prev);
-        },
-      }}
+      value={contextValue}
     >
       {children}
       <Dialog

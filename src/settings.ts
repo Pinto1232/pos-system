@@ -1,5 +1,5 @@
 import HomeIcon from '@mui/icons-material/Home';
-import { MdProductionQuantityLimits } from 'react-icons/md';
+import { MdProductionQuantityLimits, MdAttachMoney } from 'react-icons/md';
 import { RiCustomerService2Fill } from 'react-icons/ri';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { BsMegaphone } from 'react-icons/bs';
@@ -19,6 +19,10 @@ export const sidebarItems = [
   {
     label: 'Dashboard',
     icon: HomeIcon,
+  },
+  {
+    label: 'Pricing Packages',
+    icon: MdAttachMoney,
   },
   {
     label: 'Products & Inventory',

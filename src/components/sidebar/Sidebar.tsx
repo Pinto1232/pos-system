@@ -364,6 +364,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     const validSections = [
       'Dashboard',
+      'Pricing Packages',
       'Products List',
       'Add/Edit Product',
       'Product Categories',

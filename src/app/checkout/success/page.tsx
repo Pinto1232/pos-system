@@ -4,6 +4,7 @@ import {
   useState,
   useEffect,
   useRef,
+  useContext,
 } from 'react';
 import {
   Button,
@@ -22,6 +23,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
+import { AuthContext } from '@/contexts/AuthContext';
 
 function SuccessContent({
   onConfirm,
@@ -34,6 +36,7 @@ function SuccessContent({
   const { clearCart } = useCart();
   const { setLoading } = useSpinner();
   const hasCleared = useRef(false);
+  const { authenticated, token, isInitialized } = useContext(AuthContext);
 
   useEffect(() => {
     if (!hasCleared.current) {
@@ -59,23 +62,30 @@ function SuccessContent({
     setOpen(false);
   };
 
-  const handleReturnToDashboard = (
-    e: React.MouseEvent
-  ) => {
-    e.preventDefault(); // Prevent the default Link navigation
+  const handleReturnToDashboard = async (e: React.MouseEvent) => {
+    e.preventDefault();
     onConfirm();
     handleClose();
-
-    // Show the loading spinner
     setLoading(true);
-
-    // Set a flag in sessionStorage to indicate we're coming from payment success
-    sessionStorage.setItem(
-      'fromPaymentSuccess',
-      'true'
-    );
-
-    // Navigate programmatically after a short delay to ensure the spinner is visible
+    sessionStorage.setItem('fromPaymentSuccess', 'true');
+    if (!isInitialized) return;
+    if (!authenticated || !token) {
+      router.replace('/?error=Session expired, please login again');
+      return;
+    }
+    let payload = null;
+    let roles = [];
+    try {
+      payload = JSON.parse(atob(token.split('.')[1]));
+      roles = payload?.realm_access?.roles || payload?.roles || [];
+    } catch {
+      router.replace('/?error=Session invalid, please login again');
+      return;
+    }
+    if (!roles.includes('dashboard') && !roles.includes('admin')) {
+      router.replace('/?error=You do not have permission to access the dashboard');
+      return;
+    }
     setTimeout(() => {
       router.push('/dashboard');
     }, 100);

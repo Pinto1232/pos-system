@@ -4,10 +4,15 @@ import './globals.css';
 import Layout from '@/layouts/Layout';
 import { CartProvider } from '@/contexts/CartContext';
 import { handleRegistrationRedirect } from '@/utils/authUtils';
+import DataPrefetcher from '@/components/cache/DataPrefetcher';
 
 export const metadata = {
   title: 'Pisval Tech POS',
   description: 'Your POS application',
+  // Add cache-related metadata
+  other: {
+    'cache-control': 'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400',
+  },
 };
 
 export default function RootLayout({
@@ -27,6 +32,7 @@ export default function RootLayout({
         <CartProvider>
           <LoginFormProvider>
             <Providers>
+              <DataPrefetcher />
               <Layout>{children}</Layout>
             </Providers>
           </LoginFormProvider>

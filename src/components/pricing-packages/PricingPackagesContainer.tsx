@@ -14,10 +14,24 @@ import PricingPackageCard from './PricingPackageCard';
 import { Alert, Snackbar, Button, Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CacheControl from '@/components/ui/CacheControl';
+// These imports are used in the JSX
 import {
   usePackageSelection,
-  type Package,
 } from '@/contexts/PackageSelectionContext';
+
+// Define a custom Package type that includes the new package types
+type Package = {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+  extraDescription: string;
+  price: number;
+  testPeriodDays: number;
+  type: string; // Allow any string for package type
+  currency: string;
+  multiCurrencyPrices: string;
+};
 import { AxiosInstance } from 'axios';
 import { PricePackages } from '@/components/pricing-packages/types';
 import { AuthContext } from '@/contexts/AuthContext';
@@ -146,8 +160,19 @@ const PricingPackagesContainer: React.FC = () => {
       // Log network status
       console.log(`[${new Date().toISOString()}] Network status: ${navigator.onLine ? 'Online' : 'Offline'}`);
 
-      const endpoint = `/api/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+      // Use the lowercase version of the endpoint to match the Next.js API route
+      // Use the correct endpoint format to match the backend API
+      // The backend API uses lowercase 'pricingpackages' with no hyphen
+      const endpoint = `/api/pricingpackages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
       console.log(`[${new Date().toISOString()}] Attempting to fetch pricing packages from: ${endpoint}`);
+
+      // Log the full URL that will be used (for debugging)
+      const baseUrl = apiClient.defaults.baseURL || '';
+      console.log(`[${new Date().toISOString()}] Full URL will be: ${baseUrl}${endpoint}`);
+
+      // Ensure the backend API is properly configured
+      console.log(`[${new Date().toISOString()}] Backend API URL from environment: ${process.env.NEXT_PUBLIC_API_URL || 'not set'}`);
+      console.log(`[${new Date().toISOString()}] Backend API URL from axios client: ${baseUrl}`);
 
       // Set a timeout for the request
       const timeoutMs = 10000; // 10 seconds
@@ -236,11 +261,27 @@ const PricingPackagesContainer: React.FC = () => {
       // Check if it's a network error
       if (error instanceof Error && error.message.includes('Network Error')) {
         console.warn(`[${new Date().toISOString()}] Network error detected, backend might be unavailable`);
+        console.error(`[${new Date().toISOString()}] Please check if the backend server is running at ${apiClient.defaults.baseURL}`);
       }
 
       // Check if it's a timeout error
       if (error instanceof Error && error.name === 'AbortError') {
         console.warn(`[${new Date().toISOString()}] Request was aborted due to timeout`);
+      }
+
+      // Check if it's a 404 error (Not Found)
+      // Use type assertion for axios error
+      const axiosError = error as { response?: { status: number } };
+      if (axiosError.response && axiosError.response.status === 404) {
+        const currentEndpoint = `/api/pricing-packages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+        console.error(`[${new Date().toISOString()}] 404 Not Found error for endpoint: ${currentEndpoint}`);
+        console.error(`[${new Date().toISOString()}] This could be due to:
+          1. The backend API route doesn't exist
+          2. Case sensitivity issues in the route path
+          3. The backend server is not properly configured
+
+          Full URL: ${apiClient.defaults.baseURL}${currentEndpoint}
+        `);
       }
 
       console.log(`[${new Date().toISOString()}] Using fallback data due to error`);
@@ -331,73 +372,100 @@ const PricingPackagesContainer: React.FC = () => {
     }
   }, [data]);
 
-  const processPackages = (
+  // Define new package types at the component level so it can be used elsewhere
+  // Wrap in useMemo to prevent unnecessary re-renders
+  const newPackageTypes = React.useMemo(() => [
+    'starter-plus',
+    'growth-pro',
+    'enterprise-elite',
+    'custom-pro',
+    'premium-plus'
+  ], []);
+
+  // Define createPackageFromData before using it in processPackages
+  const createPackageFromData = useCallback((pkg: PackageData): Package => {
+    if (!pkg) {
+      console.warn('Attempted to create package from undefined data');
+      return {
+        id: Date.now(), // Generate a temporary ID
+        title: 'Default Package',
+        description: 'Default package description',
+        icon: 'MUI:StarIcon',
+        extraDescription: 'Default package',
+        price: 39.99,
+        testPeriodDays: 14,
+        type: 'starter-plus',
+        currency: 'USD',
+        multiCurrencyPrices: '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}'
+      };
+    }
+
+    const type = ((pkg.type || pkg.packageType || '').toLowerCase()) as string;
+
+    // Update valid types to include new package types
+    const validType = newPackageTypes.includes(type)
+      ? type
+      : 'starter-plus';
+
+    // Set default prices based on package type
+    let price = pkg.price || 0;
+    let multiCurrencyPrices = pkg.multiCurrencyPrices || '';
+
+    // Ensure custom-pro has the correct price
+    if (validType === 'custom-pro') {
+      price = 129.99;
+      multiCurrencyPrices = '{"ZAR": 2199.99, "EUR": 119.99, "GBP": 104.99}';
+      console.log('Setting custom-pro package price to:', price);
+    }
+
+    // Ensure id is always a number
+    const numericId = typeof pkg.id === 'string' ? parseInt(pkg.id, 10) : (pkg.id || Date.now());
+
+    return {
+      id: isNaN(numericId) ? Date.now() : numericId,
+      title: pkg.title || 'Unnamed Package',
+      description: pkg.description || 'No description available',
+      icon: pkg.icon || 'MUI:StarIcon',
+      extraDescription: pkg.extraDescription || '',
+      price: price,
+      testPeriodDays: pkg.testPeriodDays || 14,
+      type: validType,
+      currency: pkg.currency || 'USD',
+      multiCurrencyPrices: multiCurrencyPrices ||
+        '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}',
+    };
+  }, [newPackageTypes]);
+
+  const processPackages = useCallback((
     packagesData: PackageData[]
   ): Package[] => {
-    // Filter to only include the new packages
-    const newPackageTypes = [
-      'starter-plus',
-      'growth-pro',
-      'enterprise-elite',
-      'custom-pro',
-      'premium-plus'
-    ];
+    if (!packagesData || !Array.isArray(packagesData) || packagesData.length === 0) {
+      console.warn('processPackages received invalid or empty data:', packagesData);
+      return [];
+    }
+
+    console.log('Processing packages data:', packagesData.length, 'items');
 
     // Filter packages to only include the new ones
     const filteredPackages = packagesData.filter(
       (pkg: PackageData) => {
-        const type = pkg.type || pkg.packageType || '';
-        return newPackageTypes.includes(type.toLowerCase());
+        if (!pkg) return false;
+        const type = (pkg.type || pkg.packageType || '').toLowerCase();
+        return newPackageTypes.includes(type);
       }
     );
 
-    console.log('Filtered to new packages:', filteredPackages.map(pkg => pkg.type));
+    console.log('Filtered to new packages:', filteredPackages.length, 'items');
 
-    return filteredPackages.map(
-      (pkg: PackageData) => {
-        const type =
-          pkg.type ||
-          pkg.packageType ||
-          'starter-plus';
+    if (filteredPackages.length === 0) {
+      console.warn('No packages matched the expected types after filtering');
+      // If no packages match, return the original data converted to our format
+      // This ensures we at least show something
+      return packagesData.map(createPackageFromData);
+    }
 
-        // Update valid types to include new package types
-        const validType = [
-          'starter-plus',
-          'growth-pro',
-          'enterprise-elite',
-          'custom-pro',
-          'premium-plus',
-        ].includes(type)
-          ? (type as string)
-          : 'starter-plus';
-
-        let price = pkg.price || 0;
-        if (validType === 'custom-pro') {
-          price = 129.99;
-          console.log(
-            'Setting custom-pro package price to:',
-            price
-          );
-        }
-
-        return {
-          id: pkg.id,
-          title: pkg.title || '',
-          description: pkg.description || '',
-          icon: pkg.icon || '',
-          extraDescription:
-            pkg.extraDescription || '',
-          price: price,
-          testPeriodDays: pkg.testPeriodDays || 0,
-          type: validType,
-          currency: pkg.currency || 'USD',
-          multiCurrencyPrices:
-            pkg.multiCurrencyPrices ||
-            '{"ZAR": 549.99, "EUR": 27.99, "GBP": 23.99}',
-        } as Package;
-      }
-    );
-  };
+    return filteredPackages.map(createPackageFromData);
+  }, [newPackageTypes, createPackageFromData]);
 
   let packagesToDisplay: Package[] = [];
   let showError = false;
@@ -497,6 +565,30 @@ const PricingPackagesContainer: React.FC = () => {
     'premium-plus': 5
   };
 
+  // Ensure we have at least one package of each type from fallback data if needed
+  if (packages.length === 0 || usingFallbackData) {
+    console.log('Using fallback packages to ensure we have all package types');
+    // Create a set of existing package types
+    const existingTypes = new Set(packages.map(pkg => pkg.type));
+
+    // Add any missing package types from fallback data
+    for (const pkgType of newPackageTypes) {
+      if (!existingTypes.has(pkgType)) {
+        // Find this package type in fallback data
+        const fallbackPkg = fallbackPackages.data.find(
+          pkg => (pkg.type?.toLowerCase() || '') === pkgType
+        );
+
+        if (fallbackPkg) {
+          const processedPkg = createPackageFromData(fallbackPkg);
+          packages.push(processedPkg);
+          existingTypes.add(pkgType);
+          console.log(`Added missing package type from fallback: ${pkgType}`);
+        }
+      }
+    }
+  }
+
   // Sort packages based on the defined order
   packages.sort((a, b) => {
     const orderA = packageOrder[a.type as string] || 999;
@@ -504,7 +596,7 @@ const PricingPackagesContainer: React.FC = () => {
     return orderA - orderB;
   });
 
-  console.log('Packages after sorting (Custom Pro now in position 3):', packages.map(pkg => pkg.type));
+  console.log('Packages after sorting and ensuring all types exist:', packages.map(pkg => pkg.type));
 
   // Create a snackbar to show when using fallback data
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -573,9 +665,20 @@ const PricingPackagesContainer: React.FC = () => {
               <PricingPackageCard
                 key={pkg.id}
                 packageData={pkg}
-                onBuyNow={() =>
-                  selectPackage(pkg)
-                }
+                onBuyNow={() => {
+                  // Convert the package to the expected type for selectPackage
+                  const packageForSelection = {
+                    ...pkg,
+                    // Map the package type to one of the allowed types in PackageSelectionContext
+                    type: pkg.type.includes('custom') ? 'custom' :
+                          pkg.type.includes('starter') ? 'starter' :
+                          pkg.type.includes('growth') ? 'growth' :
+                          pkg.type.includes('enterprise') ? 'enterprise' :
+                          pkg.type.includes('premium') ? 'premium' : 'starter'
+                  } as import('@/contexts/PackageSelectionContext').Package;
+
+                  selectPackage(packageForSelection);
+                }}
               />
             ) : null
           )

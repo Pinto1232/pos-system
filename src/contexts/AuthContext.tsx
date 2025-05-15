@@ -47,8 +47,6 @@ const getKeycloakConfig = () => ({
     FALLBACK_CONFIG.logoutRedirect,
 });
 
-let keycloakInitialized = false;
-
 export interface AuthContextProps {
   token: string | null;
   login: () => Promise<void>;
@@ -110,25 +108,50 @@ const calculateRefreshTime = (
   return 60000;
 };
 
-const setTokenCookie = (token: string) => {
+const setTokenCookie = async (token: string) => {
+  if (!token) {
+    console.error('Attempted to set empty token in cookie');
+    return;
+  }
+
   const tokenExpiry = new Date();
   tokenExpiry.setTime(
     tokenExpiry.getTime() + 24 * 60 * 60 * 1000
   );
 
-  fetch('/api/auth-token/set-token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ token }),
-    credentials: 'include',
-  }).catch((err) => {
+  const payload = { token };
+  const jsonBody = JSON.stringify(payload);
+
+  console.log('Setting token cookie, payload length:', jsonBody.length);
+
+  try {
+    const response = await fetch('/api/auth-token/set-token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: jsonBody,
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(
+        `Failed to set token cookie: ${response.status} ${response.statusText}`,
+        errorText
+      );
+      return;
+    }
+
+    const data = await response.json();
+    console.log('Token cookie set response:', data);
+  } catch (err) {
     console.error(
       'Failed to set token cookie:',
       err
     );
-  });
+  }
 };
 
 const clearTokenCookie = () => {
@@ -164,7 +187,9 @@ const AuthProvider = ({
 
   const configRef = useRef(getKeycloakConfig());
 
+  // Use refs to track initialization state
   const initStartedRef = useRef(false);
+  const keycloakInitializedRef = useRef(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -265,7 +290,7 @@ const AuthProvider = ({
             'accessToken',
             kc.token
           );
-          setTokenCookie(kc.token);
+          await setTokenCookie(kc.token);
 
           const refreshTime =
             calculateRefreshTime(kc.token);
@@ -397,7 +422,7 @@ const AuthProvider = ({
                 'accessToken',
                 data.access_token
               );
-              setTokenCookie(data.access_token);
+              await setTokenCookie(data.access_token);
 
               // Schedule token refresh
               const refreshTime =
@@ -464,6 +489,30 @@ const AuthProvider = ({
       );
     }
   }, [isMounted, handleTokenRefresh]);
+
+  // Forward declaration of login function to break circular dependency
+  const performLogin = useCallback(async () => {
+    console.log('Performing login redirect...');
+    if (isMounted) {
+      // Get the redirect URL from the current window location
+      const loginRedirect = window.location.origin + '/';
+
+      try {
+        // Force redirect to Keycloak login page
+        await keycloakRef.current.login({
+          redirectUri: loginRedirect,
+          prompt: 'login', // Force showing the login page even if already authenticated
+        });
+      } catch (err) {
+        console.error('Login redirect error:', err);
+        setError(
+          err instanceof Error
+            ? `Login redirect failed: ${err.message}`
+            : 'Login redirect failed'
+        );
+      }
+    }
+  }, [isMounted]);
 
   const initializeAuth =
     useCallback(async (): Promise<() => void> => {
@@ -543,7 +592,7 @@ const AuthProvider = ({
               'accessToken',
               kc.token
             );
-            setTokenCookie(kc.token);
+            await setTokenCookie(kc.token);
 
             const refreshTime =
               calculateRefreshTime(kc.token);
@@ -574,7 +623,8 @@ const AuthProvider = ({
             'Not authenticated, redirecting to login'
           );
           setInitialized(true);
-          await login();
+          // Use performLogin instead of login to avoid circular dependency
+          await performLogin();
         }
       } catch (err: unknown) {
         console.error(
@@ -625,7 +675,7 @@ const AuthProvider = ({
           refreshTimeout = null;
         }
       };
-    }, [isMounted, handleTokenRefresh, login]);
+    }, [isMounted, handleTokenRefresh, performLogin]);
 
   useEffect(() => {
     if (isMounted && !initStartedRef.current) {
@@ -748,11 +798,11 @@ const AuthProvider = ({
         fetchToken();
       }
 
-      if (!keycloakInitialized) {
+      if (!keycloakInitializedRef.current) {
         console.log(
           'Starting Keycloak initialization for the first time'
         );
-        keycloakInitialized = true;
+        keycloakInitializedRef.current = true;
         initStartedRef.current = true;
 
         const cleanupPromise = initializeAuth();
@@ -764,7 +814,7 @@ const AuthProvider = ({
         };
       } else {
         console.log(
-          'Keycloak already initialized globally, skipping initialization'
+          'Keycloak already initialized, skipping initialization'
         );
         initStartedRef.current = true;
         setInitialized(true);

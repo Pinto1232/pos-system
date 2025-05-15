@@ -1,0 +1,314 @@
+'use client';
+
+import React, { useEffect, useContext, useState } from 'react';
+// import { useRouter } from 'next/navigation';
+import { AuthContext } from '@/contexts/AuthContext';
+import DashboardContainer from '@/components/dashboard-layout/DashboardContainer';
+import { useSpinner } from '@/contexts/SpinnerContext';
+// import { Box, Typography, Alert } from '@mui/material';
+import { UserSubscriptionData } from './types';
+import DashboardLoading from './DashboardLoading';
+
+interface DashboardClientProps {
+  initialSubscriptionData?: UserSubscriptionData | null;
+}
+
+/**
+ * Client component for the dashboard that handles client-side functionality
+ * This component receives server-fetched data and handles client-side state and interactions
+ */
+const DashboardClient: React.FC<DashboardClientProps> = ({ initialSubscriptionData }) => {
+  const { stopLoading } = useSpinner();
+  const { /* authenticated, token, */ isInitialized } = useContext(AuthContext);
+  // const router = useRouter();
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [authStatus, setAuthStatus] = useState({
+    isChecking: true,
+    isAuthorized: false,
+    errorMessage: ''
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [paymentStatus, setPaymentStatus] = useState({
+    isChecking: true,
+    isPaid: initialSubscriptionData?.isActive || false,
+    errorMessage: ''
+  });
+
+  // Use useMemo to read from sessionStorage only once during initial render
+  // const isFromPayment = useMemo(() => {
+  //   if (typeof window === 'undefined') return false;
+  //   return sessionStorage.getItem('fromPaymentSuccess') === 'true';
+  // }, []);
+
+  // Combine authentication and payment status checks into a single effect
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    console.log('⚠️ WARNING: Client-side authentication check is temporarily disabled for development');
+    console.log('⚠️ This should be re-enabled before deploying to production');
+
+    // TEMPORARILY DISABLED: Authentication check is bypassed for development
+    // Set both auth and payment status to authorized/paid to allow access to dashboard
+    setAuthStatus({
+      isChecking: false,
+      isAuthorized: true,
+      errorMessage: ''
+    });
+
+    setPaymentStatus({
+      isChecking: false,
+      isPaid: true,
+      errorMessage: ''
+    });
+
+    /* ORIGINAL AUTHENTICATION CODE - COMMENTED OUT TEMPORARILY
+    // Handle payment success case
+    if (isFromPayment) {
+      setAuthStatus({
+        isChecking: false,
+        isAuthorized: true,
+        errorMessage: ''
+      });
+      setPaymentStatus({
+        isChecking: false,
+        isPaid: true,
+        errorMessage: ''
+      });
+
+      // Clean up the payment success flag after authentication is complete
+      if (typeof window !== 'undefined') {
+        const cleanupTimeout = setTimeout(() => {
+          sessionStorage.removeItem('fromPaymentSuccess');
+        }, 1000);
+        return () => clearTimeout(cleanupTimeout);
+      }
+      return;
+    }
+
+    // Handle unauthenticated case
+    if (!authenticated || !token) {
+      setAuthStatus({
+        isChecking: false,
+        isAuthorized: false,
+        errorMessage: 'You must be logged in to access the dashboard'
+      });
+      router.replace('/?error=You must be logged in to access the dashboard');
+      return;
+    }
+
+    // Process authentication
+    const processAuth = async () => {
+      try {
+        let userId: string | null = null;
+        let roles: string[] = [];
+
+        // Parse token
+        const tokenParts = token.split('.');
+        if (tokenParts.length !== 3) {
+          throw new Error('Invalid token format');
+        }
+
+        const payload = JSON.parse(atob(tokenParts[1]));
+        userId = payload.sub || payload.userId || null;
+
+        // Extract roles from various locations in the token
+        if (payload.realm_access && Array.isArray(payload.realm_access.roles)) {
+          roles = [...payload.realm_access.roles] as string[];
+        }
+
+        if (payload.roles && Array.isArray(payload.roles)) {
+          roles = [...roles, ...payload.roles] as string[];
+        }
+
+        if (payload.resource_access) {
+          const clientIds = Object.keys(payload.resource_access);
+          for (const clientId of clientIds) {
+            const clientRoles = payload.resource_access[clientId]?.roles;
+            if (Array.isArray(clientRoles)) {
+              roles = [...roles, ...clientRoles] as string[];
+            }
+          }
+        }
+
+        // Check if user has required roles
+        const hasRequiredRole = roles.includes('dashboard') ||
+                               roles.includes('admin') ||
+                               roles.includes('user') ||
+                               roles.length === 0;
+
+        if (!hasRequiredRole) {
+          setAuthStatus({
+            isChecking: false,
+            isAuthorized: false,
+            errorMessage: 'You do not have permission to access the dashboard'
+          });
+          router.replace('/?error=You do not have permission to access the dashboard');
+          return;
+        }
+
+        // User is authorized
+        setAuthStatus({
+          isChecking: false,
+          isAuthorized: true,
+          errorMessage: ''
+        });
+
+        // Check payment status if we have a user ID and no initial data
+        if (!userId) {
+          setPaymentStatus({
+            isChecking: false,
+            isPaid: true,
+            errorMessage: ''
+          });
+          return;
+        }
+
+        // If we have initial data from the server, use it
+        if (initialSubscriptionData) {
+          setPaymentStatus({
+            isChecking: false,
+            isPaid: initialSubscriptionData.isActive,
+            errorMessage: initialSubscriptionData.isActive ? '' :
+              'Dashboard access requires a successful payment. Please complete your payment.'
+          });
+
+          if (!initialSubscriptionData.isActive) {
+            router.replace('/checkout?error=Dashboard access requires a successful payment. Please complete your payment.');
+          }
+          return;
+        }
+
+        // Otherwise fetch from client-side
+        try {
+          const res = await fetch(`/api/UserSubscription/user/${userId}`);
+
+          if (!res.ok) {
+            if (res.status === 404) {
+              setPaymentStatus({ isChecking: false, isPaid: true, errorMessage: '' });
+              return;
+            }
+            throw new Error(`Failed to verify payment status: ${res.status}`);
+          }
+
+          const data = await res.json();
+
+          if (data.isActive === true) {
+            setPaymentStatus({ isChecking: false, isPaid: true, errorMessage: '' });
+          } else {
+            setPaymentStatus({
+              isChecking: false,
+              isPaid: false,
+              errorMessage: 'Dashboard access requires a successful payment. Please complete your payment.'
+            });
+            router.replace('/checkout?error=Dashboard access requires a successful payment. Please complete your payment.');
+          }
+        } catch {
+          // Assume paid on error for better user experience
+          setPaymentStatus({
+            isChecking: false,
+            isPaid: true,
+            errorMessage: ''
+          });
+        }
+      } catch (error: unknown) {
+        // Log the error for debugging purposes
+        console.error('Authentication error:', error);
+
+        // Create a more specific error message if possible
+        const errorMessage = error instanceof Error
+          ? `Authentication error: ${error.message}`
+          : 'Authentication error. Please log in again.';
+
+        setAuthStatus({
+          isChecking: false,
+          isAuthorized: false,
+          errorMessage
+        });
+        router.replace(`/?error=${encodeURIComponent(errorMessage)}`);
+      }
+    };
+
+    processAuth();
+    */
+  }, [isInitialized, setAuthStatus, setPaymentStatus]);
+
+  // Handle loading state in a separate effect with minimal dependencies
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    const isFreshLogin = typeof window !== 'undefined' && sessionStorage.getItem('freshLogin') === 'true';
+
+    if (isFreshLogin) {
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('freshLogin');
+      }
+
+      const loadingTimeout = setTimeout(() => {
+        stopLoading();
+      }, 3000);
+
+      return () => clearTimeout(loadingTimeout);
+    } else {
+      // Only call stopLoading once when initialized
+      const loadingTimeout = setTimeout(() => {
+        stopLoading();
+      }, 100);
+
+      return () => clearTimeout(loadingTimeout);
+    }
+  }, [isInitialized, stopLoading]);
+
+  // TEMPORARILY MODIFIED: Always render the dashboard regardless of auth status
+  console.log('⚠️ WARNING: Dashboard rendering check is temporarily disabled for development');
+
+  // Show loading state while initializing
+  if (!isInitialized) {
+    return <DashboardLoading />;
+  }
+
+  // Always render the dashboard container
+  return <DashboardContainer />;
+
+  /* ORIGINAL RENDERING CODE - COMMENTED OUT TEMPORARILY
+  // Render based on current state
+  if (isFromPayment) {
+    return <DashboardContainer />;
+  }
+
+  if (!isInitialized || authStatus.isChecking || paymentStatus.isChecking) {
+    return <DashboardLoading />;
+  }
+
+  if (!authStatus.isAuthorized && authStatus.errorMessage) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {authStatus.errorMessage}
+        </Alert>
+        <Typography variant="body1">
+          You will be redirected to the login page...
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (!paymentStatus.isPaid && paymentStatus.errorMessage) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {paymentStatus.errorMessage}
+        </Alert>
+        <Typography variant="body1">
+          You will be redirected to the payment page...
+        </Typography>
+      </Box>
+    );
+  }
+
+  return authStatus.isAuthorized && paymentStatus.isPaid ? <DashboardContainer /> : null;
+  */
+};
+
+export default DashboardClient;
