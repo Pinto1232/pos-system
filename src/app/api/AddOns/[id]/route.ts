@@ -10,14 +10,15 @@ const fallbackAddOns = [
   {
     id: 1,
     name: 'Advanced Analytics',
-    description: 'Detailed business analytics and insights',
-    price: 15.00,
+    description:
+      'Detailed business analytics and insights',
+    price: 15.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 15.00,
-      'EUR': 13.50,
-      'GBP': 11.50,
-      'ZAR': 270.00
+      USD: 15.0,
+      EUR: 13.5,
+      GBP: 11.5,
+      ZAR: 270.0,
     }),
     category: 'Analytics',
     isActive: true,
@@ -25,25 +26,26 @@ const fallbackAddOns = [
       'Real-time data visualization',
       'Custom report generation',
       'Data export capabilities',
-      'Trend analysis'
+      'Trend analysis',
     ]),
     dependencies: JSON.stringify([
       'Internet connection',
-      'Modern browser'
+      'Modern browser',
     ]),
-    icon: 'analytics_icon'
+    icon: 'analytics_icon',
   },
   {
     id: 2,
     name: 'API Access',
-    description: 'Access to API for custom integrations',
-    price: 25.00,
+    description:
+      'Access to API for custom integrations',
+    price: 25.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 25.00,
-      'EUR': 22.50,
-      'GBP': 19.50,
-      'ZAR': 450.00
+      USD: 25.0,
+      EUR: 22.5,
+      GBP: 19.5,
+      ZAR: 450.0,
     }),
     category: 'Integration',
     isActive: true,
@@ -51,25 +53,26 @@ const fallbackAddOns = [
       'RESTful API endpoints',
       'Webhook notifications',
       'Custom integration options',
-      'API documentation'
+      'API documentation',
     ]),
     dependencies: JSON.stringify([
       'Developer knowledge',
-      'API key management'
+      'API key management',
     ]),
-    icon: 'api_icon'
+    icon: 'api_icon',
   },
   {
     id: 3,
     name: 'Custom Branding',
-    description: 'White-label solution with your branding',
-    price: 20.00,
+    description:
+      'White-label solution with your branding',
+    price: 20.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 20.00,
-      'EUR': 18.00,
-      'GBP': 15.50,
-      'ZAR': 360.00
+      USD: 20.0,
+      EUR: 18.0,
+      GBP: 15.5,
+      ZAR: 360.0,
     }),
     category: 'Customization',
     isActive: true,
@@ -77,25 +80,26 @@ const fallbackAddOns = [
       'Logo customization',
       'Color scheme adjustment',
       'Custom domain support',
-      'Email template branding'
+      'Email template branding',
     ]),
     dependencies: JSON.stringify([
       'Brand assets',
-      'Logo in SVG format'
+      'Logo in SVG format',
     ]),
-    icon: 'branding_icon'
+    icon: 'branding_icon',
   },
   {
     id: 4,
     name: '24/7 Support',
-    description: 'Round-the-clock customer support',
-    price: 30.00,
+    description:
+      'Round-the-clock customer support',
+    price: 30.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 30.00,
-      'EUR': 27.00,
-      'GBP': 23.50,
-      'ZAR': 540.00
+      USD: 30.0,
+      EUR: 27.0,
+      GBP: 23.5,
+      ZAR: 540.0,
     }),
     category: 'Support',
     isActive: true,
@@ -103,25 +107,26 @@ const fallbackAddOns = [
       'Priority email support',
       'Live chat assistance',
       'Phone support',
-      'Dedicated account manager'
+      'Dedicated account manager',
     ]),
     dependencies: JSON.stringify([
       'Valid support contract',
-      'User account'
+      'User account',
     ]),
-    icon: 'support_icon'
+    icon: 'support_icon',
   },
   {
     id: 5,
     name: 'Data Migration',
-    description: 'Assistance with data migration from other systems',
-    price: 50.00,
+    description:
+      'Assistance with data migration from other systems',
+    price: 50.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 50.00,
-      'EUR': 45.00,
-      'GBP': 39.00,
-      'ZAR': 900.00
+      USD: 50.0,
+      EUR: 45.0,
+      GBP: 39.0,
+      ZAR: 900.0,
     }),
     category: 'Data',
     isActive: true,
@@ -129,14 +134,14 @@ const fallbackAddOns = [
       'Data mapping assistance',
       'Migration planning',
       'Data validation',
-      'Post-migration support'
+      'Post-migration support',
     ]),
     dependencies: JSON.stringify([
       'Source data access',
-      'Data export capabilities from source system'
+      'Data export capabilities from source system',
     ]),
-    icon: 'migration_icon'
-  }
+    icon: 'migration_icon',
+  },
 ];
 
 export async function GET(
@@ -146,7 +151,9 @@ export async function GET(
   const id = context.params.id;
 
   try {
-    console.log(`Proxying GET request to backend for add-on with ID: ${id}`);
+    console.log(
+      `Proxying GET request to backend for add-on with ID: ${id}`
+    );
 
     // Forward the request to the backend API
     const response = await fetch(
@@ -156,9 +163,10 @@ export async function GET(
         headers: {
           'Content-Type': 'application/json',
           // Add Cache-Control header to prevent browser caching
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
+          'Cache-Control':
+            'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
         },
         // Add cache: 'no-store' to prevent Next.js caching
         cache: 'no-store',
@@ -186,10 +194,15 @@ export async function GET(
     }
 
     const data = await response.json();
-    console.log(`Successfully fetched add-on with ID ${id} from backend`);
+    console.log(
+      `Successfully fetched add-on with ID ${id} from backend`
+    );
     return NextResponse.json(data);
   } catch (error) {
-    console.error(`Error fetching add-on with ID ${id}:`, error);
+    console.error(
+      `Error fetching add-on with ID ${id}:`,
+      error
+    );
 
     // Find the add-on in the fallback data
     const fallbackAddOn = fallbackAddOns.find(
@@ -215,7 +228,10 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    console.log(`Proxying PUT request to backend for updating add-on with ID: ${id}`, body);
+    console.log(
+      `Proxying PUT request to backend for updating add-on with ID: ${id}`,
+      body
+    );
 
     // Forward the request to the backend API
     const response = await fetch(
@@ -239,10 +255,17 @@ export async function PUT(
       );
     }
 
-    console.log(`Successfully updated add-on with ID ${id} in backend`);
-    return new NextResponse(null, { status: 204 });
+    console.log(
+      `Successfully updated add-on with ID ${id} in backend`
+    );
+    return new NextResponse(null, {
+      status: 204,
+    });
   } catch (error) {
-    console.error(`Error updating add-on with ID ${id}:`, error);
+    console.error(
+      `Error updating add-on with ID ${id}:`,
+      error
+    );
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -257,7 +280,9 @@ export async function DELETE(
   const id = context.params.id;
 
   try {
-    console.log(`Proxying DELETE request to backend for add-on with ID: ${id}`);
+    console.log(
+      `Proxying DELETE request to backend for add-on with ID: ${id}`
+    );
 
     // Forward the request to the backend API
     const response = await fetch(
@@ -280,10 +305,17 @@ export async function DELETE(
       );
     }
 
-    console.log(`Successfully deleted add-on with ID ${id} from backend`);
-    return new NextResponse(null, { status: 204 });
+    console.log(
+      `Successfully deleted add-on with ID ${id} from backend`
+    );
+    return new NextResponse(null, {
+      status: 204,
+    });
   } catch (error) {
-    console.error(`Error deleting add-on with ID ${id}:`, error);
+    console.error(
+      `Error deleting add-on with ID ${id}:`,
+      error
+    );
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

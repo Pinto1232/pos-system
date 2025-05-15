@@ -76,9 +76,14 @@ const CustomPackageLayoutContainer: React.FC<
   // Initialize with the base price from the selected package
   // For custom packages, this will typically be 129.99 (set in PricingPackageCard)
   const [calculatedPrice, setCalculatedPrice] =
-    useState<number>(selectedPackage.type.toLowerCase().includes('custom') && selectedPackage.price === 0
-      ? 129.99
-      : selectedPackage.price);
+    useState<number>(
+      selectedPackage.type
+        .toLowerCase()
+        .includes('custom') &&
+        selectedPackage.price === 0
+        ? 129.99
+        : selectedPackage.price
+    );
   const [snackbarOpen, setSnackbarOpen] =
     useState(false);
   const [snackbarMessage, setSnackbarMessage] =
@@ -148,7 +153,10 @@ const CustomPackageLayoutContainer: React.FC<
   ]);
 
   // Use the new useAddOns hook to fetch add-ons
-  const { data: addOnsResponse, isLoading: isAddOnsLoading } = useAddOns({
+  const {
+    data: addOnsResponse,
+    isLoading: isAddOnsLoading,
+  } = useAddOns({
     isActive: true,
   });
 
@@ -166,9 +174,11 @@ const CustomPackageLayoutContainer: React.FC<
         );
 
         const coreFeatures =
-          featuresResponse.data.coreFeatures || [];
+          featuresResponse.data.coreFeatures ||
+          [];
         const usageData =
-          featuresResponse.data.usageBasedPricing || [];
+          featuresResponse.data
+            .usageBasedPricing || [];
 
         setFeatures(coreFeatures);
         setUsagePricing(usageData);
@@ -230,7 +240,10 @@ const CustomPackageLayoutContainer: React.FC<
   // Update addOns state when the data from useAddOns hook changes
   useEffect(() => {
     if (addOnsResponse?.data) {
-      console.log('AddOns data from React Query:', addOnsResponse.data);
+      console.log(
+        'AddOns data from React Query:',
+        addOnsResponse.data
+      );
       setAddOns(addOnsResponse.data);
     }
   }, [addOnsResponse]);
@@ -504,9 +517,13 @@ const CustomPackageLayoutContainer: React.FC<
       const calculatePrice = debounce(
         async () => {
           // Ensure we're using the correct base price for custom packages
-          const basePrice = selectedPackage.type.toLowerCase().includes('custom') && selectedPackage.price === 0
-            ? 129.99
-            : selectedPackage.price;
+          const basePrice =
+            selectedPackage.type
+              .toLowerCase()
+              .includes('custom') &&
+            selectedPackage.price === 0
+              ? 129.99
+              : selectedPackage.price;
 
           const requestBody: PriceCalculationRequest =
             {
@@ -569,7 +586,8 @@ const CustomPackageLayoutContainer: React.FC<
       }));
     }, []);
 
-  if (isLoading || isAddOnsLoading) return <WaveLoading />;
+  if (isLoading || isAddOnsLoading)
+    return <WaveLoading />;
   if (showLoginForm) return <LazyLoginForm />;
 
   return (

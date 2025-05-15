@@ -9,14 +9,25 @@ export async function POST(request: Request) {
 
     // Log request headers to help with debugging
     console.log('Request headers:', {
-      contentType: request.headers.get('content-type'),
-      contentLength: request.headers.get('content-length')
+      contentType: request.headers.get(
+        'content-type'
+      ),
+      contentLength: request.headers.get(
+        'content-length'
+      ),
     });
 
     // Check if the request has a body
-    const contentLength = request.headers.get('content-length');
-    if (!contentLength || parseInt(contentLength) === 0) {
-      console.error('Empty request body received');
+    const contentLength = request.headers.get(
+      'content-length'
+    );
+    if (
+      !contentLength ||
+      parseInt(contentLength) === 0
+    ) {
+      console.error(
+        'Empty request body received'
+      );
       return NextResponse.json(
         { error: 'Empty request body' },
         { status: 400 }
@@ -24,11 +35,21 @@ export async function POST(request: Request) {
     }
 
     // Check content type
-    const contentType = request.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error(`Invalid content type: ${contentType}`);
+    const contentType = request.headers.get(
+      'content-type'
+    );
+    if (
+      !contentType ||
+      !contentType.includes('application/json')
+    ) {
+      console.error(
+        `Invalid content type: ${contentType}`
+      );
       return NextResponse.json(
-        { error: 'Content-Type must be application/json' },
+        {
+          error:
+            'Content-Type must be application/json',
+        },
         { status: 400 }
       );
     }
@@ -40,9 +61,17 @@ export async function POST(request: Request) {
       const clonedRequest = request.clone();
       requestText = await clonedRequest.text();
 
-      console.log('Request body text:', requestText ? `${requestText.substring(0, 20)}...` : 'Empty');
+      console.log(
+        'Request body text:',
+        requestText
+          ? `${requestText.substring(0, 20)}...`
+          : 'Empty'
+      );
 
-      if (!requestText || requestText.trim() === '') {
+      if (
+        !requestText ||
+        requestText.trim() === ''
+      ) {
         console.error('Empty request body text');
         return NextResponse.json(
           { error: 'Empty request body' },
@@ -50,7 +79,10 @@ export async function POST(request: Request) {
         );
       }
     } catch (textError) {
-      console.error('Error reading request body as text:', textError);
+      console.error(
+        'Error reading request body as text:',
+        textError
+      );
       return NextResponse.json(
         { error: 'Failed to read request body' },
         { status: 400 }
@@ -62,8 +94,14 @@ export async function POST(request: Request) {
     try {
       jsonData = JSON.parse(requestText);
     } catch (parseError) {
-      console.error('Error parsing JSON:', parseError);
-      console.error('Invalid JSON received:', requestText);
+      console.error(
+        'Error parsing JSON:',
+        parseError
+      );
+      console.error(
+        'Invalid JSON received:',
+        requestText
+      );
       return NextResponse.json(
         { error: 'Invalid JSON in request body' },
         { status: 400 }

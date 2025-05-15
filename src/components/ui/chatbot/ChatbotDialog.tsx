@@ -21,7 +21,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useChatbot } from '@/contexts/ChatbotContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
-import { useCurrency, currencySymbols } from '@/contexts/CurrencyContext';
+import {
+  useCurrency,
+  currencySymbols,
+} from '@/contexts/CurrencyContext';
 import Image from 'next/image';
 
 const ChatbotDialog = () => {
@@ -39,7 +42,7 @@ const ChatbotDialog = () => {
   const {
     currency,
     formatPrice,
-    currencySymbol
+    currencySymbol,
   } = useCurrency();
   const [input, setInput] = useState('');
   const messagesEndRef =
@@ -55,31 +58,45 @@ const ChatbotDialog = () => {
 
   // Log currency information when it changes
   useEffect(() => {
-    console.log('Current currency in ChatbotDialog:', {
-      currency,
-      currencySymbol,
-      selectedPackage: selectedPackage ? {
-        id: selectedPackage.id,
-        type: selectedPackage.type,
-        multiCurrencyPrices: selectedPackage.multiCurrencyPrices
-      } : null
-    });
+    console.log(
+      'Current currency in ChatbotDialog:',
+      {
+        currency,
+        currencySymbol,
+        selectedPackage: selectedPackage
+          ? {
+              id: selectedPackage.id,
+              type: selectedPackage.type,
+              multiCurrencyPrices:
+                selectedPackage.multiCurrencyPrices,
+            }
+          : null,
+      }
+    );
   }, [currency, currencySymbol, selectedPackage]);
 
   // Helper function to get localized price from multiCurrencyPrices
-  const getLocalizedPrice = (basePrice: number, multiCurrencyPrices?: string): number => {
+  const getLocalizedPrice = (
+    basePrice: number,
+    multiCurrencyPrices?: string
+  ): number => {
     if (!multiCurrencyPrices) {
       return basePrice;
     }
 
     try {
-      const pricesObj = JSON.parse(multiCurrencyPrices);
+      const pricesObj = JSON.parse(
+        multiCurrencyPrices
+      );
       // If we have a price for the current currency, use it
       if (pricesObj && pricesObj[currency]) {
         return pricesObj[currency];
       }
     } catch (error) {
-      console.error('Error parsing multiCurrencyPrices:', error);
+      console.error(
+        'Error parsing multiCurrencyPrices:',
+        error
+      );
     }
 
     // Fallback to base price if no matching currency found
@@ -87,8 +104,11 @@ const ChatbotDialog = () => {
   };
 
   // Format price according to the current currency's format
-  const formatCurrencyValue = (price: number): string => {
-    const locale = currency === 'ZAR' ? 'en-ZA' : 'en-US';
+  const formatCurrencyValue = (
+    price: number
+  ): string => {
+    const locale =
+      currency === 'ZAR' ? 'en-ZA' : 'en-US';
     return new Intl.NumberFormat(locale, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -330,40 +350,64 @@ const ChatbotDialog = () => {
                       </Typography>
                       {(() => {
                         // Get localized prices if the selected package has multiCurrencyPrices
-                        const monthlyPrice = selectedPackage?.multiCurrencyPrices
-                          ? getLocalizedPrice(message.pricing.monthly, selectedPackage.multiCurrencyPrices)
-                          : message.pricing.monthly;
+                        const monthlyPrice =
+                          selectedPackage?.multiCurrencyPrices
+                            ? getLocalizedPrice(
+                                message.pricing
+                                  .monthly,
+                                selectedPackage.multiCurrencyPrices
+                              )
+                            : message.pricing
+                                .monthly;
 
-                        const annualPrice = selectedPackage?.multiCurrencyPrices
-                          ? getLocalizedPrice(message.pricing.annual, selectedPackage.multiCurrencyPrices)
-                          : message.pricing.annual;
+                        const annualPrice =
+                          selectedPackage?.multiCurrencyPrices
+                            ? getLocalizedPrice(
+                                message.pricing
+                                  .annual,
+                                selectedPackage.multiCurrencyPrices
+                              )
+                            : message.pricing
+                                .annual;
 
                         // Calculate savings percentage
-                        const savingsPercentage = Math.round(
-                          (1 - annualPrice / (monthlyPrice * 12)) * 100
-                        );
+                        const savingsPercentage =
+                          Math.round(
+                            (1 -
+                              annualPrice /
+                                (monthlyPrice *
+                                  12)) *
+                              100
+                          );
 
                         return (
                           <>
                             <Typography variant="body2">
                               Monthly:{' '}
                               {currencySymbol}
-                              {formatCurrencyValue(monthlyPrice)}
+                              {formatCurrencyValue(
+                                monthlyPrice
+                              )}
                             </Typography>
                             <Typography variant="body2">
                               Annual:{' '}
                               {currencySymbol}
-                              {formatCurrencyValue(annualPrice)}
+                              {formatCurrencyValue(
+                                annualPrice
+                              )}
                               <Typography
                                 component="span"
                                 variant="caption"
                                 sx={{
-                                  color: 'success.main',
+                                  color:
+                                    'success.main',
                                 }}
                               >
                                 {' '}
                                 (Save{' '}
-                                {savingsPercentage}
+                                {
+                                  savingsPercentage
+                                }
                                 %)
                               </Typography>
                             </Typography>

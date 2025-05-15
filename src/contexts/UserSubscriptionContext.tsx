@@ -60,7 +60,13 @@ export const useUserSubscription = () => {
 };
 
 // Cache for user subscriptions to prevent redundant API calls
-const userSubscriptionCache = new Map<string, { subscription: UserSubscription | null, timestamp: number }>();
+const userSubscriptionCache = new Map<
+  string,
+  {
+    subscription: UserSubscription | null;
+    timestamp: number;
+  }
+>();
 const SUBSCRIPTION_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 const fetchUserSubscription = async (
@@ -68,15 +74,22 @@ const fetchUserSubscription = async (
 ): Promise<UserSubscription | null> => {
   // Check cache first
   const now = Date.now();
-  const cachedData = userSubscriptionCache.get(userId);
-  if (cachedData && (now - cachedData.timestamp < SUBSCRIPTION_CACHE_TTL)) {
+  const cachedData =
+    userSubscriptionCache.get(userId);
+  if (
+    cachedData &&
+    now - cachedData.timestamp <
+      SUBSCRIPTION_CACHE_TTL
+  ) {
     return cachedData.subscription;
   }
 
   try {
     // Only log in development
     if (process.env.NODE_ENV === 'development') {
-      console.log(`Fetching subscription for user: ${userId}`);
+      console.log(
+        `Fetching subscription for user: ${userId}`
+      );
     }
 
     const response = await fetch(
@@ -87,7 +100,10 @@ const fetchUserSubscription = async (
     const data = await response.json();
 
     // Cache the result
-    userSubscriptionCache.set(userId, { subscription: data, timestamp: now });
+    userSubscriptionCache.set(userId, {
+      subscription: data,
+      timestamp: now,
+    });
 
     return data;
   } catch (error) {
@@ -115,14 +131,20 @@ const fetchUserSubscription = async (
     };
 
     // Cache the fallback data too to prevent repeated failures
-    userSubscriptionCache.set(userId, { subscription: fallbackSubscription, timestamp: now });
+    userSubscriptionCache.set(userId, {
+      subscription: fallbackSubscription,
+      timestamp: now,
+    });
 
     return fallbackSubscription;
   }
 };
 
 // Cache for user features to prevent redundant API calls
-const userFeaturesCache = new Map<string, { features: string[], timestamp: number }>();
+const userFeaturesCache = new Map<
+  string,
+  { features: string[]; timestamp: number }
+>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 const fetchUserFeatures = async (
@@ -130,15 +152,21 @@ const fetchUserFeatures = async (
 ): Promise<string[]> => {
   // Check cache first
   const now = Date.now();
-  const cachedData = userFeaturesCache.get(userId);
-  if (cachedData && (now - cachedData.timestamp < CACHE_TTL)) {
+  const cachedData =
+    userFeaturesCache.get(userId);
+  if (
+    cachedData &&
+    now - cachedData.timestamp < CACHE_TTL
+  ) {
     return cachedData.features;
   }
 
   try {
     // Only log in development
     if (process.env.NODE_ENV === 'development') {
-      console.log(`Fetching features for user: ${userId}`);
+      console.log(
+        `Fetching features for user: ${userId}`
+      );
     }
 
     const response = await fetch(
@@ -163,7 +191,10 @@ const fetchUserFeatures = async (
     const data = await response.json();
 
     // Cache the result
-    userFeaturesCache.set(userId, { features: data, timestamp: now });
+    userFeaturesCache.set(userId, {
+      features: data,
+      timestamp: now,
+    });
 
     return data;
   } catch (error) {
@@ -180,7 +211,10 @@ const fetchUserFeatures = async (
     ];
 
     // Cache the fallback data too to prevent repeated failures
-    userFeaturesCache.set(userId, { features: fallbackFeatures, timestamp: now });
+    userFeaturesCache.set(userId, {
+      features: fallbackFeatures,
+      timestamp: now,
+    });
 
     return fallbackFeatures;
   }
@@ -213,7 +247,11 @@ export const UserSubscriptionProvider: React.FC<{
 
   useEffect(() => {
     // Skip if features have already been loaded or if user is not authenticated
-    if (featuresLoadedRef.current || !userId || !isAuthenticated) {
+    if (
+      featuresLoadedRef.current ||
+      !userId ||
+      !isAuthenticated
+    ) {
       if (!userId || !isAuthenticated) {
         console.log(
           'User not authenticated or userId not available, skipping feature loading'
@@ -224,7 +262,8 @@ export const UserSubscriptionProvider: React.FC<{
 
     const loadFeatures = async () => {
       try {
-        const features = await fetchUserFeatures(userId);
+        const features =
+          await fetchUserFeatures(userId);
         setAvailableFeatures(features);
         // Mark features as loaded
         featuresLoadedRef.current = true;
@@ -262,7 +301,9 @@ export const UserSubscriptionProvider: React.FC<{
   };
 
   // Helper function to update features without duplicating code
-  const updateFeaturesAfterPackageChange = async (userId: string) => {
+  const updateFeaturesAfterPackageChange = async (
+    userId: string
+  ) => {
     try {
       // Reset the featuresLoadedRef to allow reloading features
       featuresLoadedRef.current = false;
@@ -271,13 +312,17 @@ export const UserSubscriptionProvider: React.FC<{
       await refetch();
 
       // Then update features in a controlled way
-      const features = await fetchUserFeatures(userId);
+      const features =
+        await fetchUserFeatures(userId);
       setAvailableFeatures(features);
 
       // Mark as loaded again
       featuresLoadedRef.current = true;
     } catch (error) {
-      console.error('Error updating features:', error);
+      console.error(
+        'Error updating features:',
+        error
+      );
       // Don't throw here to prevent UI breaks
     }
   };
@@ -305,7 +350,9 @@ export const UserSubscriptionProvider: React.FC<{
       }
 
       // Update features and subscription in a controlled way
-      await updateFeaturesAfterPackageChange(userId);
+      await updateFeaturesAfterPackageChange(
+        userId
+      );
     } catch (error) {
       console.error(
         'Error enabling additional package:',
@@ -338,7 +385,9 @@ export const UserSubscriptionProvider: React.FC<{
       }
 
       // Update features and subscription in a controlled way
-      await updateFeaturesAfterPackageChange(userId);
+      await updateFeaturesAfterPackageChange(
+        userId
+      );
     } catch (error) {
       console.error(
         'Error disabling additional package:',
@@ -349,28 +398,33 @@ export const UserSubscriptionProvider: React.FC<{
   };
 
   // Create a proper refresh function that clears caches
-  const refreshSubscription = useCallback(async () => {
-    if (userId) {
-      // Clear caches to force fresh data
-      userSubscriptionCache.delete(userId);
-      userFeaturesCache.delete(userId);
+  const refreshSubscription =
+    useCallback(async () => {
+      if (userId) {
+        // Clear caches to force fresh data
+        userSubscriptionCache.delete(userId);
+        userFeaturesCache.delete(userId);
 
-      // Reset the features loaded flag
-      featuresLoadedRef.current = false;
+        // Reset the features loaded flag
+        featuresLoadedRef.current = false;
 
-      // Trigger a refetch
-      await refetch();
+        // Trigger a refetch
+        await refetch();
 
-      // Reload features
-      try {
-        const features = await fetchUserFeatures(userId);
-        setAvailableFeatures(features);
-        featuresLoadedRef.current = true;
-      } catch (error) {
-        console.error('Error refreshing features:', error);
+        // Reload features
+        try {
+          const features =
+            await fetchUserFeatures(userId);
+          setAvailableFeatures(features);
+          featuresLoadedRef.current = true;
+        } catch (error) {
+          console.error(
+            'Error refreshing features:',
+            error
+          );
+        }
       }
-    }
-  }, [userId, refetch]);
+    }, [userId, refetch]);
 
   return (
     <UserSubscriptionContext.Provider

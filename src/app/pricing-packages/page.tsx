@@ -1,17 +1,42 @@
 import { Suspense } from 'react';
-import { fetchPricingPackagesAction, sortPackagesAction } from './actions';
+import {
+  fetchPricingPackagesAction,
+  sortPackagesAction,
+} from './actions';
 import PricingPackagesClient from './PricingPackagesClient';
-import { Box, Typography, Skeleton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Skeleton,
+} from '@mui/material';
 
 // Loading component for Suspense fallback
 function PricingPackagesLoading() {
   return (
-    <Box sx={{ maxWidth: '1600px', margin: '0 auto', padding: '0 40px', width: '100%' }}>
-      <Typography variant="h4" component="h1" sx={{ textAlign: 'center', mb: 4 }}>
+    <Box
+      sx={{
+        maxWidth: '1600px',
+        margin: '0 auto',
+        padding: '0 40px',
+        width: '100%',
+      }}
+    >
+      <Typography
+        variant="h4"
+        component="h1"
+        sx={{ textAlign: 'center', mb: 4 }}
+      >
         Pricing Packages
       </Typography>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-evenly', flexWrap: 'wrap', gap: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-evenly',
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+      >
         {[1, 2, 3, 4, 5].map((i) => (
           <Skeleton
             key={i}
@@ -29,8 +54,19 @@ function PricingPackagesLoading() {
 // Error component
 function PricingPackagesError() {
   return (
-    <Box sx={{ maxWidth: '1600px', margin: '0 auto', padding: '0 40px', width: '100%' }}>
-      <Typography variant="h4" component="h1" sx={{ textAlign: 'center', mb: 4 }}>
+    <Box
+      sx={{
+        maxWidth: '1600px',
+        margin: '0 auto',
+        padding: '0 40px',
+        width: '100%',
+      }}
+    >
+      <Typography
+        variant="h4"
+        component="h1"
+        sx={{ textAlign: 'center', mb: 4 }}
+      >
         Pricing Packages
       </Typography>
 
@@ -38,8 +74,12 @@ function PricingPackagesError() {
         <Typography variant="h6" color="error">
           Error loading pricing packages
         </Typography>
-        <Typography variant="body1" sx={{ mt: 2 }}>
-          We're having trouble loading our pricing information. Please try again later.
+        <Typography
+          variant="body1"
+          sx={{ mt: 2 }}
+        >
+          We're having trouble loading our pricing
+          information. Please try again later.
         </Typography>
       </Box>
     </Box>
@@ -50,19 +90,28 @@ function PricingPackagesError() {
 export default async function PricingPackagesPage() {
   try {
     // Fetch pricing packages data using the server action
-    const packages = await fetchPricingPackagesAction();
+    const packages =
+      await fetchPricingPackagesAction();
 
     // Sort packages on the server
-    const sortedPackages = sortPackagesAction(packages);
+    const sortedPackages =
+      sortPackagesAction(packages);
 
     // Render the client component with the fetched data
     return (
-      <Suspense fallback={<PricingPackagesLoading />}>
-        <PricingPackagesClient initialPackages={sortedPackages} />
+      <Suspense
+        fallback={<PricingPackagesLoading />}
+      >
+        <PricingPackagesClient
+          initialPackages={sortedPackages}
+        />
       </Suspense>
     );
   } catch (error) {
-    console.error('Error in PricingPackagesPage:', error);
+    console.error(
+      'Error in PricingPackagesPage:',
+      error
+    );
     return <PricingPackagesError />;
   }
 }

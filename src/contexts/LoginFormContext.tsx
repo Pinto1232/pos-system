@@ -51,9 +51,12 @@ export const LoginFormProvider: React.FC<{
   }, [open]);
 
   // Memoize the context value to prevent unnecessary re-renders
-  const contextValue = useMemo(() => ({
-    toggleLoginForm,
-  }), [toggleLoginForm]);
+  const contextValue = useMemo(
+    () => ({
+      toggleLoginForm,
+    }),
+    [toggleLoginForm]
+  );
 
   return (
     <LoginFormContext.Provider

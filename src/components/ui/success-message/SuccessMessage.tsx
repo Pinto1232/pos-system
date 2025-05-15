@@ -261,8 +261,13 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
             onAddToCart(notificationMessage);
           }
         } catch (error) {
-          console.error('Error adding to cart:', error);
-          setSnackbarMessage('Error adding package to cart. Please try again.');
+          console.error(
+            'Error adding to cart:',
+            error
+          );
+          setSnackbarMessage(
+            'Error adding package to cart. Please try again.'
+          );
           setSnackbarSeverity('error');
           setSnackbarOpen(true);
         }
@@ -335,7 +340,11 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                   styles.successIconContainer
                 }
               >
-                <div className={styles.checkmarkWrapper}>
+                <div
+                  className={
+                    styles.checkmarkWrapper
+                  }
+                >
                   <motion.div
                     initial={{
                       scale: 0,
@@ -354,7 +363,9 @@ const SuccessMessage: React.FC<SuccessMessageProps> =
                     className="checkmark-animation"
                   >
                     <CheckCircleIcon
-                      className={styles.successIcon}
+                      className={
+                        styles.successIcon
+                      }
                     />
                   </motion.div>
                 </div>

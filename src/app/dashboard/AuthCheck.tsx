@@ -10,8 +10,12 @@
  */
 export default async function AuthCheck() {
   // TEMPORARILY DISABLED: Authentication check is bypassed for development
-  console.log('⚠️ WARNING: Authentication check is temporarily disabled for development');
-  console.log('⚠️ This should be re-enabled before deploying to production');
+  console.log(
+    '⚠️ WARNING: Authentication check is temporarily disabled for development'
+  );
+  console.log(
+    '⚠️ This should be re-enabled before deploying to production'
+  );
 
   // Use a mock token for development
   //const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZWZhdWx0LXVzZXIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTkxNjIzOTAyMiwicm9sZXMiOlsiZGFzaGJvYXJkIiwidXNlciJdfQ.mMSYCImrC4qU18UQnAEPJRyTQwbKdX5awyEJFLrpxUc';

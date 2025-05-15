@@ -265,7 +265,8 @@ const useApiClient = () => {
             url,
             {
               timeout:
-                config?.timeout || DEFAULT_TIMEOUT,
+                config?.timeout ||
+                DEFAULT_TIMEOUT,
               suppressAuthErrors:
                 config?.suppressAuthErrors,
             }
@@ -300,9 +301,12 @@ const useApiClient = () => {
               cachedResponse &&
               Date.now() -
                 cachedResponse.timestamp <
-                (config?.cacheTTL || CACHE_MAX_AGE)
+                (config?.cacheTTL ||
+                  CACHE_MAX_AGE)
             ) {
-              console.log(`Using cached data as fallback for ${url} due to request failure`);
+              console.log(
+                `Using cached data as fallback for ${url} due to request failure`
+              );
               return cachedResponse.data as TData;
             }
           }

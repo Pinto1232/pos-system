@@ -78,11 +78,13 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
     // Check if backend and Keycloak are available on component mount
     // Use a ref to track if the check has already been performed
-    const serviceCheckPerformedRef = useRef(false);
+    const serviceCheckPerformedRef =
+      useRef(false);
 
     useEffect(() => {
       // Only perform the check once per component instance
-      if (serviceCheckPerformedRef.current) return;
+      if (serviceCheckPerformedRef.current)
+        return;
 
       const checkServices = async () => {
         serviceCheckPerformedRef.current = true;

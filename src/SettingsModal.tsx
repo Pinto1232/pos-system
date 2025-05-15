@@ -4446,32 +4446,75 @@ const SettingsModal: React.FC<
               color="text.secondary"
               sx={{ mb: 3 }}
             >
-              If you're experiencing issues with data not updating properly,
-              you can use these tools to refresh the application's cache.
+              If you're experiencing issues with
+              data not updating properly, you can
+              use these tools to refresh the
+              application's cache.
             </Typography>
 
             <CacheControl variant="full" />
 
             <Box sx={{ mt: 4 }}>
-              <Typography variant="subtitle1" gutterBottom>
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+              >
                 About Caching
               </Typography>
-              <Typography variant="body2" color="text.secondary" paragraph>
-                The application stores data temporarily in cache to improve performance.
-                Sometimes this cached data may become stale and not reflect the latest changes.
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                paragraph
+              >
+                The application stores data
+                temporarily in cache to improve
+                performance. Sometimes this cached
+                data may become stale and not
+                reflect the latest changes.
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                • <strong>Refresh Data</strong>: Updates specific data without clearing everything.<br />
-                • <strong>Reset Cache</strong>: Clears all cached data and fetches fresh data from the server.
+              <Typography
+                variant="body2"
+                color="text.secondary"
+              >
+                • <strong>Refresh Data</strong>:
+                Updates specific data without
+                clearing everything.
+                <br />•{' '}
+                <strong>Reset Cache</strong>:
+                Clears all cached data and fetches
+                fresh data from the server.
               </Typography>
             </Box>
 
-            <Box sx={{ mt: 4, p: 2, bgcolor: '#f5f5f5', borderRadius: 2 }}>
-              <Typography variant="subtitle1" gutterBottom>
+            <Box
+              sx={{
+                mt: 4,
+                p: 2,
+                bgcolor: '#f5f5f5',
+                borderRadius: 2,
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+              >
                 Cache Settings
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent:
+                      'space-between',
+                  }}
+                >
                   <Typography variant="body2">
                     Cache Duration
                   </Typography>
@@ -4480,21 +4523,43 @@ const SettingsModal: React.FC<
                     size="small"
                     sx={{ width: '200px' }}
                   >
-                    <MenuItem value="30000">30 seconds</MenuItem>
-                    <MenuItem value="60000">1 minute</MenuItem>
-                    <MenuItem value="300000">5 minutes</MenuItem>
-                    <MenuItem value="600000">10 minutes</MenuItem>
+                    <MenuItem value="30000">
+                      30 seconds
+                    </MenuItem>
+                    <MenuItem value="60000">
+                      1 minute
+                    </MenuItem>
+                    <MenuItem value="300000">
+                      5 minutes
+                    </MenuItem>
+                    <MenuItem value="600000">
+                      10 minutes
+                    </MenuItem>
                   </Select>
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent:
+                      'space-between',
+                  }}
+                >
                   <Typography variant="body2">
                     Auto-refresh on Window Focus
                   </Typography>
                   <Switch defaultChecked />
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent:
+                      'space-between',
+                  }}
+                >
                   <Typography variant="body2">
                     Prefetch Important Data
                   </Typography>
@@ -4504,8 +4569,13 @@ const SettingsModal: React.FC<
             </Box>
 
             <Alert severity="info" sx={{ mt: 4 }}>
-              <AlertTitle>Cache Troubleshooting</AlertTitle>
-              If you're still experiencing issues after refreshing the cache, try clearing your browser cache or reloading the application.
+              <AlertTitle>
+                Cache Troubleshooting
+              </AlertTitle>
+              If you're still experiencing issues
+              after refreshing the cache, try
+              clearing your browser cache or
+              reloading the application.
             </Alert>
           </Box>
         );

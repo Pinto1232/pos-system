@@ -40,7 +40,9 @@ interface UserActivity {
 }
 
 const UserActivityMonitor: React.FC = () => {
-  console.log('UserActivityMonitor component mounted');
+  console.log(
+    'UserActivityMonitor component mounted'
+  );
 
   const [searchQuery, setSearchQuery] =
     useState('');
@@ -58,7 +60,9 @@ const UserActivityMonitor: React.FC = () => {
       queryFn: async () => {
         try {
           // Try to fetch from backend API
-          console.log('Attempting to fetch user activity logs from backend API');
+          console.log(
+            'Attempting to fetch user activity logs from backend API'
+          );
 
           // Currently using mock data - in a real implementation, we would fetch from an API
           // Example of how it might look:
@@ -68,14 +72,18 @@ const UserActivityMonitor: React.FC = () => {
           // return data;
 
           // For now, using mock data
-          console.log('Using mock data for user activity logs');
+          console.log(
+            'Using mock data for user activity logs'
+          );
           return mockActivityLogs;
         } catch (err) {
           console.error(
             'Error fetching user activity:',
             err
           );
-          console.log('Falling back to mock data after error');
+          console.log(
+            'Falling back to mock data after error'
+          );
           return mockActivityLogs;
         }
       },
@@ -84,8 +92,16 @@ const UserActivityMonitor: React.FC = () => {
   // Log the activity data when it's received
   React.useEffect(() => {
     if (activityLogs) {
-      console.log('Activity logs data received:', activityLogs);
-      console.log('Data source:', activityLogs === mockActivityLogs ? 'Using mock data' : 'Using backend data');
+      console.log(
+        'Activity logs data received:',
+        activityLogs
+      );
+      console.log(
+        'Data source:',
+        activityLogs === mockActivityLogs
+          ? 'Using mock data'
+          : 'Using backend data'
+      );
     }
   }, [activityLogs]);
 
@@ -206,7 +222,6 @@ const UserActivityMonitor: React.FC = () => {
       </Box>
     );
   }
-
 
   return (
     <Box sx={{ width: '100%' }}>

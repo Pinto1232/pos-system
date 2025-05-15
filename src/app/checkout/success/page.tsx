@@ -36,7 +36,8 @@ function SuccessContent({
   const { clearCart } = useCart();
   const { setLoading } = useSpinner();
   const hasCleared = useRef(false);
-  const { authenticated, token, isInitialized } = useContext(AuthContext);
+  const { authenticated, token, isInitialized } =
+    useContext(AuthContext);
 
   useEffect(() => {
     if (!hasCleared.current) {
@@ -62,28 +63,47 @@ function SuccessContent({
     setOpen(false);
   };
 
-  const handleReturnToDashboard = async (e: React.MouseEvent) => {
+  const handleReturnToDashboard = async (
+    e: React.MouseEvent
+  ) => {
     e.preventDefault();
     onConfirm();
     handleClose();
     setLoading(true);
-    sessionStorage.setItem('fromPaymentSuccess', 'true');
+    sessionStorage.setItem(
+      'fromPaymentSuccess',
+      'true'
+    );
     if (!isInitialized) return;
     if (!authenticated || !token) {
-      router.replace('/?error=Session expired, please login again');
+      router.replace(
+        '/?error=Session expired, please login again'
+      );
       return;
     }
     let payload = null;
     let roles = [];
     try {
-      payload = JSON.parse(atob(token.split('.')[1]));
-      roles = payload?.realm_access?.roles || payload?.roles || [];
+      payload = JSON.parse(
+        atob(token.split('.')[1])
+      );
+      roles =
+        payload?.realm_access?.roles ||
+        payload?.roles ||
+        [];
     } catch {
-      router.replace('/?error=Session invalid, please login again');
+      router.replace(
+        '/?error=Session invalid, please login again'
+      );
       return;
     }
-    if (!roles.includes('dashboard') && !roles.includes('admin')) {
-      router.replace('/?error=You do not have permission to access the dashboard');
+    if (
+      !roles.includes('dashboard') &&
+      !roles.includes('admin')
+    ) {
+      router.replace(
+        '/?error=You do not have permission to access the dashboard'
+      );
       return;
     }
     setTimeout(() => {

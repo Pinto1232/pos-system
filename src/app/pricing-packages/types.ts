@@ -20,14 +20,17 @@ export const packageTypes = [
   'growth-pro',
   'enterprise-elite',
   'custom-pro',
-  'premium-plus'
+  'premium-plus',
 ];
 
 // Package order for sorting
-export const packageOrder: Record<string, number> = {
+export const packageOrder: Record<
+  string,
+  number
+> = {
   'starter-plus': 1,
   'growth-pro': 2,
   'custom-pro': 3,
   'enterprise-elite': 4,
-  'premium-plus': 5
+  'premium-plus': 5,
 };

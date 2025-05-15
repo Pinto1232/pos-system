@@ -11,7 +11,8 @@ export const metadata = {
   description: 'Your POS application',
   // Add cache-related metadata
   other: {
-    'cache-control': 'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400',
+    'cache-control':
+      'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400',
   },
 };
 

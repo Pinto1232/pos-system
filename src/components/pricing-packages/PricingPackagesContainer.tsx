@@ -5,19 +5,22 @@ import React, {
   useContext,
   useState,
   useCallback,
-  useRef
+  useRef,
 } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useApiClient } from '@/api/axiosClient';
 import styles from './PricingPackages.module.css';
 import PricingPackageCard from './PricingPackageCard';
-import { Alert, Snackbar, Button, Box } from '@mui/material';
+import {
+  Alert,
+  Snackbar,
+  Button,
+  Box,
+} from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CacheControl from '@/components/ui/CacheControl';
 // These imports are used in the JSX
-import {
-  usePackageSelection,
-} from '@/contexts/PackageSelectionContext';
+import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 
 // Define a custom Package type that includes the new package types
 type Package = {
@@ -73,67 +76,82 @@ const PricingPackagesContainer: React.FC = () => {
     data: [
       {
         id: 1,
-        title: "Starter Plus",
-        description: "Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting;Customer database;Simple analytics",
-        icon: "MUI:StarIcon",
-        extraDescription: "Perfect for small businesses looking for essential features",
+        title: 'Starter Plus',
+        description:
+          'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting;Customer database;Simple analytics',
+        icon: 'MUI:StarIcon',
+        extraDescription:
+          'Perfect for small businesses looking for essential features',
         price: 39.99,
         testPeriodDays: 14,
-        type: "starter-plus",
-        currency: "USD",
-        multiCurrencyPrices: "{\"ZAR\": 699.99, \"EUR\": 36.99, \"GBP\": 31.99}"
+        type: 'starter-plus',
+        currency: 'USD',
+        multiCurrencyPrices:
+          '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}',
       },
       {
         id: 2,
-        title: "Growth Pro",
-        description: "Everything in Growth;Advanced inventory forecasting;Enhanced customer loyalty program;Marketing automation tools;Staff performance tracking;Customizable dashboards;Mobile app access",
-        icon: "MUI:TrendingUpIcon",
-        extraDescription: "Ideal for growing businesses that need advanced features",
+        title: 'Growth Pro',
+        description:
+          'Everything in Growth;Advanced inventory forecasting;Enhanced customer loyalty program;Marketing automation tools;Staff performance tracking;Customizable dashboards;Mobile app access',
+        icon: 'MUI:TrendingUpIcon',
+        extraDescription:
+          'Ideal for growing businesses that need advanced features',
         price: 79.99,
         testPeriodDays: 14,
-        type: "growth-pro",
-        currency: "USD",
-        multiCurrencyPrices: "{\"ZAR\": 1399.99, \"EUR\": 72.99, \"GBP\": 63.99}"
+        type: 'growth-pro',
+        currency: 'USD',
+        multiCurrencyPrices:
+          '{"ZAR": 1399.99, "EUR": 72.99, "GBP": 63.99}',
       },
       {
         id: 3,
-        title: "Custom Pro",
-        description: "Tailor-made solutions for your unique business needs;Perfect for businesses requiring customized POS features;Build your own feature set;Pay only for what you need;Flexible scaling options;Industry-specific solutions;Personalized onboarding",
-        icon: "MUI:BuildIcon",
-        extraDescription: "The ultimate flexibility with professional customization services",
+        title: 'Custom Pro',
+        description:
+          'Tailor-made solutions for your unique business needs;Perfect for businesses requiring customized POS features;Build your own feature set;Pay only for what you need;Flexible scaling options;Industry-specific solutions;Personalized onboarding',
+        icon: 'MUI:BuildIcon',
+        extraDescription:
+          'The ultimate flexibility with professional customization services',
         price: 129.99,
         testPeriodDays: 30,
-        type: "custom-pro",
-        currency: "USD",
-        multiCurrencyPrices: "{\"ZAR\": 2199.99, \"EUR\": 119.99, \"GBP\": 104.99}"
+        type: 'custom-pro',
+        currency: 'USD',
+        multiCurrencyPrices:
+          '{"ZAR": 2199.99, "EUR": 119.99, "GBP": 104.99}',
       },
       {
         id: 4,
-        title: "Enterprise Elite",
-        description: "Comprehensive POS solutions for large enterprises;Includes all advanced features and premium support;Multi-location management;Enterprise-level analytics;Custom API integrations;White-label options;Dedicated account manager;Priority 24/7 support",
-        icon: "MUI:BusinessIcon",
-        extraDescription: "Complete solution for large organizations with complex requirements",
+        title: 'Enterprise Elite',
+        description:
+          'Comprehensive POS solutions for large enterprises;Includes all advanced features and premium support;Multi-location management;Enterprise-level analytics;Custom API integrations;White-label options;Dedicated account manager;Priority 24/7 support',
+        icon: 'MUI:BusinessIcon',
+        extraDescription:
+          'Complete solution for large organizations with complex requirements',
         price: 249.99,
         testPeriodDays: 30,
-        type: "enterprise-elite",
-        currency: "USD",
-        multiCurrencyPrices: "{\"ZAR\": 4299.99, \"EUR\": 229.99, \"GBP\": 199.99}"
+        type: 'enterprise-elite',
+        currency: 'USD',
+        multiCurrencyPrices:
+          '{"ZAR": 4299.99, "EUR": 229.99, "GBP": 199.99}',
       },
       {
         id: 5,
-        title: "Premium Plus",
-        description: "All-inclusive POS package with premium features;Best for businesses looking for top-tier POS solutions;Advanced AI-powered analytics;Predictive inventory management;Omnichannel integration;VIP support;Quarterly business reviews;Custom reporting",
-        icon: "MUI:DiamondIcon",
-        extraDescription: "The ultimate POS experience with cutting-edge features and premium support",
+        title: 'Premium Plus',
+        description:
+          'All-inclusive POS package with premium features;Best for businesses looking for top-tier POS solutions;Advanced AI-powered analytics;Predictive inventory management;Omnichannel integration;VIP support;Quarterly business reviews;Custom reporting',
+        icon: 'MUI:DiamondIcon',
+        extraDescription:
+          'The ultimate POS experience with cutting-edge features and premium support',
         price: 349.99,
         testPeriodDays: 30,
-        type: "premium-plus",
-        currency: "USD",
-        multiCurrencyPrices: "{\"ZAR\": 5999.99, \"EUR\": 319.99, \"GBP\": 279.99}"
-      }
+        type: 'premium-plus',
+        currency: 'USD',
+        multiCurrencyPrices:
+          '{"ZAR": 5999.99, "EUR": 319.99, "GBP": 279.99}',
+      },
     ],
     pageSize: 10,
-    pageNumber: 1
+    pageNumber: 1,
   };
 
   const fetchPricingPackages = async (
@@ -142,10 +160,14 @@ const PricingPackagesContainer: React.FC = () => {
     pageSize: number
   ): Promise<PricePackages> => {
     const startTime = new Date();
-    console.log(`[${startTime.toISOString()}] Starting pricing packages fetch operation`);
+    console.log(
+      `[${startTime.toISOString()}] Starting pricing packages fetch operation`
+    );
 
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem(
+        'accessToken'
+      );
 
       console.log(
         `[${new Date().toISOString()}] Request headers for pricing packages:`,
@@ -158,123 +180,204 @@ const PricingPackagesContainer: React.FC = () => {
       );
 
       // Log network status
-      console.log(`[${new Date().toISOString()}] Network status: ${navigator.onLine ? 'Online' : 'Offline'}`);
+      console.log(
+        `[${new Date().toISOString()}] Network status: ${navigator.onLine ? 'Online' : 'Offline'}`
+      );
 
       // Use the lowercase version of the endpoint to match the Next.js API route
       // Use the correct endpoint format to match the backend API
       // The backend API uses lowercase 'pricingpackages' with no hyphen
       const endpoint = `/api/pricingpackages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-      console.log(`[${new Date().toISOString()}] Attempting to fetch pricing packages from: ${endpoint}`);
+      console.log(
+        `[${new Date().toISOString()}] Attempting to fetch pricing packages from: ${endpoint}`
+      );
 
       // Log the full URL that will be used (for debugging)
-      const baseUrl = apiClient.defaults.baseURL || '';
-      console.log(`[${new Date().toISOString()}] Full URL will be: ${baseUrl}${endpoint}`);
+      const baseUrl =
+        apiClient.defaults.baseURL || '';
+      console.log(
+        `[${new Date().toISOString()}] Full URL will be: ${baseUrl}${endpoint}`
+      );
 
       // Ensure the backend API is properly configured
-      console.log(`[${new Date().toISOString()}] Backend API URL from environment: ${process.env.NEXT_PUBLIC_API_URL || 'not set'}`);
-      console.log(`[${new Date().toISOString()}] Backend API URL from axios client: ${baseUrl}`);
+      console.log(
+        `[${new Date().toISOString()}] Backend API URL from environment: ${process.env.NEXT_PUBLIC_API_URL || 'not set'}`
+      );
+      console.log(
+        `[${new Date().toISOString()}] Backend API URL from axios client: ${baseUrl}`
+      );
 
       // Set a timeout for the request
       const timeoutMs = 10000; // 10 seconds
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
         controller.abort();
-        console.warn(`[${new Date().toISOString()}] Request timed out after ${timeoutMs}ms`);
+        console.warn(
+          `[${new Date().toISOString()}] Request timed out after ${timeoutMs}ms`
+        );
       }, timeoutMs);
 
-      const response = await axiosClient.get(endpoint, {
-        signal: controller.signal,
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          'If-None-Match': '', // Bypass ETag caching
-          'If-Modified-Since': '', // Bypass Last-Modified caching
+      const response = await axiosClient.get(
+        endpoint,
+        {
+          signal: controller.signal,
+          headers: {
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+            'If-None-Match': '', // Bypass ETag caching
+            'If-Modified-Since': '', // Bypass Last-Modified caching
+          },
         }
-      });
+      );
 
       // Clear the timeout since the request completed
       clearTimeout(timeoutId);
 
       const endTime = new Date();
-      const duration = endTime.getTime() - startTime.getTime();
-      console.log(`[${endTime.toISOString()}] API response received in ${duration}ms:`, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: response.headers,
-        hasData: !!response.data,
-        dataStructure: response.data ? Object.keys(response.data) : 'No data'
-      });
+      const duration =
+        endTime.getTime() - startTime.getTime();
+      console.log(
+        `[${endTime.toISOString()}] API response received in ${duration}ms:`,
+        {
+          status: response.status,
+          statusText: response.statusText,
+          headers: response.headers,
+          hasData: !!response.data,
+          dataStructure: response.data
+            ? Object.keys(response.data)
+            : 'No data',
+        }
+      );
 
       // Detailed validation of the response data
       if (!response.data) {
-        console.warn(`[${new Date().toISOString()}] API response missing data property`);
+        console.warn(
+          `[${new Date().toISOString()}] API response missing data property`
+        );
         return fallbackPackages;
       }
 
       if (!response.data.data) {
-        console.warn(`[${new Date().toISOString()}] API response missing data.data property`);
-        console.log('Response data structure:', response.data);
+        console.warn(
+          `[${new Date().toISOString()}] API response missing data.data property`
+        );
+        console.log(
+          'Response data structure:',
+          response.data
+        );
         return fallbackPackages;
       }
 
       if (!Array.isArray(response.data.data)) {
-        console.warn(`[${new Date().toISOString()}] API response data.data is not an array`);
-        console.log('data.data type:', typeof response.data.data);
+        console.warn(
+          `[${new Date().toISOString()}] API response data.data is not an array`
+        );
+        console.log(
+          'data.data type:',
+          typeof response.data.data
+        );
         return fallbackPackages;
       }
 
       if (response.data.data.length === 0) {
-        console.warn(`[${new Date().toISOString()}] API response data.data is an empty array`);
+        console.warn(
+          `[${new Date().toISOString()}] API response data.data is an empty array`
+        );
         return fallbackPackages;
       }
 
       // Check if the data contains the expected package types
-      const packageTypes = response.data.data.map((pkg: PackageData) => pkg.type);
-      console.log(`[${new Date().toISOString()}] Package types in response:`, packageTypes);
+      const packageTypes = response.data.data.map(
+        (pkg: PackageData) => pkg.type
+      );
+      console.log(
+        `[${new Date().toISOString()}] Package types in response:`,
+        packageTypes
+      );
 
       // Check if any of our expected package types are present
-      const expectedTypes = ['starter-plus', 'growth-pro', 'enterprise-elite', 'custom-pro', 'premium-plus'];
-      const hasExpectedTypes = packageTypes.some((type: string) =>
-        expectedTypes.includes(type.toLowerCase())
+      const expectedTypes = [
+        'starter-plus',
+        'growth-pro',
+        'enterprise-elite',
+        'custom-pro',
+        'premium-plus',
+      ];
+      const hasExpectedTypes = packageTypes.some(
+        (type: string) =>
+          expectedTypes.includes(
+            type.toLowerCase()
+          )
       );
 
       if (!hasExpectedTypes) {
-        console.warn(`[${new Date().toISOString()}] API response doesn't contain any of the expected package types`);
-        console.log('Expected types:', expectedTypes);
-        console.log('Actual types:', packageTypes);
+        console.warn(
+          `[${new Date().toISOString()}] API response doesn't contain any of the expected package types`
+        );
+        console.log(
+          'Expected types:',
+          expectedTypes
+        );
+        console.log(
+          'Actual types:',
+          packageTypes
+        );
         return fallbackPackages;
       }
 
-      console.log(`[${new Date().toISOString()}] Successfully fetched valid pricing packages from API`);
+      console.log(
+        `[${new Date().toISOString()}] Successfully fetched valid pricing packages from API`
+      );
       return response.data;
     } catch (error: unknown) {
       const errorTime = new Date();
       console.error(
         `[${errorTime.toISOString()}] Error fetching pricing packages:`,
-        error instanceof Error ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        } : error
+        error instanceof Error
+          ? {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+            }
+          : error
       );
 
       // Check if it's a network error
-      if (error instanceof Error && error.message.includes('Network Error')) {
-        console.warn(`[${new Date().toISOString()}] Network error detected, backend might be unavailable`);
-        console.error(`[${new Date().toISOString()}] Please check if the backend server is running at ${apiClient.defaults.baseURL}`);
+      if (
+        error instanceof Error &&
+        error.message.includes('Network Error')
+      ) {
+        console.warn(
+          `[${new Date().toISOString()}] Network error detected, backend might be unavailable`
+        );
+        console.error(
+          `[${new Date().toISOString()}] Please check if the backend server is running at ${apiClient.defaults.baseURL}`
+        );
       }
 
       // Check if it's a timeout error
-      if (error instanceof Error && error.name === 'AbortError') {
-        console.warn(`[${new Date().toISOString()}] Request was aborted due to timeout`);
+      if (
+        error instanceof Error &&
+        error.name === 'AbortError'
+      ) {
+        console.warn(
+          `[${new Date().toISOString()}] Request was aborted due to timeout`
+        );
       }
 
       // Check if it's a 404 error (Not Found)
       // Use type assertion for axios error
-      const axiosError = error as { response?: { status: number } };
-      if (axiosError.response && axiosError.response.status === 404) {
+      const axiosError = error as {
+        response?: { status: number };
+      };
+      if (
+        axiosError.response &&
+        axiosError.response.status === 404
+      ) {
         const currentEndpoint = `/api/pricing-packages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-        console.error(`[${new Date().toISOString()}] 404 Not Found error for endpoint: ${currentEndpoint}`);
+        console.error(
+          `[${new Date().toISOString()}] 404 Not Found error for endpoint: ${currentEndpoint}`
+        );
         console.error(`[${new Date().toISOString()}] This could be due to:
           1. The backend API route doesn't exist
           2. Case sensitivity issues in the route path
@@ -284,41 +387,60 @@ const PricingPackagesContainer: React.FC = () => {
         `);
       }
 
-      console.log(`[${new Date().toISOString()}] Using fallback data due to error`);
+      console.log(
+        `[${new Date().toISOString()}] Using fallback data due to error`
+      );
       return fallbackPackages;
     }
   };
 
   // State to track if we're using fallback data
-  const [usingFallbackData, setUsingFallbackData] = useState(false);
+  const [
+    usingFallbackData,
+    setUsingFallbackData,
+  ] = useState(false);
 
   // State to track the last time we successfully fetched data
   // Using this state in handleSuccessfulFetch to track when we last got real data
-  const [, setLastSuccessfulFetch] = useState<Date | null>(null);
+  const [, setLastSuccessfulFetch] =
+    useState<Date | null>(null);
 
   // Function to handle successful data fetch
-  const handleSuccessfulFetch = useCallback(() => {
-    setUsingFallbackData(false);
-    setLastSuccessfulFetch(new Date());
-    console.log('Successfully fetched real data from backend');
-  }, []);
+  const handleSuccessfulFetch =
+    useCallback(() => {
+      setUsingFallbackData(false);
+      setLastSuccessfulFetch(new Date());
+      console.log(
+        'Successfully fetched real data from backend'
+      );
+    }, []);
 
   // Function to handle fallback to mock data
   const handleFallbackUsed = useCallback(() => {
     setUsingFallbackData(true);
-    console.warn('Using fallback data due to API issues');
+    console.warn(
+      'Using fallback data due to API issues'
+    );
   }, []);
 
   const { data, error, isLoading, refetch } =
     useQuery<PricePackages, Error>({
       queryKey: ['pricingPackages'],
       queryFn: async () => {
-        console.log('Executing pricing packages query function');
+        console.log(
+          'Executing pricing packages query function'
+        );
         try {
-          const result = await fetchPricingPackages(apiClient, 1, 10);
+          const result =
+            await fetchPricingPackages(
+              apiClient,
+              1,
+              10
+            );
 
           // Check if this is real data or fallback data
-          const isFallbackData = result === fallbackPackages;
+          const isFallbackData =
+            result === fallbackPackages;
 
           if (!isFallbackData) {
             handleSuccessfulFetch();
@@ -328,20 +450,29 @@ const PricingPackagesContainer: React.FC = () => {
 
           return result;
         } catch (err) {
-          console.error('Error in query function:', err);
+          console.error(
+            'Error in query function:',
+            err
+          );
           handleFallbackUsed();
           return fallbackPackages;
         }
       },
       retry: 5, // Increased from 3 to 5
       retryDelay: (attemptIndex) => {
-        const delay = Math.min(1000 * 2 ** attemptIndex, 60000); // Increased max delay to 60 seconds
-        console.log(`Retry attempt ${attemptIndex + 1} scheduled in ${delay}ms`);
+        const delay = Math.min(
+          1000 * 2 ** attemptIndex,
+          60000
+        ); // Increased max delay to 60 seconds
+        console.log(
+          `Retry attempt ${attemptIndex + 1} scheduled in ${delay}ms`
+        );
         return delay;
       },
       enabled: true,
       staleTime: 3 * 60 * 1000, // Reduced from 5 minutes to 3 minutes to check for updates more frequently
-      placeholderData: (previousData) => previousData,
+      placeholderData: (previousData) =>
+        previousData,
     });
 
   useEffect(() => {
@@ -374,98 +505,155 @@ const PricingPackagesContainer: React.FC = () => {
 
   // Define new package types at the component level so it can be used elsewhere
   // Wrap in useMemo to prevent unnecessary re-renders
-  const newPackageTypes = React.useMemo(() => [
-    'starter-plus',
-    'growth-pro',
-    'enterprise-elite',
-    'custom-pro',
-    'premium-plus'
-  ], []);
+  const newPackageTypes = React.useMemo(
+    () => [
+      'starter-plus',
+      'growth-pro',
+      'enterprise-elite',
+      'custom-pro',
+      'premium-plus',
+    ],
+    []
+  );
 
   // Define createPackageFromData before using it in processPackages
-  const createPackageFromData = useCallback((pkg: PackageData): Package => {
-    if (!pkg) {
-      console.warn('Attempted to create package from undefined data');
-      return {
-        id: Date.now(), // Generate a temporary ID
-        title: 'Default Package',
-        description: 'Default package description',
-        icon: 'MUI:StarIcon',
-        extraDescription: 'Default package',
-        price: 39.99,
-        testPeriodDays: 14,
-        type: 'starter-plus',
-        currency: 'USD',
-        multiCurrencyPrices: '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}'
-      };
-    }
-
-    const type = ((pkg.type || pkg.packageType || '').toLowerCase()) as string;
-
-    // Update valid types to include new package types
-    const validType = newPackageTypes.includes(type)
-      ? type
-      : 'starter-plus';
-
-    // Set default prices based on package type
-    let price = pkg.price || 0;
-    let multiCurrencyPrices = pkg.multiCurrencyPrices || '';
-
-    // Ensure custom-pro has the correct price
-    if (validType === 'custom-pro') {
-      price = 129.99;
-      multiCurrencyPrices = '{"ZAR": 2199.99, "EUR": 119.99, "GBP": 104.99}';
-      console.log('Setting custom-pro package price to:', price);
-    }
-
-    // Ensure id is always a number
-    const numericId = typeof pkg.id === 'string' ? parseInt(pkg.id, 10) : (pkg.id || Date.now());
-
-    return {
-      id: isNaN(numericId) ? Date.now() : numericId,
-      title: pkg.title || 'Unnamed Package',
-      description: pkg.description || 'No description available',
-      icon: pkg.icon || 'MUI:StarIcon',
-      extraDescription: pkg.extraDescription || '',
-      price: price,
-      testPeriodDays: pkg.testPeriodDays || 14,
-      type: validType,
-      currency: pkg.currency || 'USD',
-      multiCurrencyPrices: multiCurrencyPrices ||
-        '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}',
-    };
-  }, [newPackageTypes]);
-
-  const processPackages = useCallback((
-    packagesData: PackageData[]
-  ): Package[] => {
-    if (!packagesData || !Array.isArray(packagesData) || packagesData.length === 0) {
-      console.warn('processPackages received invalid or empty data:', packagesData);
-      return [];
-    }
-
-    console.log('Processing packages data:', packagesData.length, 'items');
-
-    // Filter packages to only include the new ones
-    const filteredPackages = packagesData.filter(
-      (pkg: PackageData) => {
-        if (!pkg) return false;
-        const type = (pkg.type || pkg.packageType || '').toLowerCase();
-        return newPackageTypes.includes(type);
+  const createPackageFromData = useCallback(
+    (pkg: PackageData): Package => {
+      if (!pkg) {
+        console.warn(
+          'Attempted to create package from undefined data'
+        );
+        return {
+          id: Date.now(), // Generate a temporary ID
+          title: 'Default Package',
+          description:
+            'Default package description',
+          icon: 'MUI:StarIcon',
+          extraDescription: 'Default package',
+          price: 39.99,
+          testPeriodDays: 14,
+          type: 'starter-plus',
+          currency: 'USD',
+          multiCurrencyPrices:
+            '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}',
+        };
       }
-    );
 
-    console.log('Filtered to new packages:', filteredPackages.length, 'items');
+      const type = (
+        pkg.type ||
+        pkg.packageType ||
+        ''
+      ).toLowerCase() as string;
 
-    if (filteredPackages.length === 0) {
-      console.warn('No packages matched the expected types after filtering');
-      // If no packages match, return the original data converted to our format
-      // This ensures we at least show something
-      return packagesData.map(createPackageFromData);
-    }
+      // Update valid types to include new package types
+      const validType = newPackageTypes.includes(
+        type
+      )
+        ? type
+        : 'starter-plus';
 
-    return filteredPackages.map(createPackageFromData);
-  }, [newPackageTypes, createPackageFromData]);
+      // Set default prices based on package type
+      let price = pkg.price || 0;
+      let multiCurrencyPrices =
+        pkg.multiCurrencyPrices || '';
+
+      // Ensure custom-pro has the correct price
+      if (validType === 'custom-pro') {
+        price = 129.99;
+        multiCurrencyPrices =
+          '{"ZAR": 2199.99, "EUR": 119.99, "GBP": 104.99}';
+        console.log(
+          'Setting custom-pro package price to:',
+          price
+        );
+      }
+
+      // Ensure id is always a number
+      const numericId =
+        typeof pkg.id === 'string'
+          ? parseInt(pkg.id, 10)
+          : pkg.id || Date.now();
+
+      return {
+        id: isNaN(numericId)
+          ? Date.now()
+          : numericId,
+        title: pkg.title || 'Unnamed Package',
+        description:
+          pkg.description ||
+          'No description available',
+        icon: pkg.icon || 'MUI:StarIcon',
+        extraDescription:
+          pkg.extraDescription || '',
+        price: price,
+        testPeriodDays: pkg.testPeriodDays || 14,
+        type: validType,
+        currency: pkg.currency || 'USD',
+        multiCurrencyPrices:
+          multiCurrencyPrices ||
+          '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}',
+      };
+    },
+    [newPackageTypes]
+  );
+
+  const processPackages = useCallback(
+    (packagesData: PackageData[]): Package[] => {
+      if (
+        !packagesData ||
+        !Array.isArray(packagesData) ||
+        packagesData.length === 0
+      ) {
+        console.warn(
+          'processPackages received invalid or empty data:',
+          packagesData
+        );
+        return [];
+      }
+
+      console.log(
+        'Processing packages data:',
+        packagesData.length,
+        'items'
+      );
+
+      // Filter packages to only include the new ones
+      const filteredPackages =
+        packagesData.filter(
+          (pkg: PackageData) => {
+            if (!pkg) return false;
+            const type = (
+              pkg.type ||
+              pkg.packageType ||
+              ''
+            ).toLowerCase();
+            return newPackageTypes.includes(type);
+          }
+        );
+
+      console.log(
+        'Filtered to new packages:',
+        filteredPackages.length,
+        'items'
+      );
+
+      if (filteredPackages.length === 0) {
+        console.warn(
+          'No packages matched the expected types after filtering'
+        );
+        // If no packages match, return the original data converted to our format
+        // This ensures we at least show something
+        return packagesData.map(
+          createPackageFromData
+        );
+      }
+
+      return filteredPackages.map(
+        createPackageFromData
+      );
+    },
+    [newPackageTypes, createPackageFromData]
+  );
 
   let packagesToDisplay: Package[] = [];
   let showError = false;
@@ -486,7 +674,11 @@ const PricingPackagesContainer: React.FC = () => {
     packagesToDisplay = processPackages(
       fallbackPackages.data
     );
-  } else if (!data || !data.data || !Array.isArray(data.data)) {
+  } else if (
+    !data ||
+    !data.data ||
+    !Array.isArray(data.data)
+  ) {
     console.warn(
       'Invalid data structure from backend, using fallback data'
     );
@@ -510,7 +702,8 @@ const PricingPackagesContainer: React.FC = () => {
   }
 
   // Implement periodic retry mechanism
-  const retryIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const retryIntervalRef =
+    useRef<NodeJS.Timeout | null>(null);
 
   // Setup periodic retry if using fallback data
   useEffect(() => {
@@ -525,17 +718,32 @@ const PricingPackagesContainer: React.FC = () => {
 
   // Setup periodic retry when using fallback data
   useEffect(() => {
-    if (usingFallbackData && !retryIntervalRef.current) {
-      console.log(`[${new Date().toISOString()}] Setting up periodic retry for real data`);
+    if (
+      usingFallbackData &&
+      !retryIntervalRef.current
+    ) {
+      console.log(
+        `[${new Date().toISOString()}] Setting up periodic retry for real data`
+      );
 
       // Try to refetch real data every 30 seconds when using fallback data
-      retryIntervalRef.current = setInterval(() => {
-        console.log(`[${new Date().toISOString()}] Attempting periodic retry to fetch real data`);
-        refetch();
-      }, 30000); // 30 seconds
-    } else if (!usingFallbackData && retryIntervalRef.current) {
+      retryIntervalRef.current = setInterval(
+        () => {
+          console.log(
+            `[${new Date().toISOString()}] Attempting periodic retry to fetch real data`
+          );
+          refetch();
+        },
+        30000
+      ); // 30 seconds
+    } else if (
+      !usingFallbackData &&
+      retryIntervalRef.current
+    ) {
       // If we're no longer using fallback data, clear the interval
-      console.log(`[${new Date().toISOString()}] Clearing periodic retry - using real data now`);
+      console.log(
+        `[${new Date().toISOString()}] Clearing periodic retry - using real data now`
+      );
       clearInterval(retryIntervalRef.current);
       retryIntervalRef.current = null;
     }
@@ -549,8 +757,14 @@ const PricingPackagesContainer: React.FC = () => {
   }, [usingFallbackData, refetch]);
 
   // If we still have no packages to display after all the fallbacks, show error
-  if (packagesToDisplay.length === 0 && authenticated && !isLoading) {
-    console.warn(`[${new Date().toISOString()}] No packages to display after all fallbacks`);
+  if (
+    packagesToDisplay.length === 0 &&
+    authenticated &&
+    !isLoading
+  ) {
+    console.warn(
+      `[${new Date().toISOString()}] No packages to display after all fallbacks`
+    );
     showError = true;
   }
 
@@ -562,28 +776,41 @@ const PricingPackagesContainer: React.FC = () => {
     'growth-pro': 2,
     'custom-pro': 3,
     'enterprise-elite': 4,
-    'premium-plus': 5
+    'premium-plus': 5,
   };
 
   // Ensure we have at least one package of each type from fallback data if needed
-  if (packages.length === 0 || usingFallbackData) {
-    console.log('Using fallback packages to ensure we have all package types');
+  if (
+    packages.length === 0 ||
+    usingFallbackData
+  ) {
+    console.log(
+      'Using fallback packages to ensure we have all package types'
+    );
     // Create a set of existing package types
-    const existingTypes = new Set(packages.map(pkg => pkg.type));
+    const existingTypes = new Set(
+      packages.map((pkg) => pkg.type)
+    );
 
     // Add any missing package types from fallback data
     for (const pkgType of newPackageTypes) {
       if (!existingTypes.has(pkgType)) {
         // Find this package type in fallback data
-        const fallbackPkg = fallbackPackages.data.find(
-          pkg => (pkg.type?.toLowerCase() || '') === pkgType
-        );
+        const fallbackPkg =
+          fallbackPackages.data.find(
+            (pkg) =>
+              (pkg.type?.toLowerCase() || '') ===
+              pkgType
+          );
 
         if (fallbackPkg) {
-          const processedPkg = createPackageFromData(fallbackPkg);
+          const processedPkg =
+            createPackageFromData(fallbackPkg);
           packages.push(processedPkg);
           existingTypes.add(pkgType);
-          console.log(`Added missing package type from fallback: ${pkgType}`);
+          console.log(
+            `Added missing package type from fallback: ${pkgType}`
+          );
         }
       }
     }
@@ -591,15 +818,21 @@ const PricingPackagesContainer: React.FC = () => {
 
   // Sort packages based on the defined order
   packages.sort((a, b) => {
-    const orderA = packageOrder[a.type as string] || 999;
-    const orderB = packageOrder[b.type as string] || 999;
+    const orderA =
+      packageOrder[a.type as string] || 999;
+    const orderB =
+      packageOrder[b.type as string] || 999;
     return orderA - orderB;
   });
 
-  console.log('Packages after sorting and ensuring all types exist:', packages.map(pkg => pkg.type));
+  console.log(
+    'Packages after sorting and ensuring all types exist:',
+    packages.map((pkg) => pkg.type)
+  );
 
   // Create a snackbar to show when using fallback data
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] =
+    useState(false);
 
   // Show snackbar when using fallback data
   useEffect(() => {
@@ -612,7 +845,9 @@ const PricingPackagesContainer: React.FC = () => {
 
   // Handle manual refresh when using fallback data
   const handleManualRefresh = () => {
-    console.log(`[${new Date().toISOString()}] Manual refresh requested by user`);
+    console.log(
+      `[${new Date().toISOString()}] Manual refresh requested by user`
+    );
     setSnackbarOpen(false);
     refetch();
   };
@@ -621,7 +856,9 @@ const PricingPackagesContainer: React.FC = () => {
     <div className={styles.wrapper}>
       {/* Fallback data indicator */}
       {usingFallbackData && (
-        <div className={styles.fallbackNotice || ''}>
+        <div
+          className={styles.fallbackNotice || ''}
+        >
           <Alert
             severity="warning"
             action={
@@ -635,13 +872,21 @@ const PricingPackagesContainer: React.FC = () => {
               </Button>
             }
           >
-            Showing cached pricing data. We&apos;re having trouble connecting to our servers.
+            Showing cached pricing data.
+            We&apos;re having trouble connecting
+            to our servers.
           </Alert>
         </div>
       )}
 
       {/* Add cache control component for easy data refreshing */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          mb: 2,
+        }}
+      >
         <CacheControl
           variant="minimal"
           onSuccess={() => {
@@ -670,14 +915,32 @@ const PricingPackagesContainer: React.FC = () => {
                   const packageForSelection = {
                     ...pkg,
                     // Map the package type to one of the allowed types in PackageSelectionContext
-                    type: pkg.type.includes('custom') ? 'custom' :
-                          pkg.type.includes('starter') ? 'starter' :
-                          pkg.type.includes('growth') ? 'growth' :
-                          pkg.type.includes('enterprise') ? 'enterprise' :
-                          pkg.type.includes('premium') ? 'premium' : 'starter'
+                    type: pkg.type.includes(
+                      'custom'
+                    )
+                      ? 'custom'
+                      : pkg.type.includes(
+                            'starter'
+                          )
+                        ? 'starter'
+                        : pkg.type.includes(
+                              'growth'
+                            )
+                          ? 'growth'
+                          : pkg.type.includes(
+                                'enterprise'
+                              )
+                            ? 'enterprise'
+                            : pkg.type.includes(
+                                  'premium'
+                                )
+                              ? 'premium'
+                              : 'starter',
                   } as import('@/contexts/PackageSelectionContext').Package;
 
-                  selectPackage(packageForSelection);
+                  selectPackage(
+                    packageForSelection
+                  );
                 }}
               />
             ) : null
@@ -728,7 +991,10 @@ const PricingPackagesContainer: React.FC = () => {
         open={snackbarOpen}
         autoHideDuration={10000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
@@ -744,7 +1010,8 @@ const PricingPackagesContainer: React.FC = () => {
             </Button>
           }
         >
-          Using cached pricing data. Click &quot;Refresh Now&quot; to try again.
+          Using cached pricing data. Click
+          &quot;Refresh Now&quot; to try again.
         </Alert>
       </Snackbar>
     </div>

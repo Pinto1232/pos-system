@@ -110,7 +110,9 @@ const calculateRefreshTime = (
 
 const setTokenCookie = async (token: string) => {
   if (!token) {
-    console.error('Attempted to set empty token in cookie');
+    console.error(
+      'Attempted to set empty token in cookie'
+    );
     return;
   }
 
@@ -122,18 +124,24 @@ const setTokenCookie = async (token: string) => {
   const payload = { token };
   const jsonBody = JSON.stringify(payload);
 
-  console.log('Setting token cookie, payload length:', jsonBody.length);
+  console.log(
+    'Setting token cookie, payload length:',
+    jsonBody.length
+  );
 
   try {
-    const response = await fetch('/api/auth-token/set-token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: jsonBody,
-      credentials: 'include',
-    });
+    const response = await fetch(
+      '/api/auth-token/set-token',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: jsonBody,
+        credentials: 'include',
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -145,7 +153,10 @@ const setTokenCookie = async (token: string) => {
     }
 
     const data = await response.json();
-    console.log('Token cookie set response:', data);
+    console.log(
+      'Token cookie set response:',
+      data
+    );
   } catch (err) {
     console.error(
       'Failed to set token cookie:',
@@ -422,7 +433,9 @@ const AuthProvider = ({
                 'accessToken',
                 data.access_token
               );
-              await setTokenCookie(data.access_token);
+              await setTokenCookie(
+                data.access_token
+              );
 
               // Schedule token refresh
               const refreshTime =
@@ -495,7 +508,8 @@ const AuthProvider = ({
     console.log('Performing login redirect...');
     if (isMounted) {
       // Get the redirect URL from the current window location
-      const loginRedirect = window.location.origin + '/';
+      const loginRedirect =
+        window.location.origin + '/';
 
       try {
         // Force redirect to Keycloak login page
@@ -504,7 +518,10 @@ const AuthProvider = ({
           prompt: 'login', // Force showing the login page even if already authenticated
         });
       } catch (err) {
-        console.error('Login redirect error:', err);
+        console.error(
+          'Login redirect error:',
+          err
+        );
         setError(
           err instanceof Error
             ? `Login redirect failed: ${err.message}`
@@ -675,7 +692,11 @@ const AuthProvider = ({
           refreshTimeout = null;
         }
       };
-    }, [isMounted, handleTokenRefresh, performLogin]);
+    }, [
+      isMounted,
+      handleTokenRefresh,
+      performLogin,
+    ]);
 
   useEffect(() => {
     if (isMounted && !initStartedRef.current) {

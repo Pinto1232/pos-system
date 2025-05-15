@@ -1,7 +1,14 @@
 'use client';
 
 import React, { ErrorInfo } from 'react';
-import { Box, Typography, Alert, Button, Collapse, Paper } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Alert,
+  Button,
+  Collapse,
+  Paper,
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -20,17 +27,28 @@ export interface DashboardErrorProps {
  * - Support cache revalidation
  * - Provide better debugging information
  */
-export default function DashboardError({ error, errorInfo, reset }: DashboardErrorProps) {
+export default function DashboardError({
+  error,
+  errorInfo,
+  reset,
+}: DashboardErrorProps) {
   const router = useRouter();
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] =
+    useState(false);
 
   return (
     <Box sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
       <Alert severity="error" sx={{ mb: 2 }}>
-        <Typography variant="h6" component="div" gutterBottom>
+        <Typography
+          variant="h6"
+          component="div"
+          gutterBottom
+        >
           Error loading dashboard
         </Typography>
-        <Typography variant="body1">{error.message}</Typography>
+        <Typography variant="body1">
+          {error.message}
+        </Typography>
       </Alert>
 
       {/* Error details (expandable) */}
@@ -39,28 +57,60 @@ export default function DashboardError({ error, errorInfo, reset }: DashboardErr
           variant="text"
           color="info"
           size="small"
-          onClick={() => setShowDetails(!showDetails)}
+          onClick={() =>
+            setShowDetails(!showDetails)
+          }
           sx={{ mb: 1 }}
         >
-          {showDetails ? 'Hide' : 'Show'} Technical Details
+          {showDetails ? 'Hide' : 'Show'}{' '}
+          Technical Details
         </Button>
 
         <Collapse in={showDetails}>
-          <Paper sx={{ p: 2, bgcolor: '#f5f5f5', overflowX: 'auto' }}>
-            <Typography variant="subtitle2" color="error" gutterBottom>
+          <Paper
+            sx={{
+              p: 2,
+              bgcolor: '#f5f5f5',
+              overflowX: 'auto',
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              color="error"
+              gutterBottom
+            >
               Error: {error.name}
             </Typography>
 
-            <Typography variant="body2" component="pre" sx={{ whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
+            <Typography
+              variant="body2"
+              component="pre"
+              sx={{
+                whiteSpace: 'pre-wrap',
+                fontSize: '0.8rem',
+              }}
+            >
               {error.stack || error.message}
             </Typography>
 
             {errorInfo && (
               <>
-                <Typography variant="subtitle2" color="error" sx={{ mt: 2 }} gutterBottom>
+                <Typography
+                  variant="subtitle2"
+                  color="error"
+                  sx={{ mt: 2 }}
+                  gutterBottom
+                >
                   Component Stack:
                 </Typography>
-                <Typography variant="body2" component="pre" sx={{ whiteSpace: 'pre-wrap', fontSize: '0.8rem' }}>
+                <Typography
+                  variant="body2"
+                  component="pre"
+                  sx={{
+                    whiteSpace: 'pre-wrap',
+                    fontSize: '0.8rem',
+                  }}
+                >
                   {errorInfo.componentStack}
                 </Typography>
               </>
@@ -69,11 +119,18 @@ export default function DashboardError({ error, errorInfo, reset }: DashboardErr
         </Collapse>
       </Box>
 
-      <Typography variant="body2" color="text.secondary" paragraph>
-        This error might be caused by stale data. Try refreshing to get the latest content.
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        paragraph
+      >
+        This error might be caused by stale data.
+        Try refreshing to get the latest content.
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+      <Box
+        sx={{ display: 'flex', gap: 2, mt: 2 }}
+      >
         <Button
           variant="contained"
           color="primary"

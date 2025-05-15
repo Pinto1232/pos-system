@@ -52,7 +52,9 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
 
     // Handle custom package base price
     if (
-      packageData.type.toLowerCase().includes('custom') &&
+      packageData.type
+        .toLowerCase()
+        .includes('custom') &&
       displayPrice === 0
     ) {
       // Use 129.99 as the base price in USD
@@ -88,17 +90,22 @@ const PricingPackageCard: React.FC<PricingPackageProps> =
     ) {
       // If we have a specific price for this currency, use it directly
       displayPrice = multiCurrency[currency];
-      console.log(`Using specific ${currency} price from multiCurrencyPrices: ${displayPrice}`);
+      console.log(
+        `Using specific ${currency} price from multiCurrencyPrices: ${displayPrice}`
+      );
     } else if (currency !== 'USD') {
       // Only apply rate conversion if we're not in USD and don't have a specific price
       displayPrice = displayPrice * rate;
-      console.log(`Converting price from USD to ${currency} using rate ${rate}: ${displayPrice}`);
+      console.log(
+        `Converting price from USD to ${currency} using rate ${rate}: ${displayPrice}`
+      );
     }
 
     const convertedPrice =
       formatPrice(displayPrice);
-    const isCustom =
-      packageData.type.toLowerCase().includes('custom');
+    const isCustom = packageData.type
+      .toLowerCase()
+      .includes('custom');
 
     const displayCurrency = currencySymbol;
 

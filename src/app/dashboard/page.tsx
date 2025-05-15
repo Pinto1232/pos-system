@@ -5,7 +5,10 @@ import DashboardLoading from './DashboardLoading';
 import { fetchUserSubscriptionData } from './UserSubscriptionFetcher';
 import AuthCheck from './AuthCheck';
 import ErrorBoundary from './ErrorBoundary';
-import { CACHE_TIMES, CACHE_TAGS } from '../cache-constants';
+import {
+  CACHE_TIMES,
+  CACHE_TAGS,
+} from '../cache-constants';
 
 // Configure ISR with revalidation using centralized cache configuration
 export const revalidate = CACHE_TIMES.DASHBOARD; // Revalidate based on dashboard cache time
@@ -26,7 +29,8 @@ export default async function Dashboard() {
 
   try {
     // Fetch user subscription data on the server
-    const userSubscription = await fetchUserSubscriptionData(userId);
+    const userSubscription =
+      await fetchUserSubscriptionData(userId);
 
     // Render the dashboard with suspense for better loading experience
     // and error boundary for error handling with cache integration
@@ -35,16 +39,23 @@ export default async function Dashboard() {
         cacheTags={[
           CACHE_TAGS.DASHBOARD,
           CACHE_TAGS.USER_SUBSCRIPTION,
-          `user-${userId}`
+          `user-${userId}`,
         ]}
       >
         <Suspense fallback={<DashboardLoading />}>
-          <DashboardClient initialSubscriptionData={userSubscription} />
+          <DashboardClient
+            initialSubscriptionData={
+              userSubscription
+            }
+          />
         </Suspense>
       </ErrorBoundary>
     );
   } catch (error) {
-    console.error('Error rendering dashboard:', error);
+    console.error(
+      'Error rendering dashboard:',
+      error
+    );
     return notFound();
   }
 }

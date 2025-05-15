@@ -25,14 +25,15 @@ const fallbackAddOns = [
   {
     id: 1,
     name: 'Advanced Analytics',
-    description: 'Detailed business analytics and insights',
-    price: 15.00,
+    description:
+      'Detailed business analytics and insights',
+    price: 15.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 15.00,
-      'EUR': 13.50,
-      'GBP': 11.50,
-      'ZAR': 270.00
+      USD: 15.0,
+      EUR: 13.5,
+      GBP: 11.5,
+      ZAR: 270.0,
     }),
     category: 'Analytics',
     isActive: true,
@@ -40,25 +41,26 @@ const fallbackAddOns = [
       'Real-time data visualization',
       'Custom report generation',
       'Data export capabilities',
-      'Trend analysis'
+      'Trend analysis',
     ]),
     dependencies: JSON.stringify([
       'Internet connection',
-      'Modern browser'
+      'Modern browser',
     ]),
-    icon: 'analytics_icon'
+    icon: 'analytics_icon',
   },
   {
     id: 2,
     name: 'API Access',
-    description: 'Access to API for custom integrations',
-    price: 25.00,
+    description:
+      'Access to API for custom integrations',
+    price: 25.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 25.00,
-      'EUR': 22.50,
-      'GBP': 19.50,
-      'ZAR': 450.00
+      USD: 25.0,
+      EUR: 22.5,
+      GBP: 19.5,
+      ZAR: 450.0,
     }),
     category: 'Integration',
     isActive: true,
@@ -66,25 +68,26 @@ const fallbackAddOns = [
       'RESTful API endpoints',
       'Webhook notifications',
       'Custom integration options',
-      'API documentation'
+      'API documentation',
     ]),
     dependencies: JSON.stringify([
       'Developer knowledge',
-      'API key management'
+      'API key management',
     ]),
-    icon: 'api_icon'
+    icon: 'api_icon',
   },
   {
     id: 3,
     name: 'Custom Branding',
-    description: 'White-label solution with your branding',
-    price: 20.00,
+    description:
+      'White-label solution with your branding',
+    price: 20.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 20.00,
-      'EUR': 18.00,
-      'GBP': 15.50,
-      'ZAR': 360.00
+      USD: 20.0,
+      EUR: 18.0,
+      GBP: 15.5,
+      ZAR: 360.0,
     }),
     category: 'Customization',
     isActive: true,
@@ -92,25 +95,26 @@ const fallbackAddOns = [
       'Logo customization',
       'Color scheme adjustment',
       'Custom domain support',
-      'Email template branding'
+      'Email template branding',
     ]),
     dependencies: JSON.stringify([
       'Brand assets',
-      'Logo in SVG format'
+      'Logo in SVG format',
     ]),
-    icon: 'branding_icon'
+    icon: 'branding_icon',
   },
   {
     id: 4,
     name: '24/7 Support',
-    description: 'Round-the-clock customer support',
-    price: 30.00,
+    description:
+      'Round-the-clock customer support',
+    price: 30.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 30.00,
-      'EUR': 27.00,
-      'GBP': 23.50,
-      'ZAR': 540.00
+      USD: 30.0,
+      EUR: 27.0,
+      GBP: 23.5,
+      ZAR: 540.0,
     }),
     category: 'Support',
     isActive: true,
@@ -118,25 +122,26 @@ const fallbackAddOns = [
       'Priority email support',
       'Live chat assistance',
       'Phone support',
-      'Dedicated account manager'
+      'Dedicated account manager',
     ]),
     dependencies: JSON.stringify([
       'Valid support contract',
-      'User account'
+      'User account',
     ]),
-    icon: 'support_icon'
+    icon: 'support_icon',
   },
   {
     id: 5,
     name: 'Data Migration',
-    description: 'Assistance with data migration from other systems',
-    price: 50.00,
+    description:
+      'Assistance with data migration from other systems',
+    price: 50.0,
     currency: 'USD',
     multiCurrencyPrices: JSON.stringify({
-      'USD': 50.00,
-      'EUR': 45.00,
-      'GBP': 39.00,
-      'ZAR': 900.00
+      USD: 50.0,
+      EUR: 45.0,
+      GBP: 39.0,
+      ZAR: 900.0,
     }),
     category: 'Data',
     isActive: true,
@@ -144,32 +149,42 @@ const fallbackAddOns = [
       'Data mapping assistance',
       'Migration planning',
       'Data validation',
-      'Post-migration support'
+      'Post-migration support',
     ]),
     dependencies: JSON.stringify([
       'Source data access',
-      'Data export capabilities from source system'
+      'Data export capabilities from source system',
     ]),
-    icon: 'migration_icon'
-  }
+    icon: 'migration_icon',
+  },
 ];
 
 export async function GET(request: Request) {
   try {
-    console.log('Proxying GET request to backend for add-ons');
-    console.log(`Backend API URL: ${BACKEND_API_URL}/api/AddOns`);
+    console.log(
+      'Proxying GET request to backend for add-ons'
+    );
+    console.log(
+      `Backend API URL: ${BACKEND_API_URL}/api/AddOns`
+    );
 
     // Get query parameters
     const url = new URL(request.url);
-    const category = url.searchParams.get('category');
-    const isActive = url.searchParams.get('isActive');
-    const pageNumber = url.searchParams.get('pageNumber') || '1';
-    const pageSize = url.searchParams.get('pageSize') || '50';
+    const category =
+      url.searchParams.get('category');
+    const isActive =
+      url.searchParams.get('isActive');
+    const pageNumber =
+      url.searchParams.get('pageNumber') || '1';
+    const pageSize =
+      url.searchParams.get('pageSize') || '50';
 
     // Build query string
     let queryString = `?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-    if (category) queryString += `&category=${category}`;
-    if (isActive) queryString += `&isActive=${isActive}`;
+    if (category)
+      queryString += `&category=${category}`;
+    if (isActive)
+      queryString += `&isActive=${isActive}`;
 
     // Forward the request to the backend API
     const response = await fetch(
@@ -179,9 +194,10 @@ export async function GET(request: Request) {
         headers: {
           'Content-Type': 'application/json',
           // Add Cache-Control header to prevent browser caching
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
+          'Cache-Control':
+            'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
         },
         // Add cache: 'no-store' to prevent Next.js caching
         cache: 'no-store',
@@ -194,100 +210,215 @@ export async function GET(request: Request) {
       );
 
       // Log information about the fallback data being used
-      console.log('===== USING FALLBACK ADD-ONS DATA =====');
-      console.log('Number of fallback add-ons:', fallbackAddOns.length);
+      console.log(
+        '===== USING FALLBACK ADD-ONS DATA ====='
+      );
+      console.log(
+        'Number of fallback add-ons:',
+        fallbackAddOns.length
+      );
 
       // Log the first few fallback add-ons in detail
-      fallbackAddOns.slice(0, 3).forEach((addOn, index) => {
-        console.log(`Fallback AddOn #${index + 1} (ID: ${addOn.id}):`);
-        console.log('  Name:', addOn.name);
-        console.log('  Description:', addOn.description);
-        console.log('  Price:', addOn.price);
-        console.log('  Currency:', addOn.currency);
-        console.log('  MultiCurrencyPrices:', addOn.multiCurrencyPrices);
-        console.log('  Category:', addOn.category);
-        console.log('  IsActive:', addOn.isActive);
-        console.log('  Features:', addOn.features);
-        console.log('  Dependencies:', addOn.dependencies);
-        console.log('  Icon:', addOn.icon);
-      });
+      fallbackAddOns
+        .slice(0, 3)
+        .forEach((addOn, index) => {
+          console.log(
+            `Fallback AddOn #${index + 1} (ID: ${addOn.id}):`
+          );
+          console.log('  Name:', addOn.name);
+          console.log(
+            '  Description:',
+            addOn.description
+          );
+          console.log('  Price:', addOn.price);
+          console.log(
+            '  Currency:',
+            addOn.currency
+          );
+          console.log(
+            '  MultiCurrencyPrices:',
+            addOn.multiCurrencyPrices
+          );
+          console.log(
+            '  Category:',
+            addOn.category
+          );
+          console.log(
+            '  IsActive:',
+            addOn.isActive
+          );
+          console.log(
+            '  Features:',
+            addOn.features
+          );
+          console.log(
+            '  Dependencies:',
+            addOn.dependencies
+          );
+          console.log('  Icon:', addOn.icon);
+        });
 
       if (fallbackAddOns.length > 3) {
-        console.log(`... and ${fallbackAddOns.length - 3} more fallback add-ons`);
+        console.log(
+          `... and ${fallbackAddOns.length - 3} more fallback add-ons`
+        );
       }
-      console.log('=======================================');
+      console.log(
+        '======================================='
+      );
 
       return NextResponse.json({
         totalItems: fallbackAddOns.length,
-        data: fallbackAddOns
+        data: fallbackAddOns,
       });
     }
 
     const data = await response.json();
-    console.log('Successfully fetched add-ons from backend');
+    console.log(
+      'Successfully fetched add-ons from backend'
+    );
 
     // Log detailed information about the AddOns data received from the backend
-    console.log('===== ADD-ONS API RESPONSE DATA =====');
+    console.log(
+      '===== ADD-ONS API RESPONSE DATA ====='
+    );
     console.log('Total items:', data.totalItems);
-    console.log('Response structure:', Object.keys(data));
+    console.log(
+      'Response structure:',
+      Object.keys(data)
+    );
 
     if (data.data && Array.isArray(data.data)) {
-      console.log('Number of add-ons received:', data.data.length);
+      console.log(
+        'Number of add-ons received:',
+        data.data.length
+      );
 
       // Log the first few add-ons in detail
-      data.data.slice(0, 3).forEach((addOn: AddOn, index: number) => {
-        console.log(`AddOn #${index + 1} (ID: ${addOn.id}):`);
-        console.log('  Name:', addOn.name);
-        console.log('  Description:', addOn.description);
-        console.log('  Price:', addOn.price);
-        console.log('  Currency:', addOn.currency);
-        console.log('  MultiCurrencyPrices:', addOn.multiCurrencyPrices);
-        console.log('  Category:', addOn.category);
-        console.log('  IsActive:', addOn.isActive);
-        console.log('  Features:', addOn.features);
-        console.log('  Dependencies:', addOn.dependencies);
-        console.log('  Icon:', addOn.icon);
-        console.log('  Properties:', Object.keys(addOn));
-      });
+      data.data
+        .slice(0, 3)
+        .forEach(
+          (addOn: AddOn, index: number) => {
+            console.log(
+              `AddOn #${index + 1} (ID: ${addOn.id}):`
+            );
+            console.log('  Name:', addOn.name);
+            console.log(
+              '  Description:',
+              addOn.description
+            );
+            console.log('  Price:', addOn.price);
+            console.log(
+              '  Currency:',
+              addOn.currency
+            );
+            console.log(
+              '  MultiCurrencyPrices:',
+              addOn.multiCurrencyPrices
+            );
+            console.log(
+              '  Category:',
+              addOn.category
+            );
+            console.log(
+              '  IsActive:',
+              addOn.isActive
+            );
+            console.log(
+              '  Features:',
+              addOn.features
+            );
+            console.log(
+              '  Dependencies:',
+              addOn.dependencies
+            );
+            console.log('  Icon:', addOn.icon);
+            console.log(
+              '  Properties:',
+              Object.keys(addOn)
+            );
+          }
+        );
 
       if (data.data.length > 3) {
-        console.log(`... and ${data.data.length - 3} more add-ons`);
+        console.log(
+          `... and ${data.data.length - 3} more add-ons`
+        );
       }
     }
-    console.log('=====================================');
+    console.log(
+      '====================================='
+    );
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error fetching add-ons:', error);
+    console.error(
+      'Error fetching add-ons:',
+      error
+    );
 
     // Log information about the fallback data being used due to error
-    console.log('===== USING FALLBACK ADD-ONS DATA DUE TO ERROR =====');
+    console.log(
+      '===== USING FALLBACK ADD-ONS DATA DUE TO ERROR ====='
+    );
     console.log('Error details:', error);
-    console.log('Number of fallback add-ons:', fallbackAddOns.length);
+    console.log(
+      'Number of fallback add-ons:',
+      fallbackAddOns.length
+    );
 
     // Log the first few fallback add-ons in detail
-    fallbackAddOns.slice(0, 3).forEach((addOn, index) => {
-      console.log(`Fallback AddOn #${index + 1} (ID: ${addOn.id}):`);
-      console.log('  Name:', addOn.name);
-      console.log('  Description:', addOn.description);
-      console.log('  Price:', addOn.price);
-      console.log('  Currency:', addOn.currency);
-      console.log('  MultiCurrencyPrices:', addOn.multiCurrencyPrices);
-      console.log('  Category:', addOn.category);
-      console.log('  IsActive:', addOn.isActive);
-      console.log('  Features:', addOn.features);
-      console.log('  Dependencies:', addOn.dependencies);
-      console.log('  Icon:', addOn.icon);
-    });
+    fallbackAddOns
+      .slice(0, 3)
+      .forEach((addOn, index) => {
+        console.log(
+          `Fallback AddOn #${index + 1} (ID: ${addOn.id}):`
+        );
+        console.log('  Name:', addOn.name);
+        console.log(
+          '  Description:',
+          addOn.description
+        );
+        console.log('  Price:', addOn.price);
+        console.log(
+          '  Currency:',
+          addOn.currency
+        );
+        console.log(
+          '  MultiCurrencyPrices:',
+          addOn.multiCurrencyPrices
+        );
+        console.log(
+          '  Category:',
+          addOn.category
+        );
+        console.log(
+          '  IsActive:',
+          addOn.isActive
+        );
+        console.log(
+          '  Features:',
+          addOn.features
+        );
+        console.log(
+          '  Dependencies:',
+          addOn.dependencies
+        );
+        console.log('  Icon:', addOn.icon);
+      });
 
     if (fallbackAddOns.length > 3) {
-      console.log(`... and ${fallbackAddOns.length - 3} more fallback add-ons`);
+      console.log(
+        `... and ${fallbackAddOns.length - 3} more fallback add-ons`
+      );
     }
-    console.log('=================================================');
+    console.log(
+      '================================================='
+    );
 
     return NextResponse.json({
       totalItems: fallbackAddOns.length,
-      data: fallbackAddOns
+      data: fallbackAddOns,
     });
   }
 }
@@ -295,7 +426,10 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('Proxying POST request to backend for creating add-on', body);
+    console.log(
+      'Proxying POST request to backend for creating add-on',
+      body
+    );
 
     // Forward the request to the backend API
     const response = await fetch(
@@ -320,10 +454,15 @@ export async function POST(request: Request) {
     }
 
     const data = await response.json();
-    console.log('Successfully created add-on in backend');
+    console.log(
+      'Successfully created add-on in backend'
+    );
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error creating add-on:', error);
+    console.error(
+      'Error creating add-on:',
+      error
+    );
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

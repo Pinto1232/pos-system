@@ -1,6 +1,10 @@
 'use client';
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, {
+  Component,
+  ErrorInfo,
+  ReactNode,
+} from 'react';
 import DashboardError from './DashboardError';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -28,30 +32,42 @@ interface State {
  * - Supports cache revalidation on error
  * - Includes retry mechanism that can refresh cached data
  */
-class ErrorBoundaryClass extends Component<Props, State> {
+class ErrorBoundaryClass extends Component<
+  Props,
+  State
+> {
   constructor(props: Props) {
     super(props);
     this.state = {
       hasError: false,
       error: null,
-      errorInfo: null
+      errorInfo: null,
     };
   }
 
-  static getDerivedStateFromError(error: Error): Partial<State> {
+  static getDerivedStateFromError(
+    error: Error
+  ): Partial<State> {
     // Update state so the next render will show the fallback UI
     return {
       hasError: true,
-      error
+      error,
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+  componentDidCatch(
+    error: Error,
+    errorInfo: ErrorInfo
+  ): void {
     // Update state with error info for better debugging
     this.setState({ errorInfo });
 
     // Log the error to an error reporting service
-    console.error('Error caught by boundary:', error, errorInfo);
+    console.error(
+      'Error caught by boundary:',
+      error,
+      errorInfo
+    );
 
     // You could add additional error reporting here
     // e.g., send to an error tracking service
@@ -65,7 +81,10 @@ class ErrorBoundaryClass extends Component<Props, State> {
         // @ts-expect-error - Using custom property added by the wrapper
         await this.refreshCache();
       } catch (err) {
-        console.error('Error refreshing cache during reset:', err);
+        console.error(
+          'Error refreshing cache during reset:',
+          err
+        );
       }
     }
 
@@ -73,9 +92,9 @@ class ErrorBoundaryClass extends Component<Props, State> {
     this.setState({
       hasError: false,
       error: null,
-      errorInfo: null
+      errorInfo: null,
     });
-  }
+  };
 
   render(): ReactNode {
     if (this.state.hasError) {
@@ -98,7 +117,10 @@ class ErrorBoundaryClass extends Component<Props, State> {
  * Wrapper component that provides React Query client to the error boundary
  * This allows us to invalidate cache when errors occur
  */
-export default function ErrorBoundary({ children, cacheTags }: Props): ReactNode {
+export default function ErrorBoundary({
+  children,
+  cacheTags,
+}: Props): ReactNode {
   // Get React Query client for cache operations
   const queryClient = useQueryClient();
 
@@ -110,20 +132,29 @@ export default function ErrorBoundary({ children, cacheTags }: Props): ReactNode
         // We're attaching a custom method to the class instance
         if (errorBoundary) {
           // @ts-expect-error - Adding a custom property to the component instance
-          errorBoundary.refreshCache = async () => {
-            // If cache tags are provided, invalidate those specific queries
-            if (cacheTags && cacheTags.length > 0) {
-              console.log('Invalidating cache tags on error:', cacheTags);
+          errorBoundary.refreshCache =
+            async () => {
+              // If cache tags are provided, invalidate those specific queries
+              if (
+                cacheTags &&
+                cacheTags.length > 0
+              ) {
+                console.log(
+                  'Invalidating cache tags on error:',
+                  cacheTags
+                );
 
-              // Invalidate each cache tag
-              cacheTags.forEach(tag => {
-                queryClient.invalidateQueries({ queryKey: [tag] });
-              });
-            }
+                // Invalidate each cache tag
+                cacheTags.forEach((tag) => {
+                  queryClient.invalidateQueries({
+                    queryKey: [tag],
+                  });
+                });
+              }
 
-            // Optionally, refetch active queries to get fresh data
-            await queryClient.refetchQueries();
-          };
+              // Optionally, refetch active queries to get fresh data
+              await queryClient.refetchQueries();
+            };
         }
       }}
     >

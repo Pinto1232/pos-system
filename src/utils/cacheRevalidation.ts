@@ -1,6 +1,9 @@
 'use server';
 
-import { revalidatePath, revalidateTag } from 'next/cache';
+import {
+  revalidatePath,
+  revalidateTag,
+} from 'next/cache';
 import { CACHE_TAGS } from '../app/cache-constants';
 
 /**
@@ -12,7 +15,9 @@ import { CACHE_TAGS } from '../app/cache-constants';
  * Revalidate a specific path in the application
  * @param path The path to revalidate
  */
-export async function revalidatePathAction(path: string): Promise<void> {
+export async function revalidatePathAction(
+  path: string
+): Promise<void> {
   console.log(`Revalidating path: ${path}`);
   revalidatePath(path);
 }
@@ -21,7 +26,9 @@ export async function revalidatePathAction(path: string): Promise<void> {
  * Revalidate a specific cache tag
  * @param tag The cache tag to revalidate
  */
-export async function revalidateTagAction(tag: string): Promise<void> {
+export async function revalidateTagAction(
+  tag: string
+): Promise<void> {
   console.log(`Revalidating tag: ${tag}`);
   revalidateTag(tag);
 }
@@ -30,7 +37,9 @@ export async function revalidateTagAction(tag: string): Promise<void> {
  * Revalidate pricing packages data
  */
 export async function revalidatePricingPackagesAction(): Promise<void> {
-  console.log('Revalidating pricing packages data');
+  console.log(
+    'Revalidating pricing packages data'
+  );
   revalidateTag(CACHE_TAGS.PRICING_PACKAGES);
   revalidatePath('/pricing-packages');
   revalidatePath('/api/pricing-packages');
@@ -50,8 +59,12 @@ export async function revalidateDashboardAction(): Promise<void> {
  * Revalidate user-specific data
  * @param userId The user ID
  */
-export async function revalidateUserDataAction(userId: string): Promise<void> {
-  console.log(`Revalidating data for user: ${userId}`);
+export async function revalidateUserDataAction(
+  userId: string
+): Promise<void> {
+  console.log(
+    `Revalidating data for user: ${userId}`
+  );
   revalidateTag(`user-${userId}`);
   revalidateTag(CACHE_TAGS.USER_DATA);
   revalidateTag(CACHE_TAGS.USER_SUBSCRIPTION);
@@ -67,7 +80,7 @@ export async function revalidateAllCacheAction(): Promise<void> {
   console.log('Revalidating all cache data');
 
   // Revalidate main content areas
-  Object.values(CACHE_TAGS).forEach(tag => {
+  Object.values(CACHE_TAGS).forEach((tag) => {
     revalidateTag(tag);
   });
 

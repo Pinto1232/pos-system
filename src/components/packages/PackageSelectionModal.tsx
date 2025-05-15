@@ -1,6 +1,11 @@
 'use client';
 
-import React, { memo, Suspense, useRef, useEffect } from 'react';
+import React, {
+  memo,
+  Suspense,
+  useRef,
+  useEffect,
+} from 'react';
 import {
   Modal,
   Box,
@@ -36,7 +41,9 @@ const PackageSelectionModal: React.FC = memo(
     }, [isModalOpen]);
 
     // Handle keyboard events for accessibility
-    const handleKeyDown = (event: React.KeyboardEvent) => {
+    const handleKeyDown = (
+      event: React.KeyboardEvent
+    ) => {
       if (event.key === 'Escape') {
         closeModal();
       }
@@ -46,7 +53,8 @@ const PackageSelectionModal: React.FC = memo(
     if (!selectedPackage || loading) return null;
 
     const renderPackageLayout = () => {
-      const packageType = selectedPackage.type.toLowerCase();
+      const packageType =
+        selectedPackage.type.toLowerCase();
 
       // Handle new package types based on their prefix
       if (packageType.includes('custom')) {
@@ -57,7 +65,9 @@ const PackageSelectionModal: React.FC = memo(
             }
           />
         );
-      } else if (packageType.includes('starter')) {
+      } else if (
+        packageType.includes('starter')
+      ) {
         return (
           <StarterPackageLayout
             selectedPackage={selectedPackage}
@@ -69,20 +79,26 @@ const PackageSelectionModal: React.FC = memo(
             selectedPackage={selectedPackage}
           />
         );
-      } else if (packageType.includes('enterprise')) {
+      } else if (
+        packageType.includes('enterprise')
+      ) {
         return (
           <EnterprisePackageLayout
             selectedPackage={selectedPackage}
           />
         );
-      } else if (packageType.includes('premium')) {
+      } else if (
+        packageType.includes('premium')
+      ) {
         return (
           <PremiumPackageLayout
             selectedPackage={selectedPackage}
           />
         );
       } else {
-        console.warn(`Unknown package type: ${packageType}. Defaulting to Starter package layout.`);
+        console.warn(
+          `Unknown package type: ${packageType}. Defaulting to Starter package layout.`
+        );
         return (
           <StarterPackageLayout
             selectedPackage={selectedPackage}

@@ -1,7 +1,10 @@
 'use server';
 
 // Import constants from separate file (without 'use server' directive)
-import { CACHE_TIMES, CACHE_TAGS } from './cache-constants';
+import {
+  CACHE_TIMES,
+  CACHE_TAGS,
+} from './cache-constants';
 
 // We can't re-export constants directly with 'use server'
 // Instead, create async functions to access them
@@ -28,12 +31,15 @@ export async function getCacheTags() {
  * @param tags Cache tags for revalidation
  * @returns Fetch options object with Next.js cache configuration
  */
-export async function getCacheOptions(duration: number, tags: string[] = []) {
+export async function getCacheOptions(
+  duration: number,
+  tags: string[] = []
+) {
   return {
     next: {
       revalidate: duration,
       tags: tags,
-    }
+    },
   };
 }
 
@@ -43,7 +49,10 @@ export async function getCacheOptions(duration: number, tags: string[] = []) {
  * @param staleWhileRevalidate Stale while revalidate duration in seconds
  * @returns Cache-Control header value
  */
-export async function getCacheControlHeaders(maxAge: number, staleWhileRevalidate: number = maxAge * 10) {
+export async function getCacheControlHeaders(
+  maxAge: number,
+  staleWhileRevalidate: number = maxAge * 10
+) {
   return {
     'Cache-Control': `public, s-maxage=${maxAge}, stale-while-revalidate=${staleWhileRevalidate}`,
   };
