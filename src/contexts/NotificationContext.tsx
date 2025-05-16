@@ -66,35 +66,42 @@ export const NotificationProvider: React.FC<{
   const createNotificationMutation =
     useCreateNotification();
 
-  // Mark notifications as read
-  const markAsRead = async (
-    notificationIds: string[]
-  ): Promise<void> => {
-    await markAsReadMutation.mutateAsync({
-      notificationIds,
-    });
-  };
+  // Mark notifications as read - memoized to prevent recreation on each render
+  const markAsRead = React.useCallback(
+    async (
+      notificationIds: string[]
+    ): Promise<void> => {
+      await markAsReadMutation.mutateAsync({
+        notificationIds,
+      });
+    },
+    [markAsReadMutation]
+  );
 
-  // Mark all notifications as read
+  // Mark all notifications as read - memoized to prevent recreation on each render
   const markAllAsRead =
-    async (): Promise<void> => {
+    React.useCallback(async (): Promise<void> => {
       await markAllAsReadMutation.mutateAsync();
-    };
+    }, [markAllAsReadMutation]);
 
-  // Create a new notification
-  const addNotification = async (
-    notification: CreateNotificationRequest
-  ): Promise<Notification> => {
-    return await createNotificationMutation.mutateAsync(
-      notification
-    );
-  };
+  // Create a new notification - memoized to prevent recreation on each render
+  const addNotification = React.useCallback(
+    async (
+      notification: CreateNotificationRequest
+    ): Promise<Notification> => {
+      return await createNotificationMutation.mutateAsync(
+        notification
+      );
+    },
+    [createNotificationMutation]
+  );
 
-  // Refresh notifications
-  const refreshNotifications = () => {
-    refetch();
-    unreadCountQuery.refetch();
-  };
+  // Refresh notifications - memoized to prevent recreation on each render
+  const refreshNotifications =
+    React.useCallback(() => {
+      refetch();
+      unreadCountQuery.refetch();
+    }, [refetch, unreadCountQuery]);
 
   // Set up polling for notifications (every 30 seconds)
   useEffect(() => {
@@ -103,21 +110,37 @@ export const NotificationProvider: React.FC<{
     }, 30000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [refreshNotifications]); // Add refreshNotifications as a dependency
 
-  const value = {
-    notifications: data?.notifications || [],
-    unreadCount: unreadCountQuery.data || 0,
-    totalCount: data?.totalCount || 0,
-    isLoading,
-    error: error || null,
-    markAsRead,
-    markAllAsRead,
-    createNotification: addNotification,
-    refreshNotifications,
-    filters,
-    setFilters,
-  };
+  // Memoize the context value to prevent unnecessary re-renders
+  const value = React.useMemo(
+    () => ({
+      notifications: data?.notifications || [],
+      unreadCount: unreadCountQuery.data || 0,
+      totalCount: data?.totalCount || 0,
+      isLoading,
+      error: error || null,
+      markAsRead,
+      markAllAsRead,
+      createNotification: addNotification,
+      refreshNotifications,
+      filters,
+      setFilters,
+    }),
+    [
+      data?.notifications,
+      data?.totalCount,
+      unreadCountQuery.data,
+      isLoading,
+      error,
+      markAsRead,
+      markAllAsRead,
+      addNotification,
+      refreshNotifications,
+      filters,
+      setFilters,
+    ]
+  );
 
   return (
     <NotificationContext.Provider value={value}>

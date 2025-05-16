@@ -50,36 +50,38 @@ export const SpinnerProvider = ({
   const timeoutRef =
     useRef<NodeJS.Timeout | null>(null);
 
-  const clearTimeouts = () => {
+  const clearTimeouts = React.useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-  };
+  }, []);
 
-  const startLoading = (options?: {
-    timeout?: number;
-  }) => {
-    clearTimeouts();
-    setLoading(true);
-    const timeoutDuration =
-      options?.timeout || DEFAULT_TIMEOUT;
+  // Memoize functions to prevent unnecessary re-renders
+  const startLoading = React.useCallback(
+    (options?: { timeout?: number }) => {
+      clearTimeouts();
+      setLoading(true);
+      const timeoutDuration =
+        options?.timeout || DEFAULT_TIMEOUT;
 
-    timeoutRef.current = setTimeout(() => {
-      setLoading(false);
-    }, timeoutDuration);
-  };
+      timeoutRef.current = setTimeout(() => {
+        setLoading(false);
+      }, timeoutDuration);
+    },
+    [clearTimeouts]
+  );
 
-  const stopLoading = () => {
+  const stopLoading = React.useCallback(() => {
     clearTimeouts();
     setLoading(false);
-  };
+  }, [clearTimeouts]);
 
   useEffect(() => {
     return () => {
       clearTimeouts();
     };
-  }, []);
+  }, [clearTimeouts]);
 
   useEffect(() => {
     if (isDashboard && loading) {
@@ -91,17 +93,28 @@ export const SpinnerProvider = ({
     }
   }, [isDashboard, loading]);
 
+  // Memoize the context value to prevent unnecessary re-renders
+  const contextValue = React.useMemo(
+    () => ({
+      loading,
+      setLoading,
+      startLoading,
+      stopLoading,
+      error,
+      setError,
+    }),
+    [
+      loading,
+      setLoading,
+      startLoading,
+      stopLoading,
+      error,
+      setError,
+    ]
+  );
+
   return (
-    <SpinnerContext.Provider
-      value={{
-        loading,
-        setLoading,
-        startLoading,
-        stopLoading,
-        error,
-        setError,
-      }}
-    >
+    <SpinnerContext.Provider value={contextValue}>
       <Fade
         in={loading && !isDashboard}
         timeout={300}

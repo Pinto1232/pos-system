@@ -169,7 +169,10 @@ function Hero({
             {formattedSubheading}
           </Typography>
 
-          <Box className={styles.heroButtons}>
+          <Box
+            className={styles.heroButtons}
+            sx={{ position: 'relative' }}
+          >
             <Button
               variant="contained"
               className={styles.heroBtnPrimary}
@@ -205,6 +208,31 @@ function Hero({
             >
               {ctaSecondary} &rarr;
             </Link>
+
+            {/* Decorative dot below the button - visible only on laptop screens */}
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: '-30px',
+                left: '25%',
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                background:
+                  'rgba(255, 165, 0, 0.8)',
+                boxShadow:
+                  '0 0 10px rgba(255, 165, 0, 0.5)',
+                zIndex: 1,
+                animation: 'pulse 4s infinite',
+                display: {
+                  xs: 'none',
+                  sm: 'none',
+                  md: 'block',
+                  lg: 'none',
+                  xl: 'none',
+                },
+              }}
+            />
           </Box>
         </Box>
 
@@ -213,18 +241,30 @@ function Hero({
           sx={{
             order: { xs: 0, md: 1 },
             marginBottom: { xs: '1.5rem', md: 0 },
-            width: { xs: '100%', md: 'auto' },
-            maxWidth: { xs: '800px', md: 'none' },
+            width: { xs: '100%', md: '50%' },
+            maxWidth: {
+              xs: '800px',
+              md: '600px',
+            },
             margin: { xs: '0 auto', md: 0 },
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           <Image
             src={ladyImage}
             alt="POS Devices"
             className={styles.heroLadyImage}
-            width={800}
-            height={800}
-            sizes="(max-width: 768px) 90vw, 800px"
+            width={600}
+            height={600}
+            sizes="(max-width: 480px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 500px, 600px"
+            style={{
+              objectFit: 'contain',
+              width: '100%',
+              height: 'auto',
+              maxHeight: '600px',
+            }}
             priority
           />
         </Box>

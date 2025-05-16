@@ -842,10 +842,29 @@ const CustomPackageLayout: React.FC<
   };
 
   const handleCheckboxChange = (id: string) => {
-    setCheckboxStates((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    // Reset all checkboxes first to ensure only one is selected at a time
+    const resetState = Object.keys(
+      checkboxStates
+    ).reduce(
+      (acc, key) => {
+        acc[key] = false;
+        return acc;
+      },
+      {} as Record<string, boolean>
+    );
+
+    // Toggle the clicked checkbox (if it was already true, it will be false after reset)
+    setCheckboxStates({
+      ...resetState,
+      [id]: !checkboxStates[id],
+    });
+  };
+
+  // Check if any checkbox is selected
+  const isAnyCheckboxSelected = () => {
+    return Object.values(checkboxStates).some(
+      (value) => value === true
+    );
   };
 
   const handlePlanSelect = (index: number) => {
@@ -1414,15 +1433,26 @@ const CustomPackageLayout: React.FC<
               <Button
                 className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
                 variant="contained"
-                onClick={handleSave}
+                onClick={() => {
+                  setLoading(true);
+                  // Simulate API call with a timeout
+                  setTimeout(() => {
+                    handleSave();
+                    setLoading(false);
+                  }, 2000); // Show spinner for 2 seconds
+                }}
                 disabled={
                   loading ||
+                  !isAnyCheckboxSelected() ||
                   (isCustomizable &&
                     selectedFeatures.length === 0)
                 }
               >
                 {loading ? (
-                  <CircularProgress size={20} />
+                  <CircularProgress
+                    size={20}
+                    sx={{ color: 'white' }}
+                  />
                 ) : (
                   'Continue'
                 )}
@@ -2475,6 +2505,10 @@ const CustomPackageLayout: React.FC<
               className={
                 styles.paymentPlansContainer
               }
+              sx={{
+                display: 'grid',
+                width: '100%',
+              }}
             >
               {[
                 {
@@ -2642,6 +2676,9 @@ const CustomPackageLayout: React.FC<
                       selectedPlanIndex !== index
                         ? 'none'
                         : 'auto',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
                   }}
                 >
                   <Typography
@@ -2676,9 +2713,15 @@ const CustomPackageLayout: React.FC<
                           styles.paymentTotalPrice
                         }
                         sx={{
-                          fontSize: '0.85rem',
-                          color: '#6B7280',
-                          mt: 0.5,
+                          fontSize: '0.875rem',
+                          color: '#4B5563',
+                          mt: 0.75,
+                          fontWeight: 500,
+                          padding: '4px 8px',
+                          background:
+                            'rgba(37, 99, 235, 0.08)',
+                          borderRadius: '4px',
+                          display: 'inline-block',
                         }}
                       >
                         {plan.totalPrice}
@@ -2689,23 +2732,22 @@ const CustomPackageLayout: React.FC<
                     className={
                       styles.paymentFeatures
                     }
+                    sx={{
+                      flexGrow: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent:
+                        'flex-start',
+                    }}
                   >
                     {plan.features.map(
                       (feature, idx) => (
                         <Typography
                           key={idx}
                           component="li"
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            '&::before': {
-                              content: '"✓"',
-                              color: '#2563eb',
-                              marginRight:
-                                '0.5rem',
-                              fontWeight: 'bold',
-                            },
-                          }}
+                          className={
+                            styles.featureItem
+                          }
                         >
                           {feature}
                         </Typography>
@@ -2738,6 +2780,15 @@ const CustomPackageLayout: React.FC<
                             ? '#166534'
                             : '#1d4ed8',
                       },
+                      marginTop: 'auto',
+                      padding: '0.75rem',
+                      fontWeight: 600,
+                      boxShadow:
+                        selectedPlanIndex ===
+                        index
+                          ? '0 8px 16px rgba(21, 128, 61, 0.2)'
+                          : '0 8px 16px rgba(37, 99, 235, 0.2)',
+                      letterSpacing: '0.025em',
                     }}
                   >
                     {selectedPlanIndex === index
@@ -2776,7 +2827,10 @@ const CustomPackageLayout: React.FC<
                 }
               >
                 {loading ? (
-                  <CircularProgress size={20} />
+                  <CircularProgress
+                    size={20}
+                    sx={{ color: 'white' }}
+                  />
                 ) : (
                   'Continue'
                 )}
@@ -3087,7 +3141,10 @@ const CustomPackageLayout: React.FC<
                 }
               >
                 {loading ? (
-                  <CircularProgress size={20} />
+                  <CircularProgress
+                    size={20}
+                    sx={{ color: 'white' }}
+                  />
                 ) : (
                   'Continue'
                 )}
@@ -3684,7 +3741,10 @@ const CustomPackageLayout: React.FC<
                 }
               >
                 {loading ? (
-                  <CircularProgress size={20} />
+                  <CircularProgress
+                    size={20}
+                    sx={{ color: 'white' }}
+                  />
                 ) : (
                   'Continue'
                 )}
@@ -4668,6 +4728,9 @@ const CustomPackageLayout: React.FC<
                         {backLoading ? (
                           <CircularProgress
                             size={20}
+                            sx={{
+                              color: 'white',
+                            }}
                           />
                         ) : (
                           'Back'
@@ -4708,6 +4771,9 @@ const CustomPackageLayout: React.FC<
                         {loading ? (
                           <CircularProgress
                             size={20}
+                            sx={{
+                              color: 'white',
+                            }}
                           />
                         ) : (
                           'Confirm'
@@ -4756,7 +4822,10 @@ const CustomPackageLayout: React.FC<
             }
           >
             {backLoading ? (
-              <CircularProgress size={20} />
+              <CircularProgress
+                size={20}
+                sx={{ color: 'white' }}
+              />
             ) : (
               'Back'
             )}
@@ -4776,7 +4845,10 @@ const CustomPackageLayout: React.FC<
             disabled={loading}
           >
             {loading ? (
-              <CircularProgress size={20} />
+              <CircularProgress
+                size={20}
+                sx={{ color: 'white' }}
+              />
             ) : (
               'Next'
             )}

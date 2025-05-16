@@ -845,18 +845,18 @@ const PricingPackagesContainer: React.FC = () => {
     useRef<NodeJS.Timeout | null>(null);
 
   // Setup periodic retry if using fallback data
-  useEffect(() => {
-    // Clear any existing interval when component unmounts or when data status changes
-    return () => {
-      if (retryIntervalRef.current) {
-        clearInterval(retryIntervalRef.current);
-        retryIntervalRef.current = null;
-      }
-    };
-  }, []);
+  // This effect only handles cleanup on unmount, so empty dependency array is appropriate
 
   // Setup periodic retry when using fallback data
   useEffect(() => {
+    // Create a memoized version of the interval callback to prevent unnecessary re-renders
+    const retryCallback = () => {
+      console.log(
+        `[${new Date().toISOString()}] Attempting periodic retry to fetch real data`
+      );
+      refetch();
+    };
+
     if (
       usingFallbackData &&
       !retryIntervalRef.current
@@ -867,12 +867,7 @@ const PricingPackagesContainer: React.FC = () => {
 
       // Try to refetch real data every 30 seconds when using fallback data
       retryIntervalRef.current = setInterval(
-        () => {
-          console.log(
-            `[${new Date().toISOString()}] Attempting periodic retry to fetch real data`
-          );
-          refetch();
-        },
+        retryCallback,
         30000
       ); // 30 seconds
     } else if (
@@ -887,6 +882,7 @@ const PricingPackagesContainer: React.FC = () => {
       retryIntervalRef.current = null;
     }
 
+    // Cleanup function to clear interval when component unmounts or dependencies change
     return () => {
       if (retryIntervalRef.current) {
         clearInterval(retryIntervalRef.current);

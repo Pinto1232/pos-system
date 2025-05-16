@@ -113,6 +113,12 @@ const SettingsModalPresentation: React.FC<
             border:
               '1px solid rgba(23, 58, 121, 0.1)',
             backdropFilter: 'blur(4px)',
+            // Increase height on laptop screen sizes
+            '@media (min-width: 1024px) and (max-width: 1440px)':
+              {
+                height: '90vh',
+                maxHeight: '900px',
+              },
           },
           '& ::-webkit-scrollbar': {
             display: 'none',

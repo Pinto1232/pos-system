@@ -60,7 +60,8 @@ const DashboardMain: React.FC<
     return () => clearTimeout(dataLoadingTimer);
   }, [stopLoading]);
 
-  const renderSection = () => {
+  // Memoize the renderSection function to prevent unnecessary re-renders
+  const renderSection = React.useCallback(() => {
     let sectionToRender;
 
     switch (activeSection) {
@@ -180,7 +181,7 @@ const DashboardMain: React.FC<
     }
 
     return sectionToRender;
-  };
+  }, [activeSection, isMobile]);
 
   if (!authenticated) {
     return (

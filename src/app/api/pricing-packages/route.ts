@@ -14,8 +14,11 @@ import {
   CACHE_TIMES,
   CACHE_TAGS,
 } from '../../cache-constants';
+import {
+  safeJsonParse,
+  extractJsonObjects,
+} from '@/utils/jsonUtils';
 
-// Define the response type
 export type PricingPackagesResponse = {
   totalItems: number;
   data: Array<{
@@ -131,30 +134,24 @@ export async function GET(request: NextRequest) {
   const forceRefresh =
     searchParams.get('refresh') === 'true';
 
-  // Get auth token from cookies
   const cookieStore = await cookies();
   const token =
     cookieStore.get('accessToken')?.value || '';
 
   try {
-    // If force refresh is requested, revalidate the path
     if (forceRefresh) {
       revalidatePath('/api/pricing-packages');
     }
 
-    // Attempt to fetch from the backend API
     const apiUrl =
       process.env.NEXT_PUBLIC_BACKEND_API_URL ||
       process.env.NEXT_PUBLIC_API_URL ||
       'http://localhost:5107';
 
-    // Ensure the API URL doesn't have a trailing slash
     const baseUrl = apiUrl.endsWith('/')
       ? apiUrl.slice(0, -1)
       : apiUrl;
 
-    // Construct the endpoint URL with the correct case (lowercase 'pricingpackages' with no hyphen)
-    // This should match the actual backend route which is case-sensitive
     const endpoint = `${baseUrl}/api/pricingpackages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
     console.log(
@@ -164,28 +161,36 @@ export async function GET(request: NextRequest) {
       `Fetching pricing packages from: ${endpoint}`
     );
 
-    // Log additional debugging information
     console.log(`Environment variables:
       NEXT_PUBLIC_BACKEND_API_URL: ${process.env.NEXT_PUBLIC_BACKEND_API_URL || 'not set'}
       NEXT_PUBLIC_API_URL: ${process.env.NEXT_PUBLIC_API_URL || 'not set'}
     `);
 
-    // Add timeout to prevent long-running requests
     const controller = new AbortController();
     const timeoutId = setTimeout(
       () => controller.abort(),
       3000
-    ); // 3 second timeout
+    );
 
     let data;
 
     try {
+      if (typeof window !== 'undefined') {
+        console.log(
+          `Network status: ${navigator.onLine ? 'Online' : 'Offline'}`
+        );
+      }
+
       const response = await fetch(endpoint, {
         headers: {
           Authorization: token
             ? `Bearer ${token}`
             : '',
           'Content-Type': 'application/json',
+          'Cache-Control':
+            'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
         },
         // Use centralized cache configuration
         ...getCacheOptions(CACHE_TIMES.PRICING, [
@@ -194,15 +199,23 @@ export async function GET(request: NextRequest) {
         signal: controller.signal,
       });
 
-      // Clear the timeout since the request completed
       clearTimeout(timeoutId);
+
+      console.log(
+        `Response status: ${response.status} ${response.statusText}`
+      );
+      console.log(
+        `Response headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()))}`
+      );
+      console.log(
+        `Content-Type: ${response.headers.get('content-type')}`
+      );
 
       if (!response.ok) {
         console.warn(
           `API response not OK: ${response.status} ${response.statusText}`
         );
 
-        // Log more detailed error information
         console.error(`Backend API error details:
           - Status: ${response.status}
           - Status Text: ${response.statusText}
@@ -210,7 +223,6 @@ export async function GET(request: NextRequest) {
           - Headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()))}
         `);
 
-        // If it's a 404 error, log a specific message about the endpoint
         if (response.status === 404) {
           console.error(`
             404 Not Found Error: The endpoint ${endpoint} does not exist on the backend server.
@@ -221,12 +233,11 @@ export async function GET(request: NextRequest) {
           `);
         }
 
-        // Return fallback data with proper cache headers
         const headers =
           await getCacheControlHeaders(
             CACHE_TIMES.PRICING,
             CACHE_TIMES.PRICING * 10,
-            forceRefresh // Pass forceRefresh to use no-cache headers when true
+            forceRefresh
           );
         return NextResponse.json(
           fallbackPackages,
@@ -237,7 +248,6 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      // Check if the response has content before trying to parse it
       const contentType = response.headers.get(
         'content-type'
       );
@@ -252,7 +262,7 @@ export async function GET(request: NextRequest) {
           await getCacheControlHeaders(
             CACHE_TIMES.PRICING,
             CACHE_TIMES.PRICING * 10,
-            forceRefresh // Pass forceRefresh to use no-cache headers when true
+            forceRefresh
           );
         return NextResponse.json(
           fallbackPackages,
@@ -263,7 +273,6 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      // Get the response text first to validate it's not empty
       const responseText = await response.text();
       if (
         !responseText ||
@@ -274,7 +283,7 @@ export async function GET(request: NextRequest) {
           await getCacheControlHeaders(
             CACHE_TIMES.PRICING,
             CACHE_TIMES.PRICING * 10,
-            forceRefresh // Pass forceRefresh to use no-cache headers when true
+            forceRefresh
           );
         return NextResponse.json(
           fallbackPackages,
@@ -285,24 +294,145 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      // Parse the JSON safely
-      try {
-        data = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error(
-          'Error parsing JSON response:',
-          parseError
+      console.group('API Response Analysis');
+      console.log(
+        'Raw response first 100 chars:',
+        responseText.substring(0, 100) + '...'
+      );
+
+      const isPricingPackagesResponse = (
+        obj: unknown
+      ): obj is PricingPackagesResponse => {
+        if (!obj || typeof obj !== 'object')
+          return false;
+
+        // Type assertion to allow property access
+        const candidate = obj as Record<
+          string,
+          unknown
+        >;
+
+        return (
+          'data' in candidate &&
+          Array.isArray(candidate.data) &&
+          candidate.data.length > 0 &&
+          'totalItems' in candidate &&
+          typeof candidate.totalItems === 'number'
         );
+      };
+
+      // Define a type guard for authentication errors
+      const isAuthError = (
+        obj: unknown
+      ): obj is {
+        error: string;
+        message: string;
+      } => {
+        return (
+          obj !== null &&
+          typeof obj === 'object' &&
+          'error' in obj &&
+          typeof (obj as Record<string, unknown>)
+            .error === 'string' &&
+          (obj as Record<string, unknown>)
+            .error === 'Authentication failed'
+        );
+      };
+
+      // Extract all JSON objects from the response
+      const extractedObjects =
+        extractJsonObjects(responseText);
+      console.log(
+        `Found ${extractedObjects.length} JSON objects:`
+      );
+
+      // Log each extracted object in a formatted way
+      extractedObjects.forEach((obj, index) => {
+        console.group(
+          `JSON Object #${index + 1}`
+        );
+        console.log(JSON.stringify(obj, null, 2));
+        console.groupEnd();
+      });
+
+      // Check for authentication errors in the response
+      const authErrors =
+        extractedObjects.filter(isAuthError);
+      if (authErrors.length > 0) {
+        console.group('Authentication Errors');
+        authErrors.forEach((error, index) => {
+          console.log(
+            `Error #${index + 1}:`,
+            JSON.stringify(error, null, 2)
+          );
+        });
+        console.groupEnd();
+        console.warn(
+          'Authentication errors found in response, but continuing processing'
+        );
+      }
+
+      // Log the valid pricing data if found
+      const pricingData = extractedObjects.find(
+        isPricingPackagesResponse
+      );
+      if (pricingData) {
+        console.group('Valid Pricing Data');
+        console.log(
+          'Total Items:',
+          pricingData.totalItems
+        );
+        console.log(
+          'Data Length:',
+          pricingData.data.length
+        );
+        console.log(
+          'First Item:',
+          JSON.stringify(
+            pricingData.data[0],
+            null,
+            2
+          )
+        );
+        console.groupEnd();
+      }
+
+      console.groupEnd();
+
+      if (pricingData) {
+        data =
+          pricingData as PricingPackagesResponse;
+        console.log(
+          'Using extracted pricing data object'
+        );
+      } else {
+        console.log(
+          'No valid pricing data found in extracted objects, trying safeJsonParse'
+        );
+        data = safeJsonParse(
+          responseText,
+          isPricingPackagesResponse,
+          fallbackPackages
+        ) as PricingPackagesResponse;
+      }
+
+      if (!isPricingPackagesResponse(data)) {
         console.error(
-          'Response text:',
+          'Parsed data does not match expected PricingPackagesResponse structure'
+        );
+        console.error('Parsed data:', data);
+        console.error(
+          'Response text (first 200 chars):',
           responseText.substring(0, 200) + '...'
         );
+
         const headers =
           await getCacheControlHeaders(
             CACHE_TIMES.PRICING,
             CACHE_TIMES.PRICING * 10,
-            forceRefresh // Pass forceRefresh to use no-cache headers when true
+            forceRefresh
           );
+
         return NextResponse.json(
           fallbackPackages,
           {
@@ -311,8 +441,22 @@ export async function GET(request: NextRequest) {
           }
         );
       }
+
+      // Log successful parsing
+      console.log(
+        'Successfully parsed pricing packages data:',
+        {
+          totalItems: data.totalItems,
+          dataLength: data.data.length,
+          firstItem: data.data[0]
+            ? {
+                id: data.data[0].id,
+                title: data.data[0].title,
+              }
+            : 'No items',
+        }
+      );
     } catch (fetchError) {
-      // Clear the timeout if there was a fetch error
       clearTimeout(timeoutId);
       console.error(
         'Error during fetch operation:',
@@ -322,7 +466,7 @@ export async function GET(request: NextRequest) {
         await getCacheControlHeaders(
           CACHE_TIMES.PRICING,
           CACHE_TIMES.PRICING * 10,
-          forceRefresh // Pass forceRefresh to use no-cache headers when true
+          forceRefresh
         );
       return NextResponse.json(fallbackPackages, {
         status: 200,
@@ -330,7 +474,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Validate the response data
     if (
       !data ||
       !data.data ||
@@ -344,7 +487,7 @@ export async function GET(request: NextRequest) {
         await getCacheControlHeaders(
           CACHE_TIMES.PRICING,
           CACHE_TIMES.PRICING * 10,
-          forceRefresh // Pass forceRefresh to use no-cache headers when true
+          forceRefresh
         );
       return NextResponse.json(fallbackPackages, {
         status: 200,
@@ -352,15 +495,12 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Return the data with proper cache headers
-    // If forceRefresh is true, use no-cache headers to ensure fresh data
     const headers = await getCacheControlHeaders(
       CACHE_TIMES.PRICING,
       CACHE_TIMES.PRICING * 10,
-      forceRefresh // Pass forceRefresh to use no-cache headers when true
+      forceRefresh
     );
 
-    // Log the data and headers for debugging
     console.log(
       `[API] Returning pricing data with ${forceRefresh ? 'NO-CACHE' : 'STANDARD'} headers`
     );
@@ -387,11 +527,10 @@ export async function GET(request: NextRequest) {
       error
     );
 
-    // Return fallback data with proper cache headers
     const headers = await getCacheControlHeaders(
       CACHE_TIMES.PRICING,
       CACHE_TIMES.PRICING * 10,
-      forceRefresh // Pass forceRefresh to use no-cache headers when true
+      forceRefresh
     );
     return NextResponse.json(fallbackPackages, {
       status: 200,
@@ -405,7 +544,6 @@ export async function POST(request: NextRequest) {
   try {
     const { secret } = await request.json();
 
-    // Check for a valid secret to prevent unauthorized revalidations
     if (
       secret !== process.env.REVALIDATION_SECRET
     ) {
