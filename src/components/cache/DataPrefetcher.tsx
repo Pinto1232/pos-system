@@ -27,6 +27,10 @@ export default function DataPrefetcher() {
     // Set up a listener for route changes
     const handleRouteChange = () => {
       // Prefetch data based on the current route
+      if (!pathname) {
+        return; // Skip if pathname is null
+      }
+
       if (pathname === '/') {
         // Prefetch data for the home page
         // This is already covered by prefetchCommonData
@@ -35,18 +39,30 @@ export default function DataPrefetcher() {
       ) {
         // Prefetch dashboard-specific data
         fetch('/api/dashboard/summary')
-          .then((res) => res.json())
+          .then((res) => {
+            // Check if response is OK before parsing JSON
+            if (!res.ok) {
+              throw new Error(
+                `API returned status: ${res.status}`
+              );
+            }
+            return res.json();
+          })
           .then((data) => {
-            queryClient.setQueryData(
-              ['dashboardSummary'],
-              data
-            );
+            if (data) {
+              queryClient.setQueryData(
+                ['dashboardSummary'],
+                data
+              );
+            }
           })
           .catch((error) => {
             console.error(
               'Error prefetching dashboard data:',
               error
             );
+            // Don't throw the error further, just log it
+            // This prevents the error from breaking the app
           });
       }
     };

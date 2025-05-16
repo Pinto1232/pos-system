@@ -289,10 +289,68 @@ const mockRoleService = {
       `Using mock role service - addUserToRole(${roleId}, ${userId})`
     );
     await delay(500);
-    // Implementation would depend on having a mock user service
-    console.log(
-      `Mock: Added user ${userId} to role ${roleId}`
-    );
+
+    try {
+      // Fetch user data from the mock API
+      const response = await fetch('/api/Users');
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+
+      const users = await response.json();
+      const userToAdd = users.find(
+        (u: any) => u.id === userId
+      );
+
+      if (!userToAdd) {
+        throw new Error(
+          `User with ID ${userId} not found`
+        );
+      }
+
+      // Check if the user is already in the role
+      if (
+        mockUsersInRoles[roleId]?.some(
+          (u) => u.id === userId
+        )
+      ) {
+        console.log(
+          `User ${userId} is already in role ${roleId}`
+        );
+        return;
+      }
+
+      // Add user to role
+      const userInRole: UserInRole = {
+        id: userToAdd.id,
+        userName: userToAdd.userName,
+        email: userToAdd.email,
+        isActive: userToAdd.isActive,
+      };
+
+      // Initialize the array if it doesn't exist
+      if (!mockUsersInRoles[roleId]) {
+        mockUsersInRoles[roleId] = [];
+      }
+
+      // Add the user to the role
+      mockUsersInRoles[roleId].push(userInRole);
+      console.log(
+        `Mock: Added user ${userId} to role ${roleId}`
+      );
+
+      // Log the operation for audit purposes
+      const timestamp = new Date().toISOString();
+      console.log(
+        `[AUDIT] ${timestamp} - User ${userId} added to role ${roleId}`
+      );
+    } catch (error) {
+      console.error(
+        'Error adding user to role:',
+        error
+      );
+      throw error;
+    }
   },
 
   // Remove user from role
@@ -304,10 +362,46 @@ const mockRoleService = {
       `Using mock role service - removeUserFromRole(${roleId}, ${userId})`
     );
     await delay(500);
-    // Implementation would depend on having a mock user service
-    console.log(
-      `Mock: Removed user ${userId} from role ${roleId}`
-    );
+
+    try {
+      // Check if the role exists
+      if (!mockUsersInRoles[roleId]) {
+        throw new Error(
+          `Role with ID ${roleId} not found or has no users`
+        );
+      }
+
+      // Check if the user is in the role
+      const userIndex = mockUsersInRoles[
+        roleId
+      ].findIndex((u) => u.id === userId);
+      if (userIndex === -1) {
+        throw new Error(
+          `User ${userId} is not in role ${roleId}`
+        );
+      }
+
+      // Remove the user from the role
+      mockUsersInRoles[roleId].splice(
+        userIndex,
+        1
+      );
+      console.log(
+        `Mock: Removed user ${userId} from role ${roleId}`
+      );
+
+      // Log the operation for audit purposes
+      const timestamp = new Date().toISOString();
+      console.log(
+        `[AUDIT] ${timestamp} - User ${userId} removed from role ${roleId}`
+      );
+    } catch (error) {
+      console.error(
+        'Error removing user from role:',
+        error
+      );
+      throw error;
+    }
   },
 
   // Delete a role

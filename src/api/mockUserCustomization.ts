@@ -12,6 +12,7 @@ export const mockFetchCustomization = async (
 ): Promise<UserCustomization> => {
   if (typeof window !== 'undefined') {
     try {
+      // Try to get the full customization data
       const storedData =
         localStorage.getItem(STORAGE_KEY);
       if (storedData) {
@@ -19,6 +20,27 @@ export const mockFetchCustomization = async (
           'Found stored customization data in localStorage'
         );
         return JSON.parse(storedData);
+      }
+
+      // If no full data, check if we have a saved navbar color
+      const savedNavbarColor =
+        localStorage.getItem('navbarColor');
+      if (savedNavbarColor) {
+        console.log(
+          'Found saved navbar color in localStorage:',
+          savedNavbarColor
+        );
+        // Create a customization object with the saved navbar color
+        return {
+          id: 1,
+          userId,
+          sidebarColor: '#173A79',
+          logoUrl: '/Pisval_Logo.jpg',
+          navbarColor: savedNavbarColor,
+          taxSettings: createDefaultTaxSettings(),
+          regionalSettings:
+            createDefaultRegionalSettings(),
+        };
       }
     } catch (error) {
       console.error(
@@ -28,48 +50,55 @@ export const mockFetchCustomization = async (
     }
   }
 
-  // Import the default settings from SettingsModal to ensure consistency
-  const defaultTaxSettings: TaxSettings = {
-    enableTaxCalculation: true,
-    defaultTaxRate: 15.0,
-    taxCalculationMethod: 'exclusive',
-    vatRegistered: true,
-    vatNumber: 'VAT2023456789',
-    enableMultipleTaxRates: false,
-    taxCategories: [
-      {
-        id: 1,
-        name: 'Standard Rate',
-        rate: 15.0,
-        description:
-          'Standard VAT rate for most goods and services',
-        isDefault: true,
-      },
-      {
-        id: 2,
-        name: 'Reduced Rate',
-        rate: 7.5,
-        description:
-          'Reduced rate for specific goods and services',
-        isDefault: false,
-      },
-      {
-        id: 3,
-        name: 'Zero Rate',
-        rate: 0,
-        description:
-          'Zero-rated goods and services',
-        isDefault: false,
-      },
-    ],
-    displayTaxOnReceipts: true,
-    enableTaxExemptions: false,
-    taxReportingPeriod: 'monthly',
+  return createDefaultCustomization(userId);
+};
+
+// Helper function to create default tax settings
+const createDefaultTaxSettings =
+  (): TaxSettings => {
+    return {
+      enableTaxCalculation: true,
+      defaultTaxRate: 15.0,
+      taxCalculationMethod: 'exclusive',
+      vatRegistered: true,
+      vatNumber: 'VAT2023456789',
+      enableMultipleTaxRates: false,
+      taxCategories: [
+        {
+          id: 1,
+          name: 'Standard Rate',
+          rate: 15.0,
+          description:
+            'Standard VAT rate for most goods and services',
+          isDefault: true,
+        },
+        {
+          id: 2,
+          name: 'Reduced Rate',
+          rate: 7.5,
+          description:
+            'Reduced rate for specific goods and services',
+          isDefault: false,
+        },
+        {
+          id: 3,
+          name: 'Zero Rate',
+          rate: 0,
+          description:
+            'Zero-rated goods and services',
+          isDefault: false,
+        },
+      ],
+      displayTaxOnReceipts: true,
+      enableTaxExemptions: false,
+      taxReportingPeriod: 'monthly',
+    };
   };
 
-  // Create default regional settings
-  const defaultRegionalSettings: RegionalSettings =
-    {
+// Helper function to create default regional settings
+const createDefaultRegionalSettings =
+  (): RegionalSettings => {
+    return {
       defaultCurrency: 'ZAR',
       dateFormat: 'DD/MM/YYYY',
       timeFormat: '24h',
@@ -85,7 +114,12 @@ export const mockFetchCustomization = async (
         'GBP',
       ],
     };
+  };
 
+// Helper function to create a default customization object
+const createDefaultCustomization = (
+  userId: string
+): UserCustomization => {
   console.log(
     'Creating default user customization with tax and regional settings'
   );
@@ -96,8 +130,9 @@ export const mockFetchCustomization = async (
     sidebarColor: '#173A79',
     logoUrl: '/Pisval_Logo.jpg',
     navbarColor: '#000000',
-    taxSettings: defaultTaxSettings,
-    regionalSettings: defaultRegionalSettings,
+    taxSettings: createDefaultTaxSettings(),
+    regionalSettings:
+      createDefaultRegionalSettings(),
   };
 };
 
@@ -135,15 +170,39 @@ export const mockUpdateCustomization = async (
       defaultData.regionalSettings;
   }
 
+  // Ensure navbarColor is included
+  if (!customization.navbarColor) {
+    console.warn(
+      'No navbar color provided in customization data, using default'
+    );
+    customization.navbarColor = '#000000';
+  }
+
+  // Simulate a database save by adding a small delay
+  await new Promise((resolve) =>
+    setTimeout(resolve, 1000)
+  );
+
   // Check if we're running in a browser environment
   if (typeof window !== 'undefined') {
     try {
+      // Save to localStorage to persist the data
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify(customization)
       );
       console.log(
         'Customization saved successfully to localStorage'
+      );
+
+      // Also save the navbar color separately to ensure it persists
+      localStorage.setItem(
+        'navbarColor',
+        customization.navbarColor
+      );
+      console.log(
+        'Navbar color saved separately for persistence:',
+        customization.navbarColor
       );
     } catch (error) {
       console.error(

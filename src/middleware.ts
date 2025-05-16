@@ -5,6 +5,8 @@ import { CACHE_TIMES } from './app/cache-constants';
 /**
  * Middleware to add cache-control headers to responses
  * This helps with CDN caching and browser caching
+ *
+ * Added this comment to test CI workflow
  */
 export function middleware(request: NextRequest) {
   // Get the pathname from the request

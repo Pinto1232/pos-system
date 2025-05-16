@@ -4,6 +4,7 @@ import HeroContainer from '@/components/features/HeroContainer';
 import TestimonialContainer from '@/components/testimonial/TestimonialContainer';
 import FeaturesSlider from '@/components/slider/FeaturesSlider';
 import RegistrationHandler from '@/components/auth/RegistrationHandler';
+import ErrorAlert from '@/components/ui/errorAlert/ErrorAlert';
 
 export default function Home() {
   const heading = `Choose Your Plan`;
@@ -14,6 +15,9 @@ export default function Home() {
     <div>
       {/* Handle registration redirects */}
       <RegistrationHandler />
+
+      {/* Display error messages from URL */}
+      <ErrorAlert />
 
       <Box>
         <Box textAlign="center" mt={5}>

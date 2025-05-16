@@ -78,7 +78,7 @@ export async function GET(request: Request) {
     );
 
     // Get the auth token from cookies
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token =
       cookieStore.get('auth_token')?.value ||
       cookieStore.get('keycloak_token')?.value;
@@ -108,66 +108,64 @@ export async function GET(request: Request) {
       );
     }
 
-    // Forward the request to the backend API
-    try {
-      console.log(
-        `Proxying GET request to backend for user: ${userId}`
-      );
-      const response = await fetch(
-        `${BACKEND_API_URL}/api/UserCustomization/${userId}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+    // Check if we should use mock data (from environment variable)
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
-      if (!response.ok) {
-        console.warn(
-          `Backend API returned status: ${response.status}, serving mock data directly`
+    if (!useMockData) {
+      try {
+        console.log(
+          `Proxying GET request to backend for user: ${userId}`
+        );
+        const response = await fetch(
+          `${BACKEND_API_URL}/api/UserCustomization/${userId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            // Add a timeout to prevent long waits if backend is down
+            signal: AbortSignal.timeout(3000),
+          }
         );
 
-        // Return mock data directly instead of redirecting
-        return NextResponse.json({
-          id: 1,
-          userId: userId,
-          sidebarColor: '#173A79',
-          logoUrl: '/Pisval_Logo.jpg',
-          navbarColor: '#000000',
-          taxSettings: DEFAULT_TAX_SETTINGS,
-          regionalSettings:
-            DEFAULT_REGIONAL_SETTINGS,
-        });
+        if (response.ok) {
+          const data = await response.json();
+          console.log(
+            'Successfully fetched user customization from backend'
+          );
+          return NextResponse.json(data);
+        } else {
+          console.warn(
+            `Backend API returned status: ${response.status}, serving mock data directly`
+          );
+        }
+      } catch (error) {
+        console.error(
+          'Error proxying request to backend:',
+          error
+        );
+        console.log(
+          'Returning mock data due to error'
+        );
       }
-
-      const data = await response.json();
+    } else {
       console.log(
-        'Successfully fetched user customization from backend'
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
       );
-
-      return NextResponse.json(data);
-    } catch (error) {
-      console.error(
-        'Error proxying request to backend:',
-        error
-      );
-
-      // Return mock data directly instead of redirecting
-      console.log(
-        'Returning mock data due to error'
-      );
-      return NextResponse.json({
-        id: 1,
-        userId: userId,
-        sidebarColor: '#173A79',
-        logoUrl: '/Pisval_Logo.jpg',
-        navbarColor: '#000000',
-        taxSettings: DEFAULT_TAX_SETTINGS,
-        regionalSettings:
-          DEFAULT_REGIONAL_SETTINGS,
-      });
     }
+
+    // Return mock data if backend API fails or mock data is enabled
+    return NextResponse.json({
+      id: 1,
+      userId: userId,
+      sidebarColor: '#173A79',
+      logoUrl: '/Pisval_Logo.jpg',
+      navbarColor: '#000000',
+      taxSettings: DEFAULT_TAX_SETTINGS,
+      regionalSettings: DEFAULT_REGIONAL_SETTINGS,
+    });
   } catch (error) {
     console.error(
       'Error in current-user route:',

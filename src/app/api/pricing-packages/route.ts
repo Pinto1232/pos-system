@@ -224,7 +224,9 @@ export async function GET(request: NextRequest) {
         // Return fallback data with proper cache headers
         const headers =
           await getCacheControlHeaders(
-            CACHE_TIMES.PRICING
+            CACHE_TIMES.PRICING,
+            CACHE_TIMES.PRICING * 10,
+            forceRefresh // Pass forceRefresh to use no-cache headers when true
           );
         return NextResponse.json(
           fallbackPackages,
@@ -248,7 +250,9 @@ export async function GET(request: NextRequest) {
         );
         const headers =
           await getCacheControlHeaders(
-            CACHE_TIMES.PRICING
+            CACHE_TIMES.PRICING,
+            CACHE_TIMES.PRICING * 10,
+            forceRefresh // Pass forceRefresh to use no-cache headers when true
           );
         return NextResponse.json(
           fallbackPackages,
@@ -268,7 +272,9 @@ export async function GET(request: NextRequest) {
         console.warn('API response is empty');
         const headers =
           await getCacheControlHeaders(
-            CACHE_TIMES.PRICING
+            CACHE_TIMES.PRICING,
+            CACHE_TIMES.PRICING * 10,
+            forceRefresh // Pass forceRefresh to use no-cache headers when true
           );
         return NextResponse.json(
           fallbackPackages,
@@ -293,7 +299,9 @@ export async function GET(request: NextRequest) {
         );
         const headers =
           await getCacheControlHeaders(
-            CACHE_TIMES.PRICING
+            CACHE_TIMES.PRICING,
+            CACHE_TIMES.PRICING * 10,
+            forceRefresh // Pass forceRefresh to use no-cache headers when true
           );
         return NextResponse.json(
           fallbackPackages,
@@ -312,7 +320,9 @@ export async function GET(request: NextRequest) {
       );
       const headers =
         await getCacheControlHeaders(
-          CACHE_TIMES.PRICING
+          CACHE_TIMES.PRICING,
+          CACHE_TIMES.PRICING * 10,
+          forceRefresh // Pass forceRefresh to use no-cache headers when true
         );
       return NextResponse.json(fallbackPackages, {
         status: 200,
@@ -332,7 +342,9 @@ export async function GET(request: NextRequest) {
       );
       const headers =
         await getCacheControlHeaders(
-          CACHE_TIMES.PRICING
+          CACHE_TIMES.PRICING,
+          CACHE_TIMES.PRICING * 10,
+          forceRefresh // Pass forceRefresh to use no-cache headers when true
         );
       return NextResponse.json(fallbackPackages, {
         status: 200,
@@ -341,9 +353,30 @@ export async function GET(request: NextRequest) {
     }
 
     // Return the data with proper cache headers
+    // If forceRefresh is true, use no-cache headers to ensure fresh data
     const headers = await getCacheControlHeaders(
-      CACHE_TIMES.PRICING
+      CACHE_TIMES.PRICING,
+      CACHE_TIMES.PRICING * 10,
+      forceRefresh // Pass forceRefresh to use no-cache headers when true
     );
+
+    // Log the data and headers for debugging
+    console.log(
+      `[API] Returning pricing data with ${forceRefresh ? 'NO-CACHE' : 'STANDARD'} headers`
+    );
+    console.log(`[API] Cache headers:`, headers);
+    console.log(
+      `[API] Sample pricing data (first item):`,
+      data.data && data.data.length > 0
+        ? {
+            id: data.data[0].id,
+            title: data.data[0].title,
+            price: data.data[0].price,
+            timestamp: new Date().toISOString(),
+          }
+        : 'No data'
+    );
+
     return NextResponse.json(data, {
       status: 200,
       headers,
@@ -356,7 +389,9 @@ export async function GET(request: NextRequest) {
 
     // Return fallback data with proper cache headers
     const headers = await getCacheControlHeaders(
-      CACHE_TIMES.PRICING
+      CACHE_TIMES.PRICING,
+      CACHE_TIMES.PRICING * 10,
+      forceRefresh // Pass forceRefresh to use no-cache headers when true
     );
     return NextResponse.json(fallbackPackages, {
       status: 200,

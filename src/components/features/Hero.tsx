@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import {
@@ -46,6 +48,54 @@ function Hero({
         padding: { xs: '5px', sm: '10px' },
       }}
     >
+      {/* Decorative elements */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '10%',
+          left: '5%',
+          width: '18px',
+          height: '18px',
+          borderRadius: '50%',
+          background: 'rgba(0, 204, 255, 0.8)',
+          boxShadow:
+            '0 0 10px rgba(0, 204, 255, 0.5)',
+          zIndex: 1,
+          animation: 'pulse 4s infinite',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '20%',
+          right: '10%',
+          width: '14px',
+          height: '14px',
+          borderRadius: '50%',
+          background: 'rgba(255, 105, 180, 0.8)',
+          boxShadow:
+            '0 0 10px rgba(255, 105, 180, 0.5)',
+          zIndex: 1,
+          animation: 'pulse 3s infinite',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: '15%',
+          left: '15%',
+          width: '16px',
+          height: '16px',
+          borderRadius: '50%',
+          background: 'rgba(147, 51, 234, 0.8)',
+          boxShadow:
+            '0 0 10px rgba(147, 51, 234, 0.5)',
+          zIndex: 1,
+          animation: 'pulse 5s infinite',
+        }}
+      />
+      <Box className={styles.colorfulCircle} />
+
       <Box
         className={styles.heroContainer}
         sx={{
@@ -164,7 +214,7 @@ function Hero({
             order: { xs: 0, md: 1 },
             marginBottom: { xs: '1.5rem', md: 0 },
             width: { xs: '100%', md: 'auto' },
-            maxWidth: { xs: '450px', md: 'none' },
+            maxWidth: { xs: '800px', md: 'none' },
             margin: { xs: '0 auto', md: 0 },
           }}
         >
@@ -172,9 +222,9 @@ function Hero({
             src={ladyImage}
             alt="POS Devices"
             className={styles.heroLadyImage}
-            width={450}
-            height={450}
-            sizes="(max-width: 768px) 90vw, 450px"
+            width={800}
+            height={800}
+            sizes="(max-width: 768px) 90vw, 800px"
             priority
           />
         </Box>

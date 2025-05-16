@@ -103,9 +103,116 @@ export const resetEntireCache = async (
   queryClient: QueryClient
 ): Promise<void> => {
   console.log(
-    'Resetting entire cache and refetching active queries'
+    '[CACHE] Resetting entire cache and refetching active queries'
+  );
+
+  // Before clearing everything, specifically invalidate pricing packages
+  console.log(
+    '[CACHE] Specifically invalidating pricing packages before full clear'
+  );
+  queryClient.invalidateQueries({
+    queryKey: ['pricingPackages'],
+    refetchType: 'all',
+  });
+
+  queryClient.invalidateQueries({
+    queryKey: [CACHE_TAGS.PRICING_PACKAGES],
+    refetchType: 'all',
+  });
+
+  // Force a refetch of pricing packages data
+  try {
+    console.log(
+      '[CACHE] Forcing refetch of pricing packages data'
+    );
+    await fetch(
+      '/api/pricing-packages?refresh=true',
+      {
+        method: 'GET',
+        headers: {
+          'Cache-Control':
+            'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
+      }
+    );
+  } catch (error) {
+    console.error(
+      '[CACHE] Error fetching pricing packages:',
+      error
+    );
+  }
+
+  // Clear all React Query cache
+  console.log(
+    '[CACHE] Clearing entire React Query cache'
   );
   queryClient.clear();
+
+  // Clear localStorage cache items if they exist
+  if (typeof window !== 'undefined') {
+    // Clear any application-specific cache items
+    const cacheKeys = [
+      'userCustomization',
+      'dashboardData',
+      'productsList',
+      'categoriesList',
+      'recentTransactions',
+      'userPreferences',
+      'pricingPackages', // Add pricing packages specifically
+      'pricingPackagesData',
+    ];
+
+    cacheKeys.forEach((key) => {
+      try {
+        console.log(
+          `[CACHE] Removing ${key} from localStorage`
+        );
+        localStorage.removeItem(key);
+      } catch (error) {
+        console.warn(
+          `[CACHE] Failed to remove ${key} from localStorage:`,
+          error
+        );
+      }
+    });
+
+    // Also try to clear any browser cache for the pricing packages API
+    console.log(
+      '[CACHE] Attempting to clear browser cache for pricing packages'
+    );
+    try {
+      // This is a trick to force the browser to clear its cache for a specific URL
+      const timestamp = new Date().getTime();
+      const urls = [
+        `/api/pricing-packages?t=${timestamp}`,
+        `/api/pricing-packages?refresh=true&t=${timestamp}`,
+      ];
+
+      urls.forEach(async (url) => {
+        await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Cache-Control':
+              'no-cache, no-store, must-revalidate',
+            Pragma: 'no-cache',
+            Expires: '0',
+          },
+        });
+      });
+    } catch (error) {
+      console.warn(
+        '[CACHE] Error clearing browser cache:',
+        error
+      );
+    }
+  }
+
+  // Refetch all active queries to get fresh data
+  console.log(
+    '[CACHE] Refetching all active queries'
+  );
   await queryClient.refetchQueries();
 };
 
@@ -253,6 +360,118 @@ export const isDataStale = (
   maxAge: number = 60000 // Default to 1 minute
 ): boolean => {
   return Date.now() - timestamp > maxAge;
+};
+
+/**
+ * Refresh home page and common page caches
+ * This function is specifically designed to refresh the cache for the home page and other common pages
+ * @param queryClient The React Query client instance
+ */
+export const refreshCommonPageCaches = async (
+  queryClient: QueryClient
+): Promise<void> => {
+  console.log(
+    '[CACHE] Refreshing home page and common page caches'
+  );
+
+  // Define the common query keys that might be used on the home page and other pages
+  const commonQueryKeys = [
+    ['products'],
+    ['categories'],
+    ['featured-products'],
+    ['pricing-packages'],
+    ['testimonials'],
+    ['features'],
+    [CACHE_TAGS.PRICING_PACKAGES],
+    [CACHE_TAGS.PRODUCTS],
+    [CACHE_TAGS.FEATURES],
+    [CACHE_TAGS.TESTIMONIALS],
+  ];
+
+  // Specifically target pricing packages cache - this is critical for the home page
+  console.log(
+    '[CACHE] Specifically invalidating pricing packages cache'
+  );
+  queryClient.invalidateQueries({
+    queryKey: ['pricingPackages'],
+    refetchType: 'all',
+  });
+
+  queryClient.invalidateQueries({
+    queryKey: [CACHE_TAGS.PRICING_PACKAGES],
+    refetchType: 'all',
+  });
+
+  // Invalidate all common query keys
+  commonQueryKeys.forEach((key) => {
+    console.log(
+      `[CACHE] Invalidating query key: ${key.join('/')}`
+    );
+    queryClient.invalidateQueries({
+      queryKey: key,
+    });
+  });
+
+  // Force a refetch of pricing packages data
+  try {
+    console.log(
+      '[CACHE] Forcing refetch of pricing packages data'
+    );
+    await fetch(
+      '/api/pricing-packages?refresh=true',
+      {
+        method: 'GET',
+        headers: {
+          'Cache-Control':
+            'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
+      }
+    );
+  } catch (error) {
+    console.error(
+      '[CACHE] Error fetching pricing packages:',
+      error
+    );
+  }
+
+  // Refetch queries that are currently active (visible on the page)
+  console.log(
+    '[CACHE] Refetching active queries'
+  );
+  await queryClient.refetchQueries({
+    type: 'active',
+  });
+
+  // If we're on the home page or a common page, force a refetch of relevant data
+  if (typeof window !== 'undefined') {
+    const path = window.location.pathname;
+    console.log(`[CACHE] Current path: ${path}`);
+    if (
+      path === '/' ||
+      path === '/products' ||
+      path === '/pricing-packages'
+    ) {
+      console.log(
+        '[CACHE] On home or pricing page, forcing refetch of all common data'
+      );
+      await queryClient.refetchQueries({
+        queryKey: commonQueryKeys.flat(),
+      });
+
+      // For home page, specifically refetch pricing packages
+      if (path === '/') {
+        console.log(
+          '[CACHE] On home page, specifically refetching pricing packages'
+        );
+        await queryClient.refetchQueries({
+          queryKey: ['pricingPackages'],
+          type: 'all',
+        });
+      }
+    }
+  }
 };
 
 /**

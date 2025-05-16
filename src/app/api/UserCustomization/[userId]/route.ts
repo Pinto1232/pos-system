@@ -66,48 +66,63 @@ export async function GET(
   request: Request,
   context: { params: { userId: string } }
 ) {
-  const { userId } = context.params;
+  // Access params asynchronously to fix the "params should be awaited" error
+  const params = await Promise.resolve(
+    context.params
+  );
+  const { userId } = params;
 
   try {
-    console.log(
-      `Proxying GET request to backend for user: ${userId}`
-    );
+    // Check if we should use mock data (from environment variable)
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
-    // Forward the request to the backend API
-    const response = await fetch(
-      `${BACKEND_API_URL}/api/UserCustomization/${userId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.warn(
-        `Backend API returned status: ${response.status}, serving mock data`
+    if (!useMockData) {
+      console.log(
+        `Proxying GET request to backend for user: ${userId}`
       );
 
-      // Return mock data if backend API fails
-      return NextResponse.json({
-        id: 1,
-        userId: userId,
-        sidebarColor: '#173A79',
-        logoUrl: '/Pisval_Logo.jpg',
-        navbarColor: '#000000',
-        taxSettings: DEFAULT_TAX_SETTINGS,
-        regionalSettings:
-          DEFAULT_REGIONAL_SETTINGS,
-      });
+      // Forward the request to the backend API
+      const response = await fetch(
+        `${BACKEND_API_URL}/api/UserCustomization/${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // Add a timeout to prevent long waits if backend is down
+          signal: AbortSignal.timeout(3000),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(
+          'Successfully fetched user customization from backend'
+        );
+        return NextResponse.json(data);
+      } else {
+        console.warn(
+          `Backend API returned status: ${response.status}, serving mock data`
+        );
+      }
+    } else {
+      console.log(
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
+      );
     }
 
-    const data = await response.json();
-    console.log(
-      'Successfully fetched user customization from backend'
-    );
-
-    return NextResponse.json(data);
+    // Return mock data if backend API fails or mock data is enabled
+    return NextResponse.json({
+      id: 1,
+      userId: userId,
+      sidebarColor: '#173A79',
+      logoUrl: '/Pisval_Logo.jpg',
+      navbarColor: '#000000',
+      taxSettings: DEFAULT_TAX_SETTINGS,
+      regionalSettings: DEFAULT_REGIONAL_SETTINGS,
+    });
   } catch (error) {
     console.error(
       'Error proxying request to backend:',
