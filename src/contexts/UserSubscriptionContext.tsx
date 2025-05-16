@@ -81,7 +81,9 @@ const fetchUserSubscription = async (
     now - cachedData.timestamp <
       SUBSCRIPTION_CACHE_TTL
   ) {
-    console.log(`Using cached subscription for user: ${userId}`);
+    console.log(
+      `Using cached subscription for user: ${userId}`
+    );
     return cachedData.subscription;
   }
 
@@ -94,9 +96,13 @@ const fetchUserSubscription = async (
     }
 
     // Check if we should use mock data directly (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
     if (useMockData) {
-      console.log('Using mock subscription data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true');
+      console.log(
+        'Using mock subscription data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true'
+      );
       const mockSubscription = {
         id: 1,
         userId,
@@ -128,16 +134,19 @@ const fetchUserSubscription = async (
       return mockSubscription;
     }
 
-    console.log(`Making API request to: /api/UserSubscription/user/${userId}`);
+    console.log(
+      `Making API request to: /api/UserSubscription/user/${userId}`
+    );
     const response = await fetch(
       `/api/UserSubscription/user/${userId}`,
       {
         // Add cache control headers to prevent browser caching
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
+          'Cache-Control':
+            'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
       }
     );
 
@@ -154,14 +163,19 @@ const fetchUserSubscription = async (
 
       // For 404 errors, we'll use fallback data instead of throwing
       if (response.status === 404) {
-        console.warn('API endpoint not found (404), using fallback data');
+        console.warn(
+          'API endpoint not found (404), using fallback data'
+        );
         throw new Error('API endpoint not found');
       }
     }
 
     // The API endpoint now always returns mock data for errors, so we should get valid data
     const data = await response.json();
-    console.log('Successfully fetched user subscription:', data);
+    console.log(
+      'Successfully fetched user subscription:',
+      data
+    );
 
     // Cache the result
     userSubscriptionCache.set(userId, {
@@ -171,7 +185,10 @@ const fetchUserSubscription = async (
 
     return data;
   } catch (error) {
-    console.error('Error fetching user subscription:', error);
+    console.error(
+      'Error fetching user subscription:',
+      error
+    );
 
     // Create fallback subscription data
     const fallbackSubscription = {
@@ -196,7 +213,10 @@ const fetchUserSubscription = async (
       additionalPackages: [],
     };
 
-    console.log('Using fallback subscription due to error:', fallbackSubscription);
+    console.log(
+      'Using fallback subscription due to error:',
+      fallbackSubscription
+    );
 
     // Cache the fallback data too to prevent repeated failures
     userSubscriptionCache.set(userId, {
@@ -226,7 +246,9 @@ const fetchUserFeatures = async (
     cachedData &&
     now - cachedData.timestamp < CACHE_TTL
   ) {
-    console.log(`Using cached features for user: ${userId}`);
+    console.log(
+      `Using cached features for user: ${userId}`
+    );
     return cachedData.features;
   }
 
@@ -239,9 +261,13 @@ const fetchUserFeatures = async (
     }
 
     // Check if we should use mock data directly (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
     if (useMockData) {
-      console.log('Using mock data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true');
+      console.log(
+        'Using mock data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true'
+      );
       const mockFeatures = [
         'Dashboard',
         'Products List',
@@ -261,16 +287,19 @@ const fetchUserFeatures = async (
     }
 
     // Try to fetch from API
-    console.log(`Making API request to: /api/UserSubscription/user/${userId}/features`);
+    console.log(
+      `Making API request to: /api/UserSubscription/user/${userId}/features`
+    );
     const response = await fetch(
       `/api/UserSubscription/user/${userId}/features`,
       {
         // Add cache control headers to prevent browser caching
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
+          'Cache-Control':
+            'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
       }
     );
 
@@ -287,7 +316,9 @@ const fetchUserFeatures = async (
 
       // For 404 errors, we'll use fallback data instead of throwing
       if (response.status === 404) {
-        console.warn('API endpoint not found (404), using fallback data');
+        console.warn(
+          'API endpoint not found (404), using fallback data'
+        );
         throw new Error('API endpoint not found');
       } else {
         throw new Error(
@@ -297,7 +328,10 @@ const fetchUserFeatures = async (
     }
 
     const data = await response.json();
-    console.log('Successfully fetched user features:', data);
+    console.log(
+      'Successfully fetched user features:',
+      data
+    );
 
     // Cache the result
     userFeaturesCache.set(userId, {
@@ -307,7 +341,10 @@ const fetchUserFeatures = async (
 
     return data;
   } catch (error) {
-    console.error('Error fetching user features:', error);
+    console.error(
+      'Error fetching user features:',
+      error
+    );
 
     // Return mock data for development with a clear indication it's fallback data
     const fallbackFeatures = [
@@ -319,7 +356,10 @@ const fetchUserFeatures = async (
       'Customer Management',
     ];
 
-    console.log('Using fallback features due to error:', fallbackFeatures);
+    console.log(
+      'Using fallback features due to error:',
+      fallbackFeatures
+    );
 
     // Cache the fallback data too to prevent repeated failures
     userFeaturesCache.set(userId, {

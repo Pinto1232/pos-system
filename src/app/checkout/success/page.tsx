@@ -98,8 +98,12 @@ function SuccessContent({
       return;
     }
     // TEMPORARILY DISABLED: Role check is bypassed for development
-    console.log('⚠️ WARNING: Role check is temporarily disabled for development');
-    console.log('⚠️ This should be re-enabled before deploying to production');
+    console.log(
+      '⚠️ WARNING: Role check is temporarily disabled for development'
+    );
+    console.log(
+      '⚠️ This should be re-enabled before deploying to production'
+    );
 
     // Original role check code (commented out)
     /*

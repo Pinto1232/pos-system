@@ -6,8 +6,11 @@ const BACKEND_API_URL =
   'http://localhost:5107';
 
 // Mock role permissions mapping by name
-const mockRolePermissionsByName: Record<string, string[]> = {
-  'Admin': [
+const mockRolePermissionsByName: Record<
+  string,
+  string[]
+> = {
+  Admin: [
     'users.view',
     'users.create',
     'users.edit',
@@ -30,7 +33,7 @@ const mockRolePermissionsByName: Record<string, string[]> = {
     'analytics.view',
     'analytics.create',
   ],
-  'Manager': [
+  Manager: [
     'users.view',
     'users.create',
     'users.edit',
@@ -51,7 +54,7 @@ const mockRolePermissionsByName: Record<string, string[]> = {
     'customers.create',
     'analytics.view',
   ],
-  'Cashier': [
+  Cashier: [
     'sales.create',
     'products.view',
     'customers.view',
@@ -81,14 +84,20 @@ export async function GET(
   context: { params: { roleName: string } }
 ) {
   const params = await context.params;
-  const roleName = decodeURIComponent(params.roleName);
+  const roleName = decodeURIComponent(
+    params.roleName
+  );
 
   try {
     // Check if we should use mock data (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
     if (!useMockData) {
-      console.log(`Proxying GET request to backend for role permissions by name: ${roleName}`);
+      console.log(
+        `Proxying GET request to backend for role permissions by name: ${roleName}`
+      );
 
       // Forward the request to the backend API
       const response = await fetch(
@@ -105,7 +114,9 @@ export async function GET(
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Successfully fetched role permissions by name from backend');
+        console.log(
+          'Successfully fetched role permissions by name from backend'
+        );
         return NextResponse.json(data);
       } else {
         console.warn(
@@ -113,14 +124,23 @@ export async function GET(
         );
       }
     } else {
-      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
+      console.log(
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
+      );
     }
 
     // Return mock data if backend API fails or mock data is enabled
-    return NextResponse.json(mockRolePermissionsByName[roleName] || []);
+    return NextResponse.json(
+      mockRolePermissionsByName[roleName] || []
+    );
   } catch (error) {
-    console.error('Error proxying request to backend:', error);
+    console.error(
+      'Error proxying request to backend:',
+      error
+    );
     // Return mock data for development
-    return NextResponse.json(mockRolePermissionsByName[roleName] || []);
+    return NextResponse.json(
+      mockRolePermissionsByName[roleName] || []
+    );
   }
 }

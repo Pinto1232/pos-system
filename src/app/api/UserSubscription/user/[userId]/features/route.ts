@@ -14,7 +14,9 @@ export async function GET(
 
   try {
     // Check if we should use mock data (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
     if (!useMockData) {
       console.log(
@@ -46,7 +48,9 @@ export async function GET(
         );
       }
     } else {
-      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
+      console.log(
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
+      );
     }
 
     // Return mock data if backend API fails or mock data is enabled

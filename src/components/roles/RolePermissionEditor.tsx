@@ -53,7 +53,8 @@ const RolePermissionEditor: React.FC<
     setExpandedCategories,
   ] = useState<Record<string, boolean>>({});
   const queryClient = useQueryClient();
-  const { authenticated } = useContext(AuthContext);
+  const { authenticated } =
+    useContext(AuthContext);
 
   // Fetch all available permissions
   const {
@@ -88,26 +89,49 @@ const RolePermissionEditor: React.FC<
     mutationFn: (permissions: string[]) => {
       // Check if user is authenticated
       if (!authenticated) {
-        throw new Error('You must be authenticated to update permissions');
+        throw new Error(
+          'You must be authenticated to update permissions'
+        );
       }
 
       // Validate that all permissions exist in the system
-      if (allPermissions && Array.isArray(allPermissions)) {
-        const validPermissionNames = allPermissions.map((p: PermissionInfo) => p.name);
-        const invalidPermissions = permissions.filter((p: string) => !validPermissionNames.includes(p));
+      if (
+        allPermissions &&
+        Array.isArray(allPermissions)
+      ) {
+        const validPermissionNames =
+          allPermissions.map(
+            (p: PermissionInfo) => p.name
+          );
+        const invalidPermissions =
+          permissions.filter(
+            (p: string) =>
+              !validPermissionNames.includes(p)
+          );
 
         if (invalidPermissions.length > 0) {
-          throw new Error(`Invalid permissions detected: ${invalidPermissions.join(', ')}`);
+          throw new Error(
+            `Invalid permissions detected: ${invalidPermissions.join(', ')}`
+          );
         }
 
         // Check for role-package alignment
         // This would typically check if the permissions are allowed for the user's subscription package
         // For now, we'll just log a warning for demonstration purposes
-        const premiumPermissions = ['analytics.view', 'api.access', 'reports.advanced'];
-        const hasPremiumPermissions = permissions.some((p: string) => premiumPermissions.includes(p));
+        const premiumPermissions = [
+          'analytics.view',
+          'api.access',
+          'reports.advanced',
+        ];
+        const hasPremiumPermissions =
+          permissions.some((p: string) =>
+            premiumPermissions.includes(p)
+          );
 
         if (hasPremiumPermissions) {
-          console.warn('Role contains premium permissions that may require a higher subscription package');
+          console.warn(
+            'Role contains premium permissions that may require a higher subscription package'
+          );
         }
       }
 
@@ -126,38 +150,61 @@ const RolePermissionEditor: React.FC<
       }
 
       // Log the permission change for audit purposes
-      logPermissionChange(roleId, selectedPermissions);
+      logPermissionChange(
+        roleId,
+        selectedPermissions
+      );
     },
     onError: (error) => {
-      console.error('Error updating permissions:', error);
+      console.error(
+        'Error updating permissions:',
+        error
+      );
       // Show error message to user
-      alert(`Error: ${error instanceof Error ? error.message : 'Failed to update permissions'}`);
-    }
+      alert(
+        `Error: ${error instanceof Error ? error.message : 'Failed to update permissions'}`
+      );
+    },
   });
 
   // Function to log permission changes for audit purposes
-  const logPermissionChange = (roleId: number, permissions: string[]) => {
+  const logPermissionChange = (
+    roleId: number,
+    permissions: string[]
+  ) => {
     // Get role information from permissions if available
-    const role = allPermissions && Array.isArray(allPermissions)
-      ? allPermissions.find((p: PermissionInfo) => p.name === `role-${roleId}`)
-      : undefined;
+    const role =
+      allPermissions &&
+      Array.isArray(allPermissions)
+        ? allPermissions.find(
+            (p: PermissionInfo) =>
+              p.name === `role-${roleId}`
+          )
+        : undefined;
 
     const logData = {
       timestamp: new Date().toISOString(),
       action: 'update_permissions',
       roleId,
-      roleName: role?.displayName || `Role ID: ${roleId}`,
+      roleName:
+        role?.displayName || `Role ID: ${roleId}`,
       permissionCount: permissions.length,
       userId: 'current-user', // In a real implementation, get the current user ID
     };
 
-    console.log('Permission change logged:', logData);
+    console.log(
+      'Permission change logged:',
+      logData
+    );
     // In a real implementation, send this to the backend
     // Example: apiClient.post('/api/audit/permission-changes', logData);
   };
 
   useEffect(() => {
-    if (rolePermissions && Array.isArray(rolePermissions)) {
+    if (
+      rolePermissions &&
+      Array.isArray(rolePermissions)
+    ) {
       setSelectedPermissions(rolePermissions);
     }
   }, [rolePermissions]);
@@ -165,7 +212,11 @@ const RolePermissionEditor: React.FC<
   // Group permissions by category
   const permissionsByCategory =
     React.useMemo(() => {
-      if (!allPermissions || !Array.isArray(allPermissions)) return {};
+      if (
+        !allPermissions ||
+        !Array.isArray(allPermissions)
+      )
+        return {};
 
       const filtered = searchQuery
         ? allPermissions.filter(
@@ -196,13 +247,21 @@ const RolePermissionEditor: React.FC<
 
       return filtered.reduce<
         Record<string, PermissionInfo[]>
-      >((acc: Record<string, PermissionInfo[]>, permission: PermissionInfo) => {
-        if (!acc[permission.category]) {
-          acc[permission.category] = [];
-        }
-        acc[permission.category].push(permission);
-        return acc;
-      }, {});
+      >(
+        (
+          acc: Record<string, PermissionInfo[]>,
+          permission: PermissionInfo
+        ) => {
+          if (!acc[permission.category]) {
+            acc[permission.category] = [];
+          }
+          acc[permission.category].push(
+            permission
+          );
+          return acc;
+        },
+        {}
+      );
     }, [allPermissions, searchQuery]);
 
   // Handle permission toggle
@@ -261,7 +320,10 @@ const RolePermissionEditor: React.FC<
 
   // Handle reset permissions
   const handleResetPermissions = () => {
-    if (rolePermissions && Array.isArray(rolePermissions)) {
+    if (
+      rolePermissions &&
+      Array.isArray(rolePermissions)
+    ) {
       setSelectedPermissions(rolePermissions);
     }
   };

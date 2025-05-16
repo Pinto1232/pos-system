@@ -22,10 +22,14 @@ const mockPermissionCategories = [
 export async function GET(request: Request) {
   try {
     // Check if we should use mock data (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
     if (!useMockData) {
-      console.log('Proxying GET request to backend for permission categories');
+      console.log(
+        'Proxying GET request to backend for permission categories'
+      );
 
       // Forward the request to the backend API
       const response = await fetch(
@@ -42,7 +46,9 @@ export async function GET(request: Request) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Successfully fetched permission categories from backend');
+        console.log(
+          'Successfully fetched permission categories from backend'
+        );
         return NextResponse.json(data);
       } else {
         console.warn(
@@ -50,14 +56,23 @@ export async function GET(request: Request) {
         );
       }
     } else {
-      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
+      console.log(
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
+      );
     }
 
     // Return mock data if backend API fails or mock data is enabled
-    return NextResponse.json(mockPermissionCategories);
+    return NextResponse.json(
+      mockPermissionCategories
+    );
   } catch (error) {
-    console.error('Error proxying request to backend:', error);
+    console.error(
+      'Error proxying request to backend:',
+      error
+    );
     // Return mock data for development
-    return NextResponse.json(mockPermissionCategories);
+    return NextResponse.json(
+      mockPermissionCategories
+    );
   }
 }

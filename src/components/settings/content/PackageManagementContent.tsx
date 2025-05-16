@@ -16,14 +16,20 @@ interface PackageManagementContentProps {
   packages: any[] | undefined;
   subscription: any;
   availableFeatures: string[];
-  enableAdditionalPackage: (packageId: number) => Promise<void>;
-  disableAdditionalPackage: (packageId: number) => Promise<void>;
+  enableAdditionalPackage: (
+    packageId: number
+  ) => Promise<void>;
+  disableAdditionalPackage: (
+    packageId: number
+  ) => Promise<void>;
 }
 
 /**
  * Component for package management settings content
  */
-const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
+const PackageManagementContent: React.FC<
+  PackageManagementContentProps
+> = ({
   packages,
   subscription,
   availableFeatures,
@@ -54,11 +60,18 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
           }}
         >
           <Box>
-            <Typography variant="subtitle1" fontWeight="bold">
+            <Typography
+              variant="subtitle1"
+              fontWeight="bold"
+            >
               Current Subscription
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Your current active subscription package
+            <Typography
+              variant="body2"
+              color="text.secondary"
+            >
+              Your current active subscription
+              package
             </Typography>
           </Box>
           <Chip
@@ -87,29 +100,54 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
               textAlign: 'center',
             }}
           >
-            {subscription?.package?.title || 'Starter'}
+            {subscription?.package?.title ||
+              'Starter'}
           </Box>
           <Box>
             <Typography variant="body2">
-              Started: {new Date(subscription?.startDate || Date.now()).toLocaleDateString()}
+              Started:{' '}
+              {new Date(
+                subscription?.startDate ||
+                  Date.now()
+              ).toLocaleDateString()}
             </Typography>
             <Typography variant="body2">
-              Next billing: {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+              Next billing:{' '}
+              {new Date(
+                Date.now() +
+                  30 * 24 * 60 * 60 * 1000
+              ).toLocaleDateString()}
             </Typography>
           </Box>
         </Box>
       </Paper>
 
-      <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+      <Typography
+        variant="subtitle1"
+        fontWeight="bold"
+        gutterBottom
+      >
         Available Packages
       </Typography>
-      <Typography variant="body2" color="text.secondary" paragraph>
-        Upgrade your subscription or add additional packages to access more features
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        paragraph
+      >
+        Upgrade your subscription or add
+        additional packages to access more
+        features
       </Typography>
 
       <Grid container spacing={2}>
         {(packages || []).map((pkg) => (
-          <Grid item xs={12} sm={6} md={3} key={pkg.id}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            key={pkg.id}
+          >
             <Card
               variant="outlined"
               sx={{
@@ -117,36 +155,64 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                borderColor: pkg.id === subscription?.pricingPackageId ? '#173A79' : undefined,
-                boxShadow: pkg.id === subscription?.pricingPackageId ? '0 0 0 2px rgba(23, 58, 121, 0.2)' : undefined,
+                borderColor:
+                  pkg.id ===
+                  subscription?.pricingPackageId
+                    ? '#173A79'
+                    : undefined,
+                boxShadow:
+                  pkg.id ===
+                  subscription?.pricingPackageId
+                    ? '0 0 0 2px rgba(23, 58, 121, 0.2)'
+                    : undefined,
               }}
             >
               <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h6" gutterBottom>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                >
                   {pkg.title}
                 </Typography>
-                <Typography variant="h5" color="primary" gutterBottom>
+                <Typography
+                  variant="h5"
+                  color="primary"
+                  gutterBottom
+                >
                   ${pkg.price}/mo
                 </Typography>
                 <Box sx={{ mt: 2 }}>
-                  {pkg.description.split(';').map((feature: string, index: number) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        mb: 1,
-                      }}
-                    >
-                      <CheckCircleIcon color="success" fontSize="small" />
-                      <Typography variant="body2">{feature}</Typography>
-                    </Box>
-                  ))}
+                  {pkg.description
+                    .split(';')
+                    .map(
+                      (
+                        feature: string,
+                        index: number
+                      ) => (
+                        <Box
+                          key={index}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            mb: 1,
+                          }}
+                        >
+                          <CheckCircleIcon
+                            color="success"
+                            fontSize="small"
+                          />
+                          <Typography variant="body2">
+                            {feature}
+                          </Typography>
+                        </Box>
+                      )
+                    )}
                 </Box>
               </CardContent>
               <CardActions>
-                {pkg.id === subscription?.pricingPackageId ? (
+                {pkg.id ===
+                subscription?.pricingPackageId ? (
                   <Button
                     fullWidth
                     variant="contained"
@@ -158,12 +224,18 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                   >
                     Current Plan
                   </Button>
-                ) : subscription?.additionalPackages?.includes(pkg.id) ? (
+                ) : subscription?.additionalPackages?.includes(
+                    pkg.id
+                  ) ? (
                   <Button
                     fullWidth
                     variant="outlined"
                     color="error"
-                    onClick={() => disableAdditionalPackage(pkg.id)}
+                    onClick={() =>
+                      disableAdditionalPackage(
+                        pkg.id
+                      )
+                    }
                     sx={{
                       textTransform: 'none',
                       borderRadius: 2,
@@ -176,13 +248,20 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                     fullWidth
                     variant="outlined"
                     color="primary"
-                    onClick={() => enableAdditionalPackage(pkg.id)}
+                    onClick={() =>
+                      enableAdditionalPackage(
+                        pkg.id
+                      )
+                    }
                     sx={{
                       textTransform: 'none',
                       borderRadius: 2,
                     }}
                   >
-                    {pkg.id > subscription?.pricingPackageId ? 'Upgrade' : 'Enable'}
+                    {pkg.id >
+                    subscription?.pricingPackageId
+                      ? 'Upgrade'
+                      : 'Enable'}
                   </Button>
                 )}
               </CardActions>

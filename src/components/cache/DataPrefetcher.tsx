@@ -42,7 +42,9 @@ export default function DataPrefetcher() {
           .then((res) => {
             // Check if response is OK before parsing JSON
             if (!res.ok) {
-              throw new Error(`API returned status: ${res.status}`);
+              throw new Error(
+                `API returned status: ${res.status}`
+              );
             }
             return res.json();
           })

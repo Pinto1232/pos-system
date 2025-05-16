@@ -1,5 +1,10 @@
 import React from 'react';
-import { Box, Typography, TextField, Grid } from '@mui/material';
+import {
+  Box,
+  Typography,
+  TextField,
+  Grid,
+} from '@mui/material';
 
 /**
  * Component for business information settings content

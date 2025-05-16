@@ -58,7 +58,8 @@ function Hero({
           height: '18px',
           borderRadius: '50%',
           background: 'rgba(0, 204, 255, 0.8)',
-          boxShadow: '0 0 10px rgba(0, 204, 255, 0.5)',
+          boxShadow:
+            '0 0 10px rgba(0, 204, 255, 0.5)',
           zIndex: 1,
           animation: 'pulse 4s infinite',
         }}
@@ -72,7 +73,8 @@ function Hero({
           height: '14px',
           borderRadius: '50%',
           background: 'rgba(255, 105, 180, 0.8)',
-          boxShadow: '0 0 10px rgba(255, 105, 180, 0.5)',
+          boxShadow:
+            '0 0 10px rgba(255, 105, 180, 0.5)',
           zIndex: 1,
           animation: 'pulse 3s infinite',
         }}
@@ -86,14 +88,13 @@ function Hero({
           height: '16px',
           borderRadius: '50%',
           background: 'rgba(147, 51, 234, 0.8)',
-          boxShadow: '0 0 10px rgba(147, 51, 234, 0.5)',
+          boxShadow:
+            '0 0 10px rgba(147, 51, 234, 0.5)',
           zIndex: 1,
           animation: 'pulse 5s infinite',
         }}
       />
-      <Box
-        className={styles.colorfulCircle}
-      />
+      <Box className={styles.colorfulCircle} />
 
       <Box
         className={styles.heroContainer}

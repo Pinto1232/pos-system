@@ -11,7 +11,8 @@ const mockRoles = [
     id: 1,
     name: 'Admin',
     normalizedName: 'ADMIN',
-    description: 'Complete system access with configuration privileges',
+    description:
+      'Complete system access with configuration privileges',
     permissions: JSON.stringify([
       'users.view',
       'users.create',
@@ -50,7 +51,8 @@ const mockRoles = [
     id: 2,
     name: 'Manager',
     normalizedName: 'MANAGER',
-    description: 'Store operations, reporting, and staff management',
+    description:
+      'Store operations, reporting, and staff management',
     permissions: JSON.stringify([
       'users.view',
       'users.create',
@@ -83,7 +85,8 @@ const mockRoles = [
     id: 3,
     name: 'Cashier',
     normalizedName: 'CASHIER',
-    description: 'Transaction processing and basic customer service',
+    description:
+      'Transaction processing and basic customer service',
     permissions: JSON.stringify([
       'sales.create',
       'products.view',
@@ -114,7 +117,8 @@ const mockRoles = [
     id: 4,
     name: 'Inventory Manager',
     normalizedName: 'INVENTORY_MANAGER',
-    description: 'Stock management without sales capabilities',
+    description:
+      'Stock management without sales capabilities',
     permissions: JSON.stringify([
       'products.view',
       'products.create',
@@ -143,7 +147,8 @@ const mockRoles = [
     id: 5,
     name: 'Analytics User',
     normalizedName: 'ANALYTICS_USER',
-    description: 'Access to advanced analytics and reporting',
+    description:
+      'Access to advanced analytics and reporting',
     permissions: JSON.stringify([
       'reports.view',
       'reports.create',
@@ -170,10 +175,14 @@ const mockRoles = [
 export async function GET(request: Request) {
   try {
     // Check if we should use mock data (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
     if (!useMockData) {
-      console.log('Proxying GET request to backend for roles');
+      console.log(
+        'Proxying GET request to backend for roles'
+      );
 
       // Forward the request to the backend API
       const response = await fetch(
@@ -190,7 +199,9 @@ export async function GET(request: Request) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Successfully fetched roles from backend');
+        console.log(
+          'Successfully fetched roles from backend'
+        );
         return NextResponse.json(data);
       } else {
         console.warn(
@@ -198,13 +209,18 @@ export async function GET(request: Request) {
         );
       }
     } else {
-      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
+      console.log(
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
+      );
     }
 
     // Return mock data if backend API fails or mock data is enabled
     return NextResponse.json(mockRoles);
   } catch (error) {
-    console.error('Error proxying request to backend:', error);
+    console.error(
+      'Error proxying request to backend:',
+      error
+    );
     // Return mock data for development
     return NextResponse.json(mockRoles);
   }

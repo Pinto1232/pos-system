@@ -15,10 +15,9 @@ interface TaxSettingsContentProps {
 /**
  * Component for tax and VAT settings content
  */
-const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
-  taxSettings,
-  setTaxSettings,
-}) => {
+const TaxSettingsContent: React.FC<
+  TaxSettingsContentProps
+> = ({ taxSettings, setTaxSettings }) => {
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -81,20 +80,15 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
           <Typography variant="subtitle1">
             Default Tax Rate (%)
           </Typography>
-          <Box
-            sx={{ position: 'relative' }}
-          >
+          <Box sx={{ position: 'relative' }}>
             <TextField
               type="number"
               value={
-                taxSettings.defaultTaxRate ||
-                0
+                taxSettings.defaultTaxRate || 0
               }
               onChange={(e) => {
                 const value =
-                  parseFloat(
-                    e.target.value
-                  ) || 0;
+                  parseFloat(e.target.value) || 0;
                 setTaxSettings({
                   ...taxSettings,
                   defaultTaxRate: value,
@@ -114,8 +108,7 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
                 position: 'absolute',
                 right: 8,
                 top: '50%',
-                transform:
-                  'translateY(-50%)',
+                transform: 'translateY(-50%)',
               }}
             >
               %
@@ -133,9 +126,7 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
           <Typography variant="subtitle1">
             Tax Calculation Method
           </Typography>
-          <Box
-            sx={{ display: 'flex', gap: 2 }}
-          >
+          <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
               variant={
                 taxSettings.taxCalculationMethod ===
@@ -247,9 +238,7 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
               VAT Number
             </Typography>
             <TextField
-              value={
-                taxSettings.vatNumber || ''
-              }
+              value={taxSettings.vatNumber || ''}
               onChange={(e) =>
                 setTaxSettings({
                   ...taxSettings,
@@ -312,9 +301,7 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
           <Typography variant="subtitle1">
             Tax Reporting Period
           </Typography>
-          <Box
-            sx={{ display: 'flex', gap: 2 }}
-          >
+          <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
               variant={
                 taxSettings.taxReportingPeriod ===
@@ -331,8 +318,7 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
-                  taxReportingPeriod:
-                    'monthly',
+                  taxReportingPeriod: 'monthly',
                 })
               }
               sx={{
@@ -359,8 +345,7 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
-                  taxReportingPeriod:
-                    'quarterly',
+                  taxReportingPeriod: 'quarterly',
                 })
               }
               sx={{
@@ -387,8 +372,7 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
-                  taxReportingPeriod:
-                    'annually',
+                  taxReportingPeriod: 'annually',
                 })
               }
               sx={{

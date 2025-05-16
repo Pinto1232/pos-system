@@ -1,4 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import {
+  NextRequest,
+  NextResponse,
+} from 'next/server';
 import { CACHE_TIMES } from '@/app/cache-constants';
 
 // Define the backend API URL
@@ -25,21 +28,24 @@ const mockUserCustomization = {
         id: 1,
         name: 'Standard Rate',
         rate: 15,
-        description: 'Standard tax rate for most goods and services',
+        description:
+          'Standard tax rate for most goods and services',
         isDefault: true,
       },
       {
         id: 2,
         name: 'Reduced Rate',
         rate: 7.5,
-        description: 'Reduced rate for specific goods and services',
+        description:
+          'Reduced rate for specific goods and services',
         isDefault: false,
       },
       {
         id: 3,
         name: 'Zero Rate',
         rate: 0,
-        description: 'Zero-rated goods and services',
+        description:
+          'Zero-rated goods and services',
         isDefault: false,
       },
     ],
@@ -63,8 +69,12 @@ const mockUserCustomization = {
 // GET handler for fetching user customization
 export async function GET(request: NextRequest) {
   try {
-    const userId = request.nextUrl.pathname.split('/').pop() || 'current-user';
-    console.log(`Fetching customization for user: ${userId}`);
+    const userId =
+      request.nextUrl.pathname.split('/').pop() ||
+      'current-user';
+    console.log(
+      `Fetching customization for user: ${userId}`
+    );
 
     // Create cache control headers
     const headers = {
@@ -74,7 +84,10 @@ export async function GET(request: NextRequest) {
     try {
       // Add timeout to prevent long-running requests
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+      const timeoutId = setTimeout(
+        () => controller.abort(),
+        3000
+      ); // 3 second timeout
 
       // Attempt to fetch from the backend API
       const response = await fetch(
@@ -93,22 +106,40 @@ export async function GET(request: NextRequest) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Successfully fetched user customization from backend');
-        return NextResponse.json(data, { headers });
+        console.log(
+          'Successfully fetched user customization from backend'
+        );
+        return NextResponse.json(data, {
+          headers,
+        });
       } else {
-        console.warn(`Backend API returned status: ${response.status}, using mock data`);
+        console.warn(
+          `Backend API returned status: ${response.status}, using mock data`
+        );
       }
     } catch (fetchError) {
-      console.error('Error fetching from backend:', fetchError);
+      console.error(
+        'Error fetching from backend:',
+        fetchError
+      );
       console.log('Falling back to mock data');
     }
 
     // Return mock data if backend request fails
-    return NextResponse.json(mockUserCustomization, { headers });
-  } catch (error) {
-    console.error('Error in user customization API:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch user customization' },
+      mockUserCustomization,
+      { headers }
+    );
+  } catch (error) {
+    console.error(
+      'Error in user customization API:',
+      error
+    );
+    return NextResponse.json(
+      {
+        error:
+          'Failed to fetch user customization',
+      },
       { status: 500 }
     );
   }
@@ -128,7 +159,10 @@ export async function POST(request: Request) {
     try {
       // Add timeout to prevent long-running requests
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+      const timeoutId = setTimeout(
+        () => controller.abort(),
+        3000
+      ); // 3 second timeout
 
       // Forward the request to the backend API
       const response = await fetch(
@@ -148,23 +182,37 @@ export async function POST(request: Request) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Successfully updated user customization in backend');
+        console.log(
+          'Successfully updated user customization in backend'
+        );
         return NextResponse.json(data);
       } else {
-        console.warn(`Backend API returned status: ${response.status}, using mock response`);
+        console.warn(
+          `Backend API returned status: ${response.status}, using mock response`
+        );
       }
     } catch (fetchError) {
-      console.error('Error connecting to backend:', fetchError);
-      console.log('Falling back to mock response');
+      console.error(
+        'Error connecting to backend:',
+        fetchError
+      );
+      console.log(
+        'Falling back to mock response'
+      );
     }
 
     // Return mock success response if backend request fails
-    console.log('Using mock response for user customization update');
+    console.log(
+      'Using mock response for user customization update'
+    );
     return NextResponse.json({
       id: customizationData.id || 1,
-      userId: customizationData.userId || 'current-user',
+      userId:
+        customizationData.userId ||
+        'current-user',
       ...customizationData,
-      message: 'User customization updated successfully (mock response)'
+      message:
+        'User customization updated successfully (mock response)',
     });
   } catch (error) {
     console.error(

@@ -67,12 +67,16 @@ export async function GET(
   context: { params: { userId: string } }
 ) {
   // Access params asynchronously to fix the "params should be awaited" error
-  const params = await Promise.resolve(context.params);
+  const params = await Promise.resolve(
+    context.params
+  );
   const { userId } = params;
 
   try {
     // Check if we should use mock data (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
     if (!useMockData) {
       console.log(
@@ -94,7 +98,9 @@ export async function GET(
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Successfully fetched user customization from backend');
+        console.log(
+          'Successfully fetched user customization from backend'
+        );
         return NextResponse.json(data);
       } else {
         console.warn(
@@ -102,7 +108,9 @@ export async function GET(
         );
       }
     } else {
-      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
+      console.log(
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
+      );
     }
 
     // Return mock data if backend API fails or mock data is enabled

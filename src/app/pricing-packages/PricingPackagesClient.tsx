@@ -19,19 +19,42 @@ import {
   CircularProgress,
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { Package } from './types';
+import { Package as ApiPackage } from './types';
 import {
   sortPackages,
   refreshPricingPackages,
   fetchPricingPackagesClient,
 } from './PricingPackagesUtils';
-import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import {
+  usePackageSelection,
+  Package as ContextPackage,
+} from '@/contexts/PackageSelectionContext';
 import { AuthContext } from '@/contexts/AuthContext';
 import PricingPackageCard from '@/components/pricing-packages/PricingPackageCard';
 import styles from '@/components/pricing-packages/PricingPackages.module.css';
 
+// Helper function to convert API package type to Context package type
+const adaptPackage = (
+  pkg: ApiPackage
+): ContextPackage => {
+  return {
+    ...pkg,
+    id:
+      typeof pkg.id === 'string'
+        ? parseInt(pkg.id, 10)
+        : pkg.id,
+    // Convert type string to the expected union type
+    type: pkg.type.toLowerCase() as
+      | 'custom'
+      | 'starter'
+      | 'growth'
+      | 'enterprise'
+      | 'premium',
+  };
+};
+
 interface PricingPackagesClientProps {
-  initialPackages: Package[];
+  initialPackages: ApiPackage[];
 }
 
 export default function PricingPackagesClient({
@@ -74,13 +97,58 @@ export default function PricingPackagesClient({
       setSnackbarSeverity('info');
       setSnackbarOpen(true);
 
-      // Use the client-side utility to refresh data
-      await refreshPricingPackages();
+      // Use the client-side utility to refresh data with force refresh
+      console.log(
+        `[CLIENT] Starting pricing data refresh at ${new Date().toISOString()}`
+      );
+      const refreshedData =
+        await refreshPricingPackages();
+
+      // Log the refreshed data
+      if (
+        refreshedData &&
+        refreshedData.length > 0
+      ) {
+        console.log(
+          `[CLIENT] Refreshed pricing data (first item):`,
+          {
+            id: refreshedData[0].id,
+            title: refreshedData[0].title,
+            price: refreshedData[0].price,
+            timestamp: new Date().toISOString(),
+          }
+        );
+      }
 
       // Invalidate and refetch the query
       await queryClient.invalidateQueries({
         queryKey: ['pricingPackages'],
+        refetchType: 'all',
       });
+
+      // Force a direct fetch with cache-busting
+      try {
+        // Fetch with cache-busting timestamp
+        const timestamp = new Date().getTime();
+        await fetch(
+          `/api/pricing-packages?refresh=true&t=${timestamp}`,
+          {
+            method: 'GET',
+            headers: {
+              'Cache-Control':
+                'no-cache, no-store, must-revalidate',
+              Pragma: 'no-cache',
+              Expires: '0',
+            },
+            cache: 'no-store',
+          }
+        );
+      } catch (fetchError) {
+        console.error(
+          'Error during force fetch:',
+          fetchError
+        );
+      }
 
       setSnackbarMessage(
         'Pricing data refreshed successfully!'
@@ -100,15 +168,32 @@ export default function PricingPackagesClient({
 
   // Use React Query to handle client-side data fetching and caching
   const {
-    data: packages,
+    data: packages = [], // Provide default empty array to avoid 'never' type
     isLoading,
     error,
-  } = useQuery<Package[]>({
+  } = useQuery<ApiPackage[]>({
     queryKey: ['pricingPackages'],
     queryFn: async () => {
-      // Use the client-side utility to fetch data
+      // Use the client-side utility to fetch data with forceRefresh=true to bypass cache
       const data =
-        await fetchPricingPackagesClient();
+        await fetchPricingPackagesClient(true);
+
+      // Log the data received from the utility function
+      console.log(
+        `[CLIENT] Received pricing data in queryFn at ${new Date().toISOString()}`
+      );
+      if (data && data.length > 0) {
+        console.log(
+          `[CLIENT] Sample pricing data (first item):`,
+          {
+            id: data[0].id,
+            title: data[0].title,
+            price: data[0].price,
+            timestamp: new Date().toISOString(),
+          }
+        );
+      }
+
       return sortPackages(data);
     },
     // Use the server-provided initial data
@@ -117,10 +202,29 @@ export default function PricingPackagesClient({
       initialPackages.length > 0
         ? initialPackages
         : undefined,
-    staleTime: 60 * 60 * 1000, // 1 hour
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    staleTime: 60 * 1000, // 1 minute (reduced from 1 hour)
+    gcTime: 2 * 60 * 1000, // 2 minutes
+    refetchOnWindowFocus: true, // Changed to true to refresh when window gets focus
+    refetchOnMount: true, // Changed to true to refresh when component mounts
   });
+
+  // Log the packages being rendered - moved after packages declaration
+  useEffect(() => {
+    if (packages && packages.length > 0) {
+      console.log(
+        `[CLIENT] Rendering pricing packages at ${new Date().toISOString()}`
+      );
+      console.log(
+        `[CLIENT] Rendered pricing data (first item):`,
+        {
+          id: packages[0].id,
+          title: packages[0].title,
+          price: packages[0].price,
+          timestamp: new Date().toISOString(),
+        }
+      );
+    }
+  }, [packages]);
 
   // Handle snackbar close
   const handleSnackbarClose = () => {
@@ -236,13 +340,19 @@ export default function PricingPackagesClient({
       {/* Packages grid */}
       <div className={styles.container}>
         {packages && packages.length > 0 ? (
-          packages.map((pkg) => (
-            <PricingPackageCard
-              key={pkg.id}
-              packageData={pkg}
-              onBuyNow={() => selectPackage(pkg)}
-            />
-          ))
+          packages.map((pkg) => {
+            // Convert API package to Context package
+            const adaptedPkg = adaptPackage(pkg);
+            return (
+              <PricingPackageCard
+                key={pkg.id}
+                packageData={adaptedPkg}
+                onBuyNow={() =>
+                  selectPackage(adaptedPkg)
+                }
+              />
+            );
+          })
         ) : (
           <div className={styles.message}>
             No pricing packages available at this

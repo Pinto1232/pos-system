@@ -35,87 +35,88 @@ export type PricingPackagesResponse = {
 };
 
 // Fallback data in case the API is not available
-const fallbackPackages: PricingPackagesResponse = {
-  totalItems: 5,
-  data: [
-    {
-      id: 1,
-      title: 'Starter',
-      description:
-        'Basic POS features;Inventory management;Sales reporting;Customer database;Email support;Cloud backup;Regular updates',
-      icon: 'MUI:StarIcon',
-      extraDescription:
-        'Perfect for small businesses just getting started',
-      price: 29.99,
-      testPeriodDays: 14,
-      type: 'starter',
-      currency: 'USD',
-      multiCurrencyPrices:
-        '{"ZAR": 499.99, "EUR": 27.99, "GBP": 23.99}',
-    },
-    {
-      id: 2,
-      title: 'Growth Pro',
-      description:
-        'Everything in Growth;Advanced inventory forecasting;Enhanced customer loyalty program;Marketing automation tools;Staff performance tracking;Customizable dashboards;Mobile app access',
-      icon: 'MUI:TrendingUpIcon',
-      extraDescription:
-        'Ideal for growing businesses that need advanced features',
-      price: 79.99,
-      testPeriodDays: 14,
-      type: 'growth-pro',
-      currency: 'USD',
-      multiCurrencyPrices:
-        '{"ZAR": 1399.99, "EUR": 72.99, "GBP": 63.99}',
-    },
-    {
-      id: 3,
-      title: 'Enterprise',
-      description:
-        'Everything in Premium;Dedicated account manager;Custom development;White-label solution;Unlimited users;Advanced security features;Data migration assistance',
-      icon: 'MUI:BusinessIcon',
-      extraDescription:
-        'For large businesses with complex requirements',
-      price: 199.99,
-      testPeriodDays: 30,
-      type: 'enterprise',
-      currency: 'USD',
-      multiCurrencyPrices:
-        '{"ZAR": 3499.99, "EUR": 179.99, "GBP": 159.99}',
-    },
-    {
-      id: 4,
-      title: 'Custom',
-      description:
-        'Tailored POS solution;Choose only what you need;Pay for what you use;Flexible configuration;Scalable as you grow;Custom integrations;Personalized support',
-      icon: 'MUI:SettingsIcon',
-      extraDescription:
-        'Build your own package with exactly what you need',
-      price: 0,
-      testPeriodDays: 30,
-      type: 'custom',
-      currency: 'USD',
-      multiCurrencyPrices: '{}',
-    },
-    {
-      id: 5,
-      title: 'Premium Plus',
-      description:
-        'All-inclusive POS package with premium features;Best for businesses looking for top-tier POS solutions;Advanced AI-powered analytics;Predictive inventory management;Omnichannel integration;VIP support;Quarterly business reviews;Custom reporting',
-      icon: 'MUI:DiamondIcon',
-      extraDescription:
-        'The ultimate POS experience with cutting-edge features and premium support',
-      price: 349.99,
-      testPeriodDays: 30,
-      type: 'premium-plus',
-      currency: 'USD',
-      multiCurrencyPrices:
-        '{"ZAR": 5999.99, "EUR": 319.99, "GBP": 279.99}',
-    },
-  ],
-  pageSize: 10,
-  pageNumber: 1,
-};
+const fallbackPackages: PricingPackagesResponse =
+  {
+    totalItems: 5,
+    data: [
+      {
+        id: 1,
+        title: 'Starter',
+        description:
+          'Basic POS features;Inventory management;Sales reporting;Customer database;Email support;Cloud backup;Regular updates',
+        icon: 'MUI:StarIcon',
+        extraDescription:
+          'Perfect for small businesses just getting started',
+        price: 29.99,
+        testPeriodDays: 14,
+        type: 'starter',
+        currency: 'USD',
+        multiCurrencyPrices:
+          '{"ZAR": 499.99, "EUR": 27.99, "GBP": 23.99}',
+      },
+      {
+        id: 2,
+        title: 'Growth Pro',
+        description:
+          'Everything in Growth;Advanced inventory forecasting;Enhanced customer loyalty program;Marketing automation tools;Staff performance tracking;Customizable dashboards;Mobile app access',
+        icon: 'MUI:TrendingUpIcon',
+        extraDescription:
+          'Ideal for growing businesses that need advanced features',
+        price: 79.99,
+        testPeriodDays: 14,
+        type: 'growth-pro',
+        currency: 'USD',
+        multiCurrencyPrices:
+          '{"ZAR": 1399.99, "EUR": 72.99, "GBP": 63.99}',
+      },
+      {
+        id: 3,
+        title: 'Enterprise',
+        description:
+          'Everything in Premium;Dedicated account manager;Custom development;White-label solution;Unlimited users;Advanced security features;Data migration assistance',
+        icon: 'MUI:BusinessIcon',
+        extraDescription:
+          'For large businesses with complex requirements',
+        price: 199.99,
+        testPeriodDays: 30,
+        type: 'enterprise',
+        currency: 'USD',
+        multiCurrencyPrices:
+          '{"ZAR": 3499.99, "EUR": 179.99, "GBP": 159.99}',
+      },
+      {
+        id: 4,
+        title: 'Custom',
+        description:
+          'Tailored POS solution;Choose only what you need;Pay for what you use;Flexible configuration;Scalable as you grow;Custom integrations;Personalized support',
+        icon: 'MUI:SettingsIcon',
+        extraDescription:
+          'Build your own package with exactly what you need',
+        price: 0,
+        testPeriodDays: 30,
+        type: 'custom',
+        currency: 'USD',
+        multiCurrencyPrices: '{}',
+      },
+      {
+        id: 5,
+        title: 'Premium Plus',
+        description:
+          'All-inclusive POS package with premium features;Best for businesses looking for top-tier POS solutions;Advanced AI-powered analytics;Predictive inventory management;Omnichannel integration;VIP support;Quarterly business reviews;Custom reporting',
+        icon: 'MUI:DiamondIcon',
+        extraDescription:
+          'The ultimate POS experience with cutting-edge features and premium support',
+        price: 349.99,
+        testPeriodDays: 30,
+        type: 'premium-plus',
+        currency: 'USD',
+        multiCurrencyPrices:
+          '{"ZAR": 5999.99, "EUR": 319.99, "GBP": 279.99}',
+      },
+    ],
+    pageSize: 10,
+    pageNumber: 1,
+  };
 
 export async function GET(request: NextRequest) {
   const searchParams =

@@ -14,22 +14,29 @@ import { RegionalSettings } from '../../../types/settingsTypes';
 
 interface RegionalSettingsContentProps {
   regionalSettings: RegionalSettings;
-  setRegionalSettings: (settings: RegionalSettings) => void;
+  setRegionalSettings: (
+    settings: RegionalSettings
+  ) => void;
 }
 
 /**
  * Component for regional settings content
  */
-const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
+const RegionalSettingsContent: React.FC<
+  RegionalSettingsContentProps
+> = ({
   regionalSettings,
   setRegionalSettings,
 }) => {
-  const [newCurrency, setNewCurrency] = React.useState('');
+  const [newCurrency, setNewCurrency] =
+    React.useState('');
 
   const handleAddCurrency = () => {
     if (
       newCurrency &&
-      !regionalSettings.supportedCurrencies.includes(newCurrency)
+      !regionalSettings.supportedCurrencies.includes(
+        newCurrency
+      )
     ) {
       setRegionalSettings({
         ...regionalSettings,
@@ -42,15 +49,19 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
     }
   };
 
-  const handleRemoveCurrency = (currency: string) => {
+  const handleRemoveCurrency = (
+    currency: string
+  ) => {
     setRegionalSettings({
       ...regionalSettings,
-      supportedCurrencies: regionalSettings.supportedCurrencies.filter(
-        (c) => c !== currency
-      ),
+      supportedCurrencies:
+        regionalSettings.supportedCurrencies.filter(
+          (c) => c !== currency
+        ),
       // If removing the default currency, set a new default
       defaultCurrency:
-        regionalSettings.defaultCurrency === currency
+        regionalSettings.defaultCurrency ===
+        currency
           ? regionalSettings.supportedCurrencies.filter(
               (c) => c !== currency
             )[0] || 'USD'
@@ -82,7 +93,9 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
           </Typography>
           <TextField
             select
-            value={regionalSettings.defaultCurrency}
+            value={
+              regionalSettings.defaultCurrency
+            }
             onChange={(e) =>
               setRegionalSettings({
                 ...regionalSettings,
@@ -140,7 +153,8 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
                   deleteIcon={
                     regionalSettings.defaultCurrency ===
                       currency ||
-                    regionalSettings.supportedCurrencies
+                    regionalSettings
+                      .supportedCurrencies
                       .length <= 1 ? undefined : (
                       <CloseIcon />
                     )
@@ -228,9 +242,7 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
           <Typography variant="subtitle1">
             Time Format
           </Typography>
-          <Box
-            sx={{ display: 'flex', gap: 2 }}
-          >
+          <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
               variant={
                 regionalSettings.timeFormat ===

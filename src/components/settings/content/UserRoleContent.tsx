@@ -19,11 +19,13 @@ interface UserRoleContentProps {
 /**
  * Component for user and role management content
  */
-const UserRoleContent: React.FC<UserRoleContentProps> = ({
-  selectedRoleTab,
-  setSelectedRoleTab,
-}) => {
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+const UserRoleContent: React.FC<
+  UserRoleContentProps
+> = ({ selectedRoleTab, setSelectedRoleTab }) => {
+  const handleTabChange = (
+    event: React.SyntheticEvent,
+    newValue: number
+  ) => {
     setSelectedRoleTab(newValue);
   };
 
@@ -67,8 +69,12 @@ const UserRoleContent: React.FC<UserRoleContentProps> = ({
         </Tabs>
 
         <Box sx={{ p: 2 }}>
-          {selectedRoleTab === 0 && <RoleManagement />}
-          {selectedRoleTab === 1 && <UserActivityMonitor />}
+          {selectedRoleTab === 0 && (
+            <RoleManagement />
+          )}
+          {selectedRoleTab === 1 && (
+            <UserActivityMonitor />
+          )}
         </Box>
       </Paper>
     </Box>

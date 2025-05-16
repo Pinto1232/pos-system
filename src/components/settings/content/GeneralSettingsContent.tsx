@@ -7,7 +7,10 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import { FaPaintBrush } from 'react-icons/fa';
-import { SketchPicker, ColorResult } from 'react-color';
+import {
+  SketchPicker,
+  ColorResult,
+} from 'react-color';
 
 interface GeneralSettingsContentProps {
   sidebarColor: string;
@@ -16,17 +19,25 @@ interface GeneralSettingsContentProps {
   setNavbarColor: (color: string) => void;
   logoPreview: string;
   showSidebarColorPicker: boolean;
-  setShowSidebarColorPicker: (show: boolean) => void;
+  setShowSidebarColorPicker: (
+    show: boolean
+  ) => void;
   showNavbarColorPicker: boolean;
-  setShowNavbarColorPicker: (show: boolean) => void;
-  handleLogoFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setShowNavbarColorPicker: (
+    show: boolean
+  ) => void;
+  handleLogoFileChange: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void;
 }
 
 /**
  * Component for general settings content
  * Handles appearance settings like colors and logo
  */
-const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
+const GeneralSettingsContent: React.FC<
+  GeneralSettingsContentProps
+> = ({
   sidebarColor,
   setSidebarColor,
   navbarColor,
@@ -75,8 +86,8 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
             color="text.secondary"
             sx={{ mb: 1 }}
           >
-            Upload your company logo to
-            display in the application.
+            Upload your company logo to display in
+            the application.
           </Typography>
 
           <Box
@@ -135,15 +146,13 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                 }}
               >
                 <Typography variant="body2">
-                  Recommended size: 200x200
-                  pixels
+                  Recommended size: 200x200 pixels
                 </Typography>
                 <Typography
                   variant="body2"
                   color="text.secondary"
                 >
-                  Supported formats: JPG,
-                  PNG, SVG
+                  Supported formats: JPG, PNG, SVG
                 </Typography>
               </Box>
             </Box>
@@ -243,7 +252,9 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                 <Box
                   key={theme.name}
                   onClick={() => {
-                    setSidebarColor(theme.sidebar);
+                    setSidebarColor(
+                      theme.sidebar
+                    );
                     setNavbarColor(theme.navbar);
                   }}
                   sx={{
@@ -290,8 +301,12 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
               ))}
               <Box
                 onClick={() => {
-                  setSidebarColor(DEFAULT_SIDEBAR_COLOR);
-                  setNavbarColor(DEFAULT_NAVBAR_COLOR);
+                  setSidebarColor(
+                    DEFAULT_SIDEBAR_COLOR
+                  );
+                  setNavbarColor(
+                    DEFAULT_NAVBAR_COLOR
+                  );
                 }}
                 sx={{
                   display: 'flex',
@@ -356,11 +371,17 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  onClick={() => setShowSidebarColorPicker(!showSidebarColorPicker)}
+                  onClick={() =>
+                    setShowSidebarColorPicker(
+                      !showSidebarColorPicker
+                    )
+                  }
                 >
                   <FaPaintBrush
                     color={
-                      sidebarColor === '#ffffff' || sidebarColor === '#f5f5f5'
+                      sidebarColor ===
+                        '#ffffff' ||
+                      sidebarColor === '#f5f5f5'
                         ? '#000'
                         : '#fff'
                     }
@@ -369,7 +390,11 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                 </Box>
                 <TextField
                   value={sidebarColor}
-                  onChange={(e) => setSidebarColor(e.target.value)}
+                  onChange={(e) =>
+                    setSidebarColor(
+                      e.target.value
+                    )
+                  }
                   size="small"
                   sx={{ width: '140px' }}
                 />
@@ -380,8 +405,10 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                       zIndex: 2,
                       mt: 20,
                       ml: 5,
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                      maxHeight: 'calc(100vh - 100px)',
+                      boxShadow:
+                        '0 4px 12px rgba(0,0,0,0.15)',
+                      maxHeight:
+                        'calc(100vh - 100px)',
                       overflow: 'auto',
                     }}
                   >
@@ -394,7 +421,11 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                         left: 0,
                         zIndex: 1,
                       }}
-                      onClick={() => setShowSidebarColorPicker(false)}
+                      onClick={() =>
+                        setShowSidebarColorPicker(
+                          false
+                        )
+                      }
                     />
                     <Box
                       sx={{
@@ -404,7 +435,13 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                     >
                       <SketchPicker
                         color={sidebarColor}
-                        onChange={(color: ColorResult) => setSidebarColor(color.hex)}
+                        onChange={(
+                          color: ColorResult
+                        ) =>
+                          setSidebarColor(
+                            color.hex
+                          )
+                        }
                       />
                     </Box>
                   </Box>
@@ -413,7 +450,11 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
               <Button
                 variant="outlined"
                 size="small"
-                onClick={() => setSidebarColor(DEFAULT_SIDEBAR_COLOR)}
+                onClick={() =>
+                  setSidebarColor(
+                    DEFAULT_SIDEBAR_COLOR
+                  )
+                }
                 sx={{
                   textTransform: 'none',
                   borderRadius: 4,
@@ -458,11 +499,16 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  onClick={() => setShowNavbarColorPicker(!showNavbarColorPicker)}
+                  onClick={() =>
+                    setShowNavbarColorPicker(
+                      !showNavbarColorPicker
+                    )
+                  }
                 >
                   <FaPaintBrush
                     color={
-                      navbarColor === '#ffffff' || navbarColor === '#f5f5f5'
+                      navbarColor === '#ffffff' ||
+                      navbarColor === '#f5f5f5'
                         ? '#000'
                         : '#fff'
                     }
@@ -471,7 +517,9 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                 </Box>
                 <TextField
                   value={navbarColor}
-                  onChange={(e) => setNavbarColor(e.target.value)}
+                  onChange={(e) =>
+                    setNavbarColor(e.target.value)
+                  }
                   size="small"
                   sx={{ width: '140px' }}
                 />
@@ -482,8 +530,10 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                       zIndex: 2,
                       mt: 20,
                       ml: 5,
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                      maxHeight: 'calc(100vh - 100px)',
+                      boxShadow:
+                        '0 4px 12px rgba(0,0,0,0.15)',
+                      maxHeight:
+                        'calc(100vh - 100px)',
                       overflow: 'auto',
                     }}
                   >
@@ -496,7 +546,11 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                         left: 0,
                         zIndex: 1,
                       }}
-                      onClick={() => setShowNavbarColorPicker(false)}
+                      onClick={() =>
+                        setShowNavbarColorPicker(
+                          false
+                        )
+                      }
                     />
                     <Box
                       sx={{
@@ -506,7 +560,13 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                     >
                       <SketchPicker
                         color={navbarColor}
-                        onChange={(color: ColorResult) => setNavbarColor(color.hex)}
+                        onChange={(
+                          color: ColorResult
+                        ) =>
+                          setNavbarColor(
+                            color.hex
+                          )
+                        }
                       />
                     </Box>
                   </Box>
@@ -515,7 +575,11 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
               <Button
                 variant="outlined"
                 size="small"
-                onClick={() => setNavbarColor(DEFAULT_NAVBAR_COLOR)}
+                onClick={() =>
+                  setNavbarColor(
+                    DEFAULT_NAVBAR_COLOR
+                  )
+                }
                 sx={{
                   textTransform: 'none',
                   borderRadius: 4,

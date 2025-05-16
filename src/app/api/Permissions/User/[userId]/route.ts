@@ -6,8 +6,12 @@ const BACKEND_API_URL =
   'http://localhost:5107';
 
 // Mock user permissions mapping
-const mockUserPermissions: Record<string, string[]> = {
-  '1': [ // Admin user
+const mockUserPermissions: Record<
+  string,
+  string[]
+> = {
+  '1': [
+    // Admin user
     'users.view',
     'users.create',
     'users.edit',
@@ -30,7 +34,8 @@ const mockUserPermissions: Record<string, string[]> = {
     'analytics.view',
     'analytics.create',
   ],
-  '2': [ // Manager user
+  '2': [
+    // Manager user
     'users.view',
     'users.create',
     'users.edit',
@@ -51,14 +56,16 @@ const mockUserPermissions: Record<string, string[]> = {
     'customers.create',
     'analytics.view',
   ],
-  '3': [ // Cashier user
+  '3': [
+    // Cashier user
     'sales.create',
     'products.view',
     'customers.view',
     'customers.create',
     'transactions.create',
   ],
-  '4': [ // Inventory user
+  '4': [
+    // Inventory user
     'products.view',
     'products.create',
     'products.edit',
@@ -67,7 +74,8 @@ const mockUserPermissions: Record<string, string[]> = {
     'inventory.edit',
     'inventory.reports',
   ],
-  '5': [ // Manager user (Sarah)
+  '5': [
+    // Manager user (Sarah)
     'users.view',
     'users.create',
     'users.edit',
@@ -101,10 +109,14 @@ export async function GET(
 
   try {
     // Check if we should use mock data (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
     if (!useMockData) {
-      console.log(`Proxying GET request to backend for user permissions: ${userId}`);
+      console.log(
+        `Proxying GET request to backend for user permissions: ${userId}`
+      );
 
       // Forward the request to the backend API
       const response = await fetch(
@@ -121,7 +133,9 @@ export async function GET(
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Successfully fetched user permissions from backend');
+        console.log(
+          'Successfully fetched user permissions from backend'
+        );
         return NextResponse.json(data);
       } else {
         console.warn(
@@ -129,14 +143,23 @@ export async function GET(
         );
       }
     } else {
-      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
+      console.log(
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
+      );
     }
 
     // Return mock data if backend API fails or mock data is enabled
-    return NextResponse.json(mockUserPermissions[userId] || []);
+    return NextResponse.json(
+      mockUserPermissions[userId] || []
+    );
   } catch (error) {
-    console.error('Error proxying request to backend:', error);
+    console.error(
+      'Error proxying request to backend:',
+      error
+    );
     // Return mock data for development
-    return NextResponse.json(mockUserPermissions[userId] || []);
+    return NextResponse.json(
+      mockUserPermissions[userId] || []
+    );
   }
 }

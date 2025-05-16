@@ -1,5 +1,9 @@
 import React from 'react';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import GeneralSettingsContent from './content/GeneralSettingsContent';
 import TaxSettingsContent from './content/TaxSettingsContent';
 import RegionalSettingsContent from './content/RegionalSettingsContent';
@@ -11,7 +15,10 @@ import SystemBackupContent from './content/SystemBackupContent';
 import ApiIntegrationsContent from './content/ApiIntegrationsContent';
 import CacheManagementContent from './content/CacheManagementContent';
 import ChangeHistoryContent from './content/ChangeHistoryContent';
-import { TaxSettings, RegionalSettings } from '../../types/settingsTypes';
+import {
+  TaxSettings,
+  RegionalSettings,
+} from '../../types/settingsTypes';
 
 interface SettingsContentProps {
   isLoading: boolean;
@@ -23,28 +30,44 @@ interface SettingsContentProps {
   setNavbarColor: (color: string) => void;
   logoPreview: string;
   showSidebarColorPicker: boolean;
-  setShowSidebarColorPicker: (show: boolean) => void;
+  setShowSidebarColorPicker: (
+    show: boolean
+  ) => void;
   showNavbarColorPicker: boolean;
-  setShowNavbarColorPicker: (show: boolean) => void;
-  handleLogoFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setShowNavbarColorPicker: (
+    show: boolean
+  ) => void;
+  handleLogoFileChange: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void;
   taxSettings: TaxSettings;
   setTaxSettings: (settings: TaxSettings) => void;
   regionalSettings: RegionalSettings;
-  setRegionalSettings: (settings: RegionalSettings) => void;
+  setRegionalSettings: (
+    settings: RegionalSettings
+  ) => void;
   selectedRoleTab: number;
   setSelectedRoleTab: (tab: number) => void;
   setCreateRoleModalOpen: (open: boolean) => void;
   packages: any[] | undefined;
   subscription: any;
   availableFeatures: string[];
-  enableAdditionalPackage: (packageId: number) => Promise<void>;
-  disableAdditionalPackage: (packageId: number) => Promise<void>;
+  enableAdditionalPackage: (
+    packageId: number
+  ) => Promise<void>;
+  disableAdditionalPackage: (
+    packageId: number
+  ) => Promise<void>;
   cacheDuration: string;
   setCacheDuration: (duration: string) => void;
   autoRefreshOnFocus: boolean;
-  setAutoRefreshOnFocus: (refresh: boolean) => void;
+  setAutoRefreshOnFocus: (
+    refresh: boolean
+  ) => void;
   prefetchImportantData: boolean;
-  setPrefetchImportantData: (prefetch: boolean) => void;
+  setPrefetchImportantData: (
+    prefetch: boolean
+  ) => void;
   changeHistory: {
     timestamp: Date;
     setting: string;
@@ -56,7 +79,9 @@ interface SettingsContentProps {
 /**
  * Component that renders the appropriate content based on the selected setting
  */
-const SettingsContent: React.FC<SettingsContentProps> = ({
+const SettingsContent: React.FC<
+  SettingsContentProps
+> = ({
   isLoading,
   error,
   selectedSetting,
@@ -101,11 +126,21 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
             navbarColor={navbarColor}
             setNavbarColor={setNavbarColor}
             logoPreview={logoPreview}
-            showSidebarColorPicker={showSidebarColorPicker}
-            setShowSidebarColorPicker={setShowSidebarColorPicker}
-            showNavbarColorPicker={showNavbarColorPicker}
-            setShowNavbarColorPicker={setShowNavbarColorPicker}
-            handleLogoFileChange={handleLogoFileChange}
+            showSidebarColorPicker={
+              showSidebarColorPicker
+            }
+            setShowSidebarColorPicker={
+              setShowSidebarColorPicker
+            }
+            showNavbarColorPicker={
+              showNavbarColorPicker
+            }
+            setShowNavbarColorPicker={
+              setShowNavbarColorPicker
+            }
+            handleLogoFileChange={
+              handleLogoFileChange
+            }
           />
         );
       case 'Tax & VAT Configuration':
@@ -119,7 +154,9 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
         return (
           <RegionalSettingsContent
             regionalSettings={regionalSettings}
-            setRegionalSettings={setRegionalSettings}
+            setRegionalSettings={
+              setRegionalSettings
+            }
           />
         );
       case 'Business Information':
@@ -128,8 +165,12 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
         return (
           <UserRoleContent
             selectedRoleTab={selectedRoleTab}
-            setSelectedRoleTab={setSelectedRoleTab}
-            setCreateRoleModalOpen={setCreateRoleModalOpen}
+            setSelectedRoleTab={
+              setSelectedRoleTab
+            }
+            setCreateRoleModalOpen={
+              setCreateRoleModalOpen
+            }
           />
         );
       case 'Package Management':
@@ -138,8 +179,12 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
             packages={packages}
             subscription={subscription}
             availableFeatures={availableFeatures}
-            enableAdditionalPackage={enableAdditionalPackage}
-            disableAdditionalPackage={disableAdditionalPackage}
+            enableAdditionalPackage={
+              enableAdditionalPackage
+            }
+            disableAdditionalPackage={
+              disableAdditionalPackage
+            }
           />
         );
       case 'Email & Notification Settings':
@@ -153,18 +198,32 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
           <CacheManagementContent
             cacheDuration={cacheDuration}
             setCacheDuration={setCacheDuration}
-            autoRefreshOnFocus={autoRefreshOnFocus}
-            setAutoRefreshOnFocus={setAutoRefreshOnFocus}
-            prefetchImportantData={prefetchImportantData}
-            setPrefetchImportantData={setPrefetchImportantData}
+            autoRefreshOnFocus={
+              autoRefreshOnFocus
+            }
+            setAutoRefreshOnFocus={
+              setAutoRefreshOnFocus
+            }
+            prefetchImportantData={
+              prefetchImportantData
+            }
+            setPrefetchImportantData={
+              setPrefetchImportantData
+            }
           />
         );
       case 'Change History':
-        return <ChangeHistoryContent changeHistory={changeHistory} />;
+        return (
+          <ChangeHistoryContent
+            changeHistory={changeHistory}
+          />
+        );
       default:
         return (
           <Box sx={{ p: 2 }}>
-            <Typography>Select a setting from the sidebar</Typography>
+            <Typography>
+              Select a setting from the sidebar
+            </Typography>
           </Box>
         );
     }

@@ -12,7 +12,8 @@ const mockPermissions = [
     id: 1,
     name: 'users.view',
     displayName: 'View Users',
-    description: 'View user accounts and profiles',
+    description:
+      'View user accounts and profiles',
     category: 'User Management',
   },
   {
@@ -36,7 +37,7 @@ const mockPermissions = [
     description: 'Delete user accounts',
     category: 'User Management',
   },
-  
+
   // Role Management Permissions
   {
     id: 5,
@@ -66,7 +67,7 @@ const mockPermissions = [
     description: 'Delete roles',
     category: 'Role Management',
   },
-  
+
   // System Configuration Permissions
   {
     id: 9,
@@ -75,7 +76,7 @@ const mockPermissions = [
     description: 'Configure system settings',
     category: 'System',
   },
-  
+
   // Reports Permissions
   {
     id: 10,
@@ -95,7 +96,8 @@ const mockPermissions = [
     id: 12,
     name: 'reports.export',
     displayName: 'Export Reports',
-    description: 'Export reports to various formats',
+    description:
+      'Export reports to various formats',
     category: 'Reports',
   },
   {
@@ -105,7 +107,7 @@ const mockPermissions = [
     description: 'Full access to all reports',
     category: 'Reports',
   },
-  
+
   // Transaction Permissions
   {
     id: 14,
@@ -132,10 +134,11 @@ const mockPermissions = [
     id: 17,
     name: 'transactions.all',
     displayName: 'All Transaction Access',
-    description: 'Full access to all transactions',
+    description:
+      'Full access to all transactions',
     category: 'Transactions',
   },
-  
+
   // Inventory Permissions
   {
     id: 18,
@@ -162,10 +165,11 @@ const mockPermissions = [
     id: 21,
     name: 'inventory.all',
     displayName: 'All Inventory Access',
-    description: 'Full access to all inventory functions',
+    description:
+      'Full access to all inventory functions',
     category: 'Inventory',
   },
-  
+
   // Product Permissions
   {
     id: 22,
@@ -195,7 +199,7 @@ const mockPermissions = [
     description: 'Delete products',
     category: 'Products',
   },
-  
+
   // Sales Permissions
   {
     id: 26,
@@ -204,7 +208,7 @@ const mockPermissions = [
     description: 'Create new sales',
     category: 'Sales',
   },
-  
+
   // Customer Permissions
   {
     id: 27,
@@ -220,7 +224,7 @@ const mockPermissions = [
     description: 'Create new customers',
     category: 'Customers',
   },
-  
+
   // Analytics Permissions
   {
     id: 29,
@@ -241,10 +245,14 @@ const mockPermissions = [
 export async function GET(request: Request) {
   try {
     // Check if we should use mock data (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
     if (!useMockData) {
-      console.log('Proxying GET request to backend for permissions');
+      console.log(
+        'Proxying GET request to backend for permissions'
+      );
 
       // Forward the request to the backend API
       const response = await fetch(
@@ -261,7 +269,9 @@ export async function GET(request: Request) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Successfully fetched permissions from backend');
+        console.log(
+          'Successfully fetched permissions from backend'
+        );
         return NextResponse.json(data);
       } else {
         console.warn(
@@ -269,13 +279,18 @@ export async function GET(request: Request) {
         );
       }
     } else {
-      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
+      console.log(
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
+      );
     }
 
     // Return mock data if backend API fails or mock data is enabled
     return NextResponse.json(mockPermissions);
   } catch (error) {
-    console.error('Error proxying request to backend:', error);
+    console.error(
+      'Error proxying request to backend:',
+      error
+    );
     // Return mock data for development
     return NextResponse.json(mockPermissions);
   }

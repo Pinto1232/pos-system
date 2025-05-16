@@ -19,9 +19,13 @@ const EmailSettingsContent: React.FC = () => {
       <Typography variant="h6" gutterBottom>
         Email & Notification Settings
       </Typography>
-      
+
       <Box sx={{ mb: 3 }}>
-        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="subtitle1"
+          fontWeight="bold"
+          gutterBottom
+        >
           SMTP Configuration
         </Typography>
         <Grid container spacing={2}>
@@ -72,7 +76,9 @@ const EmailSettingsContent: React.FC = () => {
               size="small"
               margin="normal"
             >
-              <MenuItem value="none">None</MenuItem>
+              <MenuItem value="none">
+                None
+              </MenuItem>
               <MenuItem value="ssl">SSL</MenuItem>
               <MenuItem value="tls">TLS</MenuItem>
             </TextField>
@@ -87,10 +93,10 @@ const EmailSettingsContent: React.FC = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button 
-              variant="outlined" 
-              sx={{ 
-                mt: 1, 
+            <Button
+              variant="outlined"
+              sx={{
+                mt: 1,
                 textTransform: 'none',
                 borderRadius: 2,
               }}
@@ -100,9 +106,13 @@ const EmailSettingsContent: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
-      
+
       <Box sx={{ mb: 3 }}>
-        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="subtitle1"
+          fontWeight="bold"
+          gutterBottom
+        >
           Notification Settings
         </Typography>
         <Grid container spacing={2}>
@@ -132,9 +142,13 @@ const EmailSettingsContent: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
-      
+
       <Box>
-        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="subtitle1"
+          fontWeight="bold"
+          gutterBottom
+        >
           Email Templates
         </Typography>
         <Grid container spacing={2}>
@@ -147,11 +161,21 @@ const EmailSettingsContent: React.FC = () => {
               size="small"
               margin="normal"
             >
-              <MenuItem value="order_confirmation">Order Confirmation</MenuItem>
-              <MenuItem value="receipt">Receipt</MenuItem>
-              <MenuItem value="password_reset">Password Reset</MenuItem>
-              <MenuItem value="welcome">Welcome Email</MenuItem>
-              <MenuItem value="inventory_alert">Inventory Alert</MenuItem>
+              <MenuItem value="order_confirmation">
+                Order Confirmation
+              </MenuItem>
+              <MenuItem value="receipt">
+                Receipt
+              </MenuItem>
+              <MenuItem value="password_reset">
+                Password Reset
+              </MenuItem>
+              <MenuItem value="welcome">
+                Welcome Email
+              </MenuItem>
+              <MenuItem value="inventory_alert">
+                Inventory Alert
+              </MenuItem>
             </TextField>
           </Grid>
           <Grid item xs={12}>
@@ -176,18 +200,18 @@ const EmailSettingsContent: React.FC = () => {
           </Grid>
           <Grid item xs={12}>
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button 
-                variant="outlined" 
-                sx={{ 
+              <Button
+                variant="outlined"
+                sx={{
                   textTransform: 'none',
                   borderRadius: 2,
                 }}
               >
                 Preview
               </Button>
-              <Button 
-                variant="contained" 
-                sx={{ 
+              <Button
+                variant="contained"
+                sx={{
                   textTransform: 'none',
                   borderRadius: 2,
                 }}

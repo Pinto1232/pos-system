@@ -8,10 +8,14 @@ import {
   Box,
   Snackbar,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import Image from 'next/image';
 import { MdRestore } from 'react-icons/md';
-import { SettingsModalPresentationProps, settingsItems } from './types/settingsTypes';
+import {
+  SettingsModalPresentationProps,
+  settingsItems,
+} from './types/settingsTypes';
 import SettingsNavigation from './components/settings/SettingsNavigation';
 import SettingsContent from './components/settings/SettingsContent';
 import CreateRoleModal from './components/settings/CreateRoleModal';
@@ -20,7 +24,9 @@ import CreateRoleModal from './components/settings/CreateRoleModal';
  * Presentation component for the Settings Modal
  * Responsible for rendering the UI structure without business logic
  */
-const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
+const SettingsModalPresentation: React.FC<
+  SettingsModalPresentationProps
+> = ({
   open,
   onClose,
   isLoading,
@@ -77,6 +83,7 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
   snackbarMessage,
   snackbarSeverity,
   changeHistory,
+  isSaving = false,
 }) => {
   return (
     <>
@@ -87,11 +94,25 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
         fullWidth
         aria-labelledby="settings-dialog-title"
         sx={{
+          // Blur effect for the backdrop (background behind the modal)
+          '& .MuiBackdrop-root': {
+            backdropFilter: 'blur(8px)',
+            backgroundColor:
+              'rgba(23, 58, 121, 0.2)', // Blue tinted background
+          },
+          // Styling for the modal paper
           '& .MuiDialog-paper': {
             height: '80vh',
             maxHeight: '800px',
             borderRadius: 4,
             overflow: 'hidden',
+            background:
+              'linear-gradient(135deg, rgba(23, 58, 121, 0.1) 0%, rgba(23, 58, 121, 0.05) 100%)',
+            boxShadow:
+              '0 8px 32px rgba(23, 58, 121, 0.15)',
+            border:
+              '1px solid rgba(23, 58, 121, 0.1)',
+            backdropFilter: 'blur(4px)',
           },
           '& ::-webkit-scrollbar': {
             display: 'none',
@@ -112,7 +133,9 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            bgcolor: '#f9f9f9',
+            bgcolor: 'rgba(249, 249, 249, 0.9)',
+            borderBottom:
+              '1px solid rgba(23, 58, 121, 0.1)',
           }}
         >
           <Box
@@ -136,12 +159,23 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
 
         <DialogContent
           dividers
-          sx={{ display: 'flex', padding: 0 }}
+          sx={{
+            display: 'flex',
+            padding: 0,
+            background:
+              'rgba(255, 255, 255, 0.8)',
+            borderTop:
+              '1px solid rgba(23, 58, 121, 0.1)',
+            borderBottom:
+              '1px solid rgba(23, 58, 121, 0.1)',
+          }}
         >
           {/* Sidebar Navigation */}
           <SettingsNavigation
             selectedSetting={selectedSetting}
-            setSelectedSetting={setSelectedSetting}
+            setSelectedSetting={
+              setSelectedSetting
+            }
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             settingsItems={settingsItems}
@@ -157,29 +191,57 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
             navbarColor={navbarColor}
             setNavbarColor={setNavbarColor}
             logoPreview={logoPreview}
-            showSidebarColorPicker={showSidebarColorPicker}
-            setShowSidebarColorPicker={setShowSidebarColorPicker}
-            showNavbarColorPicker={showNavbarColorPicker}
-            setShowNavbarColorPicker={setShowNavbarColorPicker}
-            handleLogoFileChange={handleLogoFileChange}
+            showSidebarColorPicker={
+              showSidebarColorPicker
+            }
+            setShowSidebarColorPicker={
+              setShowSidebarColorPicker
+            }
+            showNavbarColorPicker={
+              showNavbarColorPicker
+            }
+            setShowNavbarColorPicker={
+              setShowNavbarColorPicker
+            }
+            handleLogoFileChange={
+              handleLogoFileChange
+            }
             taxSettings={taxSettings}
             setTaxSettings={setTaxSettings}
             regionalSettings={regionalSettings}
-            setRegionalSettings={setRegionalSettings}
+            setRegionalSettings={
+              setRegionalSettings
+            }
             selectedRoleTab={selectedRoleTab}
-            setSelectedRoleTab={setSelectedRoleTab}
-            setCreateRoleModalOpen={setCreateRoleModalOpen}
+            setSelectedRoleTab={
+              setSelectedRoleTab
+            }
+            setCreateRoleModalOpen={
+              setCreateRoleModalOpen
+            }
             packages={packages}
             subscription={subscription}
             availableFeatures={availableFeatures}
-            enableAdditionalPackage={enableAdditionalPackage}
-            disableAdditionalPackage={disableAdditionalPackage}
+            enableAdditionalPackage={
+              enableAdditionalPackage
+            }
+            disableAdditionalPackage={
+              disableAdditionalPackage
+            }
             cacheDuration={cacheDuration}
             setCacheDuration={setCacheDuration}
-            autoRefreshOnFocus={autoRefreshOnFocus}
-            setAutoRefreshOnFocus={setAutoRefreshOnFocus}
-            prefetchImportantData={prefetchImportantData}
-            setPrefetchImportantData={setPrefetchImportantData}
+            autoRefreshOnFocus={
+              autoRefreshOnFocus
+            }
+            setAutoRefreshOnFocus={
+              setAutoRefreshOnFocus
+            }
+            prefetchImportantData={
+              prefetchImportantData
+            }
+            setPrefetchImportantData={
+              setPrefetchImportantData
+            }
             changeHistory={changeHistory}
           />
         </DialogContent>
@@ -188,8 +250,9 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
           sx={{
             justifyContent: 'space-between',
             padding: '16px 24px',
-            borderTop: '1px solid #e0e0e0',
-            bgcolor: '#f9f9f9',
+            borderTop:
+              '1px solid rgba(23, 58, 121, 0.1)',
+            bgcolor: 'rgba(249, 249, 249, 0.9)',
           }}
         >
           <Button
@@ -271,6 +334,7 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
                 onClick={handleSave}
                 color="primary"
                 variant="contained"
+                disabled={isSaving}
                 sx={{
                   textTransform: 'none',
                   borderRadius: 4,
@@ -278,13 +342,23 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
                   py: 1,
                   fontWeight: 'bold',
                   boxShadow: 'none',
+                  minWidth: '100px',
+                  bgcolor: '#173A79',
                   '&:hover': {
-                    boxShadow: 'none',
+                    boxShadow:
+                      '0 4px 12px rgba(23, 58, 121, 0.3)',
                     bgcolor: '#0f2d6a',
                   },
                 }}
               >
-                Save
+                {isSaving ? (
+                  <CircularProgress
+                    size={24}
+                    color="inherit"
+                  />
+                ) : (
+                  'Save'
+                )}
               </Button>
             </Box>
           </Box>
@@ -294,19 +368,29 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
       {/* Create Role Modal */}
       <CreateRoleModal
         open={createRoleModalOpen}
-        onClose={() => setCreateRoleModalOpen(false)}
+        onClose={() =>
+          setCreateRoleModalOpen(false)
+        }
         newRoleName={newRoleName}
         setNewRoleName={setNewRoleName}
         newRoleDescription={newRoleDescription}
-        setNewRoleDescription={setNewRoleDescription}
+        setNewRoleDescription={
+          setNewRoleDescription
+        }
         selectedTemplate={selectedTemplate}
         setSelectedTemplate={setSelectedTemplate}
-        configurePermissionsAfter={configurePermissionsAfter}
-        setConfigurePermissionsAfter={setConfigurePermissionsAfter}
+        configurePermissionsAfter={
+          configurePermissionsAfter
+        }
+        setConfigurePermissionsAfter={
+          setConfigurePermissionsAfter
+        }
         roleNameError={roleNameError}
         createRolePending={createRolePending}
         handleCreateRole={handleCreateRole}
-        getTemplatePermissions={getTemplatePermissions}
+        getTemplatePermissions={
+          getTemplatePermissions
+        }
       />
 
       {/* Snackbar for notifications */}
@@ -314,7 +398,10 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}

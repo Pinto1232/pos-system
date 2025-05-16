@@ -8,7 +8,9 @@ import { SettingsModalProps } from './types/settingsTypes';
  * All the logic and UI has been moved to the container and presentation components
  * following the presentation-container pattern
  */
-const SettingsModal: React.FC<SettingsModalProps> = (props) => {
+const SettingsModal: React.FC<
+  SettingsModalProps
+> = (props) => {
   return <SettingsModalContainer {...props} />;
 };
 

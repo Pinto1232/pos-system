@@ -23,7 +23,9 @@ interface SettingsNavigationProps {
  * Component for the settings navigation sidebar
  * Displays a searchable list of settings categories
  */
-const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
+const SettingsNavigation: React.FC<
+  SettingsNavigationProps
+> = ({
   selectedSetting,
   setSelectedSetting,
   searchQuery,
@@ -54,7 +56,8 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
           fullWidth
           value={searchQuery}
           onChange={(e) => {
-            const query = e.target.value.toLowerCase();
+            const query =
+              e.target.value.toLowerCase();
             setSearchQuery(query);
           }}
           InputProps={{
@@ -99,7 +102,9 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
             : settingsItems.filter((item) =>
                 item.label
                   .toLowerCase()
-                  .includes(searchQuery.toLowerCase())
+                  .includes(
+                    searchQuery.toLowerCase()
+                  )
               )
           ).map((item) => (
             <Tooltip
@@ -111,7 +116,9 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
                 onClick={() => {
                   setSelectedSetting(item.label);
                 }}
-                selected={selectedSetting === item.label}
+                selected={
+                  selectedSetting === item.label
+                }
                 sx={{
                   py: 2,
                   borderLeft:
@@ -122,10 +129,12 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
                     selectedSetting === item.label
                       ? '#fff'
                       : 'transparent',
-                  borderBottom: '1px solid #f0f0f0',
+                  borderBottom:
+                    '1px solid #f0f0f0',
                   '&:hover': {
                     bgcolor:
-                      selectedSetting === item.label
+                      selectedSetting ===
+                      item.label
                         ? '#fff'
                         : '#f0f0f0',
                   },
@@ -137,11 +146,13 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
                   primary={item.label}
                   primaryTypographyProps={{
                     fontWeight:
-                      selectedSetting === item.label
+                      selectedSetting ===
+                      item.label
                         ? 'bold'
                         : 'normal',
                     color:
-                      selectedSetting === item.label
+                      selectedSetting ===
+                      item.label
                         ? '#173A79'
                         : 'inherit',
                   }}

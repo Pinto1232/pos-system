@@ -89,10 +89,14 @@ const mockUsers = [
 export async function GET(request: Request) {
   try {
     // Check if we should use mock data (from environment variable)
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+    const useMockData =
+      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
+      'true';
 
     if (!useMockData) {
-      console.log('Proxying GET request to backend for users');
+      console.log(
+        'Proxying GET request to backend for users'
+      );
 
       // Forward the request to the backend API
       const response = await fetch(
@@ -109,7 +113,9 @@ export async function GET(request: Request) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Successfully fetched users from backend');
+        console.log(
+          'Successfully fetched users from backend'
+        );
         return NextResponse.json(data);
       } else {
         console.warn(
@@ -117,13 +123,18 @@ export async function GET(request: Request) {
         );
       }
     } else {
-      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
+      console.log(
+        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
+      );
     }
 
     // Return mock data if backend API fails or mock data is enabled
     return NextResponse.json(mockUsers);
   } catch (error) {
-    console.error('Error proxying request to backend:', error);
+    console.error(
+      'Error proxying request to backend:',
+      error
+    );
     // Return mock data for development
     return NextResponse.json(mockUsers);
   }

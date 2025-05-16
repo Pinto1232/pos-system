@@ -77,16 +77,73 @@ export async function revalidateUserDataAction(
  * This should be used sparingly, as it invalidates all cached data
  */
 export async function revalidateAllCacheAction(): Promise<void> {
-  console.log('Revalidating all cache data');
+  console.log(
+    '[CACHE] Revalidating all cache data'
+  );
+
+  // Specifically target pricing packages first
+  console.log(
+    '[CACHE] Specifically revalidating pricing packages tag'
+  );
+  revalidateTag(CACHE_TAGS.PRICING_PACKAGES);
 
   // Revalidate main content areas
   Object.values(CACHE_TAGS).forEach((tag) => {
+    console.log(
+      `[CACHE] Revalidating tag: ${tag}`
+    );
     revalidateTag(tag);
   });
 
-  // Revalidate main paths
-  revalidatePath('/');
-  revalidatePath('/dashboard');
-  revalidatePath('/pricing-packages');
+  // Add custom tags for the home page and pricing
+  revalidateTag('home-page');
+  revalidateTag('pricing');
+  revalidateTag('packages');
+
+  // Revalidate home page and pricing packages with highest priority
+  console.log(
+    '[CACHE] Revalidating home page and pricing packages paths'
+  );
+  revalidatePath('/', 'layout'); // Home page with layout
+  revalidatePath('/', 'page'); // Home page content
+  revalidatePath('/pricing-packages', 'layout');
+  revalidatePath('/pricing-packages', 'page');
+
+  // Revalidate API routes for pricing packages with highest priority
+  console.log(
+    '[CACHE] Revalidating pricing packages API routes'
+  );
   revalidatePath('/api/pricing-packages');
+  revalidatePath('/api/PricingPackages');
+  revalidatePath('/api/pricingpackages');
+
+  // Revalidate other main paths with 'layout' type to ensure the entire page is refreshed
+  console.log(
+    '[CACHE] Revalidating other main paths'
+  );
+  revalidatePath('/dashboard', 'layout'); // Dashboard with layout
+  revalidatePath('/products', 'layout');
+  revalidatePath('/about', 'layout');
+  revalidatePath('/contact', 'layout');
+  revalidatePath('/login', 'layout');
+  revalidatePath('/register', 'layout');
+
+  // Also revalidate other paths with 'page' type to ensure the page content is refreshed
+  revalidatePath('/dashboard', 'page'); // Dashboard content
+  revalidatePath('/products', 'page');
+
+  // Revalidate other API routes
+  console.log(
+    '[CACHE] Revalidating other API routes'
+  );
+  revalidatePath('/api/products');
+  revalidatePath('/api/categories');
+  revalidatePath('/api/users');
+  revalidatePath('/api/dashboard');
+  revalidatePath('/api/auth');
+  revalidatePath('/api/settings');
+
+  console.log(
+    '[CACHE] Cache revalidation completed'
+  );
 }

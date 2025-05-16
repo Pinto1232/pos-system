@@ -149,7 +149,9 @@ export async function GET(
   context: { params: { id: string } }
 ) {
   // Access params asynchronously to fix the "params should be awaited" error
-  const params = await Promise.resolve(context.params);
+  const params = await Promise.resolve(
+    context.params
+  );
   const id = params.id;
 
   try {
@@ -227,7 +229,9 @@ export async function PUT(
   context: { params: { id: string } }
 ) {
   // Access params asynchronously to fix the "params should be awaited" error
-  const params = await Promise.resolve(context.params);
+  const params = await Promise.resolve(
+    context.params
+  );
   const id = params.id;
 
   try {
@@ -282,7 +286,9 @@ export async function DELETE(
   context: { params: { id: string } }
 ) {
   // Access params asynchronously to fix the "params should be awaited" error
-  const params = await Promise.resolve(context.params);
+  const params = await Promise.resolve(
+    context.params
+  );
   const id = params.id;
 
   try {

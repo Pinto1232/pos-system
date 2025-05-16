@@ -21,23 +21,33 @@ import RefreshIcon from '@mui/icons-material/Refresh';
  * Component for API and integrations settings content
  */
 const ApiIntegrationsContent: React.FC = () => {
-  const [showApiKey, setShowApiKey] = React.useState(false);
+  const [showApiKey, setShowApiKey] =
+    React.useState(false);
 
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
         API & Third-Party Integrations
       </Typography>
-      
+
       <Box sx={{ mb: 4 }}>
-        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="subtitle1"
+          fontWeight="bold"
+          gutterBottom
+        >
           API Access
         </Typography>
-        <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+        <Paper
+          variant="outlined"
+          sx={{ p: 2, borderRadius: 2 }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Switch defaultChecked />}
+                control={
+                  <Switch defaultChecked />
+                }
                 label="Enable API Access"
               />
             </Grid>
@@ -46,16 +56,26 @@ const ApiIntegrationsContent: React.FC = () => {
                 label="API Key"
                 fullWidth
                 value="sk_live_51KjTygH7NbkJdF5gH7NbkJdF5gH7NbkJdF5g"
-                type={showApiKey ? 'text' : 'password'}
+                type={
+                  showApiKey ? 'text' : 'password'
+                }
                 InputProps={{
                   readOnly: true,
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        onClick={() => setShowApiKey(!showApiKey)}
+                        onClick={() =>
+                          setShowApiKey(
+                            !showApiKey
+                          )
+                        }
                         edge="end"
                       >
-                        {showApiKey ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        {showApiKey ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
                       </IconButton>
                       <IconButton edge="end">
                         <ContentCopyIcon />
@@ -67,12 +87,23 @@ const ApiIntegrationsContent: React.FC = () => {
                   ),
                 }}
               />
-              <Typography variant="caption" color="text.secondary">
-                This key provides full access to your API. Keep it secure and never share it publicly.
+              <Typography
+                variant="caption"
+                color="text.secondary"
+              >
+                This key provides full access to
+                your API. Keep it secure and never
+                share it publicly.
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  mt: 1,
+                }}
+              >
                 <Button
                   variant="outlined"
                   sx={{
@@ -96,26 +127,53 @@ const ApiIntegrationsContent: React.FC = () => {
           </Grid>
         </Paper>
       </Box>
-      
+
       <Box sx={{ mb: 4 }}>
-        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="subtitle1"
+          fontWeight="bold"
+          gutterBottom
+        >
           Payment Gateways
         </Typography>
-        <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+        <Paper
+          variant="outlined"
+          sx={{ p: 2, borderRadius: 2 }}
+        >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
                   <Box
                     component="img"
                     src="/stripe-logo.png"
                     alt="Stripe"
-                    sx={{ width: 40, height: 40, objectFit: 'contain' }}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      objectFit: 'contain',
+                    }}
                   />
-                  <Typography variant="subtitle1">Stripe</Typography>
+                  <Typography variant="subtitle1">
+                    Stripe
+                  </Typography>
                 </Box>
                 <FormControlLabel
-                  control={<Switch defaultChecked />}
+                  control={
+                    <Switch defaultChecked />
+                  }
                   label="Enabled"
                 />
               </Box>
@@ -141,17 +199,35 @@ const ApiIntegrationsContent: React.FC = () => {
                 </Grid>
               </Grid>
             </Grid>
-            
+
             <Grid item xs={12}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
                   <Box
                     component="img"
                     src="/paypal-logo.png"
                     alt="PayPal"
-                    sx={{ width: 40, height: 40, objectFit: 'contain' }}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      objectFit: 'contain',
+                    }}
                   />
-                  <Typography variant="subtitle1">PayPal</Typography>
+                  <Typography variant="subtitle1">
+                    PayPal
+                  </Typography>
                 </Box>
                 <FormControlLabel
                   control={<Switch />}
@@ -184,26 +260,53 @@ const ApiIntegrationsContent: React.FC = () => {
           </Grid>
         </Paper>
       </Box>
-      
+
       <Box>
-        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="subtitle1"
+          fontWeight="bold"
+          gutterBottom
+        >
           Third-Party Services
         </Typography>
-        <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
+        <Paper
+          variant="outlined"
+          sx={{ p: 2, borderRadius: 2 }}
+        >
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
                   <Box
                     component="img"
                     src="/google-analytics-logo.png"
                     alt="Google Analytics"
-                    sx={{ width: 40, height: 40, objectFit: 'contain' }}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      objectFit: 'contain',
+                    }}
                   />
-                  <Typography variant="subtitle1">Google Analytics</Typography>
+                  <Typography variant="subtitle1">
+                    Google Analytics
+                  </Typography>
                 </Box>
                 <FormControlLabel
-                  control={<Switch defaultChecked />}
+                  control={
+                    <Switch defaultChecked />
+                  }
                   label="Enabled"
                 />
               </Box>
@@ -215,17 +318,35 @@ const ApiIntegrationsContent: React.FC = () => {
                 size="small"
               />
             </Grid>
-            
+
             <Grid item xs={12}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
                   <Box
                     component="img"
                     src="/mailchimp-logo.png"
                     alt="Mailchimp"
-                    sx={{ width: 40, height: 40, objectFit: 'contain' }}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      objectFit: 'contain',
+                    }}
                   />
-                  <Typography variant="subtitle1">Mailchimp</Typography>
+                  <Typography variant="subtitle1">
+                    Mailchimp
+                  </Typography>
                 </Box>
                 <FormControlLabel
                   control={<Switch />}

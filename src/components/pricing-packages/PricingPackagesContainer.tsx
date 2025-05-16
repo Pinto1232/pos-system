@@ -7,7 +7,10 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import {
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { useApiClient } from '@/api/axiosClient';
 import styles from './PricingPackages.module.css';
 import PricingPackageCard from './PricingPackageCard';
@@ -16,6 +19,7 @@ import {
   Snackbar,
   Button,
   Box,
+  CircularProgress,
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CacheControl from '@/components/ui/CacheControl';
@@ -38,6 +42,7 @@ type Package = {
 import { AxiosInstance } from 'axios';
 import { PricePackages } from '@/components/pricing-packages/types';
 import { AuthContext } from '@/contexts/AuthContext';
+import { CACHE_TAGS } from '@/app/cache-constants';
 
 interface PackageData {
   id: string | number;
@@ -59,6 +64,115 @@ const PricingPackagesContainer: React.FC = () => {
   const { selectPackage } = usePackageSelection();
   const { authenticated, token } =
     useContext(AuthContext);
+  const queryClient = useQueryClient();
+
+  // State for snackbar
+  const [snackbarOpen, setSnackbarOpen] =
+    useState(false);
+  const [snackbarMessage, setSnackbarMessage] =
+    useState('');
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<
+      'success' | 'error' | 'info' | 'warning'
+    >('info');
+  const [isRefreshing, setIsRefreshing] =
+    useState(false);
+
+  // Function to manually refresh pricing packages
+  const refreshPricingPackages = async () => {
+    try {
+      setIsRefreshing(true);
+      console.log(
+        '[PRICING] Manually refreshing pricing packages'
+      );
+
+      // Invalidate the pricing packages cache in React Query
+      queryClient.invalidateQueries({
+        queryKey: ['pricingPackages'],
+        refetchType: 'all',
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [CACHE_TAGS.PRICING_PACKAGES],
+        refetchType: 'all',
+      });
+
+      // Import the utility function from PricingPackagesUtils
+      const {
+        refreshPricingPackages:
+          refreshPricingPackagesUtil,
+      } = await import(
+        '@/app/pricing-packages/PricingPackagesUtils'
+      );
+
+      // Use the utility function to refresh pricing packages with cache-busting
+      console.log(
+        '[PRICING] Directly fetching pricing packages with cache-busting'
+      );
+
+      try {
+        // This utility function already includes cache-busting and no-cache headers
+        console.log(
+          `[CONTAINER] Starting manual refresh at ${new Date().toISOString()}`
+        );
+        const refreshedData =
+          await refreshPricingPackagesUtil();
+
+        // Log the refreshed data
+        if (
+          refreshedData &&
+          refreshedData.length > 0
+        ) {
+          console.log(
+            `[CONTAINER] Manually refreshed pricing data (first item):`,
+            {
+              id: refreshedData[0].id,
+              title: refreshedData[0].title,
+              price: refreshedData[0].price,
+              timestamp: new Date().toISOString(),
+            }
+          );
+        }
+
+        console.log(
+          '[PRICING] Successfully fetched fresh pricing packages data'
+        );
+        setSnackbarMessage(
+          'Pricing packages refreshed successfully'
+        );
+        setSnackbarSeverity('success');
+
+        // Set usingFallbackData to false since we've successfully refreshed
+        setUsingFallbackData(false);
+      } catch (fetchError) {
+        console.error(
+          '[PRICING] Error fetching pricing packages:',
+          fetchError
+        );
+        setSnackbarMessage(
+          'Error refreshing pricing packages'
+        );
+        setSnackbarSeverity('error');
+      }
+
+      // Refetch the query to update the UI with fresh data
+      await refetch();
+
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error(
+        '[PRICING] Error refreshing pricing packages:',
+        error
+      );
+      setSnackbarMessage(
+        'Error refreshing pricing packages'
+      );
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     console.log('Authentication state:', {
@@ -431,12 +545,34 @@ const PricingPackagesContainer: React.FC = () => {
           'Executing pricing packages query function'
         );
         try {
+          // If we couldn't get fresh data, try the original method
+          console.log(
+            `[CONTAINER] Fetching pricing packages at ${new Date().toISOString()}`
+          );
           const result =
             await fetchPricingPackages(
               apiClient,
               1,
               10
             );
+
+          // Log the fetched data
+          if (
+            result &&
+            result.data &&
+            result.data.length > 0
+          ) {
+            console.log(
+              `[CONTAINER] Fetched pricing data (first item):`,
+              {
+                id: result.data[0].id,
+                title: result.data[0].title,
+                price: result.data[0].price,
+                timestamp:
+                  new Date().toISOString(),
+              }
+            );
+          }
 
           // Check if this is real data or fallback data
           const isFallbackData =
@@ -470,7 +606,10 @@ const PricingPackagesContainer: React.FC = () => {
         return delay;
       },
       enabled: true,
-      staleTime: 3 * 60 * 1000, // Reduced from 5 minutes to 3 minutes to check for updates more frequently
+      staleTime: 60 * 1000, // Reduced to 1 minute to check for updates more frequently
+      gcTime: 2 * 60 * 1000, // Cache for 2 minutes (cacheTime was renamed to gcTime in React Query v4)
+      refetchOnWindowFocus: true, // Refetch when window gets focus
+      refetchOnMount: true, // Refetch when component mounts
       placeholderData: (previousData) =>
         previousData,
     });
@@ -830,27 +969,48 @@ const PricingPackagesContainer: React.FC = () => {
     packages.map((pkg) => pkg.type)
   );
 
-  // Create a snackbar to show when using fallback data
-  const [snackbarOpen, setSnackbarOpen] =
-    useState(false);
-
   // Show snackbar when using fallback data
   useEffect(() => {
     if (usingFallbackData) {
+      setSnackbarMessage(
+        "Showing cached pricing data. We're having trouble connecting to our servers."
+      );
+      setSnackbarSeverity('warning');
       setSnackbarOpen(true);
     } else {
       setSnackbarOpen(false);
     }
-  }, [usingFallbackData]);
+  }, [
+    usingFallbackData,
+    setSnackbarOpen,
+    setSnackbarMessage,
+    setSnackbarSeverity,
+  ]);
 
-  // Handle manual refresh when using fallback data
-  const handleManualRefresh = () => {
-    console.log(
-      `[${new Date().toISOString()}] Manual refresh requested by user`
-    );
-    setSnackbarOpen(false);
-    refetch();
-  };
+  // Log the packages being rendered
+  useEffect(() => {
+    if (
+      data &&
+      data.data &&
+      data.data.length > 0
+    ) {
+      console.log(
+        `[CONTAINER] Rendering pricing packages at ${new Date().toISOString()}`
+      );
+      console.log(
+        `[CONTAINER] Rendered pricing data (first item):`,
+        {
+          id: data.data[0].id,
+          title: data.data[0].title,
+          price: data.data[0].price,
+          timestamp: new Date().toISOString(),
+          usingFallbackData: usingFallbackData,
+        }
+      );
+    }
+  }, [data, usingFallbackData]);
+
+  // Use refreshPricingPackages instead of handleManualRefresh
 
   return (
     <div className={styles.wrapper}>
@@ -865,10 +1025,13 @@ const PricingPackagesContainer: React.FC = () => {
               <Button
                 color="inherit"
                 size="small"
-                onClick={handleManualRefresh}
+                onClick={refreshPricingPackages}
                 startIcon={<RefreshIcon />}
+                disabled={isRefreshing}
               >
-                Refresh
+                {isRefreshing
+                  ? 'Refreshing...'
+                  : 'Refresh'}
               </Button>
             }
           >
@@ -879,7 +1042,7 @@ const PricingPackagesContainer: React.FC = () => {
         </div>
       )}
 
-      {/* Add cache control component for easy data refreshing */}
+      {/* Add refresh button for pricing packages */}
       <Box
         sx={{
           display: 'flex',
@@ -887,6 +1050,25 @@ const PricingPackagesContainer: React.FC = () => {
           mb: 2,
         }}
       >
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={refreshPricingPackages}
+          startIcon={
+            isRefreshing ? (
+              <CircularProgress size={16} />
+            ) : (
+              <RefreshIcon />
+            )
+          }
+          disabled={isRefreshing}
+          sx={{ mr: 1 }}
+        >
+          {isRefreshing
+            ? 'Refreshing...'
+            : 'Refresh Pricing'}
+        </Button>
+
         <CacheControl
           variant="minimal"
           onSuccess={() => {
@@ -986,10 +1168,10 @@ const PricingPackagesContainer: React.FC = () => {
         </div>
       )}
 
-      {/* Snackbar notification for fallback data */}
+      {/* Snackbar notification for cache operations */}
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={10000}
+        autoHideDuration={6000}
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{
           vertical: 'bottom',
@@ -998,20 +1180,22 @@ const PricingPackagesContainer: React.FC = () => {
       >
         <Alert
           onClose={() => setSnackbarOpen(false)}
-          severity="info"
+          severity={snackbarSeverity}
           sx={{ width: '100%' }}
           action={
             <Button
               color="inherit"
               size="small"
-              onClick={handleManualRefresh}
+              onClick={refreshPricingPackages}
+              disabled={isRefreshing}
             >
-              Refresh Now
+              {isRefreshing
+                ? 'Refreshing...'
+                : 'Refresh Now'}
             </Button>
           }
         >
-          Using cached pricing data. Click
-          &quot;Refresh Now&quot; to try again.
+          {snackbarMessage}
         </Alert>
       </Snackbar>
     </div>
