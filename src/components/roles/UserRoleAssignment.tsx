@@ -86,30 +86,287 @@ const UserRoleAssignment: React.FC<
 
   // Add user to role mutation
   const addUserMutation = useMutation({
-    mutationFn: (userId: number) =>
-      roleService.addUserToRole(roleId, userId),
-    onSuccess: () => {
+    mutationFn: async (userId: number) => {
+      // Check if the user already has this role
+      try {
+        const userRoles = await getUserRoles(userId);
+        if (userRoles.some(r => r.id === roleId)) {
+          throw new Error('User already has this role');
+        }
+
+        // Get role details for validation
+        const role = await getRoleDetails(roleId);
+        if (!role) {
+          throw new Error(`Role with ID ${roleId} not found`);
+        }
+
+        // Check if the user can be assigned to this role based on their subscription
+        const canAssign = await canAssignRoleToUser(userId, roleId);
+        if (!canAssign) {
+          throw new Error(`User's subscription package does not allow assignment to the ${role.name} role. Please upgrade the subscription.`);
+        }
+
+        // Check if this is a premium role
+        if (isPremiumRole(role.name)) {
+          // Show a confirmation dialog for premium roles
+          if (!window.confirm(`You are assigning a premium role (${role.name}) that may require additional subscription fees. Continue?`)) {
+            throw new Error('Operation cancelled by user');
+          }
+          console.warn(`Assigning premium role (${role.name}) - ensure user has appropriate subscription package`);
+        }
+
+        // Check if this is a critical role that requires additional security
+        if (isCriticalRole(role.name)) {
+          // In a real implementation, this might require additional authentication
+          // or approval from a higher-level administrator
+          console.warn(`Assigning critical role (${role.name}) - additional security checks would be required in production`);
+        }
+
+        // Add the user to the role
+        return roleService.addUserToRole(roleId, userId);
+      } catch (error) {
+        console.error('Error in role validation:', error);
+        throw error;
+      }
+    },
+    onSuccess: async (_, userId) => {
       queryClient.invalidateQueries({
         queryKey: ['usersInRole', roleId],
       });
       setIsAddUserDialogOpen(false);
       setSelectedUser(null);
+
+      // Log the user role addition for audit purposes
+      await logUserRoleChange('add', userId);
+
+      // Show success message
+      alert('User successfully added to role');
     },
+    onError: (error) => {
+      console.error('Error adding user to role:', error);
+      alert(`Error: ${error instanceof Error ? error.message : 'Failed to add user to role'}`);
+    }
   });
+
+  // Function to check if a role is premium and requires a higher subscription
+  const isPremiumRole = (roleName: string): boolean => {
+    const premiumRoles = ['Analytics User', 'API Access', 'Advanced Reporting'];
+    return premiumRoles.includes(roleName);
+  };
 
   // Remove user from role mutation
   const removeUserMutation = useMutation({
-    mutationFn: (userId: number) =>
-      roleService.removeUserFromRole(
-        roleId,
-        userId
-      ),
-    onSuccess: () => {
+    mutationFn: async (userId: number) => {
+      try {
+        // Get all roles the user has
+        const userRoles = await getUserRoles(userId);
+
+        // Check if this is the user's last role
+        if (userRoles.length <= 1) {
+          throw new Error('Cannot remove the user\'s last role. Users must have at least one role.');
+        }
+
+        // Get role details for validation
+        const role = await getRoleDetails(roleId);
+        if (!role) {
+          throw new Error(`Role with ID ${roleId} not found`);
+        }
+
+        // Check if this is a critical role
+        if (isCriticalRole(role.name)) {
+          // Show a warning but allow the operation to proceed
+          if (!window.confirm(`Warning: You are removing user from a critical role (${role.name}). This may impact system security and user access. Are you sure?`)) {
+            throw new Error('Operation cancelled by user');
+          }
+
+          // In a real implementation, this might require additional authentication
+          // or approval from a higher-level administrator
+          console.warn(`Removing user from critical role (${role.name}) - additional security checks would be required in production`);
+        }
+
+        // Check if removing this role would impact active operations
+        // In a real implementation, this would check if the user has active tasks that require this role
+        const userHasActiveOperations = false; // This would be a real check in production
+        if (userHasActiveOperations) {
+          if (!window.confirm(`Warning: This user has active operations that require the ${role.name} role. Removing this role may disrupt ongoing work. Continue?`)) {
+            throw new Error('Operation cancelled due to active operations');
+          }
+        }
+
+        // Remove the user from the role
+        return roleService.removeUserFromRole(roleId, userId);
+      } catch (error) {
+        console.error('Error in role validation:', error);
+        throw error;
+      }
+    },
+    onSuccess: async (_, userId) => {
       queryClient.invalidateQueries({
         queryKey: ['usersInRole', roleId],
       });
+
+      // Log the user role removal for audit purposes
+      await logUserRoleChange('remove', userId);
+
+      // Show success message
+      alert('User successfully removed from role');
     },
+    onError: (error) => {
+      console.error('Error removing user from role:', error);
+      alert(`Error: ${error instanceof Error ? error.message : 'Failed to remove user from role'}`);
+    }
   });
+
+  // Get user roles from the backend or mock service
+  const getUserRoles = async (userId: number): Promise<{id: number, name: string}[]> => {
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Fetch all roles
+      const allRoles = await roleService.getAllRoles();
+
+      // Fetch all users in roles to determine which roles the user has
+      const userRoles: {id: number, name: string}[] = [];
+
+      // Check each role to see if the user is in it
+      for (const role of allRoles) {
+        const usersInRole = await roleService.getUsersInRole(role.id);
+        if (usersInRole.some(u => u.id === userId)) {
+          userRoles.push({ id: role.id, name: role.name });
+        }
+      }
+
+      return userRoles;
+    } catch (error) {
+      console.error('Error fetching user roles:', error);
+      return [];
+    }
+  };
+
+  // Get role details from the backend or mock service
+  const getRoleDetails = async (roleId: number): Promise<{id: number, name: string, permissions?: string[], transactionLimit?: number} | null> => {
+    try {
+      const role = await roleService.getRoleById(roleId);
+
+      // Add business logic properties based on role
+      let transactionLimit = 0;
+      switch (role.name) {
+        case 'Admin':
+          transactionLimit = 10000;
+          break;
+        case 'Manager':
+          transactionLimit = 5000;
+          break;
+        case 'Cashier':
+          transactionLimit = 1000;
+          break;
+        case 'Inventory Manager':
+          transactionLimit = 2000;
+          break;
+        default:
+          transactionLimit = 500;
+      }
+
+      return {
+        id: role.id,
+        name: role.name,
+        permissions: role.permissionList,
+        transactionLimit
+      };
+    } catch (error) {
+      console.error(`Error fetching role details for role ${roleId}:`, error);
+      return null;
+    }
+  };
+
+  // Function to check if a role is critical
+  const isCriticalRole = (roleName: string): boolean => {
+    const criticalRoles = ['Admin', 'System Administrator', 'Security Officer'];
+    return criticalRoles.includes(roleName);
+  };
+
+  // Function to check if a user can be assigned to a role based on their subscription
+  const canAssignRoleToUser = async (userId: number, roleId: number): Promise<boolean> => {
+    try {
+      const role = await getRoleDetails(roleId);
+
+      // For premium roles, check if the user has the appropriate subscription
+      if (role && isPremiumRole(role.name)) {
+        // In a real implementation, this would check the user's subscription package
+        // For now, we'll simulate this check
+        const response = await fetch(`/api/UserSubscription/user/${userId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch user subscription');
+        }
+
+        const subscription = await response.json();
+        const userPackageType = subscription.package?.type || 'starter';
+
+        // Premium roles require at least a 'professional' package
+        if (userPackageType === 'starter') {
+          return false;
+        }
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error checking if user can be assigned to role:', error);
+      return false;
+    }
+  };
+
+  // Function to log user role changes for audit purposes
+  const logUserRoleChange = async (action: 'add' | 'remove', userId: number) => {
+    try {
+      // Get user details
+      const user = usersInRole?.find(u => u.id === userId) ||
+        (await fetch(`/api/Users`).then(res => res.json()).then(users => users.find((u: any) => u.id === userId)));
+
+      // Get role details
+      const role = await getRoleDetails(roleId);
+
+      // Get current user (the admin performing the action)
+      // In a real implementation, this would come from an auth context
+      const currentUser = { id: 1, userName: 'admin', email: 'admin@pisvaltech.com' };
+
+      // Create detailed audit log
+      const logData = {
+        timestamp: new Date().toISOString(),
+        action: `${action}_user_role`,
+        roleId,
+        roleName: role?.name || `Role ID: ${roleId}`,
+        rolePermissions: role?.permissions || [],
+        userId,
+        userName: user?.userName || `User ID: ${userId}`,
+        userEmail: user?.email || 'Unknown',
+        performedBy: currentUser.userName,
+        performedById: currentUser.id,
+        ipAddress: '127.0.0.1', // In a real implementation, get the client IP
+        userAgent: navigator.userAgent,
+        transactionLimit: role?.transactionLimit,
+        securityLevel: isCriticalRole(role?.name || '') ? 'high' : 'standard',
+      };
+
+      console.log('User role change logged:', logData);
+
+      // In a real implementation, send this to the backend
+      // For now, we'll simulate this with a mock API call
+      try {
+        // This would be a real API call in production
+        // await apiClient.post('/api/audit/user-role-changes', logData);
+
+        // Store in localStorage for demonstration purposes
+        const auditLogs = JSON.parse(localStorage.getItem('userRoleAuditLogs') || '[]');
+        auditLogs.push(logData);
+        localStorage.setItem('userRoleAuditLogs', JSON.stringify(auditLogs));
+      } catch (error) {
+        console.error('Error saving audit log:', error);
+      }
+    } catch (error) {
+      console.error('Error creating audit log:', error);
+    }
+  };
 
   // Handle add user to role
   const handleAddUser = () => {

@@ -1,3 +1,5 @@
+'use client';
+
 import axios from 'axios';
 import { SpinnerContext } from '@/contexts/SpinnerContext';
 import { useContext, useEffect } from 'react';

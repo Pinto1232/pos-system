@@ -1,6 +1,7 @@
 import React, {
   useState,
   useEffect,
+  useContext,
 } from 'react';
 import {
   Box,
@@ -31,7 +32,7 @@ import {
 import permissionService, {
   PermissionInfo,
 } from '@/api/permissionService';
-import roleService from '@/api/roleService';
+import { AuthContext } from '@/contexts/AuthContext';
 
 interface RolePermissionEditorProps {
   roleId: number;
@@ -52,6 +53,7 @@ const RolePermissionEditor: React.FC<
     setExpandedCategories,
   ] = useState<Record<string, boolean>>({});
   const queryClient = useQueryClient();
+  const { authenticated } = useContext(AuthContext);
 
   // Fetch all available permissions
   const {
@@ -61,6 +63,8 @@ const RolePermissionEditor: React.FC<
   } = useQuery<PermissionInfo[]>({
     queryKey: ['permissions'],
     queryFn: permissionService.getAllPermissions,
+    retry: 1, // Only retry once to avoid excessive API calls
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 
   // Fetch role permissions
@@ -75,15 +79,44 @@ const RolePermissionEditor: React.FC<
         roleId
       ),
     enabled: !!roleId,
+    retry: 1, // Only retry once to avoid excessive API calls
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
 
   // Update role permissions mutation
   const updatePermissionsMutation = useMutation({
-    mutationFn: (permissions: string[]) =>
-      roleService.updateRolePermissions(
+    mutationFn: (permissions: string[]) => {
+      // Check if user is authenticated
+      if (!authenticated) {
+        throw new Error('You must be authenticated to update permissions');
+      }
+
+      // Validate that all permissions exist in the system
+      if (allPermissions && Array.isArray(allPermissions)) {
+        const validPermissionNames = allPermissions.map((p: PermissionInfo) => p.name);
+        const invalidPermissions = permissions.filter((p: string) => !validPermissionNames.includes(p));
+
+        if (invalidPermissions.length > 0) {
+          throw new Error(`Invalid permissions detected: ${invalidPermissions.join(', ')}`);
+        }
+
+        // Check for role-package alignment
+        // This would typically check if the permissions are allowed for the user's subscription package
+        // For now, we'll just log a warning for demonstration purposes
+        const premiumPermissions = ['analytics.view', 'api.access', 'reports.advanced'];
+        const hasPremiumPermissions = permissions.some((p: string) => premiumPermissions.includes(p));
+
+        if (hasPremiumPermissions) {
+          console.warn('Role contains premium permissions that may require a higher subscription package');
+        }
+      }
+
+      // If using Keycloak, we would use the token for authorization
+      return permissionService.updateRolePermissions(
         roleId,
         permissions
-      ),
+      );
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['rolePermissions', roleId],
@@ -91,11 +124,40 @@ const RolePermissionEditor: React.FC<
       if (onPermissionsUpdated) {
         onPermissionsUpdated();
       }
+
+      // Log the permission change for audit purposes
+      logPermissionChange(roleId, selectedPermissions);
     },
+    onError: (error) => {
+      console.error('Error updating permissions:', error);
+      // Show error message to user
+      alert(`Error: ${error instanceof Error ? error.message : 'Failed to update permissions'}`);
+    }
   });
 
+  // Function to log permission changes for audit purposes
+  const logPermissionChange = (roleId: number, permissions: string[]) => {
+    // Get role information from permissions if available
+    const role = allPermissions && Array.isArray(allPermissions)
+      ? allPermissions.find((p: PermissionInfo) => p.name === `role-${roleId}`)
+      : undefined;
+
+    const logData = {
+      timestamp: new Date().toISOString(),
+      action: 'update_permissions',
+      roleId,
+      roleName: role?.displayName || `Role ID: ${roleId}`,
+      permissionCount: permissions.length,
+      userId: 'current-user', // In a real implementation, get the current user ID
+    };
+
+    console.log('Permission change logged:', logData);
+    // In a real implementation, send this to the backend
+    // Example: apiClient.post('/api/audit/permission-changes', logData);
+  };
+
   useEffect(() => {
-    if (rolePermissions) {
+    if (rolePermissions && Array.isArray(rolePermissions)) {
       setSelectedPermissions(rolePermissions);
     }
   }, [rolePermissions]);
@@ -103,11 +165,11 @@ const RolePermissionEditor: React.FC<
   // Group permissions by category
   const permissionsByCategory =
     React.useMemo(() => {
-      if (!allPermissions) return {};
+      if (!allPermissions || !Array.isArray(allPermissions)) return {};
 
       const filtered = searchQuery
         ? allPermissions.filter(
-            (p) =>
+            (p: PermissionInfo) =>
               p.name
                 .toLowerCase()
                 .includes(
@@ -134,7 +196,7 @@ const RolePermissionEditor: React.FC<
 
       return filtered.reduce<
         Record<string, PermissionInfo[]>
-      >((acc, permission) => {
+      >((acc: Record<string, PermissionInfo[]>, permission: PermissionInfo) => {
         if (!acc[permission.category]) {
           acc[permission.category] = [];
         }
@@ -199,7 +261,7 @@ const RolePermissionEditor: React.FC<
 
   // Handle reset permissions
   const handleResetPermissions = () => {
-    if (rolePermissions) {
+    if (rolePermissions && Array.isArray(rolePermissions)) {
       setSelectedPermissions(rolePermissions);
     }
   };
@@ -289,7 +351,7 @@ const RolePermissionEditor: React.FC<
                 <SearchIcon />
               </InputAdornment>
             ),
-            endAdornment: searchQuery && (
+            endAdornment: searchQuery ? (
               <InputAdornment position="end">
                 <IconButton
                   size="small"
@@ -298,7 +360,7 @@ const RolePermissionEditor: React.FC<
                   <ClearIcon />
                 </IconButton>
               </InputAdornment>
-            ),
+            ) : null,
           }}
           size="small"
           sx={{ mb: 2 }}
