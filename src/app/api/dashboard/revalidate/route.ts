@@ -33,7 +33,10 @@ export async function POST(request: NextRequest) {
       tag: tag || null,
     });
   } catch (error) {
-    console.error('Error during dashboard revalidation:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error during dashboard revalidation:',
+      JSON.stringify(error, null, 2)
+    );
     return NextResponse.json(
       {
         message: 'Error revalidating dashboard',

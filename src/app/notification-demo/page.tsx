@@ -20,12 +20,22 @@ import {
   Snackbar,
 } from '@mui/material';
 import { useNotificationContext } from '@/contexts/NotificationContext';
-import { NotificationType, CreateNotificationRequest } from '@/types/notification';
+import {
+  NotificationType,
+  CreateNotificationRequest,
+} from '@/types/notification';
 import NotificationItem from '@/components/notifications/NotificationItem';
 
 const NotificationDemo = () => {
-  const { notifications, unreadCount, totalCount, createNotification, markAsRead, markAllAsRead, refreshNotifications } =
-    useNotificationContext();
+  const {
+    notifications,
+    unreadCount,
+    totalCount,
+    createNotification,
+    markAsRead,
+    markAllAsRead,
+    refreshNotifications,
+  } = useNotificationContext();
 
   const [formData, setFormData] = useState<CreateNotificationRequest>({
     title: '',
@@ -85,7 +95,10 @@ const NotificationDemo = () => {
       setSnackbarOpen(true);
       refreshNotifications();
     } catch (error) {
-      console.error('Error creating notification:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error creating notification:',
+        JSON.stringify(error, null, 2)
+      );
       setSnackbarMessage('Failed to create notification');
       setSnackbarOpen(true);
     }
@@ -141,7 +154,11 @@ const NotificationDemo = () => {
 
               <FormControl fullWidth margin="normal">
                 <InputLabel>Type</InputLabel>
-                <Select value={formData.type} onChange={handleTypeChange} label="Type">
+                <Select
+                  value={formData.type}
+                  onChange={handleTypeChange}
+                  label="Type"
+                >
                   <MenuItem value="info">Info</MenuItem>
                   <MenuItem value="success">Success</MenuItem>
                   <MenuItem value="warning">Warning</MenuItem>
@@ -178,7 +195,11 @@ const NotificationDemo = () => {
                     }}
                     sx={{ flex: 1 }}
                   />
-                  <Button variant="contained" onClick={handleAddTag} sx={{ ml: 1 }}>
+                  <Button
+                    variant="contained"
+                    onClick={handleAddTag}
+                    sx={{ ml: 1 }}
+                  >
                     Add
                   </Button>
                 </Box>
@@ -191,7 +212,12 @@ const NotificationDemo = () => {
                   }}
                 >
                   {formData.tags?.map((tag) => (
-                    <Chip key={tag} label={tag} onDelete={() => handleRemoveTag(tag)} size="small" />
+                    <Chip
+                      key={tag}
+                      label={tag}
+                      onDelete={() => handleRemoveTag(tag)}
+                      size="small"
+                    />
                   ))}
                 </Box>
               </Box>
@@ -239,7 +265,12 @@ const NotificationDemo = () => {
                 </Typography>
               </Box>
 
-              <Button variant="outlined" fullWidth onClick={handleMarkAllAsRead} disabled={unreadCount === 0}>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={handleMarkAllAsRead}
+                disabled={unreadCount === 0}
+              >
                 Mark All as Read
               </Button>
             </CardContent>
@@ -264,7 +295,9 @@ const NotificationDemo = () => {
                 mb: 2,
               }}
             >
-              <Typography variant="h6">Notifications ({notifications.length})</Typography>
+              <Typography variant="h6">
+                Notifications ({notifications.length})
+              </Typography>
 
               <Button size="small" onClick={refreshNotifications}>
                 Refresh
@@ -296,7 +329,10 @@ const NotificationDemo = () => {
               ) : (
                 notifications.map((notification) => (
                   <Box key={notification.id} sx={{ mb: 2 }}>
-                    <NotificationItem notification={notification} onMarkAsRead={handleMarkAsRead} />
+                    <NotificationItem
+                      notification={notification}
+                      onMarkAsRead={handleMarkAsRead}
+                    />
                   </Box>
                 ))
               )}
@@ -305,7 +341,12 @@ const NotificationDemo = () => {
         </Grid>
       </Grid>
 
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar} message={snackbarMessage} />
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message={snackbarMessage}
+      />
     </Box>
   );
 };

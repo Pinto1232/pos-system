@@ -68,7 +68,10 @@ const roleService = {
       const response = await apiClient.get(`/api/Roles/${roleId}`);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching role with ID ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error fetching role with ID ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock data due to error');
       return mockRoleService.getRoleById(roleId);
     }
@@ -83,7 +86,10 @@ const roleService = {
       const response = await apiClient.get(`/api/Roles/ByName/${roleName}`);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching role with name ${roleName}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error fetching role with name ${roleName}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock data due to error');
       return mockRoleService.getRoleByName(roleName);
     }
@@ -98,7 +104,10 @@ const roleService = {
       const response = await apiClient.get(`/api/Roles/${roleId}/Users`);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching users in role with ID ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error fetching users in role with ID ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock data due to error');
       return mockRoleService.getUsersInRole(roleId);
     }
@@ -119,7 +128,10 @@ const roleService = {
     }
   },
 
-  updateRole: async (roleId: number, roleData: RoleUpdateRequest): Promise<void> => {
+  updateRole: async (
+    roleId: number,
+    roleData: RoleUpdateRequest
+  ): Promise<void> => {
     if (useMockData || !(await isBackendAvailable())) {
       return mockRoleService.updateRole(roleId, roleData);
     }
@@ -127,13 +139,19 @@ const roleService = {
     try {
       await apiClient.put(`/api/Roles/${roleId}`, roleData);
     } catch (error) {
-      console.error(`Error updating role with ID ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error updating role with ID ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock data due to error');
       return mockRoleService.updateRole(roleId, roleData);
     }
   },
 
-  updateRolePermissions: async (roleId: number, permissions: string[]): Promise<void> => {
+  updateRolePermissions: async (
+    roleId: number,
+    permissions: string[]
+  ): Promise<void> => {
     if (useMockData || !(await isBackendAvailable())) {
       return mockRoleService.updateRolePermissions(roleId, permissions);
     }
@@ -141,7 +159,10 @@ const roleService = {
     try {
       await apiClient.put(`/api/Roles/${roleId}/Permissions`, permissions);
     } catch (error) {
-      console.error(`Error updating permissions for role with ID ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error updating permissions for role with ID ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock data due to error');
       return mockRoleService.updateRolePermissions(roleId, permissions);
     }
@@ -155,7 +176,10 @@ const roleService = {
     try {
       await apiClient.post(`/api/Roles/${roleId}/Users/${userId}`);
     } catch (error) {
-      console.error(`Error adding user ${userId} to role ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error adding user ${userId} to role ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock data due to error');
       return mockRoleService.addUserToRole(roleId, userId);
     }
@@ -169,7 +193,10 @@ const roleService = {
     try {
       await apiClient.delete(`/api/Roles/${roleId}/Users/${userId}`);
     } catch (error) {
-      console.error(`Error removing user ${userId} from role ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error removing user ${userId} from role ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock data due to error');
       return mockRoleService.removeUserFromRole(roleId, userId);
     }
@@ -183,7 +210,10 @@ const roleService = {
     try {
       await apiClient.delete(`/api/Roles/${roleId}`);
     } catch (error) {
-      console.error(`Error deleting role with ID ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error deleting role with ID ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock data due to error');
       return mockRoleService.deleteRole(roleId);
     }

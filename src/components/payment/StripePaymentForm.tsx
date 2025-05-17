@@ -1,9 +1,21 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { PaymentElement, LinkAuthenticationElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
+import {
+  PaymentElement,
+  LinkAuthenticationElement,
+  useStripe,
+  useElements,
+  Elements,
+} from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { Box, Typography, Button, CircularProgress, Alert } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Alert,
+} from '@mui/material';
 import PaymentErrorDisplay from './PaymentErrorDisplay';
 import styles from './StripePaymentForm.module.css';
 
@@ -12,29 +24,50 @@ const getPublishableKey = () => {
 };
 
 const publishableKey = getPublishableKey();
-console.log('[DEBUG] Stripe publishable key:', JSON.stringify(publishableKey, null, 2));
+console.log(
+  '[DEBUG] Stripe publishable key:',
+  JSON.stringify(publishableKey, null, 2)
+);
 
 // Verify the publishable key format
-const isValidPublishableKey = publishableKey && (publishableKey.startsWith('pk_test_') || publishableKey.startsWith('pk_live_'));
-console.log('[DEBUG] Is publishable key valid format:', JSON.stringify(isValidPublishableKey, null, 2));
+const isValidPublishableKey =
+  publishableKey &&
+  (publishableKey.startsWith('pk_test_') ||
+    publishableKey.startsWith('pk_live_'));
+console.log(
+  '[DEBUG] Is publishable key valid format:',
+  JSON.stringify(isValidPublishableKey, null, 2)
+);
 
 const getStripePromise = () => {
   if (!isValidPublishableKey) {
-    console.error('[DEBUG] Invalid Stripe publishable key format:', publishableKey ? `${publishableKey.substring(0, 10)}...` : 'missing');
+    console.error(
+      '[DEBUG] Invalid Stripe publishable key format:',
+      publishableKey ? `${publishableKey.substring(0, 10)}...` : 'missing'
+    );
     return null;
   }
 
   try {
-    console.log('[DEBUG] Initializing Stripe with key:', publishableKey.substring(0, 10) + '...');
+    console.log(
+      '[DEBUG] Initializing Stripe with key:',
+      publishableKey.substring(0, 10) + '...'
+    );
     return loadStripe(publishableKey);
   } catch (error) {
-    console.error('[DEBUG] Error initializing Stripe:', JSON.stringify(error, null, 2));
+    console.error(
+      '[DEBUG] Error initializing Stripe:',
+      JSON.stringify(error, null, 2)
+    );
     return null;
   }
 };
 
 const stripePromise = getStripePromise();
-console.log('[DEBUG] Stripe initialization started, promise created:', JSON.stringify(!!stripePromise, null, 2));
+console.log(
+  '[DEBUG] Stripe initialization started, promise created:',
+  JSON.stringify(!!stripePromise, null, 2)
+);
 
 const ensureStripeLoaded = async () => {
   if (!stripePromise) {
@@ -44,10 +77,16 @@ const ensureStripeLoaded = async () => {
 
   try {
     const stripe = await stripePromise;
-    console.log('[DEBUG] Stripe loaded successfully:', JSON.stringify(!!stripe, null, 2));
+    console.log(
+      '[DEBUG] Stripe loaded successfully:',
+      JSON.stringify(!!stripe, null, 2)
+    );
     return stripe;
   } catch (error) {
-    console.error('[DEBUG] Error loading Stripe:', JSON.stringify(error, null, 2));
+    console.error(
+      '[DEBUG] Error loading Stripe:',
+      JSON.stringify(error, null, 2)
+    );
     return null;
   }
 };
@@ -57,141 +96,166 @@ interface StripePaymentFormWrapperProps {
   onMounted: () => void;
 }
 
-const StripePaymentFormWrapper: React.FC<StripePaymentFormWrapperProps> = React.memo(({ clientSecret, onMounted }) => {
-  const [stripeLoaded, setStripeLoaded] = useState<boolean | null>(null);
+const StripePaymentFormWrapper: React.FC<StripePaymentFormWrapperProps> =
+  React.memo(({ clientSecret, onMounted }) => {
+    const [stripeLoaded, setStripeLoaded] = useState<boolean | null>(null);
 
-  console.log(
-    '[DEBUG] StripePaymentFormWrapper rendering with clientSecret:',
-    JSON.stringify(clientSecret ? 'present' : 'missing', null, 2)
-  );
-
-  useEffect(() => {
     console.log(
-      '[DEBUG] StripePaymentFormWrapper useEffect - clientSecret:',
+      '[DEBUG] StripePaymentFormWrapper rendering with clientSecret:',
       JSON.stringify(clientSecret ? 'present' : 'missing', null, 2)
     );
 
-    if (stripePromise) {
-      ensureStripeLoaded()
-        .then((stripe) => {
-          setStripeLoaded(!!stripe);
-          console.log('[DEBUG] Stripe loaded:', JSON.stringify(!!stripe, null, 2));
-        })
-        .catch((error) => {
-          console.error('[DEBUG] Error loading Stripe:', JSON.stringify(error, null, 2));
-          setStripeLoaded(false);
-        });
+    useEffect(() => {
+      console.log(
+        '[DEBUG] StripePaymentFormWrapper useEffect - clientSecret:',
+        JSON.stringify(clientSecret ? 'present' : 'missing', null, 2)
+      );
+
+      if (stripePromise) {
+        ensureStripeLoaded()
+          .then((stripe) => {
+            setStripeLoaded(!!stripe);
+            console.log(
+              '[DEBUG] Stripe loaded:',
+              JSON.stringify(!!stripe, null, 2)
+            );
+          })
+          .catch((error) => {
+            console.error(
+              '[DEBUG] Error loading Stripe:',
+              JSON.stringify(error, null, 2)
+            );
+            setStripeLoaded(false);
+          });
+      }
+    }, [clientSecret]);
+
+    if (stripeLoaded === false) {
+      return (
+        <Box className={styles.paymentFormContainer}>
+          <Alert severity="error">
+            Failed to load payment system. Please refresh the page and try
+            again.
+          </Alert>
+        </Box>
+      );
     }
-  }, [clientSecret]);
 
-  if (stripeLoaded === false) {
-    return (
-      <Box className={styles.paymentFormContainer}>
-        <Alert severity="error">Failed to load payment system. Please refresh the page and try again.</Alert>
-      </Box>
+    if (!clientSecret) {
+      console.error('[DEBUG] Cannot render Elements without a client secret');
+      return (
+        <Box
+          className={styles.paymentFormContainer}
+          sx={{
+            backgroundColor: '#ffffff',
+            color: '#333333',
+            p: 2,
+            border: '1px solid #e0e0e0',
+            borderRadius: '6px',
+          }}
+        >
+          <Alert severity="error" sx={{ mb: 2 }}>
+            Payment system configuration error. Please try again later.
+          </Alert>
+          <Typography sx={{ mb: 2 }}>
+            Unable to initialize the payment form. Please refresh the page and
+            try again.
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => window.location.reload()}
+          >
+            Refresh Page
+          </Button>
+        </Box>
+      );
+    }
+
+    if (!stripePromise) {
+      console.error('[DEBUG] Stripe promise is not available');
+      return (
+        <Box
+          className={styles.paymentFormContainer}
+          sx={{
+            backgroundColor: '#ffffff',
+            color: '#333333',
+            p: 2,
+            border: '1px solid #e0e0e0',
+            borderRadius: '6px',
+          }}
+        >
+          <Alert severity="error" sx={{ mb: 2 }}>
+            Payment system initialization error.
+          </Alert>
+          <Typography sx={{ mb: 2 }}>
+            The payment system could not be initialized. Please check your
+            internet connection and try again.
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </Button>
+        </Box>
+      );
+    }
+
+    console.log(
+      '[DEBUG] Rendering Elements with client secret:',
+      clientSecret.substring(0, 10) + '...'
     );
-  }
 
-  if (!clientSecret) {
-    console.error('[DEBUG] Cannot render Elements without a client secret');
-    return (
-      <Box
-        className={styles.paymentFormContainer}
-        sx={{
+    const appearance = {
+      theme: 'stripe',
+      variables: {
+        colorPrimary: '#1976d2',
+        colorBackground: '#ffffff',
+        colorText: '#333333',
+        colorDanger: '#ff4444',
+        fontFamily: 'Arial, sans-serif',
+        spacingUnit: '4px',
+        borderRadius: '8px',
+      },
+      rules: {
+        '.Input': {
           backgroundColor: '#ffffff',
-          color: '#333333',
-          p: 2,
+          boxShadow: 'none',
           border: '1px solid #e0e0e0',
-          borderRadius: '6px',
-        }}
-      >
-        <Alert severity="error" sx={{ mb: 2 }}>
-          Payment system configuration error. Please try again later.
-        </Alert>
-        <Typography sx={{ mb: 2 }}>Unable to initialize the payment form. Please refresh the page and try again.</Typography>
-        <Button variant="contained" color="primary" onClick={() => window.location.reload()}>
-          Refresh Page
-        </Button>
-      </Box>
-    );
-  }
-
-  if (!stripePromise) {
-    console.error('[DEBUG] Stripe promise is not available');
-    return (
-      <Box
-        className={styles.paymentFormContainer}
-        sx={{
+        },
+        '.Tab': {
           backgroundColor: '#ffffff',
-          color: '#333333',
-          p: 2,
+          boxShadow: 'none',
           border: '1px solid #e0e0e0',
-          borderRadius: '6px',
+        },
+        '.Label': {
+          color: '#333333',
+        },
+      },
+    } as const;
+
+    return (
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 1050,
         }}
       >
-        <Alert severity="error" sx={{ mb: 2 }}>
-          Payment system initialization error.
-        </Alert>
-        <Typography sx={{ mb: 2 }}>
-          The payment system could not be initialized. Please check your internet connection and try again.
-        </Typography>
-        <Button variant="contained" color="primary" onClick={() => window.location.reload()}>
-          Retry
-        </Button>
-      </Box>
+        <Elements
+          stripe={stripePromise}
+          options={{
+            clientSecret,
+            appearance,
+            loader: 'auto',
+          }}
+        >
+          <StripePaymentForm onMounted={onMounted} />
+        </Elements>
+      </div>
     );
-  }
-
-  console.log('[DEBUG] Rendering Elements with client secret:', clientSecret.substring(0, 10) + '...');
-
-  const appearance = {
-    theme: 'stripe',
-    variables: {
-      colorPrimary: '#1976d2',
-      colorBackground: '#ffffff',
-      colorText: '#333333',
-      colorDanger: '#ff4444',
-      fontFamily: 'Arial, sans-serif',
-      spacingUnit: '4px',
-      borderRadius: '8px',
-    },
-    rules: {
-      '.Input': {
-        backgroundColor: '#ffffff',
-        boxShadow: 'none',
-        border: '1px solid #e0e0e0',
-      },
-      '.Tab': {
-        backgroundColor: '#ffffff',
-        boxShadow: 'none',
-        border: '1px solid #e0e0e0',
-      },
-      '.Label': {
-        color: '#333333',
-      },
-    },
-  } as const;
-
-  return (
-    <div
-      style={{
-        position: 'relative',
-        zIndex: 1050,
-      }}
-    >
-      <Elements
-        stripe={stripePromise}
-        options={{
-          clientSecret,
-          appearance,
-          loader: 'auto',
-        }}
-      >
-        <StripePaymentForm onMounted={onMounted} />
-      </Elements>
-    </div>
-  );
-});
+  });
 
 StripePaymentFormWrapper.displayName = 'StripePaymentFormWrapper';
 
@@ -235,17 +299,24 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
     if (!stripeInitialized) {
       console.error('[DEBUG] Submit attempted but Stripe not initialized');
       setErrorType('stripe_error');
-      setMessage('Payment system is still initializing. Please wait a moment and try again.');
+      setMessage(
+        'Payment system is still initializing. Please wait a moment and try again.'
+      );
       return;
     }
 
     if (!stripe || !elements) {
-      console.error('[DEBUG] Submit attempted but Stripe or Elements not loaded', {
-        stripeLoaded: !!stripe,
-        elementsLoaded: !!elements,
-      });
+      console.error(
+        '[DEBUG] Submit attempted but Stripe or Elements not loaded',
+        {
+          stripeLoaded: !!stripe,
+          elementsLoaded: !!elements,
+        }
+      );
       setErrorType('stripe_error');
-      setMessage('Payment system not fully loaded. Please refresh the page and try again.');
+      setMessage(
+        'Payment system not fully loaded. Please refresh the page and try again.'
+      );
       return;
     }
 
@@ -254,7 +325,10 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
 
     try {
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Payment processing timeout')), 30000);
+        setTimeout(
+          () => reject(new Error('Payment processing timeout')),
+          30000
+        );
       });
 
       const confirmationPromise = stripe.confirmPayment({
@@ -281,13 +355,22 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
       ]);
 
       if (error) {
-        console.error('[DEBUG] Payment confirmation error:', JSON.stringify(error, null, 2));
+        console.error(
+          '[DEBUG] Payment confirmation error:',
+          JSON.stringify(error, null, 2)
+        );
         setErrorType(error.type || 'unknown_error');
         setMessage(error.message || 'An unexpected error occurred.');
       }
     } catch (error) {
-      console.error('[DEBUG] Exception during payment confirmation:', JSON.stringify(error, null, 2));
-      if (error instanceof Error && error.message === 'Payment processing timeout') {
+      console.error(
+        '[DEBUG] Exception during payment confirmation:',
+        JSON.stringify(error, null, 2)
+      );
+      if (
+        error instanceof Error &&
+        error.message === 'Payment processing timeout'
+      ) {
         setErrorType('timeout');
         setMessage(
           'Payment is taking longer than expected. Please check your bank app or account to see if the payment went through before trying again.'
@@ -339,7 +422,9 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
           mb: 2,
         }}
       >
-        Stripe loaded: {stripe ? 'yes' : 'no'}, Elements loaded: {elements ? 'yes' : 'no'}, Initialized: {stripeInitialized ? 'yes' : 'no'}
+        Stripe loaded: {stripe ? 'yes' : 'no'}, Elements loaded:{' '}
+        {elements ? 'yes' : 'no'}, Initialized:{' '}
+        {stripeInitialized ? 'yes' : 'no'}
       </Box>
 
       <form
@@ -413,8 +498,18 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
           />
         </Box>
 
-        <Button disabled={isLoading || !stripe || !elements} type="submit" variant="contained" fullWidth className={styles.payButton}>
-          {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Pay Now'}
+        <Button
+          disabled={isLoading || !stripe || !elements}
+          type="submit"
+          variant="contained"
+          fullWidth
+          className={styles.payButton}
+        >
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            'Pay Now'
+          )}
         </Button>
 
         {message && errorType !== 'unknown_error' ? (

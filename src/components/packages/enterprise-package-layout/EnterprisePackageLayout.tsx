@@ -1,7 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Grid, Box, Typography, Button, Checkbox, FormGroup, FormControlLabel, Snackbar, Alert } from '@mui/material';
+import {
+  Grid,
+  Box,
+  Typography,
+  Button,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import iconMap from '../../../utils/icons';
 import styles from './EnterprisePackageLayout.module.css';
 import LazyLoginForm from '@/components/login-form/LoginForm';
@@ -25,13 +35,21 @@ interface EnterprisePackageLayoutProps {
   };
 }
 
-const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selectedPackage }) => {
+const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({
+  selectedPackage,
+}) => {
   const [loading, setLoading] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod();
   const { setLoading: setSpinnerLoading } = useSpinner();
   const { showSuccessModal } = useSuccessModal();
-  const { currency: currentCurrency, setCurrency: setCurrentCurrency, currencySymbol, formatPrice, rate } = useCurrency();
+  const {
+    currency: currentCurrency,
+    setCurrency: setCurrentCurrency,
+    currencySymbol,
+    formatPrice,
+    rate,
+  } = useCurrency();
   const formData = {
     firstName: 'John',
     lastName: 'Doe',
@@ -47,7 +65,8 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const IconComponent = iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
+  const IconComponent =
+    iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
 
   const handleSelectedEnterprisePackage = async () => {
     setSpinnerLoading(true);
@@ -100,9 +119,10 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
     setSnackbarOpen(false);
   };
 
-  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
-    ? JSON.parse(selectedPackage.multiCurrencyPrices)
-    : null;
+  const multiCurrency: Record<string, number> | null =
+    selectedPackage.multiCurrencyPrices
+      ? JSON.parse(selectedPackage.multiCurrencyPrices)
+      : null;
 
   let displayPrice = selectedPackage.price;
 
@@ -112,7 +132,9 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
     displayPrice = selectedPackage.price * rate;
   }
 
-  console.log(`EnterprisePackage modal price: ${displayPrice} ${currentCurrency}, rate: ${rate}`);
+  console.log(
+    `EnterprisePackage modal price: ${displayPrice} ${currentCurrency}, rate: ${rate}`
+  );
 
   if (showLoginForm) {
     return <LazyLoginForm />;
@@ -124,7 +146,9 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
         <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
-              {selectedPackage.icon && <IconComponent className={styles.packageIcon} />}
+              {selectedPackage.icon && (
+                <IconComponent className={styles.packageIcon} />
+              )}
               <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
@@ -138,18 +162,28 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
               </Typography>
 
               <Box className={styles.enterpriseBox}>
-                <Typography variant="subtitle2" className={styles.enterpriseBoxLabel}>
+                <Typography
+                  variant="subtitle2"
+                  className={styles.enterpriseBoxLabel}
+                >
                   YOUR TOTAL IN ({currentCurrency})
                 </Typography>
                 <Typography variant="h4" className={styles.enterpriseBoxAmount}>
-                  <b>{currentCurrency === 'Kz' ? `${displayPrice}Kz` : `${currencySymbol}${formatPrice(displayPrice)}`}</b>
+                  <b>
+                    {currentCurrency === 'Kz'
+                      ? `${displayPrice}Kz`
+                      : `${currencySymbol}${formatPrice(displayPrice)}`}
+                  </b>
                   /mo
                 </Typography>
               </Box>
 
               {multiCurrency && (
                 <Box className={styles.multiCurrencyBox}>
-                  <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
+                  <Typography
+                    variant="subtitle2"
+                    className={styles.multiCurrencyLabel}
+                  >
                     Prices in other currencies:
                   </Typography>
                   <FormGroup row>
@@ -170,7 +204,9 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
                         }
                         label={
                           <b className={styles.multiCurrencyPrice}>
-                            {currency === 'Kz' ? `${price}Kz` : `${currencySymbols[currency] || '$'}${formatPrice(price)}`}
+                            {currency === 'Kz'
+                              ? `${price}Kz`
+                              : `${currencySymbols[currency] || '$'}${formatPrice(price)}`}
                           </b>
                         }
                         className={styles.multiCurrencyItem}
@@ -201,14 +237,24 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Monthly Price <b>{currentCurrency === 'Kz' ? `${displayPrice}Kz` : `${currencySymbol}${formatPrice(displayPrice)}`}</b>
+                Monthly Price{' '}
+                <b>
+                  {currentCurrency === 'Kz'
+                    ? `${displayPrice}Kz`
+                    : `${currencySymbol}${formatPrice(displayPrice)}`}
+                </b>
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
                 Test Period <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
 
-              <Button variant="contained" className={styles.continueButton} fullWidth onClick={handleSelectedEnterprisePackage}>
+              <Button
+                variant="contained"
+                className={styles.continueButton}
+                fullWidth
+                onClick={handleSelectedEnterprisePackage}
+              >
                 Continue
               </Button>
             </Box>
@@ -224,7 +270,11 @@ const EnterprisePackageLayout: React.FC<EnterprisePackageLayoutProps> = ({ selec
           horizontal: 'center',
         }}
       >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

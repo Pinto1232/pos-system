@@ -26,7 +26,10 @@ export async function POST(req: Request) {
 
     console.log('API: Cart has items, proceeding with payment intent creation');
 
-    const amount = cartItems.reduce((sum, item) => sum + Math.round(item.price * 100) * item.quantity, 0);
+    const amount = cartItems.reduce(
+      (sum, item) => sum + Math.round(item.price * 100) * item.quantity,
+      0
+    );
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount,

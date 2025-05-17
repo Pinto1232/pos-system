@@ -2,9 +2,12 @@ import { UserSubscriptionData } from './types';
 import { getCacheOptions } from '../caching-config';
 import { CACHE_TIMES, CACHE_TAGS } from '../cache-constants';
 
-export async function fetchUserSubscriptionData(userId: string): Promise<UserSubscriptionData | null> {
+export async function fetchUserSubscriptionData(
+  userId: string
+): Promise<UserSubscriptionData | null> {
   try {
-    const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+    const BACKEND_API_URL =
+      process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
     const cacheOptions = await getCacheOptions(CACHE_TIMES.DASHBOARD, [
       CACHE_TAGS.USER_SUBSCRIPTION,
@@ -12,14 +15,17 @@ export async function fetchUserSubscriptionData(userId: string): Promise<UserSub
       `user-${userId}`,
     ]);
 
-    const response = await fetch(`${BACKEND_API_URL}/api/UserSubscription/user/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const response = await fetch(
+      `${BACKEND_API_URL}/api/UserSubscription/user/${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
 
-      ...cacheOptions,
-    });
+        ...cacheOptions,
+      }
+    );
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -32,7 +38,10 @@ export async function fetchUserSubscriptionData(userId: string): Promise<UserSub
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching user subscription data:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching user subscription data:',
+      JSON.stringify(error, null, 2)
+    );
 
     return {
       id: 1,
@@ -45,7 +54,14 @@ export async function fetchUserSubscriptionData(userId: string): Promise<UserSub
       },
       startDate: new Date().toISOString(),
       isActive: true,
-      enabledFeatures: ['Dashboard', 'Products List', 'Add/Edit Product', 'Sales Reports', 'Inventory Management', 'Customer Management'],
+      enabledFeatures: [
+        'Dashboard',
+        'Products List',
+        'Add/Edit Product',
+        'Sales Reports',
+        'Inventory Management',
+        'Customer Management',
+      ],
       additionalPackages: [],
     };
   }

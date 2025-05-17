@@ -37,7 +37,10 @@ const LanguageDropdown: React.FC = () => {
         try {
           return JSON.parse(savedLanguage);
         } catch (e) {
-          console.error('Error parsing saved language:', JSON.stringify(e, null, 2));
+          console.error(
+            'Error parsing saved language:',
+            JSON.stringify(e, null, 2)
+          );
         }
       }
     }

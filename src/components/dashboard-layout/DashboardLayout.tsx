@@ -8,11 +8,16 @@ import { useQuery } from '@tanstack/react-query';
 import useKeycloakUser from '@/hooks/useKeycloakUser';
 import { mockFetchCustomization } from '@/api/mockUserCustomization';
 
-const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
+const fetchCustomization = async (
+  userId: string
+): Promise<UserCustomization> => {
   try {
     console.log(`Fetching user customization for user ID: ${userId}`);
 
-    const endpoint = userId === 'current-user' ? '/api/UserCustomization/current-user' : `/api/UserCustomization/${userId}`;
+    const endpoint =
+      userId === 'current-user'
+        ? '/api/UserCustomization/current-user'
+        : `/api/UserCustomization/${userId}`;
 
     console.log(`Using endpoint: ${endpoint}`);
 
@@ -20,15 +25,23 @@ const fetchCustomization = async (userId: string): Promise<UserCustomization> =>
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Fetched customization from API:', JSON.stringify(data, null, 2));
+      console.log(
+        'Fetched customization from API:',
+        JSON.stringify(data, null, 2)
+      );
       return data;
     } else {
-      console.warn(`API call failed with status ${response.status}, falling back to mock data`);
+      console.warn(
+        `API call failed with status ${response.status}, falling back to mock data`
+      );
 
       return mockFetchCustomization(userId);
     }
   } catch (error) {
-    console.error('Error fetching customization, using mock data:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching customization, using mock data:',
+      JSON.stringify(error, null, 2)
+    );
 
     return mockFetchCustomization(userId);
   }
@@ -56,8 +69,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   const userId = userInfo?.sub || 'current-user';
 
-  console.log('Current authenticated user:', JSON.stringify(userInfo?.name || 'Unknown', null, 2));
-  console.log('Using user ID for customization:', JSON.stringify(userId, null, 2));
+  console.log(
+    'Current authenticated user:',
+    JSON.stringify(userInfo?.name || 'Unknown', null, 2)
+  );
+  console.log(
+    'Using user ID for customization:',
+    JSON.stringify(userId, null, 2)
+  );
 
   const { data, isSuccess } = useQuery<UserCustomization, Error>({
     queryKey: ['userCustomization', userId],
@@ -66,15 +85,21 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     enabled: !isUserLoading,
   });
 
-  const [customization, setCustomization] = useState<UserCustomization | null>(null);
+  const [customization, setCustomization] = useState<UserCustomization | null>(
+    null
+  );
   const [openSettingsModal, setOpenSettingsModal] = useState(false);
-  const [initialSettingsTab, setInitialSettingsTab] = useState('General Settings');
+  const [initialSettingsTab, setInitialSettingsTab] =
+    useState('General Settings');
   const [activeSection, setActiveSection] = useState(() => {
     try {
       const savedActiveItem = localStorage.getItem('sidebarActiveItem');
       return savedActiveItem || 'Dashboard';
     } catch (error) {
-      console.error('Error reading active section from localStorage:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error reading active section from localStorage:',
+        JSON.stringify(error, null, 2)
+      );
       return 'Dashboard';
     }
   });
@@ -95,8 +120,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   useEffect(() => {
     if (isSuccess && data) {
-      console.log('Dashboard received customization data:', JSON.stringify(data, null, 2));
-      console.log('Tax settings in dashboard:', JSON.stringify(data.taxSettings, null, 2));
+      console.log(
+        'Dashboard received customization data:',
+        JSON.stringify(data, null, 2)
+      );
+      console.log(
+        'Tax settings in dashboard:',
+        JSON.stringify(data.taxSettings, null, 2)
+      );
       setCustomization(data);
     }
   }, [isSuccess, data]);
@@ -109,10 +140,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       setOpenSettingsModal(true);
     };
 
-    window.addEventListener('openSettingsModal', handleOpenSettingsModal as EventListener);
+    window.addEventListener(
+      'openSettingsModal',
+      handleOpenSettingsModal as EventListener
+    );
 
     return () => {
-      window.removeEventListener('openSettingsModal', handleOpenSettingsModal as EventListener);
+      window.removeEventListener(
+        'openSettingsModal',
+        handleOpenSettingsModal as EventListener
+      );
     };
   }, []);
 
@@ -124,13 +161,20 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     setOpenSettingsModal(false);
   };
 
-  const sidebarBackground = customization?.sidebarColor || backgroundColor || '#173A79';
+  const sidebarBackground =
+    customization?.sidebarColor || backgroundColor || '#173A79';
   const logoUrl = customization?.logoUrl || '/Pisval_Logo.jpg';
   const navbarBg = customization?.navbarColor || navbarBgColor || '#000000';
 
   const handleCustomizationUpdated = (updated: UserCustomization) => {
-    console.log('Customization updated in dashboard:', JSON.stringify(updated, null, 2));
-    console.log('Updated tax settings:', JSON.stringify(updated.taxSettings, null, 2));
+    console.log(
+      'Customization updated in dashboard:',
+      JSON.stringify(updated, null, 2)
+    );
+    console.log(
+      'Updated tax settings:',
+      JSON.stringify(updated.taxSettings, null, 2)
+    );
     setCustomization(updated);
   };
 
@@ -196,7 +240,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           height: '100vh',
         }}
       >
-        <Navbar drawerWidth={isDrawerOpen ? 320 : 80} onDrawerToggle={onDrawerToggle} backgroundColor={navbarBg} />
+        <Navbar
+          drawerWidth={isDrawerOpen ? 320 : 80}
+          onDrawerToggle={onDrawerToggle}
+          backgroundColor={navbarBg}
+        />
 
         <Box
           sx={{

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 const fallbackAddOns = [
   {
@@ -17,7 +18,12 @@ const fallbackAddOns = [
     }),
     category: 'Analytics',
     isActive: true,
-    features: JSON.stringify(['Real-time data visualization', 'Custom report generation', 'Data export capabilities', 'Trend analysis']),
+    features: JSON.stringify([
+      'Real-time data visualization',
+      'Custom report generation',
+      'Data export capabilities',
+      'Trend analysis',
+    ]),
     dependencies: JSON.stringify(['Internet connection', 'Modern browser']),
     icon: 'analytics_icon',
   },
@@ -35,7 +41,12 @@ const fallbackAddOns = [
     }),
     category: 'Integration',
     isActive: true,
-    features: JSON.stringify(['RESTful API endpoints', 'Webhook notifications', 'Custom integration options', 'API documentation']),
+    features: JSON.stringify([
+      'RESTful API endpoints',
+      'Webhook notifications',
+      'Custom integration options',
+      'API documentation',
+    ]),
     dependencies: JSON.stringify(['Developer knowledge', 'API key management']),
     icon: 'api_icon',
   },
@@ -53,7 +64,12 @@ const fallbackAddOns = [
     }),
     category: 'Customization',
     isActive: true,
-    features: JSON.stringify(['Logo customization', 'Color scheme adjustment', 'Custom domain support', 'Email template branding']),
+    features: JSON.stringify([
+      'Logo customization',
+      'Color scheme adjustment',
+      'Custom domain support',
+      'Email template branding',
+    ]),
     dependencies: JSON.stringify(['Brand assets', 'Logo in SVG format']),
     icon: 'branding_icon',
   },
@@ -71,7 +87,12 @@ const fallbackAddOns = [
     }),
     category: 'Support',
     isActive: true,
-    features: JSON.stringify(['Priority email support', 'Live chat assistance', 'Phone support', 'Dedicated account manager']),
+    features: JSON.stringify([
+      'Priority email support',
+      'Live chat assistance',
+      'Phone support',
+      'Dedicated account manager',
+    ]),
     dependencies: JSON.stringify(['Valid support contract', 'User account']),
     icon: 'support_icon',
   },
@@ -89,13 +110,24 @@ const fallbackAddOns = [
     }),
     category: 'Data',
     isActive: true,
-    features: JSON.stringify(['Data mapping assistance', 'Migration planning', 'Data validation', 'Post-migration support']),
-    dependencies: JSON.stringify(['Source data access', 'Data export capabilities from source system']),
+    features: JSON.stringify([
+      'Data mapping assistance',
+      'Migration planning',
+      'Data validation',
+      'Post-migration support',
+    ]),
+    dependencies: JSON.stringify([
+      'Source data access',
+      'Data export capabilities from source system',
+    ]),
     icon: 'migration_icon',
   },
 ];
 
-export async function GET(request: Request, context: { params: { id: string } }) {
+export async function GET(
+  request: Request,
+  context: { params: { id: string } }
+) {
   const params = await Promise.resolve(context.params);
   const id = params.id;
 
@@ -116,12 +148,19 @@ export async function GET(request: Request, context: { params: { id: string } })
     });
 
     if (!response.ok) {
-      console.warn(`Backend API returned status: ${response.status}, serving fallback data`);
+      console.warn(
+        `Backend API returned status: ${response.status}, serving fallback data`
+      );
 
-      const fallbackAddOn = fallbackAddOns.find((addOn) => addOn.id === parseInt(id));
+      const fallbackAddOn = fallbackAddOns.find(
+        (addOn) => addOn.id === parseInt(id)
+      );
 
       if (!fallbackAddOn) {
-        return NextResponse.json({ error: 'Add-on not found' }, { status: 404 });
+        return NextResponse.json(
+          { error: 'Add-on not found' },
+          { status: 404 }
+        );
       }
 
       return NextResponse.json(fallbackAddOn);
@@ -131,9 +170,14 @@ export async function GET(request: Request, context: { params: { id: string } })
     console.log(`Successfully fetched add-on with ID ${id} from backend`);
     return NextResponse.json(data);
   } catch (error) {
-    console.error(`Error fetching add-on with ID ${id}:`, JSON.stringify(error, null, 2));
+    console.error(
+      `Error fetching add-on with ID ${id}:`,
+      JSON.stringify(error, null, 2)
+    );
 
-    const fallbackAddOn = fallbackAddOns.find((addOn) => addOn.id === parseInt(id));
+    const fallbackAddOn = fallbackAddOns.find(
+      (addOn) => addOn.id === parseInt(id)
+    );
 
     if (!fallbackAddOn) {
       return NextResponse.json({ error: 'Add-on not found' }, { status: 404 });
@@ -143,13 +187,19 @@ export async function GET(request: Request, context: { params: { id: string } })
   }
 }
 
-export async function PUT(request: Request, context: { params: { id: string } }) {
+export async function PUT(
+  request: Request,
+  context: { params: { id: string } }
+) {
   const params = await Promise.resolve(context.params);
   const id = params.id;
 
   try {
     const body = await request.json();
-    console.log(`Proxying PUT request to backend for updating add-on with ID: ${id}`, JSON.stringify(body, null, 2));
+    console.log(
+      `Proxying PUT request to backend for updating add-on with ID: ${id}`,
+      JSON.stringify(body, null, 2)
+    );
 
     const response = await fetch(`${BACKEND_API_URL}/api/AddOns/${id}`, {
       method: 'PUT',
@@ -160,8 +210,13 @@ export async function PUT(request: Request, context: { params: { id: string } })
     });
 
     if (!response.ok) {
-      console.warn(`Backend API returned status: ${response.status}, returning error`);
-      return NextResponse.json({ error: 'Failed to update add-on' }, { status: response.status });
+      console.warn(
+        `Backend API returned status: ${response.status}, returning error`
+      );
+      return NextResponse.json(
+        { error: 'Failed to update add-on' },
+        { status: response.status }
+      );
     }
 
     console.log(`Successfully updated add-on with ID ${id} in backend`);
@@ -169,12 +224,21 @@ export async function PUT(request: Request, context: { params: { id: string } })
       status: 204,
     });
   } catch (error) {
-    console.error(`Error updating add-on with ID ${id}:`, JSON.stringify(error, null, 2));
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error(
+      `Error updating add-on with ID ${id}:`,
+      JSON.stringify(error, null, 2)
+    );
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
-export async function DELETE(request: Request, context: { params: { id: string } }) {
+export async function DELETE(
+  request: Request,
+  context: { params: { id: string } }
+) {
   const params = await Promise.resolve(context.params);
   const id = params.id;
 
@@ -189,8 +253,13 @@ export async function DELETE(request: Request, context: { params: { id: string }
     });
 
     if (!response.ok) {
-      console.warn(`Backend API returned status: ${response.status}, returning error`);
-      return NextResponse.json({ error: 'Failed to delete add-on' }, { status: response.status });
+      console.warn(
+        `Backend API returned status: ${response.status}, returning error`
+      );
+      return NextResponse.json(
+        { error: 'Failed to delete add-on' },
+        { status: response.status }
+      );
     }
 
     console.log(`Successfully deleted add-on with ID ${id} from backend`);
@@ -198,7 +267,13 @@ export async function DELETE(request: Request, context: { params: { id: string }
       status: 204,
     });
   } catch (error) {
-    console.error(`Error deleting add-on with ID ${id}:`, JSON.stringify(error, null, 2));
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error(
+      `Error deleting add-on with ID ${id}:`,
+      JSON.stringify(error, null, 2)
+    );
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

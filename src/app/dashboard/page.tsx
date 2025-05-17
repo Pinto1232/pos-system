@@ -18,7 +18,13 @@ export default async function Dashboard() {
     const userSubscription = await fetchUserSubscriptionData(userId);
 
     return (
-      <ErrorBoundary cacheTags={[CACHE_TAGS.DASHBOARD, CACHE_TAGS.USER_SUBSCRIPTION, `user-${userId}`]}>
+      <ErrorBoundary
+        cacheTags={[
+          CACHE_TAGS.DASHBOARD,
+          CACHE_TAGS.USER_SUBSCRIPTION,
+          `user-${userId}`,
+        ]}
+      >
         <Suspense fallback={<DashboardLoading />}>
           <DashboardClient initialSubscriptionData={userSubscription} />
         </Suspense>

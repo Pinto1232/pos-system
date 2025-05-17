@@ -67,7 +67,10 @@ export default function CacheMonitor() {
           dataSize = formatBytes(jsonSize);
         }
       } catch (error) {
-        console.error('Error calculating data size:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error calculating data size:',
+          JSON.stringify(error, null, 2)
+        );
       }
 
       return {
@@ -121,7 +124,14 @@ export default function CacheMonitor() {
     return `${diffDay} day ago`;
   };
 
-  type ChipColor = 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+  type ChipColor =
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'error'
+    | 'info'
+    | 'success'
+    | 'warning';
 
   const getStatusColor = (status: CacheEntry['status']): ChipColor => {
     switch (status) {
@@ -153,7 +163,12 @@ export default function CacheMonitor() {
             Last refreshed: {formatRelativeTime(lastRefreshed)}
           </Typography>
 
-          <Button size="small" variant="outlined" onClick={refreshCacheData} disabled={isLoading}>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={refreshCacheData}
+            disabled={isLoading}
+          >
             {isLoading ? <CircularProgress size={20} /> : 'Refresh'}
           </Button>
         </Box>
@@ -199,7 +214,12 @@ export default function CacheMonitor() {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Chip label={entry.status} size="small" color={getStatusColor(entry.status)} variant="outlined" />
+                    <Chip
+                      label={entry.status}
+                      size="small"
+                      color={getStatusColor(entry.status)}
+                      variant="outlined"
+                    />
                   </TableCell>
                   <TableCell>{formatRelativeTime(entry.lastUpdated)}</TableCell>
                   <TableCell>{entry.dataSize}</TableCell>

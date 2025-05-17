@@ -8,28 +8,44 @@ const AnalyticsCardContainer = () => {
       circleText: '01',
       title: 'Customer Insights',
       subTitle: 'Sales Overview & Analytics',
-      dataPoints: ['New vs. Returning Customers', 'Average Order Value (AOV)', 'Top Customers'],
+      dataPoints: [
+        'New vs. Returning Customers',
+        'Average Order Value (AOV)',
+        'Top Customers',
+      ],
       percentage: '-22%',
     },
     {
       circleText: '02',
       title: 'Product & Category Performance',
       subTitle: 'Sales Overview & Analytics',
-      dataPoints: ['Top-Selling Products', 'Best-Performing Categories', 'Low-Stock or Out-of-Stock Alerts'],
+      dataPoints: [
+        'Top-Selling Products',
+        'Best-Performing Categories',
+        'Low-Stock or Out-of-Stock Alerts',
+      ],
       percentage: '22%',
     },
     {
       circleText: '03',
       title: 'Time-Based Analytics',
       subTitle: 'Sales Overview & Analytics',
-      dataPoints: ['Hourly / Daily / Weekly Sales Trend', 'Peak Sales Hours', 'Week-over-Week / Month-over-Month Comparison'],
+      dataPoints: [
+        'Hourly / Daily / Weekly Sales Trend',
+        'Peak Sales Hours',
+        'Week-over-Week / Month-over-Month Comparison',
+      ],
       percentage: '22%',
     },
     {
       circleText: '04',
       title: 'Profitability & Costs',
       subTitle: 'Sales Overview & Analytics',
-      dataPoints: ['Gross Margin', 'Profit or Net Income', 'Profit or Net Income'],
+      dataPoints: [
+        'Gross Margin',
+        'Profit or Net Income',
+        'Profit or Net Income',
+      ],
       percentage: '12%',
     },
   ];
@@ -68,7 +84,12 @@ const AnalyticsCardContainer = () => {
               width: '100%',
             }}
           >
-            <AnalyticsCard circleText={card.circleText} title={card.title} dataPoints={card.dataPoints} percentage={card.percentage} />
+            <AnalyticsCard
+              circleText={card.circleText}
+              title={card.title}
+              dataPoints={card.dataPoints}
+              percentage={card.percentage}
+            />
           </Grid>
         ))}
       </Grid>

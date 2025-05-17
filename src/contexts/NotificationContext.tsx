@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import {
   useNotifications,
   useMarkNotificationsAsRead,
@@ -8,7 +14,11 @@ import {
   useCreateNotification,
   useUnreadNotificationsCount,
 } from '@/hooks/useNotifications';
-import { Notification, NotificationFilters, CreateNotificationRequest } from '@/types/notification';
+import {
+  Notification,
+  NotificationFilters,
+  CreateNotificationRequest,
+} from '@/types/notification';
 
 interface NotificationContextType {
   notifications: Notification[];
@@ -18,13 +28,17 @@ interface NotificationContextType {
   error: Error | null;
   markAsRead: (notificationIds: string[]) => Promise<void>;
   markAllAsRead: () => Promise<void>;
-  createNotification: (notification: CreateNotificationRequest) => Promise<Notification>;
+  createNotification: (
+    notification: CreateNotificationRequest
+  ) => Promise<Notification>;
   refreshNotifications: () => void;
   filters: NotificationFilters;
   setFilters: (filters: NotificationFilters) => void;
 }
 
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+const NotificationContext = createContext<NotificationContextType | undefined>(
+  undefined
+);
 
 export const NotificationProvider: React.FC<{
   children: ReactNode;
@@ -101,13 +115,19 @@ export const NotificationProvider: React.FC<{
     ]
   );
 
-  return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;
+  return (
+    <NotificationContext.Provider value={value}>
+      {children}
+    </NotificationContext.Provider>
+  );
 };
 
 export const useNotificationContext = (): NotificationContextType => {
   const context = useContext(NotificationContext);
   if (context === undefined) {
-    throw new Error('useNotificationContext must be used within a NotificationProvider');
+    throw new Error(
+      'useNotificationContext must be used within a NotificationProvider'
+    );
   }
   return context;
 };

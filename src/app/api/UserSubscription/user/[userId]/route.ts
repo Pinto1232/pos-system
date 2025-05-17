@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-export async function GET(request: Request, context: { params: { userId: string } }) {
+export async function GET(
+  request: Request,
+  context: { params: { userId: string } }
+) {
   const params = await context.params;
   const userId = params.userId;
 
@@ -10,23 +14,30 @@ export async function GET(request: Request, context: { params: { userId: string 
     const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(`Proxying GET request to backend for user subscription: ${userId}`);
+      console.log(
+        `Proxying GET request to backend for user subscription: ${userId}`
+      );
 
-      const response = await fetch(`${BACKEND_API_URL}/api/UserSubscription/user/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch(
+        `${BACKEND_API_URL}/api/UserSubscription/user/${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
 
-        signal: AbortSignal.timeout(3000),
-      });
+          signal: AbortSignal.timeout(3000),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         console.log('Successfully fetched user subscription from backend');
         return NextResponse.json(data);
       } else {
-        console.warn(`Backend API returned status: ${response.status}, serving mock data`);
+        console.warn(
+          `Backend API returned status: ${response.status}, serving mock data`
+        );
       }
     } else {
       console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
@@ -43,11 +54,21 @@ export async function GET(request: Request, context: { params: { userId: string 
       },
       startDate: new Date().toISOString(),
       isActive: true,
-      enabledFeatures: ['Dashboard', 'Products List', 'Add/Edit Product', 'Sales Reports', 'Inventory Management', 'Customer Management'],
+      enabledFeatures: [
+        'Dashboard',
+        'Products List',
+        'Add/Edit Product',
+        'Sales Reports',
+        'Inventory Management',
+        'Customer Management',
+      ],
       additionalPackages: [],
     });
   } catch (error) {
-    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error proxying request to backend:',
+      JSON.stringify(error, null, 2)
+    );
 
     return NextResponse.json({
       id: 1,
@@ -60,7 +81,14 @@ export async function GET(request: Request, context: { params: { userId: string 
       },
       startDate: new Date().toISOString(),
       isActive: true,
-      enabledFeatures: ['Dashboard', 'Products List', 'Add/Edit Product', 'Sales Reports', 'Inventory Management', 'Customer Management'],
+      enabledFeatures: [
+        'Dashboard',
+        'Products List',
+        'Add/Edit Product',
+        'Sales Reports',
+        'Inventory Management',
+        'Customer Management',
+      ],
       additionalPackages: [],
     });
   }

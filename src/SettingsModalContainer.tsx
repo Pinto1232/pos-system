@@ -5,10 +5,18 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useUpdateCustomization } from '@/api/axiosClient';
 import eventBus, { UI_EVENTS } from '@/utils/eventBus';
 import { fetchAvailableCurrencies } from '@/api/currencyApi';
-import { mockFetchCustomization, mockUpdateCustomization } from '@/api/mockUserCustomization';
+import {
+  mockFetchCustomization,
+  mockUpdateCustomization,
+} from '@/api/mockUserCustomization';
 import { useUserSubscription } from '@/contexts/UserSubscriptionContext';
 import SettingsModalPresentation from './SettingsModalPresentation';
-import { UserCustomization, TaxSettings, RegionalSettings, SettingsModalProps } from './types/settingsTypes';
+import {
+  UserCustomization,
+  TaxSettings,
+  RegionalSettings,
+  SettingsModalProps,
+} from './types/settingsTypes';
 
 const DEFAULT_SIDEBAR_COLOR = '#173A79';
 const DEFAULT_LOGO_URL = '/Pisval_Logo.jpg';
@@ -61,11 +69,16 @@ const DEFAULT_REGIONAL_SETTINGS: RegionalSettings = {
   supportedCurrencies: ['ZAR', 'USD', 'EUR', 'GBP'],
 };
 
-const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
+const fetchCustomization = async (
+  userId: string
+): Promise<UserCustomization> => {
   try {
     console.log(`Fetching user customization for user ID: ${userId}`);
 
-    const endpoint = userId === 'current-user' ? '/api/UserCustomization/current-user' : `/api/UserCustomization/${userId}`;
+    const endpoint =
+      userId === 'current-user'
+        ? '/api/UserCustomization/current-user'
+        : `/api/UserCustomization/${userId}`;
 
     console.log(`Using endpoint: ${endpoint}`);
 
@@ -73,14 +86,22 @@ const fetchCustomization = async (userId: string): Promise<UserCustomization> =>
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Fetched customization from API:', JSON.stringify(data, null, 2));
+      console.log(
+        'Fetched customization from API:',
+        JSON.stringify(data, null, 2)
+      );
       return data;
     } else {
-      console.warn(`API call failed with status ${response.status}, falling back to mock data`);
+      console.warn(
+        `API call failed with status ${response.status}, falling back to mock data`
+      );
       return mockFetchCustomization(userId);
     }
   } catch (error) {
-    console.error('Error fetching customization, using mock data:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching customization, using mock data:',
+      JSON.stringify(error, null, 2)
+    );
     return mockFetchCustomization(userId);
   }
 };
@@ -117,24 +138,30 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     }[]
   >([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [taxSettings, setTaxSettingsDirect] = useState<TaxSettings>(() => JSON.parse(JSON.stringify(DEFAULT_TAX_SETTINGS)));
-  const [regionalSettings, setRegionalSettingsDirect] = useState<RegionalSettings>(() =>
-    JSON.parse(JSON.stringify(DEFAULT_REGIONAL_SETTINGS))
+  const [taxSettings, setTaxSettingsDirect] = useState<TaxSettings>(() =>
+    JSON.parse(JSON.stringify(DEFAULT_TAX_SETTINGS))
   );
+  const [regionalSettings, setRegionalSettingsDirect] =
+    useState<RegionalSettings>(() =>
+      JSON.parse(JSON.stringify(DEFAULT_REGIONAL_SETTINGS))
+    );
   const [selectedRoleTab, setSelectedRoleTab] = useState(0);
   const [cacheDuration, setCacheDuration] = useState('60000');
   const [autoRefreshOnFocus, setAutoRefreshOnFocus] = useState(true);
   const [prefetchImportantData, setPrefetchImportantData] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('success');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    'success' | 'error' | 'info' | 'warning'
+  >('success');
   const [isSaving, setIsSaving] = useState(false);
 
   const [createRoleModalOpen, setCreateRoleModalOpen] = useState(false);
   const [newRoleName, setNewRoleName] = useState('');
   const [newRoleDescription, setNewRoleDescription] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('');
-  const [configurePermissionsAfter, setConfigurePermissionsAfter] = useState(true);
+  const [configurePermissionsAfter, setConfigurePermissionsAfter] =
+    useState(true);
   const [roleNameError, setRoleNameError] = useState('');
   const [createRolePending, setCreateRolePending] = useState(false);
 
@@ -168,7 +195,14 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           'inventory.edit',
         ];
       case 'cashier':
-        return ['dashboard.view', 'products.view', 'sales.view', 'sales.create', 'customers.view', 'customers.create'];
+        return [
+          'dashboard.view',
+          'products.view',
+          'sales.view',
+          'sales.create',
+          'customers.view',
+          'customers.create',
+        ];
       case 'inventory':
         return [
           'dashboard.view',
@@ -196,7 +230,9 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
 
     try {
       // Prepare permissions based on template
-      const permissions = selectedTemplate ? getTemplatePermissions(selectedTemplate) : [];
+      const permissions = selectedTemplate
+        ? getTemplatePermissions(selectedTemplate)
+        : [];
 
       // Create role data
       const roleData = {
@@ -235,8 +271,11 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedCacheDuration = localStorage.getItem('cacheDuration');
-      const savedAutoRefreshOnFocus = localStorage.getItem('autoRefreshOnFocus');
-      const savedPrefetchImportantData = localStorage.getItem('prefetchImportantData');
+      const savedAutoRefreshOnFocus =
+        localStorage.getItem('autoRefreshOnFocus');
+      const savedPrefetchImportantData = localStorage.getItem(
+        'prefetchImportantData'
+      );
 
       if (savedCacheDuration) {
         setCacheDuration(savedCacheDuration);
@@ -283,7 +322,10 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
   }, [taxSettings]);
 
   useEffect(() => {
-    console.log('Regional settings updated:', JSON.stringify(regionalSettings, null, 2));
+    console.log(
+      'Regional settings updated:',
+      JSON.stringify(regionalSettings, null, 2)
+    );
   }, [regionalSettings]);
 
   useEffect(() => {
@@ -299,12 +341,21 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       setCreateRoleModalOpen(true);
     };
 
-    window.addEventListener('openSettingsModal', handleOpenSettingsModal as EventListener);
+    window.addEventListener(
+      'openSettingsModal',
+      handleOpenSettingsModal as EventListener
+    );
     window.addEventListener('openCreateRoleModal', handleOpenCreateRoleModal);
 
     return () => {
-      window.removeEventListener('openSettingsModal', handleOpenSettingsModal as EventListener);
-      window.removeEventListener('openCreateRoleModal', handleOpenCreateRoleModal);
+      window.removeEventListener(
+        'openSettingsModal',
+        handleOpenSettingsModal as EventListener
+      );
+      window.removeEventListener(
+        'openCreateRoleModal',
+        handleOpenCreateRoleModal
+      );
     };
   }, []);
 
@@ -314,7 +365,10 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         const currencies = await fetchAvailableCurrencies();
         console.log('Fetched currencies:', JSON.stringify(currencies, null, 2));
       } catch (error) {
-        console.error('Error fetching currencies:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error fetching currencies:',
+          JSON.stringify(error, null, 2)
+        );
       }
     };
 
@@ -331,8 +385,12 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       setNavbarColor(DEFAULT_NAVBAR_COLOR);
       setLogoPreview(DEFAULT_LOGO_URL);
 
-      const defaultTaxSettings = JSON.parse(JSON.stringify(DEFAULT_TAX_SETTINGS));
-      const defaultRegionalSettings = JSON.parse(JSON.stringify(DEFAULT_REGIONAL_SETTINGS));
+      const defaultTaxSettings = JSON.parse(
+        JSON.stringify(DEFAULT_TAX_SETTINGS)
+      );
+      const defaultRegionalSettings = JSON.parse(
+        JSON.stringify(DEFAULT_REGIONAL_SETTINGS)
+      );
 
       setTaxSettings(defaultTaxSettings);
       setRegionalSettings(defaultRegionalSettings);
@@ -340,7 +398,10 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       if (typeof window !== 'undefined') {
         const savedNavbarColor = localStorage.getItem('navbarColor');
         if (savedNavbarColor) {
-          console.log('Found saved navbar color in localStorage:', JSON.stringify(savedNavbarColor, null, 2));
+          console.log(
+            'Found saved navbar color in localStorage:',
+            JSON.stringify(savedNavbarColor, null, 2)
+          );
           setNavbarColor(savedNavbarColor);
         }
       }
@@ -348,13 +409,19 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       if (data) {
         if (data.sidebarColor) setSidebarColor(data.sidebarColor);
         if (data.navbarColor) {
-          console.log('Setting navbar color from API data:', JSON.stringify(data.navbarColor, null, 2));
+          console.log(
+            'Setting navbar color from API data:',
+            JSON.stringify(data.navbarColor, null, 2)
+          );
           setNavbarColor(data.navbarColor);
         }
         if (data.logoUrl) setLogoPreview(data.logoUrl);
 
         if (data.taxSettings) {
-          console.log('Tax settings from API:', JSON.stringify(data.taxSettings, null, 2));
+          console.log(
+            'Tax settings from API:',
+            JSON.stringify(data.taxSettings, null, 2)
+          );
 
           const mergedTaxSettings = {
             ...defaultTaxSettings,
@@ -368,13 +435,18 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         }
 
         if (data.regionalSettings) {
-          console.log('Regional settings from API:', JSON.stringify(data.regionalSettings, null, 2));
+          console.log(
+            'Regional settings from API:',
+            JSON.stringify(data.regionalSettings, null, 2)
+          );
 
           const mergedRegionalSettings = {
             ...defaultRegionalSettings,
             ...data.regionalSettings,
 
-            supportedCurrencies: Array.isArray(data.regionalSettings.supportedCurrencies)
+            supportedCurrencies: Array.isArray(
+              data.regionalSettings.supportedCurrencies
+            )
               ? data.regionalSettings.supportedCurrencies
               : defaultRegionalSettings.supportedCurrencies,
           };
@@ -401,7 +473,10 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     }
   };
 
-  const updateCustomizationMutation = useUpdateCustomization<UserCustomization, UserCustomization>();
+  const updateCustomizationMutation = useUpdateCustomization<
+    UserCustomization,
+    UserCustomization
+  >();
 
   const handleSave = () => {
     setIsSaving(true);
@@ -416,14 +491,29 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       regionalSettings: regionalSettings,
     };
 
-    console.log('Saving customization data:', JSON.stringify(dataToSave, null, 2));
-    console.log('Tax settings being saved:', JSON.stringify(taxSettings, null, 2));
-    console.log('Regional settings being saved:', JSON.stringify(regionalSettings, null, 2));
+    console.log(
+      'Saving customization data:',
+      JSON.stringify(dataToSave, null, 2)
+    );
+    console.log(
+      'Tax settings being saved:',
+      JSON.stringify(taxSettings, null, 2)
+    );
+    console.log(
+      'Regional settings being saved:',
+      JSON.stringify(regionalSettings, null, 2)
+    );
 
-    console.log('SettingsModal: Applying changes immediately to UI with data:', JSON.stringify(dataToSave, null, 2));
+    console.log(
+      'SettingsModal: Applying changes immediately to UI with data:',
+      JSON.stringify(dataToSave, null, 2)
+    );
     onCustomizationUpdated(dataToSave);
 
-    console.log('SettingsModal: Emitting customization update event with navbarColor:', JSON.stringify(navbarColor, null, 2));
+    console.log(
+      'SettingsModal: Emitting customization update event with navbarColor:',
+      JSON.stringify(navbarColor, null, 2)
+    );
     eventBus.emit(UI_EVENTS.CUSTOMIZATION_UPDATED, {
       navbarColor,
       sidebarColor,
@@ -433,16 +523,24 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem('userCustomization', JSON.stringify(dataToSave));
-        console.log('SettingsModal: Saved customization data directly to localStorage');
+        console.log(
+          'SettingsModal: Saved customization data directly to localStorage'
+        );
       } catch (error) {
-        console.error('SettingsModal: Error saving to localStorage:', JSON.stringify(error, null, 2));
+        console.error(
+          'SettingsModal: Error saving to localStorage:',
+          JSON.stringify(error, null, 2)
+        );
       }
     }
 
     try {
       updateCustomizationMutation.mutate(dataToSave, {
         onSuccess: (updatedData) => {
-          console.log('Updated data returned from API:', JSON.stringify(updatedData, null, 2));
+          console.log(
+            'Updated data returned from API:',
+            JSON.stringify(updatedData, null, 2)
+          );
 
           onCustomizationUpdated(updatedData as UserCustomization);
 
@@ -461,10 +559,16 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           setIsSaving(false);
         },
         onError: (error) => {
-          console.error('Error saving to API, falling back to mock:', JSON.stringify(error, null, 2));
+          console.error(
+            'Error saving to API, falling back to mock:',
+            JSON.stringify(error, null, 2)
+          );
 
           mockUpdateCustomization(dataToSave).then((updatedData) => {
-            console.log('Updated data returned from mock:', JSON.stringify(updatedData, null, 2));
+            console.log(
+              'Updated data returned from mock:',
+              JSON.stringify(updatedData, null, 2)
+            );
 
             onCustomizationUpdated(updatedData);
 
@@ -485,10 +589,16 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         },
       });
     } catch (error) {
-      console.error('Error in mutation, falling back to mock:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error in mutation, falling back to mock:',
+        JSON.stringify(error, null, 2)
+      );
 
       mockUpdateCustomization(dataToSave).then((updatedData) => {
-        console.log('Updated data returned from mock:', JSON.stringify(updatedData, null, 2));
+        console.log(
+          'Updated data returned from mock:',
+          JSON.stringify(updatedData, null, 2)
+        );
 
         onCustomizationUpdated(updatedData);
 
@@ -517,7 +627,10 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     setRegionalSettings(DEFAULT_REGIONAL_SETTINGS);
   };
 
-  const { enableAdditionalPackage: enablePackage, disableAdditionalPackage: disablePackage } = useUserSubscription();
+  const {
+    enableAdditionalPackage: enablePackage,
+    disableAdditionalPackage: disablePackage,
+  } = useUserSubscription();
 
   const enableAdditionalPackage = async (packageId: number) => {
     console.log(`Enable package ${packageId}`);
@@ -575,7 +688,8 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
               {
                 id: 1,
                 title: 'Starter',
-                description: 'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting',
+                description:
+                  'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting',
                 type: 'starter',
                 price: 29.99,
               },
@@ -605,13 +719,17 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
               },
             ];
       } catch (error) {
-        console.error('Error fetching packages:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error fetching packages:',
+          JSON.stringify(error, null, 2)
+        );
 
         return [
           {
             id: 1,
             title: 'Starter',
-            description: 'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting',
+            description:
+              'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting',
             type: 'starter',
             price: 29.99,
           },
@@ -671,7 +789,14 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     },
     startDate: new Date().toISOString(),
     isActive: true,
-    enabledFeatures: ['Dashboard', 'Products List', 'Add/Edit Product', 'Sales Reports', 'Inventory Management', 'Customer Management'],
+    enabledFeatures: [
+      'Dashboard',
+      'Products List',
+      'Add/Edit Product',
+      'Sales Reports',
+      'Inventory Management',
+      'Customer Management',
+    ],
     additionalPackages: [],
   };
 

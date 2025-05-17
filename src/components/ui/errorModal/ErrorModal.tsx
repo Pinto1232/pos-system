@@ -20,7 +20,10 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ message, onClose }) => {
           <h2>Error</h2>
 
           {}
-          <p>{message || 'Oops, something went wrong. Our team is working on it. Please try again later or contact support.'}</p>
+          <p>
+            {message ||
+              'Oops, something went wrong. Our team is working on it. Please try again later or contact support.'}
+          </p>
 
           {}
           <button onClick={onClose}>Try again</button>

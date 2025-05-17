@@ -32,7 +32,11 @@ interface SidebarFeatureGuardProps {
   disabledStyle?: React.CSSProperties;
 }
 
-const SidebarFeatureGuard: React.FC<SidebarFeatureGuardProps> = ({ featureName, children, disabledStyle = {} }) => {
+const SidebarFeatureGuard: React.FC<SidebarFeatureGuardProps> = ({
+  featureName,
+  children,
+  disabledStyle = {},
+}) => {
   const { hasFeatureAccess, subscription } = useUserSubscription();
   const hasAccess = hasFeatureAccess(featureName);
 
@@ -52,14 +56,17 @@ const SidebarFeatureGuard: React.FC<SidebarFeatureGuardProps> = ({ featureName, 
           >
             Feature Locked
           </div>
-          <div>The {featureName} feature is not included in your current package.</div>
+          <div>
+            The {featureName} feature is not included in your current package.
+          </div>
           <div
             style={{
               fontSize: '0.8rem',
               marginTop: '4px',
             }}
           >
-            You are currently on the {subscription?.package?.title || 'Free'} plan. Upgrade your subscription to access this feature.
+            You are currently on the {subscription?.package?.title || 'Free'}{' '}
+            plan. Upgrade your subscription to access this feature.
           </div>
           <div
             style={{

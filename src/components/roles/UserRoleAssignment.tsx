@@ -86,19 +86,30 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
         }
 
         if (isPremiumRole(role.name)) {
-          if (!window.confirm(`You are assigning a premium role (${role.name}) that may require additional subscription fees. Continue?`)) {
+          if (
+            !window.confirm(
+              `You are assigning a premium role (${role.name}) that may require additional subscription fees. Continue?`
+            )
+          ) {
             throw new Error('Operation cancelled by user');
           }
-          console.warn(`Assigning premium role (${role.name}) - ensure user has appropriate subscription package`);
+          console.warn(
+            `Assigning premium role (${role.name}) - ensure user has appropriate subscription package`
+          );
         }
 
         if (isCriticalRole(role.name)) {
-          console.warn(`Assigning critical role (${role.name}) - additional security checks would be required in production`);
+          console.warn(
+            `Assigning critical role (${role.name}) - additional security checks would be required in production`
+          );
         }
 
         return roleService.addUserToRole(roleId, userId);
       } catch (error) {
-        console.error('Error in role validation:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error in role validation:',
+          JSON.stringify(error, null, 2)
+        );
         throw error;
       }
     },
@@ -114,8 +125,13 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
       alert('User successfully added to role');
     },
     onError: (error) => {
-      console.error('Error adding user to role:', JSON.stringify(error, null, 2));
-      alert(`Error: ${error instanceof Error ? error.message : 'Failed to add user to role'}`);
+      console.error(
+        'Error adding user to role:',
+        JSON.stringify(error, null, 2)
+      );
+      alert(
+        `Error: ${error instanceof Error ? error.message : 'Failed to add user to role'}`
+      );
     },
   });
 
@@ -130,7 +146,9 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
         const userRoles = await getUserRoles(userId);
 
         if (userRoles.length <= 1) {
-          throw new Error("Cannot remove the user's last role. Users must have at least one role.");
+          throw new Error(
+            "Cannot remove the user's last role. Users must have at least one role."
+          );
         }
 
         const role = await getRoleDetails(roleId);
@@ -147,7 +165,9 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
             throw new Error('Operation cancelled by user');
           }
 
-          console.warn(`Removing user from critical role (${role.name}) - additional security checks would be required in production`);
+          console.warn(
+            `Removing user from critical role (${role.name}) - additional security checks would be required in production`
+          );
         }
 
         const userHasActiveOperations = false;
@@ -163,7 +183,10 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
 
         return roleService.removeUserFromRole(roleId, userId);
       } catch (error) {
-        console.error('Error in role validation:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error in role validation:',
+          JSON.stringify(error, null, 2)
+        );
         throw error;
       }
     },
@@ -177,12 +200,19 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
       alert('User successfully removed from role');
     },
     onError: (error) => {
-      console.error('Error removing user from role:', JSON.stringify(error, null, 2));
-      alert(`Error: ${error instanceof Error ? error.message : 'Failed to remove user from role'}`);
+      console.error(
+        'Error removing user from role:',
+        JSON.stringify(error, null, 2)
+      );
+      alert(
+        `Error: ${error instanceof Error ? error.message : 'Failed to remove user from role'}`
+      );
     },
   });
 
-  const getUserRoles = async (userId: number): Promise<{ id: number; name: string }[]> => {
+  const getUserRoles = async (
+    userId: number
+  ): Promise<{ id: number; name: string }[]> => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -205,7 +235,10 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
 
       return userRoles;
     } catch (error) {
-      console.error('Error fetching user roles:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error fetching user roles:',
+        JSON.stringify(error, null, 2)
+      );
       return [];
     }
   };
@@ -246,7 +279,10 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
         transactionLimit,
       };
     } catch (error) {
-      console.error(`Error fetching role details for role ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error fetching role details for role ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       return null;
     }
   };
@@ -256,7 +292,10 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
     return criticalRoles.includes(roleName);
   };
 
-  const canAssignRoleToUser = async (userId: number, roleId: number): Promise<boolean> => {
+  const canAssignRoleToUser = async (
+    userId: number,
+    roleId: number
+  ): Promise<boolean> => {
     try {
       const role = await getRoleDetails(roleId);
 
@@ -276,12 +315,18 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
 
       return true;
     } catch (error) {
-      console.error('Error checking if user can be assigned to role:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error checking if user can be assigned to role:',
+        JSON.stringify(error, null, 2)
+      );
       return false;
     }
   };
 
-  const logUserRoleChange = async (action: 'add' | 'remove', userId: number) => {
+  const logUserRoleChange = async (
+    action: 'add' | 'remove',
+    userId: number
+  ) => {
     try {
       const user =
         usersInRole?.find((u) => u.id === userId) ||
@@ -317,14 +362,22 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
       console.log('User role change logged:', JSON.stringify(logData, null, 2));
 
       try {
-        const auditLogs = JSON.parse(localStorage.getItem('userRoleAuditLogs') || '[]');
+        const auditLogs = JSON.parse(
+          localStorage.getItem('userRoleAuditLogs') || '[]'
+        );
         auditLogs.push(logData);
         localStorage.setItem('userRoleAuditLogs', JSON.stringify(auditLogs));
       } catch (error) {
-        console.error('Error saving audit log:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error saving audit log:',
+          JSON.stringify(error, null, 2)
+        );
       }
     } catch (error) {
-      console.error('Error creating audit log:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error creating audit log:',
+        JSON.stringify(error, null, 2)
+      );
     }
   };
 
@@ -339,11 +392,19 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
   };
 
   const availableUsers = React.useMemo(() => {
-    if (!allUsers || !usersInRole || !Array.isArray(allUsers) || !Array.isArray(usersInRole)) return [];
+    if (
+      !allUsers ||
+      !usersInRole ||
+      !Array.isArray(allUsers) ||
+      !Array.isArray(usersInRole)
+    )
+      return [];
 
     const userIdsInRole = usersInRole.map((u) => u && u.id).filter(Boolean);
 
-    return allUsers.filter((user) => user && user.id && !userIdsInRole.includes(user.id));
+    return allUsers.filter(
+      (user) => user && user.id && !userIdsInRole.includes(user.id)
+    );
   }, [allUsers, usersInRole]);
 
   const filteredUsers = React.useMemo(() => {
@@ -354,8 +415,10 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
       if (!user) return false;
 
       return (
-        (user.userName && user.userName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase()))
+        (user.userName &&
+          user.userName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (user.email &&
+          user.email.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     });
   }, [usersInRole, searchQuery]);
@@ -375,7 +438,11 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
   }
 
   if (usersError) {
-    return <Alert severity="error">Error loading users. Please try again later.</Alert>;
+    return (
+      <Alert severity="error">
+        Error loading users. Please try again later.
+      </Alert>
+    );
   }
 
   return (
@@ -402,7 +469,12 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
             ),
           }}
         />
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setIsAddUserDialogOpen(true)} size="small">
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setIsAddUserDialogOpen(true)}
+          size="small"
+        >
           Add User to Role
         </Button>
       </Box>
@@ -430,7 +502,11 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
                       <TableCell>{user.userName}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>
-                        <Chip label={user.isActive ? 'Active' : 'Inactive'} color={user.isActive ? 'success' : 'default'} size="small" />
+                        <Chip
+                          label={user.isActive ? 'Active' : 'Inactive'}
+                          color={user.isActive ? 'success' : 'default'}
+                          size="small"
+                        />
                       </TableCell>
                       <TableCell align="right">
                         <Tooltip title="Remove from Role">
@@ -453,7 +529,12 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
       )}
 
       {}
-      <Dialog open={isAddUserDialogOpen} onClose={() => setIsAddUserDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={isAddUserDialogOpen}
+        onClose={() => setIsAddUserDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Add User to Role</DialogTitle>
         <DialogContent>
           <Autocomplete
@@ -461,7 +542,15 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
             getOptionLabel={(option) => `${option.userName} (${option.email})`}
             value={selectedUser}
             onChange={(_event, newValue) => setSelectedUser(newValue)}
-            renderInput={(params) => <TextField {...params} label="Select User" margin="dense" fullWidth autoFocus />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select User"
+                margin="dense"
+                fullWidth
+                autoFocus
+              />
+            )}
             loading={isLoadingAllUsers}
             loadingText="Loading users..."
             noOptionsText="No users available to add"
@@ -470,8 +559,16 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsAddUserDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleAddUser} variant="contained" disabled={!selectedUser || addUserMutation.isPending}>
-            {addUserMutation.isPending ? <CircularProgress size={24} /> : 'Add User'}
+          <Button
+            onClick={handleAddUser}
+            variant="contained"
+            disabled={!selectedUser || addUserMutation.isPending}
+          >
+            {addUserMutation.isPending ? (
+              <CircularProgress size={24} />
+            ) : (
+              'Add User'
+            )}
           </Button>
         </DialogActions>
       </Dialog>

@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-export async function GET(request: Request, context: { params: { permission: string } }) {
+export async function GET(
+  request: Request,
+  context: { params: { permission: string } }
+) {
   const params = await context.params;
   const permission = params.permission;
 
@@ -18,24 +22,33 @@ export async function GET(request: Request, context: { params: { permission: str
     const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(`Proxying GET request to backend for permission check: ${permission}`);
+      console.log(
+        `Proxying GET request to backend for permission check: ${permission}`
+      );
 
-      const response = await fetch(`${BACKEND_API_URL}/api/KeycloakPermissions/Check/${encodeURIComponent(permission)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorization,
-        },
+      const response = await fetch(
+        `${BACKEND_API_URL}/api/KeycloakPermissions/Check/${encodeURIComponent(permission)}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: authorization,
+          },
 
-        signal: AbortSignal.timeout(3000),
-      });
+          signal: AbortSignal.timeout(3000),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
-        console.log(`Successfully checked permission ${permission} from backend`);
+        console.log(
+          `Successfully checked permission ${permission} from backend`
+        );
         return NextResponse.json(data);
       } else {
-        console.warn(`Backend API returned status: ${response.status}, serving mock data`);
+        console.warn(
+          `Backend API returned status: ${response.status}, serving mock data`
+        );
       }
     } else {
       console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
@@ -69,7 +82,10 @@ export async function GET(request: Request, context: { params: { permission: str
       hasPermission: allowedPermissions.includes(permission),
     });
   } catch (error) {
-    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error proxying request to backend:',
+      JSON.stringify(error, null, 2)
+    );
 
     return NextResponse.json({
       hasPermission: false,

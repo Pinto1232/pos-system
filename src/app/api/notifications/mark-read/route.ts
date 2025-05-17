@@ -58,7 +58,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error marking notifications as read:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error marking notifications as read:',
+      JSON.stringify(error, null, 2)
+    );
     return NextResponse.json(
       {
         error: 'Failed to mark notifications as read',
@@ -76,7 +79,10 @@ export async function PUT(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error marking all notifications as read:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error marking all notifications as read:',
+      JSON.stringify(error, null, 2)
+    );
     return NextResponse.json(
       {
         error: 'Failed to mark all notifications as read',

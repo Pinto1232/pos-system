@@ -4,7 +4,13 @@ import React from 'react';
 import { Typography, Card, CardContent, CardMedia } from '@mui/material';
 import { ImageCardProps } from './types';
 
-const ImageCard: React.FC<ImageCardProps> = ({ imageUrl, title, description, onClick, className }) => {
+const ImageCard: React.FC<ImageCardProps> = ({
+  imageUrl,
+  title,
+  description,
+  onClick,
+  className,
+}) => {
   return (
     <Card
       className={className}

@@ -1,12 +1,33 @@
 'use client';
-import React, { memo, Suspense, useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import React, {
+  memo,
+  Suspense,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from 'react';
 import eventBus, { UI_EVENTS } from '@/utils/eventBus';
-import { AppBar, Toolbar, IconButton, Box, Typography, Badge } from '@mui/material';
-import { AccessTime as TimeIcon, Login as LoginIcon } from '@mui/icons-material';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Box,
+  Typography,
+  Badge,
+} from '@mui/material';
+import {
+  AccessTime as TimeIcon,
+  Login as LoginIcon,
+} from '@mui/icons-material';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useLoginForm } from '@/contexts/LoginFormContext';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
-import { usePackageSelection, Package } from '@/contexts/PackageSelectionContext';
+import {
+  usePackageSelection,
+  Package,
+} from '@/contexts/PackageSelectionContext';
 import LanguageDropdown from '@/components/language/LanguageDropdown';
 import { IoCartOutline } from 'react-icons/io5';
 import CartSidebar from '@/components/cart/CartSidebar';
@@ -96,7 +117,9 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
       safeLocalStorage.setItem(TIMER_LAST_UPDATED_KEY, Date.now().toString());
       safeLocalStorage.setItem(SELECTED_PACKAGE_DATA_KEY, JSON.stringify(pkg));
 
-      console.log(`Timer reset to ${formatTime(newTime)} for package: ${pkg.title}`);
+      console.log(
+        `Timer reset to ${formatTime(newTime)} for package: ${pkg.title}`
+      );
       return newTime;
     },
     [safeLocalStorage, formatTime]
@@ -105,22 +128,32 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
   useEffect(() => {
     const storedTimerState = safeLocalStorage.getItem(TIMER_STATE_KEY);
     const storedPackageId = safeLocalStorage.getItem(SELECTED_PACKAGE_KEY);
-    const storedPackageData = safeLocalStorage.getItem(SELECTED_PACKAGE_DATA_KEY);
+    const storedPackageData = safeLocalStorage.getItem(
+      SELECTED_PACKAGE_DATA_KEY
+    );
 
     if (storedTimerState && storedPackageId) {
       try {
         const parsedTimerState = JSON.parse(storedTimerState);
         const parsedPackageId = JSON.parse(storedPackageId);
 
-        if (typeof parsedTimerState === 'number' && parsedTimerState > 0 && typeof parsedPackageId === 'number') {
+        if (
+          typeof parsedTimerState === 'number' &&
+          parsedTimerState > 0 &&
+          typeof parsedPackageId === 'number'
+        ) {
           const lastUpdated = safeLocalStorage.getItem(TIMER_LAST_UPDATED_KEY);
           if (lastUpdated) {
-            const elapsedSeconds = Math.floor((Date.now() - parseInt(lastUpdated)) / 1000);
+            const elapsedSeconds = Math.floor(
+              (Date.now() - parseInt(lastUpdated)) / 1000
+            );
             const adjustedTime = Math.max(0, parsedTimerState - elapsedSeconds);
             setRemainingTime(adjustedTime);
             lastSelectedPackageIdRef.current = parsedPackageId;
 
-            console.log(`Timer restored from localStorage: ${formatTime(adjustedTime)}`);
+            console.log(
+              `Timer restored from localStorage: ${formatTime(adjustedTime)}`
+            );
 
             if (storedPackageData) {
               try {
@@ -135,7 +168,9 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
           } else {
             setRemainingTime(parsedTimerState);
             lastSelectedPackageIdRef.current = parsedPackageId;
-            console.log(`Timer restored from localStorage (no timestamp): ${formatTime(parsedTimerState)}`);
+            console.log(
+              `Timer restored from localStorage (no timestamp): ${formatTime(parsedTimerState)}`
+            );
             return;
           }
         }
@@ -147,7 +182,9 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
     if (testPeriod > 0) {
       const initialTime = testPeriod * 24 * 60 * 60;
       setRemainingTime(initialTime);
-      console.log(`Timer initialized with default test period: ${formatTime(initialTime)}`);
+      console.log(
+        `Timer initialized with default test period: ${formatTime(initialTime)}`
+      );
     } else {
       console.log('No test period available for initialization');
     }
@@ -166,7 +203,10 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
 
         if (lastSelectedPackageIdRef.current !== null) {
           safeLocalStorage.setItem(TIMER_STATE_KEY, JSON.stringify(newTime));
-          safeLocalStorage.setItem(TIMER_LAST_UPDATED_KEY, Date.now().toString());
+          safeLocalStorage.setItem(
+            TIMER_LAST_UPDATED_KEY,
+            Date.now().toString()
+          );
 
           if (newTime % 60 === 0 && newTime > 0) {
             console.log(`Timer update: ${formatTime(newTime)} remaining`);
@@ -326,7 +366,11 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
                 <span
                   className={styles.timeValue}
                   style={{
-                    color: selectedPackage || lastSelectedPackageIdRef.current !== null ? '#F59E0B' : '#ffffff',
+                    color:
+                      selectedPackage ||
+                      lastSelectedPackageIdRef.current !== null
+                        ? '#F59E0B'
+                        : '#ffffff',
                   }}
                 >
                   {formatTime(remainingTime)}

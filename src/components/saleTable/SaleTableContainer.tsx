@@ -53,7 +53,9 @@ const mockData = [
   },
 ];
 
-const SaleTableContainer: React.FC<SaleTableContainerProps> = ({ className }) => {
+const SaleTableContainer: React.FC<SaleTableContainerProps> = ({
+  className,
+}) => {
   const handleViewDetails = (id: string) => {
     console.log('View details for:', JSON.stringify(id, null, 2));
   };

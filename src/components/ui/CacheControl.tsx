@@ -2,23 +2,39 @@
 
 import React, { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Button, Box, Typography, CircularProgress, Snackbar, Alert } from '@mui/material';
+import {
+  Button,
+  Box,
+  Typography,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
-import { invalidateAddOnsQueries, refetchAddOnsQueries, resetEntireCache } from '@/utils/cacheUtils';
+import {
+  invalidateAddOnsQueries,
+  refetchAddOnsQueries,
+  resetEntireCache,
+} from '@/utils/cacheUtils';
 
 interface CacheControlProps {
   variant?: 'minimal' | 'full';
   onSuccess?: () => void;
 }
 
-const CacheControl: React.FC<CacheControlProps> = ({ variant = 'minimal', onSuccess }) => {
+const CacheControl: React.FC<CacheControlProps> = ({
+  variant = 'minimal',
+  onSuccess,
+}) => {
   const queryClient = useQueryClient();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>(
+    'success'
+  );
 
   const handleRefreshData = async () => {
     try {
@@ -76,7 +92,13 @@ const CacheControl: React.FC<CacheControlProps> = ({ variant = 'minimal', onSucc
     return (
       <>
         <Button
-          startIcon={isRefreshing ? <CircularProgress size={20} color="inherit" /> : <RefreshIcon />}
+          startIcon={
+            isRefreshing ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <RefreshIcon />
+            )
+          }
           onClick={handleRefreshData}
           disabled={isRefreshing || isResetting}
           size="small"
@@ -84,7 +106,11 @@ const CacheControl: React.FC<CacheControlProps> = ({ variant = 'minimal', onSucc
         >
           Refresh Data
         </Button>
-        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+        >
           <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
             {snackbarMessage}
           </Alert>
@@ -106,12 +132,19 @@ const CacheControl: React.FC<CacheControlProps> = ({ variant = 'minimal', onSucc
         Cache Control
       </Typography>
       <Typography variant="body2" color="text.secondary" paragraph>
-        If you're experiencing issues with data not updating, you can try refreshing the data or resetting the cache.
+        If you're experiencing issues with data not updating, you can try
+        refreshing the data or resetting the cache.
       </Typography>
       <Box sx={{ display: 'flex', gap: 2 }}>
         <Button
           variant="outlined"
-          startIcon={isRefreshing ? <CircularProgress size={20} color="inherit" /> : <RefreshIcon />}
+          startIcon={
+            isRefreshing ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <RefreshIcon />
+            )
+          }
           onClick={handleRefreshData}
           disabled={isRefreshing || isResetting}
         >
@@ -120,14 +153,24 @@ const CacheControl: React.FC<CacheControlProps> = ({ variant = 'minimal', onSucc
         <Button
           variant="outlined"
           color="warning"
-          startIcon={isResetting ? <CircularProgress size={20} color="inherit" /> : <DeleteSweepIcon />}
+          startIcon={
+            isResetting ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <DeleteSweepIcon />
+            )
+          }
           onClick={handleResetCache}
           disabled={isRefreshing || isResetting}
         >
           Reset Cache
         </Button>
       </Box>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
         <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>

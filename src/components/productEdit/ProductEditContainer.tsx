@@ -19,8 +19,14 @@ const ProductEditContainer: React.FC = () => {
   const [subTotalState, setSubTotalState] = useState(0);
   const [discountState, setDiscountState] = useState(0);
 
-  const handleAddItem = (newProduct: Omit<Product, 'stock' | 'sales' | 'discount'>, resetForm: () => void) => {
-    console.log('ProductEditContainer - Adding new product:', JSON.stringify(newProduct, null, 2));
+  const handleAddItem = (
+    newProduct: Omit<Product, 'stock' | 'sales' | 'discount'>,
+    resetForm: () => void
+  ) => {
+    console.log(
+      'ProductEditContainer - Adding new product:',
+      JSON.stringify(newProduct, null, 2)
+    );
     const productWithDefaults: Product = {
       ...newProduct,
 
@@ -42,7 +48,9 @@ const ProductEditContainer: React.FC = () => {
     resetForm();
   };
 
-  const handleUpdateItem = (updatedProduct: Omit<Product, 'stock' | 'sales' | 'discount'>) => {
+  const handleUpdateItem = (
+    updatedProduct: Omit<Product, 'stock' | 'sales' | 'discount'>
+  ) => {
     setProductsState((prevProducts) => {
       if (!Array.isArray(prevProducts)) {
         return [];
@@ -76,7 +84,9 @@ const ProductEditContainer: React.FC = () => {
         setItemNoState((prev) => prev - 1);
       }
 
-      return prevProducts.filter((product) => product && product.id !== productId);
+      return prevProducts.filter(
+        (product) => product && product.id !== productId
+      );
     });
   };
 

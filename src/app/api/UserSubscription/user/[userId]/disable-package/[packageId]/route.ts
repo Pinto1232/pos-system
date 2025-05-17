@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 export async function POST(
   request: Request,
@@ -13,17 +14,24 @@ export async function POST(
   const packageId = params.packageId;
 
   try {
-    console.log(`Proxying POST request to backend to disable package ${packageId} for user: ${userId}`);
+    console.log(
+      `Proxying POST request to backend to disable package ${packageId} for user: ${userId}`
+    );
 
-    const response = await fetch(`${BACKEND_API_URL}/api/UserSubscription/user/${userId}/disable-package/${packageId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${BACKEND_API_URL}/api/UserSubscription/user/${userId}/disable-package/${packageId}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     if (!response.ok) {
-      console.warn(`Backend API returned status: ${response.status}, serving mock data`);
+      console.warn(
+        `Backend API returned status: ${response.status}, serving mock data`
+      );
 
       return NextResponse.json({
         message: `Package ${packageId} disabled successfully for user ${userId}`,
@@ -35,7 +43,10 @@ export async function POST(
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error proxying request to backend:',
+      JSON.stringify(error, null, 2)
+    );
 
     return NextResponse.json({
       message: `Package ${packageId} disabled successfully for user ${userId}`,

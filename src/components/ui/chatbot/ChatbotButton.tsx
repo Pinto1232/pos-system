@@ -67,10 +67,19 @@ const ChatbotButton = () => {
         }}
       >
         <Tooltip
-          title={selectedPackage ? `Chat about the ${selectedPackage.title} package` : 'Chat with Pisval Assistant'}
+          title={
+            selectedPackage
+              ? `Chat about the ${selectedPackage.title} package`
+              : 'Chat with Pisval Assistant'
+          }
           placement="left"
         >
-          <Badge color="error" variant="dot" invisible={!showNotification} overlap="circular">
+          <Badge
+            color="error"
+            variant="dot"
+            invisible={!showNotification}
+            overlap="circular"
+          >
             <Box sx={{ position: 'relative' }}>
               {}
               <IconButton

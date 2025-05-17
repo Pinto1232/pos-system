@@ -11,7 +11,13 @@ export type Package = {
   multiCurrencyPrices: string;
 };
 
-export const packageTypes = ['starter-plus', 'growth-pro', 'enterprise-elite', 'custom-pro', 'premium-plus'];
+export const packageTypes = [
+  'starter-plus',
+  'growth-pro',
+  'enterprise-elite',
+  'custom-pro',
+  'premium-plus',
+];
 
 export const packageOrder: Record<string, number> = {
   'starter-plus': 1,

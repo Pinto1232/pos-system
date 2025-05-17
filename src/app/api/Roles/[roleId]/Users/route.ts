@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 const mockUsersInRoles: Record<string, any[]> = {
   '1': [
@@ -54,7 +55,10 @@ const mockUsersInRoles: Record<string, any[]> = {
   '5': [],
 };
 
-export async function GET(request: Request, context: { params: { roleId: string } }) {
+export async function GET(
+  request: Request,
+  context: { params: { roleId: string } }
+) {
   const params = await context.params;
   const roleId = params.roleId;
 
@@ -62,23 +66,30 @@ export async function GET(request: Request, context: { params: { roleId: string 
     const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(`Proxying GET request to backend for users in role: ${roleId}`);
+      console.log(
+        `Proxying GET request to backend for users in role: ${roleId}`
+      );
 
-      const response = await fetch(`${BACKEND_API_URL}/api/Roles/${roleId}/Users`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch(
+        `${BACKEND_API_URL}/api/Roles/${roleId}/Users`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
 
-        signal: AbortSignal.timeout(3000),
-      });
+          signal: AbortSignal.timeout(3000),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         console.log('Successfully fetched users in role from backend');
         return NextResponse.json(data);
       } else {
-        console.warn(`Backend API returned status: ${response.status}, serving mock data`);
+        console.warn(
+          `Backend API returned status: ${response.status}, serving mock data`
+        );
       }
     } else {
       console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
@@ -86,13 +97,19 @@ export async function GET(request: Request, context: { params: { roleId: string 
 
     return NextResponse.json(mockUsersInRoles[roleId] || []);
   } catch (error) {
-    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error proxying request to backend:',
+      JSON.stringify(error, null, 2)
+    );
 
     return NextResponse.json(mockUsersInRoles[roleId] || []);
   }
 }
 
-export async function POST(request: Request, context: { params: { roleId: string } }) {
+export async function POST(
+  request: Request,
+  context: { params: { roleId: string } }
+) {
   const params = await context.params;
   const roleId = params.roleId;
 
@@ -104,14 +121,19 @@ export async function POST(request: Request, context: { params: { roleId: string
     const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(`Proxying POST request to backend to add user ${userId} to role ${roleId}`);
+      console.log(
+        `Proxying POST request to backend to add user ${userId} to role ${roleId}`
+      );
 
-      const response = await fetch(`${BACKEND_API_URL}/api/Roles/${roleId}/Users/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${BACKEND_API_URL}/api/Roles/${roleId}/Users/${userId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (response.ok) {
         console.log('Successfully added user to role in backend');
@@ -119,7 +141,9 @@ export async function POST(request: Request, context: { params: { roleId: string
           success: true,
         });
       } else {
-        console.warn(`Backend API returned status: ${response.status}, using mock implementation`);
+        console.warn(
+          `Backend API returned status: ${response.status}, using mock implementation`
+        );
       }
     } else {
       console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
@@ -164,6 +188,9 @@ export async function POST(request: Request, context: { params: { roleId: string
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error adding user to role:', JSON.stringify(error, null, 2));
-    return NextResponse.json({ error: 'Failed to add user to role' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to add user to role' },
+      { status: 500 }
+    );
   }
 }

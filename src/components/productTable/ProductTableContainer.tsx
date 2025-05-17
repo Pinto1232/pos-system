@@ -26,8 +26,12 @@ const ProductTableContainer: React.FC = () => {
     if (searchQuery) {
       filtered = filtered.filter(
         (product) =>
-          (product.productName && product.productName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (product.barcode && product.barcode.toLowerCase().includes(searchQuery.toLowerCase()))
+          (product.productName &&
+            product.productName
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())) ||
+          (product.barcode &&
+            product.barcode.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
 
@@ -37,23 +41,35 @@ const ProductTableContainer: React.FC = () => {
 
     if (ratingFilter !== 'All') {
       const ratingValue = parseInt(ratingFilter);
-      filtered = filtered.filter((product) => Math.floor(product.rating || 0) === ratingValue);
+      filtered = filtered.filter(
+        (product) => Math.floor(product.rating || 0) === ratingValue
+      );
     }
 
     if (statusFilter !== 'All') {
-      filtered = filtered.filter((product) => (statusFilter === 'Available' ? product.status === true : product.status === false));
+      filtered = filtered.filter((product) =>
+        statusFilter === 'Available'
+          ? product.status === true
+          : product.status === false
+      );
     }
 
     if (priceFilter !== 'All') {
       switch (priceFilter) {
         case 'R10-R100':
-          filtered = filtered.filter((product) => product.price >= 10 && product.price <= 100);
+          filtered = filtered.filter(
+            (product) => product.price >= 10 && product.price <= 100
+          );
           break;
         case 'R100-R500':
-          filtered = filtered.filter((product) => product.price >= 100 && product.price <= 500);
+          filtered = filtered.filter(
+            (product) => product.price >= 100 && product.price <= 500
+          );
           break;
         case 'R500-R1000':
-          filtered = filtered.filter((product) => product.price >= 500 && product.price <= 1000);
+          filtered = filtered.filter(
+            (product) => product.price >= 500 && product.price <= 1000
+          );
           break;
         case 'R1000+':
           filtered = filtered.filter((product) => product.price > 1000);
@@ -62,7 +78,14 @@ const ProductTableContainer: React.FC = () => {
     }
 
     return filtered;
-  }, [products, searchQuery, categoryFilter, ratingFilter, statusFilter, priceFilter]);
+  }, [
+    products,
+    searchQuery,
+    categoryFilter,
+    ratingFilter,
+    statusFilter,
+    priceFilter,
+  ]);
 
   const paginatedProducts = useMemo(() => {
     const startIndex = page * rowsPerPage;
@@ -71,9 +94,14 @@ const ProductTableContainer: React.FC = () => {
   }, [filteredProducts, page, rowsPerPage]);
 
   const handleView = (product: Product) => {
-    console.log('ProductTableContainer - handleView called with product:', JSON.stringify(product, null, 2));
+    console.log(
+      'ProductTableContainer - handleView called with product:',
+      JSON.stringify(product, null, 2)
+    );
     if (!product) {
-      console.error('ProductTableContainer - handleView called with null/undefined product');
+      console.error(
+        'ProductTableContainer - handleView called with null/undefined product'
+      );
       return;
     }
 
@@ -92,12 +120,18 @@ const ProductTableContainer: React.FC = () => {
       image: product.image || '/placeholder-image.png',
     } as Product;
 
-    console.log('ProductTableContainer - Opening modal with complete product data:', JSON.stringify(completeProduct, null, 2));
+    console.log(
+      'ProductTableContainer - Opening modal with complete product data:',
+      JSON.stringify(completeProduct, null, 2)
+    );
 
     setSelectedProduct(completeProduct);
     setTimeout(() => {
       setIsViewModalOpen(true);
-      console.log('ProductTableContainer - Modal should now be open, isViewModalOpen:', JSON.stringify(true, null, 2));
+      console.log(
+        'ProductTableContainer - Modal should now be open, isViewModalOpen:',
+        JSON.stringify(true, null, 2)
+      );
     }, 0);
   };
 
@@ -149,13 +183,20 @@ const ProductTableContainer: React.FC = () => {
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         if (Array.isArray(parsedData)) {
-          const updatedProducts = parsedData.map((p) => (p.id === updatedProduct.id ? updatedProduct : p));
+          const updatedProducts = parsedData.map((p) =>
+            p.id === updatedProduct.id ? updatedProduct : p
+          );
           localStorage.setItem('products', JSON.stringify(updatedProducts));
-          console.log('ProductTableContainer - Updated product status in localStorage');
+          console.log(
+            'ProductTableContainer - Updated product status in localStorage'
+          );
         }
       }
     } catch (error) {
-      console.error('Failed to update product status in localStorage:', JSON.stringify(error, null, 2));
+      console.error(
+        'Failed to update product status in localStorage:',
+        JSON.stringify(error, null, 2)
+      );
     }
   };
 
@@ -163,7 +204,9 @@ const ProductTableContainer: React.FC = () => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -201,7 +244,18 @@ const ProductTableContainer: React.FC = () => {
 
     autoTable(doc, {
       startY: 30,
-      head: [['Product Name', 'ID Code', 'SKU', 'Price', 'Status', 'Rating', 'Color', 'Created At']],
+      head: [
+        [
+          'Product Name',
+          'ID Code',
+          'SKU',
+          'Price',
+          'Status',
+          'Rating',
+          'Color',
+          'Created At',
+        ],
+      ],
       body: tableData,
       theme: 'grid',
       headStyles: {

@@ -11,7 +11,11 @@ interface FeatureGuardProps {
   fallback?: React.ReactNode;
 }
 
-const FeatureGuard: React.FC<FeatureGuardProps> = ({ featureName, children, fallback }) => {
+const FeatureGuard: React.FC<FeatureGuardProps> = ({
+  featureName,
+  children,
+  fallback,
+}) => {
   const { hasFeatureAccess, subscription } = useUserSubscription();
   const hasAccess = hasFeatureAccess(featureName);
 
@@ -49,11 +53,13 @@ const FeatureGuard: React.FC<FeatureGuardProps> = ({ featureName, children, fall
         Feature Locked
       </Typography>
       <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-        The {featureName} feature is not available with your current subscription.
+        The {featureName} feature is not available with your current
+        subscription.
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        You are currently on the {subscription?.package?.title || 'Free'} plan. Upgrade your subscription or enable additional packages to
-        access this feature.
+        You are currently on the {subscription?.package?.title || 'Free'} plan.
+        Upgrade your subscription or enable additional packages to access this
+        feature.
       </Typography>
       <Button
         variant="contained"

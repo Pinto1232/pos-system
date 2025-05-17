@@ -4,5 +4,9 @@ export interface KeycloakError {
 }
 
 export function isKeycloakError(error: unknown): error is KeycloakError {
-  return typeof error === 'object' && error !== null && ('error' in error || 'error_description' in error);
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    ('error' in error || 'error_description' in error)
+  );
 }

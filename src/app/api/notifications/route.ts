@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
-import { Notification, NotificationFilters, NotificationResponse } from '@/types/notification';
+import {
+  Notification,
+  NotificationFilters,
+  NotificationResponse,
+} from '@/types/notification';
 
 const MOCK_NOTIFICATIONS: Notification[] = [
   {
@@ -81,27 +85,43 @@ export async function GET(request: Request) {
     const filters: NotificationFilters = {
       status: (searchParams.get('status') as any) || undefined,
       type: (searchParams.get('type') as any) || undefined,
-      limit: searchParams.get('limit') ? parseInt(searchParams.get('limit') as string) : undefined,
-      offset: searchParams.get('offset') ? parseInt(searchParams.get('offset') as string) : undefined,
+      limit: searchParams.get('limit')
+        ? parseInt(searchParams.get('limit') as string)
+        : undefined,
+      offset: searchParams.get('offset')
+        ? parseInt(searchParams.get('offset') as string)
+        : undefined,
     };
 
     let filteredNotifications = [...MOCK_NOTIFICATIONS];
 
     if (filters.status) {
-      filteredNotifications = filteredNotifications.filter((n) => n.status === filters.status);
+      filteredNotifications = filteredNotifications.filter(
+        (n) => n.status === filters.status
+      );
     }
 
     if (filters.type) {
-      filteredNotifications = filteredNotifications.filter((n) => n.type === filters.type);
+      filteredNotifications = filteredNotifications.filter(
+        (n) => n.type === filters.type
+      );
     }
 
-    filteredNotifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    filteredNotifications.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
 
     const limit = filters.limit || filteredNotifications.length;
     const offset = filters.offset || 0;
-    const paginatedNotifications = filteredNotifications.slice(offset, offset + limit);
+    const paginatedNotifications = filteredNotifications.slice(
+      offset,
+      offset + limit
+    );
 
-    const unreadCount = MOCK_NOTIFICATIONS.filter((n) => n.status === 'unread').length;
+    const unreadCount = MOCK_NOTIFICATIONS.filter(
+      (n) => n.status === 'unread'
+    ).length;
 
     const response: NotificationResponse = {
       notifications: paginatedNotifications,
@@ -111,7 +131,13 @@ export async function GET(request: Request) {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error fetching notifications:', JSON.stringify(error, null, 2));
-    return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 });
+    console.error(
+      'Error fetching notifications:',
+      JSON.stringify(error, null, 2)
+    );
+    return NextResponse.json(
+      { error: 'Failed to fetch notifications' },
+      { status: 500 }
+    );
   }
 }

@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useState, ReactNode, useContext, useEffect, useRef } from 'react';
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react';
 import { Box, CircularProgress, Typography, Fade } from '@mui/material';
 import ErrorModal from '@/components/ui/errorModal/ErrorModal';
 import { usePathname } from 'next/navigation';
@@ -14,7 +21,9 @@ export interface SpinnerContextProps {
   setError: (error: string | null) => void;
 }
 
-const SpinnerContext = createContext<SpinnerContextProps | undefined>(undefined);
+const SpinnerContext = createContext<SpinnerContextProps | undefined>(
+  undefined
+);
 
 const DEFAULT_TIMEOUT = 10000;
 

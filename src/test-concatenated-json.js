@@ -33,7 +33,10 @@ function testConcatenatedJson() {
           const parsed = JSON.parse(jsonStr);
           results.push(parsed);
         } catch (e) {
-          console.warn('Found invalid JSON object:', jsonStr.substring(0, 100) + '...');
+          console.warn(
+            'Found invalid JSON object:',
+            jsonStr.substring(0, 100) + '...'
+          );
         }
       }
 
@@ -56,21 +59,35 @@ function testConcatenatedJson() {
   }
 
   function isAuthError(obj) {
-    return obj && typeof obj === 'object' && 'error' in obj && obj.error === 'Authentication failed';
+    return (
+      obj &&
+      typeof obj === 'object' &&
+      'error' in obj &&
+      obj.error === 'Authentication failed'
+    );
   }
 
   console.log('Extracting JSON objects from concatenated string...');
   const extractedObjects = extractJsonObjects(concatenatedJson);
-  console.log(`Found ${extractedObjects.length} JSON objects:`, JSON.stringify(extractedObjects, null, 2));
+  console.log(
+    `Found ${extractedObjects.length} JSON objects:`,
+    JSON.stringify(extractedObjects, null, 2)
+  );
 
   const authErrors = extractedObjects.filter(isAuthError);
   if (authErrors.length > 0) {
-    console.warn('Authentication errors found:', JSON.stringify(authErrors, null, 2));
+    console.warn(
+      'Authentication errors found:',
+      JSON.stringify(authErrors, null, 2)
+    );
   }
 
   const pricingData = extractedObjects.find(isPricingPackagesResponse);
   if (pricingData) {
-    console.log('Found valid pricing packages data:', JSON.stringify(pricingData, null, 2));
+    console.log(
+      'Found valid pricing packages data:',
+      JSON.stringify(pricingData, null, 2)
+    );
   } else {
     console.error('No valid pricing packages data found');
   }
@@ -78,9 +95,15 @@ function testConcatenatedJson() {
   console.log('\nTesting standard JSON.parse (should fail):');
   try {
     const standardParsed = JSON.parse(concatenatedJson);
-    console.log('Standard JSON.parse succeeded (unexpected):', JSON.stringify(standardParsed, null, 2));
+    console.log(
+      'Standard JSON.parse succeeded (unexpected):',
+      JSON.stringify(standardParsed, null, 2)
+    );
   } catch (error) {
-    console.log('Standard JSON.parse failed as expected:', JSON.stringify(error.message, null, 2));
+    console.log(
+      'Standard JSON.parse failed as expected:',
+      JSON.stringify(error.message, null, 2)
+    );
   }
 
   console.log('\n=== Test Complete ===');

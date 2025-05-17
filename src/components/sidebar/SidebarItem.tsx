@@ -25,14 +25,21 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           queryKey: ['userCustomization', 'current-user'],
           queryFn: async () => {
             try {
-              const response = await fetch('/api/UserCustomization/current-user');
+              const response = await fetch(
+                '/api/UserCustomization/current-user'
+              );
               if (response.ok) {
                 return response.json();
               }
               throw new Error('Failed to fetch customization');
             } catch (error) {
-              console.warn('Prefetch failed, falling back to mock data:', JSON.stringify(error, null, 2));
-              return import('@/api/mockUserCustomization').then((module) => module.mockFetchCustomization('current-user'));
+              console.warn(
+                'Prefetch failed, falling back to mock data:',
+                JSON.stringify(error, null, 2)
+              );
+              return import('@/api/mockUserCustomization').then((module) =>
+                module.mockFetchCustomization('current-user')
+              );
             }
           },
           staleTime: 60000,
@@ -56,7 +63,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         cursor: 'pointer',
         backgroundColor: isActive ? 'rgba(52, 211, 153, 0.9)' : 'inherit',
         '&:hover': {
-          backgroundColor: isActive ? 'rgba(52, 211, 153, 0.95)' : 'rgba(255, 255, 255, 0.1)',
+          backgroundColor: isActive
+            ? 'rgba(52, 211, 153, 0.95)'
+            : 'rgba(255, 255, 255, 0.1)',
           transform: 'translateX(4px)',
           boxShadow: isActive ? '0 4px 12px rgba(52, 211, 153, 0.25)' : 'none',
         },

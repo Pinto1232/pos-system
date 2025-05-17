@@ -48,7 +48,10 @@ export const useKeycloakUser = () => {
 
         setUserInfo(extractedUserInfo);
       } catch (err) {
-        console.error('Error extracting user info from token:', JSON.stringify(err, null, 2));
+        console.error(
+          'Error extracting user info from token:',
+          JSON.stringify(err, null, 2)
+        );
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setIsLoading(false);

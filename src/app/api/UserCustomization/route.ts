@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { CACHE_TIMES } from '@/app/cache-constants';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 const mockUserCustomization = {
   id: 1,
@@ -69,13 +70,16 @@ export async function GET(request: NextRequest) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-      const response = await fetch(`${BACKEND_API_URL}/api/UserCustomization/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        signal: controller.signal,
-      });
+      const response = await fetch(
+        `${BACKEND_API_URL}/api/UserCustomization/${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          signal: controller.signal,
+        }
+      );
 
       clearTimeout(timeoutId);
 
@@ -86,16 +90,24 @@ export async function GET(request: NextRequest) {
           headers,
         });
       } else {
-        console.warn(`Backend API returned status: ${response.status}, using mock data`);
+        console.warn(
+          `Backend API returned status: ${response.status}, using mock data`
+        );
       }
     } catch (fetchError) {
-      console.error('Error fetching from backend:', JSON.stringify(fetchError, null, 2));
+      console.error(
+        'Error fetching from backend:',
+        JSON.stringify(fetchError, null, 2)
+      );
       console.log('Falling back to mock data');
     }
 
     return NextResponse.json(mockUserCustomization, { headers });
   } catch (error) {
-    console.error('Error in user customization API:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error in user customization API:',
+      JSON.stringify(error, null, 2)
+    );
     return NextResponse.json(
       {
         error: 'Failed to fetch user customization',
@@ -107,7 +119,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: Request) {
   try {
-    console.log('Proxying POST request to backend for user customization update');
+    console.log(
+      'Proxying POST request to backend for user customization update'
+    );
 
     const customizationData = await request.json();
 
@@ -131,10 +145,15 @@ export async function POST(request: Request) {
         console.log('Successfully updated user customization in backend');
         return NextResponse.json(data);
       } else {
-        console.warn(`Backend API returned status: ${response.status}, using mock response`);
+        console.warn(
+          `Backend API returned status: ${response.status}, using mock response`
+        );
       }
     } catch (fetchError) {
-      console.error('Error connecting to backend:', JSON.stringify(fetchError, null, 2));
+      console.error(
+        'Error connecting to backend:',
+        JSON.stringify(fetchError, null, 2)
+      );
       console.log('Falling back to mock response');
     }
 
@@ -146,7 +165,10 @@ export async function POST(request: Request) {
       message: 'User customization updated successfully (mock response)',
     });
   } catch (error) {
-    console.error('Error processing user customization update:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error processing user customization update:',
+      JSON.stringify(error, null, 2)
+    );
     return NextResponse.json(
       {
         error: 'Failed to process user customization update',

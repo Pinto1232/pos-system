@@ -104,12 +104,15 @@ describe('Registration Flow', () => {
   });
 
   it('should set newRegistration flag and redirect to login when handling registration redirect', () => {
-    (authUtils.handleRegistrationRedirect as jest.Mock).mockImplementation(() => {
-      if ((authUtils.isRedirectFromRegistration as jest.Mock)()) {
-        (authUtils.markAsNewRegistration as jest.Mock)();
-        locationMock.href = 'http://localhost:8282/realms/pisval-pos-realm/protocol/openid-connect/auth';
+    (authUtils.handleRegistrationRedirect as jest.Mock).mockImplementation(
+      () => {
+        if ((authUtils.isRedirectFromRegistration as jest.Mock)()) {
+          (authUtils.markAsNewRegistration as jest.Mock)();
+          locationMock.href =
+            'http://localhost:8282/realms/pisval-pos-realm/protocol/openid-connect/auth';
+        }
       }
-    });
+    );
 
     (authUtils.isRedirectFromRegistration as jest.Mock).mockReturnValue(true);
 
@@ -119,6 +122,8 @@ describe('Registration Flow', () => {
 
     expect(authUtils.markAsNewRegistration).toHaveBeenCalled();
 
-    expect(locationMock.href).toBe('http://localhost:8282/realms/pisval-pos-realm/protocol/openid-connect/auth');
+    expect(locationMock.href).toBe(
+      'http://localhost:8282/realms/pisval-pos-realm/protocol/openid-connect/auth'
+    );
   });
 });

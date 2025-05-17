@@ -41,8 +41,14 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
   };
 
   return (
-    <div className={styles.jumbotronContainer} style={{ height: getResponsiveHeight() }}>
-      <div className={styles.overlay} style={{ backgroundColor: overlayColor }} />
+    <div
+      className={styles.jumbotronContainer}
+      style={{ height: getResponsiveHeight() }}
+    >
+      <div
+        className={styles.overlay}
+        style={{ backgroundColor: overlayColor }}
+      />
       <div
         className={styles.backgroundImage}
         style={{

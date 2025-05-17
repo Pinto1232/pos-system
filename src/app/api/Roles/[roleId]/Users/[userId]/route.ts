@@ -1,26 +1,34 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 let mockUsersInRoles: Record<string, any[]> = {};
 
 const initMockData = async () => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/Roles/1/Users`);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/Roles/1/Users`
+    );
     if (response.ok) {
       const data = await response.json();
 
       mockUsersInRoles['1'] = data;
 
       for (let i = 2; i <= 5; i++) {
-        const roleResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/Roles/${i}/Users`);
+        const roleResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/Roles/${i}/Users`
+        );
         if (roleResponse.ok) {
           mockUsersInRoles[i.toString()] = await roleResponse.json();
         }
       }
     }
   } catch (error) {
-    console.error('Error initializing mock data:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error initializing mock data:',
+      JSON.stringify(error, null, 2)
+    );
 
     mockUsersInRoles = {
       '1': [],
@@ -45,14 +53,19 @@ export async function POST(
     const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(`Proxying POST request to backend to add user ${userId} to role ${roleId}`);
+      console.log(
+        `Proxying POST request to backend to add user ${userId} to role ${roleId}`
+      );
 
-      const response = await fetch(`${BACKEND_API_URL}/api/Roles/${roleId}/Users/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${BACKEND_API_URL}/api/Roles/${roleId}/Users/${userId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (response.ok) {
         console.log('Successfully added user to role in backend');
@@ -60,7 +73,9 @@ export async function POST(
           success: true,
         });
       } else {
-        console.warn(`Backend API returned status: ${response.status}, using mock implementation`);
+        console.warn(
+          `Backend API returned status: ${response.status}, using mock implementation`
+        );
       }
     } else {
       console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
@@ -111,7 +126,10 @@ export async function POST(
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error adding user to role:', JSON.stringify(error, null, 2));
-    return NextResponse.json({ error: 'Failed to add user to role' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to add user to role' },
+      { status: 500 }
+    );
   }
 }
 
@@ -128,14 +146,19 @@ export async function DELETE(
     const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(`Proxying DELETE request to backend to remove user ${userId} from role ${roleId}`);
+      console.log(
+        `Proxying DELETE request to backend to remove user ${userId} from role ${roleId}`
+      );
 
-      const response = await fetch(`${BACKEND_API_URL}/api/Roles/${roleId}/Users/${userId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${BACKEND_API_URL}/api/Roles/${roleId}/Users/${userId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (response.ok) {
         console.log('Successfully removed user from role in backend');
@@ -143,7 +166,9 @@ export async function DELETE(
           success: true,
         });
       } else {
-        console.warn(`Backend API returned status: ${response.status}, using mock implementation`);
+        console.warn(
+          `Backend API returned status: ${response.status}, using mock implementation`
+        );
       }
     } else {
       console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
@@ -162,7 +187,9 @@ export async function DELETE(
       );
     }
 
-    const userIndex = mockUsersInRoles[roleId].findIndex((u) => u.id === parseInt(userId));
+    const userIndex = mockUsersInRoles[roleId].findIndex(
+      (u) => u.id === parseInt(userId)
+    );
 
     if (userIndex === -1) {
       return NextResponse.json(
@@ -178,7 +205,10 @@ export async function DELETE(
     console.log(`Mock: Removed user ${userId} from role ${roleId}`);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error removing user from role:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error removing user from role:',
+      JSON.stringify(error, null, 2)
+    );
     return NextResponse.json(
       {
         error: 'Failed to remove user from role',

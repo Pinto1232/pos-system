@@ -1,5 +1,16 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableRow, IconButton, Typography, Box, LinearProgress, Stack } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  IconButton,
+  Typography,
+  Box,
+  LinearProgress,
+  Stack,
+} from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -18,7 +29,9 @@ interface TransactionsTableProps {
   transactions: Transaction[];
 }
 
-const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) => {
+const TransactionsTable: React.FC<TransactionsTableProps> = ({
+  transactions,
+}) => {
   return (
     <Box sx={{ width: '100%' }}>
       {}
@@ -40,7 +53,11 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) =
             cursor: 'pointer',
           }}
         >
-          <Typography variant="h5" fontWeight="bold" sx={{ mr: 1, color: '#000' }}>
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            sx={{ mr: 1, color: '#000' }}
+          >
             View all my data
           </Typography>
           <ArrowForwardIcon />
@@ -58,11 +75,21 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) =
       >
         <TableHead>
           <TableRow sx={{ backgroundColor: '#f8f9fa' }}>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Order / Transaction ID</TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Progress / Fulfillment</TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Payment Method</TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Item(s) Purchased</TableCell>
-            <TableCell sx={{ fontWeight: 600, py: 2 }}>Cashier / User</TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Order / Transaction ID
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Progress / Fulfillment
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Payment Method
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Item(s) Purchased
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600, py: 2 }}>
+              Cashier / User
+            </TableCell>
             <TableCell sx={{ fontWeight: 600, py: 2 }}>Date / Time</TableCell>
             <TableCell sx={{ fontWeight: 600, py: 2 }}>Actions</TableCell>
           </TableRow>
@@ -117,13 +144,25 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({ transactions }) =
               <TableCell sx={{ py: 2 }}>{transaction.cashier}</TableCell>
               <TableCell sx={{ py: 2 }}>{transaction.date}</TableCell>
               <TableCell sx={{ py: 2 }}>
-                <IconButton aria-label="info" size="small" sx={{ color: '#2196f3' }}>
+                <IconButton
+                  aria-label="info"
+                  size="small"
+                  sx={{ color: '#2196f3' }}
+                >
                   <InfoOutlinedIcon fontSize="small" />
                 </IconButton>
-                <IconButton aria-label="view" size="small" sx={{ color: '#2196f3' }}>
+                <IconButton
+                  aria-label="view"
+                  size="small"
+                  sx={{ color: '#2196f3' }}
+                >
                   <VisibilityOutlinedIcon fontSize="small" />
                 </IconButton>
-                <IconButton aria-label="delete" size="small" sx={{ color: '#f44336' }}>
+                <IconButton
+                  aria-label="delete"
+                  size="small"
+                  sx={{ color: '#f44336' }}
+                >
                   <CloseIcon fontSize="small" />
                 </IconButton>
               </TableCell>

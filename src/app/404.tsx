@@ -36,7 +36,13 @@ export default function NotFound() {
           },
         }}
       >
-        <Image src="/404_icons.png" alt="Not Found" width={300} height={300} style={{ margin: '0 auto' }} />
+        <Image
+          src="/404_icons.png"
+          alt="Not Found"
+          width={300}
+          height={300}
+          style={{ margin: '0 auto' }}
+        />
       </Box>
       <Box
         sx={{
@@ -68,7 +74,8 @@ export default function NotFound() {
             lineHeight: 1.6,
           }}
         >
-          Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved. Let&apos;s get you back on track.
+          Oops! The page you&apos;re looking for doesn&apos;t exist or has been
+          moved. Let&apos;s get you back on track.
         </Typography>
         <Button
           variant="contained"

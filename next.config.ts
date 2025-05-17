@@ -41,7 +41,12 @@ const nextConfig: NextConfig = {
   transpilePackages: ['next-auth'],
   productionBrowserSourceMaps: false,
   images: {
-    domains: ['example.com', 'images.unsplash.com', 'picsum.photos', 'via.placeholder.com'],
+    domains: [
+      'example.com',
+      'images.unsplash.com',
+      'picsum.photos',
+      'via.placeholder.com',
+    ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60,
   },

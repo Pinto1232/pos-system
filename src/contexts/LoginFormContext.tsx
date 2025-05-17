@@ -1,6 +1,12 @@
 'use client';
 
-import React, { useState, createContext, useContext, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  createContext,
+  useContext,
+  useCallback,
+  useMemo,
+} from 'react';
 import LoginForm from '@/components/login-form/LoginForm';
 import { Dialog, DialogContent } from '@mui/material';
 import { SpinnerProvider } from '@/contexts/SpinnerContext';
@@ -9,7 +15,9 @@ interface LoginFormContextProps {
   toggleLoginForm: () => void;
 }
 
-const LoginFormContext = createContext<LoginFormContextProps | undefined>(undefined);
+const LoginFormContext = createContext<LoginFormContextProps | undefined>(
+  undefined
+);
 
 export const useLoginForm = () => {
   const context = useContext(LoginFormContext);
@@ -25,7 +33,10 @@ export const LoginFormProvider: React.FC<{
   const [open, setOpen] = useState(false);
 
   const toggleLoginForm = useCallback(() => {
-    console.log('toggleLoginForm called, current state:', JSON.stringify(open, null, 2));
+    console.log(
+      'toggleLoginForm called, current state:',
+      JSON.stringify(open, null, 2)
+    );
     setOpen((prev) => !prev);
     console.log('toggleLoginForm new state:', JSON.stringify(!open, null, 2));
   }, [open]);

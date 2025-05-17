@@ -285,7 +285,8 @@ const ImageUploadContainer = styled(Box)({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(82, 183, 136, 0.05) 100%)',
+    background:
+      'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(82, 183, 136, 0.05) 100%)',
     opacity: 0.5,
     zIndex: 0,
   },
@@ -405,7 +406,13 @@ const AVAILABLE_COLORS = [
   'Lime',
 ];
 
-const ProductEditModal: React.FC<ProductEditModalProps> = ({ open, onClose, onSubmit, product, mode = 'add' }) => {
+const ProductEditModal: React.FC<ProductEditModalProps> = ({
+  open,
+  onClose,
+  onSubmit,
+  product,
+  mode = 'add',
+}) => {
   const defaultFormData = useMemo(
     () => ({
       productName: '',
@@ -451,12 +458,14 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({ open, onClose, onSu
     }
   }, [product, mode, open, resetForm]);
 
-  const handleTextChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [field]: event.target.value,
-    });
-  };
+  const handleTextChange =
+    (field: string) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormData({
+        ...formData,
+        [field]: event.target.value,
+      });
+    };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -504,9 +513,13 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({ open, onClose, onSu
       rating: parseFloat(formData.rating) || 0,
       image: formData.image || '/placeholder-image.png',
       createdAt: formData.createdAt.toISOString(),
-      statusProduct: formData.statusProduct === 'Active' ? 'Active' : 'Inactive',
+      statusProduct:
+        formData.statusProduct === 'Active' ? 'Active' : 'Inactive',
     };
-    console.log('ProductEditModal - Submitting product with complete data:', JSON.stringify(newProduct, null, 2));
+    console.log(
+      'ProductEditModal - Submitting product with complete data:',
+      JSON.stringify(newProduct, null, 2)
+    );
     onSubmit(newProduct);
 
     resetForm();
@@ -523,7 +536,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({ open, onClose, onSu
         maxWidth="md"
         fullWidth
       >
-        <StyledDialogTitle id="product-dialog">{mode === 'view' ? 'View Product' : 'Add New Product'}</StyledDialogTitle>
+        <StyledDialogTitle id="product-dialog">
+          {mode === 'view' ? 'View Product' : 'Add New Product'}
+        </StyledDialogTitle>
         <StyledDialogContent>
           <ImageSection>
             <ImageUploadContainer>
@@ -535,9 +550,19 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({ open, onClose, onSu
                 )
               ) : (
                 <>
-                  <input type="file" accept="image/*" style={{ display: 'none' }} id="image-upload" onChange={handleImageUpload} />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    id="image-upload"
+                    onChange={handleImageUpload}
+                  />
                   <label htmlFor="image-upload">
-                    <Stack direction="column" alignItems="center" spacing={0.25}>
+                    <Stack
+                      direction="column"
+                      alignItems="center"
+                      spacing={0.25}
+                    >
                       <Box
                         sx={{
                           width: 40,
@@ -546,7 +571,8 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({ open, onClose, onSu
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          background: 'linear-gradient(135deg, #3B82F6 0%, #52B788 100%)',
+                          background:
+                            'linear-gradient(135deg, #3B82F6 0%, #52B788 100%)',
                           boxShadow: '0 4px 12px rgba(59, 130, 246, 0.2)',
                           margin: '0 auto 12px',
                           position: 'relative',
@@ -861,7 +887,9 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({ open, onClose, onSu
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          statusProduct: e.target.checked ? 'Active' : 'Inactive',
+                          statusProduct: e.target.checked
+                            ? 'Active'
+                            : 'Inactive',
                         });
                       }}
                       disabled={mode === 'view'}
@@ -880,9 +908,10 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({ open, onClose, onSu
                           backgroundColor: 'rgba(82, 183, 136, 0.08)',
                         },
                       },
-                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                        backgroundColor: '#52B788',
-                      },
+                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                        {
+                          backgroundColor: '#52B788',
+                        },
                     },
                   }}
                 />

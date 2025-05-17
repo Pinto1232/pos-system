@@ -1,8 +1,21 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Snackbar, Alert, CircularProgress } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Box,
+  Snackbar,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
 import Image from 'next/image';
 import { MdRestore } from 'react-icons/md';
-import { SettingsModalPresentationProps, settingsItems } from './types/settingsTypes';
+import {
+  SettingsModalPresentationProps,
+  settingsItems,
+} from './types/settingsTypes';
 import SettingsNavigation from './components/settings/SettingsNavigation';
 import SettingsContent from './components/settings/SettingsContent';
 import CreateRoleModal from './components/settings/CreateRoleModal';
@@ -85,7 +98,8 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
             maxHeight: '800px',
             borderRadius: 4,
             overflow: 'hidden',
-            background: 'linear-gradient(135deg, rgba(23, 58, 121, 0.1) 0%, rgba(23, 58, 121, 0.05) 100%)',
+            background:
+              'linear-gradient(135deg, rgba(23, 58, 121, 0.1) 0%, rgba(23, 58, 121, 0.05) 100%)',
             boxShadow: '0 8px 32px rgba(23, 58, 121, 0.15)',
             border: '1px solid rgba(23, 58, 121, 0.1)',
             backdropFilter: 'blur(4px)',
@@ -125,7 +139,14 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
               gap: 1,
             }}
           >
-            <Image src={logoPreview} alt="Pisval Tech Logo" width={32} height={32} style={{ borderRadius: '4px' }} unoptimized />
+            <Image
+              src={logoPreview}
+              alt="Pisval Tech Logo"
+              width={32}
+              height={32}
+              style={{ borderRadius: '4px' }}
+              unoptimized
+            />
             Pisval Tech Settings
           </Box>
         </DialogTitle>
@@ -237,7 +258,11 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
                 }}
               >
                 Import
-                <input type="file" accept="application/json" style={{ display: 'none' }} />
+                <input
+                  type="file"
+                  accept="application/json"
+                  style={{ display: 'none' }}
+                />
               </Button>
             </Box>
 
@@ -285,7 +310,11 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
                   },
                 }}
               >
-                {isSaving ? <CircularProgress size={24} color="inherit" /> : 'Save'}
+                {isSaving ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  'Save'
+                )}
               </Button>
             </Box>
           </Box>
@@ -320,7 +349,11 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
           horizontal: 'center',
         }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

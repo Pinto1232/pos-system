@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 const mockPermissions = [
   {
@@ -245,7 +246,9 @@ export async function GET(request: Request) {
         console.log('Successfully fetched permissions from backend');
         return NextResponse.json(data);
       } else {
-        console.warn(`Backend API returned status: ${response.status}, serving mock data`);
+        console.warn(
+          `Backend API returned status: ${response.status}, serving mock data`
+        );
       }
     } else {
       console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
@@ -253,7 +256,10 @@ export async function GET(request: Request) {
 
     return NextResponse.json(mockPermissions);
   } catch (error) {
-    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error proxying request to backend:',
+      JSON.stringify(error, null, 2)
+    );
 
     return NextResponse.json(mockPermissions);
   }

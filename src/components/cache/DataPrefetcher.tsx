@@ -34,7 +34,10 @@ export default function DataPrefetcher() {
             }
           })
           .catch((error) => {
-            console.error('Error prefetching dashboard data:', JSON.stringify(error, null, 2));
+            console.error(
+              'Error prefetching dashboard data:',
+              JSON.stringify(error, null, 2)
+            );
           });
       }
     };

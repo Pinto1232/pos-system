@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 const mockRoles = [
   {
@@ -80,8 +81,20 @@ const mockRoles = [
     name: 'Cashier',
     normalizedName: 'CASHIER',
     description: 'Transaction processing and basic customer service',
-    permissions: JSON.stringify(['sales.create', 'products.view', 'customers.view', 'customers.create', 'transactions.create']),
-    permissionList: ['sales.create', 'products.view', 'customers.view', 'customers.create', 'transactions.create'],
+    permissions: JSON.stringify([
+      'sales.create',
+      'products.view',
+      'customers.view',
+      'customers.create',
+      'transactions.create',
+    ]),
+    permissionList: [
+      'sales.create',
+      'products.view',
+      'customers.view',
+      'customers.create',
+      'transactions.create',
+    ],
     transactionLimit: 1000,
     securityLevel: 'standard',
     requiresMFA: false,
@@ -128,8 +141,20 @@ const mockRoles = [
     name: 'Analytics User',
     normalizedName: 'ANALYTICS_USER',
     description: 'Access to advanced analytics and reporting',
-    permissions: JSON.stringify(['reports.view', 'reports.create', 'reports.export', 'analytics.view', 'analytics.create']),
-    permissionList: ['reports.view', 'reports.create', 'reports.export', 'analytics.view', 'analytics.create'],
+    permissions: JSON.stringify([
+      'reports.view',
+      'reports.create',
+      'reports.export',
+      'analytics.view',
+      'analytics.create',
+    ]),
+    permissionList: [
+      'reports.view',
+      'reports.create',
+      'reports.export',
+      'analytics.view',
+      'analytics.create',
+    ],
     transactionLimit: 0,
     securityLevel: 'medium',
     requiresMFA: true,
@@ -160,7 +185,9 @@ export async function GET(request: Request) {
         console.log('Successfully fetched roles from backend');
         return NextResponse.json(data);
       } else {
-        console.warn(`Backend API returned status: ${response.status}, serving mock data`);
+        console.warn(
+          `Backend API returned status: ${response.status}, serving mock data`
+        );
       }
     } else {
       console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
@@ -168,7 +195,10 @@ export async function GET(request: Request) {
 
     return NextResponse.json(mockRoles);
   } catch (error) {
-    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error proxying request to backend:',
+      JSON.stringify(error, null, 2)
+    );
 
     return NextResponse.json(mockRoles);
   }

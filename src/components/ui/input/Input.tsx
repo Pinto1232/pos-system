@@ -9,9 +9,20 @@ interface InputProps {
   textFieldProps?: TextFieldProps;
   type?: string;
 }
-const Input: React.FC<InputProps> = memo(({ label, name, textFieldProps, ...props }) => {
-  return <TextField fullWidth variant="outlined" label={label} name={name} {...textFieldProps} {...props} />;
-});
+const Input: React.FC<InputProps> = memo(
+  ({ label, name, textFieldProps, ...props }) => {
+    return (
+      <TextField
+        fullWidth
+        variant="outlined"
+        label={label}
+        name={name}
+        {...textFieldProps}
+        {...props}
+      />
+    );
+  }
+);
 
 Input.displayName = 'Input';
 

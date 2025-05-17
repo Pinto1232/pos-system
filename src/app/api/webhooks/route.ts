@@ -7,7 +7,11 @@ export async function POST(req: Request) {
   const signature = req.headers.get('stripe-signature')!;
 
   try {
-    const event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!) as Stripe.Event;
+    const event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    ) as Stripe.Event;
 
     switch (event.type) {
       case 'checkout.session.completed':
@@ -27,6 +31,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true });
   } catch (err) {
     console.error('Webhook Error:', JSON.stringify(err, null, 2));
-    return NextResponse.json({ error: 'Webhook handler failed' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Webhook handler failed' },
+      { status: 400 }
+    );
   }
 }

@@ -39,12 +39,16 @@ interface SuccessModalProps {
   onAddToCart?: (message: string) => void;
 }
 
-const SuccessModalContext = createContext<SuccessModalContextProps | undefined>(undefined);
+const SuccessModalContext = createContext<SuccessModalContextProps | undefined>(
+  undefined
+);
 
 export const useSuccessModal = () => {
   const context = useContext(SuccessModalContext);
   if (!context) {
-    throw new Error('useSuccessModal must be used within a SuccessModalProvider');
+    throw new Error(
+      'useSuccessModal must be used within a SuccessModalProvider'
+    );
   }
   return context;
 };

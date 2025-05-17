@@ -28,7 +28,10 @@ export function extractJsonObjects(text: string): unknown[] {
         const parsed = JSON.parse(jsonStr);
         results.push(parsed);
       } catch (e) {
-        console.warn('Found invalid JSON object:', jsonStr.substring(0, 100) + '...');
+        console.warn(
+          'Found invalid JSON object:',
+          jsonStr.substring(0, 100) + '...'
+        );
       }
     }
 
@@ -38,7 +41,11 @@ export function extractJsonObjects(text: string): unknown[] {
   return results;
 }
 
-export function safeJsonParse<T>(text: string, validator?: (obj: unknown) => obj is T, fallback?: T): T | null | undefined {
+export function safeJsonParse<T>(
+  text: string,
+  validator?: (obj: unknown) => obj is T,
+  fallback?: T
+): T | null | undefined {
   if (!text || typeof text !== 'string') {
     console.warn('safeJsonParse: Input is not a string');
     return fallback ?? null;
@@ -52,7 +59,10 @@ export function safeJsonParse<T>(text: string, validator?: (obj: unknown) => obj
 
     console.warn('Standard JSON parse succeeded but validation failed');
   } catch (error) {
-    console.warn('Standard JSON parsing failed, trying cleanup methods', JSON.stringify(error, null, 2));
+    console.warn(
+      'Standard JSON parsing failed, trying cleanup methods',
+      JSON.stringify(error, null, 2)
+    );
   }
 
   try {
@@ -63,23 +73,34 @@ export function safeJsonParse<T>(text: string, validator?: (obj: unknown) => obj
     }
     console.warn('Cleaned JSON parse succeeded but validation failed');
   } catch (cleanError) {
-    console.warn('Cleaned JSON parsing failed, trying multiple JSON extraction', JSON.stringify(cleanError, null, 2));
+    console.warn(
+      'Cleaned JSON parsing failed, trying multiple JSON extraction',
+      JSON.stringify(cleanError, null, 2)
+    );
   }
 
   const jsonObjects = extractJsonObjects(text);
-  console.log(`Found ${jsonObjects.length} potential JSON objects in the response`);
+  console.log(
+    `Found ${jsonObjects.length} potential JSON objects in the response`
+  );
 
   jsonObjects.forEach((obj, index) => {
     console.log(`JSON object #${index + 1}:`, JSON.stringify(obj, null, 2));
     if (validator) {
-      console.log(`Validation result for object #${index + 1}:`, JSON.stringify(validator(obj, null, 2)));
+      console.log(
+        `Validation result for object #${index + 1}:`,
+        JSON.stringify(validator(obj, null, 2))
+      );
     }
   });
 
   if (validator && jsonObjects.length > 0) {
     for (const obj of jsonObjects) {
       if (validator(obj)) {
-        console.log('Found valid object that matches expected structure:', JSON.stringify(obj, null, 2));
+        console.log(
+          'Found valid object that matches expected structure:',
+          JSON.stringify(obj, null, 2)
+        );
         return obj;
       }
     }

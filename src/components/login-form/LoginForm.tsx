@@ -36,7 +36,12 @@ interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = memo(
-  ({ title = 'Welcome Back', subtitle = 'Please enter your credentials to access your account', buttonText = 'Sign In', onSubmit }) => {
+  ({
+    title = 'Welcome Back',
+    subtitle = 'Please enter your credentials to access your account',
+    buttonText = 'Sign In',
+    onSubmit,
+  }) => {
     const { startLoading, stopLoading } = useSpinner();
     const [error, setError] = useState<string | null>(null);
     const [isFadingOut, setIsFadingOut] = useState(false);
@@ -69,23 +74,42 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           const backendResponse = await axios.get('/api/health', {
             timeout: 5000,
           });
-          console.log('Backend status check response:', JSON.stringify(backendResponse.status, null, 2));
+          console.log(
+            'Backend status check response:',
+            JSON.stringify(backendResponse.status, null, 2)
+          );
         } catch (err) {
-          console.warn('Backend status check failed:', JSON.stringify(err, null, 2));
-          setError('Backend server may be unavailable. Please try again later or contact support.');
+          console.warn(
+            'Backend status check failed:',
+            JSON.stringify(err, null, 2)
+          );
+          setError(
+            'Backend server may be unavailable. Please try again later or contact support.'
+          );
           setSnackbarOpen(true);
           return;
         }
 
         try {
           console.log('Checking Keycloak status...');
-          const keycloakResponse = await axios.get('http://localhost:8282/realms/pisval-pos-realm/.well-known/openid-configuration', {
-            timeout: 5000,
-          });
-          console.log('Keycloak status check response:', JSON.stringify(keycloakResponse.status, null, 2));
+          const keycloakResponse = await axios.get(
+            'http://localhost:8282/realms/pisval-pos-realm/.well-known/openid-configuration',
+            {
+              timeout: 5000,
+            }
+          );
+          console.log(
+            'Keycloak status check response:',
+            JSON.stringify(keycloakResponse.status, null, 2)
+          );
         } catch (err) {
-          console.warn('Keycloak status check failed:', JSON.stringify(err, null, 2));
-          setError('Authentication server (Keycloak) may be unavailable. Please try again later or contact support.');
+          console.warn(
+            'Keycloak status check failed:',
+            JSON.stringify(err, null, 2)
+          );
+          setError(
+            'Authentication server (Keycloak) may be unavailable. Please try again later or contact support.'
+          );
           setSnackbarOpen(true);
         }
       };
@@ -165,7 +189,9 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     return (
       <>
         {!isLoggedIn && (
-          <div className={`${styles.LoginContent} ${isFadingOut ? styles.fadeOut : ''}`}>
+          <div
+            className={`${styles.LoginContent} ${isFadingOut ? styles.fadeOut : ''}`}
+          >
             <Box className={styles.logoContainer}>
               {logoError ? (
                 <Box
@@ -238,11 +264,17 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                       endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
-                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            aria-label={
+                              showPassword ? 'Hide password' : 'Show password'
+                            }
                             onClick={() => setShowPassword(!showPassword)}
                             edge="end"
                           >
-                            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                            {showPassword ? (
+                              <VisibilityOffIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
                           </IconButton>
                         </InputAdornment>
                       ),
@@ -277,7 +309,13 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 </Link>
               </Box>
 
-              <Button type="submit" variant="contained" fullWidth className={styles.loginButton} disabled={isFadingOut}>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                className={styles.loginButton}
+                disabled={isFadingOut}
+              >
                 {isFadingOut ? (
                   <Box
                     sx={{
@@ -285,7 +323,11 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                       alignItems: 'center',
                     }}
                   >
-                    <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+                    <CircularProgress
+                      size={20}
+                      color="inherit"
+                      sx={{ mr: 1 }}
+                    />
                     {loginStatus || 'Signing in...'}
                   </Box>
                 ) : (
@@ -293,7 +335,11 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                 )}
               </Button>
 
-              <Box className={styles.registerContainer} mt={2} textAlign="center">
+              <Box
+                className={styles.registerContainer}
+                mt={2}
+                textAlign="center"
+              >
                 <Typography variant="body2" color="textSecondary">
                   Don&apos;t have an account?{' '}
                   <Link
@@ -321,7 +367,13 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           }}
           className={styles.snackbar}
         >
-          <Alert onClose={() => setSnackbarOpen(false)} severity="error" variant="filled" sx={{ width: '100%' }} className={styles.alert}>
+          <Alert
+            onClose={() => setSnackbarOpen(false)}
+            severity="error"
+            variant="filled"
+            sx={{ width: '100%' }}
+            className={styles.alert}
+          >
             {error}
           </Alert>
         </Snackbar>

@@ -26,13 +26,18 @@ interface ChangeHistoryContentProps {
   }[];
 }
 
-const ChangeHistoryContent: React.FC<ChangeHistoryContentProps> = ({ changeHistory }) => {
+const ChangeHistoryContent: React.FC<ChangeHistoryContentProps> = ({
+  changeHistory,
+}) => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
   const filteredHistory = changeHistory.filter(
     (item) =>
       item.setting.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      new Date(item.timestamp).toLocaleString().toLowerCase().includes(searchQuery.toLowerCase())
+      new Date(item.timestamp)
+        .toLocaleString()
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -86,7 +91,11 @@ const ChangeHistoryContent: React.FC<ChangeHistoryContentProps> = ({ changeHisto
           </Typography>
         </Paper>
       ) : (
-        <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
+        <TableContainer
+          component={Paper}
+          variant="outlined"
+          sx={{ borderRadius: 2 }}
+        >
           <Table>
             <TableHead>
               <TableRow>
@@ -100,9 +109,16 @@ const ChangeHistoryContent: React.FC<ChangeHistoryContentProps> = ({ changeHisto
             <TableBody>
               {filteredHistory.map((change, index) => (
                 <TableRow key={index}>
-                  <TableCell>{new Date(change.timestamp).toLocaleString()}</TableCell>
                   <TableCell>
-                    <Chip label={change.setting} size="small" color="primary" variant="outlined" />
+                    {new Date(change.timestamp).toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={change.setting}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
                   </TableCell>
                   <TableCell>Current User</TableCell>
                   <TableCell>
@@ -115,11 +131,15 @@ const ChangeHistoryContent: React.FC<ChangeHistoryContentProps> = ({ changeHisto
                     >
                       <Typography variant="caption" color="text.secondary">
                         From: {JSON.stringify(change.oldValue).substring(0, 30)}
-                        {JSON.stringify(change.oldValue).length > 30 ? '...' : ''}
+                        {JSON.stringify(change.oldValue).length > 30
+                          ? '...'
+                          : ''}
                       </Typography>
                       <Typography variant="caption" color="primary">
                         To: {JSON.stringify(change.newValue).substring(0, 30)}
-                        {JSON.stringify(change.newValue).length > 30 ? '...' : ''}
+                        {JSON.stringify(change.newValue).length > 30
+                          ? '...'
+                          : ''}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -142,9 +162,16 @@ const ChangeHistoryContent: React.FC<ChangeHistoryContentProps> = ({ changeHisto
               {filteredHistory.length > 0 && (
                 <>
                   <TableRow>
-                    <TableCell>{new Date(Date.now() - 86400000).toLocaleString()}</TableCell>
                     <TableCell>
-                      <Chip label="General Settings" size="small" color="primary" variant="outlined" />
+                      {new Date(Date.now() - 86400000).toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label="General Settings"
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
                     </TableCell>
                     <TableCell>Admin User</TableCell>
                     <TableCell>
@@ -178,9 +205,16 @@ const ChangeHistoryContent: React.FC<ChangeHistoryContentProps> = ({ changeHisto
                   </TableRow>
 
                   <TableRow>
-                    <TableCell>{new Date(Date.now() - 172800000).toLocaleString()}</TableCell>
                     <TableCell>
-                      <Chip label="Tax Settings" size="small" color="primary" variant="outlined" />
+                      {new Date(Date.now() - 172800000).toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label="Tax Settings"
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
                     </TableCell>
                     <TableCell>Manager User</TableCell>
                     <TableCell>

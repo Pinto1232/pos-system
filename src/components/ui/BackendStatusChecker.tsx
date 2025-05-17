@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Box, Button, CircularProgress, Collapse, Paper, Typography, Link } from '@mui/material';
-import { checkBackendStatus, getTroubleshootingSteps, BackendStatus } from '@/utils/backendChecker';
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Collapse,
+  Paper,
+  Typography,
+  Link,
+} from '@mui/material';
+import {
+  checkBackendStatus,
+  getTroubleshootingSteps,
+  BackendStatus,
+} from '@/utils/backendChecker';
 import InfoIcon from '@mui/icons-material/Info';
 import axios from 'axios';
 
@@ -9,7 +22,10 @@ interface BackendStatusCheckerProps {
   showWhenRunning?: boolean;
 }
 
-const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({ onStatusChange, showWhenRunning = false }) => {
+const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({
+  onStatusChange,
+  showWhenRunning = false,
+}) => {
   const [status, setStatus] = useState<BackendStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
@@ -21,7 +37,10 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({ onStatusCha
         console.log('Checking backend status via local health API endpoint');
         const response = await axios.get('/api/health', { timeout: 3000 });
 
-        if (response.data.status === 'ok' && response.data.backend.status === 'online') {
+        if (
+          response.data.status === 'ok' &&
+          response.data.backend.status === 'online'
+        ) {
           const healthStatus: BackendStatus = {
             isRunning: true,
             url: response.data.backend.url,
@@ -36,8 +55,12 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({ onStatusCha
           throw new Error(response.data.backend.error || 'Backend is offline');
         }
       } catch (error) {
-        const healthApiError = error instanceof Error ? error.message : String(error);
-        console.log('Health API check failed, falling back to direct backend check:', JSON.stringify(healthApiError, null, 2));
+        const healthApiError =
+          error instanceof Error ? error.message : String(error);
+        console.log(
+          'Health API check failed, falling back to direct backend check:',
+          JSON.stringify(healthApiError, null, 2)
+        );
 
         const result = await checkBackendStatus();
         setStatus(result);
@@ -46,7 +69,10 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({ onStatusCha
         }
       }
     } catch (error) {
-      console.error('Error checking backend status:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error checking backend status:',
+        JSON.stringify(error, null, 2)
+      );
     } finally {
       setLoading(false);
     }
@@ -87,13 +113,19 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({ onStatusCha
   return (
     <Box sx={{ mb: 3 }}>
       {status.isRunning ? (
-        <Alert severity="success">Backend server is running at {status.url}</Alert>
+        <Alert severity="success">
+          Backend server is running at {status.url}
+        </Alert>
       ) : (
         <>
           <Alert
             severity="error"
             action={
-              <Button color="inherit" size="small" onClick={() => setExpanded(!expanded)}>
+              <Button
+                color="inherit"
+                size="small"
+                onClick={() => setExpanded(!expanded)}
+              >
                 {expanded ? 'Hide' : 'Show'} Details
               </Button>
             }
@@ -104,7 +136,8 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({ onStatusCha
                 Backend server is not running or not accessible at {status.url}
               </Typography>
               <Typography variant="body2">
-                Using mock data for demonstration. The application will continue to work with sample data.
+                Using mock data for demonstration. The application will continue
+                to work with sample data.
               </Typography>
             </Box>
           </Alert>
@@ -150,43 +183,45 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({ onStatusCha
               </Box>
 
               <Box sx={{ pl: 1 }}>
-                {getTroubleshootingSteps(status).map((step: string, index: number) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      mb: 1.5,
-                      p: 1,
-                      borderRadius: 1,
-                      '&:hover': {
-                        bgcolor: 'rgba(0, 0, 0, 0.03)',
-                      },
-                    }}
-                  >
+                {getTroubleshootingSteps(status).map(
+                  (step: string, index: number) => (
                     <Box
-                      component="span"
+                      key={index}
                       sx={{
-                        minWidth: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        bgcolor: 'primary.main',
-                        color: 'white',
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mr: 1.5,
-                        fontSize: '0.875rem',
-                        fontWeight: 'bold',
+                        alignItems: 'flex-start',
+                        mb: 1.5,
+                        p: 1,
+                        borderRadius: 1,
+                        '&:hover': {
+                          bgcolor: 'rgba(0, 0, 0, 0.03)',
+                        },
                       }}
                     >
-                      {index + 1}
+                      <Box
+                        component="span"
+                        sx={{
+                          minWidth: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          bgcolor: 'primary.main',
+                          color: 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          mr: 1.5,
+                          fontSize: '0.875rem',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {index + 1}
+                      </Box>
+                      <Typography variant="body1" sx={{ pt: 0.25 }}>
+                        {step}
+                      </Typography>
                     </Box>
-                    <Typography variant="body1" sx={{ pt: 0.25 }}>
-                      {step}
-                    </Typography>
-                  </Box>
-                ))}
+                  )
+                )}
               </Box>
 
               <Box
@@ -202,8 +237,9 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({ onStatusCha
               >
                 <InfoIcon sx={{ mr: 1, mt: 0.25 }} />
                 <Typography variant="body2">
-                  The application is currently using mock data, so you can continue to use it for demonstration purposes. To use real data,
-                  please ensure the backend server is running.
+                  The application is currently using mock data, so you can
+                  continue to use it for demonstration purposes. To use real
+                  data, please ensure the backend server is running.
                 </Typography>
               </Box>
 
@@ -228,7 +264,11 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({ onStatusCha
                 >
                   {loading ? 'Checking...' : 'Check Again'}
                 </Button>
-                <Link href="http://localhost:5107/swagger/index.html" target="_blank" rel="noopener noreferrer">
+                <Link
+                  href="http://localhost:5107/swagger/index.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button
                     variant="outlined"
                     sx={{

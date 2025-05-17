@@ -36,7 +36,11 @@ const PackageSelectionModal: React.FC = memo(() => {
     const packageType = selectedPackage.type.toLowerCase();
 
     if (packageType.includes('custom')) {
-      return <CustomPackageLayoutContainer selectedPackage={selectedPackage as CustomPackage} />;
+      return (
+        <CustomPackageLayoutContainer
+          selectedPackage={selectedPackage as CustomPackage}
+        />
+      );
     } else if (packageType.includes('starter')) {
       return <StarterPackageLayout selectedPackage={selectedPackage} />;
     } else if (packageType.includes('growth')) {
@@ -46,7 +50,9 @@ const PackageSelectionModal: React.FC = memo(() => {
     } else if (packageType.includes('premium')) {
       return <PremiumPackageLayout selectedPackage={selectedPackage} />;
     } else {
-      console.warn(`Unknown package type: ${packageType}. Defaulting to Starter package layout.`);
+      console.warn(
+        `Unknown package type: ${packageType}. Defaulting to Starter package layout.`
+      );
       return <StarterPackageLayout selectedPackage={selectedPackage} />;
     }
   };
@@ -78,8 +84,18 @@ const PackageSelectionModal: React.FC = memo(() => {
         tabIndex={-1}
         onKeyDown={handleKeyDown}
       >
-        <Box className={styles.modalHeader} display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6" component="h2" fontWeight={600} id="package-selection-modal-title">
+        <Box
+          className={styles.modalHeader}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography
+            variant="h6"
+            component="h2"
+            fontWeight={600}
+            id="package-selection-modal-title"
+          >
             {selectedPackage.title || 'Package Selection'}
           </Typography>
           <IconButton
@@ -93,7 +109,10 @@ const PackageSelectionModal: React.FC = memo(() => {
             <CloseIcon fontSize="small" />
           </IconButton>
         </Box>
-        <div className={styles.modalContent} id="package-selection-modal-description">
+        <div
+          className={styles.modalContent}
+          id="package-selection-modal-description"
+        >
           {renderPackageLayout()}
         </div>
       </Box>

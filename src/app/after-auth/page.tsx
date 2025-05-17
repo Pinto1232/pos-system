@@ -49,7 +49,8 @@ const AfterAuth = () => {
         }
       } catch (err) {
         console.error('Token exchange error:', JSON.stringify(err, null, 2));
-        const errorMessage = err instanceof Error ? err.message : 'exchange_failed';
+        const errorMessage =
+          err instanceof Error ? err.message : 'exchange_failed';
         router.replace(`/?error=${encodeURIComponent(errorMessage)}`);
       } finally {
         clearTimeout(timeout);

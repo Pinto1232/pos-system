@@ -33,7 +33,10 @@ function testApiResponse() {
           const parsed = JSON.parse(jsonStr);
           results.push(parsed);
         } catch (e) {
-          console.warn('Found invalid JSON object:', jsonStr.substring(0, 100) + '...');
+          console.warn(
+            'Found invalid JSON object:',
+            jsonStr.substring(0, 100) + '...'
+          );
         }
       }
 
@@ -56,11 +59,19 @@ function testApiResponse() {
   }
 
   function isAuthError(obj) {
-    return obj && typeof obj === 'object' && 'error' in obj && obj.error === 'Authentication failed';
+    return (
+      obj &&
+      typeof obj === 'object' &&
+      'error' in obj &&
+      obj.error === 'Authentication failed'
+    );
   }
 
   console.group('API Response Analysis');
-  console.log('Raw response first 100 chars:', sampleResponse.substring(0, 100) + '...');
+  console.log(
+    'Raw response first 100 chars:',
+    sampleResponse.substring(0, 100) + '...'
+  );
 
   const extractedObjects = extractJsonObjects(sampleResponse);
   console.log(`Found ${extractedObjects.length} JSON objects:`);
@@ -78,14 +89,22 @@ function testApiResponse() {
       console.log(`Error #${index + 1}:`, JSON.stringify(error, null, 2));
     });
     console.groupEnd();
-    console.warn('Authentication errors found in response, but continuing processing');
+    console.warn(
+      'Authentication errors found in response, but continuing processing'
+    );
   }
 
   const pricingData = extractedObjects.find(isPricingPackagesResponse);
   if (pricingData) {
     console.group('Valid Pricing Data');
-    console.log('Total Items:', JSON.stringify(pricingData.totalItems, null, 2));
-    console.log('Data Length:', JSON.stringify(pricingData.data.length, null, 2));
+    console.log(
+      'Total Items:',
+      JSON.stringify(pricingData.totalItems, null, 2)
+    );
+    console.log(
+      'Data Length:',
+      JSON.stringify(pricingData.data.length, null, 2)
+    );
     console.log('First Item:', JSON.stringify(pricingData.data[0], null, 2));
     console.groupEnd();
   }

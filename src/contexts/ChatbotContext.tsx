@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import { usePackageSelection } from './PackageSelectionContext';
 
 interface ChatMessage {
@@ -27,13 +33,18 @@ interface ChatbotContextProps {
   sendMessage: (message: string) => void;
   sendBotMessage: (message: string, clearPrevious?: boolean) => void;
   handleSuggestedResponse: (response: string) => void;
-  handleCtaButtonClick: (action: string, data?: Record<string, unknown>) => void;
+  handleCtaButtonClick: (
+    action: string,
+    data?: Record<string, unknown>
+  ) => void;
   messages: ChatMessage[];
   isOpen: boolean;
   themeColor: string;
 }
 
-const ChatbotContext = createContext<ChatbotContextProps | undefined>(undefined);
+const ChatbotContext = createContext<ChatbotContextProps | undefined>(
+  undefined
+);
 
 export const useChatbot = () => {
   const context = useContext(ChatbotContext);
@@ -63,7 +74,13 @@ const getPackageColor = (packageType: string): string => {
 const getPackageFeatures = (packageType: string): string[] => {
   switch (packageType) {
     case 'starter':
-      return ['Basic inventory management', 'Simple sales tracking', 'Customer management', 'Single user account', 'Email support'];
+      return [
+        'Basic inventory management',
+        'Simple sales tracking',
+        'Customer management',
+        'Single user account',
+        'Email support',
+      ];
     case 'growth':
       return [
         'Advanced inventory management',
@@ -103,7 +120,12 @@ const getPackageFeatures = (packageType: string): string[] => {
         'Tailored support options',
       ];
     default:
-      return ['Inventory management', 'Sales tracking', 'Customer management', 'Reporting tools'];
+      return [
+        'Inventory management',
+        'Sales tracking',
+        'Customer management',
+        'Reporting tools',
+      ];
   }
 };
 
@@ -157,17 +179,41 @@ const getPackagePricing = (
 const getSuggestedResponses = (packageType: string): string[] => {
   switch (packageType) {
     case 'starter':
-      return ['Tell me about pricing', 'What features are included?', 'How does it compare to Growth?'];
+      return [
+        'Tell me about pricing',
+        'What features are included?',
+        'How does it compare to Growth?',
+      ];
     case 'growth':
-      return ['What advanced features do I get?', 'Is there a free trial?', 'How does it compare to Premium?'];
+      return [
+        'What advanced features do I get?',
+        'Is there a free trial?',
+        'How does it compare to Premium?',
+      ];
     case 'premium':
-      return ['What makes this your best value?', 'Do you offer support?', 'Can I customize any features?'];
+      return [
+        'What makes this your best value?',
+        'Do you offer support?',
+        'Can I customize any features?',
+      ];
     case 'enterprise':
-      return ['Do you offer dedicated support?', 'Can I get a custom quote?', 'What security features are included?'];
+      return [
+        'Do you offer dedicated support?',
+        'Can I get a custom quote?',
+        'What security features are included?',
+      ];
     case 'custom':
-      return ['How do I select features?', 'What is the pricing structure?', 'Can I talk to a sales representative?'];
+      return [
+        'How do I select features?',
+        'What is the pricing structure?',
+        'Can I talk to a sales representative?',
+      ];
     default:
-      return ['Tell me more about this package', 'What features are included?', 'How much does it cost?'];
+      return [
+        'Tell me more about this package',
+        'What features are included?',
+        'How much does it cost?',
+      ];
   }
 };
 
@@ -181,26 +227,40 @@ export const ChatbotProvider: React.FC<{
       text: 'Hello! How can I help you with Pisval Tech POS today?',
       sender: 'bot',
       timestamp: new Date(),
-      suggestedResponses: ['Tell me about your packages', 'How does pricing work?', 'What features do you offer?'],
+      suggestedResponses: [
+        'Tell me about your packages',
+        'How does pricing work?',
+        'What features do you offer?',
+      ],
     },
   ]);
 
   const { selectedPackage } = usePackageSelection();
 
-  const [previousPackageId, setPreviousPackageId] = useState<number | null>(null);
+  const [previousPackageId, setPreviousPackageId] = useState<number | null>(
+    null
+  );
 
   const [themeColor, setThemeColor] = useState<string>('#1976d2');
 
   useEffect(() => {
     if (selectedPackage) {
-      const savedHistory = localStorage.getItem(`chat_history_${selectedPackage.id}`);
+      const savedHistory = localStorage.getItem(
+        `chat_history_${selectedPackage.id}`
+      );
       if (savedHistory) {
         try {
           const parsedHistory = JSON.parse(savedHistory);
-          if (previousPackageId !== selectedPackage.id && parsedHistory.length > 0) {
+          if (
+            previousPackageId !== selectedPackage.id &&
+            parsedHistory.length > 0
+          ) {
           }
         } catch (e) {
-          console.error('Error parsing chat history:', JSON.stringify(e, null, 2));
+          console.error(
+            'Error parsing chat history:',
+            JSON.stringify(e, null, 2)
+          );
         }
       }
     }
@@ -216,7 +276,11 @@ export const ChatbotProvider: React.FC<{
         text: 'Hello! How can I help you with Pisval Tech POS today?',
         sender: 'bot',
         timestamp: new Date(),
-        suggestedResponses: ['Tell me about your packages', 'How does pricing work?', 'What features do you offer?'],
+        suggestedResponses: [
+          'Tell me about your packages',
+          'How does pricing work?',
+          'What features do you offer?',
+        ],
       };
 
       setMessages([welcomeMessage]);
@@ -256,7 +320,10 @@ export const ChatbotProvider: React.FC<{
 
         setMessages((prev) => [...prev, botMessage]);
 
-        localStorage.setItem(`chat_history_${selectedPackage.id}`, JSON.stringify([welcomeMessage, botMessage]));
+        localStorage.setItem(
+          `chat_history_${selectedPackage.id}`,
+          JSON.stringify([welcomeMessage, botMessage])
+        );
       }, 500);
 
       setPreviousPackageId(selectedPackage.id);
@@ -268,7 +335,10 @@ export const ChatbotProvider: React.FC<{
   }, [selectedPackage, isOpen, previousPackageId]);
 
   const toggleChatbot = () => {
-    console.log('Toggling chatbot, current state:', JSON.stringify(isOpen, null, 2));
+    console.log(
+      'Toggling chatbot, current state:',
+      JSON.stringify(isOpen, null, 2)
+    );
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
   };
@@ -314,7 +384,10 @@ export const ChatbotProvider: React.FC<{
 
       if (selectedPackage) {
         const currentMessages = [...messages, userMessage, botMessage];
-        localStorage.setItem(`chat_history_${selectedPackage.id}`, JSON.stringify(currentMessages));
+        localStorage.setItem(
+          `chat_history_${selectedPackage.id}`,
+          JSON.stringify(currentMessages)
+        );
       }
     }, 1000);
   };
@@ -323,7 +396,10 @@ export const ChatbotProvider: React.FC<{
     sendMessage(response);
   };
 
-  const handleCtaButtonClick = (action: string, data?: Record<string, unknown>) => {
+  const handleCtaButtonClick = (
+    action: string,
+    data?: Record<string, unknown>
+  ) => {
     console.log(`CTA button clicked: ${action}`, JSON.stringify(data, null, 2));
 
     switch (action) {
@@ -336,7 +412,10 @@ export const ChatbotProvider: React.FC<{
         break;
 
       case 'upgradePackage': {
-        const packageName = data && 'packageName' in data ? String(data.packageName) : 'a higher tier';
+        const packageName =
+          data && 'packageName' in data
+            ? String(data.packageName)
+            : 'a higher tier';
         sendMessage(`I'm interested in upgrading to ${packageName}`);
         break;
       }
@@ -373,21 +452,46 @@ export const ChatbotProvider: React.FC<{
 
     if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
       return 'Hello! How can I assist you with Pisval Tech POS today?';
-    } else if (lowerMessage.includes('pricing') || lowerMessage.includes('cost') || lowerMessage.includes('price')) {
+    } else if (
+      lowerMessage.includes('pricing') ||
+      lowerMessage.includes('cost') ||
+      lowerMessage.includes('price')
+    ) {
       return 'We offer various pricing packages for our POS system. Would you like to see our pricing plans?';
-    } else if (lowerMessage.includes('feature') || lowerMessage.includes('what can')) {
+    } else if (
+      lowerMessage.includes('feature') ||
+      lowerMessage.includes('what can')
+    ) {
       return 'Pisval Tech POS offers inventory management, sales tracking, customer management, and reporting features. What specific feature would you like to know more about?';
-    } else if (lowerMessage.includes('support') || lowerMessage.includes('help')) {
+    } else if (
+      lowerMessage.includes('support') ||
+      lowerMessage.includes('help')
+    ) {
       return 'Our support team is available 24/7. You can reach us at support@pisvaltech.com or call us at 1-800-PISVAL.';
-    } else if (lowerMessage.includes('starter') || lowerMessage.includes('basic')) {
+    } else if (
+      lowerMessage.includes('starter') ||
+      lowerMessage.includes('basic')
+    ) {
       return getPackageDescription('starter');
-    } else if (lowerMessage.includes('growth') || lowerMessage.includes('medium')) {
+    } else if (
+      lowerMessage.includes('growth') ||
+      lowerMessage.includes('medium')
+    ) {
       return getPackageDescription('growth');
-    } else if (lowerMessage.includes('premium') || lowerMessage.includes('advanced')) {
+    } else if (
+      lowerMessage.includes('premium') ||
+      lowerMessage.includes('advanced')
+    ) {
       return getPackageDescription('premium');
-    } else if (lowerMessage.includes('enterprise') || lowerMessage.includes('large')) {
+    } else if (
+      lowerMessage.includes('enterprise') ||
+      lowerMessage.includes('large')
+    ) {
       return getPackageDescription('enterprise');
-    } else if (lowerMessage.includes('custom') || lowerMessage.includes('tailored')) {
+    } else if (
+      lowerMessage.includes('custom') ||
+      lowerMessage.includes('tailored')
+    ) {
       return getPackageDescription('custom');
     } else {
       return "I'm not sure I understand. Could you please rephrase your question about our POS system?";

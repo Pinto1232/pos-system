@@ -28,7 +28,9 @@ export const checkBackendStatus = async (): Promise<BackendStatus> => {
               timeout: 5000,
             }));
 
-        console.log(`Endpoint ${endpoint} responded with status: ${response.status}`);
+        console.log(
+          `Endpoint ${endpoint} responded with status: ${response.status}`
+        );
         return {
           isRunning: response.status >= 200 && response.status < 300,
           url: apiUrl,
@@ -36,7 +38,9 @@ export const checkBackendStatus = async (): Promise<BackendStatus> => {
         };
       } catch (error) {
         const endpointError = error as Error;
-        console.log(`Endpoint ${endpoint} check failed: ${endpointError.message || 'Unknown error'}`);
+        console.log(
+          `Endpoint ${endpoint} check failed: ${endpointError.message || 'Unknown error'}`
+        );
       }
     }
 
@@ -66,16 +70,24 @@ export const getTroubleshootingSteps = (status: BackendStatus): string[] => {
     steps.push(`Ensure the backend server is running at ${status.url}`);
 
     if (status.error?.includes('timeout')) {
-      steps.push('The server request timed out. The server might be running but responding slowly.');
+      steps.push(
+        'The server request timed out. The server might be running but responding slowly.'
+      );
     }
 
     if (status.error?.includes('ECONNREFUSED')) {
-      steps.push('Connection was refused. Make sure the server is running on the correct port.');
+      steps.push(
+        'Connection was refused. Make sure the server is running on the correct port.'
+      );
     }
 
     steps.push('Check network connectivity between frontend and backend');
-    steps.push('Verify that the API endpoint is correctly configured in your .env.local file');
-    steps.push('Try running the backend server with "dotnet run" in the backend directory');
+    steps.push(
+      'Verify that the API endpoint is correctly configured in your .env.local file'
+    );
+    steps.push(
+      'Try running the backend server with "dotnet run" in the backend directory'
+    );
   }
 
   return steps;

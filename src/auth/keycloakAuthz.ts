@@ -14,20 +14,23 @@ export class KeycloakAuthzClient {
     }
 
     try {
-      const response = await fetch(`${this.keycloak.authServerUrl}/realms/${this.keycloak.realm}/protocol/openid-connect/token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
-          ticket: ticket,
-          client_id: this.keycloak.clientId,
-          client_secret: '', // Add client secret if needed
-          submit_request: 'true',
-          audience: this.keycloak.clientId,
-        }),
-      });
+      const response = await fetch(
+        `${this.keycloak.authServerUrl}/realms/${this.keycloak.realm}/protocol/openid-connect/token`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
+            ticket: ticket,
+            client_id: this.keycloak.clientId,
+            client_secret: '', // Add client secret if needed
+            submit_request: 'true',
+            audience: this.keycloak.clientId,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Authorization request failed: ${response.status}`);
@@ -37,7 +40,10 @@ export class KeycloakAuthzClient {
       this.rpt = data.access_token;
       return this.rpt;
     } catch (error) {
-      console.error('Error during authorization request:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error during authorization request:',
+        JSON.stringify(error, null, 2)
+      );
       throw error;
     }
   }
@@ -69,14 +75,17 @@ export class KeycloakAuthzClient {
         });
       }
 
-      const response = await fetch(`${this.keycloak.authServerUrl}/realms/${this.keycloak.realm}/protocol/openid-connect/token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: `Bearer ${this.keycloak.token}`,
-        },
-        body: new URLSearchParams(body),
-      });
+      const response = await fetch(
+        `${this.keycloak.authServerUrl}/realms/${this.keycloak.realm}/protocol/openid-connect/token`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${this.keycloak.token}`,
+          },
+          body: new URLSearchParams(body),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Permission request failed: ${response.status}`);
@@ -86,7 +95,10 @@ export class KeycloakAuthzClient {
       this.rpt = data.access_token;
       return this.rpt;
     } catch (error) {
-      console.error('Error during permission request:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error during permission request:',
+        JSON.stringify(error, null, 2)
+      );
       throw error;
     }
   }
@@ -109,16 +121,25 @@ export class KeycloakAuthzClient {
       }
 
       return payload.authorization.permissions.some((permission: any) => {
-        const resourceMatch = permission.resource_set_name === resource || permission.resource_set_id === resource;
+        const resourceMatch =
+          permission.resource_set_name === resource ||
+          permission.resource_set_id === resource;
 
         if (!scope) {
           return resourceMatch;
         }
 
-        return resourceMatch && permission.scopes && permission.scopes.includes(scope);
+        return (
+          resourceMatch &&
+          permission.scopes &&
+          permission.scopes.includes(scope)
+        );
       });
     } catch (error) {
-      console.error('Error checking permission:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error checking permission:',
+        JSON.stringify(error, null, 2)
+      );
       return false;
     }
   }
@@ -128,6 +149,8 @@ export class KeycloakAuthzClient {
   }
 }
 
-export default function createKeycloakAuthzClient(keycloak: Keycloak): KeycloakAuthzClient {
+export default function createKeycloakAuthzClient(
+  keycloak: Keycloak
+): KeycloakAuthzClient {
   return new KeycloakAuthzClient(keycloak);
 }

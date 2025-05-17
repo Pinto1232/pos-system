@@ -1,7 +1,11 @@
 'use client';
 
 import React from 'react';
-import { QueryClient, QueryClientProvider, DefaultOptions } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  DefaultOptions,
+} from '@tanstack/react-query';
 import AuthProvider from '@/contexts/AuthContext';
 import { ProductProvider } from '@/contexts/ProductContext';
 import { CustomizationProvider } from '@/contexts/CustomizationContext';
@@ -14,7 +18,10 @@ import { UserSubscriptionProvider } from '@/contexts/UserSubscriptionContext';
 const defaultQueryOptions: DefaultOptions = {
   queries: {
     retry: (failureCount: number, error: unknown) => {
-      console.error(`Query failed (${failureCount} attempts):`, JSON.stringify(error, null, 2));
+      console.error(
+        `Query failed (${failureCount} attempts):`,
+        JSON.stringify(error, null, 2)
+      );
 
       if (error instanceof AxiosError && error.response?.status === 401) {
         console.warn('Unauthorized (401) - Redirecting to login...');
@@ -44,8 +51,14 @@ if (typeof window !== 'undefined') {
 }
 
 queryClient.getQueryCache().subscribe((event) => {
-  if (event?.query.getObserversCount() > 0 && event.query.state.status === 'error') {
-    console.error(`Query error [${event.query.queryKey.join(',')}]:`, event.query.state.error);
+  if (
+    event?.query.getObserversCount() > 0 &&
+    event.query.state.status === 'error'
+  ) {
+    console.error(
+      `Query error [${event.query.queryKey.join(',')}]:`,
+      event.query.state.error
+    );
   }
 });
 

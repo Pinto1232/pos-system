@@ -5,7 +5,8 @@ import { AddOn } from '@/components/packages/custom-package-layout/types';
 export const addOnKeys = {
   all: ['addOns'] as const,
   lists: () => [...addOnKeys.all, 'list'] as const,
-  list: (filters: Record<string, any>) => [...addOnKeys.lists(), filters] as const,
+  list: (filters: Record<string, any>) =>
+    [...addOnKeys.lists(), filters] as const,
   details: () => [...addOnKeys.all, 'detail'] as const,
   detail: (id: number) => [...addOnKeys.details(), id] as const,
   categories: () => [...addOnKeys.all, 'categories'] as const,
@@ -29,9 +30,12 @@ export const useAddOns = (filters: AddOnFilters = {}) => {
     queryFn: async () => {
       const params = new URLSearchParams();
       if (filters.category) params.append('category', filters.category);
-      if (filters.isActive !== undefined) params.append('isActive', filters.isActive.toString());
-      if (filters.pageNumber) params.append('pageNumber', filters.pageNumber.toString());
-      if (filters.pageSize) params.append('pageSize', filters.pageSize.toString());
+      if (filters.isActive !== undefined)
+        params.append('isActive', filters.isActive.toString());
+      if (filters.pageNumber)
+        params.append('pageNumber', filters.pageNumber.toString());
+      if (filters.pageSize)
+        params.append('pageSize', filters.pageSize.toString());
 
       const queryString = params.toString() ? `?${params.toString()}` : '';
 
@@ -95,7 +99,10 @@ export const useUpdateAddOn = () => {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: Partial<AddOn> }) => {
-      console.log(`Updating AddOn with ID ${id}:`, JSON.stringify(data, null, 2));
+      console.log(
+        `Updating AddOn with ID ${id}:`,
+        JSON.stringify(data, null, 2)
+      );
       const response = await apiClient.put(`/api/AddOns/${id}`, data);
       return response.data;
     },

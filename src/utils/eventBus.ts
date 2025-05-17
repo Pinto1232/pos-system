@@ -27,7 +27,10 @@ class EventBusImpl implements EventBus {
       try {
         callback(data);
       } catch (error) {
-        console.error(`Error in event handler for ${event}:`, JSON.stringify(error, null, 2));
+        console.error(
+          `Error in event handler for ${event}:`,
+          JSON.stringify(error, null, 2)
+        );
       }
     });
   }

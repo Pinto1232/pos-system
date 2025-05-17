@@ -2,7 +2,17 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Box, Typography, Button, CircularProgress, Container, Paper, Grid, Divider, Breadcrumbs } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Container,
+  Paper,
+  Grid,
+  Divider,
+  Breadcrumbs,
+} from '@mui/material';
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
 import StripePaymentForm from '@/components/payment/StripePaymentForm';
@@ -38,19 +48,25 @@ export default function CheckoutPage() {
           return parsedCart;
         }
       } catch (error) {
-        console.error('Failed to parse validated cart items from localStorage:', JSON.stringify(error, null, 2));
+        console.error(
+          'Failed to parse validated cart items from localStorage:',
+          JSON.stringify(error, null, 2)
+        );
       }
     }
 
     return [];
   }, [contextCartItems]);
 
-  const updatePaymentState = useCallback((newState: Partial<typeof paymentState>) => {
-    setPaymentState((prev) => ({
-      ...prev,
-      ...newState,
-    }));
-  }, []);
+  const updatePaymentState = useCallback(
+    (newState: Partial<typeof paymentState>) => {
+      setPaymentState((prev) => ({
+        ...prev,
+        ...newState,
+      }));
+    },
+    []
+  );
 
   const handleFormMounted = useCallback(() => {
     updatePaymentState({
@@ -68,7 +84,8 @@ export default function CheckoutPage() {
       updatePaymentState({
         isLoading: false,
         errorType: 'validation_error',
-        error: 'Your cart is empty. Please add items to your cart before checkout.',
+        error:
+          'Your cart is empty. Please add items to your cart before checkout.',
       });
       return;
     }
@@ -85,7 +102,10 @@ export default function CheckoutPage() {
 
       try {
         const cartItemsToSend = itemsToUse || effectiveCartItems;
-        console.log('Sending request to create payment intent with cart items:', JSON.stringify(cartItemsToSend, null, 2));
+        console.log(
+          'Sending request to create payment intent with cart items:',
+          JSON.stringify(cartItemsToSend, null, 2)
+        );
 
         const requestBody = JSON.stringify({
           cartItems: cartItemsToSend,
@@ -100,16 +120,25 @@ export default function CheckoutPage() {
           body: requestBody,
         });
 
-        console.log('Response status:', JSON.stringify(response.status, null, 2));
+        console.log(
+          'Response status:',
+          JSON.stringify(response.status, null, 2)
+        );
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error('Error response from API:', JSON.stringify(errorData, null, 2));
+          console.error(
+            'Error response from API:',
+            JSON.stringify(errorData, null, 2)
+          );
           throw new Error(errorData.error || 'Failed to create payment intent');
         }
 
         const responseData = await response.json();
-        console.log('Success response from API:', JSON.stringify(responseData, null, 2));
+        console.log(
+          'Success response from API:',
+          JSON.stringify(responseData, null, 2)
+        );
         const { clientSecret } = responseData;
 
         updatePaymentState({
@@ -118,10 +147,16 @@ export default function CheckoutPage() {
           paymentStep: 'payment_form',
         });
       } catch (error) {
-        console.error('Error creating payment intent:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error creating payment intent:',
+          JSON.stringify(error, null, 2)
+        );
         updatePaymentState({
           isLoading: false,
-          error: error instanceof Error ? error.message : 'Failed to initialize payment',
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to initialize payment',
           errorType: 'server_error',
           paymentStep: 'error',
         });
@@ -164,7 +199,13 @@ export default function CheckoutPage() {
             <Typography variant="body1" paragraph>
               Please add items to your cart before proceeding to checkout.
             </Typography>
-            <Button variant="contained" color="primary" component={Link} href="/" sx={{ mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              component={Link}
+              href="/"
+              sx={{ mt: 2 }}
+            >
               Continue Shopping
             </Button>
           </Paper>
@@ -190,7 +231,8 @@ export default function CheckoutPage() {
                           updatePaymentState({
                             isLoading: false,
                             errorType: 'validation_error',
-                            error: 'Your cart is empty. Please add items to your cart before checkout.',
+                            error:
+                              'Your cart is empty. Please add items to your cart before checkout.',
                           });
                           return;
                         }
@@ -201,19 +243,25 @@ export default function CheckoutPage() {
                         });
                         const retryPaymentIntent = async () => {
                           try {
-                            const response = await fetch('/api/create-payment-intent', {
-                              method: 'POST',
-                              headers: {
-                                'Content-Type': 'application/json',
-                              },
-                              body: JSON.stringify({
-                                cartItems: currentItems,
-                              }),
-                            });
+                            const response = await fetch(
+                              '/api/create-payment-intent',
+                              {
+                                method: 'POST',
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                  cartItems: currentItems,
+                                }),
+                              }
+                            );
 
                             if (!response.ok) {
                               const errorData = await response.json();
-                              throw new Error(errorData.error || 'Failed to create payment intent');
+                              throw new Error(
+                                errorData.error ||
+                                  'Failed to create payment intent'
+                              );
                             }
 
                             const { clientSecret } = await response.json();
@@ -224,10 +272,16 @@ export default function CheckoutPage() {
                               paymentStep: 'payment_form',
                             });
                           } catch (error) {
-                            console.error('Error creating payment intent:', JSON.stringify(error, null, 2));
+                            console.error(
+                              'Error creating payment intent:',
+                              JSON.stringify(error, null, 2)
+                            );
                             updatePaymentState({
                               isLoading: false,
-                              error: error instanceof Error ? error.message : 'Failed to initialize payment',
+                              error:
+                                error instanceof Error
+                                  ? error.message
+                                  : 'Failed to initialize payment',
                               errorType: 'server_error',
                               paymentStep: 'error',
                             });
@@ -245,7 +299,10 @@ export default function CheckoutPage() {
                     </Typography>
                     <Divider sx={{ mb: 3 }} />
                     {paymentState.clientSecret ? (
-                      <StripePaymentForm clientSecret={paymentState.clientSecret} onMounted={handleFormMounted} />
+                      <StripePaymentForm
+                        clientSecret={paymentState.clientSecret}
+                        onMounted={handleFormMounted}
+                      />
                     ) : (
                       <Box
                         sx={{
@@ -255,7 +312,9 @@ export default function CheckoutPage() {
                           height: '300px',
                         }}
                       >
-                        <Typography>Failed to initialize payment form. Please try again.</Typography>
+                        <Typography>
+                          Failed to initialize payment form. Please try again.
+                        </Typography>
                       </Box>
                     )}
                   </Box>
@@ -277,7 +336,13 @@ export default function CheckoutPage() {
                 <Divider sx={{ mb: 2 }} />
                 <OrderSummary cartItems={effectiveCartItems} />
                 <Box sx={{ mt: 3 }}>
-                  <Button variant="outlined" fullWidth component={Link} href="/cart" sx={{ mb: 2 }}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    component={Link}
+                    href="/cart"
+                    sx={{ mb: 2 }}
+                  >
                     Return to Cart
                   </Button>
                 </Box>

@@ -141,7 +141,8 @@ export const BankCardContainer = styled(Box)(({ theme }) => ({
     right: 0,
     width: '100px',
     height: '100px',
-    background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+    background:
+      'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
     borderRadius: '50%',
   },
   transition: 'all 0.3s ease',

@@ -57,7 +57,10 @@ const UserActivityMonitor: React.FC = () => {
         console.log('Using mock data for user activity logs');
         return mockActivityLogs;
       } catch (err) {
-        console.error('Error fetching user activity:', JSON.stringify(err, null, 2));
+        console.error(
+          'Error fetching user activity:',
+          JSON.stringify(err, null, 2)
+        );
         console.log('Falling back to mock data after error');
         return mockActivityLogs;
       }
@@ -66,8 +69,20 @@ const UserActivityMonitor: React.FC = () => {
 
   React.useEffect(() => {
     if (activityLogs) {
-      console.log('Activity logs data received:', JSON.stringify(activityLogs, null, 2));
-      console.log('Data source:', JSON.stringify(activityLogs === mockActivityLogs ? 'Using mock data' : 'Using backend data', null, 2));
+      console.log(
+        'Activity logs data received:',
+        JSON.stringify(activityLogs, null, 2)
+      );
+      console.log(
+        'Data source:',
+        JSON.stringify(
+          activityLogs === mockActivityLogs
+            ? 'Using mock data'
+            : 'Using backend data',
+          null,
+          2
+        )
+      );
     }
   }, [activityLogs]);
 
@@ -81,9 +96,11 @@ const UserActivityMonitor: React.FC = () => {
         log.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         log.ipAddress.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesActivity = activityFilter === 'all' || log.activityType === activityFilter;
+      const matchesActivity =
+        activityFilter === 'all' || log.activityType === activityFilter;
 
-      const matchesStatus = statusFilter === 'all' || log.status === statusFilter;
+      const matchesStatus =
+        statusFilter === 'all' || log.status === statusFilter;
 
       return matchesSearch && matchesActivity && matchesStatus;
     });
@@ -102,7 +119,10 @@ const UserActivityMonitor: React.FC = () => {
     return Array.from(types).sort();
   }, [activityLogs]);
 
-  const handlePageChange = (_event: React.MouseEvent<unknown> | React.ChangeEvent<unknown>, newPage: number) => {
+  const handlePageChange = (
+    _event: React.MouseEvent<unknown> | React.ChangeEvent<unknown>,
+    newPage: number
+  ) => {
     setPage(newPage);
   };
 
@@ -114,7 +134,9 @@ const UserActivityMonitor: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: string): 'success' | 'error' | 'warning' | 'default' => {
+  const getStatusColor = (
+    status: string
+  ): 'success' | 'error' | 'warning' | 'default' => {
     switch (status) {
       case 'success':
         return 'success';
@@ -190,7 +212,9 @@ const UserActivityMonitor: React.FC = () => {
             value={activityFilter}
             label="Activity Type"
             onChange={(e) => setActivityFilter(e.target.value)}
-            IconComponent={() => <FilterListIcon fontSize="small" sx={{ mr: 1 }} />}
+            IconComponent={() => (
+              <FilterListIcon fontSize="small" sx={{ mr: 1 }} />
+            )}
           >
             <MenuItem value="all">All Activities</MenuItem>
             {activityTypes.map((type) => (
@@ -203,7 +227,12 @@ const UserActivityMonitor: React.FC = () => {
 
         <FormControl size="small" sx={{ minWidth: '120px' }}>
           <InputLabel id="status-filter-label">Status</InputLabel>
-          <Select labelId="status-filter-label" value={statusFilter} label="Status" onChange={(e) => setStatusFilter(e.target.value)}>
+          <Select
+            labelId="status-filter-label"
+            value={statusFilter}
+            label="Status"
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
             <MenuItem value="all">All Status</MenuItem>
             <MenuItem value="success">Success</MenuItem>
             <MenuItem value="failed">Failed</MenuItem>
@@ -213,7 +242,9 @@ const UserActivityMonitor: React.FC = () => {
       </Box>
 
       {filteredLogs.length === 0 ? (
-        <Alert severity="info">No activity logs found matching your criteria.</Alert>
+        <Alert severity="info">
+          No activity logs found matching your criteria.
+        </Alert>
       ) : (
         <>
           <TableContainer component={Paper} sx={{ mb: 2 }}>
@@ -258,7 +289,11 @@ const UserActivityMonitor: React.FC = () => {
                     <TableCell>{log.ipAddress}</TableCell>
                     <TableCell>{formatTimestamp(log.timestamp)}</TableCell>
                     <TableCell>
-                      <Chip label={log.status} color={getStatusColor(log.status)} size="small" />
+                      <Chip
+                        label={log.status}
+                        color={getStatusColor(log.status)}
+                        size="small"
+                      />
                     </TableCell>
                   </TableRow>
                 ))}

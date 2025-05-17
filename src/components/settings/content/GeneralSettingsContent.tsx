@@ -114,7 +114,9 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                   gap: 1,
                 }}
               >
-                <Typography variant="body2">Recommended size: 200x200 pixels</Typography>
+                <Typography variant="body2">
+                  Recommended size: 200x200 pixels
+                </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Supported formats: JPG, PNG, SVG
                 </Typography>
@@ -140,7 +142,12 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
               }}
             >
               Upload Logo
-              <input type="file" accept="image/*" onChange={handleLogoFileChange} style={{ display: 'none' }} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleLogoFileChange}
+                style={{ display: 'none' }}
+              />
             </Button>
           </Box>
         </Box>
@@ -306,11 +313,25 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  onClick={() => setShowSidebarColorPicker(!showSidebarColorPicker)}
+                  onClick={() =>
+                    setShowSidebarColorPicker(!showSidebarColorPicker)
+                  }
                 >
-                  <FaPaintBrush color={sidebarColor === '#ffffff' || sidebarColor === '#f5f5f5' ? '#000' : '#fff'} size={16} />
+                  <FaPaintBrush
+                    color={
+                      sidebarColor === '#ffffff' || sidebarColor === '#f5f5f5'
+                        ? '#000'
+                        : '#fff'
+                    }
+                    size={16}
+                  />
                 </Box>
-                <TextField value={sidebarColor} onChange={(e) => setSidebarColor(e.target.value)} size="small" sx={{ width: '140px' }} />
+                <TextField
+                  value={sidebarColor}
+                  onChange={(e) => setSidebarColor(e.target.value)}
+                  size="small"
+                  sx={{ width: '140px' }}
+                />
                 {showSidebarColorPicker && (
                   <Box
                     sx={{
@@ -340,7 +361,12 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                         zIndex: 2,
                       }}
                     >
-                      <SketchPicker color={sidebarColor} onChange={(color: ColorResult) => setSidebarColor(color.hex)} />
+                      <SketchPicker
+                        color={sidebarColor}
+                        onChange={(color: ColorResult) =>
+                          setSidebarColor(color.hex)
+                        }
+                      />
                     </Box>
                   </Box>
                 )}
@@ -390,11 +416,25 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  onClick={() => setShowNavbarColorPicker(!showNavbarColorPicker)}
+                  onClick={() =>
+                    setShowNavbarColorPicker(!showNavbarColorPicker)
+                  }
                 >
-                  <FaPaintBrush color={navbarColor === '#ffffff' || navbarColor === '#f5f5f5' ? '#000' : '#fff'} size={16} />
+                  <FaPaintBrush
+                    color={
+                      navbarColor === '#ffffff' || navbarColor === '#f5f5f5'
+                        ? '#000'
+                        : '#fff'
+                    }
+                    size={16}
+                  />
                 </Box>
-                <TextField value={navbarColor} onChange={(e) => setNavbarColor(e.target.value)} size="small" sx={{ width: '140px' }} />
+                <TextField
+                  value={navbarColor}
+                  onChange={(e) => setNavbarColor(e.target.value)}
+                  size="small"
+                  sx={{ width: '140px' }}
+                />
                 {showNavbarColorPicker && (
                   <Box
                     sx={{
@@ -424,7 +464,12 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                         zIndex: 2,
                       }}
                     >
-                      <SketchPicker color={navbarColor} onChange={(color: ColorResult) => setNavbarColor(color.hex)} />
+                      <SketchPicker
+                        color={navbarColor}
+                        onChange={(color: ColorResult) =>
+                          setNavbarColor(color.hex)
+                        }
+                      />
                     </Box>
                   </Box>
                 )}

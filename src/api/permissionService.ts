@@ -50,8 +50,22 @@ const mockRolePermissions: Record<number, string[]> = {
     'inventory.edit',
   ],
   3: ['sales.create', 'products.view', 'customers.view', 'customers.create'],
-  4: ['products.view', 'products.create', 'products.edit', 'products.delete', 'inventory.view', 'inventory.edit', 'inventory.reports'],
-  5: ['reports.view', 'reports.create', 'reports.export', 'analytics.view', 'analytics.create'],
+  4: [
+    'products.view',
+    'products.create',
+    'products.edit',
+    'products.delete',
+    'inventory.view',
+    'inventory.edit',
+    'inventory.reports',
+  ],
+  5: [
+    'reports.view',
+    'reports.create',
+    'reports.export',
+    'analytics.view',
+    'analytics.create',
+  ],
 };
 
 let keycloakAuthzClient: KeycloakAuthzClient | null = null;
@@ -84,14 +98,20 @@ const permissionService = {
           const response = await apiClient.get('/api/Permissions');
           return response.data;
         } catch (keycloakError) {
-          console.error('Error fetching permissions from Keycloak:', JSON.stringify(keycloakError, null, 2));
+          console.error(
+            'Error fetching permissions from Keycloak:',
+            JSON.stringify(keycloakError, null, 2)
+          );
         }
       }
 
       const response = await apiClient.get('/api/Permissions');
       return response.data;
     } catch (error) {
-      console.error('Error fetching permissions:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error fetching permissions:',
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to empty permissions list');
       return [];
     }
@@ -102,18 +122,28 @@ const permissionService = {
       const response = await apiClient.get('/api/Permissions/Categories');
       return response.data;
     } catch (error) {
-      console.error('Error fetching permission categories:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error fetching permission categories:',
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock permission categories');
       return mockPermissionCategories;
     }
   },
 
-  getPermissionsByCategory: async (category: string): Promise<PermissionInfo[]> => {
+  getPermissionsByCategory: async (
+    category: string
+  ): Promise<PermissionInfo[]> => {
     try {
-      const response = await apiClient.get(`/api/Permissions/ByCategory/${encodeURIComponent(category)}`);
+      const response = await apiClient.get(
+        `/api/Permissions/ByCategory/${encodeURIComponent(category)}`
+      );
       return response.data;
     } catch (error) {
-      console.error(`Error fetching permissions for category ${category}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error fetching permissions for category ${category}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to empty category permissions');
 
       try {
@@ -130,17 +160,25 @@ const permissionService = {
       const authzClient = initKeycloakAuthz();
       if (authzClient && keycloak.authenticated) {
         try {
-          const response = await apiClient.get(`/api/Permissions/Role/${roleId}`);
+          const response = await apiClient.get(
+            `/api/Permissions/Role/${roleId}`
+          );
           return response.data;
         } catch (keycloakError) {
-          console.error('Error fetching permissions from Keycloak:', JSON.stringify(keycloakError, null, 2));
+          console.error(
+            'Error fetching permissions from Keycloak:',
+            JSON.stringify(keycloakError, null, 2)
+          );
         }
       }
 
       const response = await apiClient.get(`/api/Permissions/Role/${roleId}`);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching permissions for role with ID ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error fetching permissions for role with ID ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to mock role permissions');
       return mockRolePermissions[roleId] || [];
     }
@@ -151,17 +189,27 @@ const permissionService = {
       const authzClient = initKeycloakAuthz();
       if (authzClient && keycloak.authenticated) {
         try {
-          const response = await apiClient.get(`/api/Permissions/Role/ByName/${encodeURIComponent(roleName)}`);
+          const response = await apiClient.get(
+            `/api/Permissions/Role/ByName/${encodeURIComponent(roleName)}`
+          );
           return response.data;
         } catch (keycloakError) {
-          console.error('Error fetching permissions from Keycloak:', JSON.stringify(keycloakError, null, 2));
+          console.error(
+            'Error fetching permissions from Keycloak:',
+            JSON.stringify(keycloakError, null, 2)
+          );
         }
       }
 
-      const response = await apiClient.get(`/api/Permissions/Role/ByName/${encodeURIComponent(roleName)}`);
+      const response = await apiClient.get(
+        `/api/Permissions/Role/ByName/${encodeURIComponent(roleName)}`
+      );
       return response.data;
     } catch (error) {
-      console.error(`Error fetching permissions for role with name ${roleName}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error fetching permissions for role with name ${roleName}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to empty role permissions');
 
       const roleNameToId: Record<string, number> = {
@@ -186,17 +234,26 @@ const permissionService = {
       const response = await apiClient.get(`/api/Permissions/User/${userId}`);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching permissions for user with ID ${userId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error fetching permissions for user with ID ${userId}:`,
+        JSON.stringify(error, null, 2)
+      );
       console.log('Falling back to empty user permissions');
       return [];
     }
   },
 
-  updateRolePermissions: async (roleId: number, permissions: string[]): Promise<void> => {
+  updateRolePermissions: async (
+    roleId: number,
+    permissions: string[]
+  ): Promise<void> => {
     try {
       await apiClient.put(`/api/Permissions/Role/${roleId}`, permissions);
     } catch (error) {
-      console.error(`Error updating permissions for role with ID ${roleId}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error updating permissions for role with ID ${roleId}:`,
+        JSON.stringify(error, null, 2)
+      );
       throw error;
     }
   },
@@ -209,10 +266,15 @@ const permissionService = {
         return await authzClient.hasPermission(resource, scope);
       }
 
-      const response = await apiClient.get(`/api/Permissions/Check/${encodeURIComponent(permission)}`);
+      const response = await apiClient.get(
+        `/api/Permissions/Check/${encodeURIComponent(permission)}`
+      );
       return response.data.hasPermission;
     } catch (error) {
-      console.error(`Error checking permission ${permission}:`, JSON.stringify(error, null, 2));
+      console.error(
+        `Error checking permission ${permission}:`,
+        JSON.stringify(error, null, 2)
+      );
       return false;
     }
   },

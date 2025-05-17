@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import { useQuery } from '@tanstack/react-query';
 import useKeycloakUser from '@/hooks/useKeycloakUser';
 
@@ -31,12 +37,16 @@ interface UserSubscriptionContextType {
   refreshSubscription: () => void;
 }
 
-const UserSubscriptionContext = createContext<UserSubscriptionContextType | undefined>(undefined);
+const UserSubscriptionContext = createContext<
+  UserSubscriptionContextType | undefined
+>(undefined);
 
 export const useUserSubscription = () => {
   const context = useContext(UserSubscriptionContext);
   if (context === undefined) {
-    throw new Error('useUserSubscription must be used within a UserSubscriptionProvider');
+    throw new Error(
+      'useUserSubscription must be used within a UserSubscriptionProvider'
+    );
   }
   return context;
 };
@@ -50,7 +60,9 @@ const userSubscriptionCache = new Map<
 >();
 const SUBSCRIPTION_CACHE_TTL = 5 * 60 * 1000;
 
-const fetchUserSubscription = async (userId: string): Promise<UserSubscription | null> => {
+const fetchUserSubscription = async (
+  userId: string
+): Promise<UserSubscription | null> => {
   const now = Date.now();
   const cachedData = userSubscriptionCache.get(userId);
   if (cachedData && now - cachedData.timestamp < SUBSCRIPTION_CACHE_TTL) {
@@ -65,7 +77,9 @@ const fetchUserSubscription = async (userId: string): Promise<UserSubscription |
 
     const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
     if (useMockData) {
-      console.log('Using mock subscription data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true');
+      console.log(
+        'Using mock subscription data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true'
+      );
       const mockSubscription = {
         id: 1,
         userId,
@@ -77,7 +91,14 @@ const fetchUserSubscription = async (userId: string): Promise<UserSubscription |
         },
         startDate: new Date().toISOString(),
         isActive: true,
-        enabledFeatures: ['Dashboard', 'Products List', 'Add/Edit Product', 'Sales Reports', 'Inventory Management', 'Customer Management'],
+        enabledFeatures: [
+          'Dashboard',
+          'Products List',
+          'Add/Edit Product',
+          'Sales Reports',
+          'Inventory Management',
+          'Customer Management',
+        ],
         additionalPackages: [],
       };
 
@@ -99,8 +120,13 @@ const fetchUserSubscription = async (userId: string): Promise<UserSubscription |
     });
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => 'No error details available');
-      console.error(`API Error (${response.status}): ${response.statusText}`, JSON.stringify(errorText, null, 2));
+      const errorText = await response
+        .text()
+        .catch(() => 'No error details available');
+      console.error(
+        `API Error (${response.status}): ${response.statusText}`,
+        JSON.stringify(errorText, null, 2)
+      );
 
       if (response.status === 404) {
         console.warn('API endpoint not found (404), using fallback data');
@@ -109,7 +135,10 @@ const fetchUserSubscription = async (userId: string): Promise<UserSubscription |
     }
 
     const data = await response.json();
-    console.log('Successfully fetched user subscription:', JSON.stringify(data, null, 2));
+    console.log(
+      'Successfully fetched user subscription:',
+      JSON.stringify(data, null, 2)
+    );
 
     userSubscriptionCache.set(userId, {
       subscription: data,
@@ -118,7 +147,10 @@ const fetchUserSubscription = async (userId: string): Promise<UserSubscription |
 
     return data;
   } catch (error) {
-    console.error('Error fetching user subscription:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching user subscription:',
+      JSON.stringify(error, null, 2)
+    );
 
     const fallbackSubscription = {
       id: 1,
@@ -131,11 +163,21 @@ const fetchUserSubscription = async (userId: string): Promise<UserSubscription |
       },
       startDate: new Date().toISOString(),
       isActive: true,
-      enabledFeatures: ['Dashboard', 'Products List', 'Add/Edit Product', 'Sales Reports', 'Inventory Management', 'Customer Management'],
+      enabledFeatures: [
+        'Dashboard',
+        'Products List',
+        'Add/Edit Product',
+        'Sales Reports',
+        'Inventory Management',
+        'Customer Management',
+      ],
       additionalPackages: [],
     };
 
-    console.log('Using fallback subscription due to error:', JSON.stringify(fallbackSubscription, null, 2));
+    console.log(
+      'Using fallback subscription due to error:',
+      JSON.stringify(fallbackSubscription, null, 2)
+    );
 
     userSubscriptionCache.set(userId, {
       subscription: fallbackSubscription,
@@ -146,7 +188,10 @@ const fetchUserSubscription = async (userId: string): Promise<UserSubscription |
   }
 };
 
-const userFeaturesCache = new Map<string, { features: string[]; timestamp: number }>();
+const userFeaturesCache = new Map<
+  string,
+  { features: string[]; timestamp: number }
+>();
 const CACHE_TTL = 5 * 60 * 1000;
 
 const fetchUserFeatures = async (userId: string): Promise<string[]> => {
@@ -164,7 +209,9 @@ const fetchUserFeatures = async (userId: string): Promise<string[]> => {
 
     const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
     if (useMockData) {
-      console.log('Using mock data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true');
+      console.log(
+        'Using mock data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true'
+      );
       const mockFeatures = [
         'Dashboard',
         'Products List',
@@ -182,18 +229,28 @@ const fetchUserFeatures = async (userId: string): Promise<string[]> => {
       return mockFeatures;
     }
 
-    console.log(`Making API request to: /api/UserSubscription/user/${userId}/features`);
-    const response = await fetch(`/api/UserSubscription/user/${userId}/features`, {
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        Pragma: 'no-cache',
-        Expires: '0',
-      },
-    });
+    console.log(
+      `Making API request to: /api/UserSubscription/user/${userId}/features`
+    );
+    const response = await fetch(
+      `/api/UserSubscription/user/${userId}/features`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
+      }
+    );
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => 'No error details available');
-      console.error(`API Error (${response.status}): ${response.statusText}`, JSON.stringify(errorText, null, 2));
+      const errorText = await response
+        .text()
+        .catch(() => 'No error details available');
+      console.error(
+        `API Error (${response.status}): ${response.statusText}`,
+        JSON.stringify(errorText, null, 2)
+      );
 
       if (response.status === 404) {
         console.warn('API endpoint not found (404), using fallback data');
@@ -204,7 +261,10 @@ const fetchUserFeatures = async (userId: string): Promise<string[]> => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched user features:', JSON.stringify(data, null, 2));
+    console.log(
+      'Successfully fetched user features:',
+      JSON.stringify(data, null, 2)
+    );
 
     userFeaturesCache.set(userId, {
       features: data,
@@ -213,7 +273,10 @@ const fetchUserFeatures = async (userId: string): Promise<string[]> => {
 
     return data;
   } catch (error) {
-    console.error('Error fetching user features:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching user features:',
+      JSON.stringify(error, null, 2)
+    );
 
     const fallbackFeatures = [
       'Dashboard',
@@ -224,7 +287,10 @@ const fetchUserFeatures = async (userId: string): Promise<string[]> => {
       'Customer Management',
     ];
 
-    console.log('Using fallback features due to error:', JSON.stringify(fallbackFeatures, null, 2));
+    console.log(
+      'Using fallback features due to error:',
+      JSON.stringify(fallbackFeatures, null, 2)
+    );
 
     userFeaturesCache.set(userId, {
       features: fallbackFeatures,
@@ -258,7 +324,9 @@ export const UserSubscriptionProvider: React.FC<{
   useEffect(() => {
     if (featuresLoadedRef.current || !userId || !isAuthenticated) {
       if (!userId || !isAuthenticated) {
-        console.log('User not authenticated or userId not available, skipping feature loading');
+        console.log(
+          'User not authenticated or userId not available, skipping feature loading'
+        );
       }
       return;
     }
@@ -270,10 +338,20 @@ export const UserSubscriptionProvider: React.FC<{
 
         featuresLoadedRef.current = true;
       } catch (error) {
-        console.error('Failed to load user features:', JSON.stringify(error, null, 2));
+        console.error(
+          'Failed to load user features:',
+          JSON.stringify(error, null, 2)
+        );
 
-        const defaultFeatures = ['Dashboard', 'Products List', 'Add/Edit Product'];
-        console.warn('Setting default features due to error:', JSON.stringify(defaultFeatures, null, 2));
+        const defaultFeatures = [
+          'Dashboard',
+          'Products List',
+          'Add/Edit Product',
+        ];
+        console.warn(
+          'Setting default features due to error:',
+          JSON.stringify(defaultFeatures, null, 2)
+        );
         setAvailableFeatures(defaultFeatures);
 
         featuresLoadedRef.current = true;
@@ -306,12 +384,15 @@ export const UserSubscriptionProvider: React.FC<{
     if (!userId) return;
 
     try {
-      const response = await fetch(`/api/UserSubscription/user/${userId}/enable-package/${packageId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `/api/UserSubscription/user/${userId}/enable-package/${packageId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to enable package: ${response.statusText}`);
@@ -319,7 +400,10 @@ export const UserSubscriptionProvider: React.FC<{
 
       await updateFeaturesAfterPackageChange(userId);
     } catch (error) {
-      console.error('Error enabling additional package:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error enabling additional package:',
+        JSON.stringify(error, null, 2)
+      );
       throw error;
     }
   };
@@ -328,12 +412,15 @@ export const UserSubscriptionProvider: React.FC<{
     if (!userId) return;
 
     try {
-      const response = await fetch(`/api/UserSubscription/user/${userId}/disable-package/${packageId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `/api/UserSubscription/user/${userId}/disable-package/${packageId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Failed to disable package: ${response.statusText}`);
@@ -341,7 +428,10 @@ export const UserSubscriptionProvider: React.FC<{
 
       await updateFeaturesAfterPackageChange(userId);
     } catch (error) {
-      console.error('Error disabling additional package:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error disabling additional package:',
+        JSON.stringify(error, null, 2)
+      );
       throw error;
     }
   };
@@ -360,7 +450,10 @@ export const UserSubscriptionProvider: React.FC<{
         setAvailableFeatures(features);
         featuresLoadedRef.current = true;
       } catch (error) {
-        console.error('Error refreshing features:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error refreshing features:',
+          JSON.stringify(error, null, 2)
+        );
       }
     }
   }, [userId, refetch]);

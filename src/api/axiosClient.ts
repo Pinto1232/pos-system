@@ -3,7 +3,13 @@
 import axios from 'axios';
 import { SpinnerContext } from '@/contexts/SpinnerContext';
 import { useContext, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient, UseMutationResult, QueryKey } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseMutationResult,
+  QueryKey,
+} from '@tanstack/react-query';
 
 export interface ApiResponse<T = unknown> {
   data: T;
@@ -33,7 +39,10 @@ const apiClient = axios.create({
   timeout: DEFAULT_TIMEOUT,
 });
 
-console.log('API Client initialized with baseURL:', JSON.stringify(process.env.NEXT_PUBLIC_API_URL, null, 2));
+console.log(
+  'API Client initialized with baseURL:',
+  JSON.stringify(process.env.NEXT_PUBLIC_API_URL, null, 2)
+);
 
 const getErrorMessageForStatus = (status: number): string => {
   switch (status) {
@@ -63,19 +72,31 @@ const useApiClient = () => {
           const token = localStorage.getItem('accessToken');
           if (token) {
             config.headers.Authorization = `Bearer ${token}`;
-            console.log('Added token to request:', JSON.stringify(config.url, null, 2));
+            console.log(
+              'Added token to request:',
+              JSON.stringify(config.url, null, 2)
+            );
           } else {
-            console.log('No token available for request:', JSON.stringify(config.url, null, 2));
+            console.log(
+              'No token available for request:',
+              JSON.stringify(config.url, null, 2)
+            );
           }
         } catch (error) {
-          console.error('Error retrieving access token:', JSON.stringify(error, null, 2));
+          console.error(
+            'Error retrieving access token:',
+            JSON.stringify(error, null, 2)
+          );
         }
         if (spinnerContext) {
           spinnerContext.setLoading(true);
           spinnerContext.setError(null);
         }
         console.log('Request URL:', JSON.stringify(config.url, null, 2));
-        console.log('Request headers:', JSON.stringify(config.headers, null, 2));
+        console.log(
+          'Request headers:',
+          JSON.stringify(config.headers, null, 2)
+        );
         return config;
       },
       (error) => {
@@ -97,21 +118,33 @@ const useApiClient = () => {
           await new Promise((resolve) => setTimeout(resolve, 500));
           spinnerContext.setLoading(false);
 
-          const suppressAuthError = error.config?.suppressAuthErrors === true && error.response?.status === 401;
+          const suppressAuthError =
+            error.config?.suppressAuthErrors === true &&
+            error.response?.status === 401;
 
           if (!suppressAuthError && error.response) {
             const { status, data } = error.response;
-            spinnerContext.setError(data?.message || `Error (${status}): ${getErrorMessageForStatus(status)}`);
+            spinnerContext.setError(
+              data?.message ||
+                `Error (${status}): ${getErrorMessageForStatus(status)}`
+            );
           } else if (!error.response) {
-            spinnerContext.setError('Network error. Please check your backend server connection.');
+            spinnerContext.setError(
+              'Network error. Please check your backend server connection.'
+            );
           }
         }
 
         if (!error.response) {
-          console.error('Network Error or Server Unreachable:', JSON.stringify(error.message, null, 2));
+          console.error(
+            'Network Error or Server Unreachable:',
+            JSON.stringify(error.message, null, 2)
+          );
 
           const baseUrl = apiClient.defaults.baseURL || 'http://localhost:5107';
-          console.error(`Unable to connect to backend server at ${baseUrl}. Please ensure the server is running.`);
+          console.error(
+            `Unable to connect to backend server at ${baseUrl}. Please ensure the server is running.`
+          );
           return Promise.reject(
             new Error(
               `Network error: Unable to connect to backend server at ${baseUrl}. Please ensure the server is running and try again.`
@@ -126,19 +159,29 @@ const useApiClient = () => {
             return Promise.reject(new Error(data?.message || 'Bad request.'));
           case 401:
             console.warn('Unauthorized: Token may be expired.');
-            return Promise.reject(new Error('Unauthorized. Please log in again.'));
+            return Promise.reject(
+              new Error('Unauthorized. Please log in again.')
+            );
           case 403:
-            console.warn('Forbidden: You do not have permission to access this resource.');
-            return Promise.reject(new Error('Forbidden. You do not have access.'));
+            console.warn(
+              'Forbidden: You do not have permission to access this resource.'
+            );
+            return Promise.reject(
+              new Error('Forbidden. You do not have access.')
+            );
           case 404:
             console.warn('Not Found:', JSON.stringify(data, null, 2));
             return Promise.reject(new Error('Requested resource not found.'));
           case 500:
             console.error('Server Error:', JSON.stringify(data, null, 2));
-            return Promise.reject(new Error('Internal server error. Try again later.'));
+            return Promise.reject(
+              new Error('Internal server error. Try again later.')
+            );
           default:
             console.error('API Error:', JSON.stringify(data, null, 2));
-            return Promise.reject(new Error(data?.message || 'An unknown error occurred.'));
+            return Promise.reject(
+              new Error(data?.message || 'An unknown error occurred.')
+            );
         }
       }
     );
@@ -178,7 +221,9 @@ const useApiClient = () => {
 
           const requestTime = performance.now() - startTime;
           if (requestTime > 500) {
-            console.warn(`Slow request detected: ${url} took ${requestTime.toFixed(2)}ms`);
+            console.warn(
+              `Slow request detected: ${url} took ${requestTime.toFixed(2)}ms`
+            );
           }
 
           return data;
@@ -187,8 +232,14 @@ const useApiClient = () => {
             const cacheKey = `${url}-${JSON.stringify(queryKey)}`;
             const cachedResponse = requestCache.get(cacheKey);
 
-            if (cachedResponse && Date.now() - cachedResponse.timestamp < (config?.cacheTTL || CACHE_MAX_AGE)) {
-              console.log(`Using cached data as fallback for ${url} due to request failure`);
+            if (
+              cachedResponse &&
+              Date.now() - cachedResponse.timestamp <
+                (config?.cacheTTL || CACHE_MAX_AGE)
+            ) {
+              console.log(
+                `Using cached data as fallback for ${url} due to request failure`
+              );
               return cachedResponse.data as TData;
             }
           }
@@ -219,7 +270,9 @@ const useApiClient = () => {
 
         const requestTime = performance.now() - startTime;
         if (requestTime > 500) {
-          console.warn(`Slow mutation detected: ${url} took ${requestTime.toFixed(2)}ms`);
+          console.warn(
+            `Slow mutation detected: ${url} took ${requestTime.toFixed(2)}ms`
+          );
         }
 
         return data;
@@ -238,29 +291,50 @@ const useApiClient = () => {
     });
   };
 
-  const useUpdateCustomization = <TData = unknown, TVariables = Record<string, unknown>>(
+  const useUpdateCustomization = <
+    TData = unknown,
+    TVariables = Record<string, unknown>,
+  >(
     endpoint = '/api/UserCustomization',
     config?: RequestConfig
   ) => {
     return useMutation<TData, Error, TVariables>({
       mutationFn: async (customization: TVariables) => {
-        console.log('Updating customization with endpoint:', JSON.stringify(endpoint, null, 2));
-        console.log('Customization data:', JSON.stringify(customization, null, 2));
+        console.log(
+          'Updating customization with endpoint:',
+          JSON.stringify(endpoint, null, 2)
+        );
+        console.log(
+          'Customization data:',
+          JSON.stringify(customization, null, 2)
+        );
 
         try {
-          const { data } = await apiClient.post<TData>(endpoint, customization, {
-            timeout: config?.timeout || DEFAULT_TIMEOUT,
-            suppressAuthErrors: config?.suppressAuthErrors,
-          });
-          console.log('Customization update successful, received data:', JSON.stringify(data, null, 2));
+          const { data } = await apiClient.post<TData>(
+            endpoint,
+            customization,
+            {
+              timeout: config?.timeout || DEFAULT_TIMEOUT,
+              suppressAuthErrors: config?.suppressAuthErrors,
+            }
+          );
+          console.log(
+            'Customization update successful, received data:',
+            JSON.stringify(data, null, 2)
+          );
           return data;
         } catch (error) {
-          console.error('Error updating customization:', JSON.stringify(error, null, 2));
+          console.error(
+            'Error updating customization:',
+            JSON.stringify(error, null, 2)
+          );
           throw error;
         }
       },
       onSuccess: () => {
-        console.log('Invalidating customization queries after successful update');
+        console.log(
+          'Invalidating customization queries after successful update'
+        );
         queryClient.invalidateQueries({
           queryKey: ['customization'],
         });
@@ -278,7 +352,10 @@ const useApiClient = () => {
 
 export { apiClient, useApiClient };
 
-export const useUpdateCustomization = <TData = unknown, TVariables = Record<string, unknown>>(
+export const useUpdateCustomization = <
+  TData = unknown,
+  TVariables = Record<string, unknown>,
+>(
   endpoint = '/api/UserCustomization',
   config?: RequestConfig
 ): UseMutationResult<TData, Error, TVariables, unknown> => {

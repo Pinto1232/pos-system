@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useEffect, useState, Suspense, lazy } from 'react';
-import { Box, Typography, useTheme, useMediaQuery, Skeleton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  useTheme,
+  useMediaQuery,
+  Skeleton,
+} from '@mui/material';
 import { AuthContext } from '@/contexts/AuthContext';
 import styles from './dashboardMain.module.css';
 import ProductTableContainer from '../productTable/ProductTableContainer';
@@ -15,7 +21,9 @@ import ProductEditContainer from '../productEdit/ProductEditContainer';
 import SalesContainer from '../sales/salesContainer';
 import FeatureGuard from '../feature-access/FeatureGuard';
 
-const PricingPackagesClient = lazy(() => import('@/app/pricing-packages/PricingPackagesClient'));
+const PricingPackagesClient = lazy(
+  () => import('@/app/pricing-packages/PricingPackagesClient')
+);
 
 interface DashboardMainProps {
   activeSection: string;
@@ -181,10 +189,26 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
               mb: 2,
             }}
           />
-          <Skeleton variant="rectangular" height={isMobile ? 50 : 60} sx={{ mb: 2, borderRadius: 1 }} />
-          <Skeleton variant="rectangular" height={isMobile ? 200 : 300} sx={{ mb: 2, borderRadius: 1 }} />
-          <Skeleton variant="rectangular" height={isMobile ? 150 : 200} sx={{ mb: 2, borderRadius: 1 }} />
-          <Skeleton variant="rectangular" height={isMobile ? 150 : 200} sx={{ borderRadius: 1 }} />
+          <Skeleton
+            variant="rectangular"
+            height={isMobile ? 50 : 60}
+            sx={{ mb: 2, borderRadius: 1 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={isMobile ? 200 : 300}
+            sx={{ mb: 2, borderRadius: 1 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={isMobile ? 150 : 200}
+            sx={{ mb: 2, borderRadius: 1 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            height={isMobile ? 150 : 200}
+            sx={{ borderRadius: 1 }}
+          />
         </Box>
       )}
     </div>

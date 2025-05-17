@@ -13,7 +13,9 @@ interface DashboardClientProps {
   initialSubscriptionData?: UserSubscriptionData | null;
 }
 
-const DashboardClient: React.FC<DashboardClientProps> = ({ initialSubscriptionData }) => {
+const DashboardClient: React.FC<DashboardClientProps> = ({
+  initialSubscriptionData,
+}) => {
   const { stopLoading } = useSpinner();
   const { isInitialized } = useContext(AuthContext);
 
@@ -37,7 +39,9 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ initialSubscriptionDa
   useEffect(() => {
     if (!isInitialized) return;
 
-    console.log('⚠️ WARNING: Client-side authentication check is temporarily disabled for development');
+    console.log(
+      '⚠️ WARNING: Client-side authentication check is temporarily disabled for development'
+    );
     console.log('⚠️ This should be re-enabled before deploying to production');
 
     setAuthStatus({
@@ -230,7 +234,9 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ initialSubscriptionDa
   useEffect(() => {
     if (!isInitialized) return;
 
-    const isFreshLogin = typeof window !== 'undefined' && sessionStorage.getItem('freshLogin') === 'true';
+    const isFreshLogin =
+      typeof window !== 'undefined' &&
+      sessionStorage.getItem('freshLogin') === 'true';
 
     if (isFreshLogin) {
       if (typeof window !== 'undefined') {
@@ -251,7 +257,9 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ initialSubscriptionDa
     }
   }, [isInitialized, stopLoading]);
 
-  console.log('⚠️ WARNING: Dashboard rendering check is temporarily disabled for development');
+  console.log(
+    '⚠️ WARNING: Dashboard rendering check is temporarily disabled for development'
+  );
 
   if (!isInitialized) {
     return <DashboardLoading />;

@@ -7,7 +7,9 @@ interface SidebarContextProps {
   toggleSidebar: () => void;
 }
 
-const SidebarContext = createContext<SidebarContextProps | undefined>(undefined);
+const SidebarContext = createContext<SidebarContextProps | undefined>(
+  undefined
+);
 
 export const SidebarProvider = ({ children }: { children: ReactNode }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -16,7 +18,11 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
     setSidebarOpen((prev) => !prev);
   };
 
-  return <SidebarContext.Provider value={{ isSidebarOpen, toggleSidebar }}>{children}</SidebarContext.Provider>;
+  return (
+    <SidebarContext.Provider value={{ isSidebarOpen, toggleSidebar }}>
+      {children}
+    </SidebarContext.Provider>
+  );
 };
 
 export const useSidebar = () => {

@@ -1,8 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import { IconButton, Badge, Popover, Box, Typography, Divider, Button } from '@mui/material';
-import { Notifications as NotificationsIcon, Settings as SettingsIcon, FilterList as FilterListIcon } from '@mui/icons-material';
+import {
+  IconButton,
+  Badge,
+  Popover,
+  Box,
+  Typography,
+  Divider,
+  Button,
+} from '@mui/material';
+import {
+  Notifications as NotificationsIcon,
+  Settings as SettingsIcon,
+  FilterList as FilterListIcon,
+} from '@mui/icons-material';
 import NotificationList from './NotificationList';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { styled } from '@mui/material/styles';

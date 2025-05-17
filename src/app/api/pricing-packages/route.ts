@@ -34,7 +34,8 @@ const fallbackPackages: PricingPackagesResponse = {
       description:
         'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting;Customer database;Simple analytics',
       icon: 'MUI:StarIcon',
-      extraDescription: 'Perfect for small businesses looking for essential features',
+      extraDescription:
+        'Perfect for small businesses looking for essential features',
       price: 39.99,
       testPeriodDays: 14,
       type: 'starter-plus',
@@ -47,7 +48,8 @@ const fallbackPackages: PricingPackagesResponse = {
       description:
         'Everything in Growth;Advanced inventory forecasting;Enhanced customer loyalty program;Marketing automation tools;Staff performance tracking;Customizable dashboards;Mobile app access',
       icon: 'MUI:TrendingUpIcon',
-      extraDescription: 'Ideal for growing businesses that need advanced features',
+      extraDescription:
+        'Ideal for growing businesses that need advanced features',
       price: 79.99,
       testPeriodDays: 14,
       type: 'growth-pro',
@@ -60,7 +62,8 @@ const fallbackPackages: PricingPackagesResponse = {
       description:
         'Tailor-made solutions for your unique business needs;Perfect for businesses requiring customized POS features;Build your own feature set;Pay only for what you need;Flexible scaling options;Industry-specific solutions;Personalized onboarding',
       icon: 'MUI:BuildIcon',
-      extraDescription: 'The ultimate flexibility with professional customization services',
+      extraDescription:
+        'The ultimate flexibility with professional customization services',
       price: 129.99,
       testPeriodDays: 30,
       type: 'custom-pro',
@@ -73,7 +76,8 @@ const fallbackPackages: PricingPackagesResponse = {
       description:
         'Complete enterprise solution;Multi-location support;Advanced analytics;Priority support;Custom integrations;Dedicated account manager;Staff training;Enterprise-grade security',
       icon: 'MUI:BusinessIcon',
-      extraDescription: 'Comprehensive solution for large businesses with multiple locations',
+      extraDescription:
+        'Comprehensive solution for large businesses with multiple locations',
       price: 199.99,
       testPeriodDays: 30,
       type: 'enterprise-elite',
@@ -86,7 +90,8 @@ const fallbackPackages: PricingPackagesResponse = {
       description:
         'All-inclusive POS package with premium features;Best for businesses looking for top-tier POS solutions;Advanced AI-powered analytics;Predictive inventory management;Omnichannel integration;VIP support;Quarterly business reviews;Custom reporting',
       icon: 'MUI:DiamondIcon',
-      extraDescription: 'The ultimate POS experience with cutting-edge features and premium support',
+      extraDescription:
+        'The ultimate POS experience with cutting-edge features and premium support',
       price: 349.99,
       testPeriodDays: 30,
       type: 'premium-plus',
@@ -112,7 +117,10 @@ export async function GET(request: NextRequest) {
       revalidatePath('/api/pricing-packages');
     }
 
-    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5107';
+    const apiUrl =
+      process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      'http://localhost:5107';
 
     const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
 
@@ -133,7 +141,9 @@ export async function GET(request: NextRequest) {
 
     try {
       if (typeof window !== 'undefined') {
-        console.log(`Network status: ${navigator.onLine ? 'Online' : 'Offline'}`);
+        console.log(
+          `Network status: ${navigator.onLine ? 'Online' : 'Offline'}`
+        );
       }
 
       const response = await fetch(endpoint, {
@@ -152,11 +162,15 @@ export async function GET(request: NextRequest) {
       clearTimeout(timeoutId);
 
       console.log(`Response status: ${response.status} ${response.statusText}`);
-      console.log(`Response headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()))}`);
+      console.log(
+        `Response headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()))}`
+      );
       console.log(`Content-Type: ${response.headers.get('content-type')}`);
 
       if (!response.ok) {
-        console.warn(`API response not OK: ${response.status} ${response.statusText}`);
+        console.warn(
+          `API response not OK: ${response.status} ${response.statusText}`
+        );
 
         console.error(`Backend API error details:
           - Status: ${response.status}
@@ -175,7 +189,11 @@ export async function GET(request: NextRequest) {
           `);
         }
 
-        const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING, CACHE_TIMES.PRICING * 10, forceRefresh);
+        const headers = await getCacheControlHeaders(
+          CACHE_TIMES.PRICING,
+          CACHE_TIMES.PRICING * 10,
+          forceRefresh
+        );
         return NextResponse.json(fallbackPackages, {
           status: 200,
           headers,
@@ -185,7 +203,11 @@ export async function GET(request: NextRequest) {
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         console.warn(`API response is not JSON: ${contentType}`);
-        const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING, CACHE_TIMES.PRICING * 10, forceRefresh);
+        const headers = await getCacheControlHeaders(
+          CACHE_TIMES.PRICING,
+          CACHE_TIMES.PRICING * 10,
+          forceRefresh
+        );
         return NextResponse.json(fallbackPackages, {
           status: 200,
           headers,
@@ -195,7 +217,11 @@ export async function GET(request: NextRequest) {
       const responseText = await response.text();
       if (!responseText || responseText.trim() === '') {
         console.warn('API response is empty');
-        const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING, CACHE_TIMES.PRICING * 10, forceRefresh);
+        const headers = await getCacheControlHeaders(
+          CACHE_TIMES.PRICING,
+          CACHE_TIMES.PRICING * 10,
+          forceRefresh
+        );
         return NextResponse.json(fallbackPackages, {
           status: 200,
           headers,
@@ -203,9 +229,14 @@ export async function GET(request: NextRequest) {
       }
 
       console.group('API Response Analysis');
-      console.log('Raw response first 100 chars:', responseText.substring(0, 100) + '...');
+      console.log(
+        'Raw response first 100 chars:',
+        responseText.substring(0, 100) + '...'
+      );
 
-      const isPricingPackagesResponse = (obj: unknown): obj is PricingPackagesResponse => {
+      const isPricingPackagesResponse = (
+        obj: unknown
+      ): obj is PricingPackagesResponse => {
         if (!obj || typeof obj !== 'object') return false;
 
         const candidate = obj as Record<string, unknown>;
@@ -250,15 +281,26 @@ export async function GET(request: NextRequest) {
           console.log(`Error #${index + 1}:`, JSON.stringify(error, null, 2));
         });
         console.groupEnd();
-        console.warn('Authentication errors found in response, but continuing processing');
+        console.warn(
+          'Authentication errors found in response, but continuing processing'
+        );
       }
 
       const pricingData = extractedObjects.find(isPricingPackagesResponse);
       if (pricingData) {
         console.group('Valid Pricing Data');
-        console.log('Total Items:', JSON.stringify(pricingData.totalItems, null, 2));
-        console.log('Data Length:', JSON.stringify(pricingData.data.length, null, 2));
-        console.log('First Item:', JSON.stringify(pricingData.data[0], null, 2));
+        console.log(
+          'Total Items:',
+          JSON.stringify(pricingData.totalItems, null, 2)
+        );
+        console.log(
+          'Data Length:',
+          JSON.stringify(pricingData.data.length, null, 2)
+        );
+        console.log(
+          'First Item:',
+          JSON.stringify(pricingData.data[0], null, 2)
+        );
         console.groupEnd();
       }
 
@@ -268,16 +310,31 @@ export async function GET(request: NextRequest) {
         data = pricingData as PricingPackagesResponse;
         console.log('Using extracted pricing data object');
       } else {
-        console.log('No valid pricing data found in extracted objects, trying safeJsonParse');
-        data = safeJsonParse(responseText, isPricingPackagesResponse, fallbackPackages) as PricingPackagesResponse;
+        console.log(
+          'No valid pricing data found in extracted objects, trying safeJsonParse'
+        );
+        data = safeJsonParse(
+          responseText,
+          isPricingPackagesResponse,
+          fallbackPackages
+        ) as PricingPackagesResponse;
       }
 
       if (!isPricingPackagesResponse(data)) {
-        console.error('Parsed data does not match expected PricingPackagesResponse structure');
+        console.error(
+          'Parsed data does not match expected PricingPackagesResponse structure'
+        );
         console.error('Parsed data:', JSON.stringify(data, null, 2));
-        console.error('Response text (first 200 chars):', responseText.substring(0, 200) + '...');
+        console.error(
+          'Response text (first 200 chars):',
+          responseText.substring(0, 200) + '...'
+        );
 
-        const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING, CACHE_TIMES.PRICING * 10, forceRefresh);
+        const headers = await getCacheControlHeaders(
+          CACHE_TIMES.PRICING,
+          CACHE_TIMES.PRICING * 10,
+          forceRefresh
+        );
 
         return NextResponse.json(fallbackPackages, {
           status: 200,
@@ -297,26 +354,48 @@ export async function GET(request: NextRequest) {
       });
     } catch (fetchError) {
       clearTimeout(timeoutId);
-      console.error('Error during fetch operation:', JSON.stringify(fetchError, null, 2));
-      const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING, CACHE_TIMES.PRICING * 10, forceRefresh);
+      console.error(
+        'Error during fetch operation:',
+        JSON.stringify(fetchError, null, 2)
+      );
+      const headers = await getCacheControlHeaders(
+        CACHE_TIMES.PRICING,
+        CACHE_TIMES.PRICING * 10,
+        forceRefresh
+      );
       return NextResponse.json(fallbackPackages, {
         status: 200,
         headers,
       });
     }
 
-    if (!data || !data.data || !Array.isArray(data.data) || data.data.length === 0) {
+    if (
+      !data ||
+      !data.data ||
+      !Array.isArray(data.data) ||
+      data.data.length === 0
+    ) {
       console.warn('API returned invalid or empty data structure');
-      const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING, CACHE_TIMES.PRICING * 10, forceRefresh);
+      const headers = await getCacheControlHeaders(
+        CACHE_TIMES.PRICING,
+        CACHE_TIMES.PRICING * 10,
+        forceRefresh
+      );
       return NextResponse.json(fallbackPackages, {
         status: 200,
         headers,
       });
     }
 
-    const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING, CACHE_TIMES.PRICING * 10, forceRefresh);
+    const headers = await getCacheControlHeaders(
+      CACHE_TIMES.PRICING,
+      CACHE_TIMES.PRICING * 10,
+      forceRefresh
+    );
 
-    console.log(`[API] Returning pricing data with ${forceRefresh ? 'NO-CACHE' : 'STANDARD'} headers`);
+    console.log(
+      `[API] Returning pricing data with ${forceRefresh ? 'NO-CACHE' : 'STANDARD'} headers`
+    );
     console.log(`[API] Cache headers:`, JSON.stringify(headers, null, 2));
     console.log(
       `[API] Sample pricing data (first item):`,
@@ -335,9 +414,16 @@ export async function GET(request: NextRequest) {
       headers,
     });
   } catch (error) {
-    console.error('Error fetching pricing packages:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching pricing packages:',
+      JSON.stringify(error, null, 2)
+    );
 
-    const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING, CACHE_TIMES.PRICING * 10, forceRefresh);
+    const headers = await getCacheControlHeaders(
+      CACHE_TIMES.PRICING,
+      CACHE_TIMES.PRICING * 10,
+      forceRefresh
+    );
     return NextResponse.json(fallbackPackages, {
       status: 200,
       headers,

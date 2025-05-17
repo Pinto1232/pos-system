@@ -84,13 +84,19 @@ function testJsonParsing() {
     try {
       return JSON.parse(text);
     } catch (error) {
-      console.warn('Standard JSON parsing failed, trying cleanup methods', JSON.stringify(error, null, 2));
+      console.warn(
+        'Standard JSON parsing failed, trying cleanup methods',
+        JSON.stringify(error, null, 2)
+      );
 
       try {
         const cleanedText = cleanJsonText(text);
         return JSON.parse(cleanedText);
       } catch (cleanError) {
-        console.warn('Cleaned JSON parsing failed, trying regex extraction', JSON.stringify(cleanError, null, 2));
+        console.warn(
+          'Cleaned JSON parsing failed, trying regex extraction',
+          JSON.stringify(cleanError, null, 2)
+        );
 
         try {
           const jsonMatch = text.match(/\{.*\}/s);
@@ -98,7 +104,10 @@ function testJsonParsing() {
             return JSON.parse(jsonMatch[0]);
           }
         } catch (regexError) {
-          console.error('All JSON parsing methods failed', JSON.stringify(regexError, null, 2));
+          console.error(
+            'All JSON parsing methods failed',
+            JSON.stringify(regexError, null, 2)
+          );
         }
 
         return null;
@@ -112,13 +121,22 @@ function testJsonParsing() {
 
     try {
       const standardResult = JSON.parse(testCase.input);
-      console.log('Standard JSON.parse succeeded:', JSON.stringify(standardResult, null, 2));
+      console.log(
+        'Standard JSON.parse succeeded:',
+        JSON.stringify(standardResult, null, 2)
+      );
     } catch (error) {
-      console.log('Standard JSON.parse failed:', JSON.stringify(error.message, null, 2));
+      console.log(
+        'Standard JSON.parse failed:',
+        JSON.stringify(error.message, null, 2)
+      );
 
       const safeResult = safeJsonParse(testCase.input);
       if (safeResult) {
-        console.log('Safe JSON parsing succeeded:', JSON.stringify(safeResult, null, 2));
+        console.log(
+          'Safe JSON parsing succeeded:',
+          JSON.stringify(safeResult, null, 2)
+        );
       } else {
         console.log('Safe JSON parsing also failed');
       }

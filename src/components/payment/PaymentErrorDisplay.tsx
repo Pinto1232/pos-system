@@ -26,7 +26,9 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
       case 'card_error':
         return {
           title: 'Card Payment Failed',
-          description: message || 'Your card was declined. Please check your card details or try another payment method.',
+          description:
+            message ||
+            'Your card was declined. Please check your card details or try another payment method.',
           actions: [
             onUseAnotherCard
               ? {
@@ -48,7 +50,8 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
       case 'validation_error':
         return {
           title: 'Invalid Information',
-          description: message || 'Please check your payment information and try again.',
+          description:
+            message || 'Please check your payment information and try again.',
           actions: [
             onRetry
               ? {
@@ -63,7 +66,9 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
       case 'server_error':
         return {
           title: 'Payment System Error',
-          description: message || 'Our payment system is experiencing issues. Please try again later or contact support.',
+          description:
+            message ||
+            'Our payment system is experiencing issues. Please try again later or contact support.',
           actions: [
             onRetry
               ? {
@@ -109,7 +114,9 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
       default:
         return {
           title: 'Payment Error',
-          description: message || 'An unexpected error occurred. Please try again or contact support.',
+          description:
+            message ||
+            'An unexpected error occurred. Please try again or contact support.',
           actions: [
             onRetry
               ? {
@@ -130,7 +137,10 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
     }
   };
 
-  const { title, description, actions } = getUserFriendlyError(errorMessage, errorType);
+  const { title, description, actions } = getUserFriendlyError(
+    errorMessage,
+    errorType
+  );
 
   return (
     <Box sx={{ textAlign: 'center', p: 3 }}>
@@ -152,9 +162,19 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
       </Alert>
 
       {actions && actions.length > 0 && (
-        <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="center"
+          sx={{ mt: 2 }}
+        >
           {actions.map((action, index) => (
-            <Button key={index} variant={action.primary ? 'contained' : 'outlined'} onClick={action.onClick} sx={{ minWidth: 120 }}>
+            <Button
+              key={index}
+              variant={action.primary ? 'contained' : 'outlined'}
+              onClick={action.onClick}
+              sx={{ minWidth: 120 }}
+            >
               {action.label}
             </Button>
           ))}

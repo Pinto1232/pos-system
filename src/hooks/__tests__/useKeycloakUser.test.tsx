@@ -21,7 +21,13 @@ const mockAuthContext: AuthContextType = {
   isInitialized: true,
 };
 
-const wrapper = ({ children, contextValue = mockAuthContext }: { children: React.ReactNode; contextValue?: AuthContextType }) => (
+const wrapper = ({
+  children,
+  contextValue = mockAuthContext,
+}: {
+  children: React.ReactNode;
+  contextValue?: AuthContextType;
+}) => (
   <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 );
 

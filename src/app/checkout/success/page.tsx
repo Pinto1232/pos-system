@@ -1,6 +1,15 @@
 'use client';
 import { Suspense, useState, useEffect, useRef, useContext } from 'react';
-import { Button, Modal, Backdrop, Fade, Box, Typography, IconButton, useTheme } from '@mui/material';
+import {
+  Button,
+  Modal,
+  Backdrop,
+  Fade,
+  Box,
+  Typography,
+  IconButton,
+  useTheme,
+} from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -64,7 +73,9 @@ function SuccessContent({ onConfirm }: { onConfirm: () => void }) {
       return;
     }
 
-    console.log('⚠️ WARNING: Role check is temporarily disabled for development');
+    console.log(
+      '⚠️ WARNING: Role check is temporarily disabled for development'
+    );
     console.log('⚠️ This should be re-enabled before deploying to production');
 
     setTimeout(() => {
@@ -149,7 +160,8 @@ function SuccessContent({ onConfirm }: { onConfirm: () => void }) {
                 mb: 3,
               }}
             >
-              Thank you for your purchase. Your order has been processed successfully.
+              Thank you for your purchase. Your order has been processed
+              successfully.
             </Typography>
 
             <Button

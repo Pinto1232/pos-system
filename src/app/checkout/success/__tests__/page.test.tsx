@@ -42,7 +42,9 @@ describe('SuccessPage Component', () => {
     render(<SuccessPage />);
 
     expect(screen.getByText('Payment Successful! 🎉')).toBeInTheDocument();
-    expect(screen.getByText(/Thank you for your purchase/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Thank you for your purchase/i)
+    ).toBeInTheDocument();
     expect(screen.getByText('Return to Dashboard')).toBeInTheDocument();
   });
 

@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-const fallbackCategories = ['Analytics', 'Integration', 'Customization', 'Support', 'Data'];
+const fallbackCategories = [
+  'Analytics',
+  'Integration',
+  'Customization',
+  'Support',
+  'Data',
+];
 
 export async function GET() {
   try {
@@ -22,7 +29,9 @@ export async function GET() {
     });
 
     if (!response.ok) {
-      console.warn(`Backend API returned status: ${response.status}, serving fallback data`);
+      console.warn(
+        `Backend API returned status: ${response.status}, serving fallback data`
+      );
       return NextResponse.json(fallbackCategories);
     }
 
@@ -30,7 +39,10 @@ export async function GET() {
     console.log('Successfully fetched add-on categories from backend');
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error fetching add-on categories:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching add-on categories:',
+      JSON.stringify(error, null, 2)
+    );
     return NextResponse.json(fallbackCategories);
   }
 }

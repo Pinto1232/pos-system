@@ -73,7 +73,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json(newNotification);
   } catch (error) {
-    console.error('Error creating notification:', JSON.stringify(error, null, 2));
-    return NextResponse.json({ error: 'Failed to create notification' }, { status: 500 });
+    console.error(
+      'Error creating notification:',
+      JSON.stringify(error, null, 2)
+    );
+    return NextResponse.json(
+      { error: 'Failed to create notification' },
+      { status: 500 }
+    );
   }
 }

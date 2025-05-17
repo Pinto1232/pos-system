@@ -3,7 +3,12 @@ import { MdProductionQuantityLimits, MdAttachMoney } from 'react-icons/md';
 import { RiCustomerService2Fill } from 'react-icons/ri';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { BsMegaphone } from 'react-icons/bs';
-import { FaCreditCard, FaUsers, FaChartLine, FaMoneyBillWave } from 'react-icons/fa';
+import {
+  FaCreditCard,
+  FaUsers,
+  FaChartLine,
+  FaMoneyBillWave,
+} from 'react-icons/fa';
 import { TbReorder, TbTruckDelivery } from 'react-icons/tb';
 import { BiReceipt } from 'react-icons/bi';
 

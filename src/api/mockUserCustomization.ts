@@ -1,8 +1,14 @@
-import { UserCustomization, TaxSettings, RegionalSettings } from '@/SettingsModal';
+import {
+  UserCustomization,
+  TaxSettings,
+  RegionalSettings,
+} from '@/SettingsModal';
 
 const STORAGE_KEY = 'userCustomization';
 
-export const mockFetchCustomization = async (userId: string): Promise<UserCustomization> => {
+export const mockFetchCustomization = async (
+  userId: string
+): Promise<UserCustomization> => {
   if (typeof window !== 'undefined') {
     try {
       const storedData = localStorage.getItem(STORAGE_KEY);
@@ -13,7 +19,10 @@ export const mockFetchCustomization = async (userId: string): Promise<UserCustom
 
       const savedNavbarColor = localStorage.getItem('navbarColor');
       if (savedNavbarColor) {
-        console.log('Found saved navbar color in localStorage:', JSON.stringify(savedNavbarColor, null, 2));
+        console.log(
+          'Found saved navbar color in localStorage:',
+          JSON.stringify(savedNavbarColor, null, 2)
+        );
 
         return {
           id: 1,
@@ -26,7 +35,10 @@ export const mockFetchCustomization = async (userId: string): Promise<UserCustom
         };
       }
     } catch (error) {
-      console.error('Error accessing localStorage:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error accessing localStorage:',
+        JSON.stringify(error, null, 2)
+      );
     }
   }
 
@@ -85,7 +97,9 @@ const createDefaultRegionalSettings = (): RegionalSettings => {
 };
 
 const createDefaultCustomization = (userId: string): UserCustomization => {
-  console.log('Creating default user customization with tax and regional settings');
+  console.log(
+    'Creating default user customization with tax and regional settings'
+  );
 
   return {
     id: 1,
@@ -98,23 +112,34 @@ const createDefaultCustomization = (userId: string): UserCustomization => {
   };
 };
 
-export const mockUpdateCustomization = async (customization: UserCustomization): Promise<UserCustomization> => {
-  console.log('Saving customization to localStorage:', JSON.stringify(customization, null, 2));
+export const mockUpdateCustomization = async (
+  customization: UserCustomization
+): Promise<UserCustomization> => {
+  console.log(
+    'Saving customization to localStorage:',
+    JSON.stringify(customization, null, 2)
+  );
 
   if (!customization.taxSettings) {
-    console.warn('No tax settings provided in customization data, using defaults');
+    console.warn(
+      'No tax settings provided in customization data, using defaults'
+    );
     const defaultData = await mockFetchCustomization(customization.userId);
     customization.taxSettings = defaultData.taxSettings;
   }
 
   if (!customization.regionalSettings) {
-    console.warn('No regional settings provided in customization data, using defaults');
+    console.warn(
+      'No regional settings provided in customization data, using defaults'
+    );
     const defaultData = await mockFetchCustomization(customization.userId);
     customization.regionalSettings = defaultData.regionalSettings;
   }
 
   if (!customization.navbarColor) {
-    console.warn('No navbar color provided in customization data, using default');
+    console.warn(
+      'No navbar color provided in customization data, using default'
+    );
     customization.navbarColor = '#000000';
   }
 
@@ -126,9 +151,15 @@ export const mockUpdateCustomization = async (customization: UserCustomization):
       console.log('Customization saved successfully to localStorage');
 
       localStorage.setItem('navbarColor', customization.navbarColor);
-      console.log('Navbar color saved separately for persistence:', JSON.stringify(customization.navbarColor, null, 2));
+      console.log(
+        'Navbar color saved separately for persistence:',
+        JSON.stringify(customization.navbarColor, null, 2)
+      );
     } catch (error) {
-      console.error('Error saving to localStorage:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error saving to localStorage:',
+        JSON.stringify(error, null, 2)
+      );
     }
   } else {
     console.log('Not in browser environment, skipping localStorage save');

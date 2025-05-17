@@ -30,7 +30,8 @@ const fallbackPackages: PricingPackagesResponse = {
     {
       id: 1,
       title: 'Starter',
-      description: 'Basic POS features;Inventory management;Sales reporting;Customer database;Email support;Cloud backup;Regular updates',
+      description:
+        'Basic POS features;Inventory management;Sales reporting;Customer database;Email support;Cloud backup;Regular updates',
       icon: 'MUI:StarIcon',
       extraDescription: 'Perfect for small businesses just getting started',
       price: 29.99,
@@ -45,7 +46,8 @@ const fallbackPackages: PricingPackagesResponse = {
       description:
         'Everything in Growth;Advanced inventory forecasting;Enhanced customer loyalty program;Marketing automation tools;Staff performance tracking;Customizable dashboards;Mobile app access',
       icon: 'MUI:TrendingUpIcon',
-      extraDescription: 'Ideal for growing businesses that need advanced features',
+      extraDescription:
+        'Ideal for growing businesses that need advanced features',
       price: 79.99,
       testPeriodDays: 14,
       type: 'growth-pro',
@@ -84,7 +86,8 @@ const fallbackPackages: PricingPackagesResponse = {
       description:
         'All-inclusive POS package with premium features;Best for businesses looking for top-tier POS solutions;Advanced AI-powered analytics;Predictive inventory management;Omnichannel integration;VIP support;Quarterly business reviews;Custom reporting',
       icon: 'MUI:DiamondIcon',
-      extraDescription: 'The ultimate POS experience with cutting-edge features and premium support',
+      extraDescription:
+        'The ultimate POS experience with cutting-edge features and premium support',
       price: 349.99,
       testPeriodDays: 30,
       type: 'premium-plus',
@@ -111,7 +114,10 @@ export async function GET(request: NextRequest) {
       revalidatePath('/api/pricingpackages');
     }
 
-    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5107';
+    const apiUrl =
+      process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      'http://localhost:5107';
 
     const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
 
@@ -171,7 +177,10 @@ export async function GET(request: NextRequest) {
       try {
         data = JSON.parse(responseText);
       } catch (parseError) {
-        console.error('Error parsing JSON response:', JSON.stringify(parseError, null, 2));
+        console.error(
+          'Error parsing JSON response:',
+          JSON.stringify(parseError, null, 2)
+        );
         console.error('Response text:', responseText.substring(0, 200) + '...');
         const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING);
         return NextResponse.json(fallbackPackages, {
@@ -181,7 +190,10 @@ export async function GET(request: NextRequest) {
       }
     } catch (fetchError) {
       clearTimeout(timeoutId);
-      console.error('Error during fetch operation:', JSON.stringify(fetchError, null, 2));
+      console.error(
+        'Error during fetch operation:',
+        JSON.stringify(fetchError, null, 2)
+      );
       const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING);
       return NextResponse.json(fallbackPackages, {
         status: 200,
@@ -189,7 +201,12 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (!data || !data.data || !Array.isArray(data.data) || data.data.length === 0) {
+    if (
+      !data ||
+      !data.data ||
+      !Array.isArray(data.data) ||
+      data.data.length === 0
+    ) {
       console.warn('API returned invalid or empty data structure');
       const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING);
       return NextResponse.json(fallbackPackages, {
@@ -204,7 +221,10 @@ export async function GET(request: NextRequest) {
       headers,
     });
   } catch (error) {
-    console.error('Error fetching pricing packages:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching pricing packages:',
+      JSON.stringify(error, null, 2)
+    );
 
     const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING);
     return NextResponse.json(fallbackPackages, {

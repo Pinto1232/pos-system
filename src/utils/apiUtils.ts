@@ -54,11 +54,18 @@ export function analyzeResponseText(responseText: string): {
 
   // Check if there are characters before or after the JSON
   const hasLeadingCharacters = firstJsonChar > 0;
-  const hasTrailingCharacters = lastJsonChar !== -1 && lastJsonChar < responseText.length - 1;
+  const hasTrailingCharacters =
+    lastJsonChar !== -1 && lastJsonChar < responseText.length - 1;
 
   // Get the first and last few characters for debugging
-  const firstFewChars = responseText.substring(0, Math.min(20, responseText.length));
-  const lastFewChars = responseText.substring(Math.max(0, responseText.length - 20), responseText.length);
+  const firstFewChars = responseText.substring(
+    0,
+    Math.min(20, responseText.length)
+  );
+  const lastFewChars = responseText.substring(
+    Math.max(0, responseText.length - 20),
+    responseText.length
+  );
 
   // Get character codes for the first few characters
   const charCodes = Array.from(firstFewChars).map((char) => char.charCodeAt(0));
@@ -83,7 +90,11 @@ export function analyzeResponseText(responseText: string): {
  * @param responseText - The response text (if already available)
  * @param label - Optional label for the log
  */
-export async function logResponseDetails(response: Response, responseText?: string, label = 'API Response'): Promise<void> {
+export async function logResponseDetails(
+  response: Response,
+  responseText?: string,
+  label = 'API Response'
+): Promise<void> {
   try {
     const text = responseText || (await response.clone().text());
     const analysis = analyzeResponseText(text);

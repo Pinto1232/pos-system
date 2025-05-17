@@ -12,13 +12,20 @@ const patterns = [
 ];
 
 // Exclude patterns - files to skip
-const excludePatterns = ['**/node_modules/**', '**/__tests__/**', '**/test/**', '**/*.test.*', '**/*.spec.*'];
+const excludePatterns = [
+  '**/node_modules/**',
+  '**/__tests__/**',
+  '**/test/**',
+  '**/*.test.*',
+  '**/*.spec.*',
+];
 
 console.log('Formatting console.log statements...');
 
 // Regular expression to match console.log statements with object arguments
 // This regex is more conservative to avoid breaking code
-const consoleLogRegex = /console\.(log|error|warn|info|debug)\s*\(\s*(['"`].*?['"`])\s*,\s*([a-zA-Z0-9_\.]+)\s*\)/g;
+const consoleLogRegex =
+  /console\.(log|error|warn|info|debug)\s*\(\s*(['"`].*?['"`])\s*,\s*([a-zA-Z0-9_\.]+)\s*\)/g;
 
 // Process each pattern
 let processedCount = 0;
@@ -51,25 +58,33 @@ patterns.forEach((pattern) => {
 
       if (hasConsoleLog) {
         // Replace console.log statements with formatted versions
-        const updatedContent = content.replace(consoleLogRegex, (match, method, message, object) => {
-          // Skip if the object is already JSON.stringify
-          if (object.includes('JSON.stringify')) {
-            return match;
-          }
+        const updatedContent = content.replace(
+          consoleLogRegex,
+          (match, method, message, object) => {
+            // Skip if the object is already JSON.stringify
+            if (object.includes('JSON.stringify')) {
+              return match;
+            }
 
-          // Skip if the object is a simple string or number
-          if (/^(['"`].*['"`]|\d+)$/.test(object.trim())) {
-            return match;
-          }
+            // Skip if the object is a simple string or number
+            if (/^(['"`].*['"`]|\d+)$/.test(object.trim())) {
+              return match;
+            }
 
-          // Skip complex expressions that might break when formatted
-          if (object.includes('(') || object.includes(')') || object.includes('[') || object.includes(']')) {
-            return match;
-          }
+            // Skip complex expressions that might break when formatted
+            if (
+              object.includes('(') ||
+              object.includes(')') ||
+              object.includes('[') ||
+              object.includes(']')
+            ) {
+              return match;
+            }
 
-          // Format the console.log statement - only format simple variable references
-          return `console.${method}(${message}, ${object})`;
-        });
+            // Format the console.log statement - only format simple variable references
+            return `console.${method}(${message}, ${object})`;
+          }
+        );
 
         // Only write the file if changes were made
         if (content !== updatedContent) {

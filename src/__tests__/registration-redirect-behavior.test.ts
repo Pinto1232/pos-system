@@ -10,7 +10,11 @@ jest.mock('@/utils/authUtils', () => {
     handleRegistrationRedirect: jest.fn(function () {
       if (originalModule.isRedirectFromRegistration()) {
         if (window.history && window.history.replaceState) {
-          window.history.replaceState({}, document.title, window.location.pathname);
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          );
         }
 
         authUtils.markAsNewRegistration();
@@ -92,7 +96,9 @@ describe('Registration Redirect Behavior', () => {
     expect(authUtils.markAsNewRegistration).toHaveBeenCalled();
 
     jest.runAllTimers();
-    expect(locationMock.href).toContain('/realms/pisval-pos-realm/protocol/openid-connect/auth');
+    expect(locationMock.href).toContain(
+      '/realms/pisval-pos-realm/protocol/openid-connect/auth'
+    );
     expect(locationMock.href).toContain('client_id=pos-backend');
     expect(locationMock.href).toContain('response_type=code');
     expect(locationMock.href).toContain('scope=openid');
@@ -108,6 +114,8 @@ describe('Registration Redirect Behavior', () => {
     expect(authUtils.markAsNewRegistration).toHaveBeenCalled();
 
     jest.runAllTimers();
-    expect(locationMock.href).toContain('/realms/pisval-pos-realm/protocol/openid-connect/auth');
+    expect(locationMock.href).toContain(
+      '/realms/pisval-pos-realm/protocol/openid-connect/auth'
+    );
   });
 });

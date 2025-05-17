@@ -11,7 +11,11 @@ interface PermissionGuardProps {
   fallback?: ReactNode;
 }
 
-const PermissionGuard: React.FC<PermissionGuardProps> = ({ permission, children, fallback = null }) => {
+const PermissionGuard: React.FC<PermissionGuardProps> = ({
+  permission,
+  children,
+  fallback = null,
+}) => {
   const { authenticated } = useContext(AuthContext);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +32,10 @@ const PermissionGuard: React.FC<PermissionGuardProps> = ({ permission, children,
         const result = await permissionService.hasPermission(permission);
         setHasPermission(result);
       } catch (error) {
-        console.error(`Error checking permission ${permission}:`, JSON.stringify(error, null, 2));
+        console.error(
+          `Error checking permission ${permission}:`,
+          JSON.stringify(error, null, 2)
+        );
         setHasPermission(false);
       } finally {
         setIsLoading(false);

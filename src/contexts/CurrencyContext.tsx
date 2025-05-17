@@ -1,6 +1,15 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo, useRef } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import axios from 'axios';
 import { fetchUserLocation } from '@/api/currencyApi';
 
@@ -45,7 +54,9 @@ interface CurrencyProviderProps {
 // Cache for exchange rates to prevent redundant API calls
 const exchangeRateCache: Record<string, number> = {};
 
-export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) => {
+export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({
+  children,
+}) => {
   const [currency, setCurrency] = useState<string>('USD');
   const [rate, setRate] = useState<number>(1);
   const fetchInProgress = useRef(false);
@@ -59,8 +70,13 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
 
     const now = Date.now();
     const thirtyMinutes = 30 * 60 * 1000;
-    if (now - lastFetchTime.current < thirtyMinutes && exchangeRateCache[currencyCode]) {
-      console.log(`Using cached exchange rate for ${currencyCode}: ${exchangeRateCache[currencyCode]}`);
+    if (
+      now - lastFetchTime.current < thirtyMinutes &&
+      exchangeRateCache[currencyCode]
+    ) {
+      console.log(
+        `Using cached exchange rate for ${currencyCode}: ${exchangeRateCache[currencyCode]}`
+      );
       setRate(exchangeRateCache[currencyCode]);
       return;
     }
@@ -70,9 +86,15 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
       console.log(`Fetching exchange rate for ${currencyCode}`);
 
       const OPEN_EXCHANGE_APP_ID = 'c88ce4a807aa43c3b578f19b66eef7be';
-      const response = await axios.get(`https://openexchangerates.org/api/latest.json?app_id=${OPEN_EXCHANGE_APP_ID}`);
+      const response = await axios.get(
+        `https://openexchangerates.org/api/latest.json?app_id=${OPEN_EXCHANGE_APP_ID}`
+      );
 
-      if (response.data && response.data.rates && response.data.rates[currencyCode]) {
+      if (
+        response.data &&
+        response.data.rates &&
+        response.data.rates[currencyCode]
+      ) {
         const newRate = response.data.rates[currencyCode];
         setRate(newRate);
 
@@ -81,11 +103,16 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
 
         console.log(`Exchange rate for ${currencyCode} set to ${newRate}`);
       } else {
-        console.warn(`Exchange rate for ${currencyCode} not found, using default rate of 1`);
+        console.warn(
+          `Exchange rate for ${currencyCode} not found, using default rate of 1`
+        );
         setRate(1);
       }
     } catch (error) {
-      console.error('Error fetching exchange rate:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error fetching exchange rate:',
+        JSON.stringify(error, null, 2)
+      );
       setRate(1);
     } finally {
       fetchInProgress.current = false;
@@ -115,7 +142,10 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
           }
         }
       } catch (error) {
-        console.error('Error fetching currency information:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error fetching currency information:',
+          JSON.stringify(error, null, 2)
+        );
 
         setCurrency('USD');
         setRate(1);
@@ -161,7 +191,10 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
     [rate]
   );
 
-  const currencySymbol = useMemo(() => (currency === 'ZAR' ? 'R' : currencySymbols[currency] || '$'), [currency]);
+  const currencySymbol = useMemo(
+    () => (currency === 'ZAR' ? 'R' : currencySymbols[currency] || '$'),
+    [currency]
+  );
 
   const contextValue = useMemo(
     () => ({
@@ -172,10 +205,21 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
       convertPrice,
       currencySymbol,
     }),
-    [currency, rate, handleSetCurrency, formatPrice, convertPrice, currencySymbol]
+    [
+      currency,
+      rate,
+      handleSetCurrency,
+      formatPrice,
+      convertPrice,
+      currencySymbol,
+    ]
   );
 
-  return <CurrencyContext.Provider value={contextValue}>{children}</CurrencyContext.Provider>;
+  return (
+    <CurrencyContext.Provider value={contextValue}>
+      {children}
+    </CurrencyContext.Provider>
+  );
 };
 
 export const useCurrency = () => {

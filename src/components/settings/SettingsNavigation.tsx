@@ -1,5 +1,13 @@
 import React from 'react';
-import { Box, List, ListItemButton, ListItemText, TextField, Tooltip, IconButton } from '@mui/material';
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItemText,
+  TextField,
+  Tooltip,
+  IconButton,
+} from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { SettingsItem } from '../../types/settingsTypes';
 
@@ -84,7 +92,9 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
         >
           {(searchQuery.trim() === ''
             ? settingsItems
-            : settingsItems.filter((item) => item.label.toLowerCase().includes(searchQuery.toLowerCase()))
+            : settingsItems.filter((item) =>
+                item.label.toLowerCase().includes(searchQuery.toLowerCase())
+              )
           ).map((item) => (
             <Tooltip title={item.tooltip} placement="right" key={item.label}>
               <ListItemButton
@@ -94,11 +104,16 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
                 selected={selectedSetting === item.label}
                 sx={{
                   py: 2,
-                  borderLeft: selectedSetting === item.label ? '4px solid #173A79' : '4px solid transparent',
-                  bgcolor: selectedSetting === item.label ? '#fff' : 'transparent',
+                  borderLeft:
+                    selectedSetting === item.label
+                      ? '4px solid #173A79'
+                      : '4px solid transparent',
+                  bgcolor:
+                    selectedSetting === item.label ? '#fff' : 'transparent',
                   borderBottom: '1px solid #f0f0f0',
                   '&:hover': {
-                    bgcolor: selectedSetting === item.label ? '#fff' : '#f0f0f0',
+                    bgcolor:
+                      selectedSetting === item.label ? '#fff' : '#f0f0f0',
                   },
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -107,8 +122,10 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
                 <ListItemText
                   primary={item.label}
                   primaryTypographyProps={{
-                    fontWeight: selectedSetting === item.label ? 'bold' : 'normal',
-                    color: selectedSetting === item.label ? '#173A79' : 'inherit',
+                    fontWeight:
+                      selectedSetting === item.label ? 'bold' : 'normal',
+                    color:
+                      selectedSetting === item.label ? '#173A79' : 'inherit',
                   }}
                 />
                 <IconButton size="small" sx={{ opacity: 0.5, ml: 1 }}>

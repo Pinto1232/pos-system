@@ -34,7 +34,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
   return (
     <Paper elevation={0} className={styles.checkoutContainer}>
       <Box className={styles.checkoutLeft}>
-        <Typography variant="h5" className={styles.title} sx={{ padding: '1rem' }}>
+        <Typography
+          variant="h5"
+          className={styles.title}
+          sx={{ padding: '1rem' }}
+        >
           {title}
         </Typography>
 
@@ -44,7 +48,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
               const gridSize = field.name.toLowerCase() === 'address' ? 12 : 6;
               return (
                 <Grid item xs={12} sm={gridSize} key={field.name}>
-                  {field.type === 'select' || field.name === 'country' || field.name === 'state' ? (
+                  {field.type === 'select' ||
+                  field.name === 'country' ||
+                  field.name === 'state' ? (
                     <TextField
                       select
                       name={field.name}
@@ -133,7 +139,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
 
       <Box className={styles.checkoutRight}>
         <Box className={styles.checkoutRightWrapper}>
-          <Typography variant="h5" className={styles.title} sx={{ padding: '1rem' }}>
+          <Typography
+            variant="h5"
+            className={styles.title}
+            sx={{ padding: '1rem' }}
+          >
             {orderSummaryTitle}
           </Typography>
 
@@ -142,10 +152,18 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
               {orderSummaryItems.map((item) => (
                 <Box key={item.label} className={styles.section}>
                   <Box className={styles.itemRow}>
-                    <Typography className={styles.itemLabel}>{item.label}</Typography>
-                    <Typography className={styles.itemValue}>{item.value}</Typography>
+                    <Typography className={styles.itemLabel}>
+                      {item.label}
+                    </Typography>
+                    <Typography className={styles.itemValue}>
+                      {item.value}
+                    </Typography>
                   </Box>
-                  {item.description && <Typography className={styles.itemDescription}>{item.description}</Typography>}
+                  {item.description && (
+                    <Typography className={styles.itemDescription}>
+                      {item.description}
+                    </Typography>
+                  )}
                 </Box>
               ))}
             </Box>
@@ -161,7 +179,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                   if (typeof item.value === 'number') {
                     return acc + item.value;
                   }
-                  const numericValue = parseFloat(item.value.replace(/[^0-9.-]/g, ''));
+                  const numericValue = parseFloat(
+                    item.value.replace(/[^0-9.-]/g, '')
+                  );
                   return acc + (isNaN(numericValue) ? 0 : numericValue);
                 }, 0)
                 .toLocaleString('en-ZA', {
@@ -390,7 +410,20 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                       onChange={onChange}
                       variant="outlined"
                     >
-                      {['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].map((month) => (
+                      {[
+                        '01',
+                        '02',
+                        '03',
+                        '04',
+                        '05',
+                        '06',
+                        '07',
+                        '08',
+                        '09',
+                        '10',
+                        '11',
+                        '12',
+                      ].map((month) => (
                         <MenuItem key={month} value={month}>
                           {month}
                         </MenuItem>
@@ -407,7 +440,10 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                       onChange={onChange}
                       variant="outlined"
                     >
-                      {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
+                      {Array.from(
+                        { length: 10 },
+                        (_, i) => new Date().getFullYear() + i
+                      ).map((year) => (
                         <MenuItem key={year} value={year}>
                           {year}
                         </MenuItem>

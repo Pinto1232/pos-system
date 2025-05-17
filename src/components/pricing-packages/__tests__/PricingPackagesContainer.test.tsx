@@ -41,7 +41,11 @@ jest.mock('@/contexts/CurrencyContext', () => ({
 
 jest.mock('../PricingPackageCard', () => {
   return function MockPricingPackageCard({ packageData }: any) {
-    return <div data-testid={`package-card-${packageData.type}`}>{packageData.title}</div>;
+    return (
+      <div data-testid={`package-card-${packageData.type}`}>
+        {packageData.title}
+      </div>
+    );
   };
 });
 
@@ -86,7 +90,9 @@ describe('PricingPackagesContainer Component', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('No pricing packages available at this time.')).toBeInTheDocument();
+      expect(
+        screen.getByText('No pricing packages available at this time.')
+      ).toBeInTheDocument();
     });
   });
 
@@ -110,7 +116,9 @@ describe('PricingPackagesContainer Component', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('No pricing packages available at this time.')).toBeInTheDocument();
+      expect(
+        screen.getByText('No pricing packages available at this time.')
+      ).toBeInTheDocument();
     });
   });
 
@@ -127,7 +135,9 @@ describe('PricingPackagesContainer Component', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Sign in to view your personalized pricing packages')).toBeInTheDocument();
+      expect(
+        screen.getByText('Sign in to view your personalized pricing packages')
+      ).toBeInTheDocument();
     });
 
     expect(screen.queryByTestId(/package-card-/)).not.toBeInTheDocument();

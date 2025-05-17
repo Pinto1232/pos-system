@@ -39,8 +39,12 @@ const Testimonial: React.FC<TestimonialProps> = ({
     <Box className={styles.testimonialContainer}>
       <Box className={styles.testimonialWrapper}>
         <Box className={styles.videoSection}>
-          <Box className={`${styles.videoDecoration} ${styles.videoDecoration1}`}></Box>
-          <Box className={`${styles.videoDecoration} ${styles.videoDecoration2}`}></Box>
+          <Box
+            className={`${styles.videoDecoration} ${styles.videoDecoration1}`}
+          ></Box>
+          <Box
+            className={`${styles.videoDecoration} ${styles.videoDecoration2}`}
+          ></Box>
           <Box className={styles.videoWrapper} onClick={handleVideoPlay}>
             {!isPlaying && <Box className={styles.playButton}></Box>}
             <video

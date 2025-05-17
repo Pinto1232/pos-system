@@ -105,9 +105,19 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
           />
         );
       case 'Tax & VAT Configuration':
-        return <TaxSettingsContent taxSettings={taxSettings} setTaxSettings={setTaxSettings} />;
+        return (
+          <TaxSettingsContent
+            taxSettings={taxSettings}
+            setTaxSettings={setTaxSettings}
+          />
+        );
       case 'Currency & Regional Settings':
-        return <RegionalSettingsContent regionalSettings={regionalSettings} setRegionalSettings={setRegionalSettings} />;
+        return (
+          <RegionalSettingsContent
+            regionalSettings={regionalSettings}
+            setRegionalSettings={setRegionalSettings}
+          />
+        );
       case 'Business Information':
         return <BusinessInfoContent />;
       case 'User & Role Management':

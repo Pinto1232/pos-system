@@ -5,23 +5,30 @@ import { Package, packageOrder } from './types';
 export async function refreshPricingPackages(): Promise<Package[]> {
   try {
     const timestamp = new Date().getTime();
-    const response = await fetch(`/api/pricing-packages?refresh=true&t=${timestamp}`, {
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        Pragma: 'no-cache',
-        Expires: '0',
-      },
+    const response = await fetch(
+      `/api/pricing-packages?refresh=true&t=${timestamp}`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
 
-      cache: 'no-store',
-    });
+        cache: 'no-store',
+      }
+    );
 
     if (!response.ok) {
-      throw new Error(`Failed to refresh pricing packages: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to refresh pricing packages: ${response.status} ${response.statusText}`
+      );
     }
 
     const data = await response.json();
 
-    console.log(`[UTILS] Refreshed pricing data at ${new Date().toISOString()}`);
+    console.log(
+      `[UTILS] Refreshed pricing data at ${new Date().toISOString()}`
+    );
     if (data.data && data.data.length > 0) {
       console.log(`[UTILS] Sample refreshed pricing (first item):`, {
         id: data.data[0].id,
@@ -33,14 +40,21 @@ export async function refreshPricingPackages(): Promise<Package[]> {
 
     return data.data;
   } catch (error) {
-    console.error('Error refreshing pricing packages:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error refreshing pricing packages:',
+      JSON.stringify(error, null, 2)
+    );
     throw error;
   }
 }
 
-export async function fetchPricingPackagesClient(forceRefresh: boolean = false): Promise<Package[]> {
+export async function fetchPricingPackagesClient(
+  forceRefresh: boolean = false
+): Promise<Package[]> {
   try {
-    const url = forceRefresh ? `/api/pricing-packages?refresh=true&t=${new Date().getTime()}` : '/api/pricing-packages';
+    const url = forceRefresh
+      ? `/api/pricing-packages?refresh=true&t=${new Date().getTime()}`
+      : '/api/pricing-packages';
 
     const options: RequestInit = forceRefresh
       ? {
@@ -56,12 +70,16 @@ export async function fetchPricingPackagesClient(forceRefresh: boolean = false):
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch pricing packages: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch pricing packages: ${response.status} ${response.statusText}`
+      );
     }
 
     const data = await response.json();
 
-    console.log(`[UTILS] Fetched pricing data at ${new Date().toISOString()} with forceRefresh=${forceRefresh}`);
+    console.log(
+      `[UTILS] Fetched pricing data at ${new Date().toISOString()} with forceRefresh=${forceRefresh}`
+    );
     if (data.data && data.data.length > 0) {
       console.log(`[UTILS] Sample fetched pricing (first item):`, {
         id: data.data[0].id,
@@ -74,7 +92,10 @@ export async function fetchPricingPackagesClient(forceRefresh: boolean = false):
 
     return data.data;
   } catch (error) {
-    console.error('Error fetching pricing packages:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching pricing packages:',
+      JSON.stringify(error, null, 2)
+    );
     throw error;
   }
 }

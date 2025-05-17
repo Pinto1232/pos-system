@@ -58,7 +58,15 @@ import {
   noProductsSubtextStyles,
 } from './styles';
 
-const categories = ['All', 'Black', 'White', 'Green', 'Silver', 'Gold', 'Space Gray'];
+const categories = [
+  'All',
+  'Black',
+  'White',
+  'Green',
+  'Silver',
+  'Gold',
+  'Space Gray',
+];
 const ratings = ['All', '5', '4', '3', '2', '1'];
 const statuses = ['All', 'Available', 'Out of Stock'];
 const prices = ['All', 'R10-R100', 'R100-R500', 'R500-R1000', 'R1000+'];
@@ -98,11 +106,17 @@ const ProductTable: React.FC<ProductTableProps> = ({
         const parsedData = JSON.parse(storedData);
         if (Array.isArray(parsedData) && parsedData.length > 0) {
           localStorageProducts = parsedData;
-          console.log('ProductTable - Loaded products from localStorage:', JSON.stringify(localStorageProducts.length, null, 2));
+          console.log(
+            'ProductTable - Loaded products from localStorage:',
+            JSON.stringify(localStorageProducts.length, null, 2)
+          );
         }
       }
     } catch (error) {
-      console.error('Failed to load products from localStorage:', JSON.stringify(error, null, 2));
+      console.error(
+        'Failed to load products from localStorage:',
+        JSON.stringify(error, null, 2)
+      );
     }
     const sourceProducts =
       localStorageProducts.length > 0
@@ -126,9 +140,21 @@ const ProductTable: React.FC<ProductTableProps> = ({
         image: product.image || '/placeholder-image.png',
       }))
       .filter((product) => {
-        if (searchQuery && (!product.productName || !product.productName.toLowerCase().includes(searchQuery.toLowerCase()))) return false;
-        if (categoryFilter !== 'All' && product.color !== categoryFilter) return false;
-        if (ratingFilter !== 'All' && Math.floor(product.rating || 0) !== parseInt(ratingFilter, 10)) return false;
+        if (
+          searchQuery &&
+          (!product.productName ||
+            !product.productName
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()))
+        )
+          return false;
+        if (categoryFilter !== 'All' && product.color !== categoryFilter)
+          return false;
+        if (
+          ratingFilter !== 'All' &&
+          Math.floor(product.rating || 0) !== parseInt(ratingFilter, 10)
+        )
+          return false;
         if (statusFilter !== 'All') {
           const currentStatus = product.status ? 'Available' : 'Out of Stock';
           if (currentStatus !== statusFilter) return false;
@@ -153,7 +179,15 @@ const ProductTable: React.FC<ProductTableProps> = ({
         return true;
       });
     setDisplayProducts(updatedFilteredProducts);
-  }, [contextProducts, propProducts, searchQuery, categoryFilter, ratingFilter, statusFilter, priceFilter]);
+  }, [
+    contextProducts,
+    propProducts,
+    searchQuery,
+    categoryFilter,
+    ratingFilter,
+    statusFilter,
+    priceFilter,
+  ]);
 
   const paginatedProducts = useMemo(() => {
     const startIndex = page * rowsPerPage;
@@ -161,26 +195,70 @@ const ProductTable: React.FC<ProductTableProps> = ({
   }, [displayProducts, page, rowsPerPage]);
 
   useEffect(() => {
-    console.log('Modal state changed - isViewModalOpen:', isViewModalOpen, 'selectedProduct:', JSON.stringify(selectedProduct, null, 2));
+    console.log(
+      'Modal state changed - isViewModalOpen:',
+      isViewModalOpen,
+      'selectedProduct:',
+      JSON.stringify(selectedProduct, null, 2)
+    );
     if (isViewModalOpen) {
       if (selectedProduct) {
-        console.log('MODAL DEBUG: Product data available for modal:', JSON.stringify(selectedProduct, null, 2));
-        console.log('MODAL DEBUG: Product ID:', JSON.stringify(selectedProduct.id, null, 2));
-        console.log('MODAL DEBUG: Product Name:', JSON.stringify(selectedProduct.productName, null, 2));
-        console.log('MODAL DEBUG: Product Barcode:', JSON.stringify(selectedProduct.barcode, null, 2));
-        console.log('MODAL DEBUG: Product SKU:', JSON.stringify(selectedProduct.sku, null, 2));
-        console.log('MODAL DEBUG: Product Price:', JSON.stringify(selectedProduct.price, null, 2));
-        console.log('MODAL DEBUG: Product Status:', JSON.stringify(selectedProduct.status, null, 2));
-        console.log('MODAL DEBUG: Product Rating:', JSON.stringify(selectedProduct.rating, null, 2));
-        console.log('MODAL DEBUG: Product Color:', JSON.stringify(selectedProduct.color, null, 2));
-        console.log('MODAL DEBUG: Product Image:', JSON.stringify(selectedProduct.image ? 'Image exists' : 'No image', null, 2));
+        console.log(
+          'MODAL DEBUG: Product data available for modal:',
+          JSON.stringify(selectedProduct, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product ID:',
+          JSON.stringify(selectedProduct.id, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product Name:',
+          JSON.stringify(selectedProduct.productName, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product Barcode:',
+          JSON.stringify(selectedProduct.barcode, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product SKU:',
+          JSON.stringify(selectedProduct.sku, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product Price:',
+          JSON.stringify(selectedProduct.price, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product Status:',
+          JSON.stringify(selectedProduct.status, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product Rating:',
+          JSON.stringify(selectedProduct.rating, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product Color:',
+          JSON.stringify(selectedProduct.color, null, 2)
+        );
+        console.log(
+          'MODAL DEBUG: Product Image:',
+          JSON.stringify(
+            selectedProduct.image ? 'Image exists' : 'No image',
+            null,
+            2
+          )
+        );
       } else {
         console.error('MODAL DEBUG: Product data missing when modal opened');
       }
     }
   }, [isViewModalOpen, selectedProduct]);
 
-  const renderProductImage = (imageSrc: string | undefined, productName: string, width: number, height: number) => {
+  const renderProductImage = (
+    imageSrc: string | undefined,
+    productName: string,
+    width: number,
+    height: number
+  ) => {
     console.log(
       'ProductTable - Rendering image for product:',
       productName,
@@ -206,7 +284,10 @@ const ProductTable: React.FC<ProductTableProps> = ({
           />
         );
       } catch (error) {
-        console.error('ProductTable - Error rendering image:', JSON.stringify(error, null, 2));
+        console.error(
+          'ProductTable - Error rendering image:',
+          JSON.stringify(error, null, 2)
+        );
         return (
           <Box
             sx={{
@@ -269,7 +350,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
               }}
             >
               <InputLabel sx={inputLabelStyles}>Category</InputLabel>
-              <Select value={categoryFilter} onChange={onCategoryChange} label="Category" sx={selectStyles}>
+              <Select
+                value={categoryFilter}
+                onChange={onCategoryChange}
+                label="Category"
+                sx={selectStyles}
+              >
                 {categories.map((category) => (
                   <MenuItem key={`category-${category}`} value={category}>
                     {String(category)}
@@ -284,7 +370,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
               }}
             >
               <InputLabel sx={inputLabelStyles}>Rating</InputLabel>
-              <Select value={ratingFilter} onChange={onRatingChange} label="Rating" sx={selectStyles}>
+              <Select
+                value={ratingFilter}
+                onChange={onRatingChange}
+                label="Rating"
+                sx={selectStyles}
+              >
                 {ratings.map((rating) => (
                   <MenuItem key={`rating-${rating}`} value={rating}>
                     {rating === 'All' ? 'All' : `${rating} Stars`}
@@ -299,7 +390,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
               }}
             >
               <InputLabel sx={inputLabelStyles}>Status</InputLabel>
-              <Select value={statusFilter} onChange={onStatusChange} label="Status" sx={selectStyles}>
+              <Select
+                value={statusFilter}
+                onChange={onStatusChange}
+                label="Status"
+                sx={selectStyles}
+              >
                 {statuses.map((status) => (
                   <MenuItem key={status} value={status}>
                     {status}
@@ -314,7 +410,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
               }}
             >
               <InputLabel sx={inputLabelStyles}>Price Range</InputLabel>
-              <Select value={priceFilter} onChange={onPriceChange} label="Price Range" sx={selectStyles}>
+              <Select
+                value={priceFilter}
+                onChange={onPriceChange}
+                label="Price Range"
+                sx={selectStyles}
+              >
                 {prices.map((price) => (
                   <MenuItem key={price} value={price}>
                     {price}
@@ -327,7 +428,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
             <IconButton onClick={onResetFilters} sx={resetButtonStyles}>
               <FiRefreshCw size={20} />
             </IconButton>
-            <Button variant="contained" startIcon={<FiDownload />} onClick={onExportPDF} sx={exportButtonStyles}>
+            <Button
+              variant="contained"
+              startIcon={<FiDownload />}
+              onClick={onExportPDF}
+              sx={exportButtonStyles}
+            >
               Export PDF
             </Button>
           </Box>
@@ -388,7 +494,14 @@ const ProductTable: React.FC<ProductTableProps> = ({
                 >
                   <TableCell>
                     <Stack direction="row" spacing={2} alignItems="center">
-                      <Box sx={productImageStyles}>{renderProductImage(product.image, product.productName || '', 40, 40)}</Box>
+                      <Box sx={productImageStyles}>
+                        {renderProductImage(
+                          product.image,
+                          product.productName || '',
+                          40,
+                          40
+                        )}
+                      </Box>
                       <Stack direction="row" spacing={1} alignItems="center">
                         <Typography
                           variant="body1"
@@ -472,7 +585,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         />
                       }
                       label={
-                        <Typography sx={statusTextStyles(product.status ?? false)}>
+                        <Typography
+                          sx={statusTextStyles(product.status ?? false)}
+                        >
                           {product.status ? 'In Stock' : 'Out of Stock'}
                         </Typography>
                       }
@@ -518,11 +633,14 @@ const ProductTable: React.FC<ProductTableProps> = ({
                       }}
                     >
                       {product.createdAt
-                        ? new Date(product.createdAt).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })
+                        ? new Date(product.createdAt).toLocaleDateString(
+                            'en-US',
+                            {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                            }
+                          )
                         : '-'}
                     </Typography>
                   </TableCell>
@@ -533,7 +651,10 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log('ProductTable - View icon clicked for product:', JSON.stringify(product.productName, null, 2));
+                          console.log(
+                            'ProductTable - View icon clicked for product:',
+                            JSON.stringify(product.productName, null, 2)
+                          );
                           onView(product);
                         }}
                         sx={{
@@ -578,12 +699,13 @@ const ProductTable: React.FC<ProductTableProps> = ({
                 alignItems: 'center',
                 justifyContent: 'flex-end',
               },
-              '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                color: '#1E2A3B',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                margin: '0 12px',
-              },
+              '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
+                {
+                  color: '#1E2A3B',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  margin: '0 12px',
+                },
               '& .MuiTablePagination-select': {
                 paddingTop: '4px',
                 paddingBottom: '4px',
@@ -674,7 +796,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
             <Alert severity="error" sx={{ mb: 2 }}>
               Product data could not be loaded
             </Alert>
-            <Typography>There was a problem loading the product details. Please try again.</Typography>
+            <Typography>
+              There was a problem loading the product details. Please try again.
+            </Typography>
             <Box sx={{ mt: 3, textAlign: 'center' }}>
               <Button
                 onClick={(e) => {
@@ -704,7 +828,14 @@ const ProductTable: React.FC<ProductTableProps> = ({
           </Box>
         ) : (
           <>
-            <Box sx={modalImageStyles}>{renderProductImage(selectedProduct.image, selectedProduct.productName || 'Product', 120, 120)}</Box>
+            <Box sx={modalImageStyles}>
+              {renderProductImage(
+                selectedProduct.image,
+                selectedProduct.productName || 'Product',
+                120,
+                120
+              )}
+            </Box>
             <DialogTitle
               sx={{
                 ...modalTitleStyles,
@@ -937,7 +1068,13 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         gap: 1,
                       }}
                     >
-                      <Rating value={selectedProduct.rating || 0} readOnly precision={0.5} size="small" sx={{ color: '#f59e0b' }} />
+                      <Rating
+                        value={selectedProduct.rating || 0}
+                        readOnly
+                        precision={0.5}
+                        size="small"
+                        sx={{ color: '#f59e0b' }}
+                      />
                       <Typography
                         sx={{
                           color: 'text.secondary',
@@ -973,7 +1110,8 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         fontSize: '0.875rem',
                       }}
                     >
-                      {selectedProduct.statusProduct || (selectedProduct.status ? 'Active' : 'Inactive')}
+                      {selectedProduct.statusProduct ||
+                        (selectedProduct.status ? 'Active' : 'Inactive')}
                     </Typography>
                   </Box>
                   <Box
@@ -997,7 +1135,11 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         fontSize: '0.875rem',
                       }}
                     >
-                      {selectedProduct.createdAt ? new Date(selectedProduct.createdAt).toLocaleDateString() : '-'}
+                      {selectedProduct.createdAt
+                        ? new Date(
+                            selectedProduct.createdAt
+                          ).toLocaleDateString()
+                        : '-'}
                     </Typography>
                   </Box>
                 </Box>

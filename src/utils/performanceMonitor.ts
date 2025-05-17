@@ -9,7 +9,11 @@ const MAX_METRICS = 100;
 
 const metrics: PerformanceMetric[] = [];
 
-export const trackMetric = (name: string, duration: number, type: 'render' | 'api' | 'interaction' | 'resource') => {
+export const trackMetric = (
+  name: string,
+  duration: number,
+  type: 'render' | 'api' | 'interaction' | 'resource'
+) => {
   metrics.unshift({
     name,
     duration,
@@ -22,7 +26,9 @@ export const trackMetric = (name: string, duration: number, type: 'render' | 'ap
   }
 
   if (duration > getThresholdForType(type)) {
-    console.warn(`Slow ${type} detected: ${name} took ${duration.toFixed(2)}ms`);
+    console.warn(
+      `Slow ${type} detected: ${name} took ${duration.toFixed(2)}ms`
+    );
   }
 };
 

@@ -38,7 +38,8 @@ export const PackageSelectionProvider: React.FC<{
 }> = ({ children }) => {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPackageBeingCustomized, setIsPackageBeingCustomized] = useState(false);
+  const [isPackageBeingCustomized, setIsPackageBeingCustomized] =
+    useState(false);
 
   const selectPackage = (pkg: Package) => {
     setSelectedPackage(pkg);
@@ -53,7 +54,11 @@ export const PackageSelectionProvider: React.FC<{
   };
 
   const isPackageDisabled = (pkgId: number): boolean => {
-    return isPackageBeingCustomized && selectedPackage !== null && selectedPackage.id !== pkgId;
+    return (
+      isPackageBeingCustomized &&
+      selectedPackage !== null &&
+      selectedPackage.id !== pkgId
+    );
   };
 
   return (

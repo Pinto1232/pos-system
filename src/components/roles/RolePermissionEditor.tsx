@@ -29,10 +29,15 @@ interface RolePermissionEditorProps {
   onPermissionsUpdated?: () => void;
 }
 
-const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onPermissionsUpdated }) => {
+const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({
+  roleId,
+  onPermissionsUpdated,
+}) => {
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+  const [expandedCategories, setExpandedCategories] = useState<
+    Record<string, boolean>
+  >({});
   const queryClient = useQueryClient();
   const { authenticated } = useContext(AuthContext);
 
@@ -67,18 +72,32 @@ const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onP
       }
 
       if (allPermissions && Array.isArray(allPermissions)) {
-        const validPermissionNames = allPermissions.map((p: PermissionInfo) => p.name);
-        const invalidPermissions = permissions.filter((p: string) => !validPermissionNames.includes(p));
+        const validPermissionNames = allPermissions.map(
+          (p: PermissionInfo) => p.name
+        );
+        const invalidPermissions = permissions.filter(
+          (p: string) => !validPermissionNames.includes(p)
+        );
 
         if (invalidPermissions.length > 0) {
-          throw new Error(`Invalid permissions detected: ${invalidPermissions.join(', ')}`);
+          throw new Error(
+            `Invalid permissions detected: ${invalidPermissions.join(', ')}`
+          );
         }
 
-        const premiumPermissions = ['analytics.view', 'api.access', 'reports.advanced'];
-        const hasPremiumPermissions = permissions.some((p: string) => premiumPermissions.includes(p));
+        const premiumPermissions = [
+          'analytics.view',
+          'api.access',
+          'reports.advanced',
+        ];
+        const hasPremiumPermissions = permissions.some((p: string) =>
+          premiumPermissions.includes(p)
+        );
 
         if (hasPremiumPermissions) {
-          console.warn('Role contains premium permissions that may require a higher subscription package');
+          console.warn(
+            'Role contains premium permissions that may require a higher subscription package'
+          );
         }
       }
 
@@ -95,15 +114,24 @@ const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onP
       logPermissionChange(roleId, selectedPermissions);
     },
     onError: (error) => {
-      console.error('Error updating permissions:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error updating permissions:',
+        JSON.stringify(error, null, 2)
+      );
 
-      alert(`Error: ${error instanceof Error ? error.message : 'Failed to update permissions'}`);
+      alert(
+        `Error: ${error instanceof Error ? error.message : 'Failed to update permissions'}`
+      );
     },
   });
 
   const logPermissionChange = (roleId: number, permissions: string[]) => {
     const role =
-      allPermissions && Array.isArray(allPermissions) ? allPermissions.find((p: PermissionInfo) => p.name === `role-${roleId}`) : undefined;
+      allPermissions && Array.isArray(allPermissions)
+        ? allPermissions.find(
+            (p: PermissionInfo) => p.name === `role-${roleId}`
+          )
+        : undefined;
 
     const logData = {
       timestamp: new Date().toISOString(),
@@ -132,17 +160,21 @@ const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onP
             p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             p.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()))
+            (p.description &&
+              p.description.toLowerCase().includes(searchQuery.toLowerCase()))
         )
       : allPermissions;
 
-    return filtered.reduce<Record<string, PermissionInfo[]>>((acc: Record<string, PermissionInfo[]>, permission: PermissionInfo) => {
-      if (!acc[permission.category]) {
-        acc[permission.category] = [];
-      }
-      acc[permission.category].push(permission);
-      return acc;
-    }, {});
+    return filtered.reduce<Record<string, PermissionInfo[]>>(
+      (acc: Record<string, PermissionInfo[]>, permission: PermissionInfo) => {
+        if (!acc[permission.category]) {
+          acc[permission.category] = [];
+        }
+        acc[permission.category].push(permission);
+        return acc;
+      },
+      {}
+    );
   }, [allPermissions, searchQuery]);
 
   const handlePermissionToggle = (permissionName: string) => {
@@ -155,12 +187,19 @@ const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onP
     });
   };
 
-  const handleCategoryToggle = (category: string, permissions: PermissionInfo[]) => {
+  const handleCategoryToggle = (
+    category: string,
+    permissions: PermissionInfo[]
+  ) => {
     const permissionNames = permissions.map((p) => p.name);
-    const allSelected = permissionNames.every((p) => selectedPermissions.includes(p));
+    const allSelected = permissionNames.every((p) =>
+      selectedPermissions.includes(p)
+    );
 
     if (allSelected) {
-      setSelectedPermissions((prev) => prev.filter((p) => !permissionNames.includes(p)));
+      setSelectedPermissions((prev) =>
+        prev.filter((p) => !permissionNames.includes(p))
+      );
     } else {
       setSelectedPermissions((prev) => {
         const newPermissions = [...prev];
@@ -206,7 +245,10 @@ const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onP
   };
 
   const isCategoryPartiallySelected = (permissions: PermissionInfo[]) => {
-    return permissions.some((p) => selectedPermissions.includes(p.name)) && !permissions.every((p) => selectedPermissions.includes(p.name));
+    return (
+      permissions.some((p) => selectedPermissions.includes(p.name)) &&
+      !permissions.every((p) => selectedPermissions.includes(p.name))
+    );
   };
 
   if (isLoadingPermissions || isLoadingRolePermissions) {
@@ -224,7 +266,11 @@ const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onP
   }
 
   if (permissionsError || rolePermissionsError) {
-    return <Alert severity="error">Error loading permissions. Please try again later.</Alert>;
+    return (
+      <Alert severity="error">
+        Error loading permissions. Please try again later.
+      </Alert>
+    );
   }
 
   return (
@@ -261,7 +307,8 @@ const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onP
           }}
         >
           <Typography variant="body2">
-            {selectedPermissions.length} of {allPermissions?.length || 0} permissions selected
+            {selectedPermissions.length} of {allPermissions?.length || 0}{' '}
+            permissions selected
           </Typography>
           <Box>
             <Button
@@ -273,8 +320,15 @@ const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onP
             >
               Reset
             </Button>
-            <Button variant="contained" size="small" onClick={handleSavePermissions} disabled={updatePermissionsMutation.isPending}>
-              {updatePermissionsMutation.isPending ? <CircularProgress size={20} sx={{ mr: 1 }} /> : null}
+            <Button
+              variant="contained"
+              size="small"
+              onClick={handleSavePermissions}
+              disabled={updatePermissionsMutation.isPending}
+            >
+              {updatePermissionsMutation.isPending ? (
+                <CircularProgress size={20} sx={{ mr: 1 }} />
+              ) : null}
               Save Permissions
             </Button>
           </Box>
@@ -294,7 +348,12 @@ const RolePermissionEditor: React.FC<RolePermissionEditorProps> = ({ roleId, onP
       </Box>
 
       {Object.entries(permissionsByCategory).map(([category, permissions]) => (
-        <Accordion key={category} expanded={isCategoryExpanded(category)} onChange={() => toggleCategoryExpansion(category)} sx={{ mb: 1 }}>
+        <Accordion
+          key={category}
+          expanded={isCategoryExpanded(category)}
+          onChange={() => toggleCategoryExpansion(category)}
+          sx={{ mb: 1 }}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box
               sx={{

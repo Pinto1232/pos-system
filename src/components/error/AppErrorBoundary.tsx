@@ -14,7 +14,13 @@ interface ErrorDisplayProps {
   showHomeButton?: boolean;
 }
 
-function ErrorDisplay({ error, errorInfo, reset, title = 'An error occurred', showHomeButton = true }: ErrorDisplayProps) {
+function ErrorDisplay({
+  error,
+  errorInfo,
+  reset,
+  title = 'An error occurred',
+  showHomeButton = true,
+}: ErrorDisplayProps) {
   const router = useRouter();
   const [showDetails, setShowDetails] = useState(false);
 
@@ -29,7 +35,13 @@ function ErrorDisplay({ error, errorInfo, reset, title = 'An error occurred', sh
 
       {}
       <Box sx={{ mb: 3 }}>
-        <Button variant="text" color="info" size="small" onClick={() => setShowDetails(!showDetails)} sx={{ mb: 1 }}>
+        <Button
+          variant="text"
+          color="info"
+          size="small"
+          onClick={() => setShowDetails(!showDetails)}
+          sx={{ mb: 1 }}
+        >
           {showDetails ? 'Hide' : 'Show'} Technical Details
         </Button>
 
@@ -58,7 +70,12 @@ function ErrorDisplay({ error, errorInfo, reset, title = 'An error occurred', sh
 
             {errorInfo && (
               <>
-                <Typography variant="subtitle2" color="error" sx={{ mt: 2 }} gutterBottom>
+                <Typography
+                  variant="subtitle2"
+                  color="error"
+                  sx={{ mt: 2 }}
+                  gutterBottom
+                >
                   Component Stack:
                 </Typography>
                 <Typography
@@ -78,7 +95,8 @@ function ErrorDisplay({ error, errorInfo, reset, title = 'An error occurred', sh
       </Box>
 
       <Typography variant="body2" color="text.secondary" paragraph>
-        This error might be caused by stale data. Try refreshing to get the latest content.
+        This error might be caused by stale data. Try refreshing to get the
+        latest content.
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
@@ -138,7 +156,10 @@ class ErrorBoundaryClass extends Component<Props, State> {
       try {
         await this.refreshCache();
       } catch (err) {
-        console.error('Error refreshing cache during reset:', JSON.stringify(err, null, 2));
+        console.error(
+          'Error refreshing cache during reset:',
+          JSON.stringify(err, null, 2)
+        );
       }
     }
 
@@ -166,7 +187,12 @@ class ErrorBoundaryClass extends Component<Props, State> {
   }
 }
 
-export default function AppErrorBoundary({ children, cacheTags, errorTitle, showHomeButton }: Props): ReactNode {
+export default function AppErrorBoundary({
+  children,
+  cacheTags,
+  errorTitle,
+  showHomeButton,
+}: Props): ReactNode {
   const queryClient = useQueryClient();
 
   return (
@@ -178,7 +204,10 @@ export default function AppErrorBoundary({ children, cacheTags, errorTitle, show
         if (errorBoundary) {
           errorBoundary.refreshCache = async () => {
             if (cacheTags && cacheTags.length > 0) {
-              console.log('Invalidating cache tags on error:', JSON.stringify(cacheTags, null, 2));
+              console.log(
+                'Invalidating cache tags on error:',
+                JSON.stringify(cacheTags, null, 2)
+              );
 
               cacheTags.forEach((tag) => {
                 queryClient.invalidateQueries({

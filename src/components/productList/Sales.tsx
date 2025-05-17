@@ -29,7 +29,15 @@ import DownloadIcon from '@mui/icons-material/Download';
 import ShareIcon from '@mui/icons-material/Share';
 import InfoIcon from '@mui/icons-material/Info';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
 const Sales: React.FC<SalesProps> = ({
   data = {
@@ -99,10 +107,18 @@ const Sales: React.FC<SalesProps> = ({
       currentStep++;
       const progress = easeOutQuad(currentStep / steps);
 
-      setInStoreProgress(Math.min(Math.round(inStoreTarget * progress), inStoreTarget));
-      setOnlineProgress(Math.min(Math.round(onlineTarget * progress), onlineTarget));
-      setMobileProgress(Math.min(Math.round(mobileTarget * progress), mobileTarget));
-      setDesktopProgress(Math.min(Math.round(desktopTarget * progress), desktopTarget));
+      setInStoreProgress(
+        Math.min(Math.round(inStoreTarget * progress), inStoreTarget)
+      );
+      setOnlineProgress(
+        Math.min(Math.round(onlineTarget * progress), onlineTarget)
+      );
+      setMobileProgress(
+        Math.min(Math.round(mobileTarget * progress), mobileTarget)
+      );
+      setDesktopProgress(
+        Math.min(Math.round(desktopTarget * progress), desktopTarget)
+      );
 
       if (currentStep >= steps) {
         clearInterval(timer);
@@ -315,7 +331,10 @@ const Sales: React.FC<SalesProps> = ({
             }}
           >
             {data.teamPerformance.map((member: TeamMember) => (
-              <Tooltip key={member.name} title={`${member.name}: ${formatCurrency(member.revenue)}`}>
+              <Tooltip
+                key={member.name}
+                title={`${member.name}: ${formatCurrency(member.revenue)}`}
+              >
                 <Avatar
                   sx={{
                     bgcolor: '#1976d2',
@@ -488,7 +507,10 @@ const Sales: React.FC<SalesProps> = ({
           }}
         >
           {data.teamPerformance.map((member: TeamMember) => (
-            <Tooltip key={member.name} title={`${member.name}: ${formatCurrency(member.revenue)}`}>
+            <Tooltip
+              key={member.name}
+              title={`${member.name}: ${formatCurrency(member.revenue)}`}
+            >
               <Avatar
                 sx={{
                   bgcolor: '#1976d2',
@@ -556,7 +578,13 @@ const Sales: React.FC<SalesProps> = ({
               </Typography>
               <Chip
                 label={`${data.growthPercentage > 0 ? '+' : ''}${formatPercentage(data.growthPercentage)}`}
-                icon={data.growthPercentage > 0 ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+                icon={
+                  data.growthPercentage > 0 ? (
+                    <ArrowUpwardIcon />
+                  ) : (
+                    <ArrowDownwardIcon />
+                  )
+                }
                 color={data.growthPercentage > 0 ? 'success' : 'error'}
                 size="small"
                 sx={{
@@ -590,7 +618,9 @@ const Sales: React.FC<SalesProps> = ({
               }}
             >
               <span>vs prev.</span>
-              <span style={{ fontWeight: 600 }}>{formatCurrency(data.previousRevenue)}</span>
+              <span style={{ fontWeight: 600 }}>
+                {formatCurrency(data.previousRevenue)}
+              </span>
               <span>{timeframe}</span>
             </Typography>
 
@@ -971,7 +1001,11 @@ const Sales: React.FC<SalesProps> = ({
                         bottom: 10,
                       }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" vertical={false} />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="#e0e0e0"
+                        vertical={false}
+                      />
                       <XAxis
                         dataKey="date"
                         axisLine={false}
@@ -1327,7 +1361,8 @@ const Sales: React.FC<SalesProps> = ({
                   fontWeight: 600,
                 }}
               >
-                {data.deals.growth > 0 ? '↑' : '↓'} {Math.abs(data.deals.growth)}
+                {data.deals.growth > 0 ? '↑' : '↓'}{' '}
+                {Math.abs(data.deals.growth)}
               </Typography>
             </Stack>
             {selectedMetric === 'deals' && (
@@ -1464,11 +1499,15 @@ const Sales: React.FC<SalesProps> = ({
               <Typography
                 variant="body2"
                 sx={{
-                  color: data.deals.winRateGrowth > 0 ? 'success.main' : 'error.main',
+                  color:
+                    data.deals.winRateGrowth > 0
+                      ? 'success.main'
+                      : 'error.main',
                   fontWeight: 600,
                 }}
               >
-                {data.deals.winRateGrowth > 0 ? '↑' : '↓'} {formatPercentage(data.deals.winRateGrowth)}
+                {data.deals.winRateGrowth > 0 ? '↑' : '↓'}{' '}
+                {formatPercentage(data.deals.winRateGrowth)}
               </Typography>
             </Stack>
             {selectedMetric === 'winRate' && (
@@ -1576,9 +1615,13 @@ const Sales: React.FC<SalesProps> = ({
                 mt: 2,
                 height: 6,
                 borderRadius: 3,
-                backgroundColor: member.percentage >= 0 ? 'rgba(46, 125, 50, 0.1)' : 'rgba(211, 47, 47, 0.1)',
+                backgroundColor:
+                  member.percentage >= 0
+                    ? 'rgba(46, 125, 50, 0.1)'
+                    : 'rgba(211, 47, 47, 0.1)',
                 '& .MuiLinearProgress-bar': {
-                  backgroundColor: member.percentage >= 0 ? '#2e7d32' : '#d32f2f',
+                  backgroundColor:
+                    member.percentage >= 0 ? '#2e7d32' : '#d32f2f',
                 },
               }}
             />

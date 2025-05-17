@@ -42,8 +42,12 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   onDeleteItem,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [viewingProduct, setViewingProduct] = React.useState<Product | null>(null);
-  const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
+  const [viewingProduct, setViewingProduct] = React.useState<Product | null>(
+    null
+  );
+  const [editingProduct, setEditingProduct] = React.useState<Product | null>(
+    null
+  );
   const { updateProduct, addProduct } = useProductContext();
 
   const [page, setPage] = React.useState(0);
@@ -57,7 +61,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -90,7 +96,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   };
 
   const handleSubmitProduct = (data: Product) => {
-    console.log('ProductEdit - Received data from modal:', JSON.stringify(data, null, 2));
+    console.log(
+      'ProductEdit - Received data from modal:',
+      JSON.stringify(data, null, 2)
+    );
     const productWithStatus = {
       ...data,
       id: data.id || Date.now(),
@@ -106,7 +115,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       statusProduct: Boolean(data.status) ? 'Active' : 'Inactive',
     };
 
-    console.log('ProductEdit - Enhanced product data:', JSON.stringify(productWithStatus, null, 2));
+    console.log(
+      'ProductEdit - Enhanced product data:',
+      JSON.stringify(productWithStatus, null, 2)
+    );
 
     if (editingProduct) {
       onUpdateItem(productWithStatus);
@@ -123,13 +135,20 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     }
 
     try {
-      const existingProducts = JSON.parse(localStorage.getItem('products') || '[]');
+      const existingProducts = JSON.parse(
+        localStorage.getItem('products') || '[]'
+      );
       const updatedProducts = editingProduct
-        ? existingProducts.map((p: Product) => (p.id === productWithStatus.id ? productWithStatus : p))
+        ? existingProducts.map((p: Product) =>
+            p.id === productWithStatus.id ? productWithStatus : p
+          )
         : [...existingProducts, productWithStatus];
       localStorage.setItem('products', JSON.stringify(updatedProducts));
     } catch (error) {
-      console.error('Error saving product to localStorage:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error saving product to localStorage:',
+        JSON.stringify(error, null, 2)
+      );
     }
 
     handleCloseModal();
@@ -359,7 +378,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             </Typography>
           );
         } catch {
-          return <Typography variant="body2">{params.row.createdAt || '-'}</Typography>;
+          return (
+            <Typography variant="body2">
+              {params.row.createdAt || '-'}
+            </Typography>
+          );
         }
       },
     },
@@ -437,7 +460,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   }, [products, selectedRows]);
 
   const selectedProducts = React.useMemo(() => {
-    return products.filter((product) => selectedRows.includes(product.id.toString()));
+    return products.filter((product) =>
+      selectedRows.includes(product.id.toString())
+    );
   }, [products, selectedRows]);
 
   const handleExportPDF = () => {
@@ -477,7 +502,17 @@ const ProductEdit: React.FC<ProductEditProps> = ({
 
     autoTable(doc, {
       startY: 70,
-      head: [['Product Name', 'SKU', 'ID Code', 'Price', 'Status', 'Rating', 'Created At']],
+      head: [
+        [
+          'Product Name',
+          'SKU',
+          'ID Code',
+          'Price',
+          'Status',
+          'Rating',
+          'Created At',
+        ],
+      ],
       body: tableData,
       theme: 'grid',
       headStyles: {
@@ -518,7 +553,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     setSnackbarOpen(true);
   };
 
-  const handleCloseSnackbar = (_?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleCloseSnackbar = (
+    _?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -554,7 +592,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               >
                 Inventory
               </Typography>
-              <S.ExportButton startIcon={<PictureAsPdfIcon />} onClick={handleExportPDF}>
+              <S.ExportButton
+                startIcon={<PictureAsPdfIcon />}
+                onClick={handleExportPDF}
+              >
                 Export as PDF
               </S.ExportButton>
             </S.HeaderWrapper>
@@ -576,13 +617,21 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           </S.TableHeaderRow>
 
           <S.ButtonGroup>
-            <S.AddItemButton variant="contained" onClick={handleOpenModal} startIcon={<AddIcon />}>
+            <S.AddItemButton
+              variant="contained"
+              onClick={handleOpenModal}
+              startIcon={<AddIcon />}
+            >
               Add item manually
             </S.AddItemButton>
             <S.QrCodeButton variant="contained">
               <QrCodeScannerIcon />
             </S.QrCodeButton>
-            <S.NewSessionButton variant="contained" onClick={onNewSession} startIcon={<StorefrontIcon />}>
+            <S.NewSessionButton
+              variant="contained"
+              onClick={onNewSession}
+              startIcon={<StorefrontIcon />}
+            >
               New Session
             </S.NewSessionButton>
           </S.ButtonGroup>
@@ -696,20 +745,21 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                       justifyContent: 'center',
                     },
                   },
-                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                    color: '#1E2A3B',
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    margin: '0 12px',
-                    '@media (max-width: 768px)': {
-                      fontSize: '0.8rem',
-                      margin: '0 8px',
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
+                    {
+                      color: '#1E2A3B',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      margin: '0 12px',
+                      '@media (max-width: 768px)': {
+                        fontSize: '0.8rem',
+                        margin: '0 8px',
+                      },
+                      '@media (max-width: 480px)': {
+                        fontSize: '0.75rem',
+                        margin: '0 4px',
+                      },
                     },
-                    '@media (max-width: 480px)': {
-                      fontSize: '0.75rem',
-                      margin: '0 4px',
-                    },
-                  },
                   '& .MuiTablePagination-select': {
                     paddingTop: '4px',
                     paddingBottom: '4px',
@@ -898,7 +948,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#64748B',
                 }}
               >
-                {selectedRows.length > 0 ? 'Selected Items' : 'Items'} ({selectedRows.length > 0 ? selectedRows.length : products.length})
+                {selectedRows.length > 0 ? 'Selected Items' : 'Items'} (
+                {selectedRows.length > 0
+                  ? selectedRows.length
+                  : products.length}
+                )
               </Typography>
               <Typography
                 variant="subtitle1"
@@ -908,7 +962,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                R{(selectedRows.length > 0 ? selectedProductsPrice : totalProductsPrice).toFixed(2)}
+                R
+                {(selectedRows.length > 0
+                  ? selectedProductsPrice
+                  : totalProductsPrice
+                ).toFixed(2)}
               </Typography>
             </Box>
 
@@ -1003,7 +1061,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                R{(selectedRows.length > 0 ? selectedProductsPrice : totalProductsPrice).toFixed(2)}
+                R
+                {(selectedRows.length > 0
+                  ? selectedProductsPrice
+                  : totalProductsPrice
+                ).toFixed(2)}
               </Typography>
             </Box>
 
@@ -1031,7 +1093,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   variant="outlined"
                   color="primary"
                   onClick={() => {
-                    setSnackbarMessage(`${selectedRows.length} items added to cart`);
+                    setSnackbarMessage(
+                      `${selectedRows.length} items added to cart`
+                    );
                     setSnackbarOpen(true);
                   }}
                   sx={{
@@ -1051,7 +1115,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               </Stack>
             ) : (
               <>
-                <S.CollectPaymentButton variant="contained" onClick={onCollectPayment}>
+                <S.CollectPaymentButton
+                  variant="contained"
+                  onClick={onCollectPayment}
+                >
                   Collect Payment
                 </S.CollectPaymentButton>
 
@@ -1121,7 +1188,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             horizontal: 'center',
           }}
         >
-          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="success"
+            sx={{ width: '100%' }}
+          >
             {snackbarMessage}
           </Alert>
         </Snackbar>

@@ -46,7 +46,10 @@ const NotificationItemContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onMarkAsRead }) => {
+const NotificationItem: React.FC<NotificationItemProps> = ({
+  notification,
+  onMarkAsRead,
+}) => {
   const router = useRouter();
 
   const getNotificationIcon = () => {
@@ -89,7 +92,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onMar
     }
   };
 
-  const formattedTime = formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true });
+  const formattedTime = formatDistanceToNow(new Date(notification.createdAt), {
+    addSuffix: true,
+  });
 
   return (
     <NotificationItemContainer
@@ -124,7 +129,11 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ notification, onMar
             {notification.title}
           </Typography>
 
-          <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ fontSize: '0.7rem' }}
+          >
             {formattedTime}
           </Typography>
         </Box>

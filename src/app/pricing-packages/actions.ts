@@ -6,7 +6,9 @@ import { PricingPackagesResponse } from '../api/pricing-packages/route';
 import { getCacheOptions } from '../caching-config';
 import { CACHE_TIMES, CACHE_TAGS } from '../cache-constants';
 
-export async function fetchPricingPackagesAction(refresh = false): Promise<Package[]> {
+export async function fetchPricingPackagesAction(
+  refresh = false
+): Promise<Package[]> {
   try {
     const baseUrl = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
@@ -17,7 +19,9 @@ export async function fetchPricingPackagesAction(refresh = false): Promise<Packa
     const cookieStore = await cookies();
     const token = cookieStore.get('accessToken')?.value;
 
-    const cacheOptions = await getCacheOptions(CACHE_TIMES.PRICING, [CACHE_TAGS.PRICING_PACKAGES]);
+    const cacheOptions = await getCacheOptions(CACHE_TIMES.PRICING, [
+      CACHE_TAGS.PRICING_PACKAGES,
+    ]);
 
     const response = await fetch(apiUrl, {
       headers: {
@@ -29,20 +33,29 @@ export async function fetchPricingPackagesAction(refresh = false): Promise<Packa
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch pricing packages: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch pricing packages: ${response.status} ${response.statusText}`
+      );
     }
 
     const data: PricingPackagesResponse = await response.json();
 
     return processPackages(data.data);
   } catch (error) {
-    console.error('Error fetching pricing packages:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching pricing packages:',
+      JSON.stringify(error, null, 2)
+    );
     return [];
   }
 }
 
 function processPackages(packagesData: PackageData[]): Package[] {
-  if (!packagesData || !Array.isArray(packagesData) || packagesData.length === 0) {
+  if (
+    !packagesData ||
+    !Array.isArray(packagesData) ||
+    packagesData.length === 0
+  ) {
     console.warn('processPackages received invalid or empty data');
     return [];
   }
@@ -116,11 +129,14 @@ function createPackageFromData(pkg: PackageData | null | undefined): Package {
     testPeriodDays: pkg.testPeriodDays || 14,
     type: validType,
     currency: pkg.currency || 'USD',
-    multiCurrencyPrices: multiCurrencyPrices || '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}',
+    multiCurrencyPrices:
+      multiCurrencyPrices || '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}',
   };
 }
 
-export async function sortPackagesAction(packages: Package[]): Promise<Package[]> {
+export async function sortPackagesAction(
+  packages: Package[]
+): Promise<Package[]> {
   return [...packages].sort((a, b) => {
     const orderA = packageOrder[a.type as string] || 999;
     const orderB = packageOrder[b.type as string] || 999;

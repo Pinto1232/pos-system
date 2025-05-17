@@ -3,7 +3,12 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 export function useDebouncedState<T>(
   initialValue: T,
   delay: number = 300
-): [T, (value: T | ((prev: T) => T)) => void, T, (value: T | ((prev: T) => T)) => void] {
+): [
+  T,
+  (value: T | ((prev: T) => T)) => void,
+  T,
+  (value: T | ((prev: T) => T)) => void,
+] {
   const [immediateValue, setImmediateValue] = useState<T>(initialValue);
 
   const [debouncedValue, setDebouncedValue] = useState<T>(initialValue);
@@ -26,25 +31,36 @@ export function useDebouncedState<T>(
     };
   }, [immediateValue, delay]);
 
-  const setImmediateValueMemoized = useCallback((value: T | ((prev: T) => T)) => {
-    setImmediateValue(value);
-  }, []);
+  const setImmediateValueMemoized = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      setImmediateValue(value);
+    },
+    []
+  );
 
-  const setDebouncedValueMemoized = useCallback((value: T | ((prev: T) => T)) => {
-    setImmediateValue(value);
+  const setDebouncedValueMemoized = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      setImmediateValue(value);
 
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
 
-    if (typeof value === 'function') {
-      setDebouncedValue((prev: T) => (value as (prev: T) => T)(prev));
-    } else {
-      setDebouncedValue(value);
-    }
-  }, []);
+      if (typeof value === 'function') {
+        setDebouncedValue((prev: T) => (value as (prev: T) => T)(prev));
+      } else {
+        setDebouncedValue(value);
+      }
+    },
+    []
+  );
 
-  return [debouncedValue, setDebouncedValueMemoized, immediateValue, setImmediateValueMemoized];
+  return [
+    debouncedValue,
+    setDebouncedValueMemoized,
+    immediateValue,
+    setImmediateValueMemoized,
+  ];
 }
 
 export default useDebouncedState;

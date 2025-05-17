@@ -11,11 +11,16 @@ export const metadata = {
   description: 'Your POS application',
 
   other: {
-    'cache-control': 'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400',
+    'cache-control':
+      'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400',
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   if (typeof window !== 'undefined') {
     handleRegistrationRedirect();
   }

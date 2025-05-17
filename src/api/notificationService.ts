@@ -86,26 +86,42 @@ const API_ENDPOINTS = {
   CREATE_NOTIFICATION: '/api/notifications/create',
 };
 
-export const getNotifications = async (filters: NotificationFilters = {}): Promise<NotificationResponse> => {
+export const getNotifications = async (
+  filters: NotificationFilters = {}
+): Promise<NotificationResponse> => {
   try {
     if (process.env.NODE_ENV === 'development') {
-      let filteredNotifications = Array.isArray(MOCK_NOTIFICATIONS) ? [...MOCK_NOTIFICATIONS] : [];
+      let filteredNotifications = Array.isArray(MOCK_NOTIFICATIONS)
+        ? [...MOCK_NOTIFICATIONS]
+        : [];
 
       if (filters.status) {
-        filteredNotifications = filteredNotifications.filter((n) => n && n.status === filters.status);
+        filteredNotifications = filteredNotifications.filter(
+          (n) => n && n.status === filters.status
+        );
       }
 
       if (filters.type) {
-        filteredNotifications = filteredNotifications.filter((n) => n && n.type === filters.type);
+        filteredNotifications = filteredNotifications.filter(
+          (n) => n && n.type === filters.type
+        );
       }
 
-      filteredNotifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      filteredNotifications.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
 
       const limit = filters.limit || filteredNotifications.length;
       const offset = filters.offset || 0;
-      const paginatedNotifications = filteredNotifications.slice(offset, offset + limit);
+      const paginatedNotifications = filteredNotifications.slice(
+        offset,
+        offset + limit
+      );
 
-      const unreadCount = Array.isArray(MOCK_NOTIFICATIONS) ? MOCK_NOTIFICATIONS.filter((n) => n && n.status === 'unread').length : 0;
+      const unreadCount = Array.isArray(MOCK_NOTIFICATIONS)
+        ? MOCK_NOTIFICATIONS.filter((n) => n && n.status === 'unread').length
+        : 0;
 
       return {
         notifications: paginatedNotifications,
@@ -114,22 +130,31 @@ export const getNotifications = async (filters: NotificationFilters = {}): Promi
       };
     }
 
-    const { data } = await axios.get(API_ENDPOINTS.GET_NOTIFICATIONS, { params: filters });
+    const { data } = await axios.get(API_ENDPOINTS.GET_NOTIFICATIONS, {
+      params: filters,
+    });
     return data;
   } catch (error) {
-    console.error('Error fetching notifications:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching notifications:',
+      JSON.stringify(error, null, 2)
+    );
     throw error;
   }
 };
 
-export const markNotificationsAsRead = async (request: MarkAsReadRequest): Promise<void> => {
+export const markNotificationsAsRead = async (
+  request: MarkAsReadRequest
+): Promise<void> => {
   try {
     if (process.env.NODE_ENV === 'development') {
       if (Array.isArray(request.notificationIds)) {
         request.notificationIds.forEach((id) => {
           if (!id) return;
 
-          const notification = Array.isArray(MOCK_NOTIFICATIONS) ? MOCK_NOTIFICATIONS.find((n) => n && n.id === id) : undefined;
+          const notification = Array.isArray(MOCK_NOTIFICATIONS)
+            ? MOCK_NOTIFICATIONS.find((n) => n && n.id === id)
+            : undefined;
 
           if (notification) {
             notification.status = 'read';
@@ -141,12 +166,17 @@ export const markNotificationsAsRead = async (request: MarkAsReadRequest): Promi
 
     await axios.post(API_ENDPOINTS.MARK_AS_READ, request);
   } catch (error) {
-    console.error('Error marking notifications as read:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error marking notifications as read:',
+      JSON.stringify(error, null, 2)
+    );
     throw error;
   }
 };
 
-export const createNotification = async (request: CreateNotificationRequest): Promise<Notification> => {
+export const createNotification = async (
+  request: CreateNotificationRequest
+): Promise<Notification> => {
   try {
     if (process.env.NODE_ENV === 'development') {
       const newNotification: Notification = {
@@ -165,10 +195,16 @@ export const createNotification = async (request: CreateNotificationRequest): Pr
       return newNotification;
     }
 
-    const { data } = await axios.post(API_ENDPOINTS.CREATE_NOTIFICATION, request);
+    const { data } = await axios.post(
+      API_ENDPOINTS.CREATE_NOTIFICATION,
+      request
+    );
     return data;
   } catch (error) {
-    console.error('Error creating notification:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error creating notification:',
+      JSON.stringify(error, null, 2)
+    );
     throw error;
   }
 };
@@ -188,7 +224,10 @@ export const markAllNotificationsAsRead = async (): Promise<void> => {
 
     await axios.post(`${API_ENDPOINTS.MARK_AS_READ}/all`);
   } catch (error) {
-    console.error('Error marking all notifications as read:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error marking all notifications as read:',
+      JSON.stringify(error, null, 2)
+    );
     throw error;
   }
 };

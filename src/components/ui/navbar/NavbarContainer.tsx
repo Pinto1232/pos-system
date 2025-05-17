@@ -14,7 +14,12 @@ const NavbarContainer: React.FC = () => {
 
   return (
     <Box component="nav" role="navigation">
-      <Navbar title="Pisval Tech" menuItems={['Home', 'About', 'Contact']} isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+      <Navbar
+        title="Pisval Tech"
+        menuItems={['Home', 'About', 'Contact']}
+        isDrawerOpen={isDrawerOpen}
+        toggleDrawer={toggleDrawer}
+      />
       <Drawer
         anchor="left"
         open={isDrawerOpen}

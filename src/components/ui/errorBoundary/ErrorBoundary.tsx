@@ -46,7 +46,12 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   render(): ReactNode {
     if (this.state.hasError) {
-      return <ErrorModal message={this.state.error?.message || 'An unexpected error occurred'} onClose={this.handleResetError} />;
+      return (
+        <ErrorModal
+          message={this.state.error?.message || 'An unexpected error occurred'}
+          onClose={this.handleResetError}
+        />
+      );
     }
 
     return this.props.children;

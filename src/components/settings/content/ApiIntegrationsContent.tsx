@@ -33,7 +33,10 @@ const ApiIntegrationsContent: React.FC = () => {
         <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormControlLabel control={<Switch defaultChecked />} label="Enable API Access" />
+              <FormControlLabel
+                control={<Switch defaultChecked />}
+                label="Enable API Access"
+              />
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -45,8 +48,15 @@ const ApiIntegrationsContent: React.FC = () => {
                   readOnly: true,
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={() => setShowApiKey(!showApiKey)} edge="end">
-                        {showApiKey ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                      <IconButton
+                        onClick={() => setShowApiKey(!showApiKey)}
+                        edge="end"
+                      >
+                        {showApiKey ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
                       </IconButton>
                       <IconButton edge="end">
                         <ContentCopyIcon />
@@ -59,7 +69,8 @@ const ApiIntegrationsContent: React.FC = () => {
                 }}
               />
               <Typography variant="caption" color="text.secondary">
-                This key provides full access to your API. Keep it secure and never share it publicly.
+                This key provides full access to your API. Keep it secure and
+                never share it publicly.
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -127,7 +138,10 @@ const ApiIntegrationsContent: React.FC = () => {
                   />
                   <Typography variant="subtitle1">Stripe</Typography>
                 </Box>
-                <FormControlLabel control={<Switch defaultChecked />} label="Enabled" />
+                <FormControlLabel
+                  control={<Switch defaultChecked />}
+                  label="Enabled"
+                />
               </Box>
               <Divider sx={{ my: 2 }} />
               <Grid container spacing={2}>
@@ -141,7 +155,13 @@ const ApiIntegrationsContent: React.FC = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField label="Webhook Secret" fullWidth defaultValue="whsec_12345abcdef" type="password" size="small" />
+                  <TextField
+                    label="Webhook Secret"
+                    fullWidth
+                    defaultValue="whsec_12345abcdef"
+                    type="password"
+                    size="small"
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -178,10 +198,23 @@ const ApiIntegrationsContent: React.FC = () => {
               <Divider sx={{ my: 2 }} />
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  <TextField label="Client ID" fullWidth defaultValue="" size="small" disabled />
+                  <TextField
+                    label="Client ID"
+                    fullWidth
+                    defaultValue=""
+                    size="small"
+                    disabled
+                  />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField label="Client Secret" fullWidth defaultValue="" type="password" size="small" disabled />
+                  <TextField
+                    label="Client Secret"
+                    fullWidth
+                    defaultValue=""
+                    type="password"
+                    size="small"
+                    disabled
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -222,10 +255,18 @@ const ApiIntegrationsContent: React.FC = () => {
                   />
                   <Typography variant="subtitle1">Google Analytics</Typography>
                 </Box>
-                <FormControlLabel control={<Switch defaultChecked />} label="Enabled" />
+                <FormControlLabel
+                  control={<Switch defaultChecked />}
+                  label="Enabled"
+                />
               </Box>
               <Divider sx={{ my: 2 }} />
-              <TextField label="Tracking ID" fullWidth defaultValue="UA-123456789-1" size="small" />
+              <TextField
+                label="Tracking ID"
+                fullWidth
+                defaultValue="UA-123456789-1"
+                size="small"
+              />
             </Grid>
 
             <Grid item xs={12}>
@@ -258,7 +299,13 @@ const ApiIntegrationsContent: React.FC = () => {
                 <FormControlLabel control={<Switch />} label="Enabled" />
               </Box>
               <Divider sx={{ my: 2 }} />
-              <TextField label="API Key" fullWidth defaultValue="" size="small" disabled />
+              <TextField
+                label="API Key"
+                fullWidth
+                defaultValue=""
+                size="small"
+                disabled
+              />
             </Grid>
           </Grid>
         </Paper>

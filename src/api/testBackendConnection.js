@@ -13,8 +13,14 @@ async function testConnection() {
   } catch (error) {
     console.error('Connection failed!');
     if (error.response) {
-      console.error('Response status:', JSON.stringify(error.response.status, null, 2));
-      console.error('Response data:', JSON.stringify(error.response.data, null, 2));
+      console.error(
+        'Response status:',
+        JSON.stringify(error.response.status, null, 2)
+      );
+      console.error(
+        'Response data:',
+        JSON.stringify(error.response.data, null, 2)
+      );
     } else if (error.request) {
       console.error('No response received from server');
     } else {

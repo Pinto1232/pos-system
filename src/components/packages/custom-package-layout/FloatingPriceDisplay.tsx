@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Paper, Typography, Tooltip, IconButton, Collapse } from '@mui/material';
+import {
+  Box,
+  Paper,
+  Typography,
+  Tooltip,
+  IconButton,
+  Collapse,
+} from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -46,7 +53,12 @@ const FloatingPriceDisplay: React.FC<FloatingPriceDisplayProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(true);
   const { formatPrice: formatCurrencyPrice, rate } = useCurrency();
-  const displayCurrency = currency === 'ZAR' ? 'R' : currency === 'Kz' ? 'Kz' : currencySymbols[currency] || currency;
+  const displayCurrency =
+    currency === 'ZAR'
+      ? 'R'
+      : currency === 'Kz'
+        ? 'Kz'
+        : currencySymbols[currency] || currency;
   const formatPrice = (price: number): string => {
     return formatCurrencyPrice(price);
   };
@@ -58,9 +70,15 @@ const FloatingPriceDisplay: React.FC<FloatingPriceDisplayProps> = ({
     return price;
   };
 
-  const featurePrice = selectedFeatures.reduce((sum, feature) => sum + feature.basePrice, 0);
+  const featurePrice = selectedFeatures.reduce(
+    (sum, feature) => sum + feature.basePrice,
+    0
+  );
 
-  const addOnPrice = selectedAddOns.reduce((sum, addOn) => sum + addOn.price, 0);
+  const addOnPrice = selectedAddOns.reduce(
+    (sum, addOn) => sum + addOn.price,
+    0
+  );
 
   const usagePrice = usagePricing.reduce((sum, usage) => {
     const quantity = usageQuantities[usage.id] || 0;
@@ -79,7 +97,11 @@ const FloatingPriceDisplay: React.FC<FloatingPriceDisplayProps> = ({
           <Tooltip title="This is the current price based on your selections. It will update as you customize your package.">
             <InfoIcon fontSize="small" className={styles.infoIcon} />
           </Tooltip>
-          <IconButton size="small" onClick={() => setExpanded(!expanded)} className={styles.expandButton}>
+          <IconButton
+            size="small"
+            onClick={() => setExpanded(!expanded)}
+            className={styles.expandButton}
+          >
             {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </Box>
@@ -104,7 +126,9 @@ const FloatingPriceDisplay: React.FC<FloatingPriceDisplayProps> = ({
 
             {featurePrice > 0 && (
               <Box className={styles.breakdownItem}>
-                <Typography variant="body2">Features ({selectedFeatures.length}):</Typography>
+                <Typography variant="body2">
+                  Features ({selectedFeatures.length}):
+                </Typography>
                 <Typography variant="body2">
                   +{displayCurrency}
                   {formatPrice(convertPrice(featurePrice))}

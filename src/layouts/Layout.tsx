@@ -35,7 +35,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                       <NavbarContainer />
                       <NavbarSpacer />
                       {}
-                      {(!pathname.includes('/checkout') || pathname.includes('/checkout/success')) && (
+                      {(!pathname.includes('/checkout') ||
+                        pathname.includes('/checkout/success')) && (
                         <LazyJumbotron
                           heading="Pisval Tech Point of Sale System"
                           subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"

@@ -1,7 +1,9 @@
 function testPricingPackages() {
   console.log('=== TESTING PRICING PACKAGES DISPLAY ===');
 
-  const packageCards = document.querySelectorAll('[class*="PricingPackages_card"]');
+  const packageCards = document.querySelectorAll(
+    '[class*="PricingPackages_card"]'
+  );
   console.log(`Found ${packageCards.length} package cards on the page`);
 
   if (packageCards.length === 0) {
@@ -24,7 +26,10 @@ function testPricingPackages() {
 
   window.fetch = function (url, options) {
     if (url.includes('PricingPackages')) {
-      console.log('🔄 Intercepted pricing packages API call:', JSON.stringify(url, null, 2));
+      console.log(
+        '🔄 Intercepted pricing packages API call:',
+        JSON.stringify(url, null, 2)
+      );
       return Promise.reject(new Error('Simulated API failure'));
     }
     return originalFetch(url, options);
@@ -32,34 +37,53 @@ function testPricingPackages() {
 
   console.log('Triggering refetch...');
 
-  const retryButton = document.querySelector('button[class*="PricingPackages_retryButton"]');
+  const retryButton = document.querySelector(
+    'button[class*="PricingPackages_retryButton"]'
+  );
   if (retryButton) {
     console.log('Found retry button, clicking it...');
     retryButton.click();
   } else {
-    console.log('No retry button found, trying to force refetch through React Query cache...');
+    console.log(
+      'No retry button found, trying to force refetch through React Query cache...'
+    );
 
     console.log('Reloading the page to see if fallback packages appear...');
   }
 
   setTimeout(() => {
-    const packageCardsAfterFailure = document.querySelectorAll('[class*="PricingPackages_card"]');
-    console.log(`Found ${packageCardsAfterFailure.length} package cards after simulated API failure`);
+    const packageCardsAfterFailure = document.querySelectorAll(
+      '[class*="PricingPackages_card"]'
+    );
+    console.log(
+      `Found ${packageCardsAfterFailure.length} package cards after simulated API failure`
+    );
 
     if (packageCardsAfterFailure.length === 0) {
       console.error('❌ No pricing packages found after API failure!');
     } else {
       console.log('✅ Pricing packages are still displayed after API failure');
 
-      const packageTitlesAfterFailure = Array.from(packageCardsAfterFailure).map((card) => {
-        const titleElement = card.querySelector('[class*="PricingPackages_title"]');
+      const packageTitlesAfterFailure = Array.from(
+        packageCardsAfterFailure
+      ).map((card) => {
+        const titleElement = card.querySelector(
+          '[class*="PricingPackages_title"]'
+        );
         return titleElement ? titleElement.textContent.trim() : 'Unknown';
       });
 
-      console.log('Package titles after API failure:', JSON.stringify(packageTitlesAfterFailure, null, 2));
+      console.log(
+        'Package titles after API failure:',
+        JSON.stringify(packageTitlesAfterFailure, null, 2)
+      );
 
-      const samePackages = JSON.stringify(packageTitles) === JSON.stringify(packageTitlesAfterFailure);
-      console.log(`Packages before and after API failure are ${samePackages ? 'the same' : 'different'}`);
+      const samePackages =
+        JSON.stringify(packageTitles) ===
+        JSON.stringify(packageTitlesAfterFailure);
+      console.log(
+        `Packages before and after API failure are ${samePackages ? 'the same' : 'different'}`
+      );
     }
 
     console.log('Restoring original fetch function...');

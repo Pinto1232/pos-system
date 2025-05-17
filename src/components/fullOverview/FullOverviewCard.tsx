@@ -32,7 +32,8 @@ const CardContent = styled(Box)({
 
 const CardHeader = styled(Box)({
   padding: '16px',
-  background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(124, 58, 237, 0.05))',
+  background:
+    'linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(124, 58, 237, 0.05))',
   borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
 });
 
@@ -133,7 +134,12 @@ const FullOverviewCard: React.FC<
 
   const renderStatusIndicator = () => {
     if (!status) return null;
-    const color = status === 'active' ? '#10B981' : status === 'pending' ? '#F59E0B' : '#EF4444';
+    const color =
+      status === 'active'
+        ? '#10B981'
+        : status === 'pending'
+          ? '#F59E0B'
+          : '#EF4444';
 
     return (
       <Tooltip title={status.charAt(0).toUpperCase() + status.slice(1)}>
@@ -207,7 +213,12 @@ const FullOverviewCard: React.FC<
               ))}
           </CardBody>
           <CardFooter>
-            <TagWrapper>{tags && tags.map((tag, index) => <StyledTag key={index} label={tag} size="small" />)}</TagWrapper>
+            <TagWrapper>
+              {tags &&
+                tags.map((tag, index) => (
+                  <StyledTag key={index} label={tag} size="small" />
+                ))}
+            </TagWrapper>
           </CardFooter>
         </CardContent>
       </StyledCard>
@@ -374,7 +385,8 @@ const FullOverviewCard: React.FC<
                   sm: '65px',
                   md: '70px',
                 },
-                background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+                background:
+                  'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
                 borderRadius: '50%',
               },
             }}
@@ -782,7 +794,8 @@ const FullOverviewCard: React.FC<
                 left: 0,
                 right: 0,
                 height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent)',
+                background:
+                  'linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent)',
               },
             }}
           >
@@ -811,7 +824,8 @@ const FullOverviewCard: React.FC<
                   position: 'absolute',
                   inset: 0,
                   borderRadius: '10px',
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0))',
+                  background:
+                    'linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0))',
                 },
               }}
             >
@@ -1356,7 +1370,8 @@ const FullOverviewCard: React.FC<
                         transition: 'all 0.3s ease',
                         '&:hover': {
                           transform: 'scale(1.05)',
-                          background: 'linear-gradient(to top, #4338CA, #6D28D9)',
+                          background:
+                            'linear-gradient(to top, #4338CA, #6D28D9)',
                         },
                       }}
                     />
@@ -1575,7 +1590,8 @@ const FullOverviewCard: React.FC<
           mb: 2,
           width: '100%',
           opacity: 0.6,
-          background: 'linear-gradient(to right, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.3), rgba(79, 70, 229, 0.1))',
+          background:
+            'linear-gradient(to right, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.3), rgba(79, 70, 229, 0.1))',
         }}
         flexItem
       />

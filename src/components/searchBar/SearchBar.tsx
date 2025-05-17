@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import { SearchBarProps } from './searchBar.types';
-import { StyledSearchBar, StyledInput, SearchIconButton } from './searchBar.styles';
+import {
+  StyledSearchBar,
+  StyledInput,
+  SearchIconButton,
+} from './searchBar.styles';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchBar: React.FC<SearchBarProps> = ({ placeholder = 'Search...', onSearch, value = '' }) => {
+const SearchBar: React.FC<SearchBarProps> = ({
+  placeholder = 'Search...',
+  onSearch,
+  value = '',
+}) => {
   const [searchValue, setSearchValue] = useState(value);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +32,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder = 'Search...', onSear
 
   return (
     <StyledSearchBar>
-      <StyledInput placeholder={placeholder} value={searchValue} onChange={handleChange} onKeyDown={handleKeyDown} />
+      <StyledInput
+        placeholder={placeholder}
+        value={searchValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+      />
       <SearchIconButton onClick={handleSearchClick}>
         <SearchIcon />
       </SearchIconButton>

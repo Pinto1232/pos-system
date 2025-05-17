@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Box, Typography, Divider, List, ListItem, ListItemText, Paper } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+} from '@mui/material';
 import styles from './CheckoutModal.module.css';
 
 interface CartItem {
@@ -26,12 +34,18 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ cartItems }) => {
     }).format(amount);
   };
 
-  const subtotal = useMemo(() => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0), [cartItems]);
+  const subtotal = useMemo(
+    () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [cartItems]
+  );
 
   const tax = useMemo(() => subtotal * 0.15, [subtotal]);
   const total = useMemo(() => subtotal + tax, [subtotal, tax]);
 
-  console.log('Rendering OrderSummary with cart items:', JSON.stringify(cartItems, null, 2));
+  console.log(
+    'Rendering OrderSummary with cart items:',
+    JSON.stringify(cartItems, null, 2)
+  );
 
   return (
     <Paper

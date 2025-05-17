@@ -1,5 +1,11 @@
 'use client';
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from 'react';
 
 interface CartItem {
   id: string | number;
@@ -29,7 +35,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const parsedCart = JSON.parse(storedCart);
         setCartItems(parsedCart);
       } catch (error) {
-        console.error('Failed to parse cart from localStorage:', JSON.stringify(error, null, 2));
+        console.error(
+          'Failed to parse cart from localStorage:',
+          JSON.stringify(error, null, 2)
+        );
         localStorage.removeItem('cartItems');
       }
     }

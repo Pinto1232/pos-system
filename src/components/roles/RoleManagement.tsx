@@ -35,7 +35,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SecurityIcon from '@mui/icons-material/Security';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import roleService, { Role, RoleCreateRequest, RoleUpdateRequest } from '@/api/roleService';
+import roleService, {
+  Role,
+  RoleCreateRequest,
+  RoleUpdateRequest,
+} from '@/api/roleService';
 import RolePermissionEditor from './RolePermissionEditor';
 import UserRoleAssignment from './UserRoleAssignment';
 import CreateRoleModal from '../settings/CreateRoleModal';
@@ -50,7 +54,13 @@ function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div role="tabpanel" hidden={value !== index} id={`role-tabpanel-${index}`} aria-labelledby={`role-tab-${index}`} {...other}>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`role-tabpanel-${index}`}
+      aria-labelledby={`role-tab-${index}`}
+      {...other}
+    >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
@@ -62,7 +72,8 @@ const RoleManagement: React.FC = () => {
 
   const [createRoleModalOpen, setCreateRoleModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState('');
-  const [configurePermissionsAfter, setConfigurePermissionsAfter] = useState(true);
+  const [configurePermissionsAfter, setConfigurePermissionsAfter] =
+    useState(true);
   const [roleNameError, setRoleNameError] = useState('');
   const [createRolePending, setCreateRolePending] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -95,7 +106,9 @@ const RoleManagement: React.FC = () => {
         throw new Error('Role name cannot be empty');
       }
 
-      const existingRole = roles?.find((r) => r.name.toLowerCase() === roleData.name.toLowerCase());
+      const existingRole = roles?.find(
+        (r) => r.name.toLowerCase() === roleData.name.toLowerCase()
+      );
       if (existingRole) {
         throw new Error(`Role with name "${roleData.name}" already exists`);
       }
@@ -114,7 +127,9 @@ const RoleManagement: React.FC = () => {
     },
     onError: (error) => {
       console.error('Error creating role:', JSON.stringify(error, null, 2));
-      alert(`Error: ${error instanceof Error ? error.message : 'Failed to create role'}`);
+      alert(
+        `Error: ${error instanceof Error ? error.message : 'Failed to create role'}`
+      );
     },
   });
 
@@ -125,11 +140,19 @@ const RoleManagement: React.FC = () => {
       }
 
       const roleToUpdate = roles?.find((r) => r.id === id);
-      if (roleToUpdate && isSystemRole(roleToUpdate.name) && roleToUpdate.name !== data.name) {
-        throw new Error(`Cannot change name of system role: ${roleToUpdate.name}`);
+      if (
+        roleToUpdate &&
+        isSystemRole(roleToUpdate.name) &&
+        roleToUpdate.name !== data.name
+      ) {
+        throw new Error(
+          `Cannot change name of system role: ${roleToUpdate.name}`
+        );
       }
 
-      const existingRole = roles?.find((r) => r.id !== id && r.name.toLowerCase() === data.name.toLowerCase());
+      const existingRole = roles?.find(
+        (r) => r.id !== id && r.name.toLowerCase() === data.name.toLowerCase()
+      );
       if (existingRole) {
         throw new Error(`Role with name "${data.name}" already exists`);
       }
@@ -146,7 +169,9 @@ const RoleManagement: React.FC = () => {
     },
     onError: (error) => {
       console.error('Error updating role:', JSON.stringify(error, null, 2));
-      alert(`Error: ${error instanceof Error ? error.message : 'Failed to update role'}`);
+      alert(
+        `Error: ${error instanceof Error ? error.message : 'Failed to update role'}`
+      );
     },
   });
 
@@ -172,7 +197,9 @@ const RoleManagement: React.FC = () => {
     onError: (error) => {
       console.error('Error deleting role:', JSON.stringify(error, null, 2));
 
-      alert(`Error: ${error instanceof Error ? error.message : 'Failed to delete role'}`);
+      alert(
+        `Error: ${error instanceof Error ? error.message : 'Failed to delete role'}`
+      );
     },
   });
 
@@ -181,7 +208,10 @@ const RoleManagement: React.FC = () => {
     return systemRoles.includes(roleName);
   };
 
-  const logRoleChange = (action: 'create' | 'update' | 'delete', roleId: number | null) => {
+  const logRoleChange = (
+    action: 'create' | 'update' | 'delete',
+    roleId: number | null
+  ) => {
     const role = roles?.find((r) => r.id === roleId);
     const logData = {
       timestamp: new Date().toISOString(),
@@ -213,7 +243,12 @@ const RoleManagement: React.FC = () => {
       case 'cashier':
         return ['sales.create', 'customers.view', 'products.view'];
       case 'inventory':
-        return ['inventory.view', 'inventory.edit', 'products.view', 'products.edit'];
+        return [
+          'inventory.view',
+          'inventory.edit',
+          'products.view',
+          'products.edit',
+        ];
       default:
         return [];
     }
@@ -238,14 +273,18 @@ const RoleManagement: React.FC = () => {
         return;
       }
 
-      const existingRole = roles?.find((r) => r.name.toLowerCase() === newRoleName.toLowerCase());
+      const existingRole = roles?.find(
+        (r) => r.name.toLowerCase() === newRoleName.toLowerCase()
+      );
       if (existingRole) {
         setRoleNameError(`Role with name "${newRoleName}" already exists`);
         setCreateRolePending(false);
         return;
       }
 
-      const permissions = selectedTemplate ? getTemplatePermissions(selectedTemplate) : [];
+      const permissions = selectedTemplate
+        ? getTemplatePermissions(selectedTemplate)
+        : [];
 
       createRoleMutation.mutate(
         {
@@ -269,14 +308,22 @@ const RoleManagement: React.FC = () => {
             }
           },
           onError: (error) => {
-            console.error('Error creating role:', JSON.stringify(error, null, 2));
-            setRoleNameError(error instanceof Error ? error.message : 'Failed to create role');
+            console.error(
+              'Error creating role:',
+              JSON.stringify(error, null, 2)
+            );
+            setRoleNameError(
+              error instanceof Error ? error.message : 'Failed to create role'
+            );
             setCreateRolePending(false);
           },
         }
       );
     } catch (error) {
-      console.error('Error in handleCreateRoleFromModal:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error in handleCreateRoleFromModal:',
+        JSON.stringify(error, null, 2)
+      );
       setRoleNameError('An unexpected error occurred');
       setCreateRolePending(false);
     }
@@ -300,7 +347,10 @@ const RoleManagement: React.FC = () => {
     }
   };
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, roleId: number) => {
+  const handleOpenMenu = (
+    event: React.MouseEvent<HTMLElement>,
+    roleId: number
+  ) => {
     setAnchorEl(event.currentTarget);
     setMenuRoleId(roleId);
 
@@ -350,7 +400,10 @@ const RoleManagement: React.FC = () => {
   }
 
   if (rolesError) {
-    console.error('Role loading error details:', JSON.stringify(rolesError, null, 2));
+    console.error(
+      'Role loading error details:',
+      JSON.stringify(rolesError, null, 2)
+    );
     return (
       <Box>
         <BackendStatusChecker />
@@ -362,7 +415,11 @@ const RoleManagement: React.FC = () => {
             Actions:
           </Typography>
           <Box sx={{ mt: 2 }}>
-            <Button variant="contained" onClick={() => refetchRoles()} sx={{ mr: 2 }}>
+            <Button
+              variant="contained"
+              onClick={() => refetchRoles()}
+              sx={{ mr: 2 }}
+            >
               Retry Loading Roles
             </Button>
             <Button variant="outlined" onClick={() => window.location.reload()}>
@@ -386,10 +443,24 @@ const RoleManagement: React.FC = () => {
           alignItems: 'center',
         }}
       >
-        <Tabs value={tabValue} onChange={handleTabChange} aria-label="role management tabs">
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          aria-label="role management tabs"
+        >
           <Tab label="Roles" id="role-tab-0" aria-controls="role-tabpanel-0" />
-          <Tab label="Permissions" id="role-tab-1" aria-controls="role-tabpanel-1" disabled={!selectedRoleId} />
-          <Tab label="Users" id="role-tab-2" aria-controls="role-tabpanel-2" disabled={!selectedRoleId} />
+          <Tab
+            label="Permissions"
+            id="role-tab-1"
+            aria-controls="role-tabpanel-1"
+            disabled={!selectedRoleId}
+          />
+          <Tab
+            label="Users"
+            id="role-tab-2"
+            aria-controls="role-tabpanel-2"
+            disabled={!selectedRoleId}
+          />
         </Tabs>
         {tabValue === 0 && (
           <Box sx={{ display: 'flex', gap: 1 }}>
@@ -432,10 +503,22 @@ const RoleManagement: React.FC = () => {
                         alignItems: 'center',
                       }}
                     >
-                      <Typography variant="body1" fontWeight={role.id === selectedRoleId ? 'bold' : 'normal'}>
+                      <Typography
+                        variant="body1"
+                        fontWeight={
+                          role.id === selectedRoleId ? 'bold' : 'normal'
+                        }
+                      >
                         {role.name}
                       </Typography>
-                      {isSystemRole(role.name) && <Chip label="System" size="small" color="primary" sx={{ ml: 1 }} />}
+                      {isSystemRole(role.name) && (
+                        <Chip
+                          label="System"
+                          size="small"
+                          color="primary"
+                          sx={{ ml: 1 }}
+                        />
+                      )}
                     </Box>
                   </TableCell>
                   <TableCell>{role.description || '-'}</TableCell>
@@ -448,14 +531,19 @@ const RoleManagement: React.FC = () => {
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Manage Permissions">
-                      <IconButton size="small" onClick={() => handleRoleSelect(role.id)}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleRoleSelect(role.id)}
+                      >
                         <SecurityIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
                     <IconButton
                       size="small"
                       onClick={(e) => handleOpenMenu(e, role.id)}
-                      disabled={isSystemRole(role.name) && role.name === 'Admin'}
+                      disabled={
+                        isSystemRole(role.name) && role.name === 'Admin'
+                      }
                     >
                       <MoreVertIcon fontSize="small" />
                     </IconButton>
@@ -472,7 +560,8 @@ const RoleManagement: React.FC = () => {
         {selectedRoleId ? (
           <Box>
             <Typography variant="h6" gutterBottom>
-              Permissions for {roles?.find((r) => r.id === selectedRoleId)?.name}
+              Permissions for{' '}
+              {roles?.find((r) => r.id === selectedRoleId)?.name}
             </Typography>
             <RolePermissionEditor roleId={selectedRoleId} />
           </Box>
@@ -496,12 +585,18 @@ const RoleManagement: React.FC = () => {
       </TabPanel>
 
       {}
-      <Dialog open={isEditDialogOpen} onClose={() => setIsEditDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Edit Role</DialogTitle>
         <DialogContent>
           {isSystemRoleMenuDisabled() && (
             <Alert severity="info" sx={{ mb: 2 }}>
-              This is a system role. The name cannot be changed, but you can update the description.
+              This is a system role. The name cannot be changed, but you can
+              update the description.
             </Alert>
           )}
           <TextField
@@ -513,7 +608,11 @@ const RoleManagement: React.FC = () => {
             onChange={(e) => setEditRoleName(e.target.value)}
             sx={{ mb: 2 }}
             disabled={isSystemRoleMenuDisabled()}
-            helperText={isSystemRoleMenuDisabled() ? 'System role names cannot be changed' : ''}
+            helperText={
+              isSystemRoleMenuDisabled()
+                ? 'System role names cannot be changed'
+                : ''
+            }
           />
           <Typography>Pinto Manuel</Typography>
           <TextField
@@ -529,24 +628,37 @@ const RoleManagement: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleEditRole} variant="contained" disabled={!editRoleName.trim() || updateRoleMutation.isPending}>
-            {updateRoleMutation.isPending ? <CircularProgress size={24} /> : 'Save'}
+          <Button
+            onClick={handleEditRole}
+            variant="contained"
+            disabled={!editRoleName.trim() || updateRoleMutation.isPending}
+          >
+            {updateRoleMutation.isPending ? (
+              <CircularProgress size={24} />
+            ) : (
+              'Save'
+            )}
           </Button>
         </DialogActions>
       </Dialog>
 
       {}
-      <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)}>
+      <Dialog
+        open={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+      >
         <DialogTitle>Delete Role</DialogTitle>
         <DialogContent>
           {isSystemRoleMenuDisabled() ? (
             <Alert severity="error" sx={{ mb: 2 }}>
-              System roles cannot be deleted as they are required for the system to function properly.
+              System roles cannot be deleted as they are required for the system
+              to function properly.
             </Alert>
           ) : (
             <Alert severity="warning" sx={{ mb: 2 }}>
-              Deleting a role will remove it from all users who have this role assigned. Make sure users have alternative roles assigned
-              before proceeding.
+              Deleting a role will remove it from all users who have this role
+              assigned. Make sure users have alternative roles assigned before
+              proceeding.
             </Alert>
           )}
           <Typography>
@@ -556,10 +668,21 @@ const RoleManagement: React.FC = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setIsDeleteDialogOpen(false)}>{isSystemRoleMenuDisabled() ? 'Close' : 'Cancel'}</Button>
+          <Button onClick={() => setIsDeleteDialogOpen(false)}>
+            {isSystemRoleMenuDisabled() ? 'Close' : 'Cancel'}
+          </Button>
           {!isSystemRoleMenuDisabled() && (
-            <Button onClick={handleDeleteRole} color="error" variant="contained" disabled={deleteRoleMutation.isPending}>
-              {deleteRoleMutation.isPending ? <CircularProgress size={24} /> : 'Delete'}
+            <Button
+              onClick={handleDeleteRole}
+              color="error"
+              variant="contained"
+              disabled={deleteRoleMutation.isPending}
+            >
+              {deleteRoleMutation.isPending ? (
+                <CircularProgress size={24} />
+              ) : (
+                'Delete'
+              )}
             </Button>
           )}
         </DialogActions>
@@ -584,7 +707,11 @@ const RoleManagement: React.FC = () => {
       />
 
       {}
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleCloseMenu}
+      >
         <MenuItem onClick={handleOpenEditDialog}>
           <ListItemIcon>
             <EditIcon fontSize="small" />
@@ -625,7 +752,11 @@ const RoleManagement: React.FC = () => {
           <ListItemIcon>
             <DeleteIcon fontSize="small" color="error" />
           </ListItemIcon>
-          <ListItemText>{isSystemRoleMenuDisabled() ? 'System roles cannot be deleted' : 'Delete Role'}</ListItemText>
+          <ListItemText>
+            {isSystemRoleMenuDisabled()
+              ? 'System roles cannot be deleted'
+              : 'Delete Role'}
+          </ListItemText>
         </MenuItem>
       </Menu>
     </Box>

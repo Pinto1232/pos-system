@@ -1,5 +1,13 @@
 import React from 'react';
-import { Box, Typography, Button, TextField, MenuItem, Chip, IconButton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  MenuItem,
+  Chip,
+  IconButton,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { RegionalSettings } from '../../../types/settingsTypes';
@@ -9,14 +17,23 @@ interface RegionalSettingsContentProps {
   setRegionalSettings: (settings: RegionalSettings) => void;
 }
 
-const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regionalSettings, setRegionalSettings }) => {
+const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
+  regionalSettings,
+  setRegionalSettings,
+}) => {
   const [newCurrency, setNewCurrency] = React.useState('');
 
   const handleAddCurrency = () => {
-    if (newCurrency && !regionalSettings.supportedCurrencies.includes(newCurrency)) {
+    if (
+      newCurrency &&
+      !regionalSettings.supportedCurrencies.includes(newCurrency)
+    ) {
       setRegionalSettings({
         ...regionalSettings,
-        supportedCurrencies: [...regionalSettings.supportedCurrencies, newCurrency],
+        supportedCurrencies: [
+          ...regionalSettings.supportedCurrencies,
+          newCurrency,
+        ],
       });
       setNewCurrency('');
     }
@@ -25,11 +42,15 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regio
   const handleRemoveCurrency = (currency: string) => {
     setRegionalSettings({
       ...regionalSettings,
-      supportedCurrencies: regionalSettings.supportedCurrencies.filter((c) => c !== currency),
+      supportedCurrencies: regionalSettings.supportedCurrencies.filter(
+        (c) => c !== currency
+      ),
       // If removing the default currency, set a new default
       defaultCurrency:
         regionalSettings.defaultCurrency === currency
-          ? regionalSettings.supportedCurrencies.filter((c) => c !== currency)[0] || 'USD'
+          ? regionalSettings.supportedCurrencies.filter(
+              (c) => c !== currency
+            )[0] || 'USD'
           : regionalSettings.defaultCurrency,
     });
   };
@@ -95,9 +116,15 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regio
                 key={currency}
                 label={currency}
                 onDelete={() => handleRemoveCurrency(currency)}
-                color={regionalSettings.defaultCurrency === currency ? 'primary' : 'default'}
+                color={
+                  regionalSettings.defaultCurrency === currency
+                    ? 'primary'
+                    : 'default'
+                }
                 deleteIcon={
-                  regionalSettings.defaultCurrency === currency || regionalSettings.supportedCurrencies.length <= 1 ? undefined : (
+                  regionalSettings.defaultCurrency === currency ||
+                  regionalSettings.supportedCurrencies.length <=
+                    1 ? undefined : (
                     <CloseIcon />
                   )
                 }
@@ -127,7 +154,11 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regio
               placeholder="Add currency (e.g. USD)"
               sx={{ flex: 1 }}
             />
-            <IconButton color="primary" onClick={handleAddCurrency} disabled={!newCurrency.trim()}>
+            <IconButton
+              color="primary"
+              onClick={handleAddCurrency}
+              disabled={!newCurrency.trim()}
+            >
               <AddIcon />
             </IconButton>
           </Box>
@@ -169,8 +200,12 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regio
           <Typography variant="subtitle1">Time Format</Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
-              variant={regionalSettings.timeFormat === '12h' ? 'contained' : 'outlined'}
-              color={regionalSettings.timeFormat === '12h' ? 'primary' : 'inherit'}
+              variant={
+                regionalSettings.timeFormat === '12h' ? 'contained' : 'outlined'
+              }
+              color={
+                regionalSettings.timeFormat === '12h' ? 'primary' : 'inherit'
+              }
               onClick={() =>
                 setRegionalSettings({
                   ...regionalSettings,
@@ -186,8 +221,12 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regio
               12-hour (AM/PM)
             </Button>
             <Button
-              variant={regionalSettings.timeFormat === '24h' ? 'contained' : 'outlined'}
-              color={regionalSettings.timeFormat === '24h' ? 'primary' : 'inherit'}
+              variant={
+                regionalSettings.timeFormat === '24h' ? 'contained' : 'outlined'
+              }
+              color={
+                regionalSettings.timeFormat === '24h' ? 'primary' : 'inherit'
+              }
               onClick={() =>
                 setRegionalSettings({
                   ...regionalSettings,
@@ -225,11 +264,17 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regio
             size="small"
             fullWidth
           >
-            <MenuItem value="Africa/Johannesburg">Africa/Johannesburg (GMT+2)</MenuItem>
+            <MenuItem value="Africa/Johannesburg">
+              Africa/Johannesburg (GMT+2)
+            </MenuItem>
             <MenuItem value="Europe/London">Europe/London (GMT+0/+1)</MenuItem>
-            <MenuItem value="America/New_York">America/New_York (GMT-5/-4)</MenuItem>
+            <MenuItem value="America/New_York">
+              America/New_York (GMT-5/-4)
+            </MenuItem>
             <MenuItem value="Asia/Tokyo">Asia/Tokyo (GMT+9)</MenuItem>
-            <MenuItem value="Australia/Sydney">Australia/Sydney (GMT+10/+11)</MenuItem>
+            <MenuItem value="Australia/Sydney">
+              Australia/Sydney (GMT+10/+11)
+            </MenuItem>
           </TextField>
         </Box>
 
@@ -253,9 +298,15 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regio
             size="small"
             fullWidth
           >
-            <MenuItem value="#,###.##">1,234.56 (comma as thousands separator)</MenuItem>
-            <MenuItem value="#.###,##">1.234,56 (dot as thousands separator)</MenuItem>
-            <MenuItem value="# ###.##">1 234.56 (space as thousands separator)</MenuItem>
+            <MenuItem value="#,###.##">
+              1,234.56 (comma as thousands separator)
+            </MenuItem>
+            <MenuItem value="#.###,##">
+              1.234,56 (dot as thousands separator)
+            </MenuItem>
+            <MenuItem value="# ###.##">
+              1 234.56 (space as thousands separator)
+            </MenuItem>
           </TextField>
         </Box>
 
@@ -296,7 +347,9 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regio
         >
           <Typography variant="subtitle1">Auto-detect Location</Typography>
           <Button
-            variant={regionalSettings.autoDetectLocation ? 'contained' : 'outlined'}
+            variant={
+              regionalSettings.autoDetectLocation ? 'contained' : 'outlined'
+            }
             color={regionalSettings.autoDetectLocation ? 'primary' : 'inherit'}
             onClick={() =>
               setRegionalSettings({
@@ -321,9 +374,13 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({ regio
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="subtitle1">Enable Multi-Currency Support</Typography>
+          <Typography variant="subtitle1">
+            Enable Multi-Currency Support
+          </Typography>
           <Button
-            variant={regionalSettings.enableMultiCurrency ? 'contained' : 'outlined'}
+            variant={
+              regionalSettings.enableMultiCurrency ? 'contained' : 'outlined'
+            }
             color={regionalSettings.enableMultiCurrency ? 'primary' : 'inherit'}
             onClick={() =>
               setRegionalSettings({

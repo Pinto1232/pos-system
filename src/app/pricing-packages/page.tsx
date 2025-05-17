@@ -13,7 +13,11 @@ function PricingPackagesLoading() {
         width: '100%',
       }}
     >
-      <Typography variant="h4" component="h1" sx={{ textAlign: 'center', mb: 4 }}>
+      <Typography
+        variant="h4"
+        component="h1"
+        sx={{ textAlign: 'center', mb: 4 }}
+      >
         Pricing Packages
       </Typography>
 
@@ -26,7 +30,13 @@ function PricingPackagesLoading() {
         }}
       >
         {[1, 2, 3, 4, 5].map((i) => (
-          <Skeleton key={i} variant="rectangular" width={250} height={400} sx={{ borderRadius: 2 }} />
+          <Skeleton
+            key={i}
+            variant="rectangular"
+            width={250}
+            height={400}
+            sx={{ borderRadius: 2 }}
+          />
         ))}
       </Box>
     </Box>
@@ -43,7 +53,11 @@ function PricingPackagesError() {
         width: '100%',
       }}
     >
-      <Typography variant="h4" component="h1" sx={{ textAlign: 'center', mb: 4 }}>
+      <Typography
+        variant="h4"
+        component="h1"
+        sx={{ textAlign: 'center', mb: 4 }}
+      >
         Pricing Packages
       </Typography>
 
@@ -52,7 +66,8 @@ function PricingPackagesError() {
           Error loading pricing packages
         </Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
-          We're having trouble loading our pricing information. Please try again later.
+          We're having trouble loading our pricing information. Please try again
+          later.
         </Typography>
       </Box>
     </Box>
@@ -71,7 +86,10 @@ export default async function PricingPackagesPage() {
       </Suspense>
     );
   } catch (error) {
-    console.error('Error in PricingPackagesPage:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error in PricingPackagesPage:',
+      JSON.stringify(error, null, 2)
+    );
     return <PricingPackagesError />;
   }
 }

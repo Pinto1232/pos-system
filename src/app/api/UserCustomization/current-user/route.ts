@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 const DEFAULT_TAX_SETTINGS = {
   enableTaxCalculation: true,
@@ -63,7 +64,9 @@ export async function GET(request: Request) {
     console.log('Processing current-user customization request');
 
     const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value || cookieStore.get('keycloak_token')?.value;
+    const token =
+      cookieStore.get('auth_token')?.value ||
+      cookieStore.get('keycloak_token')?.value;
 
     let userId = 'current-user';
 
@@ -75,7 +78,10 @@ export async function GET(request: Request) {
           console.log(`Extracted user ID from token: ${userId}`);
         }
       } catch (tokenError) {
-        console.error('Error decoding token:', JSON.stringify(tokenError, null, 2));
+        console.error(
+          'Error decoding token:',
+          JSON.stringify(tokenError, null, 2)
+        );
       }
     } else {
       console.log('No authentication token found, using default user ID');
@@ -86,24 +92,32 @@ export async function GET(request: Request) {
     if (!useMockData) {
       try {
         console.log(`Proxying GET request to backend for user: ${userId}`);
-        const response = await fetch(`${BACKEND_API_URL}/api/UserCustomization/${userId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+        const response = await fetch(
+          `${BACKEND_API_URL}/api/UserCustomization/${userId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
 
-          signal: AbortSignal.timeout(3000),
-        });
+            signal: AbortSignal.timeout(3000),
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
           console.log('Successfully fetched user customization from backend');
           return NextResponse.json(data);
         } else {
-          console.warn(`Backend API returned status: ${response.status}, serving mock data directly`);
+          console.warn(
+            `Backend API returned status: ${response.status}, serving mock data directly`
+          );
         }
       } catch (error) {
-        console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error proxying request to backend:',
+          JSON.stringify(error, null, 2)
+        );
         console.log('Returning mock data due to error');
       }
     } else {
@@ -120,7 +134,10 @@ export async function GET(request: Request) {
       regionalSettings: DEFAULT_REGIONAL_SETTINGS,
     });
   } catch (error) {
-    console.error('Error in current-user route:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error in current-user route:',
+      JSON.stringify(error, null, 2)
+    );
 
     console.log('Returning mock data due to general error');
     return NextResponse.json({

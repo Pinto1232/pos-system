@@ -10,7 +10,10 @@ interface UserRoleContentProps {
   setCreateRoleModalOpen: (open: boolean) => void;
 }
 
-const UserRoleContent: React.FC<UserRoleContentProps> = ({ selectedRoleTab, setSelectedRoleTab }) => {
+const UserRoleContent: React.FC<UserRoleContentProps> = ({
+  selectedRoleTab,
+  setSelectedRoleTab,
+}) => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedRoleTab(newValue);
   };

@@ -20,7 +20,10 @@ export async function GET() {
       },
     });
   } catch (error: any) {
-    console.error('Health check: Backend health check failed', JSON.stringify(error, null, 2));
+    console.error(
+      'Health check: Backend health check failed',
+      JSON.stringify(error, null, 2)
+    );
 
     return NextResponse.json(
       {

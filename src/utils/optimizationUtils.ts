@@ -1,6 +1,10 @@
 import { useRef, useEffect, DependencyList } from 'react';
 
-export function useRenderTracker(componentName: string, props: Record<string, any>, dependencies?: DependencyList): void {
+export function useRenderTracker(
+  componentName: string,
+  props: Record<string, any>,
+  dependencies?: DependencyList
+): void {
   const renderCount = useRef(0);
   const prevProps = useRef<Record<string, any>>({});
   const prevDeps = useRef<any[]>([]);
@@ -31,14 +35,19 @@ export function useRenderTracker(componentName: string, props: Record<string, an
     }
 
     if (renderCount.current > 1) {
-      console.log(`[RENDER] ${componentName} rendered ${renderCount.current} times`);
+      console.log(
+        `[RENDER] ${componentName} rendered ${renderCount.current} times`
+      );
 
       if (Object.keys(changedProps).length > 0) {
         console.log('Changed props:', JSON.stringify(changedProps, null, 2));
       }
 
       if (dependencies && Object.keys(changedDeps).length > 0) {
-        console.log('Changed dependencies:', JSON.stringify(changedDeps, null, 2));
+        console.log(
+          'Changed dependencies:',
+          JSON.stringify(changedDeps, null, 2)
+        );
       }
     }
 
@@ -50,7 +59,12 @@ export function useRenderTracker(componentName: string, props: Record<string, an
 }
 
 export function isPlainObject(obj: any): boolean {
-  return obj !== null && typeof obj === 'object' && !Array.isArray(obj) && Object.getPrototypeOf(obj) === Object.prototype;
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    !Array.isArray(obj) &&
+    Object.getPrototypeOf(obj) === Object.prototype
+  );
 }
 
 export function deepEqual(a: any, b: any): boolean {

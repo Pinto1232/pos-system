@@ -90,41 +90,76 @@ const SuccessMessage: React.FC<SuccessMessageProps> = memo(
     const { hideSuccessModal } = useSuccessModal();
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'warning' | 'error'>('success');
-    const [packageAddedSnackbarOpen, setPackageAddedSnackbarOpen] = useState(false);
+    const [snackbarSeverity, setSnackbarSeverity] = useState<
+      'success' | 'warning' | 'error'
+    >('success');
+    const [packageAddedSnackbarOpen, setPackageAddedSnackbarOpen] =
+      useState(false);
 
     useEffect(() => {
       if (open && formData) {
         console.log('===== ORDER SUMMARY DATA =====');
         console.log('Customer Information:', JSON.stringify(formData, null, 2));
-        console.log('Selected Package:', JSON.stringify(selectedPackage, null, 2));
-        console.log('Selected Features:', JSON.stringify(selectedFeatures, null, 2));
-        console.log('Selected Add-ons:', JSON.stringify(selectedAddOns, null, 2));
-        console.log('Usage Quantities:', JSON.stringify(usageQuantities, null, 2));
+        console.log(
+          'Selected Package:',
+          JSON.stringify(selectedPackage, null, 2)
+        );
+        console.log(
+          'Selected Features:',
+          JSON.stringify(selectedFeatures, null, 2)
+        );
+        console.log(
+          'Selected Add-ons:',
+          JSON.stringify(selectedAddOns, null, 2)
+        );
+        console.log(
+          'Usage Quantities:',
+          JSON.stringify(usageQuantities, null, 2)
+        );
         console.log('Total Price:', calculatedPrice, currentCurrency);
         console.log('=============================');
       }
-    }, [open, formData, selectedPackage, selectedFeatures, selectedAddOns, usageQuantities, calculatedPrice, currentCurrency]);
+    }, [
+      open,
+      formData,
+      selectedPackage,
+      selectedFeatures,
+      selectedAddOns,
+      usageQuantities,
+      calculatedPrice,
+      currentCurrency,
+    ]);
 
     const handleAddToCart = useCallback(() => {
       if (!selectedPackage) return;
 
       const packageType = selectedPackage.type;
-      const stripePriceId = STRIPE_PRICE_IDS?.[packageType] || 'default_price_id';
+      const stripePriceId =
+        STRIPE_PRICE_IDS?.[packageType] || 'default_price_id';
 
       const packageId = selectedPackage.id || Date.now();
 
-      console.log('Checking if package exists in cart:', JSON.stringify(packageId, null, 2));
+      console.log(
+        'Checking if package exists in cart:',
+        JSON.stringify(packageId, null, 2)
+      );
       console.log('Current cart items:', JSON.stringify(cartItems, null, 2));
 
       const isPackageInCart = cartItems.some((item) => {
-        console.log('Comparing item.id:', item.id, 'with packageId:', JSON.stringify(packageId, null, 2));
+        console.log(
+          'Comparing item.id:',
+          item.id,
+          'with packageId:',
+          JSON.stringify(packageId, null, 2)
+        );
         return item.id === packageId;
       });
 
       if (isPackageInCart) {
         console.log('Package already in cart, showing warning');
-        setSnackbarMessage(`${selectedPackage.title} package is already in your cart!`);
+        setSnackbarMessage(
+          `${selectedPackage.title} package is already in your cart!`
+        );
         setSnackbarSeverity('warning');
         setSnackbarOpen(true);
         return;
@@ -132,7 +167,9 @@ const SuccessMessage: React.FC<SuccessMessageProps> = memo(
 
       const cartItem = {
         id: packageId,
-        name: selectedPackage.title || packageType.charAt(0).toUpperCase() + packageType.slice(1),
+        name:
+          selectedPackage.title ||
+          packageType.charAt(0).toUpperCase() + packageType.slice(1),
         price: calculatedPrice || selectedPackage.price || 29.99,
         quantity: 1,
         packageType,
@@ -261,7 +298,9 @@ const SuccessMessage: React.FC<SuccessMessageProps> = memo(
                 duration: 0.3,
               }}
             >
-              <Typography className={styles.successText}>{message || 'Please proceed with payment'}</Typography>
+              <Typography className={styles.successText}>
+                {message || 'Please proceed with payment'}
+              </Typography>
             </motion.div>
 
             <motion.div
@@ -346,7 +385,12 @@ const SuccessMessage: React.FC<SuccessMessageProps> = memo(
             },
           }}
         >
-          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} variant="filled" sx={{ width: '100%' }}>
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarSeverity}
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
             {snackbarMessage}
           </Alert>
         </Snackbar>

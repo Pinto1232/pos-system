@@ -126,11 +126,13 @@ export const settingsItems: SettingsItem[] = [
   },
   {
     label: 'Business Information',
-    tooltip: 'Manage your business details, contact information, and registration data',
+    tooltip:
+      'Manage your business details, contact information, and registration data',
   },
   {
     label: 'Tax & VAT Configuration',
-    tooltip: 'Set up tax rates, VAT settings, and configure tax calculation methods',
+    tooltip:
+      'Set up tax rates, VAT settings, and configure tax calculation methods',
   },
   {
     label: 'Currency & Regional Settings',
@@ -146,15 +148,18 @@ export const settingsItems: SettingsItem[] = [
   },
   {
     label: 'Email & Notification Settings',
-    tooltip: 'Configure email servers, notification preferences, and message templates',
+    tooltip:
+      'Configure email servers, notification preferences, and message templates',
   },
   {
     label: 'System Backup & Restore',
-    tooltip: 'Create backups, schedule automatic backups, and restore from previous backups',
+    tooltip:
+      'Create backups, schedule automatic backups, and restore from previous backups',
   },
   {
     label: 'API & Third-Party Integrations',
-    tooltip: 'Manage API keys and configure integrations with external services',
+    tooltip:
+      'Manage API keys and configure integrations with external services',
   },
   {
     label: 'Cache Management',

@@ -11,7 +11,13 @@ export async function POST() {
     console.log('Token cookie cleared successfully');
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error clearing token cookie:', JSON.stringify(error, null, 2));
-    return NextResponse.json({ error: 'Failed to clear token' }, { status: 500 });
+    console.error(
+      'Error clearing token cookie:',
+      JSON.stringify(error, null, 2)
+    );
+    return NextResponse.json(
+      { error: 'Failed to clear token' },
+      { status: 500 }
+    );
   }
 }

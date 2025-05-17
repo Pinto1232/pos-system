@@ -14,7 +14,8 @@ interface AddOn {
   icon: string;
 }
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 const fallbackAddOns = [
   {
@@ -31,7 +32,12 @@ const fallbackAddOns = [
     }),
     category: 'Analytics',
     isActive: true,
-    features: JSON.stringify(['Real-time data visualization', 'Custom report generation', 'Data export capabilities', 'Trend analysis']),
+    features: JSON.stringify([
+      'Real-time data visualization',
+      'Custom report generation',
+      'Data export capabilities',
+      'Trend analysis',
+    ]),
     dependencies: JSON.stringify(['Internet connection', 'Modern browser']),
     icon: 'analytics_icon',
   },
@@ -49,7 +55,12 @@ const fallbackAddOns = [
     }),
     category: 'Integration',
     isActive: true,
-    features: JSON.stringify(['RESTful API endpoints', 'Webhook notifications', 'Custom integration options', 'API documentation']),
+    features: JSON.stringify([
+      'RESTful API endpoints',
+      'Webhook notifications',
+      'Custom integration options',
+      'API documentation',
+    ]),
     dependencies: JSON.stringify(['Developer knowledge', 'API key management']),
     icon: 'api_icon',
   },
@@ -67,7 +78,12 @@ const fallbackAddOns = [
     }),
     category: 'Customization',
     isActive: true,
-    features: JSON.stringify(['Logo customization', 'Color scheme adjustment', 'Custom domain support', 'Email template branding']),
+    features: JSON.stringify([
+      'Logo customization',
+      'Color scheme adjustment',
+      'Custom domain support',
+      'Email template branding',
+    ]),
     dependencies: JSON.stringify(['Brand assets', 'Logo in SVG format']),
     icon: 'branding_icon',
   },
@@ -85,7 +101,12 @@ const fallbackAddOns = [
     }),
     category: 'Support',
     isActive: true,
-    features: JSON.stringify(['Priority email support', 'Live chat assistance', 'Phone support', 'Dedicated account manager']),
+    features: JSON.stringify([
+      'Priority email support',
+      'Live chat assistance',
+      'Phone support',
+      'Dedicated account manager',
+    ]),
     dependencies: JSON.stringify(['Valid support contract', 'User account']),
     icon: 'support_icon',
   },
@@ -103,8 +124,16 @@ const fallbackAddOns = [
     }),
     category: 'Data',
     isActive: true,
-    features: JSON.stringify(['Data mapping assistance', 'Migration planning', 'Data validation', 'Post-migration support']),
-    dependencies: JSON.stringify(['Source data access', 'Data export capabilities from source system']),
+    features: JSON.stringify([
+      'Data mapping assistance',
+      'Migration planning',
+      'Data validation',
+      'Post-migration support',
+    ]),
+    dependencies: JSON.stringify([
+      'Source data access',
+      'Data export capabilities from source system',
+    ]),
     icon: 'migration_icon',
   },
 ];
@@ -124,41 +153,60 @@ export async function GET(request: Request) {
     if (category) queryString += `&category=${category}`;
     if (isActive) queryString += `&isActive=${isActive}`;
 
-    const response = await fetch(`${BACKEND_API_URL}/api/AddOns${queryString}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${BACKEND_API_URL}/api/AddOns${queryString}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
 
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        Pragma: 'no-cache',
-        Expires: '0',
-      },
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
 
-      cache: 'no-store',
-    });
+        cache: 'no-store',
+      }
+    );
 
     if (!response.ok) {
-      console.warn(`Backend API returned status: ${response.status}, serving fallback data`);
+      console.warn(
+        `Backend API returned status: ${response.status}, serving fallback data`
+      );
 
       console.log('===== USING FALLBACK ADD-ONS DATA =====');
-      console.log('Number of fallback add-ons:', JSON.stringify(fallbackAddOns.length, null, 2));
+      console.log(
+        'Number of fallback add-ons:',
+        JSON.stringify(fallbackAddOns.length, null, 2)
+      );
 
       fallbackAddOns.slice(0, 3).forEach((addOn, index) => {
         console.log(`Fallback AddOn #${index + 1} (ID: ${addOn.id}):`);
         console.log('  Name:', JSON.stringify(addOn.name, null, 2));
-        console.log('  Description:', JSON.stringify(addOn.description, null, 2));
+        console.log(
+          '  Description:',
+          JSON.stringify(addOn.description, null, 2)
+        );
         console.log('  Price:', JSON.stringify(addOn.price, null, 2));
         console.log('  Currency:', JSON.stringify(addOn.currency, null, 2));
-        console.log('  MultiCurrencyPrices:', JSON.stringify(addOn.multiCurrencyPrices, null, 2));
+        console.log(
+          '  MultiCurrencyPrices:',
+          JSON.stringify(addOn.multiCurrencyPrices, null, 2)
+        );
         console.log('  Category:', JSON.stringify(addOn.category, null, 2));
         console.log('  IsActive:', JSON.stringify(addOn.isActive, null, 2));
         console.log('  Features:', JSON.stringify(addOn.features, null, 2));
-        console.log('  Dependencies:', JSON.stringify(addOn.dependencies, null, 2));
+        console.log(
+          '  Dependencies:',
+          JSON.stringify(addOn.dependencies, null, 2)
+        );
         console.log('  Icon:', JSON.stringify(addOn.icon, null, 2));
       });
 
       if (fallbackAddOns.length > 3) {
-        console.log(`... and ${fallbackAddOns.length - 3} more fallback add-ons`);
+        console.log(
+          `... and ${fallbackAddOns.length - 3} more fallback add-ons`
+        );
       }
       console.log('=======================================');
 
@@ -173,24 +221,42 @@ export async function GET(request: Request) {
 
     console.log('===== ADD-ONS API RESPONSE DATA =====');
     console.log('Total items:', JSON.stringify(data.totalItems, null, 2));
-    console.log('Response structure:', JSON.stringify(Object.keys(data, null, 2)));
+    console.log(
+      'Response structure:',
+      JSON.stringify(Object.keys(data, null, 2))
+    );
 
     if (data.data && Array.isArray(data.data)) {
-      console.log('Number of add-ons received:', JSON.stringify(data.data.length, null, 2));
+      console.log(
+        'Number of add-ons received:',
+        JSON.stringify(data.data.length, null, 2)
+      );
 
       data.data.slice(0, 3).forEach((addOn: AddOn, index: number) => {
         console.log(`AddOn #${index + 1} (ID: ${addOn.id}):`);
         console.log('  Name:', JSON.stringify(addOn.name, null, 2));
-        console.log('  Description:', JSON.stringify(addOn.description, null, 2));
+        console.log(
+          '  Description:',
+          JSON.stringify(addOn.description, null, 2)
+        );
         console.log('  Price:', JSON.stringify(addOn.price, null, 2));
         console.log('  Currency:', JSON.stringify(addOn.currency, null, 2));
-        console.log('  MultiCurrencyPrices:', JSON.stringify(addOn.multiCurrencyPrices, null, 2));
+        console.log(
+          '  MultiCurrencyPrices:',
+          JSON.stringify(addOn.multiCurrencyPrices, null, 2)
+        );
         console.log('  Category:', JSON.stringify(addOn.category, null, 2));
         console.log('  IsActive:', JSON.stringify(addOn.isActive, null, 2));
         console.log('  Features:', JSON.stringify(addOn.features, null, 2));
-        console.log('  Dependencies:', JSON.stringify(addOn.dependencies, null, 2));
+        console.log(
+          '  Dependencies:',
+          JSON.stringify(addOn.dependencies, null, 2)
+        );
         console.log('  Icon:', JSON.stringify(addOn.icon, null, 2));
-        console.log('  Properties:', JSON.stringify(Object.keys(addOn, null, 2)));
+        console.log(
+          '  Properties:',
+          JSON.stringify(Object.keys(addOn, null, 2))
+        );
       });
 
       if (data.data.length > 3) {
@@ -205,7 +271,10 @@ export async function GET(request: Request) {
 
     console.log('===== USING FALLBACK ADD-ONS DATA DUE TO ERROR =====');
     console.log('Error details:', JSON.stringify(error, null, 2));
-    console.log('Number of fallback add-ons:', JSON.stringify(fallbackAddOns.length, null, 2));
+    console.log(
+      'Number of fallback add-ons:',
+      JSON.stringify(fallbackAddOns.length, null, 2)
+    );
 
     fallbackAddOns.slice(0, 3).forEach((addOn, index) => {
       console.log(`Fallback AddOn #${index + 1} (ID: ${addOn.id}):`);
@@ -213,11 +282,17 @@ export async function GET(request: Request) {
       console.log('  Description:', JSON.stringify(addOn.description, null, 2));
       console.log('  Price:', JSON.stringify(addOn.price, null, 2));
       console.log('  Currency:', JSON.stringify(addOn.currency, null, 2));
-      console.log('  MultiCurrencyPrices:', JSON.stringify(addOn.multiCurrencyPrices, null, 2));
+      console.log(
+        '  MultiCurrencyPrices:',
+        JSON.stringify(addOn.multiCurrencyPrices, null, 2)
+      );
       console.log('  Category:', JSON.stringify(addOn.category, null, 2));
       console.log('  IsActive:', JSON.stringify(addOn.isActive, null, 2));
       console.log('  Features:', JSON.stringify(addOn.features, null, 2));
-      console.log('  Dependencies:', JSON.stringify(addOn.dependencies, null, 2));
+      console.log(
+        '  Dependencies:',
+        JSON.stringify(addOn.dependencies, null, 2)
+      );
       console.log('  Icon:', JSON.stringify(addOn.icon, null, 2));
     });
 
@@ -236,7 +311,10 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('Proxying POST request to backend for creating add-on', JSON.stringify(body, null, 2));
+    console.log(
+      'Proxying POST request to backend for creating add-on',
+      JSON.stringify(body, null, 2)
+    );
 
     const response = await fetch(`${BACKEND_API_URL}/api/AddOns`, {
       method: 'POST',
@@ -247,8 +325,13 @@ export async function POST(request: Request) {
     });
 
     if (!response.ok) {
-      console.warn(`Backend API returned status: ${response.status}, returning error`);
-      return NextResponse.json({ error: 'Failed to create add-on' }, { status: response.status });
+      console.warn(
+        `Backend API returned status: ${response.status}, returning error`
+      );
+      return NextResponse.json(
+        { error: 'Failed to create add-on' },
+        { status: response.status }
+      );
     }
 
     const data = await response.json();
@@ -256,6 +339,9 @@ export async function POST(request: Request) {
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error creating add-on:', JSON.stringify(error, null, 2));
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

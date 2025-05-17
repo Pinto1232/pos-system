@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { CACHE_TIMES } from '@/app/cache-constants';
 
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+const BACKEND_API_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
 const mockDashboardSummary = {
   recentSales: [
@@ -66,14 +67,17 @@ export async function GET() {
 
     if (!useMockData) {
       try {
-        const response = await fetch(`${BACKEND_API_URL}/api/Dashboard/summary`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+        const response = await fetch(
+          `${BACKEND_API_URL}/api/Dashboard/summary`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
 
-          signal: AbortSignal.timeout(3000),
-        });
+            signal: AbortSignal.timeout(3000),
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -82,10 +86,15 @@ export async function GET() {
             headers,
           });
         } else {
-          console.warn(`Backend API returned status: ${response.status}, serving mock data`);
+          console.warn(
+            `Backend API returned status: ${response.status}, serving mock data`
+          );
         }
       } catch (error) {
-        console.error('Error fetching from backend:', JSON.stringify(error, null, 2));
+        console.error(
+          'Error fetching from backend:',
+          JSON.stringify(error, null, 2)
+        );
         console.log('Falling back to mock data');
       }
     } else {
@@ -94,7 +103,10 @@ export async function GET() {
 
     return NextResponse.json(mockDashboardSummary, { headers });
   } catch (error) {
-    console.error('Error in dashboard summary API:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error in dashboard summary API:',
+      JSON.stringify(error, null, 2)
+    );
     return NextResponse.json(
       {
         error: 'Failed to fetch dashboard summary',

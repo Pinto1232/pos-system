@@ -1,7 +1,10 @@
 import { useRef, useCallback, useMemo, DependencyList } from 'react';
 import { deepEqual } from '@/utils/optimizationUtils';
 
-export function useDeepMemo<T>(factory: () => T, dependencies: DependencyList): T {
+export function useDeepMemo<T>(
+  factory: () => T,
+  dependencies: DependencyList
+): T {
   const ref = useRef<{
     deps: DependencyList;
     value: T;
@@ -15,7 +18,9 @@ export function useDeepMemo<T>(factory: () => T, dependencies: DependencyList): 
   let depsChanged = !ref.current.initialized;
 
   if (!depsChanged && dependencies.length === ref.current.deps.length) {
-    depsChanged = !dependencies.every((dep, i) => deepEqual(dep, ref.current.deps[i]));
+    depsChanged = !dependencies.every((dep, i) =>
+      deepEqual(dep, ref.current.deps[i])
+    );
   } else if (!depsChanged) {
     depsChanged = true;
   }
@@ -29,7 +34,10 @@ export function useDeepMemo<T>(factory: () => T, dependencies: DependencyList): 
   return ref.current.value;
 }
 
-export function useDeepCallback<T extends (...args: any[]) => any>(callback: T, dependencies: DependencyList): T {
+export function useDeepCallback<T extends (...args: any[]) => any>(
+  callback: T,
+  dependencies: DependencyList
+): T {
   return useDeepMemo(() => callback, dependencies);
 }
 

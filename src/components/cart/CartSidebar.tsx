@@ -1,7 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Drawer, Box, Typography, IconButton, Button, Divider, Badge, Paper, CircularProgress } from '@mui/material';
+import {
+  Drawer,
+  Box,
+  Typography,
+  IconButton,
+  Button,
+  Divider,
+  Badge,
+  Paper,
+  CircularProgress,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { FaTrash, FaShoppingCart } from 'react-icons/fa';
 import { HiShoppingCart } from 'react-icons/hi';
@@ -126,16 +136,24 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
     price: number;
   }
 
-  const [validatedCartItems, setValidatedCartItems] = useState<ValidatedCartItem[]>([]);
+  const [validatedCartItems, setValidatedCartItems] = useState<
+    ValidatedCartItem[]
+  >([]);
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
   const taxAmount = totalPrice * 0.15;
   const finalTotal = totalPrice + taxAmount;
 
   const handleCheckout = () => {
     setIsLoading(true);
     try {
-      console.log('Proceeding to checkout page with cart items:', JSON.stringify(cartItems, null, 2));
+      console.log(
+        'Proceeding to checkout page with cart items:',
+        JSON.stringify(cartItems, null, 2)
+      );
 
       const validated = cartItems.map((item) => ({
         ...item,
@@ -151,7 +169,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
       setValidatedCartItems(validated);
 
       if (validated.length === 0) {
-        throw new Error('Your cart is empty. Please add items to your cart before checkout.');
+        throw new Error(
+          'Your cart is empty. Please add items to your cart before checkout.'
+        );
       }
 
       localStorage.setItem('validatedCartItems', JSON.stringify(validated));
@@ -161,7 +181,11 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
       }, 2000);
     } catch (error) {
       console.error('Checkout Error:', JSON.stringify(error, null, 2));
-      alert(error instanceof Error ? error.message : 'Checkout failed. Please try again or contact support.');
+      alert(
+        error instanceof Error
+          ? error.message
+          : 'Checkout failed. Please try again or contact support.'
+      );
       setIsLoading(false);
     }
   };
@@ -176,7 +200,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
       <CheckoutModal
         open={isCheckoutModalOpen}
         onClose={handleCloseCheckoutModal}
-        cartItems={validatedCartItems.length > 0 ? validatedCartItems : cartItems}
+        cartItems={
+          validatedCartItems.length > 0 ? validatedCartItems : cartItems
+        }
         customStyles={modalCustomStyles}
       />
       <StyledDrawer anchor="right" open={open} onClose={onClose}>
@@ -187,7 +213,11 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
               alignItems: 'center',
             }}
           >
-            <HiShoppingCart size={20} color="#2196F3" style={{ marginRight: '12px' }} />
+            <HiShoppingCart
+              size={20}
+              color="#2196F3"
+              style={{ marginRight: '12px' }}
+            />
             <Typography
               variant="h6"
               sx={{
@@ -239,7 +269,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
               <CartItemContainer key={item.id} elevation={0}>
                 <ProductImage>
                   {}
-                  <span style={{ fontSize: '1rem' }}>{item.name ? item.name.charAt(0).toUpperCase() : 'P'}</span>
+                  <span style={{ fontSize: '1rem' }}>
+                    {item.name ? item.name.charAt(0).toUpperCase() : 'P'}
+                  </span>
                 </ProductImage>
                 <Box
                   sx={{
@@ -276,7 +308,12 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
                     >
                       {item.name}
                     </Typography>
-                    <DeleteButton edge="end" aria-label="delete" onClick={() => removeFromCart(item.id)} size="small">
+                    <DeleteButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => removeFromCart(item.id)}
+                      size="small"
+                    >
                       <FaTrash size={14} />
                     </DeleteButton>
                   </Box>
@@ -299,7 +336,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
                     >
                       Quantity: {item.quantity}
                     </Typography>
-                    <PriceText>{formatPrice(item.price * item.quantity)}</PriceText>
+                    <PriceText>
+                      {formatPrice(item.price * item.quantity)}
+                    </PriceText>
                   </Box>
                 </Box>
               </CartItemContainer>
@@ -472,7 +511,15 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
                 minHeight: '42px',
               }}
             >
-              {isLoading ? <CircularProgress size={24} sx={{ color: 'white' }} thickness={4} /> : 'Checkout Now'}
+              {isLoading ? (
+                <CircularProgress
+                  size={24}
+                  sx={{ color: 'white' }}
+                  thickness={4}
+                />
+              ) : (
+                'Checkout Now'
+              )}
             </Button>
 
             <Typography

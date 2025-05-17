@@ -21,7 +21,9 @@ export async function POST(req: Request) {
             product_data: {
               name: item.name || 'Custom Product',
               description: `${item.name} package with all selected features`,
-              images: [`${process.env.NEXT_PUBLIC_BASE_URL}/images/product-image.png`],
+              images: [
+                `${process.env.NEXT_PUBLIC_BASE_URL}/images/product-image.png`,
+              ],
             },
             unit_amount: Math.round((item.price || 0) * 100),
           },

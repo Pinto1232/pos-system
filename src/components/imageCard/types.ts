@@ -6,6 +6,7 @@ export interface ImageCardProps {
   className?: string;
 }
 
-export interface ImageCardContainerProps extends Omit<ImageCardProps, 'className'> {
+export interface ImageCardContainerProps
+  extends Omit<ImageCardProps, 'className'> {
   onCardClick?: () => void;
 }

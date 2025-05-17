@@ -7,7 +7,10 @@ interface TaxSettingsContentProps {
   setTaxSettings: (settings: TaxSettings) => void;
 }
 
-const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({ taxSettings, setTaxSettings }) => {
+const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({
+  taxSettings,
+  setTaxSettings,
+}) => {
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -29,7 +32,9 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({ taxSettings, se
         >
           <Typography variant="subtitle1">Enable Tax Calculation</Typography>
           <Button
-            variant={taxSettings.enableTaxCalculation ? 'contained' : 'outlined'}
+            variant={
+              taxSettings.enableTaxCalculation ? 'contained' : 'outlined'
+            }
             color={taxSettings.enableTaxCalculation ? 'primary' : 'inherit'}
             onClick={() =>
               setTaxSettings({
@@ -98,8 +103,16 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({ taxSettings, se
           <Typography variant="subtitle1">Tax Calculation Method</Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
-              variant={taxSettings.taxCalculationMethod === 'inclusive' ? 'contained' : 'outlined'}
-              color={taxSettings.taxCalculationMethod === 'inclusive' ? 'primary' : 'inherit'}
+              variant={
+                taxSettings.taxCalculationMethod === 'inclusive'
+                  ? 'contained'
+                  : 'outlined'
+              }
+              color={
+                taxSettings.taxCalculationMethod === 'inclusive'
+                  ? 'primary'
+                  : 'inherit'
+              }
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
@@ -115,8 +128,16 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({ taxSettings, se
               Inclusive
             </Button>
             <Button
-              variant={taxSettings.taxCalculationMethod === 'exclusive' ? 'contained' : 'outlined'}
-              color={taxSettings.taxCalculationMethod === 'exclusive' ? 'primary' : 'inherit'}
+              variant={
+                taxSettings.taxCalculationMethod === 'exclusive'
+                  ? 'contained'
+                  : 'outlined'
+              }
+              color={
+                taxSettings.taxCalculationMethod === 'exclusive'
+                  ? 'primary'
+                  : 'inherit'
+              }
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
@@ -193,7 +214,9 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({ taxSettings, se
         >
           <Typography variant="subtitle1">Display Tax on Receipts</Typography>
           <Button
-            variant={taxSettings.displayTaxOnReceipts ? 'contained' : 'outlined'}
+            variant={
+              taxSettings.displayTaxOnReceipts ? 'contained' : 'outlined'
+            }
             color={taxSettings.displayTaxOnReceipts ? 'primary' : 'inherit'}
             onClick={() =>
               setTaxSettings({
@@ -221,8 +244,16 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({ taxSettings, se
           <Typography variant="subtitle1">Tax Reporting Period</Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
-              variant={taxSettings.taxReportingPeriod === 'monthly' ? 'contained' : 'outlined'}
-              color={taxSettings.taxReportingPeriod === 'monthly' ? 'primary' : 'inherit'}
+              variant={
+                taxSettings.taxReportingPeriod === 'monthly'
+                  ? 'contained'
+                  : 'outlined'
+              }
+              color={
+                taxSettings.taxReportingPeriod === 'monthly'
+                  ? 'primary'
+                  : 'inherit'
+              }
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
@@ -238,8 +269,16 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({ taxSettings, se
               Monthly
             </Button>
             <Button
-              variant={taxSettings.taxReportingPeriod === 'quarterly' ? 'contained' : 'outlined'}
-              color={taxSettings.taxReportingPeriod === 'quarterly' ? 'primary' : 'inherit'}
+              variant={
+                taxSettings.taxReportingPeriod === 'quarterly'
+                  ? 'contained'
+                  : 'outlined'
+              }
+              color={
+                taxSettings.taxReportingPeriod === 'quarterly'
+                  ? 'primary'
+                  : 'inherit'
+              }
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
@@ -255,8 +294,16 @@ const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({ taxSettings, se
               Quarterly
             </Button>
             <Button
-              variant={taxSettings.taxReportingPeriod === 'annually' ? 'contained' : 'outlined'}
-              color={taxSettings.taxReportingPeriod === 'annually' ? 'primary' : 'inherit'}
+              variant={
+                taxSettings.taxReportingPeriod === 'annually'
+                  ? 'contained'
+                  : 'outlined'
+              }
+              color={
+                taxSettings.taxReportingPeriod === 'annually'
+                  ? 'primary'
+                  : 'inherit'
+              }
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,

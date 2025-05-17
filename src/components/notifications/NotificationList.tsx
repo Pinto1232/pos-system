@@ -1,7 +1,13 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Button, CircularProgress, Divider } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Divider,
+} from '@mui/material';
 import NotificationItem from './NotificationItem';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { styled } from '@mui/material/styles';
@@ -35,7 +41,15 @@ const EmptyState = styled(Box)(({ theme }) => ({
 }));
 
 const NotificationList: React.FC = () => {
-  const { notifications, isLoading, error, markAsRead, markAllAsRead, refreshNotifications, unreadCount } = useNotificationContext();
+  const {
+    notifications,
+    isLoading,
+    error,
+    markAsRead,
+    markAllAsRead,
+    refreshNotifications,
+    unreadCount,
+  } = useNotificationContext();
 
   const handleMarkAsRead = async (id: string) => {
     await markAsRead([id]);
@@ -65,7 +79,12 @@ const NotificationList: React.FC = () => {
         <Typography variant="body2" color="error" gutterBottom>
           Error loading notifications
         </Typography>
-        <Button variant="outlined" size="small" onClick={refreshNotifications} sx={{ mt: 1 }}>
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={refreshNotifications}
+          sx={{ mt: 1 }}
+        >
           Retry
         </Button>
       </EmptyState>
@@ -96,9 +115,15 @@ const NotificationList: React.FC = () => {
           py: 1,
         }}
       >
-        <Typography variant="subtitle2">Notifications {unreadCount > 0 && `(${unreadCount} unread)`}</Typography>
+        <Typography variant="subtitle2">
+          Notifications {unreadCount > 0 && `(${unreadCount} unread)`}
+        </Typography>
         {unreadCount > 0 && (
-          <Button size="small" onClick={handleMarkAllAsRead} sx={{ fontSize: '0.75rem' }}>
+          <Button
+            size="small"
+            onClick={handleMarkAllAsRead}
+            sx={{ fontSize: '0.75rem' }}
+          >
             Mark all as read
           </Button>
         )}
@@ -108,7 +133,11 @@ const NotificationList: React.FC = () => {
 
       <NotificationListContainer>
         {notifications.map((notification) => (
-          <NotificationItem key={notification.id} notification={notification} onMarkAsRead={handleMarkAsRead} />
+          <NotificationItem
+            key={notification.id}
+            notification={notification}
+            onMarkAsRead={handleMarkAsRead}
+          />
         ))}
       </NotificationListContainer>
     </Box>

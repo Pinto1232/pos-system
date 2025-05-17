@@ -1,6 +1,14 @@
 'use client';
 
-import React, { createContext, useState, useEffect, ReactNode, useRef, useCallback, useMemo } from 'react';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import { KeycloakInstance } from 'keycloak-js';
 import keycloakInstance from '@/auth/keycloak';
 import { isKeycloakError } from '@/types/keycloak';
@@ -21,10 +29,14 @@ const FALLBACK_CONFIG = {
 const getKeycloakConfig = () => ({
   url: process.env.NEXT_PUBLIC_KEYCLOAK_URL || FALLBACK_CONFIG.url,
   realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM || FALLBACK_CONFIG.realm,
-  clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || FALLBACK_CONFIG.clientId,
-  redirectUri: process.env.NEXT_PUBLIC_REDIRECT_URI || FALLBACK_CONFIG.redirectUri,
-  loginRedirect: process.env.NEXT_PUBLIC_LOGIN_REDIRECT || FALLBACK_CONFIG.loginRedirect,
-  logoutRedirect: process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || FALLBACK_CONFIG.logoutRedirect,
+  clientId:
+    process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || FALLBACK_CONFIG.clientId,
+  redirectUri:
+    process.env.NEXT_PUBLIC_REDIRECT_URI || FALLBACK_CONFIG.redirectUri,
+  loginRedirect:
+    process.env.NEXT_PUBLIC_LOGIN_REDIRECT || FALLBACK_CONFIG.loginRedirect,
+  logoutRedirect:
+    process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || FALLBACK_CONFIG.logoutRedirect,
 });
 
 export interface AuthContextProps {
@@ -57,14 +69,21 @@ const calculateRefreshTime = (token: string): number => {
     if (payload.exp) {
       const expiryTimeInSeconds = payload.exp;
       const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-      const timeUntilExpiryInSeconds = expiryTimeInSeconds - currentTimeInSeconds;
+      const timeUntilExpiryInSeconds =
+        expiryTimeInSeconds - currentTimeInSeconds;
 
-      const refreshTimeInMs = Math.min(Math.max(timeUntilExpiryInSeconds * 0.7 * 1000, 10000), 300000);
+      const refreshTimeInMs = Math.min(
+        Math.max(timeUntilExpiryInSeconds * 0.7 * 1000, 10000),
+        300000
+      );
 
       return refreshTimeInMs;
     }
   } catch (error) {
-    console.error('Error calculating token refresh time:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error calculating token refresh time:',
+      JSON.stringify(error, null, 2)
+    );
   }
 
   return 60000;
@@ -82,7 +101,10 @@ const setTokenCookie = async (token: string) => {
   const payload = { token };
   const jsonBody = JSON.stringify(payload);
 
-  console.log('Setting token cookie, payload length:', JSON.stringify(jsonBody.length, null, 2));
+  console.log(
+    'Setting token cookie, payload length:',
+    JSON.stringify(jsonBody.length, null, 2)
+  );
 
   try {
     const response = await fetch('/api/auth-token/set-token', {
@@ -97,7 +119,10 @@ const setTokenCookie = async (token: string) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Failed to set token cookie: ${response.status} ${response.statusText}`, JSON.stringify(errorText, null, 2));
+      console.error(
+        `Failed to set token cookie: ${response.status} ${response.statusText}`,
+        JSON.stringify(errorText, null, 2)
+      );
       return;
     }
 
@@ -113,7 +138,10 @@ const clearTokenCookie = () => {
     method: 'POST',
     credentials: 'include',
   }).catch((err) => {
-    console.error('Failed to clear token cookie:', JSON.stringify(err, null, 2));
+    console.error(
+      'Failed to clear token cookie:',
+      JSON.stringify(err, null, 2)
+    );
   });
 };
 
@@ -132,11 +160,16 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     setIsMounted(true);
 
-    console.log('Using Keycloak config from AuthContext:', JSON.stringify(configRef.current, null, 2));
+    console.log(
+      'Using Keycloak config from AuthContext:',
+      JSON.stringify(configRef.current, null, 2)
+    );
 
     const envValidation = validateAuthEnvVars();
     if (!envValidation.isValid) {
-      console.warn(`Using fallback values for: ${envValidation.missingVars.join(', ')}`);
+      console.warn(
+        `Using fallback values for: ${envValidation.missingVars.join(', ')}`
+      );
     }
   }, []);
 
@@ -149,7 +182,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (isMounted) {
         const config = configRef.current;
         const logoutRedirect = window.encodeURIComponent(config.logoutRedirect);
-        console.log('Logout redirect URI:', JSON.stringify(logoutRedirect, null, 2));
+        console.log(
+          'Logout redirect URI:',
+          JSON.stringify(logoutRedirect, null, 2)
+        );
 
         const logoutUrl = `${config.url}/realms/${config.realm}/protocol/openid-connect/logout`;
 
@@ -165,7 +201,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         form.method = 'POST';
         form.action = logoutUrl;
         form.appendChild(createFormInput('client_id', config.clientId));
-        form.appendChild(createFormInput('post_logout_redirect_uri', config.logoutRedirect));
+        form.appendChild(
+          createFormInput('post_logout_redirect_uri', config.logoutRedirect)
+        );
 
         document.body.appendChild(form);
         form.submit();
@@ -191,7 +229,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           await setTokenCookie(kc.token);
 
           const refreshTime = calculateRefreshTime(kc.token);
-          console.log(`Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`);
+          console.log(
+            `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+          );
 
           setTimeout(() => {
             handleTokenRefresh(kc);
@@ -199,7 +239,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           if (kc.token) {
             const refreshTime = calculateRefreshTime(kc.token);
-            console.log(`Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`);
+            console.log(
+              `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+            );
 
             setTimeout(() => {
               handleTokenRefresh(kc);
@@ -207,10 +249,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
         }
       } catch (refreshError) {
-        console.error('Token refresh failed:', JSON.stringify(refreshError, null, 2));
+        console.error(
+          'Token refresh failed:',
+          JSON.stringify(refreshError, null, 2)
+        );
 
         if (retryCount < MAX_REFRESH_RETRIES) {
-          console.log(`Retrying token refresh (${retryCount + 1}/${MAX_REFRESH_RETRIES}) in ${RETRY_DELAY_MS * Math.pow(2, retryCount)}ms`);
+          console.log(
+            `Retrying token refresh (${retryCount + 1}/${MAX_REFRESH_RETRIES}) in ${RETRY_DELAY_MS * Math.pow(2, retryCount)}ms`
+          );
           setTimeout(
             () => {
               handleTokenRefresh(kc, retryCount + 1);
@@ -233,7 +280,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         const config = configRef.current;
 
         const loginRedirect = window.location.origin + '/';
-        console.log('Using login redirect:', JSON.stringify(loginRedirect, null, 2));
+        console.log(
+          'Using login redirect:',
+          JSON.stringify(loginRedirect, null, 2)
+        );
 
         const username = sessionStorage.getItem('kc_username');
         const password = sessionStorage.getItem('kc_password');
@@ -272,7 +322,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
               await setTokenCookie(data.access_token);
 
               const refreshTime = calculateRefreshTime(data.access_token);
-              console.log(`Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`);
+              console.log(
+                `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+              );
               setTimeout(() => {
                 handleTokenRefresh(keycloakRef.current);
               }, refreshTime);
@@ -283,10 +335,16 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
               window.location.href = loginRedirect;
               return;
             } else {
-              console.error('Direct token request failed:', JSON.stringify(response.status, null, 2));
+              console.error(
+                'Direct token request failed:',
+                JSON.stringify(response.status, null, 2)
+              );
             }
           } catch (tokenError) {
-            console.error('Error during direct token request:', JSON.stringify(tokenError, null, 2));
+            console.error(
+              'Error during direct token request:',
+              JSON.stringify(tokenError, null, 2)
+            );
           }
 
           sessionStorage.removeItem('kc_username');
@@ -300,7 +358,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       console.error('Login error:', JSON.stringify(err, null, 2));
-      setError(err instanceof Error ? `Login failed: ${err.message}` : 'Login failed');
+      setError(
+        err instanceof Error ? `Login failed: ${err.message}` : 'Login failed'
+      );
     }
   }, [isMounted, handleTokenRefresh]);
 
@@ -316,7 +376,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
       } catch (err) {
         console.error('Login redirect error:', JSON.stringify(err, null, 2));
-        setError(err instanceof Error ? `Login redirect failed: ${err.message}` : 'Login redirect failed');
+        setError(
+          err instanceof Error
+            ? `Login redirect failed: ${err.message}`
+            : 'Login redirect failed'
+        );
       }
     }
   }, [isMounted]);
@@ -338,11 +402,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     console.log('Using Keycloak config:', JSON.stringify(config, null, 2));
 
     try {
-      const isNewRegistration = localStorage.getItem('newRegistration') === 'true';
+      const isNewRegistration =
+        localStorage.getItem('newRegistration') === 'true';
 
       const onLoadOption = isNewRegistration ? 'login-required' : 'check-sso';
 
-      console.log('Keycloak onLoad option:', onLoadOption, 'isNewRegistration:', JSON.stringify(isNewRegistration, null, 2));
+      console.log(
+        'Keycloak onLoad option:',
+        onLoadOption,
+        'isNewRegistration:',
+        JSON.stringify(isNewRegistration, null, 2)
+      );
 
       const authenticated = await kc.init({
         onLoad: onLoadOption,
@@ -351,7 +421,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         pkceMethod: 'S256',
         responseMode: 'query',
         enableLogging: true,
-        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/silent-check-sso.html',
         silentCheckSsoFallback: false,
       });
 
@@ -359,7 +430,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.removeItem('newRegistration');
       }
 
-      console.log('Redirect URI:', JSON.stringify(window.location.origin + '/', null, 2));
+      console.log(
+        'Redirect URI:',
+        JSON.stringify(window.location.origin + '/', null, 2)
+      );
 
       if (authenticated) {
         if (kc.token) {
@@ -369,7 +443,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           await setTokenCookie(kc.token);
 
           const refreshTime = calculateRefreshTime(kc.token);
-          console.log(`Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`);
+          console.log(
+            `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+          );
 
           refreshTimeout = setTimeout(() => {
             handleTokenRefresh(kc);
@@ -406,7 +482,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         errorMessage = `Authentication error: ${JSON.stringify(err)}`;
       }
 
-      console.error('Final error message:', JSON.stringify(errorMessage, null, 2));
+      console.error(
+        'Final error message:',
+        JSON.stringify(errorMessage, null, 2)
+      );
       setError(errorMessage);
       localStorage.removeItem('accessToken');
       clearTokenCookie();
@@ -429,7 +508,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       const skipAuthApi = process.env.NEXT_PUBLIC_SKIP_AUTH_API === 'true';
 
       if (skipAuthApi) {
-        console.log('Using mock token API due to NEXT_PUBLIC_SKIP_AUTH_API flag');
+        console.log(
+          'Using mock token API due to NEXT_PUBLIC_SKIP_AUTH_API flag'
+        );
 
         const fetchMockToken = async () => {
           try {
@@ -443,7 +524,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             });
 
             if (!response.ok) {
-              throw new Error(`Failed to get mock token: ${response.status} ${response.statusText}`);
+              throw new Error(
+                `Failed to get mock token: ${response.status} ${response.statusText}`
+              );
             }
 
             const data = await response.json();
@@ -456,7 +539,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
               console.log('Mock token set');
             }
           } catch (err) {
-            console.error('Error fetching mock token:', JSON.stringify(err, null, 2));
+            console.error(
+              'Error fetching mock token:',
+              JSON.stringify(err, null, 2)
+            );
           }
         };
 
@@ -473,14 +559,22 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
               },
             });
 
-            console.log('Token API response status:', JSON.stringify(response.status, null, 2));
+            console.log(
+              'Token API response status:',
+              JSON.stringify(response.status, null, 2)
+            );
 
             if (!response.ok) {
-              throw new Error(`Failed to get token: ${response.status} ${response.statusText}`);
+              throw new Error(
+                `Failed to get token: ${response.status} ${response.statusText}`
+              );
             }
 
             const data = await response.json();
-            console.log('Token API response data:', JSON.stringify(data, null, 2));
+            console.log(
+              'Token API response data:',
+              JSON.stringify(data, null, 2)
+            );
 
             if (data.token) {
               setToken(data.token);
@@ -489,10 +583,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
               console.log('Token set from API');
               return true;
             } else {
-              console.log('No token in API response, proceeding with Keycloak initialization');
+              console.log(
+                'No token in API response, proceeding with Keycloak initialization'
+              );
             }
           } catch (err) {
-            console.error('Error fetching token:', JSON.stringify(err, null, 2));
+            console.error(
+              'Error fetching token:',
+              JSON.stringify(err, null, 2)
+            );
           }
           return false;
         };
@@ -539,7 +638,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return null;
   }
 
-  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

@@ -56,25 +56,41 @@ describe('Authentication Utilities', () => {
 
       markAsNewRegistration();
 
-      expect(window.localStorage.setItem).toHaveBeenCalledWith('newRegistration', 'true');
+      expect(window.localStorage.setItem).toHaveBeenCalledWith(
+        'newRegistration',
+        'true'
+      );
     });
   });
 
   describe('redirectToKeycloakRegistration', () => {
     it('should mark as new registration and redirect to Keycloak registration page', () => {
-      const markAsNewRegistrationSpy = jest.spyOn(window.localStorage, 'setItem');
+      const markAsNewRegistrationSpy = jest.spyOn(
+        window.localStorage,
+        'setItem'
+      );
 
       redirectToKeycloakRegistration();
 
-      expect(markAsNewRegistrationSpy).toHaveBeenCalledWith('newRegistration', 'true');
+      expect(markAsNewRegistrationSpy).toHaveBeenCalledWith(
+        'newRegistration',
+        'true'
+      );
 
-      expect(locationMock.href).toContain('/realms/pisval-pos-realm/protocol/openid-connect/registrations');
+      expect(locationMock.href).toContain(
+        '/realms/pisval-pos-realm/protocol/openid-connect/registrations'
+      );
       expect(locationMock.href).toContain('client_id=pos-backend');
-      expect(locationMock.href).toContain(`redirect_uri=${encodeURIComponent('http://localhost:3000/')}`);
+      expect(locationMock.href).toContain(
+        `redirect_uri=${encodeURIComponent('http://localhost:3000/')}`
+      );
     });
 
     it('should use custom parameters when provided', () => {
-      const markAsNewRegistrationSpy = jest.spyOn(window.localStorage, 'setItem');
+      const markAsNewRegistrationSpy = jest.spyOn(
+        window.localStorage,
+        'setItem'
+      );
 
       redirectToKeycloakRegistration(
         'https://custom-keycloak.example.com',
@@ -83,12 +99,21 @@ describe('Authentication Utilities', () => {
         'https://custom-redirect.example.com'
       );
 
-      expect(markAsNewRegistrationSpy).toHaveBeenCalledWith('newRegistration', 'true');
+      expect(markAsNewRegistrationSpy).toHaveBeenCalledWith(
+        'newRegistration',
+        'true'
+      );
 
-      expect(locationMock.href).toContain('https://custom-keycloak.example.com');
-      expect(locationMock.href).toContain('/realms/custom-realm/protocol/openid-connect/registrations');
+      expect(locationMock.href).toContain(
+        'https://custom-keycloak.example.com'
+      );
+      expect(locationMock.href).toContain(
+        '/realms/custom-realm/protocol/openid-connect/registrations'
+      );
       expect(locationMock.href).toContain('client_id=custom-client');
-      expect(locationMock.href).toContain(`redirect_uri=${encodeURIComponent('https://custom-redirect.example.com')}`);
+      expect(locationMock.href).toContain(
+        `redirect_uri=${encodeURIComponent('https://custom-redirect.example.com')}`
+      );
     });
   });
 
@@ -143,7 +168,9 @@ describe('Authentication Utilities', () => {
       expect(localStorageSpy).toHaveBeenCalledWith('newRegistration', 'true');
 
       jest.runAllTimers();
-      expect(locationMock.href).toContain('/realms/pisval-pos-realm/protocol/openid-connect/auth');
+      expect(locationMock.href).toContain(
+        '/realms/pisval-pos-realm/protocol/openid-connect/auth'
+      );
       expect(locationMock.href).toContain('client_id=pos-backend');
       expect(locationMock.href).toContain('response_type=code');
       expect(locationMock.href).toContain('scope=openid');
@@ -161,7 +188,9 @@ describe('Authentication Utilities', () => {
       expect(localStorageSpy).toHaveBeenCalledWith('newRegistration', 'true');
 
       jest.runAllTimers();
-      expect(locationMock.href).toContain('/realms/pisval-pos-realm/protocol/openid-connect/auth');
+      expect(locationMock.href).toContain(
+        '/realms/pisval-pos-realm/protocol/openid-connect/auth'
+      );
     });
   });
 });

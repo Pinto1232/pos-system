@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Drawer, Box, List, Typography, useMediaQuery, useTheme, Avatar, Skeleton, Tooltip } from '@mui/material';
+import {
+  Drawer,
+  Box,
+  List,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  Avatar,
+  Skeleton,
+  Tooltip,
+} from '@mui/material';
 import Image from 'next/image';
 import { sidebarItems } from '@/settings';
 import { useSpinner } from '@/contexts/SpinnerContext';
@@ -76,7 +86,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   }, [INACTIVITY_TIMEOUT]);
 
   useEffect(() => {
-    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    const activityEvents = [
+      'mousedown',
+      'mousemove',
+      'keypress',
+      'scroll',
+      'touchstart',
+    ];
 
     const handleUserActivity = () => {
       resetInactivityTimer();
@@ -114,7 +130,9 @@ const Sidebar: React.FC<SidebarProps> = ({
       if (savedActiveItem) {
         for (const item of sidebarItems) {
           if (item.expandable && item.subItems) {
-            const isSubItem = item.subItems.some((subItem) => subItem.label === savedActiveItem);
+            const isSubItem = item.subItems.some(
+              (subItem) => subItem.label === savedActiveItem
+            );
             if (isSubItem) {
               setExpandedItems((prev) => ({
                 ...prev,
@@ -126,7 +144,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         }
       }
     } catch (error) {
-      console.error('Error loading sidebar state from localStorage:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error loading sidebar state from localStorage:',
+        JSON.stringify(error, null, 2)
+      );
 
       setActiveItemState('Dashboard');
     }
@@ -145,7 +166,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               (item.label === 'Dashboard' ||
                 (item.subItems &&
                   Array.isArray(item.subItems) &&
-                  item.subItems.some((subItem) => subItem && subItem.label === 'Dashboard')))
+                  item.subItems.some(
+                    (subItem) => subItem && subItem.label === 'Dashboard'
+                  )))
           )
         : undefined;
 
@@ -155,15 +178,21 @@ const Sidebar: React.FC<SidebarProps> = ({
           localStorage.setItem('sidebarActiveItem', 'Dashboard');
         } else if (matchingSidebarItem.subItems) {
           const subItem =
-            matchingSidebarItem.subItems && Array.isArray(matchingSidebarItem.subItems)
-              ? matchingSidebarItem.subItems.find((sub) => sub && sub.label === 'Dashboard')
+            matchingSidebarItem.subItems &&
+            Array.isArray(matchingSidebarItem.subItems)
+              ? matchingSidebarItem.subItems.find(
+                  (sub) => sub && sub.label === 'Dashboard'
+                )
               : undefined;
           if (subItem) {
             const newExpandedItems = {
               [matchingSidebarItem.label]: true,
             };
             setExpandedItems(newExpandedItems);
-            localStorage.setItem('sidebarExpandedItems', JSON.stringify(newExpandedItems));
+            localStorage.setItem(
+              'sidebarExpandedItems',
+              JSON.stringify(newExpandedItems)
+            );
             setActiveItemState('Dashboard');
             localStorage.setItem('sidebarActiveItem', 'Dashboard');
           }
@@ -342,7 +371,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           '& .MuiDrawer-paper': {
             width: !isSmallScreen && !localDrawerOpen ? 80 : drawerWidth,
             minWidth: isSmallScreen ? 250 : undefined,
-            transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
+            transition:
+              'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
             boxSizing: 'border-box',
             boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
             backgroundColor: sidebarColor || backgroundColor,
@@ -474,10 +504,15 @@ const Sidebar: React.FC<SidebarProps> = ({
                       mx: 'auto',
                     }}
                   >
-                    <Tooltip title={userInfo?.email || ''} placement="bottom" arrow>
+                    <Tooltip
+                      title={userInfo?.email || ''}
+                      placement="bottom"
+                      arrow
+                    >
                       <Box
                         sx={{
-                          background: 'linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)',
+                          background:
+                            'linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)',
                           borderRadius: '8px',
                           padding: isSmallScreen ? '6px 12px' : '8px 16px',
                           width: '100%',
@@ -503,7 +538,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                           }}
                         >
-                          {userInfo?.name?.charAt(0) || userInfo?.preferred_username?.charAt(0) || 'U'}
+                          {userInfo?.name?.charAt(0) ||
+                            userInfo?.preferred_username?.charAt(0) ||
+                            'U'}
                         </Avatar>
                         <Box
                           sx={{
@@ -524,7 +561,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                               maxWidth: '100%',
                             }}
                           >
-                            {userInfo?.name || userInfo?.preferred_username || 'User'}
+                            {userInfo?.name ||
+                              userInfo?.preferred_username ||
+                              'User'}
                           </Typography>
                           <Box
                             sx={{
@@ -536,9 +575,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                               height: isSmallScreen ? 6 : 8,
                               borderRadius: '50%',
                               bgcolor: isUserActive ? '#4CAF50' : '#F44336',
-                              boxShadow: isUserActive ? '0 0 4px #4CAF50' : '0 0 4px #F44336',
+                              boxShadow: isUserActive
+                                ? '0 0 4px #4CAF50'
+                                : '0 0 4px #F44336',
                               animation: 'pulse 2s infinite',
-                              transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+                              transition:
+                                'background-color 0.3s ease, box-shadow 0.3s ease',
                             }}
                           />
                         </Box>

@@ -1,7 +1,17 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Dialog, DialogTitle, DialogContent, IconButton, Typography, Box, CircularProgress, useTheme, useMediaQuery } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Typography,
+  Box,
+  CircularProgress,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useCart } from '@/contexts/CartContext';
 import styles from './CheckoutModal.module.css';
@@ -29,13 +39,21 @@ interface CheckoutModalProps {
   };
 }
 
-const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems: propCartItems, customStyles = {} }) => {
+const CheckoutModal: React.FC<CheckoutModalProps> = ({
+  open,
+  onClose,
+  cartItems: propCartItems,
+  customStyles = {},
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
   const cartContext = useCart();
-  const cartItems = useMemo(() => propCartItems || cartContext.cartItems, [propCartItems, cartContext.cartItems]);
+  const cartItems = useMemo(
+    () => propCartItems || cartContext.cartItems,
+    [propCartItems, cartContext.cartItems]
+  );
 
   const [paymentState, setPaymentState] = useState({
     clientSecret: null as string | null,
@@ -47,12 +65,15 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
     stripeFormMounted: false,
   });
 
-  const updatePaymentState = useCallback((newState: Partial<typeof paymentState>) => {
-    setPaymentState((prev) => ({
-      ...prev,
-      ...newState,
-    }));
-  }, []);
+  const updatePaymentState = useCallback(
+    (newState: Partial<typeof paymentState>) => {
+      setPaymentState((prev) => ({
+        ...prev,
+        ...newState,
+      }));
+    },
+    []
+  );
 
   useEffect(() => {
     if (!open) {
@@ -63,14 +84,20 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
       return;
     }
 
-    console.log('CheckoutModal useEffect - open:', open, 'cartItems:', JSON.stringify(cartItems, null, 2));
+    console.log(
+      'CheckoutModal useEffect - open:',
+      open,
+      'cartItems:',
+      JSON.stringify(cartItems, null, 2)
+    );
 
     if (!cartItems || cartItems.length === 0) {
       console.error('Cart is empty in CheckoutModal');
       updatePaymentState({
         isLoading: false,
         errorType: 'validation_error',
-        error: 'Your cart is empty. Please add items to your cart before checkout.',
+        error:
+          'Your cart is empty. Please add items to your cart before checkout.',
       });
       return;
     }
@@ -84,7 +111,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
       });
 
       try {
-        console.log('Sending request to create payment intent with cart items:', JSON.stringify(cartItems, null, 2));
+        console.log(
+          'Sending request to create payment intent with cart items:',
+          JSON.stringify(cartItems, null, 2)
+        );
 
         const requestBody = JSON.stringify({
           cartItems,
@@ -99,16 +129,25 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
           body: requestBody,
         });
 
-        console.log('Response status:', JSON.stringify(response.status, null, 2));
+        console.log(
+          'Response status:',
+          JSON.stringify(response.status, null, 2)
+        );
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error('Error response from API:', JSON.stringify(errorData, null, 2));
+          console.error(
+            'Error response from API:',
+            JSON.stringify(errorData, null, 2)
+          );
           throw new Error(errorData.error || 'Failed to create payment intent');
         }
 
         const responseData = await response.json();
-        console.log('Success response from API:', JSON.stringify(responseData, null, 2));
+        console.log(
+          'Success response from API:',
+          JSON.stringify(responseData, null, 2)
+        );
         const { clientSecret } = responseData;
 
         updatePaymentState({
@@ -117,10 +156,20 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
           paymentStep: 'payment_form',
         });
       } catch (error) {
-        console.error('Error creating payment intent:', JSON.stringify(error instanceof Error ? error.message : error, null, 2));
+        console.error(
+          'Error creating payment intent:',
+          JSON.stringify(
+            error instanceof Error ? error.message : error,
+            null,
+            2
+          )
+        );
         updatePaymentState({
           isLoading: false,
-          error: error instanceof Error ? error.message : 'Failed to initialize payment',
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to initialize payment',
           errorType: 'server_error',
           paymentStep: 'error',
         });
@@ -178,11 +227,20 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
       }}
     >
       <DialogTitle className={styles.dialogTitle} sx={{ p: 0 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          p={2}
+        >
           <Box component="span" className={styles.title}>
             Checkout
           </Box>
-          <IconButton aria-label="close" onClick={onClose} className={styles.closeButton}>
+          <IconButton
+            aria-label="close"
+            onClick={onClose}
+            className={styles.closeButton}
+          >
             <CloseIcon />
           </IconButton>
         </Box>
@@ -201,7 +259,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
             zIndex: 1000,
           }}
         >
-          Loading: {paymentState.isLoading ? 'true' : 'false'}, Error: {paymentState.error ? 'true' : 'false'}, ClientSecret:{' '}
+          Loading: {paymentState.isLoading ? 'true' : 'false'}, Error:{' '}
+          {paymentState.error ? 'true' : 'false'}, ClientSecret:{' '}
           {paymentState.clientSecret ? 'present' : 'missing'}
         </Box>
 
@@ -236,7 +295,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
 
                     if (!response.ok) {
                       const errorData = await response.json();
-                      throw new Error(errorData.error || 'Failed to create payment intent');
+                      throw new Error(
+                        errorData.error || 'Failed to create payment intent'
+                      );
                     }
 
                     const { clientSecret } = await response.json();
@@ -247,10 +308,16 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
                       paymentStep: 'payment_form',
                     });
                   } catch (error) {
-                    console.error('Error creating payment intent:', JSON.stringify(error, null, 2));
+                    console.error(
+                      'Error creating payment intent:',
+                      JSON.stringify(error, null, 2)
+                    );
                     updatePaymentState({
                       isLoading: false,
-                      error: error instanceof Error ? error.message : 'Failed to initialize payment',
+                      error:
+                        error instanceof Error
+                          ? error.message
+                          : 'Failed to initialize payment',
                       errorType: 'server_error',
                       paymentStep: 'error',
                     });
@@ -297,7 +364,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
                     overflow: 'visible',
                   }}
                 >
-                  <StripePaymentForm clientSecret={paymentState.clientSecret} onMounted={handleFormMounted} />
+                  <StripePaymentForm
+                    clientSecret={paymentState.clientSecret}
+                    onMounted={handleFormMounted}
+                  />
                 </div>
               ) : (
                 <Box
@@ -309,7 +379,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ open, onClose, cartItems:
                     minHeight: '300px',
                   }}
                 >
-                  <Typography>Failed to initialize payment form. Please try again.</Typography>
+                  <Typography>
+                    Failed to initialize payment form. Please try again.
+                  </Typography>
                 </Box>
               )}
             </Box>

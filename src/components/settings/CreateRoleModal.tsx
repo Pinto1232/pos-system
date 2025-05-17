@@ -63,7 +63,8 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
           borderRadius: 3,
           overflow: 'hidden',
           boxShadow: '0 8px 32px rgba(23, 58, 121, 0.2)',
-          background: 'linear-gradient(135deg, rgba(23, 58, 121, 0.1) 0%, rgba(23, 58, 121, 0.05) 100%)',
+          background:
+            'linear-gradient(135deg, rgba(23, 58, 121, 0.1) 0%, rgba(23, 58, 121, 0.05) 100%)',
           border: '1px solid rgba(23, 58, 121, 0.1)',
           backdropFilter: 'blur(4px)',
         },
@@ -94,7 +95,12 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
             Define custom roles with specific permissions
           </Typography>
         </Box>
-        <IconButton edge="end" color="inherit" onClick={onClose} aria-label="close">
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={onClose}
+          aria-label="close"
+        >
           <CloseIcon />
         </IconButton>
       </Box>
@@ -124,7 +130,9 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
                 value={newRoleName}
                 onChange={(e) => setNewRoleName(e.target.value)}
                 error={!!roleNameError}
-                helperText={roleNameError || 'Choose a descriptive name for this role'}
+                helperText={
+                  roleNameError || 'Choose a descriptive name for this role'
+                }
                 autoFocus
               />
               <TextField
@@ -176,7 +184,12 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
               >
                 <FormControlLabel
                   control={
-                    <Checkbox checked={configurePermissionsAfter} onChange={(e) => setConfigurePermissionsAfter(e.target.checked)} />
+                    <Checkbox
+                      checked={configurePermissionsAfter}
+                      onChange={(e) =>
+                        setConfigurePermissionsAfter(e.target.checked)
+                      }
+                    />
                   }
                   label="Configure permissions after creation"
                 />
@@ -201,20 +214,22 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
               }}
             >
               <Grid container spacing={1}>
-                {getTemplatePermissions(selectedTemplate).map((permission, index) => (
-                  <Grid item xs={6} sm={4} key={index}>
-                    <Chip
-                      label={permission}
-                      size="small"
-                      sx={{
-                        bgcolor: 'rgba(23, 58, 121, 0.1)',
-                        color: '#173A79',
-                        fontWeight: 500,
-                        mb: 1,
-                      }}
-                    />
-                  </Grid>
-                ))}
+                {getTemplatePermissions(selectedTemplate).map(
+                  (permission, index) => (
+                    <Grid item xs={6} sm={4} key={index}>
+                      <Chip
+                        label={permission}
+                        size="small"
+                        sx={{
+                          bgcolor: 'rgba(23, 58, 121, 0.1)',
+                          color: '#173A79',
+                          fontWeight: 500,
+                          mb: 1,
+                        }}
+                      />
+                    </Grid>
+                  )
+                )}
               </Grid>
             </Paper>
           </Box>
@@ -254,7 +269,11 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
             minWidth: '120px',
           }}
         >
-          {createRolePending ? <CircularProgress size={24} color="inherit" /> : 'Create Role'}
+          {createRolePending ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            'Create Role'
+          )}
         </Button>
       </DialogActions>
     </Dialog>

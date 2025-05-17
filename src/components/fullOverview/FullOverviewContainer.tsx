@@ -149,7 +149,9 @@ const FullOverviewContainer: React.FC = () => {
           >
             Overview Dashboard
           </Typography>
-          <IconButton onClick={handleViewModeToggle}>{viewMode === 'grid' ? <ViewListIcon /> : <ViewModuleIcon />}</IconButton>
+          <IconButton onClick={handleViewModeToggle}>
+            {viewMode === 'grid' ? <ViewListIcon /> : <ViewModuleIcon />}
+          </IconButton>
         </Box>
         <Box sx={{ p: 2 }}>
           <Grid
@@ -166,7 +168,13 @@ const FullOverviewContainer: React.FC = () => {
             }}
           >
             {cardsData.map((item, idx) => (
-              <Grid item xs={12} sm={viewMode === 'grid' ? 6 : 12} md={viewMode === 'grid' ? 4 : 12} key={idx}>
+              <Grid
+                item
+                xs={12}
+                sm={viewMode === 'grid' ? 6 : 12}
+                md={viewMode === 'grid' ? 4 : 12}
+                key={idx}
+              >
                 <FullOverviewCard {...item} viewMode={viewMode} />
               </Grid>
             ))}

@@ -53,7 +53,8 @@ const SystemBackupContent: React.FC = () => {
           </Button>
         </Box>
         <Typography variant="body2" color="text.secondary" paragraph>
-          Create a manual backup of your system data. This includes all settings, products, customers, and transaction history.
+          Create a manual backup of your system data. This includes all
+          settings, products, customers, and transaction history.
         </Typography>
       </Box>
 
@@ -69,7 +70,10 @@ const SystemBackupContent: React.FC = () => {
               gap: 2,
             }}
           >
-            <FormControlLabel control={<Switch defaultChecked />} label="Enable automatic backups" />
+            <FormControlLabel
+              control={<Switch defaultChecked />}
+              label="Enable automatic backups"
+            />
 
             <Box
               sx={{
@@ -79,7 +83,12 @@ const SystemBackupContent: React.FC = () => {
               }}
             >
               <Typography variant="body2">Backup frequency:</Typography>
-              <TextField select defaultValue="daily" size="small" sx={{ minWidth: 150 }}>
+              <TextField
+                select
+                defaultValue="daily"
+                size="small"
+                sx={{ minWidth: 150 }}
+              >
                 <MenuItem value="hourly">Hourly</MenuItem>
                 <MenuItem value="daily">Daily</MenuItem>
                 <MenuItem value="weekly">Weekly</MenuItem>
@@ -95,7 +104,12 @@ const SystemBackupContent: React.FC = () => {
               }}
             >
               <Typography variant="body2">Retention period:</Typography>
-              <TextField select defaultValue="30" size="small" sx={{ minWidth: 150 }}>
+              <TextField
+                select
+                defaultValue="30"
+                size="small"
+                sx={{ minWidth: 150 }}
+              >
                 <MenuItem value="7">7 days</MenuItem>
                 <MenuItem value="30">30 days</MenuItem>
                 <MenuItem value="90">90 days</MenuItem>
@@ -111,7 +125,12 @@ const SystemBackupContent: React.FC = () => {
               }}
             >
               <Typography variant="body2">Backup location:</Typography>
-              <TextField select defaultValue="local" size="small" sx={{ minWidth: 150 }}>
+              <TextField
+                select
+                defaultValue="local"
+                size="small"
+                sx={{ minWidth: 150 }}
+              >
                 <MenuItem value="local">Local Storage</MenuItem>
                 <MenuItem value="cloud">Cloud Storage</MenuItem>
                 <MenuItem value="both">Both</MenuItem>
@@ -125,7 +144,11 @@ const SystemBackupContent: React.FC = () => {
         <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
           Backup History
         </Typography>
-        <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
+        <TableContainer
+          component={Paper}
+          variant="outlined"
+          sx={{ borderRadius: 2 }}
+        >
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -184,7 +207,13 @@ const SystemBackupContent: React.FC = () => {
                     <Chip
                       label={backup.status}
                       size="small"
-                      color={backup.status === 'Completed' ? 'success' : backup.status === 'Failed' ? 'error' : 'warning'}
+                      color={
+                        backup.status === 'Completed'
+                          ? 'success'
+                          : backup.status === 'Failed'
+                            ? 'error'
+                            : 'warning'
+                      }
                     />
                   </TableCell>
                   <TableCell align="right">

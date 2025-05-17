@@ -42,18 +42,24 @@ jest.mock('@/utils/authUtils', () => {
   const originalModule = jest.requireActual('@/utils/authUtils');
   return {
     ...originalModule,
-    handleRegistrationRedirect: jest.fn(originalModule.handleRegistrationRedirect),
-    isRedirectFromRegistration: jest.fn(originalModule.isRedirectFromRegistration),
+    handleRegistrationRedirect: jest.fn(
+      originalModule.handleRegistrationRedirect
+    ),
+    isRedirectFromRegistration: jest.fn(
+      originalModule.isRedirectFromRegistration
+    ),
     markAsNewRegistration: jest.fn(() => {
       localStorage.setItem('newRegistration', 'true');
     }),
-    redirectToKeycloakRegistration: jest.fn((keycloakUrl, realm, clientId, redirectUri) => {
-      authUtils.markAsNewRegistration();
+    redirectToKeycloakRegistration: jest.fn(
+      (keycloakUrl, realm, clientId, redirectUri) => {
+        authUtils.markAsNewRegistration();
 
-      const registrationUrl = `${keycloakUrl || 'http://localhost:8282'}/realms/${realm || 'pisval-pos-realm'}/protocol/openid-connect/registrations?client_id=${clientId || 'pos-backend'}&redirect_uri=${encodeURIComponent(redirectUri || window.location.origin + '/')}`;
+        const registrationUrl = `${keycloakUrl || 'http://localhost:8282'}/realms/${realm || 'pisval-pos-realm'}/protocol/openid-connect/registrations?client_id=${clientId || 'pos-backend'}&redirect_uri=${encodeURIComponent(redirectUri || window.location.origin + '/')}`;
 
-      window.location.href = registrationUrl;
-    }),
+        window.location.href = registrationUrl;
+      }
+    ),
   };
 });
 
@@ -122,7 +128,9 @@ describe('Registration to Login Flow', () => {
 
     expect(authUtils.markAsNewRegistration).toHaveBeenCalled();
 
-    expect(locationMock.href).toContain('/realms/pisval-pos-realm/protocol/openid-connect/registrations');
+    expect(locationMock.href).toContain(
+      '/realms/pisval-pos-realm/protocol/openid-connect/registrations'
+    );
 
     locationMock.search = '?session_code=abc123';
 
@@ -142,7 +150,9 @@ describe('Registration to Login Flow', () => {
       jest.runAllTimers();
     });
 
-    expect(locationMock.href).toContain('/realms/pisval-pos-realm/protocol/openid-connect/auth');
+    expect(locationMock.href).toContain(
+      '/realms/pisval-pos-realm/protocol/openid-connect/auth'
+    );
     expect(locationMock.href).toContain('response_type=code');
     expect(locationMock.href).toContain('scope=openid');
 

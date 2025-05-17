@@ -11,7 +11,11 @@ export interface DashboardErrorProps {
   reset: () => void;
 }
 
-export default function DashboardError({ error, errorInfo, reset }: DashboardErrorProps) {
+export default function DashboardError({
+  error,
+  errorInfo,
+  reset,
+}: DashboardErrorProps) {
   const router = useRouter();
   const [showDetails, setShowDetails] = useState(false);
 
@@ -26,7 +30,13 @@ export default function DashboardError({ error, errorInfo, reset }: DashboardErr
 
       {}
       <Box sx={{ mb: 3 }}>
-        <Button variant="text" color="info" size="small" onClick={() => setShowDetails(!showDetails)} sx={{ mb: 1 }}>
+        <Button
+          variant="text"
+          color="info"
+          size="small"
+          onClick={() => setShowDetails(!showDetails)}
+          sx={{ mb: 1 }}
+        >
           {showDetails ? 'Hide' : 'Show'} Technical Details
         </Button>
 
@@ -55,7 +65,12 @@ export default function DashboardError({ error, errorInfo, reset }: DashboardErr
 
             {errorInfo && (
               <>
-                <Typography variant="subtitle2" color="error" sx={{ mt: 2 }} gutterBottom>
+                <Typography
+                  variant="subtitle2"
+                  color="error"
+                  sx={{ mt: 2 }}
+                  gutterBottom
+                >
                   Component Stack:
                 </Typography>
                 <Typography
@@ -75,7 +90,8 @@ export default function DashboardError({ error, errorInfo, reset }: DashboardErr
       </Box>
 
       <Typography variant="body2" color="text.secondary" paragraph>
-        This error might be caused by stale data. Try refreshing to get the latest content.
+        This error might be caused by stale data. Try refreshing to get the
+        latest content.
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>

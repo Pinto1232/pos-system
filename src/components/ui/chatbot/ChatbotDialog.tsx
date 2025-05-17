@@ -1,7 +1,18 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Dialog, DialogContent, DialogTitle, TextField, IconButton, Box, Typography, Paper, Avatar, Button } from '@mui/material';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  IconButton,
+  Box,
+  Typography,
+  Paper,
+  Avatar,
+  Button,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import { useChatbot } from '@/contexts/ChatbotContext';
@@ -10,7 +21,15 @@ import { useCurrency, currencySymbols } from '@/contexts/CurrencyContext';
 import Image from 'next/image';
 
 const ChatbotDialog = () => {
-  const { isOpen, toggleChatbot, messages, sendMessage, handleSuggestedResponse, handleCtaButtonClick, themeColor } = useChatbot();
+  const {
+    isOpen,
+    toggleChatbot,
+    messages,
+    sendMessage,
+    handleSuggestedResponse,
+    handleCtaButtonClick,
+    themeColor,
+  } = useChatbot();
   const { selectedPackage } = usePackageSelection();
   const { currency, formatPrice, currencySymbol } = useCurrency();
   const [input, setInput] = useState('');
@@ -38,7 +57,10 @@ const ChatbotDialog = () => {
     });
   }, [currency, currencySymbol, selectedPackage]);
 
-  const getLocalizedPrice = (basePrice: number, multiCurrencyPrices?: string): number => {
+  const getLocalizedPrice = (
+    basePrice: number,
+    multiCurrencyPrices?: string
+  ): number => {
     if (!multiCurrencyPrices) {
       return basePrice;
     }
@@ -50,7 +72,10 @@ const ChatbotDialog = () => {
         return pricesObj[currency];
       }
     } catch (error) {
-      console.error('Error parsing multiCurrencyPrices:', JSON.stringify(error, null, 2));
+      console.error(
+        'Error parsing multiCurrencyPrices:',
+        JSON.stringify(error, null, 2)
+      );
     }
 
     return basePrice;
@@ -141,10 +166,17 @@ const ChatbotDialog = () => {
             }}
           />
           <Typography variant="h6" sx={{ transition: 'all 0.3s ease' }}>
-            {selectedPackage ? `Pisval Assistant - ${selectedPackage.title}` : 'Pisval Assistant'}
+            {selectedPackage
+              ? `Pisval Assistant - ${selectedPackage.title}`
+              : 'Pisval Assistant'}
           </Typography>
         </Box>
-        <IconButton edge="end" color="inherit" onClick={toggleChatbot} aria-label="close">
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={toggleChatbot}
+          aria-label="close"
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -178,7 +210,8 @@ const ChatbotDialog = () => {
               key={message.id}
               sx={{
                 display: 'flex',
-                justifyContent: message.sender === 'user' ? 'flex-end' : 'flex-start',
+                justifyContent:
+                  message.sender === 'user' ? 'flex-end' : 'flex-start',
                 mb: 1,
               }}
             >
@@ -209,34 +242,45 @@ const ChatbotDialog = () => {
                 sx={{
                   padding: '10px 16px',
                   maxWidth: '70%',
-                  borderRadius: message.sender === 'user' ? '18px 18px 0 18px' : '18px 18px 18px 0',
-                  backgroundColor: message.sender === 'user' ? themeColor : 'white',
+                  borderRadius:
+                    message.sender === 'user'
+                      ? '18px 18px 0 18px'
+                      : '18px 18px 18px 0',
+                  backgroundColor:
+                    message.sender === 'user' ? themeColor : 'white',
                   color: message.sender === 'user' ? 'white' : 'inherit',
                 }}
               >
                 <Typography variant="body1">{message.text}</Typography>
 
                 {}
-                {message.sender === 'bot' && message.features && message.features.length > 0 && (
-                  <Box sx={{ mt: 2, mb: 1 }}>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        fontWeight: 'bold',
-                        mb: 0.5,
-                      }}
-                    >
-                      Key Features:
-                    </Typography>
-                    <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                      {message.features.map((feature, index) => (
-                        <Typography component="li" variant="body2" key={index} sx={{ mb: 0.5 }}>
-                          {feature}
-                        </Typography>
-                      ))}
+                {message.sender === 'bot' &&
+                  message.features &&
+                  message.features.length > 0 && (
+                    <Box sx={{ mt: 2, mb: 1 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          fontWeight: 'bold',
+                          mb: 0.5,
+                        }}
+                      >
+                        Key Features:
+                      </Typography>
+                      <Box component="ul" sx={{ pl: 2, m: 0 }}>
+                        {message.features.map((feature, index) => (
+                          <Typography
+                            component="li"
+                            variant="body2"
+                            key={index}
+                            sx={{ mb: 0.5 }}
+                          >
+                            {feature}
+                          </Typography>
+                        ))}
+                      </Box>
                     </Box>
-                  </Box>
-                )}
+                  )}
 
                 {}
                 {message.sender === 'bot' && message.pricing && (
@@ -260,14 +304,22 @@ const ChatbotDialog = () => {
                     </Typography>
                     {(() => {
                       const monthlyPrice = selectedPackage?.multiCurrencyPrices
-                        ? getLocalizedPrice(message.pricing.monthly, selectedPackage.multiCurrencyPrices)
+                        ? getLocalizedPrice(
+                            message.pricing.monthly,
+                            selectedPackage.multiCurrencyPrices
+                          )
                         : message.pricing.monthly;
 
                       const annualPrice = selectedPackage?.multiCurrencyPrices
-                        ? getLocalizedPrice(message.pricing.annual, selectedPackage.multiCurrencyPrices)
+                        ? getLocalizedPrice(
+                            message.pricing.annual,
+                            selectedPackage.multiCurrencyPrices
+                          )
                         : message.pricing.annual;
 
-                      const savingsPercentage = Math.round((1 - annualPrice / (monthlyPrice * 12)) * 100);
+                      const savingsPercentage = Math.round(
+                        (1 - annualPrice / (monthlyPrice * 12)) * 100
+                      );
 
                       return (
                         <>
@@ -297,33 +349,37 @@ const ChatbotDialog = () => {
                 )}
 
                 {}
-                {message.sender === 'bot' && message.ctaButtons && message.ctaButtons.length > 0 && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 1,
-                      mt: 2,
-                    }}
-                  >
-                    {message.ctaButtons.map((button, index) => (
-                      <Button
-                        key={index}
-                        variant="contained"
-                        size="small"
-                        onClick={() => handleCtaButtonClick(button.action, button.data)}
-                        sx={{
-                          bgcolor: themeColor,
-                          '&:hover': {
-                            bgcolor: `${themeColor}dd`,
-                          },
-                        }}
-                      >
-                        {button.text}
-                      </Button>
-                    ))}
-                  </Box>
-                )}
+                {message.sender === 'bot' &&
+                  message.ctaButtons &&
+                  message.ctaButtons.length > 0 && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 1,
+                        mt: 2,
+                      }}
+                    >
+                      {message.ctaButtons.map((button, index) => (
+                        <Button
+                          key={index}
+                          variant="contained"
+                          size="small"
+                          onClick={() =>
+                            handleCtaButtonClick(button.action, button.data)
+                          }
+                          sx={{
+                            bgcolor: themeColor,
+                            '&:hover': {
+                              bgcolor: `${themeColor}dd`,
+                            },
+                          }}
+                        >
+                          {button.text}
+                        </Button>
+                      ))}
+                    </Box>
+                  )}
 
                 <Typography
                   variant="caption"
@@ -364,7 +420,8 @@ const ChatbotDialog = () => {
       {messages.length > 0 &&
         (() => {
           const lastMessage = messages[messages.length - 1];
-          return lastMessage?.suggestedResponses && lastMessage.suggestedResponses.length > 0 ? (
+          return lastMessage?.suggestedResponses &&
+            lastMessage.suggestedResponses.length > 0 ? (
             <Box
               sx={{
                 display: 'flex',

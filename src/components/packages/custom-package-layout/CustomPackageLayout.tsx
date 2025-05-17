@@ -72,33 +72,42 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
   const [loading, setLoading] = useState(false);
   const [backLoading, setBackLoading] = useState(false);
   const { setTestPeriod } = useTestPeriod();
-  const { currency: contextCurrency, formatPrice: formatCurrencyPrice, rate, currencySymbol } = useCurrency();
+  const {
+    currency: contextCurrency,
+    formatPrice: formatCurrencyPrice,
+    rate,
+    currencySymbol,
+  } = useCurrency();
 
   const selectedCurrency = propsCurrency || contextCurrency;
   const [totalFeaturePrice, setTotalFeaturePrice] = useState<number>(0);
-  const [featurePrices, setFeaturePrices] = useState<Record<number, number>>({});
+  const [featurePrices, setFeaturePrices] = useState<Record<number, number>>(
+    {}
+  );
 
   const [planDiscount, setPlanDiscount] = useState<number>(0);
   const [supportPrice, setSupportPrice] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(basePrice);
 
-  const [checkboxStates, setCheckboxStates] = useState<Record<string, boolean>>({
-    'business-regular-updates': false,
-    'startup-regular-updates': false,
-    'personal-regular-updates': false,
-    'business-cloud-storage': false,
-    'startup-cloud-storage': false,
-    'personal-cloud-storage': false,
-    'business-market-analysis': false,
-    'startup-market-analysis': false,
-    'personal-market-analysis': false,
-    'business-team-management': false,
-    'startup-team-management': false,
-    'personal-team-management': false,
-    'business-support': false,
-    'startup-support': false,
-    'personal-support': false,
-  });
+  const [checkboxStates, setCheckboxStates] = useState<Record<string, boolean>>(
+    {
+      'business-regular-updates': false,
+      'startup-regular-updates': false,
+      'personal-regular-updates': false,
+      'business-cloud-storage': false,
+      'startup-cloud-storage': false,
+      'personal-cloud-storage': false,
+      'business-market-analysis': false,
+      'startup-market-analysis': false,
+      'personal-market-analysis': false,
+      'business-team-management': false,
+      'startup-team-management': false,
+      'personal-team-management': false,
+      'business-support': false,
+      'startup-support': false,
+      'personal-support': false,
+    }
+  );
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -110,12 +119,18 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     city: '',
     zipCode: '',
   });
-  const [selectedPlanIndex, setSelectedPlanIndex] = useState<number | null>(null);
-  const [selectedSupportIndex, setSelectedSupportIndex] = useState<number | null>(null);
+  const [selectedPlanIndex, setSelectedPlanIndex] = useState<number | null>(
+    null
+  );
+  const [selectedSupportIndex, setSelectedSupportIndex] = useState<
+    number | null
+  >(null);
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
-  const [activeEnterpriseCategory, setActiveEnterpriseCategory] = useState<string | null>(null);
+  const [activeEnterpriseCategory, setActiveEnterpriseCategory] = useState<
+    string | null
+  >(null);
 
   // Initialize feature prices when features are loaded
   useEffect(() => {
@@ -123,7 +138,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       const priceMap: Record<number, number> = {};
       features.forEach((feature) => {
         const featurePrice =
-          feature.multiCurrencyPrices && feature.multiCurrencyPrices[selectedCurrency]
+          feature.multiCurrencyPrices &&
+          feature.multiCurrencyPrices[selectedCurrency]
             ? feature.multiCurrencyPrices[selectedCurrency]
             : feature.basePrice;
         priceMap[feature.id] = featurePrice;
@@ -133,24 +149,37 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       // Also initialize add-on prices
       if (addOns.length > 0) {
         console.log('===== PROCESSING ADD-ONS IN CUSTOM PACKAGE LAYOUT =====');
-        console.log('Total AddOns received:', JSON.stringify(addOns.length, null, 2));
+        console.log(
+          'Total AddOns received:',
+          JSON.stringify(addOns.length, null, 2)
+        );
 
         addOns.forEach((addOn, index) => {
           console.log(`Processing AddOn #${index + 1} (ID: ${addOn.id}):`);
           console.log('  Name:', JSON.stringify(addOn.name, null, 2));
-          console.log('  Description:', JSON.stringify(addOn.description, null, 2));
+          console.log(
+            '  Description:',
+            JSON.stringify(addOn.description, null, 2)
+          );
           console.log('  Price:', JSON.stringify(addOn.price, null, 2));
           console.log('  Currency:', JSON.stringify(addOn.currency, null, 2));
-          console.log('  MultiCurrencyPrices:', JSON.stringify(addOn.multiCurrencyPrices, null, 2));
+          console.log(
+            '  MultiCurrencyPrices:',
+            JSON.stringify(addOn.multiCurrencyPrices, null, 2)
+          );
           console.log('  Category:', JSON.stringify(addOn.category, null, 2));
           console.log('  IsActive:', JSON.stringify(addOn.isActive, null, 2));
 
           const addOnPrice =
-            addOn.multiCurrencyPrices && addOn.multiCurrencyPrices[selectedCurrency]
+            addOn.multiCurrencyPrices &&
+            addOn.multiCurrencyPrices[selectedCurrency]
               ? addOn.multiCurrencyPrices[selectedCurrency]
               : addOn.price;
           priceMap[addOn.id] = addOnPrice;
-          console.log(`  Calculated price for currency ${selectedCurrency}:`, JSON.stringify(addOnPrice, null, 2));
+          console.log(
+            `  Calculated price for currency ${selectedCurrency}:`,
+            JSON.stringify(addOnPrice, null, 2)
+          );
         });
         console.log('===================================================');
       }
@@ -159,7 +188,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       if (usagePricing.length > 0) {
         usagePricing.forEach((item) => {
           const usagePrice =
-            item.multiCurrencyPrices && item.multiCurrencyPrices[selectedCurrency]
+            item.multiCurrencyPrices &&
+            item.multiCurrencyPrices[selectedCurrency]
               ? item.multiCurrencyPrices[selectedCurrency]
               : item.pricePerUnit;
           priceMap[item.id] = usagePrice;
@@ -167,7 +197,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       }
 
       setFeaturePrices(priceMap);
-      console.log('Feature prices initialized:', JSON.stringify(priceMap, null, 2));
+      console.log(
+        'Feature prices initialized:',
+        JSON.stringify(priceMap, null, 2)
+      );
     }
   }, [features, addOns, usagePricing, selectedCurrency]);
 
@@ -176,48 +209,65 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     console.log('DEBUG - Price calculation triggered');
     console.log(`DEBUG - Current currency: ${selectedCurrency}, Rate: ${rate}`);
     console.log(`DEBUG - Base price (raw): ${basePrice}`);
-    console.log(`DEBUG - Selected package:`, JSON.stringify(selectedPackage, null, 2));
+    console.log(
+      `DEBUG - Selected package:`,
+      JSON.stringify(selectedPackage, null, 2)
+    );
 
     const featureTotal = selectedFeatures.reduce((sum, feature) => {
       const featurePrice =
         featurePrices[feature.id] ||
-        (feature.multiCurrencyPrices && feature.multiCurrencyPrices[selectedCurrency]
+        (feature.multiCurrencyPrices &&
+        feature.multiCurrencyPrices[selectedCurrency]
           ? feature.multiCurrencyPrices[selectedCurrency]
           : feature.basePrice);
 
-      console.log(`Feature: ${feature.name}, ID: ${feature.id}, Price: ${featurePrice}`);
+      console.log(
+        `Feature: ${feature.name}, ID: ${feature.id}, Price: ${featurePrice}`
+      );
       return sum + featurePrice;
     }, 0);
 
     const addOnTotal = selectedAddOns.reduce((sum, addOn) => {
       const addOnPrice =
         featurePrices[addOn.id] ||
-        (addOn.multiCurrencyPrices && addOn.multiCurrencyPrices[selectedCurrency]
+        (addOn.multiCurrencyPrices &&
+        addOn.multiCurrencyPrices[selectedCurrency]
           ? addOn.multiCurrencyPrices[selectedCurrency]
           : addOn.price);
 
-      console.log(`Add-on: ${addOn.name}, ID: ${addOn.id}, Price: ${addOnPrice}`);
+      console.log(
+        `Add-on: ${addOn.name}, ID: ${addOn.id}, Price: ${addOnPrice}`
+      );
       return sum + addOnPrice;
     }, 0);
 
-    const usageTotal = Object.entries(usageQuantities).reduce((sum, [idStr, quantity]) => {
-      const id = parseInt(idStr);
-      const usageItem = usagePricing.find((item) => item.id === id);
-      if (!usageItem) return sum;
+    const usageTotal = Object.entries(usageQuantities).reduce(
+      (sum, [idStr, quantity]) => {
+        const id = parseInt(idStr);
+        const usageItem = usagePricing.find((item) => item.id === id);
+        if (!usageItem) return sum;
 
-      const usagePrice =
-        featurePrices[id] ||
-        (usageItem.multiCurrencyPrices && usageItem.multiCurrencyPrices[selectedCurrency]
-          ? usageItem.multiCurrencyPrices[selectedCurrency]
-          : usageItem.pricePerUnit);
+        const usagePrice =
+          featurePrices[id] ||
+          (usageItem.multiCurrencyPrices &&
+          usageItem.multiCurrencyPrices[selectedCurrency]
+            ? usageItem.multiCurrencyPrices[selectedCurrency]
+            : usageItem.pricePerUnit);
 
-      const itemTotal = usagePrice * quantity;
-      console.log(`Usage: ${usageItem.name}, ID: ${id}, Quantity: ${quantity}, Price per unit: ${usagePrice}, Total: ${itemTotal}`);
-      return sum + itemTotal;
-    }, 0);
+        const itemTotal = usagePrice * quantity;
+        console.log(
+          `Usage: ${usageItem.name}, ID: ${id}, Quantity: ${quantity}, Price per unit: ${usagePrice}, Total: ${itemTotal}`
+        );
+        return sum + itemTotal;
+      },
+      0
+    );
 
     const featuresSum = featureTotal + addOnTotal + usageTotal;
-    console.log(`Calculated features price: ${featuresSum} (Features: ${featureTotal}, Add-ons: ${addOnTotal}, Usage: ${usageTotal})`);
+    console.log(
+      `Calculated features price: ${featuresSum} (Features: ${featureTotal}, Add-ons: ${addOnTotal}, Usage: ${usageTotal})`
+    );
     setTotalFeaturePrice(featuresSum);
 
     const subtotal = basePrice + featuresSum + supportPrice;
@@ -259,7 +309,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
     const categories = {
       analytics: ['realTimeAnalytics', 'customReports', 'dataExport'],
-      multiLocation: ['centralizedManagement', 'locationSettings', 'crossLocationInventory'],
+      multiLocation: [
+        'centralizedManagement',
+        'locationSettings',
+        'crossLocationInventory',
+      ],
       security: ['roleBasedAccess', 'advancedEncryption', 'auditLogging'],
       api: ['restfulApi', 'webhookNotifications', 'customIntegration'],
     };
@@ -304,7 +358,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
     if (featurePrice === undefined) {
       featurePrice =
-        feature.multiCurrencyPrices && feature.multiCurrencyPrices[selectedCurrency]
+        feature.multiCurrencyPrices &&
+        feature.multiCurrencyPrices[selectedCurrency]
           ? feature.multiCurrencyPrices[selectedCurrency]
           : feature.basePrice;
 
@@ -326,7 +381,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       );
     }
 
-    const newFeatures = isSelected ? selectedFeatures.filter((f) => f.id !== feature.id) : [...selectedFeatures, feature];
+    const newFeatures = isSelected
+      ? selectedFeatures.filter((f) => f.id !== feature.id)
+      : [...selectedFeatures, feature];
 
     onFeatureToggle(newFeatures);
   };
@@ -339,7 +396,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     console.log('  Description:', JSON.stringify(addOn.description, null, 2));
     console.log('  Price:', JSON.stringify(addOn.price, null, 2));
     console.log('  Currency:', JSON.stringify(addOn.currency, null, 2));
-    console.log('  MultiCurrencyPrices:', JSON.stringify(addOn.multiCurrencyPrices, null, 2));
+    console.log(
+      '  MultiCurrencyPrices:',
+      JSON.stringify(addOn.multiCurrencyPrices, null, 2)
+    );
     console.log('  Category:', JSON.stringify(addOn.category, null, 2));
     console.log('  IsActive:', JSON.stringify(addOn.isActive, null, 2));
 
@@ -347,14 +407,20 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     console.log('  Currently selected:', JSON.stringify(isSelected, null, 2));
 
     let addOnPrice = featurePrices[addOn.id];
-    console.log('  Price from featurePrices map:', JSON.stringify(addOnPrice, null, 2));
+    console.log(
+      '  Price from featurePrices map:',
+      JSON.stringify(addOnPrice, null, 2)
+    );
 
     if (addOnPrice === undefined) {
       addOnPrice =
         addOn.multiCurrencyPrices && addOn.multiCurrencyPrices[selectedCurrency]
           ? addOn.multiCurrencyPrices[selectedCurrency]
           : addOn.price;
-      console.log(`  Calculated price for currency ${selectedCurrency}:`, JSON.stringify(addOnPrice, null, 2));
+      console.log(
+        `  Calculated price for currency ${selectedCurrency}:`,
+        JSON.stringify(addOnPrice, null, 2)
+      );
 
       setFeaturePrices((prev) => ({
         ...prev,
@@ -364,14 +430,20 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
     if (isSelected) {
       setTotalFeaturePrice((prevTotal) => prevTotal - addOnPrice);
-      console.log(`Removed add-on ${addOn.name} (ID: ${addOn.id}), price: ${addOnPrice}, new total: ${totalFeaturePrice - addOnPrice}`);
+      console.log(
+        `Removed add-on ${addOn.name} (ID: ${addOn.id}), price: ${addOnPrice}, new total: ${totalFeaturePrice - addOnPrice}`
+      );
     } else {
       setTotalFeaturePrice((prevTotal) => prevTotal + addOnPrice);
-      console.log(`Added add-on ${addOn.name} (ID: ${addOn.id}), price: ${addOnPrice}, new total: ${totalFeaturePrice + addOnPrice}`);
+      console.log(
+        `Added add-on ${addOn.name} (ID: ${addOn.id}), price: ${addOnPrice}, new total: ${totalFeaturePrice + addOnPrice}`
+      );
     }
     console.log('===========================');
 
-    const newAddOns = isSelected ? selectedAddOns.filter((a) => a.id !== addOn.id) : [...selectedAddOns, addOn];
+    const newAddOns = isSelected
+      ? selectedAddOns.filter((a) => a.id !== addOn.id)
+      : [...selectedAddOns, addOn];
 
     onAddOnToggle(newAddOns);
   };
@@ -387,7 +459,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
       if (usagePrice === undefined) {
         usagePrice =
-          usageItem.multiCurrencyPrices && usageItem.multiCurrencyPrices[selectedCurrency]
+          usageItem.multiCurrencyPrices &&
+          usageItem.multiCurrencyPrices[selectedCurrency]
             ? usageItem.multiCurrencyPrices[selectedCurrency]
             : usageItem.pricePerUnit;
 
@@ -411,7 +484,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     });
   };
 
-  const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleTextFieldChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     console.log(`TextField change: ${name} = ${value}`);
     setFormData((prev) => ({
@@ -487,34 +562,50 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
   const formatPrice = (currency: string, price: number) => {
     let displayPrice = price;
-    console.log(`DEBUG - formatPrice called with currency: ${currency}, price: ${price}`);
+    console.log(
+      `DEBUG - formatPrice called with currency: ${currency}, price: ${price}`
+    );
 
     if (currency !== 'USD' && selectedPackage.currency === 'USD') {
       let multiCurrency: Record<string, number> | null = null;
       if (selectedPackage.multiCurrencyPrices) {
         try {
           multiCurrency = JSON.parse(selectedPackage.multiCurrencyPrices);
-          console.log(`DEBUG - multiCurrencyPrices parsed:`, JSON.stringify(multiCurrency, null, 2));
+          console.log(
+            `DEBUG - multiCurrencyPrices parsed:`,
+            JSON.stringify(multiCurrency, null, 2)
+          );
 
           if (multiCurrency && multiCurrency[currency]) {
             displayPrice = multiCurrency[currency];
             console.log(`DEBUG - Using multiCurrency price: ${displayPrice}`);
           } else {
             displayPrice = price * rate;
-            console.log(`DEBUG - Using rate conversion: ${price} * ${rate} = ${displayPrice}`);
+            console.log(
+              `DEBUG - Using rate conversion: ${price} * ${rate} = ${displayPrice}`
+            );
           }
         } catch (e) {
-          console.error('Error parsing multiCurrencyPrices:', JSON.stringify(e, null, 2));
+          console.error(
+            'Error parsing multiCurrencyPrices:',
+            JSON.stringify(e, null, 2)
+          );
 
           displayPrice = price * rate;
-          console.log(`DEBUG - Error in parsing, using rate conversion: ${price} * ${rate} = ${displayPrice}`);
+          console.log(
+            `DEBUG - Error in parsing, using rate conversion: ${price} * ${rate} = ${displayPrice}`
+          );
         }
       } else {
         displayPrice = price * rate;
-        console.log(`DEBUG - No multiCurrencyPrices, using rate conversion: ${price} * ${rate} = ${displayPrice}`);
+        console.log(
+          `DEBUG - No multiCurrencyPrices, using rate conversion: ${price} * ${rate} = ${displayPrice}`
+        );
       }
     } else {
-      console.log(`DEBUG - No conversion needed, using original price: ${displayPrice}`);
+      console.log(
+        `DEBUG - No conversion needed, using original price: ${displayPrice}`
+      );
     }
 
     let result;
@@ -556,16 +647,21 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       console.log(`Payment plan deselected. Discount reset to 0%`);
     } else {
       setSelectedPlanIndex(index);
-      const newDiscount = index < planDiscounts.length ? planDiscounts[index] : 0;
+      const newDiscount =
+        index < planDiscounts.length ? planDiscounts[index] : 0;
       setPlanDiscount(newDiscount);
 
       const subtotal = basePrice + totalFeaturePrice + supportPrice;
       const discountAmount = subtotal * newDiscount;
       const newTotal = subtotal - discountAmount;
 
-      console.log(`Payment plan selected: ${index} (${['Monthly', 'Quarterly', 'Biannual', 'Annual', 'Enterprise'][index]})`);
+      console.log(
+        `Payment plan selected: ${index} (${['Monthly', 'Quarterly', 'Biannual', 'Annual', 'Enterprise'][index]})`
+      );
       console.log(`Discount applied: ${newDiscount * 100}%`);
-      console.log(`Price impact: -${discountAmount} (${subtotal} → ${newTotal})`);
+      console.log(
+        `Price impact: -${discountAmount} (${subtotal} → ${newTotal})`
+      );
     }
   };
 
@@ -575,43 +671,64 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     if (selectedSupportIndex === index) {
       setSelectedSupportIndex(null);
       setSupportPrice(0);
-      console.log(`Support level deselected. Additional support cost reset to 0`);
+      console.log(
+        `Support level deselected. Additional support cost reset to 0`
+      );
     } else {
       setSelectedSupportIndex(index);
 
       const baseForSupport = basePrice + totalFeaturePrice;
-      const multiplier = index < supportMultipliers.length ? supportMultipliers[index] : 0;
+      const multiplier =
+        index < supportMultipliers.length ? supportMultipliers[index] : 0;
       const newSupportPrice = baseForSupport * multiplier;
 
       setSupportPrice(newSupportPrice);
 
-      console.log(`Support level selected: ${index} (${['Standard', 'Premium', 'Advanced'][index]})`);
-      console.log(`Support price multiplier: ${multiplier * 100}% of base package`);
-      console.log(`Support price calculation: ${baseForSupport} × ${multiplier} = ${newSupportPrice}`);
-      console.log(`New total with support: ${basePrice + totalFeaturePrice + newSupportPrice}`);
+      console.log(
+        `Support level selected: ${index} (${['Standard', 'Premium', 'Advanced'][index]})`
+      );
+      console.log(
+        `Support price multiplier: ${multiplier * 100}% of base package`
+      );
+      console.log(
+        `Support price calculation: ${baseForSupport} × ${multiplier} = ${newSupportPrice}`
+      );
+      console.log(
+        `New total with support: ${basePrice + totalFeaturePrice + newSupportPrice}`
+      );
     }
   };
 
-  const handleEnterpriseFeatureToggle = (featureName: string, category: string) => {
+  const handleEnterpriseFeatureToggle = (
+    featureName: string,
+    category: string
+  ) => {
     if (!onEnterpriseFeatureToggle) return;
     if (enterpriseFeatures && enterpriseFeatures[featureName]) {
       onEnterpriseFeatureToggle(featureName);
       return;
     }
-    if (activeEnterpriseCategory !== null && activeEnterpriseCategory !== category) {
+    if (
+      activeEnterpriseCategory !== null &&
+      activeEnterpriseCategory !== category
+    ) {
       return;
     }
     onEnterpriseFeatureToggle(featureName);
   };
   const isEnterpriseFeatureDisabled = (category: string) => {
-    return activeEnterpriseCategory !== null && activeEnterpriseCategory !== category;
+    return (
+      activeEnterpriseCategory !== null && activeEnterpriseCategory !== category
+    );
   };
 
   const getStepContent = () => {
     const currentLabel = steps[currentStep]?.trim() || '';
 
     if (!currentLabel) {
-      return <Typography variant="body1">Loading step configuration...</Typography>;
+      return (
+        <Typography variant="body1">Loading step configuration...</Typography>
+      );
     }
 
     switch (currentLabel) {
@@ -619,14 +736,19 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         let multiCurrencyPrices: Record<string, number> = {};
         try {
           if (selectedPackage?.multiCurrencyPrices) {
-            multiCurrencyPrices = JSON.parse(selectedPackage.multiCurrencyPrices);
+            multiCurrencyPrices = JSON.parse(
+              selectedPackage.multiCurrencyPrices
+            );
           } else {
             multiCurrencyPrices = {
               [selectedCurrency]: basePrice,
             };
           }
         } catch (error) {
-          console.error('Error parsing multiCurrencyPrices:', JSON.stringify(error, null, 2));
+          console.error(
+            'Error parsing multiCurrencyPrices:',
+            JSON.stringify(error, null, 2)
+          );
           multiCurrencyPrices = {
             [selectedCurrency]: basePrice,
           };
@@ -654,7 +776,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             </Typography>
 
             <Box className={styles.priceDisplay}>
-              <Typography variant="h5">Base Price: {formatPrice(selectedCurrency, displayPrice)}</Typography>
+              <Typography variant="h5">
+                Base Price: {formatPrice(selectedCurrency, displayPrice)}
+              </Typography>
 
               {isCustomizable && (
                 <Box className={styles.currentPriceContainer}>
@@ -671,8 +795,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       mt: 1,
                     }}
                   >
-                    Base: {formatPrice(selectedCurrency, displayPrice)} + Features: {formatPrice(selectedCurrency, totalFeaturePrice)}
-                    {supportPrice > 0 && ` + Support: ${formatPrice(selectedCurrency, supportPrice)}`}
+                    Base: {formatPrice(selectedCurrency, displayPrice)} +
+                    Features: {formatPrice(selectedCurrency, totalFeaturePrice)}
+                    {supportPrice > 0 &&
+                      ` + Support: ${formatPrice(selectedCurrency, supportPrice)}`}
                     {planDiscount > 0 &&
                       ` - Discount: ${formatPrice(selectedCurrency, (basePrice + totalFeaturePrice + supportPrice) * planDiscount)}`}
                   </Typography>
@@ -793,7 +919,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
                   const addOnPrice =
                     featurePrices[addOn.id] ||
-                    (addOn.multiCurrencyPrices && addOn.multiCurrencyPrices[selectedCurrency]
+                    (addOn.multiCurrencyPrices &&
+                    addOn.multiCurrencyPrices[selectedCurrency]
                       ? addOn.multiCurrencyPrices[selectedCurrency]
                       : addOn.price);
 
@@ -816,31 +943,46 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         className={styles.planColumn}
                         data-label="Business"
                         sx={{
-                          backgroundColor: checkboxStates[businessKey] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
+                          backgroundColor: checkboxStates[businessKey]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
                           transition: 'background-color 0.3s ease',
                         }}
                       >
-                        <Checkbox checked={checkboxStates[businessKey] || false} onChange={() => handleCheckboxChange(businessKey)} />
+                        <Checkbox
+                          checked={checkboxStates[businessKey] || false}
+                          onChange={() => handleCheckboxChange(businessKey)}
+                        />
                       </Box>
                       <Box
                         className={styles.planColumn}
                         data-label="Startup"
                         sx={{
-                          backgroundColor: checkboxStates[startupKey] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
+                          backgroundColor: checkboxStates[startupKey]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
                           transition: 'background-color 0.3s ease',
                         }}
                       >
-                        <Checkbox checked={checkboxStates[startupKey] || false} onChange={() => handleCheckboxChange(startupKey)} />
+                        <Checkbox
+                          checked={checkboxStates[startupKey] || false}
+                          onChange={() => handleCheckboxChange(startupKey)}
+                        />
                       </Box>
                       <Box
                         className={styles.planColumn}
                         data-label="Personal"
                         sx={{
-                          backgroundColor: checkboxStates[personalKey] ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
+                          backgroundColor: checkboxStates[personalKey]
+                            ? 'rgba(76, 175, 80, 0.1)'
+                            : 'transparent',
                           transition: 'background-color 0.3s ease',
                         }}
                       >
-                        <Checkbox checked={checkboxStates[personalKey] || false} onChange={() => handleCheckboxChange(personalKey)} />
+                        <Checkbox
+                          checked={checkboxStates[personalKey] || false}
+                          onChange={() => handleCheckboxChange(personalKey)}
+                        />
                       </Box>
                     </Box>
                   );
@@ -868,9 +1010,17 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     setLoading(false);
                   }, 2000);
                 }}
-                disabled={loading || !isAnyCheckboxSelected() || (isCustomizable && selectedFeatures.length === 0)}
+                disabled={
+                  loading ||
+                  !isAnyCheckboxSelected() ||
+                  (isCustomizable && selectedFeatures.length === 0)
+                }
               >
-                {loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : 'Continue'}
+                {loading ? (
+                  <CircularProgress size={20} sx={{ color: 'white' }} />
+                ) : (
+                  'Continue'
+                )}
               </Button>
             </Box>
           </Box>
@@ -896,34 +1046,60 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               <Box className={styles.featuresContainer}>
                 {features.length > 0 ? (
                   features.map((feature) => {
-                    const isSelected = selectedFeatures.some((f) => f.id === feature.id);
-                    const featurePrice = feature.multiCurrencyPrices ? feature.multiCurrencyPrices[selectedCurrency] : feature.basePrice;
+                    const isSelected = selectedFeatures.some(
+                      (f) => f.id === feature.id
+                    );
+                    const featurePrice = feature.multiCurrencyPrices
+                      ? feature.multiCurrencyPrices[selectedCurrency]
+                      : feature.basePrice;
                     return (
-                      <Box key={feature.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ''}`}>
+                      <Box
+                        key={feature.id}
+                        className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ''}`}
+                      >
                         <Box>
-                          <Typography className={styles.featureName}>Create Custom Plan</Typography>
-                          <Typography variant="body2" className={styles.featureDescription}>
+                          <Typography className={styles.featureName}>
+                            Create Custom Plan
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            className={styles.featureDescription}
+                          >
                             Select the modules and features.
                           </Typography>
                           <Box>
                             <FormControlLabel
-                              control={<Checkbox checked={isSelected} onChange={() => handleFeatureToggle(feature)} />}
+                              control={
+                                <Checkbox
+                                  checked={isSelected}
+                                  onChange={() => handleFeatureToggle(feature)}
+                                />
+                              }
                               label={
                                 <Box display="flex" alignItems="center">
-                                  <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                                  <Box
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="space-between"
+                                    width="100%"
+                                  >
                                     <span>{feature.name}</span>
                                     <Typography
                                       variant="body2"
                                       sx={{
                                         fontWeight: 600,
                                         color: '#2563eb',
-                                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                                        backgroundColor:
+                                          'rgba(37, 99, 235, 0.1)',
                                         padding: '4px 8px',
                                         borderRadius: '4px',
                                         marginLeft: '8px',
                                       }}
                                     >
-                                      {formatPrice(selectedCurrency, featurePrice)}
+                                      {formatPrice(
+                                        selectedCurrency,
+                                        featurePrice
+                                      )}
                                     </Typography>
                                   </Box>
                                   {isSelected && (
@@ -941,9 +1117,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                               }
                             />
                             {isSelected && (
-                              <Box className={styles.featureDescriptionContainer}>
+                              <Box
+                                className={styles.featureDescriptionContainer}
+                              >
                                 <InfoIcon className={styles.infoIcon} />
-                                <Typography variant="body2" className={styles.featureDescription}>
+                                <Typography
+                                  variant="body2"
+                                  className={styles.featureDescription}
+                                >
                                   {feature.description}
                                 </Typography>
                               </Box>
@@ -1031,10 +1212,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     padding: '12px 16px',
                   }}
                 >
-                  <Typography className={styles.itemLabel} sx={{ fontWeight: 600 }}>
+                  <Typography
+                    className={styles.itemLabel}
+                    sx={{ fontWeight: 600 }}
+                  >
                     Base Package
                   </Typography>
-                  <Typography className={styles.itemPrice} sx={{ fontWeight: 600 }}>
+                  <Typography
+                    className={styles.itemPrice}
+                    sx={{ fontWeight: 600 }}
+                  >
                     {formatPrice(selectedCurrency, basePrice)}
                   </Typography>
                 </Box>
@@ -1042,17 +1229,24 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 {}
                 {selectedFeatures.length > 0 ? (
                   selectedFeatures.map((feature, index) => {
-                    const featurePrice = feature.multiCurrencyPrices ? feature.multiCurrencyPrices[selectedCurrency] : feature.basePrice;
+                    const featurePrice = feature.multiCurrencyPrices
+                      ? feature.multiCurrencyPrices[selectedCurrency]
+                      : feature.basePrice;
                     return (
                       <Box
                         key={feature.id}
                         className={styles.billingItem}
                         sx={{
-                          backgroundColor: index % 2 === 0 ? '#3b82f65e' : '#ffffff',
+                          backgroundColor:
+                            index % 2 === 0 ? '#3b82f65e' : '#ffffff',
                         }}
                       >
-                        <Typography className={styles.itemLabel}>{feature.name}</Typography>
-                        <Typography className={styles.itemPrice}>{formatPrice(selectedCurrency, featurePrice)}</Typography>
+                        <Typography className={styles.itemLabel}>
+                          {feature.name}
+                        </Typography>
+                        <Typography className={styles.itemPrice}>
+                          {formatPrice(selectedCurrency, featurePrice)}
+                        </Typography>
                       </Box>
                     );
                   })
@@ -1066,16 +1260,30 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       color: '#64748b',
                     }}
                   >
-                    <Typography className={styles.itemLabel}>No features selected</Typography>
-                    <Typography className={styles.itemPrice}>{formatPrice(selectedCurrency, 0)}</Typography>
+                    <Typography className={styles.itemLabel}>
+                      No features selected
+                    </Typography>
+                    <Typography className={styles.itemPrice}>
+                      {formatPrice(selectedCurrency, 0)}
+                    </Typography>
                   </Box>
                 )}
 
                 <Box className={styles.userAgreement}>
-                  <FormControlLabel control={<Checkbox />} label="User Agreement" />
-                  <Typography variant="body2" className={styles.userAgreementText}>
-                    Before proceeding to payment, please read and sign, agreeing to the{' '}
-                    <Link href="/path/to/user-agreement" className={styles.userAgreementLink}>
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="User Agreement"
+                  />
+                  <Typography
+                    variant="body2"
+                    className={styles.userAgreementText}
+                  >
+                    Before proceeding to payment, please read and sign, agreeing
+                    to the{' '}
+                    <Link
+                      href="/path/to/user-agreement"
+                      className={styles.userAgreementLink}
+                    >
                       User agreement
                     </Link>
                   </Typography>
@@ -1120,37 +1328,77 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         );
       case 'Choose Add-Ons':
         console.log('===== RENDERING ADD-ONS SECTION =====');
-        console.log('Total AddOns available:', JSON.stringify(addOns.length, null, 2));
-        console.log('Currently selected AddOns:', JSON.stringify(selectedAddOns, null, 2));
-        console.log('Selected currency:', JSON.stringify(selectedCurrency, null, 2));
+        console.log(
+          'Total AddOns available:',
+          JSON.stringify(addOns.length, null, 2)
+        );
+        console.log(
+          'Currently selected AddOns:',
+          JSON.stringify(selectedAddOns, null, 2)
+        );
+        console.log(
+          'Selected currency:',
+          JSON.stringify(selectedCurrency, null, 2)
+        );
 
         return (
           <Box className={styles.featuresContainer}>
             <Box className={styles.sectionHeader}>
               <Typography variant="h5">Choose Add-Ons</Typography>
               <Typography variant="body2" className={styles.sectionDescription}>
-                Select additional features to enhance your package. Each add-on comes with its own pricing.
+                Select additional features to enhance your package. Each add-on
+                comes with its own pricing.
               </Typography>
             </Box>
             {addOns.length > 0 ? (
               addOns.map((addOn) => {
-                console.log(`Rendering AddOn ID ${addOn.id}:`, JSON.stringify(addOn, null, 2));
-                console.log('  Currency:', JSON.stringify(addOn.currency, null, 2));
-                console.log('  MultiCurrencyPrices:', JSON.stringify(addOn.multiCurrencyPrices, null, 2));
-                console.log('  Category:', JSON.stringify(addOn.category, null, 2));
-                console.log('  IsActive:', JSON.stringify(addOn.isActive, null, 2));
+                console.log(
+                  `Rendering AddOn ID ${addOn.id}:`,
+                  JSON.stringify(addOn, null, 2)
+                );
+                console.log(
+                  '  Currency:',
+                  JSON.stringify(addOn.currency, null, 2)
+                );
+                console.log(
+                  '  MultiCurrencyPrices:',
+                  JSON.stringify(addOn.multiCurrencyPrices, null, 2)
+                );
+                console.log(
+                  '  Category:',
+                  JSON.stringify(addOn.category, null, 2)
+                );
+                console.log(
+                  '  IsActive:',
+                  JSON.stringify(addOn.isActive, null, 2)
+                );
 
-                const isSelected = selectedAddOns.some((a) => a.id === addOn.id);
-                const addOnPrice = addOn.multiCurrencyPrices ? addOn.multiCurrencyPrices[selectedCurrency] : addOn.price;
-                console.log(`  Calculated price for currency ${selectedCurrency}:`, JSON.stringify(addOnPrice, null, 2));
+                const isSelected = selectedAddOns.some(
+                  (a) => a.id === addOn.id
+                );
+                const addOnPrice = addOn.multiCurrencyPrices
+                  ? addOn.multiCurrencyPrices[selectedCurrency]
+                  : addOn.price;
+                console.log(
+                  `  Calculated price for currency ${selectedCurrency}:`,
+                  JSON.stringify(addOnPrice, null, 2)
+                );
                 return (
-                  <Box key={addOn.id} className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ''}`}>
+                  <Box
+                    key={addOn.id}
+                    className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ''}`}
+                  >
                     <Button
                       className={styles.addOnsfeatureButton}
                       variant={isSelected ? 'contained' : 'outlined'}
                       onClick={() => handleAddOnToggle(addOn)}
                     >
-                      <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        width="100%"
+                      >
                         <Box display="flex" alignItems="center">
                           {addOn.icon && (
                             <Box
@@ -1163,15 +1411,27 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                               }}
                             >
                               {}
-                              {addOn.icon === 'analytics_icon' && <BarChartIcon fontSize="small" />}
-                              {addOn.icon === 'api_icon' && <CodeIcon fontSize="small" />}
-                              {addOn.icon === 'branding_icon' && <BrushIcon fontSize="small" />}
-                              {addOn.icon === 'support_icon' && <SupportAgentIcon fontSize="small" />}
-                              {addOn.icon === 'migration_icon' && <StorageIcon fontSize="small" />}
+                              {addOn.icon === 'analytics_icon' && (
+                                <BarChartIcon fontSize="small" />
+                              )}
+                              {addOn.icon === 'api_icon' && (
+                                <CodeIcon fontSize="small" />
+                              )}
+                              {addOn.icon === 'branding_icon' && (
+                                <BrushIcon fontSize="small" />
+                              )}
+                              {addOn.icon === 'support_icon' && (
+                                <SupportAgentIcon fontSize="small" />
+                              )}
+                              {addOn.icon === 'migration_icon' && (
+                                <StorageIcon fontSize="small" />
+                              )}
                               {}
                             </Box>
                           )}
-                          <span>{addOn.name.replace(/[^a-zA-Z0-9 ]/g, '')}</span>
+                          <span>
+                            {addOn.name.replace(/[^a-zA-Z0-9 ]/g, '')}
+                          </span>
                         </Box>
                         <Typography
                           variant="body2"
@@ -1198,7 +1458,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       >
                         <Box display="flex" alignItems="flex-start">
                           <InfoIcon className={styles.infoIcon} />
-                          <Typography variant="body2" className={styles.featureDescription}>
+                          <Typography
+                            variant="body2"
+                            className={styles.featureDescription}
+                          >
                             {addOn.description}
                           </Typography>
                         </Box>
@@ -1240,74 +1503,79 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                                       {feature}
                                     </Typography>
                                   ))
-                                : JSON.parse(addOn.features as string).map((feature: string, idx: number) => (
-                                    <Typography
-                                      key={idx}
-                                      component="li"
-                                      variant="body2"
-                                      sx={{
-                                        mb: 0.5,
-                                      }}
-                                    >
-                                      {feature}
-                                    </Typography>
-                                  ))}
+                                : JSON.parse(addOn.features as string).map(
+                                    (feature: string, idx: number) => (
+                                      <Typography
+                                        key={idx}
+                                        component="li"
+                                        variant="body2"
+                                        sx={{
+                                          mb: 0.5,
+                                        }}
+                                      >
+                                        {feature}
+                                      </Typography>
+                                    )
+                                  )}
                             </Box>
                           </Box>
                         )}
 
                         {}
-                        {addOn.dependencies && addOn.dependencies.length > 0 && (
-                          <Box
-                            sx={{
-                              ml: 4,
-                              mt: 1,
-                            }}
-                          >
-                            <Typography
-                              variant="subtitle2"
-                              sx={{
-                                fontWeight: 600,
-                                mb: 1,
-                              }}
-                            >
-                              Requirements:
-                            </Typography>
+                        {addOn.dependencies &&
+                          addOn.dependencies.length > 0 && (
                             <Box
-                              component="ul"
                               sx={{
-                                pl: 2,
-                                m: 0,
+                                ml: 4,
+                                mt: 1,
                               }}
                             >
-                              {Array.isArray(addOn.dependencies)
-                                ? addOn.dependencies.map((dep, idx) => (
-                                    <Typography
-                                      key={idx}
-                                      component="li"
-                                      variant="body2"
-                                      sx={{
-                                        mb: 0.5,
-                                      }}
-                                    >
-                                      {dep}
-                                    </Typography>
-                                  ))
-                                : JSON.parse(addOn.dependencies as string).map((dep: string, idx: number) => (
-                                    <Typography
-                                      key={idx}
-                                      component="li"
-                                      variant="body2"
-                                      sx={{
-                                        mb: 0.5,
-                                      }}
-                                    >
-                                      {dep}
-                                    </Typography>
-                                  ))}
+                              <Typography
+                                variant="subtitle2"
+                                sx={{
+                                  fontWeight: 600,
+                                  mb: 1,
+                                }}
+                              >
+                                Requirements:
+                              </Typography>
+                              <Box
+                                component="ul"
+                                sx={{
+                                  pl: 2,
+                                  m: 0,
+                                }}
+                              >
+                                {Array.isArray(addOn.dependencies)
+                                  ? addOn.dependencies.map((dep, idx) => (
+                                      <Typography
+                                        key={idx}
+                                        component="li"
+                                        variant="body2"
+                                        sx={{
+                                          mb: 0.5,
+                                        }}
+                                      >
+                                        {dep}
+                                      </Typography>
+                                    ))
+                                  : JSON.parse(
+                                      addOn.dependencies as string
+                                    ).map((dep: string, idx: number) => (
+                                      <Typography
+                                        key={idx}
+                                        component="li"
+                                        variant="body2"
+                                        sx={{
+                                          mb: 0.5,
+                                        }}
+                                      >
+                                        {dep}
+                                      </Typography>
+                                    ))}
+                              </Box>
                             </Box>
-                          </Box>
-                        )}
+                          )}
                       </Box>
                     )}
                   </Box>
@@ -1373,20 +1641,29 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
             <Box className={styles.sectionHeader}>
               <Typography variant="h5">Configure Usage</Typography>
               <Typography variant="body2" className={styles.sectionDescription}>
-                Adjust the usage metrics to fit your business needs. Ensure the values are within the allowed range.
+                Adjust the usage metrics to fit your business needs. Ensure the
+                values are within the allowed range.
               </Typography>
             </Box>
             {usagePricing.length > 0 ? (
               usagePricing.map((usage) => {
-                const currentValue = usageQuantities[usage.id] ?? usage.defaultValue;
-                const usagePrice = usage.multiCurrencyPrices ? usage.multiCurrencyPrices[selectedCurrency] : usage.pricePerUnit;
+                const currentValue =
+                  usageQuantities[usage.id] ?? usage.defaultValue;
+                const usagePrice = usage.multiCurrencyPrices
+                  ? usage.multiCurrencyPrices[selectedCurrency]
+                  : usage.pricePerUnit;
                 const usageError =
                   currentValue < usage.minValue || currentValue > usage.maxValue
                     ? `Value must be between ${usage.minValue} and ${usage.maxValue}`
                     : '';
                 return (
                   <Box key={usage.id} className={styles.usageItem}>
-                    <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      mb={1}
+                    >
                       <Typography variant="subtitle1">{usage.name}</Typography>
                       <Typography
                         variant="body2"
@@ -1405,7 +1682,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     <TextField
                       type="number"
                       value={currentValue}
-                      onChange={(e) => handleUsageUpdate(usage.id, e.target.value)}
+                      onChange={(e) =>
+                        handleUsageUpdate(usage.id, e.target.value)
+                      }
                       error={!!usageError}
                       helperText={usageError}
                       inputProps={{
@@ -1420,7 +1699,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               })
             ) : (
               <Box className={styles.emptyState}>
-                <Typography variant="h6">No usage metrics to configure</Typography>
+                <Typography variant="h6">
+                  No usage metrics to configure
+                </Typography>
                 <Button variant="outlined" onClick={onNext}>
                   Continue
                 </Button>
@@ -1517,8 +1798,16 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   title: 'Monthly Plan',
                   description: 'Pay monthly for maximum flexibility',
                   price:
-                    getCurrentCurrencySymbol() + formatCurrencyPrice(convertPrice(basePrice + totalFeaturePrice + supportPrice)) + '/month',
-                  features: ['Monthly Billing', 'No Commitment', 'Easy Upgrade'],
+                    getCurrentCurrencySymbol() +
+                    formatCurrencyPrice(
+                      convertPrice(basePrice + totalFeaturePrice + supportPrice)
+                    ) +
+                    '/month',
+                  features: [
+                    'Monthly Billing',
+                    'No Commitment',
+                    'Easy Upgrade',
+                  ],
                   buttonText: 'SELECT PLAN',
                   discount: 0,
                   period: 1,
@@ -1528,13 +1817,25 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   description: 'Save 10% with quarterly billing',
                   price:
                     getCurrentCurrencySymbol() +
-                    formatCurrencyPrice(convertPrice((basePrice + totalFeaturePrice + supportPrice) * 0.9)) +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        (basePrice + totalFeaturePrice + supportPrice) * 0.9
+                      )
+                    ) +
                     '/month',
                   totalPrice:
                     getCurrentCurrencySymbol() +
-                    formatCurrencyPrice(convertPrice((basePrice + totalFeaturePrice + supportPrice) * 3 * 0.9)) +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        (basePrice + totalFeaturePrice + supportPrice) * 3 * 0.9
+                      )
+                    ) +
                     ' total',
-                  features: ['10% Discount', 'Quarterly Reviews', 'Email Support'],
+                  features: [
+                    '10% Discount',
+                    'Quarterly Reviews',
+                    'Email Support',
+                  ],
                   buttonText: 'SELECT PLAN',
                   discount: 0.1,
                   period: 3,
@@ -1544,13 +1845,27 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   description: 'Save 15% with biannual billing',
                   price:
                     getCurrentCurrencySymbol() +
-                    formatCurrencyPrice(convertPrice((basePrice + totalFeaturePrice + supportPrice) * 0.85)) +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        (basePrice + totalFeaturePrice + supportPrice) * 0.85
+                      )
+                    ) +
                     '/month',
                   totalPrice:
                     getCurrentCurrencySymbol() +
-                    formatCurrencyPrice(convertPrice((basePrice + totalFeaturePrice + supportPrice) * 6 * 0.85)) +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        (basePrice + totalFeaturePrice + supportPrice) *
+                          6 *
+                          0.85
+                      )
+                    ) +
                     ' total',
-                  features: ['15% Discount', 'Flexible Billing', 'Mid-term Adjustments'],
+                  features: [
+                    '15% Discount',
+                    'Flexible Billing',
+                    'Mid-term Adjustments',
+                  ],
                   buttonText: 'SELECT PLAN',
                   discount: 0.15,
                   period: 6,
@@ -1560,11 +1875,21 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   description: 'Save 20% with annual billing',
                   price:
                     getCurrentCurrencySymbol() +
-                    formatCurrencyPrice(convertPrice((basePrice + totalFeaturePrice + supportPrice) * 0.8)) +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        (basePrice + totalFeaturePrice + supportPrice) * 0.8
+                      )
+                    ) +
                     '/month',
                   totalPrice:
                     getCurrentCurrencySymbol() +
-                    formatCurrencyPrice(convertPrice((basePrice + totalFeaturePrice + supportPrice) * 12 * 0.8)) +
+                    formatCurrencyPrice(
+                      convertPrice(
+                        (basePrice + totalFeaturePrice + supportPrice) *
+                          12 *
+                          0.8
+                      )
+                    ) +
                     ' total',
                   features: ['20% Discount', 'Priority Support', 'Free Setup'],
                   buttonText: 'SELECT PLAN',
@@ -1575,7 +1900,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   title: 'Enterprise Plan',
                   description: 'Custom solutions for large businesses',
                   price: 'Custom Pricing',
-                  features: ['Dedicated Support', 'Custom Features', 'SLA Guarantee'],
+                  features: [
+                    'Dedicated Support',
+                    'Custom Features',
+                    'SLA Guarantee',
+                  ],
                   buttonText: 'SELECT PLAN',
                 },
               ].map((plan, index) => (
@@ -1584,17 +1913,29 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                   className={styles.paymentPlanItem}
                   data-selected={selectedPlanIndex === index}
                   sx={{
-                    opacity: selectedPlanIndex !== null && selectedPlanIndex !== index ? 0.7 : 1,
-                    pointerEvents: selectedPlanIndex !== null && selectedPlanIndex !== index ? 'none' : 'auto',
+                    opacity:
+                      selectedPlanIndex !== null && selectedPlanIndex !== index
+                        ? 0.7
+                        : 1,
+                    pointerEvents:
+                      selectedPlanIndex !== null && selectedPlanIndex !== index
+                        ? 'none'
+                        : 'auto',
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
                   }}
                 >
-                  <Typography className={styles.paymentTitle}>{plan.title}</Typography>
-                  <Typography className={styles.paymentDescription}>{plan.description}</Typography>
+                  <Typography className={styles.paymentTitle}>
+                    {plan.title}
+                  </Typography>
+                  <Typography className={styles.paymentDescription}>
+                    {plan.description}
+                  </Typography>
                   <Box className={styles.paymentPriceContainer}>
-                    <Typography className={styles.paymentPrice}>{plan.price}</Typography>
+                    <Typography className={styles.paymentPrice}>
+                      {plan.price}
+                    </Typography>
                     {plan.totalPrice && (
                       <Typography
                         className={styles.paymentTotalPrice}
@@ -1623,7 +1964,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     }}
                   >
                     {plan.features.map((feature, idx) => (
-                      <Typography key={idx} component="li" className={styles.featureItem}>
+                      <Typography
+                        key={idx}
+                        component="li"
+                        className={styles.featureItem}
+                      >
                         {feature}
                       </Typography>
                     ))}
@@ -1632,16 +1977,23 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     variant="contained"
                     className={styles.selectPlanButton}
                     onClick={() => handlePlanSelect(index)}
-                    disabled={selectedPlanIndex !== null && selectedPlanIndex !== index}
+                    disabled={
+                      selectedPlanIndex !== null && selectedPlanIndex !== index
+                    }
                     sx={{
-                      backgroundColor: selectedPlanIndex === index ? '#15803d' : '#2563eb',
+                      backgroundColor:
+                        selectedPlanIndex === index ? '#15803d' : '#2563eb',
                       '&:hover': {
-                        backgroundColor: selectedPlanIndex === index ? '#166534' : '#1d4ed8',
+                        backgroundColor:
+                          selectedPlanIndex === index ? '#166534' : '#1d4ed8',
                       },
                       marginTop: 'auto',
                       padding: '0.75rem',
                       fontWeight: 600,
-                      boxShadow: selectedPlanIndex === index ? '0 8px 16px rgba(21, 128, 61, 0.2)' : '0 8px 16px rgba(37, 99, 235, 0.2)',
+                      boxShadow:
+                        selectedPlanIndex === index
+                          ? '0 8px 16px rgba(21, 128, 61, 0.2)'
+                          : '0 8px 16px rgba(37, 99, 235, 0.2)',
                       letterSpacing: '0.025em',
                     }}
                   >
@@ -1665,7 +2017,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 onClick={handleNext}
                 disabled={loading || selectedPlanIndex === null}
               >
-                {loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : 'Continue'}
+                {loading ? (
+                  <CircularProgress size={20} sx={{ color: 'white' }} />
+                ) : (
+                  'Continue'
+                )}
               </Button>
             </Box>
           </Box>
@@ -1695,17 +2051,28 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               <Box
                 className={`${styles.supportPlanItem} ${selectedSupportIndex === 0 ? styles.selected : ''}`}
                 sx={{
-                  opacity: selectedSupportIndex !== null && selectedSupportIndex !== 0 ? 0.5 : 1,
-                  pointerEvents: selectedSupportIndex !== null && selectedSupportIndex !== 0 ? 'none' : 'auto',
+                  opacity:
+                    selectedSupportIndex !== null && selectedSupportIndex !== 0
+                      ? 0.5
+                      : 1,
+                  pointerEvents:
+                    selectedSupportIndex !== null && selectedSupportIndex !== 0
+                      ? 'none'
+                      : 'auto',
                 }}
               >
                 <Typography variant="h6">Standard Support</Typography>
-                <Typography variant="body2" className={styles.supportDescription}>
+                <Typography
+                  variant="body2"
+                  className={styles.supportDescription}
+                >
                   Email support with 24-hour response time
                 </Typography>
                 <Box className={styles.supportFeatures}>
                   <Typography variant="body2">✓ Email Support</Typography>
-                  <Typography variant="body2">✓ Knowledge Base Access</Typography>
+                  <Typography variant="body2">
+                    ✓ Knowledge Base Access
+                  </Typography>
                   <Typography variant="body2">✓ Community Forum</Typography>
                 </Box>
                 <Typography variant="h5" className={styles.supportPrice}>
@@ -1729,22 +2096,41 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               <Box
                 className={`${styles.supportPlanItem} ${styles.premium} ${selectedSupportIndex === 1 ? styles.selected : ''}`}
                 sx={{
-                  opacity: selectedSupportIndex !== null && selectedSupportIndex !== 1 ? 0.5 : 1,
-                  pointerEvents: selectedSupportIndex !== null && selectedSupportIndex !== 1 ? 'none' : 'auto',
+                  opacity:
+                    selectedSupportIndex !== null && selectedSupportIndex !== 1
+                      ? 0.5
+                      : 1,
+                  pointerEvents:
+                    selectedSupportIndex !== null && selectedSupportIndex !== 1
+                      ? 'none'
+                      : 'auto',
                 }}
               >
                 <Typography variant="h6">Premium Support</Typography>
-                <Typography variant="body2" className={styles.supportDescription}>
+                <Typography
+                  variant="body2"
+                  className={styles.supportDescription}
+                >
                   Priority support with 4-hour response time
                 </Typography>
                 <Box className={styles.supportFeatures}>
-                  <Typography variant="body2">✓ 24/7 Priority Support</Typography>
-                  <Typography variant="body2">✓ Dedicated Account Manager</Typography>
+                  <Typography variant="body2">
+                    ✓ 24/7 Priority Support
+                  </Typography>
+                  <Typography variant="body2">
+                    ✓ Dedicated Account Manager
+                  </Typography>
                   <Typography variant="body2">✓ Phone Support</Typography>
-                  <Typography variant="body2">✓ Custom Training Sessions</Typography>
+                  <Typography variant="body2">
+                    ✓ Custom Training Sessions
+                  </Typography>
                 </Box>
                 <Typography variant="h5" className={styles.supportPrice}>
-                  +{formatPrice(selectedCurrency, (basePrice + totalFeaturePrice) * 0.2)}
+                  +
+                  {formatPrice(
+                    selectedCurrency,
+                    (basePrice + totalFeaturePrice) * 0.2
+                  )}
                   /month
                 </Typography>
                 <Button
@@ -1765,23 +2151,40 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               <Box
                 className={`${styles.supportPlanItem} ${styles.advanced} ${selectedSupportIndex === 2 ? styles.selected : ''}`}
                 sx={{
-                  opacity: selectedSupportIndex !== null && selectedSupportIndex !== 2 ? 0.5 : 1,
-                  pointerEvents: selectedSupportIndex !== null && selectedSupportIndex !== 2 ? 'none' : 'auto',
+                  opacity:
+                    selectedSupportIndex !== null && selectedSupportIndex !== 2
+                      ? 0.5
+                      : 1,
+                  pointerEvents:
+                    selectedSupportIndex !== null && selectedSupportIndex !== 2
+                      ? 'none'
+                      : 'auto',
                 }}
               >
                 <Typography variant="h6">Advanced Support</Typography>
-                <Typography variant="body2" className={styles.supportDescription}>
+                <Typography
+                  variant="body2"
+                  className={styles.supportDescription}
+                >
                   Enterprise-grade support with dedicated team
                 </Typography>
                 <Box className={styles.supportFeatures}>
-                  <Typography variant="body2">✓ 24/7 Dedicated Support Team</Typography>
+                  <Typography variant="body2">
+                    ✓ 24/7 Dedicated Support Team
+                  </Typography>
                   <Typography variant="body2">✓ SLA Guarantee</Typography>
                   <Typography variant="body2">✓ On-site Support</Typography>
                   <Typography variant="body2">✓ Custom Development</Typography>
-                  <Typography variant="body2">✓ Priority Feature Requests</Typography>
+                  <Typography variant="body2">
+                    ✓ Priority Feature Requests
+                  </Typography>
                 </Box>
                 <Typography variant="h5" className={styles.supportPrice}>
-                  +{formatPrice(selectedCurrency, (basePrice + totalFeaturePrice) * 0.4)}
+                  +
+                  {formatPrice(
+                    selectedCurrency,
+                    (basePrice + totalFeaturePrice) * 0.4
+                  )}
                   /month
                 </Typography>
                 <Button
@@ -1815,7 +2218,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 onClick={handleNext}
                 disabled={loading || selectedSupportIndex === null}
               >
-                {loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : 'Continue'}
+                {loading ? (
+                  <CircularProgress size={20} sx={{ color: 'white' }} />
+                ) : (
+                  'Continue'
+                )}
               </Button>
             </Box>
           </Box>
@@ -1837,11 +2244,17 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               >
                 Configure Enterprise Features
               </Typography>
-              Customize your enterprise package with advanced features tailored for large businesses.
+              Customize your enterprise package with advanced features tailored
+              for large businesses.
               {activeEnterpriseCategory && (
                 <>
-                  <Typography variant="body2" className={styles.sectionDescription} sx={{ mb: 2 }}>
-                    Customize your enterprise package with advanced features tailored for large businesses.
+                  <Typography
+                    variant="body2"
+                    className={styles.sectionDescription}
+                    sx={{ mb: 2 }}
+                  >
+                    Customize your enterprise package with advanced features
+                    tailored for large businesses.
                   </Typography>
 
                   <Box
@@ -1860,9 +2273,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                         fontSize: '0.875rem',
                       }}
                     >
-                      Category selected: <strong>{activeEnterpriseCategory}</strong>
+                      Category selected:{' '}
+                      <strong>{activeEnterpriseCategory}</strong>
                     </Box>
-                    <IconButton size="small" onClick={handleInfoClick} sx={{ color: '#059669' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleInfoClick}
+                      sx={{ color: '#059669' }}
+                    >
                       <InfoIcon fontSize="small" />
                     </IconButton>
                   </Box>
@@ -1888,7 +2306,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     </DialogTitle>
                     <DialogContent sx={{ pt: 2, mt: 1 }}>
                       <Typography variant="body1" sx={{ mb: 2 }}>
-                        You&apos;ve selected features from the <strong>{activeEnterpriseCategory}</strong> category.
+                        You&apos;ve selected features from the{' '}
+                        <strong>{activeEnterpriseCategory}</strong> category.
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1897,11 +2316,13 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                           mb: 2,
                         }}
                       >
-                        Our enterprise packages allow one category selection at a time to ensure optimal system performance and
+                        Our enterprise packages allow one category selection at
+                        a time to ensure optimal system performance and
                         compatibility.
                       </Typography>
                       <Typography variant="body2" sx={{ color: '#4B5563' }}>
-                        To explore other categories, please deselect your current selections first.
+                        To explore other categories, please deselect your
+                        current selections first.
                       </Typography>
                     </DialogContent>
                     <DialogActions
@@ -1936,7 +2357,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               >
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">Advanced Analytics</Typography>
-                  <Typography variant="body2" className={styles.featureDescription}>
+                  <Typography
+                    variant="body2"
+                    className={styles.featureDescription}
+                  >
                     Comprehensive reporting and analytics tools
                   </Typography>
                 </Box>
@@ -1946,7 +2370,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.realTimeAnalytics || false}
-                        onChange={() => handleEnterpriseFeatureToggle('realTimeAnalytics', 'analytics')}
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'realTimeAnalytics',
+                            'analytics'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('analytics')}
                       />
                     }
@@ -1957,7 +2386,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.customReports || false}
-                        onChange={() => handleEnterpriseFeatureToggle('customReports', 'analytics')}
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'customReports',
+                            'analytics'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('analytics')}
                       />
                     }
@@ -1968,7 +2402,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.dataExport || false}
-                        onChange={() => handleEnterpriseFeatureToggle('dataExport', 'analytics')}
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'dataExport',
+                            'analytics'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('analytics')}
                       />
                     }
@@ -1980,12 +2419,17 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               <Box
                 className={styles.enterpriseFeatureItem}
                 sx={{
-                  opacity: isEnterpriseFeatureDisabled('multiLocation') ? 0.5 : 1,
+                  opacity: isEnterpriseFeatureDisabled('multiLocation')
+                    ? 0.5
+                    : 1,
                 }}
               >
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">Multi-Location</Typography>
-                  <Typography variant="body2" className={styles.featureDescription}>
+                  <Typography
+                    variant="body2"
+                    className={styles.featureDescription}
+                  >
                     Manage multiple business locations efficiently
                   </Typography>
                 </Box>
@@ -1994,8 +2438,15 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     control={
                       <Checkbox
                         color="primary"
-                        checked={enterpriseFeatures?.centralizedManagement || false}
-                        onChange={() => handleEnterpriseFeatureToggle('centralizedManagement', 'multiLocation')}
+                        checked={
+                          enterpriseFeatures?.centralizedManagement || false
+                        }
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'centralizedManagement',
+                            'multiLocation'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('multiLocation')}
                       />
                     }
@@ -2006,7 +2457,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.locationSettings || false}
-                        onChange={() => handleEnterpriseFeatureToggle('locationSettings', 'multiLocation')}
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'locationSettings',
+                            'multiLocation'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('multiLocation')}
                       />
                     }
@@ -2016,8 +2472,15 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     control={
                       <Checkbox
                         color="primary"
-                        checked={enterpriseFeatures?.crossLocationInventory || false}
-                        onChange={() => handleEnterpriseFeatureToggle('crossLocationInventory', 'multiLocation')}
+                        checked={
+                          enterpriseFeatures?.crossLocationInventory || false
+                        }
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'crossLocationInventory',
+                            'multiLocation'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('multiLocation')}
                       />
                     }
@@ -2034,7 +2497,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               >
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">Security Suite</Typography>
-                  <Typography variant="body2" className={styles.featureDescription}>
+                  <Typography
+                    variant="body2"
+                    className={styles.featureDescription}
+                  >
                     Advanced security features for enterprise protection
                   </Typography>
                 </Box>
@@ -2044,7 +2510,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.roleBasedAccess || false}
-                        onChange={() => handleEnterpriseFeatureToggle('roleBasedAccess', 'security')}
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'roleBasedAccess',
+                            'security'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('security')}
                       />
                     }
@@ -2054,8 +2525,15 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     control={
                       <Checkbox
                         color="primary"
-                        checked={enterpriseFeatures?.advancedEncryption || false}
-                        onChange={() => handleEnterpriseFeatureToggle('advancedEncryption', 'security')}
+                        checked={
+                          enterpriseFeatures?.advancedEncryption || false
+                        }
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'advancedEncryption',
+                            'security'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('security')}
                       />
                     }
@@ -2066,7 +2544,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.auditLogging || false}
-                        onChange={() => handleEnterpriseFeatureToggle('auditLogging', 'security')}
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'auditLogging',
+                            'security'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('security')}
                       />
                     }
@@ -2083,7 +2566,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
               >
                 <Box className={styles.featureHeader}>
                   <Typography variant="h6">API & Integration</Typography>
-                  <Typography variant="body2" className={styles.featureDescription}>
+                  <Typography
+                    variant="body2"
+                    className={styles.featureDescription}
+                  >
                     Connect with other business applications
                   </Typography>
                 </Box>
@@ -2093,7 +2579,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.restfulApi || false}
-                        onChange={() => handleEnterpriseFeatureToggle('restfulApi', 'api')}
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle('restfulApi', 'api')
+                        }
                         disabled={isEnterpriseFeatureDisabled('api')}
                       />
                     }
@@ -2103,8 +2591,15 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     control={
                       <Checkbox
                         color="primary"
-                        checked={enterpriseFeatures?.webhookNotifications || false}
-                        onChange={() => handleEnterpriseFeatureToggle('webhookNotifications', 'api')}
+                        checked={
+                          enterpriseFeatures?.webhookNotifications || false
+                        }
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'webhookNotifications',
+                            'api'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('api')}
                       />
                     }
@@ -2115,7 +2610,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       <Checkbox
                         color="primary"
                         checked={enterpriseFeatures?.customIntegration || false}
-                        onChange={() => handleEnterpriseFeatureToggle('customIntegration', 'api')}
+                        onChange={() =>
+                          handleEnterpriseFeatureToggle(
+                            'customIntegration',
+                            'api'
+                          )
+                        }
                         disabled={isEnterpriseFeatureDisabled('api')}
                       />
                     }
@@ -2139,7 +2639,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                 onClick={handleNext}
                 disabled={loading || !isAnyEnterpriseFeatureSelected()}
               >
-                {loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : 'Continue'}
+                {loading ? (
+                  <CircularProgress size={20} sx={{ color: 'white' }} />
+                ) : (
+                  'Continue'
+                )}
               </Button>
             </Box>
           </Box>
@@ -2181,13 +2685,39 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                       onChange={handleTextFieldChange}
                     />
                   </Box>
-                  <TextField label="Email" name="email" fullWidth required value={formData.email} onChange={handleTextFieldChange} />
-                  <TextField label="Phone Number" name="phone" fullWidth required value={formData.phone} onChange={handleTextFieldChange} />
-                  <TextField label="Address" name="address" fullWidth required value={formData.address} onChange={handleTextFieldChange} />
+                  <TextField
+                    label="Email"
+                    name="email"
+                    fullWidth
+                    required
+                    value={formData.email}
+                    onChange={handleTextFieldChange}
+                  />
+                  <TextField
+                    label="Phone Number"
+                    name="phone"
+                    fullWidth
+                    required
+                    value={formData.phone}
+                    onChange={handleTextFieldChange}
+                  />
+                  <TextField
+                    label="Address"
+                    name="address"
+                    fullWidth
+                    required
+                    value={formData.address}
+                    onChange={handleTextFieldChange}
+                  />
                   <Box className={styles.formRow}>
                     <FormControl fullWidth required>
                       <InputLabel>Country</InputLabel>
-                      <Select label="Country" name="country" value={formData.country} onChange={handleSelectChange}>
+                      <Select
+                        label="Country"
+                        name="country"
+                        value={formData.country}
+                        onChange={handleSelectChange}
+                      >
                         {countries.map((country) => (
                           <MenuItem key={country} value={country}>
                             {country}
@@ -2197,7 +2727,12 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     </FormControl>
                     <FormControl fullWidth>
                       <InputLabel>State / Province / Region</InputLabel>
-                      <Select label="State / Province / Region" name="state" value={formData.state} onChange={handleSelectChange}>
+                      <Select
+                        label="State / Province / Region"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleSelectChange}
+                      >
                         {states.map((state) => (
                           <MenuItem key={state} value={state}>
                             {state}
@@ -2207,7 +2742,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                     </FormControl>
                   </Box>
                   <Box className={styles.formRow}>
-                    <TextField label="City" name="city" fullWidth required value={formData.city} onChange={handleTextFieldChange} />
+                    <TextField
+                      label="City"
+                      name="city"
+                      fullWidth
+                      required
+                      value={formData.city}
+                      onChange={handleTextFieldChange}
+                    />
                     <TextField
                       label="Postal / Zip Code"
                       name="zipCode"
@@ -2333,7 +2875,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                           color: '#6B7280',
                         }}
                       >
-                        Complete enterprise solution with advanced features and priority support
+                        Complete enterprise solution with advanced features and
+                        priority support
                       </Typography>
                     </Box>
                   </Box>
@@ -2418,7 +2961,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                           color: '#6B7280',
                         }}
                       >
-                        Billed annually • {formatPrice(selectedCurrency, basePrice * 12 * 0.8)} total
+                        Billed annually •{' '}
+                        {formatPrice(selectedCurrency, basePrice * 12 * 0.8)}{' '}
+                        total
                       </Typography>
                     </Box>
                   </Box>
@@ -2503,7 +3048,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                           color: '#6B7280',
                         }}
                       >
-                        Dedicated support team • 4-hour response time • Priority handling
+                        Dedicated support team • 4-hour response time • Priority
+                        handling
                       </Typography>
                     </Box>
                   </Box>
@@ -2734,7 +3280,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                             gap: 1,
                           }}
                         >
-                          {planDiscount > 0 ? 'Plan Discount' : 'No Discount Applied'}
+                          {planDiscount > 0
+                            ? 'Plan Discount'
+                            : 'No Discount Applied'}
                           {planDiscount > 0 && (
                             <span
                               className={styles.discountTag}
@@ -2910,7 +3458,10 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
                               supportPrice,
                             };
 
-                            onShowSuccessMessage('Package successfully configured! Proceed with payment.', packageData);
+                            onShowSuccessMessage(
+                              'Package successfully configured! Proceed with payment.',
+                              packageData
+                            );
                           }
                         }}
                         disabled={loading}
@@ -2935,7 +3486,11 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         );
 
       default:
-        return <Typography variant="body1">Unknown step configuration. Please contact support.</Typography>;
+        return (
+          <Typography variant="body1">
+            Unknown step configuration. Please contact support.
+          </Typography>
+        );
     }
   };
 
@@ -2950,16 +3505,34 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         steps[currentStep] !== 'Choose Support Level' &&
         steps[currentStep] !== 'Select Payment Plan' &&
         steps[currentStep] !== 'Configure Enterprise Features' && (
-          <Button className={styles.btnControlsBack} variant="outlined" onClick={handleBack} disabled={currentStep === 0 || backLoading}>
-            {backLoading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : 'Back'}
+          <Button
+            className={styles.btnControlsBack}
+            variant="outlined"
+            onClick={handleBack}
+            disabled={currentStep === 0 || backLoading}
+          >
+            {backLoading ? (
+              <CircularProgress size={20} sx={{ color: 'white' }} />
+            ) : (
+              'Back'
+            )}
           </Button>
         )}
       {currentStep < steps.length - 1 &&
         steps[currentStep] !== 'Choose Support Level' &&
         steps[currentStep] !== 'Select Payment Plan' &&
         steps[currentStep] !== 'Configure Enterprise Features' && (
-          <Button className={styles.btnControlsNext} variant="contained" onClick={handleNext} disabled={loading}>
-            {loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : 'Next'}
+          <Button
+            className={styles.btnControlsNext}
+            variant="contained"
+            onClick={handleNext}
+            disabled={loading}
+          >
+            {loading ? (
+              <CircularProgress size={20} sx={{ color: 'white' }} />
+            ) : (
+              'Next'
+            )}
           </Button>
         )}
     </Box>
@@ -3007,7 +3580,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
         >
           {getStepContent()}
         </motion.div>
-        {currentStep !== steps.length - 1 && currentStep !== 0 && renderNavigationButtons()}
+        {currentStep !== steps.length - 1 &&
+          currentStep !== 0 &&
+          renderNavigationButtons()}
       </CardContent>
     </Card>
   );

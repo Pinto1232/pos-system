@@ -4,7 +4,8 @@ const mockPackages = [
   {
     id: 1,
     title: 'Starter',
-    description: 'Basic POS features;Inventory management;Sales reporting;Customer database;Email support;Cloud backup;Regular updates',
+    description:
+      'Basic POS features;Inventory management;Sales reporting;Customer database;Email support;Cloud backup;Regular updates',
     type: 'starter',
     price: 29.99,
   },

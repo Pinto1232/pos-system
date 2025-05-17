@@ -24,7 +24,15 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import InfoIcon from '@mui/icons-material/Info';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
 const Sales: React.FC<SalesProps> = ({
   data = {
@@ -93,10 +101,18 @@ const Sales: React.FC<SalesProps> = ({
       currentStep++;
       const progress = easeOutQuad(currentStep / steps);
 
-      setInStoreProgress(Math.min(Math.round(inStoreTarget * progress), inStoreTarget));
-      setOnlineProgress(Math.min(Math.round(onlineTarget * progress), onlineTarget));
-      setMobileProgress(Math.min(Math.round(mobileTarget * progress), mobileTarget));
-      setDesktopProgress(Math.min(Math.round(desktopTarget * progress), desktopTarget));
+      setInStoreProgress(
+        Math.min(Math.round(inStoreTarget * progress), inStoreTarget)
+      );
+      setOnlineProgress(
+        Math.min(Math.round(onlineTarget * progress), onlineTarget)
+      );
+      setMobileProgress(
+        Math.min(Math.round(mobileTarget * progress), mobileTarget)
+      );
+      setDesktopProgress(
+        Math.min(Math.round(desktopTarget * progress), desktopTarget)
+      );
 
       if (currentStep >= steps) {
         clearInterval(timer);
@@ -421,7 +437,13 @@ const Sales: React.FC<SalesProps> = ({
               </Typography>
               <Chip
                 label={`${data.growthPercentage > 0 ? '+' : ''}${formatPercentage(data.growthPercentage)}`}
-                icon={data.growthPercentage > 0 ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+                icon={
+                  data.growthPercentage > 0 ? (
+                    <ArrowUpwardIcon />
+                  ) : (
+                    <ArrowDownwardIcon />
+                  )
+                }
                 color={data.growthPercentage > 0 ? 'success' : 'error'}
                 size="small"
                 sx={{
@@ -435,11 +457,17 @@ const Sales: React.FC<SalesProps> = ({
                   '& .MuiChip-icon': {
                     fontSize: '1rem',
                   },
-                  boxShadow: data.growthPercentage > 0 ? '0 4px 12px rgba(76, 175, 80, 0.2)' : '0 4px 12px rgba(244, 67, 54, 0.2)',
+                  boxShadow:
+                    data.growthPercentage > 0
+                      ? '0 4px 12px rgba(76, 175, 80, 0.2)'
+                      : '0 4px 12px rgba(244, 67, 54, 0.2)',
                   transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   '&:hover': {
                     transform: 'translateY(-3px) scale(1.05)',
-                    boxShadow: data.growthPercentage > 0 ? '0 6px 16px rgba(76, 175, 80, 0.25)' : '0 6px 16px rgba(244, 67, 54, 0.25)',
+                    boxShadow:
+                      data.growthPercentage > 0
+                        ? '0 6px 16px rgba(76, 175, 80, 0.25)'
+                        : '0 6px 16px rgba(244, 67, 54, 0.25)',
                   },
                 }}
               />
@@ -459,7 +487,9 @@ const Sales: React.FC<SalesProps> = ({
               }}
             >
               <span>vs prev.</span>
-              <span style={{ fontWeight: 600 }}>{formatCurrency(data.previousRevenue)}</span>
+              <span style={{ fontWeight: 600 }}>
+                {formatCurrency(data.previousRevenue)}
+              </span>
               <span>{timeframe}</span>
             </Typography>
 
@@ -483,7 +513,8 @@ const Sales: React.FC<SalesProps> = ({
                   alignItems: 'center',
                   justifyContent: 'center',
                   mb: { xs: 2, sm: 0 },
-                  transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  transition:
+                    'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   '&:hover': {
                     transform: 'scale(1.05)',
                   },
@@ -823,7 +854,8 @@ const Sales: React.FC<SalesProps> = ({
                       left: '0',
                       width: '30%',
                       height: '2px',
-                      background: 'linear-gradient(90deg, #4338ca, transparent)',
+                      background:
+                        'linear-gradient(90deg, #4338ca, transparent)',
                       borderRadius: '2px',
                     },
                   }}
@@ -877,7 +909,11 @@ const Sales: React.FC<SalesProps> = ({
                         bottom: 10,
                       }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" vertical={false} />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="#e0e0e0"
+                        vertical={false}
+                      />
                       <XAxis
                         dataKey="date"
                         axisLine={false}
@@ -1069,7 +1105,12 @@ const Sales: React.FC<SalesProps> = ({
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              mb={2}
+            >
               <Typography
                 variant="overline"
                 sx={{
@@ -1169,7 +1210,8 @@ const Sales: React.FC<SalesProps> = ({
               right: 0,
               width: '150px',
               height: '150px',
-              background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+              background:
+                'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
               borderRadius: '50%',
               transform: 'translate(50%, -50%)',
             },
@@ -1312,7 +1354,12 @@ const Sales: React.FC<SalesProps> = ({
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              mb={2}
+            >
               <Typography
                 variant="overline"
                 sx={{
@@ -1363,13 +1410,19 @@ const Sales: React.FC<SalesProps> = ({
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    backgroundColor: data.deals.growth > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+                    backgroundColor:
+                      data.deals.growth > 0
+                        ? 'rgba(16, 185, 129, 0.1)'
+                        : 'rgba(244, 63, 94, 0.1)',
                     borderRadius: '8px',
                     padding: '4px 10px',
                     transition: 'all 0.2s ease',
                     '&:hover': {
                       transform: 'translateY(-2px)',
-                      backgroundColor: data.deals.growth > 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
+                      backgroundColor:
+                        data.deals.growth > 0
+                          ? 'rgba(16, 185, 129, 0.15)'
+                          : 'rgba(244, 63, 94, 0.15)',
                     },
                   }}
                 >
@@ -1461,7 +1514,12 @@ const Sales: React.FC<SalesProps> = ({
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              mb={2}
+            >
               <Typography
                 variant="overline"
                 sx={{
@@ -1581,7 +1639,12 @@ const Sales: React.FC<SalesProps> = ({
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              mb={2}
+            >
               <Typography
                 variant="overline"
                 sx={{
@@ -1632,20 +1695,27 @@ const Sales: React.FC<SalesProps> = ({
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    backgroundColor: data.deals.winRateGrowth > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+                    backgroundColor:
+                      data.deals.winRateGrowth > 0
+                        ? 'rgba(16, 185, 129, 0.1)'
+                        : 'rgba(244, 63, 94, 0.1)',
                     borderRadius: '8px',
                     padding: '4px 10px',
                     transition: 'all 0.2s ease',
                     '&:hover': {
                       transform: 'translateY(-2px)',
-                      backgroundColor: data.deals.winRateGrowth > 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
+                      backgroundColor:
+                        data.deals.winRateGrowth > 0
+                          ? 'rgba(16, 185, 129, 0.15)'
+                          : 'rgba(244, 63, 94, 0.15)',
                     },
                   }}
                 >
                   <Typography
                     variant="body2"
                     sx={{
-                      color: data.deals.winRateGrowth > 0 ? '#10b981' : '#f43f5e',
+                      color:
+                        data.deals.winRateGrowth > 0 ? '#10b981' : '#f43f5e',
                       fontWeight: 700,
                       fontSize: '0.9rem',
                       display: 'flex',
@@ -1955,7 +2025,9 @@ const Sales: React.FC<SalesProps> = ({
                         fontWeight: 700,
                       }}
                     >
-                      {formatPercentage((member.revenue / data.totalRevenue) * 100)}
+                      {formatPercentage(
+                        (member.revenue / data.totalRevenue) * 100
+                      )}
                     </Typography>
                   </Box>
                 </Box>
@@ -1987,7 +2059,10 @@ const Sales: React.FC<SalesProps> = ({
                         px: 1.5,
                         py: 0.5,
                         borderRadius: '16px',
-                        bgcolor: member.percentage >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+                        bgcolor:
+                          member.percentage >= 0
+                            ? 'rgba(16, 185, 129, 0.1)'
+                            : 'rgba(244, 63, 94, 0.1)',
                       }}
                     >
                       {member.percentage >= 0 ? (
@@ -2057,7 +2132,8 @@ const Sales: React.FC<SalesProps> = ({
                         borderRadius: 4,
                         backgroundColor: 'rgba(226, 232, 240, 0.5)',
                         '& .MuiLinearProgress-bar': {
-                          backgroundColor: member.percentage >= 0 ? '#10b981' : '#f43f5e',
+                          backgroundColor:
+                            member.percentage >= 0 ? '#10b981' : '#f43f5e',
                           borderRadius: 4,
                         },
                         position: 'relative',

@@ -9,16 +9,24 @@ export const invalidateAddOnsQueries = (queryClient: QueryClient): void => {
   });
 };
 
-export const invalidateAddOnQuery = (queryClient: QueryClient, id: number): void => {
+export const invalidateAddOnQuery = (
+  queryClient: QueryClient,
+  id: number
+): void => {
   console.log(`Invalidating AddOn query for ID: ${id}`);
   queryClient.invalidateQueries({
     queryKey: addOnKeys.detail(id),
   });
 };
 
-export const invalidateAddOnListQueries = (queryClient: QueryClient, filters?: Record<string, unknown>): void => {
+export const invalidateAddOnListQueries = (
+  queryClient: QueryClient,
+  filters?: Record<string, unknown>
+): void => {
   if (filters) {
-    console.log(`Invalidating AddOn list queries with filters: ${JSON.stringify(filters)}`);
+    console.log(
+      `Invalidating AddOn list queries with filters: ${JSON.stringify(filters)}`
+    );
     queryClient.invalidateQueries({
       queryKey: addOnKeys.list(filters),
     });
@@ -30,24 +38,32 @@ export const invalidateAddOnListQueries = (queryClient: QueryClient, filters?: R
   }
 };
 
-export const invalidateAddOnCategoriesQueries = (queryClient: QueryClient): void => {
+export const invalidateAddOnCategoriesQueries = (
+  queryClient: QueryClient
+): void => {
   console.log('Invalidating AddOn categories queries');
   queryClient.invalidateQueries({
     queryKey: addOnKeys.categories(),
   });
 };
 
-export const refetchAddOnsQueries = async (queryClient: QueryClient): Promise<void> => {
+export const refetchAddOnsQueries = async (
+  queryClient: QueryClient
+): Promise<void> => {
   console.log('Forcing refetch of all AddOns queries');
   await queryClient.refetchQueries({
     queryKey: addOnKeys.all,
   });
 };
 
-export const resetEntireCache = async (queryClient: QueryClient): Promise<void> => {
+export const resetEntireCache = async (
+  queryClient: QueryClient
+): Promise<void> => {
   console.log('[CACHE] Resetting entire cache and refetching active queries');
 
-  console.log('[CACHE] Specifically invalidating pricing packages before full clear');
+  console.log(
+    '[CACHE] Specifically invalidating pricing packages before full clear'
+  );
   queryClient.invalidateQueries({
     queryKey: ['pricingPackages'],
     refetchType: 'all',
@@ -69,7 +85,10 @@ export const resetEntireCache = async (queryClient: QueryClient): Promise<void> 
       },
     });
   } catch (error) {
-    console.error('[CACHE] Error fetching pricing packages:', JSON.stringify(error, null, 2));
+    console.error(
+      '[CACHE] Error fetching pricing packages:',
+      JSON.stringify(error, null, 2)
+    );
   }
 
   console.log('[CACHE] Clearing entire React Query cache');
@@ -92,14 +111,22 @@ export const resetEntireCache = async (queryClient: QueryClient): Promise<void> 
         console.log(`[CACHE] Removing ${key} from localStorage`);
         localStorage.removeItem(key);
       } catch (error) {
-        console.warn(`[CACHE] Failed to remove ${key} from localStorage:`, JSON.stringify(error, null, 2));
+        console.warn(
+          `[CACHE] Failed to remove ${key} from localStorage:`,
+          JSON.stringify(error, null, 2)
+        );
       }
     });
 
-    console.log('[CACHE] Attempting to clear browser cache for pricing packages');
+    console.log(
+      '[CACHE] Attempting to clear browser cache for pricing packages'
+    );
     try {
       const timestamp = new Date().getTime();
-      const urls = [`/api/pricing-packages?t=${timestamp}`, `/api/pricing-packages?refresh=true&t=${timestamp}`];
+      const urls = [
+        `/api/pricing-packages?t=${timestamp}`,
+        `/api/pricing-packages?refresh=true&t=${timestamp}`,
+      ];
 
       urls.forEach(async (url) => {
         await fetch(url, {
@@ -112,7 +139,10 @@ export const resetEntireCache = async (queryClient: QueryClient): Promise<void> 
         });
       });
     } catch (error) {
-      console.warn('[CACHE] Error clearing browser cache:', JSON.stringify(error, null, 2));
+      console.warn(
+        '[CACHE] Error clearing browser cache:',
+        JSON.stringify(error, null, 2)
+      );
     }
   }
 
@@ -120,11 +150,17 @@ export const resetEntireCache = async (queryClient: QueryClient): Promise<void> 
   await queryClient.refetchQueries();
 };
 
-export const invalidateCacheTags = (queryClient: QueryClient, tags: string[] = []): void => {
+export const invalidateCacheTags = (
+  queryClient: QueryClient,
+  tags: string[] = []
+): void => {
   console.log('Invalidating cache tags:', JSON.stringify(tags, null, 2));
 
   if (!tags || !Array.isArray(tags)) {
-    console.warn('Invalid tags provided to invalidateCacheTags:', JSON.stringify(tags, null, 2));
+    console.warn(
+      'Invalid tags provided to invalidateCacheTags:',
+      JSON.stringify(tags, null, 2)
+    );
     return;
   }
 
@@ -135,10 +171,14 @@ export const invalidateCacheTags = (queryClient: QueryClient, tags: string[] = [
   });
 };
 
-export const prefetchCommonData = async (queryClient: QueryClient): Promise<void> => {
+export const prefetchCommonData = async (
+  queryClient: QueryClient
+): Promise<void> => {
   console.log('Prefetching common data');
 
-  const prefetchPromises = [fetch('/api/pricing-packages').then((res) => res.json())];
+  const prefetchPromises = [
+    fetch('/api/pricing-packages').then((res) => res.json()),
+  ];
 
   try {
     const [pricingPackages] = await Promise.all(prefetchPromises);
@@ -149,7 +189,10 @@ export const prefetchCommonData = async (queryClient: QueryClient): Promise<void
       console.warn('Received undefined pricing packages data during prefetch');
     }
   } catch (error) {
-    console.error('Error prefetching common data:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error prefetching common data:',
+      JSON.stringify(error, null, 2)
+    );
   }
 };
 
@@ -157,11 +200,20 @@ export const setupCacheListeners = (queryClient: QueryClient): (() => void) => {
   const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
     if (process.env.NODE_ENV === 'development') {
       if (event.type === 'added') {
-        console.log('Query added to cache:', JSON.stringify(event.query.queryKey, null, 2));
+        console.log(
+          'Query added to cache:',
+          JSON.stringify(event.query.queryKey, null, 2)
+        );
       } else if (event.type === 'removed') {
-        console.log('Query removed from cache:', JSON.stringify(event.query.queryKey, null, 2));
+        console.log(
+          'Query removed from cache:',
+          JSON.stringify(event.query.queryKey, null, 2)
+        );
       } else if (event.type === 'updated') {
-        console.log('Query updated in cache:', JSON.stringify(event.query.queryKey, null, 2));
+        console.log(
+          'Query updated in cache:',
+          JSON.stringify(event.query.queryKey, null, 2)
+        );
       }
     }
   });
@@ -169,7 +221,10 @@ export const setupCacheListeners = (queryClient: QueryClient): (() => void) => {
   return unsubscribe;
 };
 
-export const createFetchOptions = async (cacheTags: string[] | null | undefined = [], revalidate: number = 60): Promise<RequestInit> => {
+export const createFetchOptions = async (
+  cacheTags: string[] | null | undefined = [],
+  revalidate: number = 60
+): Promise<RequestInit> => {
   const safeCacheTags = Array.isArray(cacheTags) ? cacheTags : [];
 
   return {
@@ -180,11 +235,16 @@ export const createFetchOptions = async (cacheTags: string[] | null | undefined 
   } as RequestInit;
 };
 
-export const isDataStale = (timestamp: number, maxAge: number = 60000): boolean => {
+export const isDataStale = (
+  timestamp: number,
+  maxAge: number = 60000
+): boolean => {
   return Date.now() - timestamp > maxAge;
 };
 
-export const refreshCommonPageCaches = async (queryClient: QueryClient): Promise<void> => {
+export const refreshCommonPageCaches = async (
+  queryClient: QueryClient
+): Promise<void> => {
   console.log('[CACHE] Refreshing home page and common page caches');
 
   const commonQueryKeys = [
@@ -229,7 +289,10 @@ export const refreshCommonPageCaches = async (queryClient: QueryClient): Promise
       },
     });
   } catch (error) {
-    console.error('[CACHE] Error fetching pricing packages:', JSON.stringify(error, null, 2));
+    console.error(
+      '[CACHE] Error fetching pricing packages:',
+      JSON.stringify(error, null, 2)
+    );
   }
 
   console.log('[CACHE] Refetching active queries');
@@ -241,13 +304,17 @@ export const refreshCommonPageCaches = async (queryClient: QueryClient): Promise
     const path = window.location.pathname;
     console.log(`[CACHE] Current path: ${path}`);
     if (path === '/' || path === '/products' || path === '/pricing-packages') {
-      console.log('[CACHE] On home or pricing page, forcing refetch of all common data');
+      console.log(
+        '[CACHE] On home or pricing page, forcing refetch of all common data'
+      );
       await queryClient.refetchQueries({
         queryKey: commonQueryKeys.flat(),
       });
 
       if (path === '/') {
-        console.log('[CACHE] On home page, specifically refetching pricing packages');
+        console.log(
+          '[CACHE] On home page, specifically refetching pricing packages'
+        );
         await queryClient.refetchQueries({
           queryKey: ['pricingPackages'],
           type: 'all',
@@ -266,16 +333,25 @@ export const safeGet = <T>(obj: unknown, path: string, defaultValue: T): T => {
     let result: unknown = obj;
 
     for (const part of parts) {
-      if (result === undefined || result === null || typeof result !== 'object') {
+      if (
+        result === undefined ||
+        result === null ||
+        typeof result !== 'object'
+      ) {
         return defaultValue;
       }
 
       result = (result as Record<string, unknown>)[part];
     }
 
-    return result === undefined || result === null ? defaultValue : (result as T);
+    return result === undefined || result === null
+      ? defaultValue
+      : (result as T);
   } catch (error) {
-    console.warn(`Error accessing path ${path}:`, JSON.stringify(error, null, 2));
+    console.warn(
+      `Error accessing path ${path}:`,
+      JSON.stringify(error, null, 2)
+    );
     return defaultValue;
   }
 };

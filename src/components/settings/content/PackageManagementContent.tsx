@@ -1,5 +1,15 @@
 import React from 'react';
-import { Box, Typography, Paper, Button, Chip, Grid, Card, CardContent, CardActions } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  Chip,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 interface PackageManagementContentProps {
@@ -48,7 +58,12 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
               Your current active subscription package
             </Typography>
           </Box>
-          <Chip label="Active" color="success" size="small" icon={<CheckCircleIcon />} />
+          <Chip
+            label="Active"
+            color="success"
+            size="small"
+            icon={<CheckCircleIcon />}
+          />
         </Box>
 
         <Box
@@ -72,8 +87,18 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             {subscription?.package?.title || 'Starter'}
           </Box>
           <Box>
-            <Typography variant="body2">Started: {new Date(subscription?.startDate || Date.now()).toLocaleDateString()}</Typography>
-            <Typography variant="body2">Next billing: {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}</Typography>
+            <Typography variant="body2">
+              Started:{' '}
+              {new Date(
+                subscription?.startDate || Date.now()
+              ).toLocaleDateString()}
+            </Typography>
+            <Typography variant="body2">
+              Next billing:{' '}
+              {new Date(
+                Date.now() + 30 * 24 * 60 * 60 * 1000
+              ).toLocaleDateString()}
+            </Typography>
           </Box>
         </Box>
       </Paper>
@@ -82,7 +107,8 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         Available Packages
       </Typography>
       <Typography variant="body2" color="text.secondary" paragraph>
-        Upgrade your subscription or add additional packages to access more features
+        Upgrade your subscription or add additional packages to access more
+        features
       </Typography>
 
       <Grid container spacing={2}>
@@ -95,8 +121,14 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                borderColor: pkg.id === subscription?.pricingPackageId ? '#173A79' : undefined,
-                boxShadow: pkg.id === subscription?.pricingPackageId ? '0 0 0 2px rgba(23, 58, 121, 0.2)' : undefined,
+                borderColor:
+                  pkg.id === subscription?.pricingPackageId
+                    ? '#173A79'
+                    : undefined,
+                boxShadow:
+                  pkg.id === subscription?.pricingPackageId
+                    ? '0 0 0 2px rgba(23, 58, 121, 0.2)'
+                    : undefined,
               }}
             >
               <CardContent sx={{ flexGrow: 1 }}>
@@ -107,20 +139,22 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                   ${pkg.price}/mo
                 </Typography>
                 <Box sx={{ mt: 2 }}>
-                  {pkg.description.split(';').map((feature: string, index: number) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        mb: 1,
-                      }}
-                    >
-                      <CheckCircleIcon color="success" fontSize="small" />
-                      <Typography variant="body2">{feature}</Typography>
-                    </Box>
-                  ))}
+                  {pkg.description
+                    .split(';')
+                    .map((feature: string, index: number) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          mb: 1,
+                        }}
+                      >
+                        <CheckCircleIcon color="success" fontSize="small" />
+                        <Typography variant="body2">{feature}</Typography>
+                      </Box>
+                    ))}
                 </Box>
               </CardContent>
               <CardActions>
@@ -160,7 +194,9 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                       borderRadius: 2,
                     }}
                   >
-                    {pkg.id > subscription?.pricingPackageId ? 'Upgrade' : 'Enable'}
+                    {pkg.id > subscription?.pricingPackageId
+                      ? 'Upgrade'
+                      : 'Enable'}
                   </Button>
                 )}
               </CardActions>

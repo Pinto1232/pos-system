@@ -26,7 +26,10 @@ const ErrorAlert: React.FC = () => {
     }
   }, [searchParams]);
 
-  const handleClose = (_event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -49,7 +52,12 @@ const ErrorAlert: React.FC = () => {
         variant="filled"
         onClose={handleClose}
         action={
-          <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
             <CloseIcon fontSize="small" />
           </IconButton>
         }

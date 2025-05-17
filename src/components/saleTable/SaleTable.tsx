@@ -19,10 +19,20 @@ import {
   useTheme,
   Chip,
 } from '@mui/material';
-import { VisibilityOutlined, ReceiptLong, Delete, ChevronRight } from '@mui/icons-material';
+import {
+  VisibilityOutlined,
+  ReceiptLong,
+  Delete,
+  ChevronRight,
+} from '@mui/icons-material';
 import { SaleTableProps } from './types';
 
-const SaleTable: React.FC<SaleTableProps> = ({ sales, onViewDetails, onViewReceipt, onDelete }) => {
+const SaleTable: React.FC<SaleTableProps> = ({
+  sales,
+  onViewDetails,
+  onViewReceipt,
+  onDelete,
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 

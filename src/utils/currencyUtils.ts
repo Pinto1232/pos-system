@@ -11,7 +11,10 @@ export const fetchCurrencyAndRate = async () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5107';
     const fullUrl = `${apiUrl}/api/currency/location`;
 
-    console.log('Attempting to fetch currency with URL:', JSON.stringify(fullUrl, null, 2));
+    console.log(
+      'Attempting to fetch currency with URL:',
+      JSON.stringify(fullUrl, null, 2)
+    );
 
     const ipInfo = await axios.get(fullUrl, {
       headers: {
@@ -25,12 +28,17 @@ export const fetchCurrencyAndRate = async () => {
       return { currency: 'USD', rate: 1 };
     }
 
-    const exchangeRes = await axios.get(`https://openexchangerates.org/api/latest.json?app_id=${OPEN_EXCHANGE_APP_ID}`);
+    const exchangeRes = await axios.get(
+      `https://openexchangerates.org/api/latest.json?app_id=${OPEN_EXCHANGE_APP_ID}`
+    );
 
     const rate = exchangeRes.data.rates[userCurrency] || 1;
     return { currency: userCurrency, rate };
   } catch (error) {
-    console.error('Error fetching currency info:', JSON.stringify(error, null, 2));
+    console.error(
+      'Error fetching currency info:',
+      JSON.stringify(error, null, 2)
+    );
 
     if (axios.isAxiosError(error)) {
       console.error('Detailed Currency Fetch Error:', {

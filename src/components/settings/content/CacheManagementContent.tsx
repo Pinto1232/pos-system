@@ -42,13 +42,18 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
   const [isClearing, setIsClearing] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('success');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    'success' | 'error' | 'info' | 'warning'
+  >('success');
 
   const handleSaveSettings = () => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('cacheDuration', cacheDuration);
       localStorage.setItem('autoRefreshOnFocus', autoRefreshOnFocus.toString());
-      localStorage.setItem('prefetchImportantData', prefetchImportantData.toString());
+      localStorage.setItem(
+        'prefetchImportantData',
+        prefetchImportantData.toString()
+      );
 
       setSnackbarMessage('Cache settings saved successfully');
       setSnackbarSeverity('success');
@@ -61,7 +66,9 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
       setIsRefreshing(true);
       console.log('[CACHE-UI] Starting cache refresh operation');
 
-      console.log('[CACHE-UI] Specifically invalidating pricing packages cache');
+      console.log(
+        '[CACHE-UI] Specifically invalidating pricing packages cache'
+      );
       queryClient.invalidateQueries({
         queryKey: ['pricingPackages'],
         refetchType: 'all',
@@ -73,25 +80,38 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
       console.log('[CACHE-UI] Calling refreshCommonPageCaches');
       await refreshCommonPageCaches(queryClient);
 
-      console.log('[CACHE-UI] Directly fetching pricing packages with cache-busting');
+      console.log(
+        '[CACHE-UI] Directly fetching pricing packages with cache-busting'
+      );
       try {
         const timestamp = new Date().getTime();
-        const response = await fetch(`/api/pricing-packages?refresh=true&t=${timestamp}`, {
-          method: 'GET',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            Pragma: 'no-cache',
-            Expires: '0',
-          },
-        });
+        const response = await fetch(
+          `/api/pricing-packages?refresh=true&t=${timestamp}`,
+          {
+            method: 'GET',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              Pragma: 'no-cache',
+              Expires: '0',
+            },
+          }
+        );
 
         if (response.ok) {
-          console.log('[CACHE-UI] Successfully fetched fresh pricing packages data');
+          console.log(
+            '[CACHE-UI] Successfully fetched fresh pricing packages data'
+          );
         } else {
-          console.warn('[CACHE-UI] Failed to fetch fresh pricing packages data:', JSON.stringify(response.status, null, 2));
+          console.warn(
+            '[CACHE-UI] Failed to fetch fresh pricing packages data:',
+            JSON.stringify(response.status, null, 2)
+          );
         }
       } catch (fetchError) {
-        console.error('[CACHE-UI] Error fetching pricing packages:', JSON.stringify(fetchError, null, 2));
+        console.error(
+          '[CACHE-UI] Error fetching pricing packages:',
+          JSON.stringify(fetchError, null, 2)
+        );
       }
 
       console.log('[CACHE-UI] Refetching all active queries');
@@ -102,7 +122,10 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (error) {
-      console.error('[CACHE-UI] Error refreshing caches:', JSON.stringify(error, null, 2));
+      console.error(
+        '[CACHE-UI] Error refreshing caches:',
+        JSON.stringify(error, null, 2)
+      );
       setSnackbarMessage('Failed to refresh caches');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
@@ -116,7 +139,9 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
       setIsClearing(true);
       console.log('[CACHE-UI] Starting cache clear operation');
 
-      console.log('[CACHE-UI] Specifically invalidating pricing packages cache before full clear');
+      console.log(
+        '[CACHE-UI] Specifically invalidating pricing packages cache before full clear'
+      );
       queryClient.invalidateQueries({
         queryKey: ['pricingPackages'],
         refetchType: 'all',
@@ -131,25 +156,38 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
       console.log('[CACHE-UI] Calling refreshCommonPageCaches');
       await refreshCommonPageCaches(queryClient);
 
-      console.log('[CACHE-UI] Directly fetching pricing packages with cache-busting');
+      console.log(
+        '[CACHE-UI] Directly fetching pricing packages with cache-busting'
+      );
       try {
         const timestamp = new Date().getTime();
-        const response = await fetch(`/api/pricing-packages?refresh=true&t=${timestamp}`, {
-          method: 'GET',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            Pragma: 'no-cache',
-            Expires: '0',
-          },
-        });
+        const response = await fetch(
+          `/api/pricing-packages?refresh=true&t=${timestamp}`,
+          {
+            method: 'GET',
+            headers: {
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              Pragma: 'no-cache',
+              Expires: '0',
+            },
+          }
+        );
 
         if (response.ok) {
-          console.log('[CACHE-UI] Successfully fetched fresh pricing packages data after clear');
+          console.log(
+            '[CACHE-UI] Successfully fetched fresh pricing packages data after clear'
+          );
         } else {
-          console.warn('[CACHE-UI] Failed to fetch fresh pricing packages data after clear:', JSON.stringify(response.status, null, 2));
+          console.warn(
+            '[CACHE-UI] Failed to fetch fresh pricing packages data after clear:',
+            JSON.stringify(response.status, null, 2)
+          );
         }
       } catch (fetchError) {
-        console.error('[CACHE-UI] Error fetching pricing packages after clear:', JSON.stringify(fetchError, null, 2));
+        console.error(
+          '[CACHE-UI] Error fetching pricing packages after clear:',
+          JSON.stringify(fetchError, null, 2)
+        );
       }
 
       console.log('[CACHE-UI] Cache clear operation completed successfully');
@@ -157,7 +195,10 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (error) {
-      console.error('[CACHE-UI] Error clearing caches:', JSON.stringify(error, null, 2));
+      console.error(
+        '[CACHE-UI] Error clearing caches:',
+        JSON.stringify(error, null, 2)
+      );
       setSnackbarMessage('Failed to clear caches');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
@@ -203,20 +244,31 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
                 />
               </Box>
               <Typography variant="caption" color="text.secondary">
-                How long data should be cached before being refreshed (in milliseconds)
+                How long data should be cached before being refreshed (in
+                milliseconds)
               </Typography>
             </Grid>
 
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Switch checked={autoRefreshOnFocus} onChange={(e) => setAutoRefreshOnFocus(e.target.checked)} />}
+                control={
+                  <Switch
+                    checked={autoRefreshOnFocus}
+                    onChange={(e) => setAutoRefreshOnFocus(e.target.checked)}
+                  />
+                }
                 label="Auto-refresh data when window regains focus"
               />
             </Grid>
 
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Switch checked={prefetchImportantData} onChange={(e) => setPrefetchImportantData(e.target.checked)} />}
+                control={
+                  <Switch
+                    checked={prefetchImportantData}
+                    onChange={(e) => setPrefetchImportantData(e.target.checked)}
+                  />
+                }
                 label="Prefetch important data for faster navigation"
               />
             </Grid>
@@ -275,7 +327,12 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
                 <Typography variant="caption" color="text.secondary">
                   Last updated: 5 minutes ago
                 </Typography>
-                <Chip label="Fresh" size="small" color="success" variant="outlined" />
+                <Chip
+                  label="Fresh"
+                  size="small"
+                  color="success"
+                  variant="outlined"
+                />
               </Box>
             </Grid>
 
@@ -310,7 +367,12 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
                 <Typography variant="caption" color="text.secondary">
                   Last updated: 35 minutes ago
                 </Typography>
-                <Chip label="Stale" size="small" color="warning" variant="outlined" />
+                <Chip
+                  label="Stale"
+                  size="small"
+                  color="warning"
+                  variant="outlined"
+                />
               </Box>
             </Grid>
 
@@ -345,7 +407,12 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
                 <Typography variant="caption" color="text.secondary">
                   Last updated: 2 minutes ago
                 </Typography>
-                <Chip label="Fresh" size="small" color="success" variant="outlined" />
+                <Chip
+                  label="Fresh"
+                  size="small"
+                  color="success"
+                  variant="outlined"
+                />
               </Box>
             </Grid>
 
@@ -380,7 +447,12 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
                 <Typography variant="caption" color="text.secondary">
                   Last updated: 15 minutes ago
                 </Typography>
-                <Chip label="Fresh" size="small" color="success" variant="outlined" />
+                <Chip
+                  label="Fresh"
+                  size="small"
+                  color="success"
+                  variant="outlined"
+                />
               </Box>
             </Grid>
           </Grid>
@@ -394,7 +466,13 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button
             variant="outlined"
-            startIcon={isRefreshing ? <CircularProgress size={20} color="inherit" /> : <RefreshIcon />}
+            startIcon={
+              isRefreshing ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                <RefreshIcon />
+              )
+            }
             sx={{
               textTransform: 'none',
               borderRadius: 2,
@@ -407,7 +485,13 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
           <Button
             variant="outlined"
             color="error"
-            startIcon={isClearing ? <CircularProgress size={20} color="inherit" /> : <DeleteSweepIcon />}
+            startIcon={
+              isClearing ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                <DeleteSweepIcon />
+              )
+            }
             sx={{
               textTransform: 'none',
               borderRadius: 2,
@@ -430,7 +514,11 @@ const CacheManagementContent: React.FC<CacheManagementContentProps> = ({
           horizontal: 'center',
         }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

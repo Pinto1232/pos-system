@@ -26,6 +26,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error setting mock token:', JSON.stringify(error, null, 2));
-    return NextResponse.json({ error: 'Failed to set mock token' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to set mock token' },
+      { status: 500 }
+    );
   }
 }

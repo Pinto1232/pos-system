@@ -58,7 +58,11 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
   const appBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleCustomizationUpdate = (data: { navbarColor?: string; sidebarColor?: string; logoUrl?: string }) => {
+    const handleCustomizationUpdate = (data: {
+      navbarColor?: string;
+      sidebarColor?: string;
+      logoUrl?: string;
+    }) => {
       if (appBarRef.current && data.navbarColor) {
         appBarRef.current.style.backgroundColor = data.navbarColor;
       }
@@ -88,7 +92,8 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
           width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
           ml: isMobile ? 0 : `${drawerWidth}px`,
           right: 0,
-          transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
+          transition:
+            'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
           border: 'none',
           zIndex: 1050,
           backgroundColor: navbarColor,
@@ -129,7 +134,8 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
               sx={{
                 fontSize: '1.5rem',
                 transition: 'transform 0.3s ease',
-                transform: drawerWidth === 80 ? 'rotate(0deg)' : 'rotate(180deg)',
+                transform:
+                  drawerWidth === 80 ? 'rotate(0deg)' : 'rotate(180deg)',
               }}
             />
           </IconButton>
@@ -231,7 +237,8 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
               slotProps={{
                 paper: {
                   style: {
-                    transition: 'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    transition:
+                      'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
                   },
                 },
               }}
@@ -247,12 +254,14 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                   overflowY: 'auto',
                   borderRadius: '12px',
                   boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                  animation: 'fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation:
+                    'fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   overflow: 'hidden',
                   border: '1px solid rgba(0,0,0,0.05)',
                   transform: 'translateY(0)',
                   opacity: 1,
-                  transition: 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                  transition:
+                    'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                 },
                 '& .MuiList-root': {
                   padding: '8px',
@@ -276,7 +285,8 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                   padding: '10px 16px',
                   margin: '2px 0',
                   transition: 'all 0.15s ease',
-                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.05s',
                   opacity: 0,
                   transform: 'translateY(8px)',
@@ -321,7 +331,8 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                   padding: '10px 16px',
                   margin: '2px 0',
                   transition: 'all 0.15s ease',
-                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.1s',
                   opacity: 0,
                   transform: 'translateY(8px)',
@@ -364,7 +375,8 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                   padding: '0 8px',
                   my: 1,
                   borderTop: '1px solid rgba(0,0,0,0.06)',
-                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.15s',
                   opacity: 0,
                   '@keyframes fadeInItem': {
@@ -388,7 +400,8 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                   margin: '2px 0',
                   borderRadius: '8px',
                   transition: 'all 0.2s ease',
-                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation:
+                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.2s',
                   opacity: 0,
                   transform: 'translateY(8px)',

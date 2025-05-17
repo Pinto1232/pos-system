@@ -27,7 +27,9 @@ jest.mock('@/components/sidebar/Navbar', () => {
 });
 
 jest.mock('@/components/dashboardMain/dashboardMainContainer', () => {
-  return function MockDashboardMainContainer(props: { children?: React.ReactNode }) {
+  return function MockDashboardMainContainer(props: {
+    children?: React.ReactNode;
+  }) {
     return (
       <div data-testid="dashboard-main-container">
         <div data-testid="dashboard-main-props">{JSON.stringify(props)}</div>
@@ -37,7 +39,12 @@ jest.mock('@/components/dashboardMain/dashboardMainContainer', () => {
 });
 
 jest.mock('@/SettingsModal', () => {
-  return function MockSettingsModal(props: { open: boolean; onClose: () => void; userId: string; onCustomizationUpdated: () => void }) {
+  return function MockSettingsModal(props: {
+    open: boolean;
+    onClose: () => void;
+    userId: string;
+    onCustomizationUpdated: () => void;
+  }) {
     return (
       <div data-testid="settings-modal">
         <div data-testid="settings-modal-props">{JSON.stringify(props)}</div>
@@ -53,7 +60,9 @@ global.fetch = jest.fn().mockImplementation((url) => {
       json: () =>
         Promise.resolve({
           id: 1,
-          userId: url.includes('test-user-id') ? 'test-user-id' : 'current-user',
+          userId: url.includes('test-user-id')
+            ? 'test-user-id'
+            : 'current-user',
           sidebarColor: '#173A79',
           logoUrl: '/test-logo.jpg',
           navbarColor: '#000000',
@@ -130,7 +139,9 @@ describe('DashboardLayout Component', () => {
     );
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringMatching(/\/api\/UserCustomization\/test-user-id/));
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/api\/UserCustomization\/test-user-id/)
+      );
     });
 
     const settingsModalProps = screen.getByTestId('settings-modal-props');
@@ -159,7 +170,9 @@ describe('DashboardLayout Component', () => {
     );
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringMatching(/\/api\/UserCustomization\/current-user/));
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/api\/UserCustomization\/current-user/)
+      );
     });
 
     const settingsModalProps = screen.getByTestId('settings-modal-props');

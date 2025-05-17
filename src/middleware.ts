@@ -9,7 +9,11 @@ export function middleware(request: NextRequest) {
 
   let cacheControl = 'public, max-age=0, s-maxage=0, must-revalidate';
 
-  if (pathname.startsWith('/_next/static/') || pathname.startsWith('/static/') || pathname.includes('.')) {
+  if (
+    pathname.startsWith('/_next/static/') ||
+    pathname.startsWith('/static/') ||
+    pathname.includes('.')
+  ) {
     cacheControl = `public, max-age=31536000, s-maxage=86400, stale-while-revalidate=86400`;
   } else if (pathname.startsWith('/api/pricing-packages')) {
     cacheControl = `public, max-age=60, s-maxage=${CACHE_TIMES.PRICING}, stale-while-revalidate=${CACHE_TIMES.PRICING * 10}`;
