@@ -8,10 +8,7 @@ export interface TaxSettings {
   taxCategories: TaxCategory[];
   displayTaxOnReceipts: boolean;
   enableTaxExemptions: boolean;
-  taxReportingPeriod:
-    | 'monthly'
-    | 'quarterly'
-    | 'annually';
+  taxReportingPeriod: 'monthly' | 'quarterly' | 'annually';
 }
 
 export interface TaxCategory {
@@ -53,9 +50,7 @@ export interface SettingsModalProps {
   open: boolean;
   onClose: () => void;
   userId: string;
-  onCustomizationUpdated: (
-    updated: UserCustomization
-  ) => void;
+  onCustomizationUpdated: (updated: UserCustomization) => void;
   initialSetting?: string;
 }
 
@@ -70,28 +65,20 @@ export interface SettingsModalPresentationProps {
   setNavbarColor: (color: string) => void;
   logoPreview: string;
   showSidebarColorPicker: boolean;
-  setShowSidebarColorPicker: (
-    show: boolean
-  ) => void;
+  setShowSidebarColorPicker: (show: boolean) => void;
   showNavbarColorPicker: boolean;
-  setShowNavbarColorPicker: (
-    show: boolean
-  ) => void;
+  setShowNavbarColorPicker: (show: boolean) => void;
   selectedSetting: string;
   setSelectedSetting: (setting: string) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  handleLogoFileChange: (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void;
+  handleLogoFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSave: () => void;
   handleReset: () => void;
   taxSettings: TaxSettings;
   setTaxSettings: (settings: TaxSettings) => void;
   regionalSettings: RegionalSettings;
-  setRegionalSettings: (
-    settings: RegionalSettings
-  ) => void;
+  setRegionalSettings: (settings: RegionalSettings) => void;
   selectedRoleTab: number;
   setSelectedRoleTab: (tab: number) => void;
   createRoleModalOpen: boolean;
@@ -99,48 +86,30 @@ export interface SettingsModalPresentationProps {
   newRoleName: string;
   setNewRoleName: (name: string) => void;
   newRoleDescription: string;
-  setNewRoleDescription: (
-    description: string
-  ) => void;
+  setNewRoleDescription: (description: string) => void;
   selectedTemplate: string;
   setSelectedTemplate: (template: string) => void;
   configurePermissionsAfter: boolean;
-  setConfigurePermissionsAfter: (
-    configure: boolean
-  ) => void;
+  setConfigurePermissionsAfter: (configure: boolean) => void;
   roleNameError: string;
   createRolePending: boolean;
   handleCreateRole: () => void;
-  getTemplatePermissions: (
-    template: string
-  ) => string[];
+  getTemplatePermissions: (template: string) => string[];
   packages: any[] | undefined;
   subscription: any;
   availableFeatures: string[];
-  enableAdditionalPackage: (
-    packageId: number
-  ) => Promise<void>;
-  disableAdditionalPackage: (
-    packageId: number
-  ) => Promise<void>;
+  enableAdditionalPackage: (packageId: number) => Promise<void>;
+  disableAdditionalPackage: (packageId: number) => Promise<void>;
   cacheDuration: string;
   setCacheDuration: (duration: string) => void;
   autoRefreshOnFocus: boolean;
-  setAutoRefreshOnFocus: (
-    refresh: boolean
-  ) => void;
+  setAutoRefreshOnFocus: (refresh: boolean) => void;
   prefetchImportantData: boolean;
-  setPrefetchImportantData: (
-    prefetch: boolean
-  ) => void;
+  setPrefetchImportantData: (prefetch: boolean) => void;
   snackbarOpen: boolean;
   setSnackbarOpen: (open: boolean) => void;
   snackbarMessage: string;
-  snackbarSeverity:
-    | 'success'
-    | 'error'
-    | 'info'
-    | 'warning';
+  snackbarSeverity: 'success' | 'error' | 'info' | 'warning';
   changeHistory: {
     timestamp: Date;
     setting: string;
@@ -153,57 +122,46 @@ export interface SettingsModalPresentationProps {
 export const settingsItems: SettingsItem[] = [
   {
     label: 'General Settings',
-    tooltip:
-      'Configure application appearance, logo, and theme colors',
+    tooltip: 'Configure application appearance, logo, and theme colors',
   },
   {
     label: 'Business Information',
-    tooltip:
-      'Manage your business details, contact information, and registration data',
+    tooltip: 'Manage your business details, contact information, and registration data',
   },
   {
     label: 'Tax & VAT Configuration',
-    tooltip:
-      'Set up tax rates, VAT settings, and configure tax calculation methods',
+    tooltip: 'Set up tax rates, VAT settings, and configure tax calculation methods',
   },
   {
     label: 'Currency & Regional Settings',
-    tooltip:
-      'Configure currencies, date formats, and regional preferences',
+    tooltip: 'Configure currencies, date formats, and regional preferences',
   },
   {
     label: 'User & Role Management',
-    tooltip:
-      'Manage users, roles, and permissions for system access',
+    tooltip: 'Manage users, roles, and permissions for system access',
   },
   {
     label: 'Package Management',
-    tooltip:
-      'Manage your subscription packages and enable additional features',
+    tooltip: 'Manage your subscription packages and enable additional features',
   },
   {
     label: 'Email & Notification Settings',
-    tooltip:
-      'Configure email servers, notification preferences, and message templates',
+    tooltip: 'Configure email servers, notification preferences, and message templates',
   },
   {
     label: 'System Backup & Restore',
-    tooltip:
-      'Create backups, schedule automatic backups, and restore from previous backups',
+    tooltip: 'Create backups, schedule automatic backups, and restore from previous backups',
   },
   {
     label: 'API & Third-Party Integrations',
-    tooltip:
-      'Manage API keys and configure integrations with external services',
+    tooltip: 'Manage API keys and configure integrations with external services',
   },
   {
     label: 'Cache Management',
-    tooltip:
-      'Manage application cache settings and refresh data when needed',
+    tooltip: 'Manage application cache settings and refresh data when needed',
   },
   {
     label: 'Change History',
-    tooltip:
-      'View history of changes made to settings',
+    tooltip: 'View history of changes made to settings',
   },
 ];

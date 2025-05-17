@@ -1,12 +1,6 @@
 'use client';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import useKeycloakUser from '@/hooks/useKeycloakUser';
 
@@ -31,35 +25,22 @@ interface UserSubscriptionContextType {
   isLoading: boolean;
   error: Error | null;
   availableFeatures: string[];
-  hasFeatureAccess: (
-    featureName: string
-  ) => boolean;
-  enableAdditionalPackage: (
-    packageId: number
-  ) => Promise<void>;
-  disableAdditionalPackage: (
-    packageId: number
-  ) => Promise<void>;
+  hasFeatureAccess: (featureName: string) => boolean;
+  enableAdditionalPackage: (packageId: number) => Promise<void>;
+  disableAdditionalPackage: (packageId: number) => Promise<void>;
   refreshSubscription: () => void;
 }
 
-const UserSubscriptionContext = createContext<
-  UserSubscriptionContextType | undefined
->(undefined);
+const UserSubscriptionContext = createContext<UserSubscriptionContextType | undefined>(undefined);
 
 export const useUserSubscription = () => {
-  const context = useContext(
-    UserSubscriptionContext
-  );
+  const context = useContext(UserSubscriptionContext);
   if (context === undefined) {
-    throw new Error(
-      'useUserSubscription must be used within a UserSubscriptionProvider'
-    );
+    throw new Error('useUserSubscription must be used within a UserSubscriptionProvider');
   }
   return context;
 };
 
-// Cache for user subscriptions to prevent redundant API calls
 const userSubscriptionCache = new Map<
   string,
   {
@@ -67,42 +48,24 @@ const userSubscriptionCache = new Map<
     timestamp: number;
   }
 >();
-const SUBSCRIPTION_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const SUBSCRIPTION_CACHE_TTL = 5 * 60 * 1000;
 
-const fetchUserSubscription = async (
-  userId: string
-): Promise<UserSubscription | null> => {
-  // Check cache first
+const fetchUserSubscription = async (userId: string): Promise<UserSubscription | null> => {
   const now = Date.now();
-  const cachedData =
-    userSubscriptionCache.get(userId);
-  if (
-    cachedData &&
-    now - cachedData.timestamp <
-      SUBSCRIPTION_CACHE_TTL
-  ) {
-    console.log(
-      `Using cached subscription for user: ${userId}`
-    );
+  const cachedData = userSubscriptionCache.get(userId);
+  if (cachedData && now - cachedData.timestamp < SUBSCRIPTION_CACHE_TTL) {
+    console.log(`Using cached subscription for user: ${userId}`);
     return cachedData.subscription;
   }
 
   try {
-    // Only log in development
     if (process.env.NODE_ENV === 'development') {
-      console.log(
-        `Fetching subscription for user: ${userId}`
-      );
+      console.log(`Fetching subscription for user: ${userId}`);
     }
 
-    // Check if we should use mock data directly (from environment variable)
-    const useMockData =
-      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
-      'true';
+    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
     if (useMockData) {
-      console.log(
-        'Using mock subscription data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true'
-      );
+      console.log('Using mock subscription data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true');
       const mockSubscription = {
         id: 1,
         userId,
@@ -114,18 +77,10 @@ const fetchUserSubscription = async (
         },
         startDate: new Date().toISOString(),
         isActive: true,
-        enabledFeatures: [
-          'Dashboard',
-          'Products List',
-          'Add/Edit Product',
-          'Sales Reports',
-          'Inventory Management',
-          'Customer Management',
-        ],
+        enabledFeatures: ['Dashboard', 'Products List', 'Add/Edit Product', 'Sales Reports', 'Inventory Management', 'Customer Management'],
         additionalPackages: [],
       };
 
-      // Cache the mock data
       userSubscriptionCache.set(userId, {
         subscription: mockSubscription,
         timestamp: now,
@@ -134,50 +89,28 @@ const fetchUserSubscription = async (
       return mockSubscription;
     }
 
-    console.log(
-      `Making API request to: /api/UserSubscription/user/${userId}`
-    );
-    const response = await fetch(
-      `/api/UserSubscription/user/${userId}`,
-      {
-        // Add cache control headers to prevent browser caching
-        headers: {
-          'Cache-Control':
-            'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
-      }
-    );
+    console.log(`Making API request to: /api/UserSubscription/user/${userId}`);
+    const response = await fetch(`/api/UserSubscription/user/${userId}`, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
+    });
 
     if (!response.ok) {
-      const errorText = await response
-        .text()
-        .catch(
-          () => 'No error details available'
-        );
-      console.error(
-        `API Error (${response.status}): ${response.statusText}`,
-        errorText
-      );
+      const errorText = await response.text().catch(() => 'No error details available');
+      console.error(`API Error (${response.status}): ${response.statusText}`, JSON.stringify(errorText, null, 2));
 
-      // For 404 errors, we'll use fallback data instead of throwing
       if (response.status === 404) {
-        console.warn(
-          'API endpoint not found (404), using fallback data'
-        );
+        console.warn('API endpoint not found (404), using fallback data');
         throw new Error('API endpoint not found');
       }
     }
 
-    // The API endpoint now always returns mock data for errors, so we should get valid data
     const data = await response.json();
-    console.log(
-      'Successfully fetched user subscription:',
-      data
-    );
+    console.log('Successfully fetched user subscription:', JSON.stringify(data, null, 2));
 
-    // Cache the result
     userSubscriptionCache.set(userId, {
       subscription: data,
       timestamp: now,
@@ -185,12 +118,8 @@ const fetchUserSubscription = async (
 
     return data;
   } catch (error) {
-    console.error(
-      'Error fetching user subscription:',
-      error
-    );
+    console.error('Error fetching user subscription:', JSON.stringify(error, null, 2));
 
-    // Create fallback subscription data
     const fallbackSubscription = {
       id: 1,
       userId,
@@ -202,23 +131,12 @@ const fetchUserSubscription = async (
       },
       startDate: new Date().toISOString(),
       isActive: true,
-      enabledFeatures: [
-        'Dashboard',
-        'Products List',
-        'Add/Edit Product',
-        'Sales Reports',
-        'Inventory Management',
-        'Customer Management',
-      ],
+      enabledFeatures: ['Dashboard', 'Products List', 'Add/Edit Product', 'Sales Reports', 'Inventory Management', 'Customer Management'],
       additionalPackages: [],
     };
 
-    console.log(
-      'Using fallback subscription due to error:',
-      fallbackSubscription
-    );
+    console.log('Using fallback subscription due to error:', JSON.stringify(fallbackSubscription, null, 2));
 
-    // Cache the fallback data too to prevent repeated failures
     userSubscriptionCache.set(userId, {
       subscription: fallbackSubscription,
       timestamp: now,
@@ -228,46 +146,25 @@ const fetchUserSubscription = async (
   }
 };
 
-// Cache for user features to prevent redundant API calls
-const userFeaturesCache = new Map<
-  string,
-  { features: string[]; timestamp: number }
->();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const userFeaturesCache = new Map<string, { features: string[]; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000;
 
-const fetchUserFeatures = async (
-  userId: string
-): Promise<string[]> => {
-  // Check cache first
+const fetchUserFeatures = async (userId: string): Promise<string[]> => {
   const now = Date.now();
-  const cachedData =
-    userFeaturesCache.get(userId);
-  if (
-    cachedData &&
-    now - cachedData.timestamp < CACHE_TTL
-  ) {
-    console.log(
-      `Using cached features for user: ${userId}`
-    );
+  const cachedData = userFeaturesCache.get(userId);
+  if (cachedData && now - cachedData.timestamp < CACHE_TTL) {
+    console.log(`Using cached features for user: ${userId}`);
     return cachedData.features;
   }
 
   try {
-    // Only log in development
     if (process.env.NODE_ENV === 'development') {
-      console.log(
-        `Fetching features for user: ${userId}`
-      );
+      console.log(`Fetching features for user: ${userId}`);
     }
 
-    // Check if we should use mock data directly (from environment variable)
-    const useMockData =
-      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
-      'true';
+    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
     if (useMockData) {
-      console.log(
-        'Using mock data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true'
-      );
+      console.log('Using mock data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true');
       const mockFeatures = [
         'Dashboard',
         'Products List',
@@ -277,7 +174,6 @@ const fetchUserFeatures = async (
         'Customer Management',
       ];
 
-      // Cache the mock data
       userFeaturesCache.set(userId, {
         features: mockFeatures,
         timestamp: now,
@@ -286,54 +182,30 @@ const fetchUserFeatures = async (
       return mockFeatures;
     }
 
-    // Try to fetch from API
-    console.log(
-      `Making API request to: /api/UserSubscription/user/${userId}/features`
-    );
-    const response = await fetch(
-      `/api/UserSubscription/user/${userId}/features`,
-      {
-        // Add cache control headers to prevent browser caching
-        headers: {
-          'Cache-Control':
-            'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
-      }
-    );
+    console.log(`Making API request to: /api/UserSubscription/user/${userId}/features`);
+    const response = await fetch(`/api/UserSubscription/user/${userId}/features`, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
+    });
 
     if (!response.ok) {
-      const errorText = await response
-        .text()
-        .catch(
-          () => 'No error details available'
-        );
-      console.error(
-        `API Error (${response.status}): ${response.statusText}`,
-        errorText
-      );
+      const errorText = await response.text().catch(() => 'No error details available');
+      console.error(`API Error (${response.status}): ${response.statusText}`, JSON.stringify(errorText, null, 2));
 
-      // For 404 errors, we'll use fallback data instead of throwing
       if (response.status === 404) {
-        console.warn(
-          'API endpoint not found (404), using fallback data'
-        );
+        console.warn('API endpoint not found (404), using fallback data');
         throw new Error('API endpoint not found');
       } else {
-        throw new Error(
-          `Failed to fetch features: ${response.statusText}`
-        );
+        throw new Error(`Failed to fetch features: ${response.statusText}`);
       }
     }
 
     const data = await response.json();
-    console.log(
-      'Successfully fetched user features:',
-      data
-    );
+    console.log('Successfully fetched user features:', JSON.stringify(data, null, 2));
 
-    // Cache the result
     userFeaturesCache.set(userId, {
       features: data,
       timestamp: now,
@@ -341,12 +213,8 @@ const fetchUserFeatures = async (
 
     return data;
   } catch (error) {
-    console.error(
-      'Error fetching user features:',
-      error
-    );
+    console.error('Error fetching user features:', JSON.stringify(error, null, 2));
 
-    // Return mock data for development with a clear indication it's fallback data
     const fallbackFeatures = [
       'Dashboard',
       'Products List',
@@ -356,12 +224,8 @@ const fetchUserFeatures = async (
       'Customer Management',
     ];
 
-    console.log(
-      'Using fallback features due to error:',
-      fallbackFeatures
-    );
+    console.log('Using fallback features due to error:', JSON.stringify(fallbackFeatures, null, 2));
 
-    // Cache the fallback data too to prevent repeated failures
     userFeaturesCache.set(userId, {
       features: fallbackFeatures,
       timestamp: now,
@@ -374,12 +238,8 @@ const fetchUserFeatures = async (
 export const UserSubscriptionProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const { userId, isAuthenticated } =
-    useKeycloakUser();
-  const [
-    availableFeatures,
-    setAvailableFeatures,
-  ] = useState<string[]>([]);
+  const { userId, isAuthenticated } = useKeycloakUser();
+  const [availableFeatures, setAvailableFeatures] = useState<string[]>([]);
 
   const {
     data: subscription,
@@ -390,52 +250,32 @@ export const UserSubscriptionProvider: React.FC<{
     queryKey: ['userSubscription', userId],
     queryFn: () => fetchUserSubscription(userId),
     enabled: !!userId && isAuthenticated,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
-  // Use a ref to track if features have been loaded to prevent unnecessary API calls
   const featuresLoadedRef = React.useRef(false);
 
   useEffect(() => {
-    // Skip if features have already been loaded or if user is not authenticated
-    if (
-      featuresLoadedRef.current ||
-      !userId ||
-      !isAuthenticated
-    ) {
+    if (featuresLoadedRef.current || !userId || !isAuthenticated) {
       if (!userId || !isAuthenticated) {
-        console.log(
-          'User not authenticated or userId not available, skipping feature loading'
-        );
+        console.log('User not authenticated or userId not available, skipping feature loading');
       }
       return;
     }
 
     const loadFeatures = async () => {
       try {
-        const features =
-          await fetchUserFeatures(userId);
+        const features = await fetchUserFeatures(userId);
         setAvailableFeatures(features);
-        // Mark features as loaded
+
         featuresLoadedRef.current = true;
       } catch (error) {
-        console.error(
-          'Failed to load user features:',
-          error
-        );
+        console.error('Failed to load user features:', JSON.stringify(error, null, 2));
 
-        // Set default features to ensure UI doesn't break
-        const defaultFeatures = [
-          'Dashboard',
-          'Products List',
-          'Add/Edit Product',
-        ];
-        console.warn(
-          'Setting default features due to error:',
-          defaultFeatures
-        );
+        const defaultFeatures = ['Dashboard', 'Products List', 'Add/Edit Product'];
+        console.warn('Setting default features due to error:', JSON.stringify(defaultFeatures, null, 2));
         setAvailableFeatures(defaultFeatures);
-        // Still mark as loaded to prevent continuous retries
+
         featuresLoadedRef.current = true;
       }
     };
@@ -443,139 +283,87 @@ export const UserSubscriptionProvider: React.FC<{
     loadFeatures();
   }, [userId, isAuthenticated]);
 
-  const hasFeatureAccess = (
-    featureName: string
-  ): boolean => {
-    return availableFeatures.includes(
-      featureName
-    );
+  const hasFeatureAccess = (featureName: string): boolean => {
+    return availableFeatures.includes(featureName);
   };
 
-  // Helper function to update features without duplicating code
-  const updateFeaturesAfterPackageChange = async (
-    userId: string
-  ) => {
+  const updateFeaturesAfterPackageChange = async (userId: string) => {
     try {
-      // Reset the featuresLoadedRef to allow reloading features
       featuresLoadedRef.current = false;
 
-      // Refresh subscription data first
       await refetch();
 
-      // Then update features in a controlled way
-      const features =
-        await fetchUserFeatures(userId);
+      const features = await fetchUserFeatures(userId);
       setAvailableFeatures(features);
 
-      // Mark as loaded again
       featuresLoadedRef.current = true;
     } catch (error) {
-      console.error(
-        'Error updating features:',
-        error
-      );
-      // Don't throw here to prevent UI breaks
+      console.error('Error updating features:', JSON.stringify(error, null, 2));
     }
   };
 
-  const enableAdditionalPackage = async (
-    packageId: number
-  ): Promise<void> => {
+  const enableAdditionalPackage = async (packageId: number): Promise<void> => {
     if (!userId) return;
 
     try {
-      const response = await fetch(
-        `/api/UserSubscription/user/${userId}/enable-package/${packageId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await fetch(`/api/UserSubscription/user/${userId}/enable-package/${packageId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to enable package: ${response.statusText}`
-        );
+        throw new Error(`Failed to enable package: ${response.statusText}`);
       }
 
-      // Update features and subscription in a controlled way
-      await updateFeaturesAfterPackageChange(
-        userId
-      );
+      await updateFeaturesAfterPackageChange(userId);
     } catch (error) {
-      console.error(
-        'Error enabling additional package:',
-        error
-      );
+      console.error('Error enabling additional package:', JSON.stringify(error, null, 2));
       throw error;
     }
   };
 
-  const disableAdditionalPackage = async (
-    packageId: number
-  ): Promise<void> => {
+  const disableAdditionalPackage = async (packageId: number): Promise<void> => {
     if (!userId) return;
 
     try {
-      const response = await fetch(
-        `/api/UserSubscription/user/${userId}/disable-package/${packageId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await fetch(`/api/UserSubscription/user/${userId}/disable-package/${packageId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to disable package: ${response.statusText}`
-        );
+        throw new Error(`Failed to disable package: ${response.statusText}`);
       }
 
-      // Update features and subscription in a controlled way
-      await updateFeaturesAfterPackageChange(
-        userId
-      );
+      await updateFeaturesAfterPackageChange(userId);
     } catch (error) {
-      console.error(
-        'Error disabling additional package:',
-        error
-      );
+      console.error('Error disabling additional package:', JSON.stringify(error, null, 2));
       throw error;
     }
   };
 
-  // Create a proper refresh function that clears caches
-  const refreshSubscription =
-    useCallback(async () => {
-      if (userId) {
-        // Clear caches to force fresh data
-        userSubscriptionCache.delete(userId);
-        userFeaturesCache.delete(userId);
+  const refreshSubscription = useCallback(async () => {
+    if (userId) {
+      userSubscriptionCache.delete(userId);
+      userFeaturesCache.delete(userId);
 
-        // Reset the features loaded flag
-        featuresLoadedRef.current = false;
+      featuresLoadedRef.current = false;
 
-        // Trigger a refetch
-        await refetch();
+      await refetch();
 
-        // Reload features
-        try {
-          const features =
-            await fetchUserFeatures(userId);
-          setAvailableFeatures(features);
-          featuresLoadedRef.current = true;
-        } catch (error) {
-          console.error(
-            'Error refreshing features:',
-            error
-          );
-        }
+      try {
+        const features = await fetchUserFeatures(userId);
+        setAvailableFeatures(features);
+        featuresLoadedRef.current = true;
+      } catch (error) {
+        console.error('Error refreshing features:', JSON.stringify(error, null, 2));
       }
-    }, [userId, refetch]);
+    }
+  }, [userId, refetch]);
 
   return (
     <UserSubscriptionContext.Provider

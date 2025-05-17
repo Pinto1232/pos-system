@@ -1,15 +1,8 @@
 'use client';
 
-import React, {
-  useState,
-  ChangeEvent,
-  FormEvent,
-} from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import CheckoutForm from './CheckoutForm';
-import {
-  CheckoutField,
-  OrderSummaryItem,
-} from './CheckoutFormInterfaces';
+import { CheckoutField, OrderSummaryItem } from './CheckoutFormInterfaces';
 
 const CheckoutContainer: React.FC = () => {
   const checkoutFields: CheckoutField[] = [
@@ -69,16 +62,10 @@ const CheckoutContainer: React.FC = () => {
     },
   ];
 
-  /**
-   * Define the items for the order summary.
-   * These can be replaced/updated as needed for
-   * different products, plans, or data.
-   */
   const orderSummaryItems: OrderSummaryItem[] = [
     {
       label: 'Start Plan',
-      value:
-        'Feb 06 - Mar 03 07:00 AM - 09:00 AM (GMT +05:00)',
+      value: 'Feb 06 - Mar 03 07:00 AM - 09:00 AM (GMT +05:00)',
     },
     {
       label: 'Transactions',
@@ -98,15 +85,9 @@ const CheckoutContainer: React.FC = () => {
     },
   ];
 
-  // Holds the user’s input data, keyed by field name.
-  const [formData, setFormData] = useState<
-    Record<string, string>
-  >({});
+  const [formData, setFormData] = useState<Record<string, string>>({});
 
-  // Update formData whenever an input changes.
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -114,11 +95,10 @@ const CheckoutContainer: React.FC = () => {
     }));
   };
 
-  // Handle form submission.
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // Perform your checkout logic here
-    console.log('Form submitted:', formData);
+
+    console.log('Form submitted:', JSON.stringify(formData, null, 2));
   };
 
   return (

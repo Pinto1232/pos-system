@@ -1,15 +1,11 @@
 'use client';
 
-import React, {
-  useEffect,
-  useContext,
-  useState,
-} from 'react';
-// import { useRouter } from 'next/navigation';
+import React, { useEffect, useContext, useState } from 'react';
+
 import { AuthContext } from '@/contexts/AuthContext';
 import DashboardContainer from '@/components/dashboard-layout/DashboardContainer';
 import { useSpinner } from '@/contexts/SpinnerContext';
-// import { Box, Typography, Alert } from '@mui/material';
+
 import { UserSubscriptionData } from './types';
 import DashboardLoading from './DashboardLoading';
 
@@ -17,20 +13,10 @@ interface DashboardClientProps {
   initialSubscriptionData?: UserSubscriptionData | null;
 }
 
-/**
- * Client component for the dashboard that handles client-side functionality
- * This component receives server-fetched data and handles client-side state and interactions
- */
-const DashboardClient: React.FC<
-  DashboardClientProps
-> = ({ initialSubscriptionData }) => {
+const DashboardClient: React.FC<DashboardClientProps> = ({ initialSubscriptionData }) => {
   const { stopLoading } = useSpinner();
-  const {
-    /* authenticated, token, */ isInitialized,
-  } = useContext(AuthContext);
-  // const router = useRouter();
+  const { isInitialized } = useContext(AuthContext);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [authStatus, setAuthStatus] = useState({
     isChecking: true,
     isAuthorized: false,
@@ -38,34 +24,22 @@ const DashboardClient: React.FC<
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [paymentStatus, setPaymentStatus] =
-    useState({
-      isChecking: true,
-      isPaid:
-        initialSubscriptionData?.isActive ||
-        false,
-      errorMessage: '',
-    });
+  const [paymentStatus, setPaymentStatus] = useState({
+    isChecking: true,
+    isPaid: initialSubscriptionData?.isActive || false,
+    errorMessage: '',
+  });
 
   // Use useMemo to read from sessionStorage only once during initial render
   // const isFromPayment = useMemo(() => {
   //   if (typeof window === 'undefined') return false;
-  //   return sessionStorage.getItem('fromPaymentSuccess') === 'true';
-  // }, []);
 
-  // Combine authentication and payment status checks into a single effect
   useEffect(() => {
     if (!isInitialized) return;
 
-    console.log(
-      '⚠️ WARNING: Client-side authentication check is temporarily disabled for development'
-    );
-    console.log(
-      '⚠️ This should be re-enabled before deploying to production'
-    );
+    console.log('⚠️ WARNING: Client-side authentication check is temporarily disabled for development');
+    console.log('⚠️ This should be re-enabled before deploying to production');
 
-    // TEMPORARILY DISABLED: Authentication check is bypassed for development
-    // Set both auth and payment status to authorized/paid to allow access to dashboard
     setAuthStatus({
       isChecking: false,
       isAuthorized: true,
@@ -102,7 +76,7 @@ const DashboardClient: React.FC<
       return;
     }
 
-    // Handle unauthenticated case
+    
     if (!authenticated || !token) {
       setAuthStatus({
         isChecking: false,
@@ -113,13 +87,13 @@ const DashboardClient: React.FC<
       return;
     }
 
-    // Process authentication
+    
     const processAuth = async () => {
       try {
         let userId: string | null = null;
         let roles: string[] = [];
 
-        // Parse token
+        
         const tokenParts = token.split('.');
         if (tokenParts.length !== 3) {
           throw new Error('Invalid token format');
@@ -128,7 +102,7 @@ const DashboardClient: React.FC<
         const payload = JSON.parse(atob(tokenParts[1]));
         userId = payload.sub || payload.userId || null;
 
-        // Extract roles from various locations in the token
+        
         if (payload.realm_access && Array.isArray(payload.realm_access.roles)) {
           roles = [...payload.realm_access.roles] as string[];
         }
@@ -147,7 +121,7 @@ const DashboardClient: React.FC<
           }
         }
 
-        // Check if user has required roles
+        
         const hasRequiredRole = roles.includes('dashboard') ||
                                roles.includes('admin') ||
                                roles.includes('user') ||
@@ -163,7 +137,7 @@ const DashboardClient: React.FC<
           return;
         }
 
-        // User is authorized
+        
         setAuthStatus({
           isChecking: false,
           isAuthorized: true,
@@ -229,7 +203,10 @@ const DashboardClient: React.FC<
         }
       } catch (error: unknown) {
         // Log the error for debugging purposes
-        console.error('Authentication error:', error);
+        console.error(
+  'Authentication error:',
+  JSON.stringify(error, null, 2)
+);
 
         // Create a more specific error message if possible
         const errorMessage = error instanceof Error
@@ -247,20 +224,13 @@ const DashboardClient: React.FC<
 
     processAuth();
     */
-  }, [
-    isInitialized,
-    setAuthStatus,
-    setPaymentStatus,
-  ]);
+  }, [isInitialized, setAuthStatus, setPaymentStatus]);
 
   // Handle loading state in a separate effect with minimal dependencies
   useEffect(() => {
     if (!isInitialized) return;
 
-    const isFreshLogin =
-      typeof window !== 'undefined' &&
-      sessionStorage.getItem('freshLogin') ===
-        'true';
+    const isFreshLogin = typeof window !== 'undefined' && sessionStorage.getItem('freshLogin') === 'true';
 
     if (isFreshLogin) {
       if (typeof window !== 'undefined') {
@@ -273,7 +243,6 @@ const DashboardClient: React.FC<
 
       return () => clearTimeout(loadingTimeout);
     } else {
-      // Only call stopLoading once when initialized
       const loadingTimeout = setTimeout(() => {
         stopLoading();
       }, 100);
@@ -282,57 +251,13 @@ const DashboardClient: React.FC<
     }
   }, [isInitialized, stopLoading]);
 
-  // TEMPORARILY MODIFIED: Always render the dashboard regardless of auth status
-  console.log(
-    '⚠️ WARNING: Dashboard rendering check is temporarily disabled for development'
-  );
+  console.log('⚠️ WARNING: Dashboard rendering check is temporarily disabled for development');
 
-  // Show loading state while initializing
   if (!isInitialized) {
     return <DashboardLoading />;
   }
 
-  // Always render the dashboard container
   return <DashboardContainer />;
-
-  /* ORIGINAL RENDERING CODE - COMMENTED OUT TEMPORARILY
-  // Render based on current state
-  if (isFromPayment) {
-    return <DashboardContainer />;
-  }
-
-  if (!isInitialized || authStatus.isChecking || paymentStatus.isChecking) {
-    return <DashboardLoading />;
-  }
-
-  if (!authStatus.isAuthorized && authStatus.errorMessage) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {authStatus.errorMessage}
-        </Alert>
-        <Typography variant="body1">
-          You will be redirected to the login page...
-        </Typography>
-      </Box>
-    );
-  }
-
-  if (!paymentStatus.isPaid && paymentStatus.errorMessage) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {paymentStatus.errorMessage}
-        </Alert>
-        <Typography variant="body1">
-          You will be redirected to the payment page...
-        </Typography>
-      </Box>
-    );
-  }
-
-  return authStatus.isAuthorized && paymentStatus.isPaid ? <DashboardContainer /> : null;
-  */
 };
 
 export default DashboardClient;

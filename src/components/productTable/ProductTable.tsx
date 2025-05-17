@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-} from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Table,
@@ -34,15 +30,8 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image';
-import {
-  FiEye,
-  FiDownload,
-  FiRefreshCw,
-} from 'react-icons/fi';
-import {
-  ProductTableProps,
-  Product,
-} from './types';
+import { FiEye, FiDownload, FiRefreshCw } from 'react-icons/fi';
+import { ProductTableProps, Product } from './types';
 import { useProductContext } from '@/contexts/ProductContext';
 import { getColorStyles } from '@/utils/colorUtils';
 import {
@@ -69,32 +58,12 @@ import {
   noProductsSubtextStyles,
 } from './styles';
 
-const categories = [
-  'All',
-  'Black',
-  'White',
-  'Green',
-  'Silver',
-  'Gold',
-  'Space Gray',
-];
+const categories = ['All', 'Black', 'White', 'Green', 'Silver', 'Gold', 'Space Gray'];
 const ratings = ['All', '5', '4', '3', '2', '1'];
-const statuses = [
-  'All',
-  'Available',
-  'Out of Stock',
-];
-const prices = [
-  'All',
-  'R10-R100',
-  'R100-R500',
-  'R500-R1000',
-  'R1000+',
-];
+const statuses = ['All', 'Available', 'Out of Stock'];
+const prices = ['All', 'R10-R100', 'R100-R500', 'R500-R1000', 'R1000+'];
 
-const ProductTable: React.FC<
-  ProductTableProps
-> = ({
+const ProductTable: React.FC<ProductTableProps> = ({
   products: propProducts,
   selectedProduct,
   isViewModalOpen,
@@ -118,117 +87,63 @@ const ProductTable: React.FC<
   onResetFilters,
   onExportPDF,
 }) => {
-  const { products: contextProducts } =
-    useProductContext();
-  const [displayProducts, setDisplayProducts] =
-    useState<Product[]>([]);
+  const { products: contextProducts } = useProductContext();
+  const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     let localStorageProducts: Product[] = [];
     try {
-      const storedData =
-        localStorage.getItem('products');
+      const storedData = localStorage.getItem('products');
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        if (
-          Array.isArray(parsedData) &&
-          parsedData.length > 0
-        ) {
+        if (Array.isArray(parsedData) && parsedData.length > 0) {
           localStorageProducts = parsedData;
-          console.log(
-            'ProductTable - Loaded products from localStorage:',
-            localStorageProducts.length
-          );
+          console.log('ProductTable - Loaded products from localStorage:', JSON.stringify(localStorageProducts.length, null, 2));
         }
       }
     } catch (error) {
-      console.error(
-        'Failed to load products from localStorage:',
-        error
-      );
+      console.error('Failed to load products from localStorage:', JSON.stringify(error, null, 2));
     }
     const sourceProducts =
       localStorageProducts.length > 0
         ? localStorageProducts
-        : contextProducts &&
-            contextProducts.length > 0
+        : contextProducts && contextProducts.length > 0
           ? contextProducts
           : propProducts || [];
     const updatedFilteredProducts = sourceProducts
       .map((product) => ({
         ...product,
         id: product.id || 0,
-        productName:
-          product.productName ||
-          'Unknown Product',
+        productName: product.productName || 'Unknown Product',
         barcode: product.barcode || 'N/A',
         sku: product.sku || '-',
-        price:
-          typeof product.price === 'number'
-            ? product.price
-            : 0,
-        status:
-          typeof product.status === 'boolean'
-            ? product.status
-            : false,
-        rating:
-          typeof product.rating === 'number'
-            ? product.rating
-            : 0,
-        createdAt:
-          product.createdAt ||
-          new Date().toISOString(),
+        price: typeof product.price === 'number' ? product.price : 0,
+        status: typeof product.status === 'boolean' ? product.status : false,
+        rating: typeof product.rating === 'number' ? product.rating : 0,
+        createdAt: product.createdAt || new Date().toISOString(),
         color: product.color || 'N/A',
-        statusProduct: product.status
-          ? 'Active'
-          : 'Inactive',
-        image:
-          product.image ||
-          '/placeholder-image.png',
+        statusProduct: product.status ? 'Active' : 'Inactive',
+        image: product.image || '/placeholder-image.png',
       }))
       .filter((product) => {
-        if (
-          searchQuery &&
-          (!product.productName ||
-            !product.productName
-              .toLowerCase()
-              .includes(
-                searchQuery.toLowerCase()
-              ))
-        )
-          return false;
-        if (
-          categoryFilter !== 'All' &&
-          product.color !== categoryFilter
-        )
-          return false;
-        if (
-          ratingFilter !== 'All' &&
-          Math.floor(product.rating || 0) !==
-            parseInt(ratingFilter, 10)
-        )
-          return false;
+        if (searchQuery && (!product.productName || !product.productName.toLowerCase().includes(searchQuery.toLowerCase()))) return false;
+        if (categoryFilter !== 'All' && product.color !== categoryFilter) return false;
+        if (ratingFilter !== 'All' && Math.floor(product.rating || 0) !== parseInt(ratingFilter, 10)) return false;
         if (statusFilter !== 'All') {
-          const currentStatus = product.status
-            ? 'Available'
-            : 'Out of Stock';
-          if (currentStatus !== statusFilter)
-            return false;
+          const currentStatus = product.status ? 'Available' : 'Out of Stock';
+          if (currentStatus !== statusFilter) return false;
         }
         if (priceFilter !== 'All') {
           const price = product.price || 0;
           switch (priceFilter) {
             case 'R10-R100':
-              if (price < 10 || price > 100)
-                return false;
+              if (price < 10 || price > 100) return false;
               break;
             case 'R100-R500':
-              if (price < 100 || price > 500)
-                return false;
+              if (price < 100 || price > 500) return false;
               break;
             case 'R500-R1000':
-              if (price < 500 || price > 1000)
-                return false;
+              if (price < 500 || price > 1000) return false;
               break;
             case 'R1000+':
               if (price < 1000) return false;
@@ -238,94 +153,39 @@ const ProductTable: React.FC<
         return true;
       });
     setDisplayProducts(updatedFilteredProducts);
-  }, [
-    contextProducts,
-    propProducts,
-    searchQuery,
-    categoryFilter,
-    ratingFilter,
-    statusFilter,
-    priceFilter,
-  ]);
+  }, [contextProducts, propProducts, searchQuery, categoryFilter, ratingFilter, statusFilter, priceFilter]);
 
   const paginatedProducts = useMemo(() => {
     const startIndex = page * rowsPerPage;
-    return displayProducts.slice(
-      startIndex,
-      startIndex + rowsPerPage
-    );
+    return displayProducts.slice(startIndex, startIndex + rowsPerPage);
   }, [displayProducts, page, rowsPerPage]);
 
   useEffect(() => {
-    console.log(
-      'Modal state changed - isViewModalOpen:',
-      isViewModalOpen,
-      'selectedProduct:',
-      selectedProduct
-    );
+    console.log('Modal state changed - isViewModalOpen:', isViewModalOpen, 'selectedProduct:', JSON.stringify(selectedProduct, null, 2));
     if (isViewModalOpen) {
       if (selectedProduct) {
-        console.log(
-          'MODAL DEBUG: Product data available for modal:',
-          JSON.stringify(selectedProduct, null, 2)
-        );
-        console.log(
-          'MODAL DEBUG: Product ID:',
-          selectedProduct.id
-        );
-        console.log(
-          'MODAL DEBUG: Product Name:',
-          selectedProduct.productName
-        );
-        console.log(
-          'MODAL DEBUG: Product Barcode:',
-          selectedProduct.barcode
-        );
-        console.log(
-          'MODAL DEBUG: Product SKU:',
-          selectedProduct.sku
-        );
-        console.log(
-          'MODAL DEBUG: Product Price:',
-          selectedProduct.price
-        );
-        console.log(
-          'MODAL DEBUG: Product Status:',
-          selectedProduct.status
-        );
-        console.log(
-          'MODAL DEBUG: Product Rating:',
-          selectedProduct.rating
-        );
-        console.log(
-          'MODAL DEBUG: Product Color:',
-          selectedProduct.color
-        );
-        console.log(
-          'MODAL DEBUG: Product Image:',
-          selectedProduct.image
-            ? 'Image exists'
-            : 'No image'
-        );
+        console.log('MODAL DEBUG: Product data available for modal:', JSON.stringify(selectedProduct, null, 2));
+        console.log('MODAL DEBUG: Product ID:', JSON.stringify(selectedProduct.id, null, 2));
+        console.log('MODAL DEBUG: Product Name:', JSON.stringify(selectedProduct.productName, null, 2));
+        console.log('MODAL DEBUG: Product Barcode:', JSON.stringify(selectedProduct.barcode, null, 2));
+        console.log('MODAL DEBUG: Product SKU:', JSON.stringify(selectedProduct.sku, null, 2));
+        console.log('MODAL DEBUG: Product Price:', JSON.stringify(selectedProduct.price, null, 2));
+        console.log('MODAL DEBUG: Product Status:', JSON.stringify(selectedProduct.status, null, 2));
+        console.log('MODAL DEBUG: Product Rating:', JSON.stringify(selectedProduct.rating, null, 2));
+        console.log('MODAL DEBUG: Product Color:', JSON.stringify(selectedProduct.color, null, 2));
+        console.log('MODAL DEBUG: Product Image:', JSON.stringify(selectedProduct.image ? 'Image exists' : 'No image', null, 2));
       } else {
-        console.error(
-          'MODAL DEBUG: Product data missing when modal opened'
-        );
+        console.error('MODAL DEBUG: Product data missing when modal opened');
       }
     }
   }, [isViewModalOpen, selectedProduct]);
 
-  const renderProductImage = (
-    imageSrc: string | undefined,
-    productName: string,
-    width: number,
-    height: number
-  ) => {
+  const renderProductImage = (imageSrc: string | undefined, productName: string, width: number, height: number) => {
     console.log(
       'ProductTable - Rendering image for product:',
       productName,
       'Image source:',
-      imageSrc ? 'Image exists' : 'No image'
+      JSON.stringify(imageSrc ? 'Image exists' : 'No image', null, 2)
     );
 
     if (imageSrc) {
@@ -346,10 +206,7 @@ const ProductTable: React.FC<
           />
         );
       } catch (error) {
-        console.error(
-          'ProductTable - Error rendering image:',
-          error
-        );
+        console.error('ProductTable - Error rendering image:', JSON.stringify(error, null, 2));
         return (
           <Box
             sx={{
@@ -361,9 +218,7 @@ const ProductTable: React.FC<
               justifyContent: 'center',
             }}
           >
-            <Typography variant="caption">
-              Image Error
-            </Typography>
+            <Typography variant="caption">Image Error</Typography>
           </Box>
         );
       }
@@ -379,9 +234,7 @@ const ProductTable: React.FC<
             justifyContent: 'center',
           }}
         >
-          <Typography variant="caption">
-            No Image
-          </Typography>
+          <Typography variant="caption">No Image</Typography>
         </Box>
       );
     }
@@ -404,9 +257,7 @@ const ProductTable: React.FC<
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon
-                      sx={{ color: '#64748b' }}
-                    />
+                    <SearchIcon sx={{ color: '#64748b' }} />
                   </InputAdornment>
                 ),
               }}
@@ -417,20 +268,10 @@ const ProductTable: React.FC<
                 minWidth: { xs: '100%', sm: 180 },
               }}
             >
-              <InputLabel sx={inputLabelStyles}>
-                Category
-              </InputLabel>
-              <Select
-                value={categoryFilter}
-                onChange={onCategoryChange}
-                label="Category"
-                sx={selectStyles}
-              >
+              <InputLabel sx={inputLabelStyles}>Category</InputLabel>
+              <Select value={categoryFilter} onChange={onCategoryChange} label="Category" sx={selectStyles}>
                 {categories.map((category) => (
-                  <MenuItem
-                    key={`category-${category}`}
-                    value={category}
-                  >
+                  <MenuItem key={`category-${category}`} value={category}>
                     {String(category)}
                   </MenuItem>
                 ))}
@@ -442,23 +283,11 @@ const ProductTable: React.FC<
                 minWidth: { xs: '100%', sm: 180 },
               }}
             >
-              <InputLabel sx={inputLabelStyles}>
-                Rating
-              </InputLabel>
-              <Select
-                value={ratingFilter}
-                onChange={onRatingChange}
-                label="Rating"
-                sx={selectStyles}
-              >
+              <InputLabel sx={inputLabelStyles}>Rating</InputLabel>
+              <Select value={ratingFilter} onChange={onRatingChange} label="Rating" sx={selectStyles}>
                 {ratings.map((rating) => (
-                  <MenuItem
-                    key={`rating-${rating}`}
-                    value={rating}
-                  >
-                    {rating === 'All'
-                      ? 'All'
-                      : `${rating} Stars`}
+                  <MenuItem key={`rating-${rating}`} value={rating}>
+                    {rating === 'All' ? 'All' : `${rating} Stars`}
                   </MenuItem>
                 ))}
               </Select>
@@ -469,20 +298,10 @@ const ProductTable: React.FC<
                 minWidth: { xs: '100%', sm: 180 },
               }}
             >
-              <InputLabel sx={inputLabelStyles}>
-                Status
-              </InputLabel>
-              <Select
-                value={statusFilter}
-                onChange={onStatusChange}
-                label="Status"
-                sx={selectStyles}
-              >
+              <InputLabel sx={inputLabelStyles}>Status</InputLabel>
+              <Select value={statusFilter} onChange={onStatusChange} label="Status" sx={selectStyles}>
                 {statuses.map((status) => (
-                  <MenuItem
-                    key={status}
-                    value={status}
-                  >
+                  <MenuItem key={status} value={status}>
                     {status}
                   </MenuItem>
                 ))}
@@ -494,20 +313,10 @@ const ProductTable: React.FC<
                 minWidth: { xs: '100%', sm: 180 },
               }}
             >
-              <InputLabel sx={inputLabelStyles}>
-                Price Range
-              </InputLabel>
-              <Select
-                value={priceFilter}
-                onChange={onPriceChange}
-                label="Price Range"
-                sx={selectStyles}
-              >
+              <InputLabel sx={inputLabelStyles}>Price Range</InputLabel>
+              <Select value={priceFilter} onChange={onPriceChange} label="Price Range" sx={selectStyles}>
                 {prices.map((price) => (
-                  <MenuItem
-                    key={price}
-                    value={price}
-                  >
+                  <MenuItem key={price} value={price}>
                     {price}
                   </MenuItem>
                 ))}
@@ -515,18 +324,10 @@ const ProductTable: React.FC<
             </FormControl>
           </Box>
           <Box sx={actionsBoxStyles}>
-            <IconButton
-              onClick={onResetFilters}
-              sx={resetButtonStyles}
-            >
+            <IconButton onClick={onResetFilters} sx={resetButtonStyles}>
               <FiRefreshCw size={20} />
             </IconButton>
-            <Button
-              variant="contained"
-              startIcon={<FiDownload />}
-              onClick={onExportPDF}
-              sx={exportButtonStyles}
-            >
+            <Button variant="contained" startIcon={<FiDownload />} onClick={onExportPDF} sx={exportButtonStyles}>
               Export PDF
             </Button>
           </Box>
@@ -536,325 +337,223 @@ const ProductTable: React.FC<
         sx={{
           backgroundColor: '#fff',
           borderRadius: '12px',
-          boxShadow:
-            '0px 4px 8px rgba(0, 0, 0, 0.04)',
+          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
           overflow: 'hidden',
         }}
       >
         <Table>
-          <TableHead
-            sx={{ backgroundColor: '#f8f9fa' }}
-          >
+          <TableHead sx={{ backgroundColor: '#f8f9fa' }}>
             <TableRow>
-              <TableCell sx={tableCellStyles}>
-                Product
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                ID Code
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                SKU
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Price
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Status
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Rating
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Created
-              </TableCell>
-              <TableCell sx={tableCellStyles}>
-                Actions
-              </TableCell>
+              <TableCell sx={tableCellStyles}>Product</TableCell>
+              <TableCell sx={tableCellStyles}>ID Code</TableCell>
+              <TableCell sx={tableCellStyles}>SKU</TableCell>
+              <TableCell sx={tableCellStyles}>Price</TableCell>
+              <TableCell sx={tableCellStyles}>Status</TableCell>
+              <TableCell sx={tableCellStyles}>Rating</TableCell>
+              <TableCell sx={tableCellStyles}>Created</TableCell>
+              <TableCell sx={tableCellStyles}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {paginatedProducts.length === 0 ? (
               <TableRow>
-                <TableCell
-                  colSpan={8}
-                  align="center"
-                  sx={{ py: 8 }}
-                >
+                <TableCell colSpan={8} align="center" sx={{ py: 8 }}>
                   <Box sx={noProductsStyles}>
-                    <Typography
-                      variant="h6"
-                      sx={noProductsTextStyles}
-                    >
+                    <Typography variant="h6" sx={noProductsTextStyles}>
                       No products found
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={noProductsSubtextStyles}
-                    >
+                    <Typography variant="body2" sx={noProductsSubtextStyles}>
                       Try adjusting your filters
                     </Typography>
                   </Box>
                 </TableCell>
               </TableRow>
             ) : (
-              paginatedProducts.map(
-                (product, index) => (
-                  <TableRow
-                    key={product.id || index}
-                    hover
-                    sx={{
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor:
-                          '#F8F9FA',
-                      },
-                      '& td': {
-                        borderBottom:
-                          '1px solid #E0E0E0',
-                        color: '#1E2A3B',
-                        fontSize: '14px',
-                        padding: '16px',
-                      },
-                    }}
-                  >
-                    <TableCell>
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        alignItems="center"
-                      >
-                        <Box
-                          sx={productImageStyles}
-                        >
-                          {renderProductImage(
-                            product.image,
-                            product.productName ||
-                              '',
-                            40,
-                            40
-                          )}
-                        </Box>
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          alignItems="center"
-                        >
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              fontWeight: 500,
-                              overflow: 'hidden',
-                              textOverflow:
-                                'ellipsis',
-                              whiteSpace:
-                                'nowrap',
-                            }}
-                          >
-                            {product.productName}
-                          </Typography>
-                          {product.color && (
-                            <Chip
-                              label={
-                                product.color
-                              }
-                              size="small"
-                              sx={{
-                                height: 20,
-                                minWidth: 60,
-                                padding:
-                                  '2px 4px',
-                                fontSize:
-                                  '0.7rem',
-                                fontWeight: 500,
-                                bgcolor:
-                                  getColorStyles(
-                                    product.color
-                                  ).bg,
-                                color:
-                                  getColorStyles(
-                                    product.color
-                                  ).text,
-                                border:
-                                  '1px solid #e2e8f0',
-                                flexShrink: 0,
-                              }}
-                            />
-                          )}
-                        </Stack>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: 500,
-                          overflow: 'hidden',
-                          textOverflow:
-                            'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {product.barcode || 'N/A'}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: 500,
-                          overflow: 'hidden',
-                          textOverflow:
-                            'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {product.sku || '-'}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: 600,
-                          color: '#1E2A3B',
-                        }}
-                      >
-                        R
-                        {(
-                          product.price || 0
-                        ).toFixed(2)}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={
-                              product.status ??
-                              false
-                            }
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              onStatusToggle(
-                                product
-                              );
-                            }}
-                            sx={switchStyles}
-                            size="small"
-                          />
-                        }
-                        label={
-                          <Typography
-                            sx={statusTextStyles(
-                              product.status ??
-                                false
-                            )}
-                          >
-                            {product.status
-                              ? 'In Stock'
-                              : 'Out of Stock'}
-                          </Typography>
-                        }
-                        onClick={(e) =>
-                          e.stopPropagation()
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Rating
-                          value={
-                            product.rating || 0
-                          }
-                          readOnly
-                          precision={0.5}
-                          size="small"
-                          sx={{
-                            color: '#f59e0b',
-                          }}
-                        />
+              paginatedProducts.map((product, index) => (
+                <TableRow
+                  key={product.id || index}
+                  hover
+                  sx={{
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: '#F8F9FA',
+                    },
+                    '& td': {
+                      borderBottom: '1px solid #E0E0E0',
+                      color: '#1E2A3B',
+                      fontSize: '14px',
+                      padding: '16px',
+                    },
+                  }}
+                >
+                  <TableCell>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Box sx={productImageStyles}>{renderProductImage(product.image, product.productName || '', 40, 40)}</Box>
+                      <Stack direction="row" spacing={1} alignItems="center">
                         <Typography
-                          variant="body2"
+                          variant="body1"
                           sx={{
-                            ml: 1,
-                            color: '#64748b',
-                            fontSize: '0.75rem',
+                            fontWeight: 500,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
                           }}
                         >
-                          ({product.rating || 0})
+                          {product.productName}
                         </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
+                        {product.color && (
+                          <Chip
+                            label={product.color}
+                            size="small"
+                            sx={{
+                              height: 20,
+                              minWidth: 60,
+                              padding: '2px 4px',
+                              fontSize: '0.7rem',
+                              fontWeight: 500,
+                              bgcolor: getColorStyles(product.color).bg,
+                              color: getColorStyles(product.color).text,
+                              border: '1px solid #e2e8f0',
+                              flexShrink: 0,
+                            }}
+                          />
+                        )}
+                      </Stack>
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 500,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {product.barcode || 'N/A'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 500,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {product.sku || '-'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 600,
+                        color: '#1E2A3B',
+                      }}
+                    >
+                      R{(product.price || 0).toFixed(2)}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={product.status ?? false}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            onStatusToggle(product);
+                          }}
+                          sx={switchStyles}
+                          size="small"
+                        />
+                      }
+                      label={
+                        <Typography sx={statusTextStyles(product.status ?? false)}>
+                          {product.status ? 'In Stock' : 'Out of Stock'}
+                        </Typography>
+                      }
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Rating
+                        value={product.rating || 0}
+                        readOnly
+                        precision={0.5}
+                        size="small"
+                        sx={{
+                          color: '#f59e0b',
+                        }}
+                      />
                       <Typography
                         variant="body2"
                         sx={{
-                          fontWeight: 500,
-                          overflow: 'hidden',
-                          textOverflow:
-                            'ellipsis',
-                          whiteSpace: 'nowrap',
+                          ml: 1,
+                          color: '#64748b',
+                          fontSize: '0.75rem',
                         }}
                       >
-                        {product.createdAt
-                          ? new Date(
-                              product.createdAt
-                            ).toLocaleDateString(
-                              'en-US',
-                              {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                              }
-                            )
-                          : '-'}
+                        ({product.rating || 0})
                       </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        justifyContent="center"
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 500,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {product.createdAt
+                        ? new Date(product.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                          })
+                        : '-'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Stack direction="row" spacing={1} justifyContent="center">
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log('ProductTable - View icon clicked for product:', JSON.stringify(product.productName, null, 2));
+                          onView(product);
+                        }}
+                        sx={{
+                          color: '#3b82f6',
+                          backgroundColor: '#f8f9fa',
+                          border: '1px solid #e0e0e0',
+                          borderRadius: '6px',
+                          padding: '8px',
+                          '&:hover': {
+                            backgroundColor: '#f0f2f5',
+                            borderColor: '#3b82f6',
+                          },
+                        }}
                       >
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            console.log(
-                              'ProductTable - View icon clicked for product:',
-                              product.productName
-                            );
-                            onView(product);
-                          }}
-                          sx={{
-                            color: '#3b82f6',
-                            backgroundColor:
-                              '#f8f9fa',
-                            border:
-                              '1px solid #e0e0e0',
-                            borderRadius: '6px',
-                            padding: '8px',
-                            '&:hover': {
-                              backgroundColor:
-                                '#f0f2f5',
-                              borderColor:
-                                '#3b82f6',
-                            },
-                          }}
-                        >
-                          <FiEye size={20} />
-                        </IconButton>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                )
-              )
+                        <FiEye size={20} />
+                      </IconButton>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              ))
             )}
           </TableBody>
         </Table>
@@ -866,16 +565,12 @@ const ProductTable: React.FC<
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={onPageChange}
-            onRowsPerPageChange={
-              onRowsPerPageChange
-            }
+            onRowsPerPageChange={onRowsPerPageChange}
             sx={{
               backgroundColor: '#FFFFFF',
               borderRadius: '0 0 12px 12px',
-              borderTop:
-                '1px solid rgba(224, 224, 224, 0.5)',
-              boxShadow:
-                '0 2px 4px rgba(0,0,0,0.03)',
+              borderTop: '1px solid rgba(224, 224, 224, 0.5)',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.03)',
               '& .MuiToolbar-root': {
                 padding: '0 24px',
                 minHeight: '60px',
@@ -883,13 +578,12 @@ const ProductTable: React.FC<
                 alignItems: 'center',
                 justifyContent: 'flex-end',
               },
-              '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
-                {
-                  color: '#1E2A3B',
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  margin: '0 12px',
-                },
+              '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                color: '#1E2A3B',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                margin: '0 12px',
+              },
               '& .MuiTablePagination-select': {
                 paddingTop: '4px',
                 paddingBottom: '4px',
@@ -939,10 +633,8 @@ const ProductTable: React.FC<
               position: 'relative',
               margin: '32px',
               borderRadius: '16px',
-              boxShadow:
-                '0 8px 32px rgba(0,0,0,0.2)',
-              backgroundColor:
-                '#ffffff !important',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+              backgroundColor: '#ffffff !important',
               display: 'block !important',
               opacity: 1,
               visibility: 'visible',
@@ -979,26 +671,16 @@ const ProductTable: React.FC<
               borderRadius: '16px',
             }}
           >
-            <Alert
-              severity="error"
-              sx={{ mb: 2 }}
-            >
+            <Alert severity="error" sx={{ mb: 2 }}>
               Product data could not be loaded
             </Alert>
-            <Typography>
-              There was a problem loading the
-              product details. Please try again.
-            </Typography>
-            <Box
-              sx={{ mt: 3, textAlign: 'center' }}
-            >
+            <Typography>There was a problem loading the product details. Please try again.</Typography>
+            <Box sx={{ mt: 3, textAlign: 'center' }}>
               <Button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log(
-                    'ProductTable - Error close button clicked'
-                  );
+                  console.log('ProductTable - Error close button clicked');
                   onCloseModal();
                 }}
                 variant="contained"
@@ -1011,8 +693,7 @@ const ProductTable: React.FC<
                   '&:hover': {
                     bgcolor: '#2563eb',
                   },
-                  display:
-                    'inline-flex !important',
+                  display: 'inline-flex !important',
                   visibility: 'visible',
                   opacity: 1,
                 }}
@@ -1023,15 +704,7 @@ const ProductTable: React.FC<
           </Box>
         ) : (
           <>
-            <Box sx={modalImageStyles}>
-              {renderProductImage(
-                selectedProduct.image,
-                selectedProduct.productName ||
-                  'Product',
-                120,
-                120
-              )}
-            </Box>
+            <Box sx={modalImageStyles}>{renderProductImage(selectedProduct.image, selectedProduct.productName || 'Product', 120, 120)}</Box>
             <DialogTitle
               sx={{
                 ...modalTitleStyles,
@@ -1070,8 +743,7 @@ const ProductTable: React.FC<
                     mb: 0.5,
                   }}
                 >
-                  {selectedProduct.productName ||
-                    'Unknown Product'}
+                  {selectedProduct.productName || 'Unknown Product'}
                 </Typography>
                 {selectedProduct.color && (
                   <Chip
@@ -1081,13 +753,8 @@ const ProductTable: React.FC<
                       mt: 1,
                       fontSize: '0.75rem',
                       height: '24px',
-                      backgroundColor:
-                        getColorStyles(
-                          selectedProduct.color
-                        ).bg,
-                      color: getColorStyles(
-                        selectedProduct.color
-                      ).text,
+                      backgroundColor: getColorStyles(selectedProduct.color).bg,
+                      color: getColorStyles(selectedProduct.color).text,
                       fontWeight: 500,
                     }}
                   />
@@ -1127,12 +794,10 @@ const ProductTable: React.FC<
                   <Box
                     sx={{
                       display: 'flex',
-                      justifyContent:
-                        'space-between',
+                      justifyContent: 'space-between',
                       mb: 1.5,
                       pb: 1.5,
-                      borderBottom:
-                        '1px solid #e0e0e0',
+                      borderBottom: '1px solid #e0e0e0',
                     }}
                   >
                     <Typography
@@ -1150,19 +815,16 @@ const ProductTable: React.FC<
                         fontSize: '0.875rem',
                       }}
                     >
-                      {selectedProduct.barcode ||
-                        'N/A'}
+                      {selectedProduct.barcode || 'N/A'}
                     </Typography>
                   </Box>
                   <Box
                     sx={{
                       display: 'flex',
-                      justifyContent:
-                        'space-between',
+                      justifyContent: 'space-between',
                       mb: 1.5,
                       pb: 1.5,
-                      borderBottom:
-                        '1px solid #e0e0e0',
+                      borderBottom: '1px solid #e0e0e0',
                     }}
                   >
                     <Typography
@@ -1186,12 +848,10 @@ const ProductTable: React.FC<
                   <Box
                     sx={{
                       display: 'flex',
-                      justifyContent:
-                        'space-between',
+                      justifyContent: 'space-between',
                       mb: 1.5,
                       pb: 1.5,
-                      borderBottom:
-                        '1px solid #e0e0e0',
+                      borderBottom: '1px solid #e0e0e0',
                     }}
                   >
                     <Typography
@@ -1209,22 +869,17 @@ const ProductTable: React.FC<
                         fontSize: '1rem',
                       }}
                     >
-                      R
-                      {(
-                        selectedProduct.price || 0
-                      ).toFixed(2)}
+                      R{(selectedProduct.price || 0).toFixed(2)}
                     </Typography>
                   </Box>
                   <Box
                     sx={{
                       display: 'flex',
-                      justifyContent:
-                        'space-between',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
                       mb: 1.5,
                       pb: 1.5,
-                      borderBottom:
-                        '1px solid #e0e0e0',
+                      borderBottom: '1px solid #e0e0e0',
                     }}
                   >
                     <Typography
@@ -1242,14 +897,8 @@ const ProductTable: React.FC<
                         py: 0.5,
                         borderRadius: '16px',
                         display: 'inline-block',
-                        bgcolor:
-                          selectedProduct.status
-                            ? '#e8f5e9'
-                            : '#ffebee',
-                        color:
-                          selectedProduct.status
-                            ? '#2e7d32'
-                            : '#c62828',
+                        bgcolor: selectedProduct.status ? '#e8f5e9' : '#ffebee',
+                        color: selectedProduct.status ? '#2e7d32' : '#c62828',
                       }}
                     >
                       <Typography
@@ -1258,22 +907,18 @@ const ProductTable: React.FC<
                           fontWeight: 500,
                         }}
                       >
-                        {selectedProduct.status
-                          ? 'In Stock'
-                          : 'Out of Stock'}
+                        {selectedProduct.status ? 'In Stock' : 'Out of Stock'}
                       </Typography>
                     </Box>
                   </Box>
                   <Box
                     sx={{
                       display: 'flex',
-                      justifyContent:
-                        'space-between',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
                       mb: 1.5,
                       pb: 1.5,
-                      borderBottom:
-                        '1px solid #e0e0e0',
+                      borderBottom: '1px solid #e0e0e0',
                     }}
                   >
                     <Typography
@@ -1292,25 +937,14 @@ const ProductTable: React.FC<
                         gap: 1,
                       }}
                     >
-                      <Rating
-                        value={
-                          selectedProduct.rating ||
-                          0
-                        }
-                        readOnly
-                        precision={0.5}
-                        size="small"
-                        sx={{ color: '#f59e0b' }}
-                      />
+                      <Rating value={selectedProduct.rating || 0} readOnly precision={0.5} size="small" sx={{ color: '#f59e0b' }} />
                       <Typography
                         sx={{
                           color: 'text.secondary',
                           fontSize: '0.8rem',
                         }}
                       >
-                        (
-                        {selectedProduct.rating ||
-                          0}
+                        ({selectedProduct.rating || 0}
                         /5)
                       </Typography>
                     </Box>
@@ -1318,12 +952,10 @@ const ProductTable: React.FC<
                   <Box
                     sx={{
                       display: 'flex',
-                      justifyContent:
-                        'space-between',
+                      justifyContent: 'space-between',
                       mb: 1.5,
                       pb: 1.5,
-                      borderBottom:
-                        '1px solid #e0e0e0',
+                      borderBottom: '1px solid #e0e0e0',
                     }}
                   >
                     <Typography
@@ -1341,17 +973,13 @@ const ProductTable: React.FC<
                         fontSize: '0.875rem',
                       }}
                     >
-                      {selectedProduct.statusProduct ||
-                        (selectedProduct.status
-                          ? 'Active'
-                          : 'Inactive')}
+                      {selectedProduct.statusProduct || (selectedProduct.status ? 'Active' : 'Inactive')}
                     </Typography>
                   </Box>
                   <Box
                     sx={{
                       display: 'flex',
-                      justifyContent:
-                        'space-between',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <Typography
@@ -1369,11 +997,7 @@ const ProductTable: React.FC<
                         fontSize: '0.875rem',
                       }}
                     >
-                      {selectedProduct.createdAt
-                        ? new Date(
-                            selectedProduct.createdAt
-                          ).toLocaleDateString()
-                        : '-'}
+                      {selectedProduct.createdAt ? new Date(selectedProduct.createdAt).toLocaleDateString() : '-'}
                     </Typography>
                   </Box>
                 </Box>
@@ -1395,9 +1019,7 @@ const ProductTable: React.FC<
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log(
-                    'ProductTable - Close button clicked'
-                  );
+                  console.log('ProductTable - Close button clicked');
                   onCloseModal();
                 }}
                 variant="contained"
@@ -1410,8 +1032,7 @@ const ProductTable: React.FC<
                   '&:hover': {
                     bgcolor: '#2563eb',
                   },
-                  display:
-                    'inline-flex !important',
+                  display: 'inline-flex !important',
                   visibility: 'visible',
                   opacity: 1,
                 }}

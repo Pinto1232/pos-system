@@ -1,16 +1,4 @@
-/**
- * Utility functions for API operations
- */
-
-/**
- * Analyzes a response text to identify potential issues
- *
- * @param responseText - The response text to analyze
- * @returns An object containing analysis results
- */
-export function analyzeResponseText(
-  responseText: string
-): {
+export function analyzeResponseText(responseText: string): {
   hasLeadingCharacters: boolean;
   hasTrailingCharacters: boolean;
   hasBOM: boolean;
@@ -36,8 +24,7 @@ export function analyzeResponseText(
   }
 
   // Check for BOM (Byte Order Mark)
-  const hasBOM =
-    responseText.charCodeAt(0) === 0xfeff;
+  const hasBOM = responseText.charCodeAt(0) === 0xfeff;
 
   // Find the first JSON character ('{' or '[')
   const firstBrace = responseText.indexOf('{');
@@ -45,10 +32,7 @@ export function analyzeResponseText(
 
   let firstJsonChar = -1;
   if (firstBrace !== -1 && firstBracket !== -1) {
-    firstJsonChar = Math.min(
-      firstBrace,
-      firstBracket
-    );
+    firstJsonChar = Math.min(firstBrace, firstBracket);
   } else if (firstBrace !== -1) {
     firstJsonChar = firstBrace;
   } else if (firstBracket !== -1) {
@@ -57,15 +41,11 @@ export function analyzeResponseText(
 
   // Find the last JSON character ('}' or ']')
   const lastBrace = responseText.lastIndexOf('}');
-  const lastBracket =
-    responseText.lastIndexOf(']');
+  const lastBracket = responseText.lastIndexOf(']');
 
   let lastJsonChar = -1;
   if (lastBrace !== -1 && lastBracket !== -1) {
-    lastJsonChar = Math.max(
-      lastBrace,
-      lastBracket
-    );
+    lastJsonChar = Math.max(lastBrace, lastBracket);
   } else if (lastBrace !== -1) {
     lastJsonChar = lastBrace;
   } else if (lastBracket !== -1) {
@@ -74,24 +54,14 @@ export function analyzeResponseText(
 
   // Check if there are characters before or after the JSON
   const hasLeadingCharacters = firstJsonChar > 0;
-  const hasTrailingCharacters =
-    lastJsonChar !== -1 &&
-    lastJsonChar < responseText.length - 1;
+  const hasTrailingCharacters = lastJsonChar !== -1 && lastJsonChar < responseText.length - 1;
 
   // Get the first and last few characters for debugging
-  const firstFewChars = responseText.substring(
-    0,
-    Math.min(20, responseText.length)
-  );
-  const lastFewChars = responseText.substring(
-    Math.max(0, responseText.length - 20),
-    responseText.length
-  );
+  const firstFewChars = responseText.substring(0, Math.min(20, responseText.length));
+  const lastFewChars = responseText.substring(Math.max(0, responseText.length - 20), responseText.length);
 
   // Get character codes for the first few characters
-  const charCodes = Array.from(firstFewChars).map(
-    (char) => char.charCodeAt(0)
-  );
+  const charCodes = Array.from(firstFewChars).map((char) => char.charCodeAt(0));
 
   return {
     hasLeadingCharacters,
@@ -113,51 +83,29 @@ export function analyzeResponseText(
  * @param responseText - The response text (if already available)
  * @param label - Optional label for the log
  */
-export async function logResponseDetails(
-  response: Response,
-  responseText?: string,
-  label = 'API Response'
-): Promise<void> {
+export async function logResponseDetails(response: Response, responseText?: string, label = 'API Response'): Promise<void> {
   try {
-    const text =
-      responseText ||
-      (await response.clone().text());
+    const text = responseText || (await response.clone().text());
     const analysis = analyzeResponseText(text);
 
     console.group(`${label} Details`);
-    console.log(
-      'Status:',
-      response.status,
-      response.statusText
-    );
-    console.log(
-      'Headers:',
-      Object.fromEntries(
-        response.headers.entries()
-      )
-    );
-    console.log(
-      'Content-Type:',
-      response.headers.get('content-type')
-    );
+    console.log('Status:', response.status, response.statusText);
+    console.log('Headers:', Object.fromEntries(response.headers.entries()));
+    console.log('Content-Type:', response.headers.get('content-type'));
     console.log('Response Length:', text.length);
-    console.log(
-      'First 100 chars:',
-      text.substring(0, 100)
-    );
+    console.log('First 100 chars:', text.substring(0, 100));
     console.log('Analysis:', analysis);
     console.groupEnd();
 
     return;
   } catch (error) {
-    console.error(
-      'Error logging response details:',
-      error
-    );
+    console.error('Error logging response details:', error);
   }
 }
 
-export default {
+const apiUtils = {
   analyzeResponseText,
   logResponseDetails,
 };
+
+export default apiUtils;

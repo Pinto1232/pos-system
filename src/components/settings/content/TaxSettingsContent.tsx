@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  TextField,
-} from '@mui/material';
+import { Box, Typography, Button, TextField } from '@mui/material';
 import { TaxSettings } from '../../../types/settingsTypes';
 
 interface TaxSettingsContentProps {
@@ -12,12 +7,7 @@ interface TaxSettingsContentProps {
   setTaxSettings: (settings: TaxSettings) => void;
 }
 
-/**
- * Component for tax and VAT settings content
- */
-const TaxSettingsContent: React.FC<
-  TaxSettingsContentProps
-> = ({ taxSettings, setTaxSettings }) => {
+const TaxSettingsContent: React.FC<TaxSettingsContentProps> = ({ taxSettings, setTaxSettings }) => {
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -37,25 +27,14 @@ const TaxSettingsContent: React.FC<
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="subtitle1">
-            Enable Tax Calculation
-          </Typography>
+          <Typography variant="subtitle1">Enable Tax Calculation</Typography>
           <Button
-            variant={
-              taxSettings.enableTaxCalculation
-                ? 'contained'
-                : 'outlined'
-            }
-            color={
-              taxSettings.enableTaxCalculation
-                ? 'primary'
-                : 'inherit'
-            }
+            variant={taxSettings.enableTaxCalculation ? 'contained' : 'outlined'}
+            color={taxSettings.enableTaxCalculation ? 'primary' : 'inherit'}
             onClick={() =>
               setTaxSettings({
                 ...taxSettings,
-                enableTaxCalculation:
-                  !taxSettings.enableTaxCalculation,
+                enableTaxCalculation: !taxSettings.enableTaxCalculation,
               })
             }
             sx={{
@@ -64,9 +43,7 @@ const TaxSettingsContent: React.FC<
               textTransform: 'none',
             }}
           >
-            {taxSettings.enableTaxCalculation
-              ? 'Enabled'
-              : 'Disabled'}
+            {taxSettings.enableTaxCalculation ? 'Enabled' : 'Disabled'}
           </Button>
         </Box>
 
@@ -77,18 +54,13 @@ const TaxSettingsContent: React.FC<
             gap: 1,
           }}
         >
-          <Typography variant="subtitle1">
-            Default Tax Rate (%)
-          </Typography>
+          <Typography variant="subtitle1">Default Tax Rate (%)</Typography>
           <Box sx={{ position: 'relative' }}>
             <TextField
               type="number"
-              value={
-                taxSettings.defaultTaxRate || 0
-              }
+              value={taxSettings.defaultTaxRate || 0}
               onChange={(e) => {
-                const value =
-                  parseFloat(e.target.value) || 0;
+                const value = parseFloat(e.target.value) || 0;
                 setTaxSettings({
                   ...taxSettings,
                   defaultTaxRate: value,
@@ -123,28 +95,15 @@ const TaxSettingsContent: React.FC<
             gap: 1,
           }}
         >
-          <Typography variant="subtitle1">
-            Tax Calculation Method
-          </Typography>
+          <Typography variant="subtitle1">Tax Calculation Method</Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
-              variant={
-                taxSettings.taxCalculationMethod ===
-                'inclusive'
-                  ? 'contained'
-                  : 'outlined'
-              }
-              color={
-                taxSettings.taxCalculationMethod ===
-                'inclusive'
-                  ? 'primary'
-                  : 'inherit'
-              }
+              variant={taxSettings.taxCalculationMethod === 'inclusive' ? 'contained' : 'outlined'}
+              color={taxSettings.taxCalculationMethod === 'inclusive' ? 'primary' : 'inherit'}
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
-                  taxCalculationMethod:
-                    'inclusive',
+                  taxCalculationMethod: 'inclusive',
                 })
               }
               sx={{
@@ -156,23 +115,12 @@ const TaxSettingsContent: React.FC<
               Inclusive
             </Button>
             <Button
-              variant={
-                taxSettings.taxCalculationMethod ===
-                'exclusive'
-                  ? 'contained'
-                  : 'outlined'
-              }
-              color={
-                taxSettings.taxCalculationMethod ===
-                'exclusive'
-                  ? 'primary'
-                  : 'inherit'
-              }
+              variant={taxSettings.taxCalculationMethod === 'exclusive' ? 'contained' : 'outlined'}
+              color={taxSettings.taxCalculationMethod === 'exclusive' ? 'primary' : 'inherit'}
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
-                  taxCalculationMethod:
-                    'exclusive',
+                  taxCalculationMethod: 'exclusive',
                 })
               }
               sx={{
@@ -193,25 +141,14 @@ const TaxSettingsContent: React.FC<
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="subtitle1">
-            VAT Registered
-          </Typography>
+          <Typography variant="subtitle1">VAT Registered</Typography>
           <Button
-            variant={
-              taxSettings.vatRegistered
-                ? 'contained'
-                : 'outlined'
-            }
-            color={
-              taxSettings.vatRegistered
-                ? 'primary'
-                : 'inherit'
-            }
+            variant={taxSettings.vatRegistered ? 'contained' : 'outlined'}
+            color={taxSettings.vatRegistered ? 'primary' : 'inherit'}
             onClick={() =>
               setTaxSettings({
                 ...taxSettings,
-                vatRegistered:
-                  !taxSettings.vatRegistered,
+                vatRegistered: !taxSettings.vatRegistered,
               })
             }
             sx={{
@@ -220,9 +157,7 @@ const TaxSettingsContent: React.FC<
               textTransform: 'none',
             }}
           >
-            {taxSettings.vatRegistered
-              ? 'Yes'
-              : 'No'}
+            {taxSettings.vatRegistered ? 'Yes' : 'No'}
           </Button>
         </Box>
 
@@ -234,9 +169,7 @@ const TaxSettingsContent: React.FC<
               gap: 1,
             }}
           >
-            <Typography variant="subtitle1">
-              VAT Number
-            </Typography>
+            <Typography variant="subtitle1">VAT Number</Typography>
             <TextField
               value={taxSettings.vatNumber || ''}
               onChange={(e) =>
@@ -258,25 +191,14 @@ const TaxSettingsContent: React.FC<
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="subtitle1">
-            Display Tax on Receipts
-          </Typography>
+          <Typography variant="subtitle1">Display Tax on Receipts</Typography>
           <Button
-            variant={
-              taxSettings.displayTaxOnReceipts
-                ? 'contained'
-                : 'outlined'
-            }
-            color={
-              taxSettings.displayTaxOnReceipts
-                ? 'primary'
-                : 'inherit'
-            }
+            variant={taxSettings.displayTaxOnReceipts ? 'contained' : 'outlined'}
+            color={taxSettings.displayTaxOnReceipts ? 'primary' : 'inherit'}
             onClick={() =>
               setTaxSettings({
                 ...taxSettings,
-                displayTaxOnReceipts:
-                  !taxSettings.displayTaxOnReceipts,
+                displayTaxOnReceipts: !taxSettings.displayTaxOnReceipts,
               })
             }
             sx={{
@@ -285,9 +207,7 @@ const TaxSettingsContent: React.FC<
               textTransform: 'none',
             }}
           >
-            {taxSettings.displayTaxOnReceipts
-              ? 'Yes'
-              : 'No'}
+            {taxSettings.displayTaxOnReceipts ? 'Yes' : 'No'}
           </Button>
         </Box>
 
@@ -298,23 +218,11 @@ const TaxSettingsContent: React.FC<
             gap: 1,
           }}
         >
-          <Typography variant="subtitle1">
-            Tax Reporting Period
-          </Typography>
+          <Typography variant="subtitle1">Tax Reporting Period</Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
-              variant={
-                taxSettings.taxReportingPeriod ===
-                'monthly'
-                  ? 'contained'
-                  : 'outlined'
-              }
-              color={
-                taxSettings.taxReportingPeriod ===
-                'monthly'
-                  ? 'primary'
-                  : 'inherit'
-              }
+              variant={taxSettings.taxReportingPeriod === 'monthly' ? 'contained' : 'outlined'}
+              color={taxSettings.taxReportingPeriod === 'monthly' ? 'primary' : 'inherit'}
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
@@ -330,18 +238,8 @@ const TaxSettingsContent: React.FC<
               Monthly
             </Button>
             <Button
-              variant={
-                taxSettings.taxReportingPeriod ===
-                'quarterly'
-                  ? 'contained'
-                  : 'outlined'
-              }
-              color={
-                taxSettings.taxReportingPeriod ===
-                'quarterly'
-                  ? 'primary'
-                  : 'inherit'
-              }
+              variant={taxSettings.taxReportingPeriod === 'quarterly' ? 'contained' : 'outlined'}
+              color={taxSettings.taxReportingPeriod === 'quarterly' ? 'primary' : 'inherit'}
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,
@@ -357,18 +255,8 @@ const TaxSettingsContent: React.FC<
               Quarterly
             </Button>
             <Button
-              variant={
-                taxSettings.taxReportingPeriod ===
-                'annually'
-                  ? 'contained'
-                  : 'outlined'
-              }
-              color={
-                taxSettings.taxReportingPeriod ===
-                'annually'
-                  ? 'primary'
-                  : 'inherit'
-              }
+              variant={taxSettings.taxReportingPeriod === 'annually' ? 'contained' : 'outlined'}
+              color={taxSettings.taxReportingPeriod === 'annually' ? 'primary' : 'inherit'}
               onClick={() =>
                 setTaxSettings({
                   ...taxSettings,

@@ -12,7 +12,7 @@ interface ButtonProps {
   variant?: 'contained' | 'outlined' | 'text';
   fullWidth?: boolean;
   disabled?: boolean;
-  sx?: React.CSSProperties; // Add support for the sx prop with proper typing
+  sx?: React.CSSProperties;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -24,23 +24,17 @@ export const Button: React.FC<ButtonProps> = ({
   variant = 'contained',
   fullWidth = false,
   disabled = false,
-  sx, // Add sx prop to destructuring
+  sx,
 }) => {
   return (
     <button
-      className={`${styles.button} ${className} ${styles[variant]} ${
-        fullWidth ? styles.fullWidth : ''
-      } ${disabled ? styles.disabled : ''}`}
+      className={`${styles.button} ${className} ${styles[variant]} ${fullWidth ? styles.fullWidth : ''} ${disabled ? styles.disabled : ''}`}
       onClick={onClick}
       type={type}
       disabled={disabled}
-      style={sx} // Apply the sx prop as inline style
+      style={sx}
     >
-      {startIcon && (
-        <span className={styles.startIcon}>
-          {startIcon}
-        </span>
-      )}
+      {startIcon && <span className={styles.startIcon}>{startIcon}</span>}
       {children}
     </button>
   );

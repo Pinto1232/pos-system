@@ -1,11 +1,6 @@
-// PackageSelectionContext.tsx
 'use client';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 export type Package = {
   id: number;
@@ -15,12 +10,7 @@ export type Package = {
   extraDescription: string;
   price: number;
   testPeriodDays: number;
-  type:
-    | 'custom'
-    | 'starter'
-    | 'growth'
-    | 'enterprise'
-    | 'premium';
+  type: 'custom' | 'starter' | 'growth' | 'enterprise' | 'premium';
   currency?: string;
   multiCurrencyPrices?: string;
 };
@@ -34,27 +24,21 @@ type PackageSelectionContextType = {
   isPackageDisabled: (pkgId: number) => boolean;
 };
 
-const PackageSelectionContext =
-  createContext<PackageSelectionContextType>({
-    selectedPackage: null,
-    isModalOpen: false,
-    selectPackage: () => {},
-    closeModal: () => {},
-    isPackageBeingCustomized: false,
-    isPackageDisabled: () => false,
-  });
+const PackageSelectionContext = createContext<PackageSelectionContextType>({
+  selectedPackage: null,
+  isModalOpen: false,
+  selectPackage: () => {},
+  closeModal: () => {},
+  isPackageBeingCustomized: false,
+  isPackageDisabled: () => false,
+});
 
 export const PackageSelectionProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [selectedPackage, setSelectedPackage] =
-    useState<Package | null>(null);
-  const [isModalOpen, setIsModalOpen] =
-    useState(false);
-  const [
-    isPackageBeingCustomized,
-    setIsPackageBeingCustomized,
-  ] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPackageBeingCustomized, setIsPackageBeingCustomized] = useState(false);
 
   const selectPackage = (pkg: Package) => {
     setSelectedPackage(pkg);
@@ -68,14 +52,8 @@ export const PackageSelectionProvider: React.FC<{
     setIsPackageBeingCustomized(false);
   };
 
-  const isPackageDisabled = (
-    pkgId: number
-  ): boolean => {
-    return (
-      isPackageBeingCustomized &&
-      selectedPackage !== null &&
-      selectedPackage.id !== pkgId
-    );
+  const isPackageDisabled = (pkgId: number): boolean => {
+    return isPackageBeingCustomized && selectedPackage !== null && selectedPackage.id !== pkgId;
   };
 
   return (
@@ -94,5 +72,4 @@ export const PackageSelectionProvider: React.FC<{
   );
 };
 
-export const usePackageSelection = () =>
-  useContext(PackageSelectionContext);
+export const usePackageSelection = () => useContext(PackageSelectionContext);

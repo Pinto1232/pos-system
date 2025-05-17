@@ -10,11 +10,8 @@ interface AuthWrapperProps {
   children: ReactNode;
 }
 
-const AuthWrapper = ({
-  children,
-}: AuthWrapperProps) => {
-  const { error, isInitialized } =
-    useContext(AuthContext);
+const AuthWrapper = ({ children }: AuthWrapperProps) => {
+  const { error, isInitialized } = useContext(AuthContext);
 
   if (error) {
     return (

@@ -1,4 +1,3 @@
-// Mock for keycloak-js
 const mockKeycloak = function () {
   return {
     init: jest.fn().mockResolvedValue(true),
@@ -6,31 +5,15 @@ const mockKeycloak = function () {
     logout: jest.fn(),
     register: jest.fn(),
     accountManagement: jest.fn(),
-    createLoginUrl: jest
-      .fn()
-      .mockReturnValue('http://mock-login-url'),
-    createLogoutUrl: jest
-      .fn()
-      .mockReturnValue('http://mock-logout-url'),
-    createRegisterUrl: jest
-      .fn()
-      .mockReturnValue(
-        'http://mock-register-url'
-      ),
-    createAccountUrl: jest
-      .fn()
-      .mockReturnValue('http://mock-account-url'),
-    isTokenExpired: jest
-      .fn()
-      .mockReturnValue(false),
-    updateToken: jest
-      .fn()
-      .mockResolvedValue(true),
+    createLoginUrl: jest.fn().mockReturnValue('http://mock-login-url'),
+    createLogoutUrl: jest.fn().mockReturnValue('http://mock-logout-url'),
+    createRegisterUrl: jest.fn().mockReturnValue('http://mock-register-url'),
+    createAccountUrl: jest.fn().mockReturnValue('http://mock-account-url'),
+    isTokenExpired: jest.fn().mockReturnValue(false),
+    updateToken: jest.fn().mockResolvedValue(true),
     clearToken: jest.fn(),
     hasRealmRole: jest.fn().mockReturnValue(true),
-    hasResourceRole: jest
-      .fn()
-      .mockReturnValue(true),
+    hasResourceRole: jest.fn().mockReturnValue(true),
     loadUserProfile: jest.fn().mockResolvedValue({
       id: 'mock-user-id',
       username: 'mock-username',

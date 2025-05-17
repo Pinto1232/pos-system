@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
 
-// Mock packages data
 const mockPackages = [
   {
     id: 1,
     title: 'Starter',
-    description:
-      'Basic POS features;Inventory management;Sales reporting;Customer database;Email support;Cloud backup;Regular updates',
+    description: 'Basic POS features;Inventory management;Sales reporting;Customer database;Email support;Cloud backup;Regular updates',
     type: 'starter',
     price: 29.99,
   },
@@ -37,10 +35,7 @@ const mockPackages = [
 ];
 
 export async function GET() {
-  console.log(
-    'Fetching packages from simplified API endpoint'
-  );
+  console.log('Fetching packages from simplified API endpoint');
 
-  // Return the mock data
   return NextResponse.json(mockPackages);
 }

@@ -1,54 +1,30 @@
 'use client';
 
-import React, {
-  createContext,
-  useState,
-  ReactNode,
-  useContext,
-  useEffect,
-  useRef,
-} from 'react';
-import {
-  Box,
-  CircularProgress,
-  Typography,
-  Fade,
-} from '@mui/material';
+import React, { createContext, useState, ReactNode, useContext, useEffect, useRef } from 'react';
+import { Box, CircularProgress, Typography, Fade } from '@mui/material';
 import ErrorModal from '@/components/ui/errorModal/ErrorModal';
 import { usePathname } from 'next/navigation';
 
 export interface SpinnerContextProps {
   loading: boolean;
   setLoading: (loading: boolean) => void;
-  startLoading: (options?: {
-    timeout?: number;
-  }) => void;
+  startLoading: (options?: { timeout?: number }) => void;
   stopLoading: () => void;
   error: string | null;
   setError: (error: string | null) => void;
 }
 
-const SpinnerContext = createContext<
-  SpinnerContextProps | undefined
->(undefined);
+const SpinnerContext = createContext<SpinnerContextProps | undefined>(undefined);
 
 const DEFAULT_TIMEOUT = 10000;
 
-export const SpinnerProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
+export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<
-    string | null
-  >(null);
+  const [error, setError] = useState<string | null>(null);
   const pathname = usePathname();
-  const isDashboard =
-    pathname?.startsWith('/dashboard');
+  const isDashboard = pathname?.startsWith('/dashboard');
 
-  const timeoutRef =
-    useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const clearTimeouts = React.useCallback(() => {
     if (timeoutRef.current) {
@@ -57,13 +33,11 @@ export const SpinnerProvider = ({
     }
   }, []);
 
-  // Memoize functions to prevent unnecessary re-renders
   const startLoading = React.useCallback(
     (options?: { timeout?: number }) => {
       clearTimeouts();
       setLoading(true);
-      const timeoutDuration =
-        options?.timeout || DEFAULT_TIMEOUT;
+      const timeoutDuration = options?.timeout || DEFAULT_TIMEOUT;
 
       timeoutRef.current = setTimeout(() => {
         setLoading(false);
@@ -93,7 +67,6 @@ export const SpinnerProvider = ({
     }
   }, [isDashboard, loading]);
 
-  // Memoize the context value to prevent unnecessary re-renders
   const contextValue = React.useMemo(
     () => ({
       loading,
@@ -103,22 +76,12 @@ export const SpinnerProvider = ({
       error,
       setError,
     }),
-    [
-      loading,
-      setLoading,
-      startLoading,
-      stopLoading,
-      error,
-      setError,
-    ]
+    [loading, setLoading, startLoading, stopLoading, error, setError]
   );
 
   return (
     <SpinnerContext.Provider value={contextValue}>
-      <Fade
-        in={loading && !isDashboard}
-        timeout={300}
-      >
+      <Fade in={loading && !isDashboard} timeout={300}>
         <Box
           sx={{
             position: 'fixed',
@@ -126,10 +89,7 @@ export const SpinnerProvider = ({
             left: 0,
             right: 0,
             bottom: 0,
-            display:
-              loading && !isDashboard
-                ? 'flex'
-                : 'none',
+            display: loading && !isDashboard ? 'flex' : 'none',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
@@ -144,19 +104,13 @@ export const SpinnerProvider = ({
               color: '#ffffff',
             }}
           />
-          <Typography
-            variant="h6"
-            sx={{ mt: 2, color: '#ffffff' }}
-          >
+          <Typography variant="h6" sx={{ mt: 2, color: '#ffffff' }}>
             Loading...
           </Typography>
         </Box>
       </Fade>
 
-      <Fade
-        in={loading && isDashboard}
-        timeout={300}
-      >
+      <Fade in={loading && isDashboard} timeout={300}>
         <Box
           sx={{
             position: 'fixed',
@@ -164,10 +118,7 @@ export const SpinnerProvider = ({
             left: 0,
             right: 0,
             bottom: 0,
-            display:
-              loading && isDashboard
-                ? 'flex'
-                : 'none',
+            display: loading && isDashboard ? 'flex' : 'none',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
@@ -182,21 +133,13 @@ export const SpinnerProvider = ({
               color: '#ffffff',
             }}
           />
-          <Typography
-            variant="h6"
-            sx={{ mt: 2, color: '#ffffff' }}
-          >
+          <Typography variant="h6" sx={{ mt: 2, color: '#ffffff' }}>
             Loading...
           </Typography>
         </Box>
       </Fade>
 
-      {error && (
-        <ErrorModal
-          message={error}
-          onClose={() => setError(null)}
-        />
-      )}
+      {error && <ErrorModal message={error} onClose={() => setError(null)} />}
       {children}
     </SpinnerContext.Provider>
   );
@@ -205,9 +148,7 @@ export const SpinnerProvider = ({
 export const useSpinner = () => {
   const context = useContext(SpinnerContext);
   if (!context) {
-    throw new Error(
-      'useSpinner must be used within a SpinnerProvider'
-    );
+    throw new Error('useSpinner must be used within a SpinnerProvider');
   }
   return context;
 };

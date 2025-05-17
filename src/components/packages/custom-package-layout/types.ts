@@ -6,18 +6,11 @@ export interface Package {
   extraDescription: string;
   price: number;
   testPeriodDays: number;
-  type:
-    | 'starter'
-    | 'growth'
-    | 'enterprise'
-    | 'custom'
-    | 'premium';
+  type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
   isCustomizable: boolean;
   selectedFeatures?: number[] | null;
   selectedAddOns?: number[] | null;
-  selectedUsageBasedPricing?:
-    | UsagePricing[]
-    | null;
+  selectedUsageBasedPricing?: UsagePricing[] | null;
   multiCurrencyPrices: string;
   currency?: string;
 }
@@ -40,11 +33,11 @@ export interface AddOn {
   multiCurrencyPrices?: Record<string, number>;
   category?: string;
   isActive?: boolean;
-  // List of specific capabilities/functionalities that the addon enables
+
   features?: string[];
-  // Any requirements or prerequisites needed for the addon to function
+
   dependencies?: string[];
-  // Icon or visual indicator for the addon (can be a URL or a class name)
+
   icon?: string;
 }
 
@@ -68,7 +61,7 @@ export interface FeaturesResponse {
 
 export interface PriceCalculationRequest {
   packageId: number;
-  basePrice?: number; // Add optional basePrice field
+  basePrice?: number;
   selectedFeatures: number[];
   selectedAddOns: number[];
   usageLimits: Record<number, number>;
@@ -147,15 +140,9 @@ export interface CustomPackageLayoutProps {
   }) => void;
   onFeatureToggle: (features: Feature[]) => void;
   onAddOnToggle: (addOns: AddOn[]) => void;
-  onUsageChange: (
-    quantities: Record<number, number>
-  ) => void;
-  setSelectedCurrency: React.Dispatch<
-    React.SetStateAction<string>
-  >;
+  onUsageChange: (quantities: Record<number, number>) => void;
+  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
   enterpriseFeatures?: Record<string, boolean>;
-  onEnterpriseFeatureToggle?: (
-    featureId: string
-  ) => void;
+  onEnterpriseFeatureToggle?: (featureId: string) => void;
   currentCurrency?: string;
 }

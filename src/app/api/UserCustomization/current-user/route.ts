@@ -2,12 +2,8 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
 
-// Define the backend API URL
-const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_URL ||
-  'http://localhost:5107';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-// Default tax settings
 const DEFAULT_TAX_SETTINGS = {
   enableTaxCalculation: true,
   defaultTaxRate: 15.0,
@@ -20,24 +16,21 @@ const DEFAULT_TAX_SETTINGS = {
       id: 1,
       name: 'Standard Rate',
       rate: 15.0,
-      description:
-        'Standard VAT rate for most goods and services',
+      description: 'Standard VAT rate for most goods and services',
       isDefault: true,
     },
     {
       id: 2,
       name: 'Reduced Rate',
       rate: 7.5,
-      description:
-        'Reduced rate for specific goods and services',
+      description: 'Reduced rate for specific goods and services',
       isDefault: false,
     },
     {
       id: 3,
       name: 'Zero Rate',
       rate: 0,
-      description:
-        'Zero-rated goods and services',
+      description: 'Zero-rated goods and services',
       isDefault: false,
     },
   ],
@@ -46,7 +39,6 @@ const DEFAULT_TAX_SETTINGS = {
   taxReportingPeriod: 'monthly',
 };
 
-// Default regional settings
 const DEFAULT_REGIONAL_SETTINGS = {
   defaultCurrency: 'ZAR',
   dateFormat: 'DD/MM/YYYY',
@@ -56,12 +48,7 @@ const DEFAULT_REGIONAL_SETTINGS = {
   language: 'en-ZA',
   autoDetectLocation: true,
   enableMultiCurrency: true,
-  supportedCurrencies: [
-    'ZAR',
-    'USD',
-    'EUR',
-    'GBP',
-  ],
+  supportedCurrencies: ['ZAR', 'USD', 'EUR', 'GBP'],
 };
 
 interface JwtPayload {
@@ -73,90 +60,56 @@ interface JwtPayload {
 
 export async function GET(request: Request) {
   try {
-    console.log(
-      'Processing current-user customization request'
-    );
+    console.log('Processing current-user customization request');
 
-    // Get the auth token from cookies
     const cookieStore = await cookies();
-    const token =
-      cookieStore.get('auth_token')?.value ||
-      cookieStore.get('keycloak_token')?.value;
+    const token = cookieStore.get('auth_token')?.value || cookieStore.get('keycloak_token')?.value;
 
-    let userId = 'current-user'; // Default fallback
+    let userId = 'current-user';
 
-    // If we have a token, extract the user ID
     if (token) {
       try {
-        const decoded =
-          jwtDecode<JwtPayload>(token);
+        const decoded = jwtDecode<JwtPayload>(token);
         if (decoded.sub) {
           userId = decoded.sub;
-          console.log(
-            `Extracted user ID from token: ${userId}`
-          );
+          console.log(`Extracted user ID from token: ${userId}`);
         }
       } catch (tokenError) {
-        console.error(
-          'Error decoding token:',
-          tokenError
-        );
+        console.error('Error decoding token:', JSON.stringify(tokenError, null, 2));
       }
     } else {
-      console.log(
-        'No authentication token found, using default user ID'
-      );
+      console.log('No authentication token found, using default user ID');
     }
 
-    // Check if we should use mock data (from environment variable)
-    const useMockData =
-      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
-      'true';
+    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
       try {
-        console.log(
-          `Proxying GET request to backend for user: ${userId}`
-        );
-        const response = await fetch(
-          `${BACKEND_API_URL}/api/UserCustomization/${userId}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            // Add a timeout to prevent long waits if backend is down
-            signal: AbortSignal.timeout(3000),
-          }
-        );
+        console.log(`Proxying GET request to backend for user: ${userId}`);
+        const response = await fetch(`${BACKEND_API_URL}/api/UserCustomization/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          signal: AbortSignal.timeout(3000),
+        });
 
         if (response.ok) {
           const data = await response.json();
-          console.log(
-            'Successfully fetched user customization from backend'
-          );
+          console.log('Successfully fetched user customization from backend');
           return NextResponse.json(data);
         } else {
-          console.warn(
-            `Backend API returned status: ${response.status}, serving mock data directly`
-          );
+          console.warn(`Backend API returned status: ${response.status}, serving mock data directly`);
         }
       } catch (error) {
-        console.error(
-          'Error proxying request to backend:',
-          error
-        );
-        console.log(
-          'Returning mock data due to error'
-        );
+        console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+        console.log('Returning mock data due to error');
       }
     } else {
-      console.log(
-        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
-      );
+      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
     }
 
-    // Return mock data if backend API fails or mock data is enabled
     return NextResponse.json({
       id: 1,
       userId: userId,
@@ -167,15 +120,9 @@ export async function GET(request: Request) {
       regionalSettings: DEFAULT_REGIONAL_SETTINGS,
     });
   } catch (error) {
-    console.error(
-      'Error in current-user route:',
-      error
-    );
+    console.error('Error in current-user route:', JSON.stringify(error, null, 2));
 
-    // Even in case of a general error, return mock data
-    console.log(
-      'Returning mock data due to general error'
-    );
+    console.log('Returning mock data due to general error');
     return NextResponse.json({
       id: 1,
       userId: 'current-user',

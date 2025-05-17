@@ -1,25 +1,16 @@
-'use client'; // If you're using Next.js app router
+'use client';
 
 import React, { useCallback } from 'react';
-import {
-  Box,
-  useTheme,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, useTheme, useMediaQuery } from '@mui/material';
 import SearchBar from './SearchBar';
 
 const SearchBarContainer: React.FC = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(
-    theme.breakpoints.down('sm')
-  );
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleSearch = useCallback(
-    (query: string) => {
-      console.log('Searching for:', query);
-    },
-    []
-  );
+  const handleSearch = useCallback((query: string) => {
+    console.log('Searching for:', JSON.stringify(query, null, 2));
+  }, []);
 
   return (
     <Box
@@ -29,9 +20,7 @@ const SearchBarContainer: React.FC = () => {
         mx: isMobile ? 'auto' : 0,
         px: { xs: 1, sm: 2 },
         display: 'flex',
-        justifyContent: isMobile
-          ? 'center'
-          : 'flex-start',
+        justifyContent: isMobile ? 'center' : 'flex-start',
       }}
     >
       <Box sx={{ width: '100%' }}>

@@ -1,40 +1,24 @@
 'use client';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserCustomization } from '@/SettingsModal';
 import { mockFetchCustomization } from '@/api/mockUserCustomization';
-import eventBus, {
-  UI_EVENTS,
-} from '@/utils/eventBus';
+import eventBus, { UI_EVENTS } from '@/utils/eventBus';
 
 interface CustomizationContextType {
   customization: UserCustomization | null;
-  updateCustomization: (
-    updated: UserCustomization
-  ) => void;
+  updateCustomization: (updated: UserCustomization) => void;
   navbarColor: string;
   sidebarColor: string;
   logoUrl: string;
 }
 
-const CustomizationContext = createContext<
-  CustomizationContextType | undefined
->(undefined);
+const CustomizationContext = createContext<CustomizationContextType | undefined>(undefined);
 
 export const useCustomization = () => {
-  const context = useContext(
-    CustomizationContext
-  );
+  const context = useContext(CustomizationContext);
   if (!context) {
-    throw new Error(
-      'useCustomization must be used within a CustomizationProvider'
-    );
+    throw new Error('useCustomization must be used within a CustomizationProvider');
   }
   return context;
 };
@@ -44,144 +28,70 @@ interface CustomizationProviderProps {
   userId: string;
 }
 
-export const CustomizationProvider: React.FC<
-  CustomizationProviderProps
-> = ({ children, userId }) => {
-  const [customization, setCustomization] =
-    useState<UserCustomization | null>(null);
+export const CustomizationProvider: React.FC<CustomizationProviderProps> = ({ children, userId }) => {
+  const [customization, setCustomization] = useState<UserCustomization | null>(null);
 
-  // Default values
   const DEFAULT_NAVBAR_COLOR = '#173A79';
   const DEFAULT_SIDEBAR_COLOR = '#173A79';
   const DEFAULT_LOGO_URL = '/Pisval_Logo.jpg';
 
-  // Derived state for direct access to commonly used values
-  const [navbarColor, setNavbarColor] = useState(
-    DEFAULT_NAVBAR_COLOR
-  );
-  const [sidebarColor, setSidebarColor] =
-    useState(DEFAULT_SIDEBAR_COLOR);
-  const [logoUrl, setLogoUrl] = useState(
-    DEFAULT_LOGO_URL
-  );
+  const [navbarColor, setNavbarColor] = useState(DEFAULT_NAVBAR_COLOR);
+  const [sidebarColor, setSidebarColor] = useState(DEFAULT_SIDEBAR_COLOR);
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
 
   useEffect(() => {
     const fetchUserCustomization = async () => {
       try {
-        console.log(
-          'CustomizationContext: Fetching user customization for userId:',
-          userId
-        );
-        const data =
-          await mockFetchCustomization(userId);
-        console.log(
-          'CustomizationContext: Received customization data:',
-          data
-        );
+        console.log('CustomizationContext: Fetching user customization for userId:', JSON.stringify(userId, null, 2));
+        const data = await mockFetchCustomization(userId);
+        console.log('CustomizationContext: Received customization data:', JSON.stringify(data, null, 2));
         setCustomization(data);
 
-        // Update the derived state
-        console.log(
-          'CustomizationContext: Setting navbarColor to:',
-          data.navbarColor || DEFAULT_NAVBAR_COLOR
-        );
-        setNavbarColor(
-          data.navbarColor || DEFAULT_NAVBAR_COLOR
-        );
-        setSidebarColor(
-          data.sidebarColor ||
-            DEFAULT_SIDEBAR_COLOR
-        );
-        setLogoUrl(
-          data.logoUrl || DEFAULT_LOGO_URL
-        );
+        console.log('CustomizationContext: Setting navbarColor to:', JSON.stringify(data.navbarColor || DEFAULT_NAVBAR_COLOR, null, 2));
+        setNavbarColor(data.navbarColor || DEFAULT_NAVBAR_COLOR);
+        setSidebarColor(data.sidebarColor || DEFAULT_SIDEBAR_COLOR);
+        setLogoUrl(data.logoUrl || DEFAULT_LOGO_URL);
 
-        // Emit event to notify all components about the initial state
-        console.log(
-          'CustomizationContext: Emitting initial customization event'
-        );
-        eventBus.emit(
-          UI_EVENTS.CUSTOMIZATION_UPDATED,
-          {
-            navbarColor:
-              data.navbarColor ||
-              DEFAULT_NAVBAR_COLOR,
-            sidebarColor:
-              data.sidebarColor ||
-              DEFAULT_SIDEBAR_COLOR,
-            logoUrl:
-              data.logoUrl || DEFAULT_LOGO_URL,
-          }
-        );
+        console.log('CustomizationContext: Emitting initial customization event');
+        eventBus.emit(UI_EVENTS.CUSTOMIZATION_UPDATED, {
+          navbarColor: data.navbarColor || DEFAULT_NAVBAR_COLOR,
+          sidebarColor: data.sidebarColor || DEFAULT_SIDEBAR_COLOR,
+          logoUrl: data.logoUrl || DEFAULT_LOGO_URL,
+        });
       } catch (error) {
-        console.error(
-          'Failed to fetch customization:',
-          error
-        );
+        console.error('Failed to fetch customization:', JSON.stringify(error, null, 2));
       }
     };
 
     fetchUserCustomization();
   }, [userId]);
 
-  // Update derived state whenever customization changes
   useEffect(() => {
     if (customization) {
-      setNavbarColor(
-        customization.navbarColor ||
-          DEFAULT_NAVBAR_COLOR
-      );
-      setSidebarColor(
-        customization.sidebarColor ||
-          DEFAULT_SIDEBAR_COLOR
-      );
-      setLogoUrl(
-        customization.logoUrl || DEFAULT_LOGO_URL
-      );
+      setNavbarColor(customization.navbarColor || DEFAULT_NAVBAR_COLOR);
+      setSidebarColor(customization.sidebarColor || DEFAULT_SIDEBAR_COLOR);
+      setLogoUrl(customization.logoUrl || DEFAULT_LOGO_URL);
     }
   }, [customization]);
 
-  const updateCustomization = (
-    updated: UserCustomization
-  ) => {
-    console.log(
-      'CustomizationContext: Updating customization',
-      updated
-    );
+  const updateCustomization = (updated: UserCustomization) => {
+    console.log('CustomizationContext: Updating customization', JSON.stringify(updated, null, 2));
 
-    // Update the main state
     setCustomization(updated);
 
-    // Immediately update the derived state for faster UI updates
-    setNavbarColor(
-      updated.navbarColor || DEFAULT_NAVBAR_COLOR
-    );
-    setSidebarColor(
-      updated.sidebarColor ||
-        DEFAULT_SIDEBAR_COLOR
-    );
-    setLogoUrl(
-      updated.logoUrl || DEFAULT_LOGO_URL
-    );
+    setNavbarColor(updated.navbarColor || DEFAULT_NAVBAR_COLOR);
+    setSidebarColor(updated.sidebarColor || DEFAULT_SIDEBAR_COLOR);
+    setLogoUrl(updated.logoUrl || DEFAULT_LOGO_URL);
 
-    // Emit event to notify all components about the update
     console.log(
       'CustomizationContext: Emitting customization update event with navbarColor:',
-      updated.navbarColor || DEFAULT_NAVBAR_COLOR
+      JSON.stringify(updated.navbarColor || DEFAULT_NAVBAR_COLOR, null, 2)
     );
-    eventBus.emit(
-      UI_EVENTS.CUSTOMIZATION_UPDATED,
-      {
-        navbarColor:
-          updated.navbarColor ||
-          DEFAULT_NAVBAR_COLOR,
-        sidebarColor:
-          updated.sidebarColor ||
-          DEFAULT_SIDEBAR_COLOR,
-        logoUrl:
-          updated.logoUrl || DEFAULT_LOGO_URL,
-      }
-    );
+    eventBus.emit(UI_EVENTS.CUSTOMIZATION_UPDATED, {
+      navbarColor: updated.navbarColor || DEFAULT_NAVBAR_COLOR,
+      sidebarColor: updated.sidebarColor || DEFAULT_SIDEBAR_COLOR,
+      logoUrl: updated.logoUrl || DEFAULT_LOGO_URL,
+    });
   };
 
   return (

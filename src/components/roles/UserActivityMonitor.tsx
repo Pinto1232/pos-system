@@ -40,68 +40,34 @@ interface UserActivity {
 }
 
 const UserActivityMonitor: React.FC = () => {
-  console.log(
-    'UserActivityMonitor component mounted'
-  );
+  console.log('UserActivityMonitor component mounted');
 
-  const [searchQuery, setSearchQuery] =
-    useState('');
-  const [activityFilter, setActivityFilter] =
-    useState('all');
-  const [statusFilter, setStatusFilter] =
-    useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activityFilter, setActivityFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
 
-  // Fetch user activity logs
-  const { data: activityLogs, isLoading } =
-    useQuery<UserActivity[]>({
-      queryKey: ['userActivity'],
-      queryFn: async () => {
-        try {
-          // Try to fetch from backend API
-          console.log(
-            'Attempting to fetch user activity logs from backend API'
-          );
+  const { data: activityLogs, isLoading } = useQuery<UserActivity[]>({
+    queryKey: ['userActivity'],
+    queryFn: async () => {
+      try {
+        console.log('Attempting to fetch user activity logs from backend API');
 
-          // Currently using mock data - in a real implementation, we would fetch from an API
-          // Example of how it might look:
-          // const response = await fetch('/api/user-activity');
-          // const data = await response.json();
-          // console.log('Successfully fetched user activity logs from backend:', data);
-          // return data;
+        console.log('Using mock data for user activity logs');
+        return mockActivityLogs;
+      } catch (err) {
+        console.error('Error fetching user activity:', JSON.stringify(err, null, 2));
+        console.log('Falling back to mock data after error');
+        return mockActivityLogs;
+      }
+    },
+  });
 
-          // For now, using mock data
-          console.log(
-            'Using mock data for user activity logs'
-          );
-          return mockActivityLogs;
-        } catch (err) {
-          console.error(
-            'Error fetching user activity:',
-            err
-          );
-          console.log(
-            'Falling back to mock data after error'
-          );
-          return mockActivityLogs;
-        }
-      },
-    });
-
-  // Log the activity data when it's received
   React.useEffect(() => {
     if (activityLogs) {
-      console.log(
-        'Activity logs data received:',
-        activityLogs
-      );
-      console.log(
-        'Data source:',
-        activityLogs === mockActivityLogs
-          ? 'Using mock data'
-          : 'Using backend data'
-      );
+      console.log('Activity logs data received:', JSON.stringify(activityLogs, null, 2));
+      console.log('Data source:', JSON.stringify(activityLogs === mockActivityLogs ? 'Using mock data' : 'Using backend data', null, 2));
     }
   }, [activityLogs]);
 
@@ -109,94 +75,46 @@ const UserActivityMonitor: React.FC = () => {
     if (!activityLogs) return [];
 
     return activityLogs.filter((log) => {
-      // Apply search filter
       const matchesSearch =
-        log.userName
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        log.email
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        log.description
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        log.ipAddress
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+        log.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        log.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        log.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        log.ipAddress.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Apply activity type filter
-      const matchesActivity =
-        activityFilter === 'all' ||
-        log.activityType === activityFilter;
+      const matchesActivity = activityFilter === 'all' || log.activityType === activityFilter;
 
-      // Apply status filter
-      const matchesStatus =
-        statusFilter === 'all' ||
-        log.status === statusFilter;
+      const matchesStatus = statusFilter === 'all' || log.status === statusFilter;
 
-      return (
-        matchesSearch &&
-        matchesActivity &&
-        matchesStatus
-      );
+      return matchesSearch && matchesActivity && matchesStatus;
     });
-  }, [
-    activityLogs,
-    searchQuery,
-    activityFilter,
-    statusFilter,
-  ]);
+  }, [activityLogs, searchQuery, activityFilter, statusFilter]);
 
-  // Get paginated logs
   const paginatedLogs = React.useMemo(() => {
     const startIndex = (page - 1) * rowsPerPage;
-    return filteredLogs.slice(
-      startIndex,
-      startIndex + rowsPerPage
-    );
+    return filteredLogs.slice(startIndex, startIndex + rowsPerPage);
   }, [filteredLogs, page]);
 
-  // Get unique activity types for filter
   const activityTypes = React.useMemo(() => {
     if (!activityLogs) return [];
 
     const types = new Set<string>();
-    activityLogs.forEach((log) =>
-      types.add(log.activityType)
-    );
+    activityLogs.forEach((log) => types.add(log.activityType));
     return Array.from(types).sort();
   }, [activityLogs]);
 
-  // Handle page change
-  const handlePageChange = (
-    _event:
-      | React.MouseEvent<unknown>
-      | React.ChangeEvent<unknown>,
-    newPage: number
-  ) => {
+  const handlePageChange = (_event: React.MouseEvent<unknown> | React.ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage);
   };
 
-  // Format timestamp
   const formatTimestamp = (timestamp: string) => {
     try {
-      return format(
-        new Date(timestamp),
-        'MMM dd, yyyy HH:mm:ss'
-      );
+      return format(new Date(timestamp), 'MMM dd, yyyy HH:mm:ss');
     } catch {
       return timestamp;
     }
   };
 
-  // Get status chip color
-  const getStatusColor = (
-    status: string
-  ):
-    | 'success'
-    | 'error'
-    | 'warning'
-    | 'default' => {
+  const getStatusColor = (status: string): 'success' | 'error' | 'warning' | 'default' => {
     switch (status) {
       case 'success':
         return 'success';
@@ -258,39 +176,23 @@ const UserActivityMonitor: React.FC = () => {
             placeholder="Search user activity..."
             size="small"
             value={searchQuery}
-            onChange={(e) =>
-              setSearchQuery(e.target.value)
-            }
+            onChange={(e) => setSearchQuery(e.target.value)}
             variant="standard"
             fullWidth
             sx={{ input: { padding: '8px 0' } }}
           />
         </Box>
 
-        <FormControl
-          size="small"
-          sx={{ minWidth: '150px' }}
-        >
-          <InputLabel id="activity-filter-label">
-            Activity Type
-          </InputLabel>
+        <FormControl size="small" sx={{ minWidth: '150px' }}>
+          <InputLabel id="activity-filter-label">Activity Type</InputLabel>
           <Select
             labelId="activity-filter-label"
             value={activityFilter}
             label="Activity Type"
-            onChange={(e) =>
-              setActivityFilter(e.target.value)
-            }
-            IconComponent={() => (
-              <FilterListIcon
-                fontSize="small"
-                sx={{ mr: 1 }}
-              />
-            )}
+            onChange={(e) => setActivityFilter(e.target.value)}
+            IconComponent={() => <FilterListIcon fontSize="small" sx={{ mr: 1 }} />}
           >
-            <MenuItem value="all">
-              All Activities
-            </MenuItem>
+            <MenuItem value="all">All Activities</MenuItem>
             {activityTypes.map((type) => (
               <MenuItem key={type} value={type}>
                 {type}
@@ -299,59 +201,29 @@ const UserActivityMonitor: React.FC = () => {
           </Select>
         </FormControl>
 
-        <FormControl
-          size="small"
-          sx={{ minWidth: '120px' }}
-        >
-          <InputLabel id="status-filter-label">
-            Status
-          </InputLabel>
-          <Select
-            labelId="status-filter-label"
-            value={statusFilter}
-            label="Status"
-            onChange={(e) =>
-              setStatusFilter(e.target.value)
-            }
-          >
-            <MenuItem value="all">
-              All Status
-            </MenuItem>
-            <MenuItem value="success">
-              Success
-            </MenuItem>
-            <MenuItem value="failed">
-              Failed
-            </MenuItem>
-            <MenuItem value="warning">
-              Warning
-            </MenuItem>
+        <FormControl size="small" sx={{ minWidth: '120px' }}>
+          <InputLabel id="status-filter-label">Status</InputLabel>
+          <Select labelId="status-filter-label" value={statusFilter} label="Status" onChange={(e) => setStatusFilter(e.target.value)}>
+            <MenuItem value="all">All Status</MenuItem>
+            <MenuItem value="success">Success</MenuItem>
+            <MenuItem value="failed">Failed</MenuItem>
+            <MenuItem value="warning">Warning</MenuItem>
           </Select>
         </FormControl>
       </Box>
 
       {filteredLogs.length === 0 ? (
-        <Alert severity="info">
-          No activity logs found matching your
-          criteria.
-        </Alert>
+        <Alert severity="info">No activity logs found matching your criteria.</Alert>
       ) : (
         <>
-          <TableContainer
-            component={Paper}
-            sx={{ mb: 2 }}
-          >
+          <TableContainer component={Paper} sx={{ mb: 2 }}>
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell>User</TableCell>
                   <TableCell>Activity</TableCell>
-                  <TableCell>
-                    Description
-                  </TableCell>
-                  <TableCell>
-                    IP Address
-                  </TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>IP Address</TableCell>
                   <TableCell>Timestamp</TableCell>
                   <TableCell>Status</TableCell>
                 </TableRow>
@@ -360,19 +232,12 @@ const UserActivityMonitor: React.FC = () => {
                 {paginatedLogs.map((log) => (
                   <TableRow key={log.id} hover>
                     <TableCell>
-                      <Typography variant="body2">
-                        {log.userName}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        color="textSecondary"
-                      >
+                      <Typography variant="body2">{log.userName}</Typography>
+                      <Typography variant="caption" color="textSecondary">
                         {log.email}
                       </Typography>
                     </TableCell>
-                    <TableCell>
-                      {log.activityType}
-                    </TableCell>
+                    <TableCell>{log.activityType}</TableCell>
                     <TableCell>
                       <Box
                         sx={{
@@ -381,35 +246,19 @@ const UserActivityMonitor: React.FC = () => {
                         }}
                       >
                         {log.description}
-                        {log.status ===
-                          'failed' && (
+                        {log.status === 'failed' && (
                           <Tooltip title="This action failed and may require attention">
                             <IconButton size="small">
-                              <InfoIcon
-                                fontSize="small"
-                                color="error"
-                              />
+                              <InfoIcon fontSize="small" color="error" />
                             </IconButton>
                           </Tooltip>
                         )}
                       </Box>
                     </TableCell>
+                    <TableCell>{log.ipAddress}</TableCell>
+                    <TableCell>{formatTimestamp(log.timestamp)}</TableCell>
                     <TableCell>
-                      {log.ipAddress}
-                    </TableCell>
-                    <TableCell>
-                      {formatTimestamp(
-                        log.timestamp
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={log.status}
-                        color={getStatusColor(
-                          log.status
-                        )}
-                        size="small"
-                      />
+                      <Chip label={log.status} color={getStatusColor(log.status)} size="small" />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -424,17 +273,11 @@ const UserActivityMonitor: React.FC = () => {
               alignItems: 'center',
             }}
           >
-            <Typography
-              variant="body2"
-              color="textSecondary"
-            >
-              Showing {paginatedLogs.length} of{' '}
-              {filteredLogs.length} activities
+            <Typography variant="body2" color="textSecondary">
+              Showing {paginatedLogs.length} of {filteredLogs.length} activities
             </Typography>
             <Pagination
-              count={Math.ceil(
-                filteredLogs.length / rowsPerPage
-              )}
+              count={Math.ceil(filteredLogs.length / rowsPerPage)}
               page={page}
               onChange={handlePageChange}
               color="primary"
@@ -447,7 +290,6 @@ const UserActivityMonitor: React.FC = () => {
   );
 };
 
-// Mock data for demonstration
 const mockActivityLogs: UserActivity[] = [
   {
     id: 1,
@@ -466,8 +308,7 @@ const mockActivityLogs: UserActivity[] = [
     userName: 'manager',
     email: 'manager@pisvaltech.com',
     activityType: 'Permission Change',
-    description:
-      'Changed permissions for role "Cashier"',
+    description: 'Changed permissions for role "Cashier"',
     ipAddress: '192.168.1.2',
     timestamp: '2023-10-15T10:15:00Z',
     status: 'success',
@@ -478,8 +319,7 @@ const mockActivityLogs: UserActivity[] = [
     userName: 'cashier',
     email: 'cashier@pisvaltech.com',
     activityType: 'Login',
-    description:
-      'Failed login attempt (incorrect password)',
+    description: 'Failed login attempt (incorrect password)',
     ipAddress: '192.168.1.3',
     timestamp: '2023-10-15T11:00:00Z',
     status: 'failed',
@@ -490,8 +330,7 @@ const mockActivityLogs: UserActivity[] = [
     userName: 'admin',
     email: 'admin@pisvaltech.com',
     activityType: 'Role Creation',
-    description:
-      'Created new role "Inventory Manager"',
+    description: 'Created new role "Inventory Manager"',
     ipAddress: '192.168.1.1',
     timestamp: '2023-10-15T11:30:00Z',
     status: 'success',
@@ -502,8 +341,7 @@ const mockActivityLogs: UserActivity[] = [
     userName: 'manager',
     email: 'manager@pisvaltech.com',
     activityType: 'User Assignment',
-    description:
-      'Assigned user "john" to role "Inventory Manager"',
+    description: 'Assigned user "john" to role "Inventory Manager"',
     ipAddress: '192.168.1.2',
     timestamp: '2023-10-15T12:00:00Z',
     status: 'success',
@@ -514,8 +352,7 @@ const mockActivityLogs: UserActivity[] = [
     userName: 'john',
     email: 'john@pisvaltech.com',
     activityType: 'Login',
-    description:
-      'User logged in from new location',
+    description: 'User logged in from new location',
     ipAddress: '203.0.113.1',
     timestamp: '2023-10-15T13:00:00Z',
     status: 'warning',
@@ -526,8 +363,7 @@ const mockActivityLogs: UserActivity[] = [
     userName: 'admin',
     email: 'admin@pisvaltech.com',
     activityType: 'Permission Change',
-    description:
-      'Updated permissions for role "Manager"',
+    description: 'Updated permissions for role "Manager"',
     ipAddress: '192.168.1.1',
     timestamp: '2023-10-15T14:30:00Z',
     status: 'success',
@@ -549,8 +385,7 @@ const mockActivityLogs: UserActivity[] = [
     userName: 'sarah',
     email: 'sarah@pisvaltech.com',
     activityType: 'Role Assignment',
-    description:
-      'User assigned to role "Cashier"',
+    description: 'User assigned to role "Cashier"',
     ipAddress: '192.168.1.5',
     timestamp: '2023-10-15T16:00:00Z',
     status: 'success',
@@ -561,8 +396,7 @@ const mockActivityLogs: UserActivity[] = [
     userName: 'manager',
     email: 'manager@pisvaltech.com',
     activityType: 'Permission Change',
-    description:
-      'Failed to update permissions (insufficient privileges)',
+    description: 'Failed to update permissions (insufficient privileges)',
     ipAddress: '192.168.1.2',
     timestamp: '2023-10-15T17:00:00Z',
     status: 'failed',

@@ -19,24 +19,12 @@ import {
   useTheme,
   Chip,
 } from '@mui/material';
-import {
-  VisibilityOutlined,
-  ReceiptLong,
-  Delete,
-  ChevronRight,
-} from '@mui/icons-material';
+import { VisibilityOutlined, ReceiptLong, Delete, ChevronRight } from '@mui/icons-material';
 import { SaleTableProps } from './types';
 
-const SaleTable: React.FC<SaleTableProps> = ({
-  sales,
-  onViewDetails,
-  onViewReceipt,
-  onDelete,
-}) => {
+const SaleTable: React.FC<SaleTableProps> = ({ sales, onViewDetails, onViewReceipt, onDelete }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(
-    theme.breakpoints.down('sm')
-  );
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const renderMobileView = () => (
     <Stack spacing={2}>
@@ -46,8 +34,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
           sx={{
             width: '100%',
             borderRadius: '12px',
-            boxShadow:
-              '0px 4px 8px rgba(0, 0, 0, 0.04)',
+            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
             overflow: 'hidden',
           }}
         >
@@ -69,13 +56,9 @@ const SaleTable: React.FC<SaleTableProps> = ({
                 >
                   {sale.id}
                 </Typography>
-                <Box
-                  sx={{ display: 'flex', gap: 1 }}
-                >
+                <Box sx={{ display: 'flex', gap: 1 }}>
                   <IconButton
-                    onClick={() =>
-                      onViewDetails(sale.id)
-                    }
+                    onClick={() => onViewDetails(sale.id)}
                     size="small"
                     sx={{
                       color: '#3b82f6',
@@ -84,8 +67,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                       borderRadius: '6px',
                       padding: '6px',
                       '&:hover': {
-                        backgroundColor:
-                          '#f0f2f5',
+                        backgroundColor: '#f0f2f5',
                         borderColor: '#3b82f6',
                       },
                     }}
@@ -93,9 +75,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                     <VisibilityOutlined fontSize="small" />
                   </IconButton>
                   <IconButton
-                    onClick={() =>
-                      onViewReceipt(sale.id)
-                    }
+                    onClick={() => onViewReceipt(sale.id)}
                     size="small"
                     sx={{
                       color: '#3b82f6',
@@ -104,8 +84,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                       borderRadius: '6px',
                       padding: '6px',
                       '&:hover': {
-                        backgroundColor:
-                          '#f0f2f5',
+                        backgroundColor: '#f0f2f5',
                         borderColor: '#3b82f6',
                       },
                     }}
@@ -113,9 +92,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                     <ReceiptLong fontSize="small" />
                   </IconButton>
                   <IconButton
-                    onClick={() =>
-                      onDelete(sale.id)
-                    }
+                    onClick={() => onDelete(sale.id)}
                     size="small"
                     sx={{
                       color: '#d32f2f',
@@ -124,8 +101,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                       borderRadius: '6px',
                       padding: '6px',
                       '&:hover': {
-                        backgroundColor:
-                          '#fee2e2',
+                        backgroundColor: '#fee2e2',
                         borderColor: '#d32f2f',
                       },
                     }}
@@ -146,9 +122,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                 >
                   Progress
                 </Typography>
-                <Box
-                  sx={{ width: '100%', mt: 0.5 }}
-                >
+                <Box sx={{ width: '100%', mt: 0.5 }}>
                   <LinearProgress
                     variant="determinate"
                     value={sale.progress}
@@ -156,12 +130,10 @@ const SaleTable: React.FC<SaleTableProps> = ({
                       height: 8,
                       borderRadius: 4,
                       backgroundColor: '#E0E0E0',
-                      '& .MuiLinearProgress-bar':
-                        {
-                          backgroundColor:
-                            '#34D399',
-                          borderRadius: 4,
-                        },
+                      '& .MuiLinearProgress-bar': {
+                        backgroundColor: '#34D399',
+                        borderRadius: 4,
+                      },
                     }}
                   />
                   <Box
@@ -183,11 +155,9 @@ const SaleTable: React.FC<SaleTableProps> = ({
                             ? '#d1fae5'
                             : sale.progress >= 75
                               ? '#bfdbfe'
-                              : sale.progress >=
-                                  50
+                              : sale.progress >= 50
                                 ? '#fef3c7'
-                                : sale.progress >=
-                                    25
+                                : sale.progress >= 25
                                   ? '#fed7aa'
                                   : '#fecaca',
                         color:
@@ -195,11 +165,9 @@ const SaleTable: React.FC<SaleTableProps> = ({
                             ? '#065f46'
                             : sale.progress >= 75
                               ? '#1e40af'
-                              : sale.progress >=
-                                  50
+                              : sale.progress >= 50
                                 ? '#92400e'
-                                : sale.progress >=
-                                    25
+                                : sale.progress >= 25
                                   ? '#9a3412'
                                   : '#b91c1c',
                         border:
@@ -207,11 +175,9 @@ const SaleTable: React.FC<SaleTableProps> = ({
                             ? '1px solid #a7f3d0'
                             : sale.progress >= 75
                               ? '1px solid #93c5fd'
-                              : sale.progress >=
-                                  50
+                              : sale.progress >= 50
                                 ? '1px solid #fde68a'
-                                : sale.progress >=
-                                    25
+                                : sale.progress >= 25
                                   ? '1px solid #fdba74'
                                   : '1px solid #fca5a5',
                       }}
@@ -347,15 +313,12 @@ const SaleTable: React.FC<SaleTableProps> = ({
       sx={{
         backgroundColor: '#fff',
         borderRadius: '8px 8px 0 0',
-        boxShadow:
-          '0px 4px 8px rgba(0, 0, 0, 0.04)',
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
         overflow: 'hidden',
       }}
     >
       <Table>
-        <TableHead
-          sx={{ backgroundColor: '#f8f9fa' }}
-        >
+        <TableHead sx={{ backgroundColor: '#f8f9fa' }}>
           <TableRow>
             <TableCell
               sx={{
@@ -449,14 +412,12 @@ const SaleTable: React.FC<SaleTableProps> = ({
             <TableRow
               key={sale.id}
               sx={{
-                '&:last-child td, &:last-child th':
-                  { border: 0 },
+                '&:last-child td, &:last-child th': { border: 0 },
                 '&:hover': {
                   backgroundColor: '#F8F9FA',
                 },
                 '& td': {
-                  borderBottom:
-                    '1px solid #E0E0E0',
+                  borderBottom: '1px solid #E0E0E0',
                   color: '#1E2A3B',
                   fontSize: '14px',
                   padding: '16px',
@@ -488,12 +449,10 @@ const SaleTable: React.FC<SaleTableProps> = ({
                       height: 8,
                       borderRadius: 4,
                       backgroundColor: '#E0E0E0',
-                      '& .MuiLinearProgress-bar':
-                        {
-                          backgroundColor:
-                            '#34D399',
-                          borderRadius: 4,
-                        },
+                      '& .MuiLinearProgress-bar': {
+                        backgroundColor: '#34D399',
+                        borderRadius: 4,
+                      },
                     }}
                   />
                   <Box
@@ -515,11 +474,9 @@ const SaleTable: React.FC<SaleTableProps> = ({
                             ? '#d1fae5'
                             : sale.progress >= 75
                               ? '#bfdbfe'
-                              : sale.progress >=
-                                  50
+                              : sale.progress >= 50
                                 ? '#fef3c7'
-                                : sale.progress >=
-                                    25
+                                : sale.progress >= 25
                                   ? '#fed7aa'
                                   : '#fecaca',
                         color:
@@ -527,11 +484,9 @@ const SaleTable: React.FC<SaleTableProps> = ({
                             ? '#065f46'
                             : sale.progress >= 75
                               ? '#1e40af'
-                              : sale.progress >=
-                                  50
+                              : sale.progress >= 50
                                 ? '#92400e'
-                                : sale.progress >=
-                                    25
+                                : sale.progress >= 25
                                   ? '#9a3412'
                                   : '#b91c1c',
                         border:
@@ -539,11 +494,9 @@ const SaleTable: React.FC<SaleTableProps> = ({
                             ? '1px solid #a7f3d0'
                             : sale.progress >= 75
                               ? '1px solid #93c5fd'
-                              : sale.progress >=
-                                  50
+                              : sale.progress >= 50
                                 ? '1px solid #fde68a'
-                                : sale.progress >=
-                                    25
+                                : sale.progress >= 25
                                   ? '1px solid #fdba74'
                                   : '1px solid #fca5a5',
                       }}
@@ -612,9 +565,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                   }}
                 >
                   <IconButton
-                    onClick={() =>
-                      onViewDetails(sale.id)
-                    }
+                    onClick={() => onViewDetails(sale.id)}
                     size="small"
                     sx={{
                       color: '#3b82f6',
@@ -623,8 +574,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                       borderRadius: '6px',
                       padding: '8px',
                       '&:hover': {
-                        backgroundColor:
-                          '#f0f2f5',
+                        backgroundColor: '#f0f2f5',
                         borderColor: '#3b82f6',
                       },
                     }}
@@ -632,9 +582,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                     <VisibilityOutlined fontSize="small" />
                   </IconButton>
                   <IconButton
-                    onClick={() =>
-                      onViewReceipt(sale.id)
-                    }
+                    onClick={() => onViewReceipt(sale.id)}
                     size="small"
                     sx={{
                       color: '#3b82f6',
@@ -643,8 +591,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                       borderRadius: '6px',
                       padding: '8px',
                       '&:hover': {
-                        backgroundColor:
-                          '#f0f2f5',
+                        backgroundColor: '#f0f2f5',
                         borderColor: '#3b82f6',
                       },
                     }}
@@ -652,9 +599,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                     <ReceiptLong fontSize="small" />
                   </IconButton>
                   <IconButton
-                    onClick={() =>
-                      onDelete(sale.id)
-                    }
+                    onClick={() => onDelete(sale.id)}
                     size="small"
                     sx={{
                       color: '#d32f2f',
@@ -663,8 +608,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
                       borderRadius: '6px',
                       padding: '8px',
                       '&:hover': {
-                        backgroundColor:
-                          '#fee2e2',
+                        backgroundColor: '#fee2e2',
                         borderColor: '#d32f2f',
                       },
                     }}
@@ -714,9 +658,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
         </Link>
       </Box>
 
-      {isMobile
-        ? renderMobileView()
-        : renderDesktopView()}
+      {isMobile ? renderMobileView() : renderDesktopView()}
 
       <Box
         sx={{
@@ -728,8 +670,7 @@ const SaleTable: React.FC<SaleTableProps> = ({
           backgroundColor: '#ffffff',
           padding: '12px 16px',
           borderRadius: '0 0 8px 8px',
-          boxShadow:
-            '0px 2px 4px rgba(0, 0, 0, 0.04)',
+          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.04)',
           marginTop: '-1px',
           borderTop: '1px solid #E0E0E0',
         }}

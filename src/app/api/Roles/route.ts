@@ -1,18 +1,13 @@
 import { NextResponse } from 'next/server';
 
-// Define the backend API URL
-const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_URL ||
-  'http://localhost:5107';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-// Mock roles data with enhanced business logic
 const mockRoles = [
   {
     id: 1,
     name: 'Admin',
     normalizedName: 'ADMIN',
-    description:
-      'Complete system access with configuration privileges',
+    description: 'Complete system access with configuration privileges',
     permissions: JSON.stringify([
       'users.view',
       'users.create',
@@ -51,8 +46,7 @@ const mockRoles = [
     id: 2,
     name: 'Manager',
     normalizedName: 'MANAGER',
-    description:
-      'Store operations, reporting, and staff management',
+    description: 'Store operations, reporting, and staff management',
     permissions: JSON.stringify([
       'users.view',
       'users.create',
@@ -85,28 +79,15 @@ const mockRoles = [
     id: 3,
     name: 'Cashier',
     normalizedName: 'CASHIER',
-    description:
-      'Transaction processing and basic customer service',
-    permissions: JSON.stringify([
-      'sales.create',
-      'products.view',
-      'customers.view',
-      'customers.create',
-      'transactions.create',
-    ]),
-    permissionList: [
-      'sales.create',
-      'products.view',
-      'customers.view',
-      'customers.create',
-      'transactions.create',
-    ],
+    description: 'Transaction processing and basic customer service',
+    permissions: JSON.stringify(['sales.create', 'products.view', 'customers.view', 'customers.create', 'transactions.create']),
+    permissionList: ['sales.create', 'products.view', 'customers.view', 'customers.create', 'transactions.create'],
     transactionLimit: 1000,
     securityLevel: 'standard',
     requiresMFA: false,
     timeRestrictions: {
       type: 'shift',
-      hours: [8, 20], // 8 AM to 8 PM
+      hours: [8, 20],
     },
     locationRestrictions: {
       type: 'store',
@@ -117,8 +98,7 @@ const mockRoles = [
     id: 4,
     name: 'Inventory Manager',
     normalizedName: 'INVENTORY_MANAGER',
-    description:
-      'Stock management without sales capabilities',
+    description: 'Stock management without sales capabilities',
     permissions: JSON.stringify([
       'products.view',
       'products.create',
@@ -147,22 +127,9 @@ const mockRoles = [
     id: 5,
     name: 'Analytics User',
     normalizedName: 'ANALYTICS_USER',
-    description:
-      'Access to advanced analytics and reporting',
-    permissions: JSON.stringify([
-      'reports.view',
-      'reports.create',
-      'reports.export',
-      'analytics.view',
-      'analytics.create',
-    ]),
-    permissionList: [
-      'reports.view',
-      'reports.create',
-      'reports.export',
-      'analytics.view',
-      'analytics.create',
-    ],
+    description: 'Access to advanced analytics and reporting',
+    permissions: JSON.stringify(['reports.view', 'reports.create', 'reports.export', 'analytics.view', 'analytics.create']),
+    permissionList: ['reports.view', 'reports.create', 'reports.export', 'analytics.view', 'analytics.create'],
     transactionLimit: 0,
     securityLevel: 'medium',
     requiresMFA: true,
@@ -174,54 +141,35 @@ const mockRoles = [
 
 export async function GET(request: Request) {
   try {
-    // Check if we should use mock data (from environment variable)
-    const useMockData =
-      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
-      'true';
+    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(
-        'Proxying GET request to backend for roles'
-      );
+      console.log('Proxying GET request to backend for roles');
 
-      // Forward the request to the backend API
-      const response = await fetch(
-        `${BACKEND_API_URL}/api/Roles`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // Add a timeout to prevent long waits if backend is down
-          signal: AbortSignal.timeout(3000),
-        }
-      );
+      const response = await fetch(`${BACKEND_API_URL}/api/Roles`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        signal: AbortSignal.timeout(3000),
+      });
 
       if (response.ok) {
         const data = await response.json();
-        console.log(
-          'Successfully fetched roles from backend'
-        );
+        console.log('Successfully fetched roles from backend');
         return NextResponse.json(data);
       } else {
-        console.warn(
-          `Backend API returned status: ${response.status}, serving mock data`
-        );
+        console.warn(`Backend API returned status: ${response.status}, serving mock data`);
       }
     } else {
-      console.log(
-        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
-      );
+      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
     }
 
-    // Return mock data if backend API fails or mock data is enabled
     return NextResponse.json(mockRoles);
   } catch (error) {
-    console.error(
-      'Error proxying request to backend:',
-      error
-    );
-    // Return mock data for development
+    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+
     return NextResponse.json(mockRoles);
   }
 }

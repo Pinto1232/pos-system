@@ -1,19 +1,13 @@
 import { NextResponse } from 'next/server';
 
-// Define the backend API URL
-const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_URL ||
-  'http://localhost:5107';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-// Mock permissions data with categories and descriptions
 const mockPermissions = [
-  // User Management Permissions
   {
     id: 1,
     name: 'users.view',
     displayName: 'View Users',
-    description:
-      'View user accounts and profiles',
+    description: 'View user accounts and profiles',
     category: 'User Management',
   },
   {
@@ -38,7 +32,6 @@ const mockPermissions = [
     category: 'User Management',
   },
 
-  // Role Management Permissions
   {
     id: 5,
     name: 'roles.view',
@@ -68,7 +61,6 @@ const mockPermissions = [
     category: 'Role Management',
   },
 
-  // System Configuration Permissions
   {
     id: 9,
     name: 'system.configure',
@@ -77,7 +69,6 @@ const mockPermissions = [
     category: 'System',
   },
 
-  // Reports Permissions
   {
     id: 10,
     name: 'reports.view',
@@ -96,8 +87,7 @@ const mockPermissions = [
     id: 12,
     name: 'reports.export',
     displayName: 'Export Reports',
-    description:
-      'Export reports to various formats',
+    description: 'Export reports to various formats',
     category: 'Reports',
   },
   {
@@ -108,7 +98,6 @@ const mockPermissions = [
     category: 'Reports',
   },
 
-  // Transaction Permissions
   {
     id: 14,
     name: 'transactions.create',
@@ -134,12 +123,10 @@ const mockPermissions = [
     id: 17,
     name: 'transactions.all',
     displayName: 'All Transaction Access',
-    description:
-      'Full access to all transactions',
+    description: 'Full access to all transactions',
     category: 'Transactions',
   },
 
-  // Inventory Permissions
   {
     id: 18,
     name: 'inventory.view',
@@ -165,12 +152,10 @@ const mockPermissions = [
     id: 21,
     name: 'inventory.all',
     displayName: 'All Inventory Access',
-    description:
-      'Full access to all inventory functions',
+    description: 'Full access to all inventory functions',
     category: 'Inventory',
   },
 
-  // Product Permissions
   {
     id: 22,
     name: 'products.view',
@@ -200,7 +185,6 @@ const mockPermissions = [
     category: 'Products',
   },
 
-  // Sales Permissions
   {
     id: 26,
     name: 'sales.create',
@@ -209,7 +193,6 @@ const mockPermissions = [
     category: 'Sales',
   },
 
-  // Customer Permissions
   {
     id: 27,
     name: 'customers.view',
@@ -225,7 +208,6 @@ const mockPermissions = [
     category: 'Customers',
   },
 
-  // Analytics Permissions
   {
     id: 29,
     name: 'analytics.view',
@@ -244,54 +226,35 @@ const mockPermissions = [
 
 export async function GET(request: Request) {
   try {
-    // Check if we should use mock data (from environment variable)
-    const useMockData =
-      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
-      'true';
+    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(
-        'Proxying GET request to backend for permissions'
-      );
+      console.log('Proxying GET request to backend for permissions');
 
-      // Forward the request to the backend API
-      const response = await fetch(
-        `${BACKEND_API_URL}/api/Permissions`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // Add a timeout to prevent long waits if backend is down
-          signal: AbortSignal.timeout(3000),
-        }
-      );
+      const response = await fetch(`${BACKEND_API_URL}/api/Permissions`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        signal: AbortSignal.timeout(3000),
+      });
 
       if (response.ok) {
         const data = await response.json();
-        console.log(
-          'Successfully fetched permissions from backend'
-        );
+        console.log('Successfully fetched permissions from backend');
         return NextResponse.json(data);
       } else {
-        console.warn(
-          `Backend API returned status: ${response.status}, serving mock data`
-        );
+        console.warn(`Backend API returned status: ${response.status}, serving mock data`);
       }
     } else {
-      console.log(
-        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
-      );
+      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
     }
 
-    // Return mock data if backend API fails or mock data is enabled
     return NextResponse.json(mockPermissions);
   } catch (error) {
-    console.error(
-      'Error proxying request to backend:',
-      error
-    );
-    // Return mock data for development
+    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+
     return NextResponse.json(mockPermissions);
   }
 }

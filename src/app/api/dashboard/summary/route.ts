@@ -1,12 +1,8 @@
 import { NextResponse } from 'next/server';
 import { CACHE_TIMES } from '@/app/cache-constants';
 
-// Define the backend API URL
-const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_URL ||
-  'http://localhost:5107';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-// Mock data for dashboard summary
 const mockDashboardSummary = {
   recentSales: [
     {
@@ -19,9 +15,7 @@ const mockDashboardSummary = {
     },
     {
       id: 2,
-      date: new Date(
-        Date.now() - 3600000
-      ).toISOString(),
+      date: new Date(Date.now() - 3600000).toISOString(),
       customer: 'Jane Smith',
       amount: 89.5,
       status: 'completed',
@@ -29,9 +23,7 @@ const mockDashboardSummary = {
     },
     {
       id: 3,
-      date: new Date(
-        Date.now() - 7200000
-      ).toISOString(),
+      date: new Date(Date.now() - 7200000).toISOString(),
       customer: 'Robert Johnson',
       amount: 210.75,
       status: 'pending',
@@ -57,84 +49,55 @@ const mockDashboardSummary = {
       id: 2,
       type: 'info',
       message: 'Monthly sales report is ready',
-      date: new Date(
-        Date.now() - 86400000
-      ).toISOString(),
+      date: new Date(Date.now() - 86400000).toISOString(),
     },
   ],
 };
 
 export async function GET() {
   try {
-    console.log(
-      'Fetching dashboard summary data'
-    );
+    console.log('Fetching dashboard summary data');
 
-    // Create cache control headers
     const headers = {
       'Cache-Control': `s-maxage=${CACHE_TIMES.DASHBOARD}, stale-while-revalidate`,
     };
 
-    // Check if we should use mock data (from environment variable)
-    const useMockData =
-      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
-      'true';
+    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
       try {
-        // Attempt to fetch from backend
-        const response = await fetch(
-          `${BACKEND_API_URL}/api/Dashboard/summary`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            // Add a timeout to prevent long waits if backend is down
-            signal: AbortSignal.timeout(3000),
-          }
-        );
+        const response = await fetch(`${BACKEND_API_URL}/api/Dashboard/summary`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+          signal: AbortSignal.timeout(3000),
+        });
 
         if (response.ok) {
           const data = await response.json();
-          console.log(
-            'Successfully fetched dashboard summary from backend'
-          );
+          console.log('Successfully fetched dashboard summary from backend');
           return NextResponse.json(data, {
             headers,
           });
         } else {
-          console.warn(
-            `Backend API returned status: ${response.status}, serving mock data`
-          );
+          console.warn(`Backend API returned status: ${response.status}, serving mock data`);
         }
       } catch (error) {
-        console.error(
-          'Error fetching from backend:',
-          error
-        );
+        console.error('Error fetching from backend:', JSON.stringify(error, null, 2));
         console.log('Falling back to mock data');
       }
     } else {
-      console.log(
-        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
-      );
+      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
     }
 
-    // Return mock data with proper cache headers
-    return NextResponse.json(
-      mockDashboardSummary,
-      { headers }
-    );
+    return NextResponse.json(mockDashboardSummary, { headers });
   } catch (error) {
-    console.error(
-      'Error in dashboard summary API:',
-      error
-    );
+    console.error('Error in dashboard summary API:', JSON.stringify(error, null, 2));
     return NextResponse.json(
       {
-        error:
-          'Failed to fetch dashboard summary',
+        error: 'Failed to fetch dashboard summary',
       },
       { status: 500 }
     );

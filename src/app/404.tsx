@@ -1,10 +1,4 @@
-import {
-  Button,
-  Typography,
-  Container,
-  Box,
-  keyframes,
-} from '@mui/material';
+import { Button, Typography, Container, Box, keyframes } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -38,18 +32,11 @@ export default function NotFound() {
           mb: 4,
           animation: `${floatAnimation} 3s ease-in-out infinite`,
           '& img': {
-            filter:
-              'drop-shadow(0 10px 20px rgba(0,0,0,0.1))',
+            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.1))',
           },
         }}
       >
-        <Image
-          src="/404_icons.png"
-          alt="Not Found"
-          width={300}
-          height={300}
-          style={{ margin: '0 auto' }}
-        />
+        <Image src="/404_icons.png" alt="Not Found" width={300} height={300} style={{ margin: '0 auto' }} />
       </Box>
       <Box
         sx={{
@@ -81,9 +68,7 @@ export default function NotFound() {
             lineHeight: 1.6,
           }}
         >
-          Oops! The page you&apos;re looking for
-          doesn&apos;t exist or has been moved.
-          Let&apos;s get you back on track.
+          Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved. Let&apos;s get you back on track.
         </Typography>
         <Button
           variant="contained"
@@ -97,11 +82,9 @@ export default function NotFound() {
             fontSize: '1.1rem',
             borderRadius: '12px',
             textTransform: 'none',
-            boxShadow:
-              '0 4px 14px 0 rgba(0,118,255,0.39)',
+            boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)',
             '&:hover': {
-              boxShadow:
-                '0 6px 20px rgba(0,118,255,0.23)',
+              boxShadow: '0 6px 20px rgba(0,118,255,0.23)',
               transform: 'translateY(-2px)',
               transition: 'all 0.3s ease',
             },

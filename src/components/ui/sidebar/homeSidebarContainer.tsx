@@ -1,19 +1,14 @@
-// SidebarContainer.tsx
 'use client';
 
 import { useState, useCallback } from 'react';
 import Sidebar from '@/components/ui/sidebar/homeSidebar';
 
 const SidebarContainer = () => {
-  const [activeItem, setActiveItem] =
-    useState<string>('');
+  const [activeItem, setActiveItem] = useState<string>('');
 
-  const handleItemClick = useCallback(
-    (item: string) => {
-      setActiveItem(item);
-    },
-    []
-  );
+  const handleItemClick = useCallback((item: string) => {
+    setActiveItem(item);
+  }, []);
 
   return (
     <Sidebar

@@ -1,10 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
-import {
-  TextField,
-  TextFieldProps,
-} from '@mui/material';
+import { TextField, TextFieldProps } from '@mui/material';
 
 interface InputProps {
   label: string;
@@ -12,20 +9,9 @@ interface InputProps {
   textFieldProps?: TextFieldProps;
   type?: string;
 }
-const Input: React.FC<InputProps> = memo(
-  ({ label, name, textFieldProps, ...props }) => {
-    return (
-      <TextField
-        fullWidth
-        variant="outlined"
-        label={label}
-        name={name}
-        {...textFieldProps}
-        {...props}
-      />
-    );
-  }
-);
+const Input: React.FC<InputProps> = memo(({ label, name, textFieldProps, ...props }) => {
+  return <TextField fullWidth variant="outlined" label={label} name={name} {...textFieldProps} {...props} />;
+});
 
 Input.displayName = 'Input';
 

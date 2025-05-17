@@ -22,9 +22,6 @@ import RestoreIcon from '@mui/icons-material/Restore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BackupIcon from '@mui/icons-material/Backup';
 
-/**
- * Component for system backup settings content
- */
 const SystemBackupContent: React.FC = () => {
   return (
     <Box sx={{ p: 2 }}>
@@ -41,10 +38,7 @@ const SystemBackupContent: React.FC = () => {
             mb: 2,
           }}
         >
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-          >
+          <Typography variant="subtitle1" fontWeight="bold">
             Manual Backup
           </Typography>
           <Button
@@ -58,30 +52,16 @@ const SystemBackupContent: React.FC = () => {
             Create Backup Now
           </Button>
         </Box>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          paragraph
-        >
-          Create a manual backup of your system
-          data. This includes all settings,
-          products, customers, and transaction
-          history.
+        <Typography variant="body2" color="text.secondary" paragraph>
+          Create a manual backup of your system data. This includes all settings, products, customers, and transaction history.
         </Typography>
       </Box>
 
       <Box sx={{ mb: 3 }}>
-        <Typography
-          variant="subtitle1"
-          fontWeight="bold"
-          gutterBottom
-        >
+        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
           Automatic Backup Settings
         </Typography>
-        <Paper
-          variant="outlined"
-          sx={{ p: 2, borderRadius: 2 }}
-        >
+        <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
           <Box
             sx={{
               display: 'flex',
@@ -89,10 +69,7 @@ const SystemBackupContent: React.FC = () => {
               gap: 2,
             }}
           >
-            <FormControlLabel
-              control={<Switch defaultChecked />}
-              label="Enable automatic backups"
-            />
+            <FormControlLabel control={<Switch defaultChecked />} label="Enable automatic backups" />
 
             <Box
               sx={{
@@ -101,27 +78,12 @@ const SystemBackupContent: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              <Typography variant="body2">
-                Backup frequency:
-              </Typography>
-              <TextField
-                select
-                defaultValue="daily"
-                size="small"
-                sx={{ minWidth: 150 }}
-              >
-                <MenuItem value="hourly">
-                  Hourly
-                </MenuItem>
-                <MenuItem value="daily">
-                  Daily
-                </MenuItem>
-                <MenuItem value="weekly">
-                  Weekly
-                </MenuItem>
-                <MenuItem value="monthly">
-                  Monthly
-                </MenuItem>
+              <Typography variant="body2">Backup frequency:</Typography>
+              <TextField select defaultValue="daily" size="small" sx={{ minWidth: 150 }}>
+                <MenuItem value="hourly">Hourly</MenuItem>
+                <MenuItem value="daily">Daily</MenuItem>
+                <MenuItem value="weekly">Weekly</MenuItem>
+                <MenuItem value="monthly">Monthly</MenuItem>
               </TextField>
             </Box>
 
@@ -132,27 +94,12 @@ const SystemBackupContent: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              <Typography variant="body2">
-                Retention period:
-              </Typography>
-              <TextField
-                select
-                defaultValue="30"
-                size="small"
-                sx={{ minWidth: 150 }}
-              >
-                <MenuItem value="7">
-                  7 days
-                </MenuItem>
-                <MenuItem value="30">
-                  30 days
-                </MenuItem>
-                <MenuItem value="90">
-                  90 days
-                </MenuItem>
-                <MenuItem value="365">
-                  1 year
-                </MenuItem>
+              <Typography variant="body2">Retention period:</Typography>
+              <TextField select defaultValue="30" size="small" sx={{ minWidth: 150 }}>
+                <MenuItem value="7">7 days</MenuItem>
+                <MenuItem value="30">30 days</MenuItem>
+                <MenuItem value="90">90 days</MenuItem>
+                <MenuItem value="365">1 year</MenuItem>
               </TextField>
             </Box>
 
@@ -163,24 +110,11 @@ const SystemBackupContent: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              <Typography variant="body2">
-                Backup location:
-              </Typography>
-              <TextField
-                select
-                defaultValue="local"
-                size="small"
-                sx={{ minWidth: 150 }}
-              >
-                <MenuItem value="local">
-                  Local Storage
-                </MenuItem>
-                <MenuItem value="cloud">
-                  Cloud Storage
-                </MenuItem>
-                <MenuItem value="both">
-                  Both
-                </MenuItem>
+              <Typography variant="body2">Backup location:</Typography>
+              <TextField select defaultValue="local" size="small" sx={{ minWidth: 150 }}>
+                <MenuItem value="local">Local Storage</MenuItem>
+                <MenuItem value="cloud">Cloud Storage</MenuItem>
+                <MenuItem value="both">Both</MenuItem>
               </TextField>
             </Box>
           </Box>
@@ -188,18 +122,10 @@ const SystemBackupContent: React.FC = () => {
       </Box>
 
       <Box>
-        <Typography
-          variant="subtitle1"
-          fontWeight="bold"
-          gutterBottom
-        >
+        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
           Backup History
         </Typography>
-        <TableContainer
-          component={Paper}
-          variant="outlined"
-          sx={{ borderRadius: 2 }}
-        >
+        <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
           <Table size="small">
             <TableHead>
               <TableRow>
@@ -207,9 +133,7 @@ const SystemBackupContent: React.FC = () => {
                 <TableCell>Type</TableCell>
                 <TableCell>Size</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell align="right">
-                  Actions
-                </TableCell>
+                <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -246,67 +170,37 @@ const SystemBackupContent: React.FC = () => {
                 },
               ].map((backup, index) => (
                 <TableRow key={index}>
-                  <TableCell>
-                    {backup.date}
-                  </TableCell>
+                  <TableCell>{backup.date}</TableCell>
                   <TableCell>
                     <Chip
                       label={backup.type}
                       size="small"
-                      color={
-                        backup.type === 'Manual'
-                          ? 'primary'
-                          : 'default'
-                      }
-                      variant={
-                        backup.type === 'Manual'
-                          ? 'filled'
-                          : 'outlined'
-                      }
+                      color={backup.type === 'Manual' ? 'primary' : 'default'}
+                      variant={backup.type === 'Manual' ? 'filled' : 'outlined'}
                     />
                   </TableCell>
-                  <TableCell>
-                    {backup.size}
-                  </TableCell>
+                  <TableCell>{backup.size}</TableCell>
                   <TableCell>
                     <Chip
                       label={backup.status}
                       size="small"
-                      color={
-                        backup.status ===
-                        'Completed'
-                          ? 'success'
-                          : backup.status ===
-                              'Failed'
-                            ? 'error'
-                            : 'warning'
-                      }
+                      color={backup.status === 'Completed' ? 'success' : backup.status === 'Failed' ? 'error' : 'warning'}
                     />
                   </TableCell>
                   <TableCell align="right">
                     <Box
                       sx={{
                         display: 'flex',
-                        justifyContent:
-                          'flex-end',
+                        justifyContent: 'flex-end',
                       }}
                     >
-                      <IconButton
-                        size="small"
-                        color="primary"
-                      >
+                      <IconButton size="small" color="primary">
                         <DownloadIcon fontSize="small" />
                       </IconButton>
-                      <IconButton
-                        size="small"
-                        color="secondary"
-                      >
+                      <IconButton size="small" color="secondary">
                         <RestoreIcon fontSize="small" />
                       </IconButton>
-                      <IconButton
-                        size="small"
-                        color="error"
-                      >
+                      <IconButton size="small" color="error">
                         <DeleteIcon fontSize="small" />
                       </IconButton>
                     </Box>

@@ -1,20 +1,8 @@
-/**
- * Test script for handling concatenated JSON objects in API responses
- *
- * This script can be run in the browser console to test the enhanced JSON parsing
- * functionality that handles concatenated JSON objects.
- */
-
-/**
- * Test function to simulate and fix concatenated JSON issues
- */
 function testConcatenatedJson() {
   console.log('=== Concatenated JSON Test ===');
 
-  // Sample concatenated JSON with authentication error followed by valid pricing data
   const concatenatedJson = `{"error": "Authentication failed", "message": "Invalid token"}{"totalItems": 5, "data": [{"id": 1, "title": "Starter Plus", "description": "Basic POS functionality", "icon": "MUI:StarIcon", "extraDescription": "Perfect for small businesses", "price": 39.99, "testPeriodDays": 14, "type": "starter-plus", "currency": "USD", "multiCurrencyPrices": "{\"ZAR\": 699.99, \"EUR\": 36.99, \"GBP\": 31.99}"}], "pageSize": 10, "pageNumber": 1}`;
 
-  // Function to extract all valid JSON objects from a string
   function extractJsonObjects(text) {
     if (!text || typeof text !== 'string') {
       return [];
@@ -24,21 +12,13 @@ function testConcatenatedJson() {
     let currentPos = 0;
 
     while (currentPos < text.length) {
-      // Find the start of a JSON object
-      const startBrace = text.indexOf(
-        '{',
-        currentPos
-      );
+      const startBrace = text.indexOf('{', currentPos);
       if (startBrace === -1) break;
 
-      // Track nested braces to find the matching closing brace
       let braceCount = 1;
       let endBrace = startBrace + 1;
 
-      while (
-        braceCount > 0 &&
-        endBrace < text.length
-      ) {
+      while (braceCount > 0 && endBrace < text.length) {
         if (text[endBrace] === '{') {
           braceCount++;
         } else if (text[endBrace] === '}') {
@@ -48,31 +28,21 @@ function testConcatenatedJson() {
       }
 
       if (braceCount === 0) {
-        // We found a complete JSON object
-        const jsonStr = text.substring(
-          startBrace,
-          endBrace
-        );
+        const jsonStr = text.substring(startBrace, endBrace);
         try {
           const parsed = JSON.parse(jsonStr);
           results.push(parsed);
         } catch (e) {
-          // Skip invalid JSON
-          console.warn(
-            'Found invalid JSON object:',
-            jsonStr.substring(0, 100) + '...'
-          );
+          console.warn('Found invalid JSON object:', jsonStr.substring(0, 100) + '...');
         }
       }
 
-      // Move past this object
       currentPos = endBrace;
     }
 
     return results;
   }
 
-  // Function to validate if an object matches the expected pricing packages structure
   function isPricingPackagesResponse(obj) {
     return (
       obj &&
@@ -85,70 +55,32 @@ function testConcatenatedJson() {
     );
   }
 
-  // Function to validate if an object is an authentication error
   function isAuthError(obj) {
-    return (
-      obj &&
-      typeof obj === 'object' &&
-      'error' in obj &&
-      obj.error === 'Authentication failed'
-    );
+    return obj && typeof obj === 'object' && 'error' in obj && obj.error === 'Authentication failed';
   }
 
-  // Extract all JSON objects from the concatenated string
-  console.log(
-    'Extracting JSON objects from concatenated string...'
-  );
-  const extractedObjects = extractJsonObjects(
-    concatenatedJson
-  );
-  console.log(
-    `Found ${extractedObjects.length} JSON objects:`,
-    extractedObjects
-  );
+  console.log('Extracting JSON objects from concatenated string...');
+  const extractedObjects = extractJsonObjects(concatenatedJson);
+  console.log(`Found ${extractedObjects.length} JSON objects:`, JSON.stringify(extractedObjects, null, 2));
 
-  // Check for authentication errors
-  const authErrors =
-    extractedObjects.filter(isAuthError);
+  const authErrors = extractedObjects.filter(isAuthError);
   if (authErrors.length > 0) {
-    console.warn(
-      'Authentication errors found:',
-      authErrors
-    );
+    console.warn('Authentication errors found:', JSON.stringify(authErrors, null, 2));
   }
 
-  // Find valid pricing packages data
-  const pricingData = extractedObjects.find(
-    isPricingPackagesResponse
-  );
+  const pricingData = extractedObjects.find(isPricingPackagesResponse);
   if (pricingData) {
-    console.log(
-      'Found valid pricing packages data:',
-      pricingData
-    );
+    console.log('Found valid pricing packages data:', JSON.stringify(pricingData, null, 2));
   } else {
-    console.error(
-      'No valid pricing packages data found'
-    );
+    console.error('No valid pricing packages data found');
   }
 
-  // Test with standard JSON.parse (should fail)
-  console.log(
-    '\nTesting standard JSON.parse (should fail):'
-  );
+  console.log('\nTesting standard JSON.parse (should fail):');
   try {
-    const standardParsed = JSON.parse(
-      concatenatedJson
-    );
-    console.log(
-      'Standard JSON.parse succeeded (unexpected):',
-      standardParsed
-    );
+    const standardParsed = JSON.parse(concatenatedJson);
+    console.log('Standard JSON.parse succeeded (unexpected):', JSON.stringify(standardParsed, null, 2));
   } catch (error) {
-    console.log(
-      'Standard JSON.parse failed as expected:',
-      error.message
-    );
+    console.log('Standard JSON.parse failed as expected:', JSON.stringify(error.message, null, 2));
   }
 
   console.log('\n=== Test Complete ===');
@@ -160,7 +92,6 @@ function testConcatenatedJson() {
   };
 }
 
-// Instructions for running the test
 console.log(`
 === CONCATENATED JSON TEST SCRIPT ===
 This script tests the handling of concatenated JSON objects in API responses.
@@ -180,6 +111,4 @@ const result = testConcatenatedJson();
 console.log(result.pricingData); // View the extracted pricing data
 `);
 
-// Export the test function
-window.testConcatenatedJson =
-  testConcatenatedJson;
+window.testConcatenatedJson = testConcatenatedJson;

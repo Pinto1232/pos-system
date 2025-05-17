@@ -13,7 +13,11 @@
     "format:ts": "prettier --write \"**/*.{ts,tsx}\"",
     "format:styles": "prettier --write \"**/*.{css,scss}\"",
     "format:json": "prettier --write \"**/*.json\"",
-    "format:md": "prettier --write \"**/*.md\""
+    "format:md": "prettier --write \"**/*.md\"",
+    "format:strip-comments": "node scripts/strip-comments.js",
+    "format:console-logs": "node scripts/format-console-logs.js",
+    "format:clean": "npm run format && npm run format:strip-comments",
+    "format:all": "npm run format && npm run format:console-logs"
   },
   "dependencies": {
     "@date-io/date-fns": "^2.16.0",
@@ -71,9 +75,11 @@
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.6",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "glob": "^10.3.10",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.5.3",
+    "strip-comments": "^2.0.1",
     "typescript": "^5"
   }
 }

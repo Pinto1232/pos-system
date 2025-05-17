@@ -1,8 +1,4 @@
-import React, {
-  Component,
-  ErrorInfo,
-  ReactNode,
-} from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 import ErrorModal from '../errorModal/ErrorModal';
 
 interface ErrorBoundaryProps {
@@ -15,10 +11,7 @@ interface ErrorBoundaryState {
   errorInfo: ErrorInfo | null;
 }
 
-class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
@@ -28,9 +21,7 @@ class ErrorBoundary extends Component<
     };
   }
 
-  static getDerivedStateFromError(
-    error: Error
-  ): ErrorBoundaryState {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return {
       hasError: true,
       error,
@@ -38,15 +29,8 @@ class ErrorBoundary extends Component<
     };
   }
 
-  componentDidCatch(
-    error: Error,
-    errorInfo: ErrorInfo
-  ): void {
-    console.error(
-      'Error caught by ErrorBoundary:',
-      error,
-      errorInfo
-    );
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    console.error('Error caught by ErrorBoundary:', error, errorInfo);
     this.setState({
       errorInfo,
     });
@@ -62,15 +46,7 @@ class ErrorBoundary extends Component<
 
   render(): ReactNode {
     if (this.state.hasError) {
-      return (
-        <ErrorModal
-          message={
-            this.state.error?.message ||
-            'An unexpected error occurred'
-          }
-          onClose={this.handleResetError}
-        />
-      );
+      return <ErrorModal message={this.state.error?.message || 'An unexpected error occurred'} onClose={this.handleResetError} />;
     }
 
     return this.props.children;

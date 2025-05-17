@@ -1,12 +1,6 @@
-export type NotificationType =
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+export type NotificationType = 'success' | 'warning' | 'error' | 'info';
 
-export type NotificationStatus =
-  | 'read'
-  | 'unread';
+export type NotificationStatus = 'read' | 'unread';
 
 export interface Notification {
   id: string;

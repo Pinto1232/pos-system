@@ -1,27 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  Grid,
-  Box,
-  Typography,
-  Button,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
-  Snackbar,
-  Alert,
-} from '@mui/material';
+import { Grid, Box, Typography, Button, Checkbox, FormGroup, FormControlLabel, Snackbar, Alert } from '@mui/material';
 import iconMap from '../../../utils/icons';
 import styles from './PremiumPackageLayout.module.css';
 import LazyLoginForm from '@/components/login-form/LoginForm';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { useSuccessModal } from '@/contexts/SuccessModalContext';
-import {
-  useCurrency,
-  currencySymbols,
-} from '@/contexts/CurrencyContext';
+import { useCurrency, currencySymbols } from '@/contexts/CurrencyContext';
 
 interface PremiumPackageLayoutProps {
   selectedPackage: {
@@ -32,36 +19,19 @@ interface PremiumPackageLayoutProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type:
-      | 'starter'
-      | 'growth'
-      | 'enterprise'
-      | 'custom'
-      | 'premium';
+    type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
     currency?: string;
     multiCurrencyPrices?: string;
   };
 }
 
-// Currency symbols are now handled by the CurrencyContext
-
-const PremiumPackageLayout: React.FC<
-  PremiumPackageLayoutProps
-> = ({ selectedPackage }) => {
+const PremiumPackageLayout: React.FC<PremiumPackageLayoutProps> = ({ selectedPackage }) => {
   const [loading, setLoading] = useState(false);
-  const [showLoginForm, setShowLoginForm] =
-    useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const { setTestPeriod } = useTestPeriod();
-  const { setLoading: setSpinnerLoading } =
-    useSpinner();
+  const { setLoading: setSpinnerLoading } = useSpinner();
   const { showSuccessModal } = useSuccessModal();
-  const {
-    currency: currentCurrency,
-    setCurrency: setCurrentCurrency,
-    currencySymbol,
-    formatPrice,
-    rate,
-  } = useCurrency();
+  const { currency: currentCurrency, setCurrency: setCurrentCurrency, currencySymbol, formatPrice, rate } = useCurrency();
   const formData = {
     firstName: 'John',
     lastName: 'Doe',
@@ -74,48 +44,37 @@ const PremiumPackageLayout: React.FC<
     postal: '94105',
   };
 
-  // Add state for notification
-  const [snackbarOpen, setSnackbarOpen] =
-    useState(false);
-  const [snackbarMessage, setSnackbarMessage] =
-    useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const IconComponent =
-    iconMap[selectedPackage.icon] ||
-    iconMap['MUI:DefaultIcon'];
+  const IconComponent = iconMap[selectedPackage.icon] || iconMap['MUI:DefaultIcon'];
 
-  const handleSelectedPremiumPackage =
-    async () => {
-      setSpinnerLoading(true);
-      setLoading(true);
-      console.log('Selected package', {
-        ...selectedPackage,
-        currency: currentCurrency,
-      });
-      // Simulate backend call
-      await new Promise((resolve) =>
-        setTimeout(resolve, 2000)
-      );
-      setLoading(false);
-      setSpinnerLoading(false);
+  const handleSelectedPremiumPackage = async () => {
+    setSpinnerLoading(true);
+    setLoading(true);
+    console.log('Selected package', {
+      ...selectedPackage,
+      currency: currentCurrency,
+    });
 
-      // Show success modal using context
-      showSuccessModal({
-        message: 'Package selected successfully!',
-        onConfirm: handleConfirmSuccessMessage,
-        onReturn: handleReturnSuccessMessage,
-        selectedPackage: selectedPackage,
-        currentCurrency: currentCurrency,
-        formData: formData,
-        calculatedPrice: displayPrice,
-        onAddToCart: handleAddToCart,
-      });
-    };
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setLoading(false);
+    setSpinnerLoading(false);
 
-  const handleConfirmSuccessMessage = (
-    isSignup: boolean
-  ) => {
-    console.log('Confirmed', isSignup);
+    showSuccessModal({
+      message: 'Package selected successfully!',
+      onConfirm: handleConfirmSuccessMessage,
+      onReturn: handleReturnSuccessMessage,
+      selectedPackage: selectedPackage,
+      currentCurrency: currentCurrency,
+      formData: formData,
+      calculatedPrice: displayPrice,
+      onAddToCart: handleAddToCart,
+    });
+  };
+
+  const handleConfirmSuccessMessage = (isSignup: boolean) => {
+    console.log('Confirmed', JSON.stringify(isSignup, null, 2));
 
     if (isSignup) {
       setShowLoginForm(true);
@@ -128,48 +87,32 @@ const PremiumPackageLayout: React.FC<
     console.log('Return');
   };
 
-  const handleCurrencyChange = (
-    currency: string
-  ) => {
+  const handleCurrencyChange = (currency: string) => {
     setCurrentCurrency(currency);
   };
 
-  // Add handler for cart notification
   const handleAddToCart = (message: string) => {
     setSnackbarMessage(message);
     setSnackbarOpen(true);
   };
 
-  // Add handler to close snackbar
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
 
-  const multiCurrency: Record<
-    string,
-    number
-  > | null = selectedPackage.multiCurrencyPrices
-    ? JSON.parse(
-        selectedPackage.multiCurrencyPrices
-      )
+  const multiCurrency: Record<string, number> | null = selectedPackage.multiCurrencyPrices
+    ? JSON.parse(selectedPackage.multiCurrencyPrices)
     : null;
 
   let displayPrice = selectedPackage.price;
 
-  if (
-    currentCurrency &&
-    multiCurrency &&
-    multiCurrency[currentCurrency] !== undefined
-  ) {
+  if (currentCurrency && multiCurrency && multiCurrency[currentCurrency] !== undefined) {
     displayPrice = multiCurrency[currentCurrency];
   } else {
     displayPrice = selectedPackage.price * rate;
   }
 
-  // For debugging
-  console.log(
-    `PremiumPackage modal price: ${displayPrice} ${currentCurrency}, rate: ${rate}`
-  );
+  console.log(`PremiumPackage modal price: ${displayPrice} ${currentCurrency}, rate: ${rate}`);
 
   if (showLoginForm) {
     return <LazyLoginForm />;
@@ -178,98 +121,45 @@ const PremiumPackageLayout: React.FC<
   return (
     <Box className={styles.container}>
       {!loading && (
-        <Grid
-          container
-          spacing={3}
-          className={styles.gridContainer}
-        >
+        <Grid container spacing={3} className={styles.gridContainer}>
           <Grid item xs={12} md={8}>
             <Box className={styles.leftColumn}>
-              {selectedPackage.icon && (
-                <IconComponent
-                  className={styles.packageIcon}
-                />
-              )}
-              <Typography
-                variant="h6"
-                className={styles.heading}
-              >
+              {selectedPackage.icon && <IconComponent className={styles.packageIcon} />}
+              <Typography variant="h6" className={styles.heading}>
                 {selectedPackage.title}
               </Typography>
 
-              <Typography
-                variant="body1"
-                className={styles.description}
-              >
-                {selectedPackage.description.replace(
-                  /[^\w\s.,!?]/g,
-                  ''
-                )}
+              <Typography variant="body1" className={styles.description}>
+                {selectedPackage.description.replace(/[^\w\s.,!?]/g, '')}
               </Typography>
 
-              <Typography
-                variant="body2"
-                className={styles.description}
-              >
+              <Typography variant="body2" className={styles.description}>
                 {selectedPackage.extraDescription}
               </Typography>
 
               <Box className={styles.premiumBox}>
-                <Typography
-                  variant="subtitle2"
-                  className={
-                    styles.premiumBoxLabel
-                  }
-                >
-                  YOUR TOTAL IN ({currentCurrency}
-                  )
+                <Typography variant="subtitle2" className={styles.premiumBoxLabel}>
+                  YOUR TOTAL IN ({currentCurrency})
                 </Typography>
-                <Typography
-                  variant="h4"
-                  className={
-                    styles.premiumBoxAmount
-                  }
-                >
-                  <b>
-                    {currentCurrency === 'Kz'
-                      ? `${displayPrice}Kz`
-                      : `${currencySymbol}${formatPrice(displayPrice)}`}
-                  </b>
+                <Typography variant="h4" className={styles.premiumBoxAmount}>
+                  <b>{currentCurrency === 'Kz' ? `${displayPrice}Kz` : `${currencySymbol}${formatPrice(displayPrice)}`}</b>
                   /mo
                 </Typography>
               </Box>
 
               {multiCurrency && (
-                <Box
-                  className={
-                    styles.multiCurrencyBox
-                  }
-                >
-                  <Typography
-                    variant="subtitle2"
-                    className={
-                      styles.multiCurrencyLabel
-                    }
-                  >
+                <Box className={styles.multiCurrencyBox}>
+                  <Typography variant="subtitle2" className={styles.multiCurrencyLabel}>
                     Prices in other currencies:
                   </Typography>
                   <FormGroup row>
-                    {Object.entries(
-                      multiCurrency
-                    ).map(([currency, price]) => (
+                    {Object.entries(multiCurrency).map(([currency, price]) => (
                       <FormControlLabel
                         key={currency}
                         control={
                           <Checkbox
-                            checked={
-                              currentCurrency ===
-                              currency
-                            }
-                            onChange={() =>
-                              handleCurrencyChange(
-                                currency
-                              )
-                            }
+                            checked={currentCurrency === currency}
+                            onChange={() => handleCurrencyChange(currency)}
                             sx={{
                               color: '#d53f8c',
                               '&.Mui-checked': {
@@ -279,94 +169,46 @@ const PremiumPackageLayout: React.FC<
                           />
                         }
                         label={
-                          <b
-                            className={
-                              styles.multiCurrencyPrice
-                            }
-                          >
-                            {currency === 'Kz'
-                              ? `${price}Kz`
-                              : `${currencySymbols[currency] || '$'}${formatPrice(price)}`}
+                          <b className={styles.multiCurrencyPrice}>
+                            {currency === 'Kz' ? `${price}Kz` : `${currencySymbols[currency] || '$'}${formatPrice(price)}`}
                           </b>
                         }
-                        className={
-                          styles.multiCurrencyItem
-                        }
+                        className={styles.multiCurrencyItem}
                       />
                     ))}
                   </FormGroup>
                 </Box>
               )}
 
-              <Typography
-                variant="subtitle2"
-                className={styles.testPeriod}
-              >
-                Test Period:{' '}
-                <b>
-                  {selectedPackage.testPeriodDays}{' '}
-                  days
-                </b>
+              <Typography variant="subtitle2" className={styles.testPeriod}>
+                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
             </Box>
           </Grid>
 
           <Grid item xs={12} md={4}>
             <Box className={styles.rightColumn}>
-              <Typography
-                variant="h6"
-                className={styles.heading}
-              >
+              <Typography variant="h6" className={styles.heading}>
                 Package summary
               </Typography>
 
-              <Typography
-                variant="body2"
-                className={styles.summaryItem}
-              >
-                Package Type{' '}
-                <b>{selectedPackage.type}</b>
+              <Typography variant="body2" className={styles.summaryItem}>
+                Package Type <b>{selectedPackage.type}</b>
               </Typography>
 
-              <Typography
-                variant="body2"
-                className={styles.summaryItem}
-              >
-                Package ID{' '}
-                <b>{selectedPackage.id}</b>
+              <Typography variant="body2" className={styles.summaryItem}>
+                Package ID <b>{selectedPackage.id}</b>
               </Typography>
 
-              <Typography
-                variant="body2"
-                className={styles.summaryItem}
-              >
-                Monthly Price{' '}
-                <b>
-                  {currentCurrency === 'Kz'
-                    ? `${displayPrice}Kz`
-                    : `${currencySymbol}${formatPrice(displayPrice)}`}
-                </b>
+              <Typography variant="body2" className={styles.summaryItem}>
+                Monthly Price <b>{currentCurrency === 'Kz' ? `${displayPrice}Kz` : `${currencySymbol}${formatPrice(displayPrice)}`}</b>
               </Typography>
 
-              <Typography
-                variant="body2"
-                className={styles.summaryItem}
-              >
-                Test Period{' '}
-                <b>
-                  {selectedPackage.testPeriodDays}{' '}
-                  days
-                </b>
+              <Typography variant="body2" className={styles.summaryItem}>
+                Test Period <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
 
-              <Button
-                variant="contained"
-                className={styles.continueButton}
-                fullWidth
-                onClick={
-                  handleSelectedPremiumPackage
-                }
-              >
+              <Button variant="contained" className={styles.continueButton} fullWidth onClick={handleSelectedPremiumPackage}>
                 Continue
               </Button>
             </Box>
@@ -374,7 +216,7 @@ const PremiumPackageLayout: React.FC<
         </Grid>
       )}
 
-      {/* Add Snackbar for notifications */}
+      {}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={4000}
@@ -384,11 +226,7 @@ const PremiumPackageLayout: React.FC<
           horizontal: 'center',
         }}
       >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          sx={{ width: '100%' }}
-        >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

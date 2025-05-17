@@ -1,18 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Switch,
-  FormControlLabel,
-  Grid,
-  MenuItem,
-} from '@mui/material';
+import { Box, Typography, TextField, Button, Switch, FormControlLabel, Grid, MenuItem } from '@mui/material';
 
-/**
- * Component for email settings content
- */
 const EmailSettingsContent: React.FC = () => {
   return (
     <Box sx={{ p: 2 }}>
@@ -21,76 +9,31 @@ const EmailSettingsContent: React.FC = () => {
       </Typography>
 
       <Box sx={{ mb: 3 }}>
-        <Typography
-          variant="subtitle1"
-          fontWeight="bold"
-          gutterBottom
-        >
+        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
           SMTP Configuration
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <TextField
-              label="SMTP Server"
-              fullWidth
-              defaultValue="smtp.example.com"
-              size="small"
-              margin="normal"
-            />
+            <TextField label="SMTP Server" fullWidth defaultValue="smtp.example.com" size="small" margin="normal" />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              label="SMTP Port"
-              fullWidth
-              defaultValue="587"
-              size="small"
-              margin="normal"
-              type="number"
-            />
+            <TextField label="SMTP Port" fullWidth defaultValue="587" size="small" margin="normal" type="number" />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              label="Username"
-              fullWidth
-              defaultValue="notifications@pisvaltech.com"
-              size="small"
-              margin="normal"
-            />
+            <TextField label="Username" fullWidth defaultValue="notifications@pisvaltech.com" size="small" margin="normal" />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              label="Password"
-              fullWidth
-              defaultValue="********"
-              size="small"
-              margin="normal"
-              type="password"
-            />
+            <TextField label="Password" fullWidth defaultValue="********" size="small" margin="normal" type="password" />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              select
-              label="Encryption"
-              fullWidth
-              defaultValue="tls"
-              size="small"
-              margin="normal"
-            >
-              <MenuItem value="none">
-                None
-              </MenuItem>
+            <TextField select label="Encryption" fullWidth defaultValue="tls" size="small" margin="normal">
+              <MenuItem value="none">None</MenuItem>
               <MenuItem value="ssl">SSL</MenuItem>
               <MenuItem value="tls">TLS</MenuItem>
             </TextField>
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextField
-              label="From Email"
-              fullWidth
-              defaultValue="no-reply@pisvaltech.com"
-              size="small"
-              margin="normal"
-            />
+            <TextField label="From Email" fullWidth defaultValue="no-reply@pisvaltech.com" size="small" margin="normal" />
           </Grid>
           <Grid item xs={12}>
             <Button
@@ -108,74 +51,37 @@ const EmailSettingsContent: React.FC = () => {
       </Box>
 
       <Box sx={{ mb: 3 }}>
-        <Typography
-          variant="subtitle1"
-          fontWeight="bold"
-          gutterBottom
-        >
+        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
           Notification Settings
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <FormControlLabel
-              control={<Switch defaultChecked />}
-              label="Send order confirmation emails to customers"
-            />
+            <FormControlLabel control={<Switch defaultChecked />} label="Send order confirmation emails to customers" />
           </Grid>
           <Grid item xs={12}>
-            <FormControlLabel
-              control={<Switch defaultChecked />}
-              label="Send low inventory alerts to staff"
-            />
+            <FormControlLabel control={<Switch defaultChecked />} label="Send low inventory alerts to staff" />
           </Grid>
           <Grid item xs={12}>
-            <FormControlLabel
-              control={<Switch defaultChecked />}
-              label="Send daily sales summary to managers"
-            />
+            <FormControlLabel control={<Switch defaultChecked />} label="Send daily sales summary to managers" />
           </Grid>
           <Grid item xs={12}>
-            <FormControlLabel
-              control={<Switch />}
-              label="Send promotional emails to customers"
-            />
+            <FormControlLabel control={<Switch />} label="Send promotional emails to customers" />
           </Grid>
         </Grid>
       </Box>
 
       <Box>
-        <Typography
-          variant="subtitle1"
-          fontWeight="bold"
-          gutterBottom
-        >
+        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
           Email Templates
         </Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <TextField
-              select
-              label="Select Template"
-              fullWidth
-              defaultValue="order_confirmation"
-              size="small"
-              margin="normal"
-            >
-              <MenuItem value="order_confirmation">
-                Order Confirmation
-              </MenuItem>
-              <MenuItem value="receipt">
-                Receipt
-              </MenuItem>
-              <MenuItem value="password_reset">
-                Password Reset
-              </MenuItem>
-              <MenuItem value="welcome">
-                Welcome Email
-              </MenuItem>
-              <MenuItem value="inventory_alert">
-                Inventory Alert
-              </MenuItem>
+            <TextField select label="Select Template" fullWidth defaultValue="order_confirmation" size="small" margin="normal">
+              <MenuItem value="order_confirmation">Order Confirmation</MenuItem>
+              <MenuItem value="receipt">Receipt</MenuItem>
+              <MenuItem value="password_reset">Password Reset</MenuItem>
+              <MenuItem value="welcome">Welcome Email</MenuItem>
+              <MenuItem value="inventory_alert">Inventory Alert</MenuItem>
             </TextField>
           </Grid>
           <Grid item xs={12}>

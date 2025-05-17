@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   AppBar,
@@ -19,16 +15,10 @@ import {
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { navbarLinks } from '../../settings';
-import {
-  FiUser,
-  FiSettings,
-  FiLogOut,
-} from 'react-icons/fi';
+import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import { useLogout } from '@/hooks/useLogout';
 import SettingsModal from '@/SettingsModal';
-import eventBus, {
-  UI_EVENTS,
-} from '@/utils/eventBus';
+import eventBus, { UI_EVENTS } from '@/utils/eventBus';
 import { useCustomization } from '@/contexts/CustomizationContext';
 import NotificationDropdown from '@/components/notifications/NotificationDropdown';
 
@@ -38,26 +28,16 @@ interface NavbarProps {
   backgroundColor?: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({
-  drawerWidth,
-  onDrawerToggle,
-}) => {
-  const [anchorEl, setAnchorEl] =
-    useState<null | HTMLElement>(null);
-  const [isSettingsOpen, setIsSettingsOpen] =
-    useState(false);
+const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { isLoggingOut, logout } = useLogout();
   const open = Boolean(anchorEl);
   const theme = useTheme();
-  const isMobile = useMediaQuery(
-    theme.breakpoints.down('sm')
-  );
-  const { navbarColor, updateCustomization } =
-    useCustomization();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { navbarColor, updateCustomization } = useCustomization();
 
-  const handleClick = (
-    event: React.MouseEvent<HTMLElement>
-  ) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -78,36 +58,24 @@ const Navbar: React.FC<NavbarProps> = ({
   const appBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleCustomizationUpdate = (data: {
-      navbarColor?: string;
-      sidebarColor?: string;
-      logoUrl?: string;
-    }) => {
+    const handleCustomizationUpdate = (data: { navbarColor?: string; sidebarColor?: string; logoUrl?: string }) => {
       if (appBarRef.current && data.navbarColor) {
-        appBarRef.current.style.backgroundColor =
-          data.navbarColor;
+        appBarRef.current.style.backgroundColor = data.navbarColor;
       }
     };
 
-    eventBus.on(
-      UI_EVENTS.CUSTOMIZATION_UPDATED,
-      handleCustomizationUpdate
-    );
+    eventBus.on(UI_EVENTS.CUSTOMIZATION_UPDATED, handleCustomizationUpdate);
 
     handleCustomizationUpdate({ navbarColor });
 
     return () => {
-      eventBus.off(
-        UI_EVENTS.CUSTOMIZATION_UPDATED,
-        handleCustomizationUpdate
-      );
+      eventBus.off(UI_EVENTS.CUSTOMIZATION_UPDATED, handleCustomizationUpdate);
     };
   }, [navbarColor]);
 
   useEffect(() => {
     if (appBarRef.current) {
-      appBarRef.current.style.backgroundColor =
-        navbarColor;
+      appBarRef.current.style.backgroundColor = navbarColor;
     }
   }, [navbarColor]);
 
@@ -117,25 +85,19 @@ const Navbar: React.FC<NavbarProps> = ({
         position="fixed"
         ref={appBarRef}
         sx={{
-          width: isMobile
-            ? '100%'
-            : `calc(100% - ${drawerWidth}px)`,
+          width: isMobile ? '100%' : `calc(100% - ${drawerWidth}px)`,
           ml: isMobile ? 0 : `${drawerWidth}px`,
           right: 0,
-          transition:
-            'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
+          transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
           border: 'none',
-          zIndex: 1050, // Lower than sidebar to prevent overlap issues
+          zIndex: 1050,
           backgroundColor: navbarColor,
-          boxShadow:
-            '0 2px 10px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
         }}
       >
         <Toolbar
           sx={{
-            justifyContent: isMobile
-              ? 'space-between'
-              : 'flex-start',
+            justifyContent: isMobile ? 'space-between' : 'flex-start',
           }}
         >
           <IconButton
@@ -145,15 +107,13 @@ const Navbar: React.FC<NavbarProps> = ({
             onClick={onDrawerToggle}
             sx={{
               mr: 2,
-              backgroundColor:
-                'rgba(255, 255, 255, 0.05)',
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
               width: 40,
               height: 40,
               borderRadius: '8px',
               transition: 'all 0.3s ease',
               '&:hover': {
-                backgroundColor:
-                  'rgba(255, 255, 255, 0.15)',
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
                 transform: 'translateX(2px)',
               },
               '&:active': {
@@ -162,18 +122,14 @@ const Navbar: React.FC<NavbarProps> = ({
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              boxShadow:
-                '0 2px 8px rgba(0, 0, 0, 0.15)',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
             }}
           >
             <ChevronLeftIcon
               sx={{
                 fontSize: '1.5rem',
                 transition: 'transform 0.3s ease',
-                transform:
-                  drawerWidth === 80
-                    ? 'rotate(0deg)'
-                    : 'rotate(180deg)',
+                transform: drawerWidth === 80 ? 'rotate(0deg)' : 'rotate(180deg)',
               }}
             />
           </IconButton>
@@ -182,25 +138,17 @@ const Navbar: React.FC<NavbarProps> = ({
               display: 'flex',
               gap: 2,
               flexGrow: 1,
-              justifyContent: isMobile
-                ? 'center'
-                : 'flex-start',
+              justifyContent: isMobile ? 'center' : 'flex-start',
             }}
           >
             {navbarLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                passHref
-              >
+              <Link key={link.label} href={link.href} passHref>
                 <Typography
                   variant="body1"
                   sx={{
                     cursor: 'pointer',
                     color: 'inherit',
-                    fontSize: isMobile
-                      ? '0.875rem'
-                      : '1rem',
+                    fontSize: isMobile ? '0.875rem' : '1rem',
                   }}
                 >
                   {link.label}
@@ -229,8 +177,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 borderRadius: '8px',
                 transition: 'all 0.2s ease',
                 '&:hover': {
-                  backgroundColor:
-                    'rgba(255, 255, 255, 0.1)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
                 },
               }}
               onClick={handleClick}
@@ -240,25 +187,17 @@ const Navbar: React.FC<NavbarProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: isMobile
-                    ? '32px'
-                    : '36px',
-                  height: isMobile
-                    ? '32px'
-                    : '36px',
+                  width: isMobile ? '32px' : '36px',
+                  height: isMobile ? '32px' : '36px',
                   borderRadius: '50%',
-                  backgroundColor:
-                    'rgba(255, 255, 255, 0.15)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
                   backdropFilter: 'blur(8px)',
-                  boxShadow:
-                    '0 2px 6px rgba(0, 0, 0, 0.1)',
+                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <FiUser
                   style={{
-                    fontSize: isMobile
-                      ? '1.1rem'
-                      : '1.3rem',
+                    fontSize: isMobile ? '1.1rem' : '1.3rem',
                     color: '#ffffff',
                   }}
                 />
@@ -267,9 +206,7 @@ const Navbar: React.FC<NavbarProps> = ({
                 variant="body1"
                 sx={{
                   fontWeight: 500,
-                  fontSize: isMobile
-                    ? '0.875rem'
-                    : '0.95rem',
+                  fontSize: isMobile ? '0.875rem' : '0.95rem',
                   display: {
                     xs: 'none',
                     sm: 'block',
@@ -294,8 +231,7 @@ const Navbar: React.FC<NavbarProps> = ({
               slotProps={{
                 paper: {
                   style: {
-                    transition:
-                      'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    transition: 'opacity 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
                   },
                 },
               }}
@@ -310,17 +246,13 @@ const Navbar: React.FC<NavbarProps> = ({
                   maxHeight: '400px',
                   overflowY: 'auto',
                   borderRadius: '12px',
-                  boxShadow:
-                    '0 8px 24px rgba(0,0,0,0.12)',
-                  animation:
-                    'fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  animation: 'fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   overflow: 'hidden',
-                  border:
-                    '1px solid rgba(0,0,0,0.05)',
+                  border: '1px solid rgba(0,0,0,0.05)',
                   transform: 'translateY(0)',
                   opacity: 1,
-                  transition:
-                    'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                  transition: 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                 },
                 '& .MuiList-root': {
                   padding: '8px',
@@ -328,13 +260,11 @@ const Navbar: React.FC<NavbarProps> = ({
                 '@keyframes fadeIn': {
                   from: {
                     opacity: 0,
-                    transform:
-                      'translateY(-12px) scale(0.98)',
+                    transform: 'translateY(-12px) scale(0.98)',
                   },
                   to: {
                     opacity: 1,
-                    transform:
-                      'translateY(0) scale(1)',
+                    transform: 'translateY(0) scale(1)',
                   },
                 },
               }}
@@ -346,21 +276,18 @@ const Navbar: React.FC<NavbarProps> = ({
                   padding: '10px 16px',
                   margin: '2px 0',
                   transition: 'all 0.15s ease',
-                  animation:
-                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.05s',
                   opacity: 0,
                   transform: 'translateY(8px)',
                   '&:hover': {
-                    backgroundColor:
-                      'rgba(0,0,0,0.04)',
+                    backgroundColor: 'rgba(0,0,0,0.04)',
                     transform: 'translateY(-1px)',
                   },
                   '@keyframes fadeInItem': {
                     from: {
                       opacity: 0,
-                      transform:
-                        'translateY(8px)',
+                      transform: 'translateY(8px)',
                     },
                     to: {
                       opacity: 1,
@@ -394,21 +321,18 @@ const Navbar: React.FC<NavbarProps> = ({
                   padding: '10px 16px',
                   margin: '2px 0',
                   transition: 'all 0.15s ease',
-                  animation:
-                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.1s',
                   opacity: 0,
                   transform: 'translateY(8px)',
                   '&:hover': {
-                    backgroundColor:
-                      'rgba(0,0,0,0.04)',
+                    backgroundColor: 'rgba(0,0,0,0.04)',
                     transform: 'translateY(-1px)',
                   },
                   '@keyframes fadeInItem': {
                     from: {
                       opacity: 0,
-                      transform:
-                        'translateY(8px)',
+                      transform: 'translateY(8px)',
                     },
                     to: {
                       opacity: 1,
@@ -439,10 +363,8 @@ const Navbar: React.FC<NavbarProps> = ({
                 sx={{
                   padding: '0 8px',
                   my: 1,
-                  borderTop:
-                    '1px solid rgba(0,0,0,0.06)',
-                  animation:
-                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  borderTop: '1px solid rgba(0,0,0,0.06)',
+                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.15s',
                   opacity: 0,
                   '@keyframes fadeInItem': {
@@ -466,16 +388,14 @@ const Navbar: React.FC<NavbarProps> = ({
                   margin: '2px 0',
                   borderRadius: '8px',
                   transition: 'all 0.2s ease',
-                  animation:
-                    'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                  animation: 'fadeInItem 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   animationDelay: '0.2s',
                   opacity: 0,
                   transform: 'translateY(8px)',
                   '&:hover': {
                     backgroundColor: '#1a4589',
                     transform: 'translateY(-1px)',
-                    boxShadow:
-                      '0 4px 12px rgba(23, 58, 121, 0.2)',
+                    boxShadow: '0 4px 12px rgba(23, 58, 121, 0.2)',
                   },
                   '&.Mui-disabled': {
                     opacity: 0.7,
@@ -484,8 +404,7 @@ const Navbar: React.FC<NavbarProps> = ({
                   '@keyframes fadeInItem': {
                     from: {
                       opacity: 0,
-                      transform:
-                        'translateY(8px)',
+                      transform: 'translateY(8px)',
                     },
                     to: {
                       opacity: 1,
@@ -502,10 +421,7 @@ const Navbar: React.FC<NavbarProps> = ({
                       width: '100%',
                     }}
                   >
-                    <CircularProgress
-                      size={24}
-                      sx={{ color: 'white' }}
-                    />
+                    <CircularProgress size={24} sx={{ color: 'white' }} />
                   </Box>
                 ) : (
                   <>
@@ -515,10 +431,7 @@ const Navbar: React.FC<NavbarProps> = ({
                         color: 'white',
                       }}
                     >
-                      <FiLogOut
-                        fontSize="small"
-                        style={{ color: 'white' }}
-                      />
+                      <FiLogOut fontSize="small" style={{ color: 'white' }} />
                     </ListItemIcon>
                     <Typography
                       sx={{
@@ -539,9 +452,7 @@ const Navbar: React.FC<NavbarProps> = ({
         open={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         userId="current-user"
-        onCustomizationUpdated={
-          updateCustomization
-        }
+        onCustomizationUpdated={updateCustomization}
       />
     </>
   );

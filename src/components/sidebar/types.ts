@@ -36,10 +36,7 @@ export interface SubItemsProps {
   isExpanded: boolean;
   activeItem: string;
   textColor: string;
-  onItemClick: (
-    label: string,
-    parentLabel: string
-  ) => void;
+  onItemClick: (label: string, parentLabel: string) => void;
 }
 
 export interface SidebarProps {

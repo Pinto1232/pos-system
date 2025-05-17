@@ -1,18 +1,7 @@
 'use client';
 
-import React, {
-  useEffect,
-  useState,
-  Suspense,
-  lazy,
-} from 'react';
-import {
-  Box,
-  Typography,
-  useTheme,
-  useMediaQuery,
-  Skeleton,
-} from '@mui/material';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
+import { Box, Typography, useTheme, useMediaQuery, Skeleton } from '@mui/material';
 import { AuthContext } from '@/contexts/AuthContext';
 import styles from './dashboardMain.module.css';
 import ProductTableContainer from '../productTable/ProductTableContainer';
@@ -26,30 +15,18 @@ import ProductEditContainer from '../productEdit/ProductEditContainer';
 import SalesContainer from '../sales/salesContainer';
 import FeatureGuard from '../feature-access/FeatureGuard';
 
-// Lazy load the pricing packages client component
-const PricingPackagesClient = lazy(
-  () =>
-    import(
-      '@/app/pricing-packages/PricingPackagesClient'
-    )
-);
+const PricingPackagesClient = lazy(() => import('@/app/pricing-packages/PricingPackagesClient'));
 
 interface DashboardMainProps {
   activeSection: string;
 }
 
-const DashboardMain: React.FC<
-  DashboardMainProps
-> = ({ activeSection }) => {
-  const { authenticated } =
-    React.useContext(AuthContext);
+const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
+  const { authenticated } = React.useContext(AuthContext);
   const { stopLoading } = useSpinner();
   const theme = useTheme();
-  const isMobile = useMediaQuery(
-    theme.breakpoints.down('sm')
-  );
-  const [isDataLoaded, setIsDataLoaded] =
-    useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   useEffect(() => {
     const dataLoadingTimer = setTimeout(() => {
@@ -60,7 +37,6 @@ const DashboardMain: React.FC<
     return () => clearTimeout(dataLoadingTimer);
   }, [stopLoading]);
 
-  // Memoize the renderSection function to prevent unnecessary re-renders
   const renderSection = React.useCallback(() => {
     let sectionToRender;
 
@@ -79,12 +55,8 @@ const DashboardMain: React.FC<
               color="#000"
               gutterBottom
               sx={{
-                textAlign: isMobile
-                  ? 'center'
-                  : 'left',
-                fontSize: isMobile
-                  ? '1.25rem'
-                  : '2.5rem',
+                textAlign: isMobile ? 'center' : 'left',
+                fontSize: isMobile ? '1.25rem' : '2.5rem',
                 fontWeight: 600,
                 mb: isMobile ? 2 : 3,
                 px: isMobile ? 1 : 2,
@@ -161,16 +133,11 @@ const DashboardMain: React.FC<
                       py: 4,
                     }}
                   >
-                    <Skeleton
-                      variant="rectangular"
-                      height={400}
-                    />
+                    <Skeleton variant="rectangular" height={400} />
                   </Box>
                 }
               >
-                <PricingPackagesClient
-                  initialPackages={[]}
-                />
+                <PricingPackagesClient initialPackages={[]} />
               </Suspense>
             </Box>
           </FeatureGuard>
@@ -209,33 +176,15 @@ const DashboardMain: React.FC<
           <Skeleton
             variant="text"
             sx={{
-              fontSize: isMobile
-                ? '1.5rem'
-                : '2.5rem',
+              fontSize: isMobile ? '1.5rem' : '2.5rem',
               width: isMobile ? '50%' : '30%',
               mb: 2,
             }}
           />
-          <Skeleton
-            variant="rectangular"
-            height={isMobile ? 50 : 60}
-            sx={{ mb: 2, borderRadius: 1 }}
-          />
-          <Skeleton
-            variant="rectangular"
-            height={isMobile ? 200 : 300}
-            sx={{ mb: 2, borderRadius: 1 }}
-          />
-          <Skeleton
-            variant="rectangular"
-            height={isMobile ? 150 : 200}
-            sx={{ mb: 2, borderRadius: 1 }}
-          />
-          <Skeleton
-            variant="rectangular"
-            height={isMobile ? 150 : 200}
-            sx={{ borderRadius: 1 }}
-          />
+          <Skeleton variant="rectangular" height={isMobile ? 50 : 60} sx={{ mb: 2, borderRadius: 1 }} />
+          <Skeleton variant="rectangular" height={isMobile ? 200 : 300} sx={{ mb: 2, borderRadius: 1 }} />
+          <Skeleton variant="rectangular" height={isMobile ? 150 : 200} sx={{ mb: 2, borderRadius: 1 }} />
+          <Skeleton variant="rectangular" height={isMobile ? 150 : 200} sx={{ borderRadius: 1 }} />
         </Box>
       )}
     </div>

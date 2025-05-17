@@ -1,31 +1,18 @@
-import React, {
-  useState,
-  useEffect,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Navbar from '@/components/sidebar/Navbar';
 import DashboardMainContainer from '../dashboardMain/dashboardMainContainer';
-import SettingsModal, {
-  UserCustomization,
-} from '@/SettingsModal';
+import SettingsModal, { UserCustomization } from '@/SettingsModal';
 import { useQuery } from '@tanstack/react-query';
 import useKeycloakUser from '@/hooks/useKeycloakUser';
 import { mockFetchCustomization } from '@/api/mockUserCustomization';
 
-const fetchCustomization = async (
-  userId: string
-): Promise<UserCustomization> => {
+const fetchCustomization = async (userId: string): Promise<UserCustomization> => {
   try {
-    console.log(
-      `Fetching user customization for user ID: ${userId}`
-    );
+    console.log(`Fetching user customization for user ID: ${userId}`);
 
-    // Special handling for current-user endpoint
-    const endpoint =
-      userId === 'current-user'
-        ? '/api/UserCustomization/current-user'
-        : `/api/UserCustomization/${userId}`;
+    const endpoint = userId === 'current-user' ? '/api/UserCustomization/current-user' : `/api/UserCustomization/${userId}`;
 
     console.log(`Using endpoint: ${endpoint}`);
 
@@ -33,24 +20,16 @@ const fetchCustomization = async (
 
     if (response.ok) {
       const data = await response.json();
-      console.log(
-        'Fetched customization from API:',
-        data
-      );
+      console.log('Fetched customization from API:', JSON.stringify(data, null, 2));
       return data;
     } else {
-      console.warn(
-        `API call failed with status ${response.status}, falling back to mock data`
-      );
-      // Fall back to mock data if API call fails
+      console.warn(`API call failed with status ${response.status}, falling back to mock data`);
+
       return mockFetchCustomization(userId);
     }
   } catch (error) {
-    console.error(
-      'Error fetching customization, using mock data:',
-      error
-    );
-    // Fall back to mock data if there's an error
+    console.error('Error fetching customization, using mock data:', JSON.stringify(error, null, 2));
+
     return mockFetchCustomization(userId);
   }
 };
@@ -65,9 +44,7 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-const DashboardLayout: React.FC<
-  DashboardLayoutProps
-> = ({
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   isDrawerOpen,
   onDrawerToggle,
   backgroundColor,
@@ -75,124 +52,67 @@ const DashboardLayout: React.FC<
   iconColor = '#fff',
   navbarBgColor,
 }) => {
-  // Get the authenticated user's information from Keycloak
-  const { userInfo, isLoading: isUserLoading } =
-    useKeycloakUser();
+  const { userInfo, isLoading: isUserLoading } = useKeycloakUser();
 
-  // Use the user's sub (subject identifier) from Keycloak as the userId
-  // Fall back to 'current-user' if not available
   const userId = userInfo?.sub || 'current-user';
 
-  console.log(
-    'Current authenticated user:',
-    userInfo?.name || 'Unknown'
-  );
-  console.log(
-    'Using user ID for customization:',
-    userId
-  );
+  console.log('Current authenticated user:', JSON.stringify(userInfo?.name || 'Unknown', null, 2));
+  console.log('Using user ID for customization:', JSON.stringify(userId, null, 2));
 
-  const { data, isSuccess } = useQuery<
-    UserCustomization,
-    Error
-  >({
+  const { data, isSuccess } = useQuery<UserCustomization, Error>({
     queryKey: ['userCustomization', userId],
     queryFn: () => fetchCustomization(userId),
-    // Only fetch when we have user info or know we're using the fallback
+
     enabled: !isUserLoading,
   });
 
-  const [customization, setCustomization] =
-    useState<UserCustomization | null>(null);
-  const [
-    openSettingsModal,
-    setOpenSettingsModal,
-  ] = useState(false);
-  const [
-    initialSettingsTab,
-    setInitialSettingsTab,
-  ] = useState('General Settings');
-  const [activeSection, setActiveSection] =
-    useState(() => {
-      // Initialize from localStorage if available, otherwise default to Dashboard
-      try {
-        const savedActiveItem =
-          localStorage.getItem(
-            'sidebarActiveItem'
-          );
-        return savedActiveItem || 'Dashboard';
-      } catch (error) {
-        console.error(
-          'Error reading active section from localStorage:',
-          error
-        );
-        return 'Dashboard';
-      }
-    });
+  const [customization, setCustomization] = useState<UserCustomization | null>(null);
+  const [openSettingsModal, setOpenSettingsModal] = useState(false);
+  const [initialSettingsTab, setInitialSettingsTab] = useState('General Settings');
+  const [activeSection, setActiveSection] = useState(() => {
+    try {
+      const savedActiveItem = localStorage.getItem('sidebarActiveItem');
+      return savedActiveItem || 'Dashboard';
+    } catch (error) {
+      console.error('Error reading active section from localStorage:', JSON.stringify(error, null, 2));
+      return 'Dashboard';
+    }
+  });
 
-  // Update activeSection when localStorage changes (for cross-tab synchronization)
   useEffect(() => {
-    const handleStorageChange = (
-      e: StorageEvent
-    ) => {
-      if (
-        e.key === 'sidebarActiveItem' &&
-        e.newValue
-      ) {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'sidebarActiveItem' && e.newValue) {
         setActiveSection(e.newValue);
       }
     };
 
-    window.addEventListener(
-      'storage',
-      handleStorageChange
-    );
+    window.addEventListener('storage', handleStorageChange);
 
     return () => {
-      window.removeEventListener(
-        'storage',
-        handleStorageChange
-      );
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
   useEffect(() => {
     if (isSuccess && data) {
-      console.log(
-        'Dashboard received customization data:',
-        data
-      );
-      console.log(
-        'Tax settings in dashboard:',
-        data.taxSettings
-      );
+      console.log('Dashboard received customization data:', JSON.stringify(data, null, 2));
+      console.log('Tax settings in dashboard:', JSON.stringify(data.taxSettings, null, 2));
       setCustomization(data);
     }
   }, [isSuccess, data]);
 
-  // Listen for events to open settings modal with specific tab
   useEffect(() => {
-    const handleOpenSettingsModal = (
-      event: CustomEvent
-    ) => {
+    const handleOpenSettingsModal = (event: CustomEvent) => {
       if (event.detail?.initialTab) {
-        setInitialSettingsTab(
-          event.detail.initialTab
-        );
+        setInitialSettingsTab(event.detail.initialTab);
       }
       setOpenSettingsModal(true);
     };
 
-    window.addEventListener(
-      'openSettingsModal',
-      handleOpenSettingsModal as EventListener
-    );
+    window.addEventListener('openSettingsModal', handleOpenSettingsModal as EventListener);
 
     return () => {
-      window.removeEventListener(
-        'openSettingsModal',
-        handleOpenSettingsModal as EventListener
-      );
+      window.removeEventListener('openSettingsModal', handleOpenSettingsModal as EventListener);
     };
   }, []);
 
@@ -204,28 +124,13 @@ const DashboardLayout: React.FC<
     setOpenSettingsModal(false);
   };
 
-  const sidebarBackground =
-    customization?.sidebarColor ||
-    backgroundColor ||
-    '#173A79';
-  const logoUrl =
-    customization?.logoUrl || '/Pisval_Logo.jpg';
-  const navbarBg =
-    customization?.navbarColor ||
-    navbarBgColor ||
-    '#000000';
+  const sidebarBackground = customization?.sidebarColor || backgroundColor || '#173A79';
+  const logoUrl = customization?.logoUrl || '/Pisval_Logo.jpg';
+  const navbarBg = customization?.navbarColor || navbarBgColor || '#000000';
 
-  const handleCustomizationUpdated = (
-    updated: UserCustomization
-  ) => {
-    console.log(
-      'Customization updated in dashboard:',
-      updated
-    );
-    console.log(
-      'Updated tax settings:',
-      updated.taxSettings
-    );
+  const handleCustomizationUpdated = (updated: UserCustomization) => {
+    console.log('Customization updated in dashboard:', JSON.stringify(updated, null, 2));
+    console.log('Updated tax settings:', JSON.stringify(updated.taxSettings, null, 2));
     setCustomization(updated);
   };
 
@@ -235,18 +140,15 @@ const DashboardLayout: React.FC<
         display: 'grid',
         gridTemplateColumns: {
           xs: '1fr',
-          sm: isDrawerOpen
-            ? '320px 1fr'
-            : '80px 1fr',
+          sm: isDrawerOpen ? '320px 1fr' : '80px 1fr',
         },
         gridTemplateRows: '1fr',
         minHeight: '100vh',
         bgcolor: '#F3F4F6',
-        transition:
-          'grid-template-columns 0.3s ease',
+        transition: 'grid-template-columns 0.3s ease',
       }}
     >
-      {/* Sidebar in its own grid column */}
+      {}
       <Box
         sx={{
           gridColumn: '1 / 2',
@@ -267,30 +169,24 @@ const DashboardLayout: React.FC<
           onSettingsClick={handleSettingsClick}
           onSectionSelect={(section) => {
             setActiveSection(section);
-            localStorage.setItem(
-              'sidebarActiveItem',
-              section
-            );
+            localStorage.setItem('sidebarActiveItem', section);
           }}
           handleItemClick={(item) => {
             console.log(`Item clicked: ${item}`);
             setActiveSection(item);
-            localStorage.setItem(
-              'sidebarActiveItem',
-              item
-            );
+            localStorage.setItem('sidebarActiveItem', item);
           }}
           logoUrl={logoUrl}
         />
       </Box>
 
-      {/* Main content in its own grid column */}
+      {}
       <Box
         component="main"
         sx={{
           gridColumn: {
-            xs: '1 / 2', // On mobile, take full width
-            sm: '2 / 3', // On desktop, take second column
+            xs: '1 / 2',
+            sm: '2 / 3',
           },
           gridRow: '1 / 2',
           display: 'flex',
@@ -300,35 +196,27 @@ const DashboardLayout: React.FC<
           height: '100vh',
         }}
       >
-        <Navbar
-          drawerWidth={isDrawerOpen ? 320 : 80}
-          onDrawerToggle={onDrawerToggle}
-          backgroundColor={navbarBg}
-        />
+        <Navbar drawerWidth={isDrawerOpen ? 320 : 80} onDrawerToggle={onDrawerToggle} backgroundColor={navbarBg} />
 
         <Box
           sx={{
             flexGrow: 1,
             overflow: 'auto',
-            pt: 8, // Space for fixed navbar
+            pt: 8,
             pb: 2,
             px: { xs: 1, sm: 2 },
             boxSizing: 'border-box',
             width: '100%',
           }}
         >
-          <DashboardMainContainer
-            activeSection={activeSection}
-          />
+          <DashboardMainContainer activeSection={activeSection} />
         </Box>
       </Box>
       <SettingsModal
         open={openSettingsModal}
         onClose={handleCloseSettings}
         userId={userId}
-        onCustomizationUpdated={
-          handleCustomizationUpdated
-        }
+        onCustomizationUpdated={handleCustomizationUpdated}
         initialSetting={initialSettingsTab}
       />
     </Box>

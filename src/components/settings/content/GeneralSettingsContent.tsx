@@ -1,16 +1,8 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-} from '@mui/material';
+import { Box, Typography, TextField, Button } from '@mui/material';
 import Image from 'next/image';
 import { FaPaintBrush } from 'react-icons/fa';
-import {
-  SketchPicker,
-  ColorResult,
-} from 'react-color';
+import { SketchPicker, ColorResult } from 'react-color';
 
 interface GeneralSettingsContentProps {
   sidebarColor: string;
@@ -19,25 +11,13 @@ interface GeneralSettingsContentProps {
   setNavbarColor: (color: string) => void;
   logoPreview: string;
   showSidebarColorPicker: boolean;
-  setShowSidebarColorPicker: (
-    show: boolean
-  ) => void;
+  setShowSidebarColorPicker: (show: boolean) => void;
   showNavbarColorPicker: boolean;
-  setShowNavbarColorPicker: (
-    show: boolean
-  ) => void;
-  handleLogoFileChange: (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => void;
+  setShowNavbarColorPicker: (show: boolean) => void;
+  handleLogoFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-/**
- * Component for general settings content
- * Handles appearance settings like colors and logo
- */
-const GeneralSettingsContent: React.FC<
-  GeneralSettingsContentProps
-> = ({
+const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
   sidebarColor,
   setSidebarColor,
   navbarColor,
@@ -75,19 +55,11 @@ const GeneralSettingsContent: React.FC<
             bgcolor: '#f9f9f9',
           }}
         >
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-          >
+          <Typography variant="subtitle1" fontWeight="bold">
             Company Logo
           </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mb: 1 }}
-          >
-            Upload your company logo to display in
-            the application.
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            Upload your company logo to display in the application.
           </Typography>
 
           <Box
@@ -130,10 +102,7 @@ const GeneralSettingsContent: React.FC<
                     unoptimized
                   />
                 ) : (
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                  >
+                  <Typography variant="body2" color="text.secondary">
                     No logo
                   </Typography>
                 )}
@@ -145,13 +114,8 @@ const GeneralSettingsContent: React.FC<
                   gap: 1,
                 }}
               >
-                <Typography variant="body2">
-                  Recommended size: 200x200 pixels
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                >
+                <Typography variant="body2">Recommended size: 200x200 pixels</Typography>
+                <Typography variant="body2" color="text.secondary">
                   Supported formats: JPG, PNG, SVG
                 </Typography>
               </Box>
@@ -176,12 +140,7 @@ const GeneralSettingsContent: React.FC<
               }}
             >
               Upload Logo
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleLogoFileChange}
-                style={{ display: 'none' }}
-              />
+              <input type="file" accept="image/*" onChange={handleLogoFileChange} style={{ display: 'none' }} />
             </Button>
           </Box>
         </Box>
@@ -198,26 +157,15 @@ const GeneralSettingsContent: React.FC<
             mt: 2,
           }}
         >
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-          >
+          <Typography variant="subtitle1" fontWeight="bold">
             Theme Colors
           </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mb: 1 }}
-          >
-            Customize the colors of your
-            application interface.
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            Customize the colors of your application interface.
           </Typography>
 
           <Box sx={{ mb: 3 }}>
-            <Typography
-              variant="body2"
-              sx={{ mb: 1 }}
-            >
+            <Typography variant="body2" sx={{ mb: 1 }}>
               Theme Presets
             </Typography>
             <Box
@@ -252,9 +200,7 @@ const GeneralSettingsContent: React.FC<
                 <Box
                   key={theme.name}
                   onClick={() => {
-                    setSidebarColor(
-                      theme.sidebar
-                    );
+                    setSidebarColor(theme.sidebar);
                     setNavbarColor(theme.navbar);
                   }}
                   sx={{
@@ -294,19 +240,13 @@ const GeneralSettingsContent: React.FC<
                       }}
                     />
                   </Box>
-                  <Typography variant="caption">
-                    {theme.name}
-                  </Typography>
+                  <Typography variant="caption">{theme.name}</Typography>
                 </Box>
               ))}
               <Box
                 onClick={() => {
-                  setSidebarColor(
-                    DEFAULT_SIDEBAR_COLOR
-                  );
-                  setNavbarColor(
-                    DEFAULT_NAVBAR_COLOR
-                  );
+                  setSidebarColor(DEFAULT_SIDEBAR_COLOR);
+                  setNavbarColor(DEFAULT_NAVBAR_COLOR);
                 }}
                 sx={{
                   display: 'flex',
@@ -323,9 +263,7 @@ const GeneralSettingsContent: React.FC<
                   },
                 }}
               >
-                <Typography variant="caption">
-                  Reset to Default
-                </Typography>
+                <Typography variant="caption">Reset to Default</Typography>
               </Box>
             </Box>
           </Box>
@@ -345,10 +283,7 @@ const GeneralSettingsContent: React.FC<
                 gap: 2,
               }}
             >
-              <Typography
-                variant="body1"
-                sx={{ width: '120px' }}
-              >
+              <Typography variant="body1" sx={{ width: '120px' }}>
                 Sidebar Color
               </Typography>
               <Box
@@ -371,33 +306,11 @@ const GeneralSettingsContent: React.FC<
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  onClick={() =>
-                    setShowSidebarColorPicker(
-                      !showSidebarColorPicker
-                    )
-                  }
+                  onClick={() => setShowSidebarColorPicker(!showSidebarColorPicker)}
                 >
-                  <FaPaintBrush
-                    color={
-                      sidebarColor ===
-                        '#ffffff' ||
-                      sidebarColor === '#f5f5f5'
-                        ? '#000'
-                        : '#fff'
-                    }
-                    size={16}
-                  />
+                  <FaPaintBrush color={sidebarColor === '#ffffff' || sidebarColor === '#f5f5f5' ? '#000' : '#fff'} size={16} />
                 </Box>
-                <TextField
-                  value={sidebarColor}
-                  onChange={(e) =>
-                    setSidebarColor(
-                      e.target.value
-                    )
-                  }
-                  size="small"
-                  sx={{ width: '140px' }}
-                />
+                <TextField value={sidebarColor} onChange={(e) => setSidebarColor(e.target.value)} size="small" sx={{ width: '140px' }} />
                 {showSidebarColorPicker && (
                   <Box
                     sx={{
@@ -405,10 +318,8 @@ const GeneralSettingsContent: React.FC<
                       zIndex: 2,
                       mt: 20,
                       ml: 5,
-                      boxShadow:
-                        '0 4px 12px rgba(0,0,0,0.15)',
-                      maxHeight:
-                        'calc(100vh - 100px)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      maxHeight: 'calc(100vh - 100px)',
                       overflow: 'auto',
                     }}
                   >
@@ -421,11 +332,7 @@ const GeneralSettingsContent: React.FC<
                         left: 0,
                         zIndex: 1,
                       }}
-                      onClick={() =>
-                        setShowSidebarColorPicker(
-                          false
-                        )
-                      }
+                      onClick={() => setShowSidebarColorPicker(false)}
                     />
                     <Box
                       sx={{
@@ -433,16 +340,7 @@ const GeneralSettingsContent: React.FC<
                         zIndex: 2,
                       }}
                     >
-                      <SketchPicker
-                        color={sidebarColor}
-                        onChange={(
-                          color: ColorResult
-                        ) =>
-                          setSidebarColor(
-                            color.hex
-                          )
-                        }
-                      />
+                      <SketchPicker color={sidebarColor} onChange={(color: ColorResult) => setSidebarColor(color.hex)} />
                     </Box>
                   </Box>
                 )}
@@ -450,11 +348,7 @@ const GeneralSettingsContent: React.FC<
               <Button
                 variant="outlined"
                 size="small"
-                onClick={() =>
-                  setSidebarColor(
-                    DEFAULT_SIDEBAR_COLOR
-                  )
-                }
+                onClick={() => setSidebarColor(DEFAULT_SIDEBAR_COLOR)}
                 sx={{
                   textTransform: 'none',
                   borderRadius: 4,
@@ -473,10 +367,7 @@ const GeneralSettingsContent: React.FC<
                 gap: 2,
               }}
             >
-              <Typography
-                variant="body1"
-                sx={{ width: '120px' }}
-              >
+              <Typography variant="body1" sx={{ width: '120px' }}>
                 Navbar Color
               </Typography>
               <Box
@@ -499,30 +390,11 @@ const GeneralSettingsContent: React.FC<
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  onClick={() =>
-                    setShowNavbarColorPicker(
-                      !showNavbarColorPicker
-                    )
-                  }
+                  onClick={() => setShowNavbarColorPicker(!showNavbarColorPicker)}
                 >
-                  <FaPaintBrush
-                    color={
-                      navbarColor === '#ffffff' ||
-                      navbarColor === '#f5f5f5'
-                        ? '#000'
-                        : '#fff'
-                    }
-                    size={16}
-                  />
+                  <FaPaintBrush color={navbarColor === '#ffffff' || navbarColor === '#f5f5f5' ? '#000' : '#fff'} size={16} />
                 </Box>
-                <TextField
-                  value={navbarColor}
-                  onChange={(e) =>
-                    setNavbarColor(e.target.value)
-                  }
-                  size="small"
-                  sx={{ width: '140px' }}
-                />
+                <TextField value={navbarColor} onChange={(e) => setNavbarColor(e.target.value)} size="small" sx={{ width: '140px' }} />
                 {showNavbarColorPicker && (
                   <Box
                     sx={{
@@ -530,10 +402,8 @@ const GeneralSettingsContent: React.FC<
                       zIndex: 2,
                       mt: 20,
                       ml: 5,
-                      boxShadow:
-                        '0 4px 12px rgba(0,0,0,0.15)',
-                      maxHeight:
-                        'calc(100vh - 100px)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      maxHeight: 'calc(100vh - 100px)',
                       overflow: 'auto',
                     }}
                   >
@@ -546,11 +416,7 @@ const GeneralSettingsContent: React.FC<
                         left: 0,
                         zIndex: 1,
                       }}
-                      onClick={() =>
-                        setShowNavbarColorPicker(
-                          false
-                        )
-                      }
+                      onClick={() => setShowNavbarColorPicker(false)}
                     />
                     <Box
                       sx={{
@@ -558,16 +424,7 @@ const GeneralSettingsContent: React.FC<
                         zIndex: 2,
                       }}
                     >
-                      <SketchPicker
-                        color={navbarColor}
-                        onChange={(
-                          color: ColorResult
-                        ) =>
-                          setNavbarColor(
-                            color.hex
-                          )
-                        }
-                      />
+                      <SketchPicker color={navbarColor} onChange={(color: ColorResult) => setNavbarColor(color.hex)} />
                     </Box>
                   </Box>
                 )}
@@ -575,11 +432,7 @@ const GeneralSettingsContent: React.FC<
               <Button
                 variant="outlined"
                 size="small"
-                onClick={() =>
-                  setNavbarColor(
-                    DEFAULT_NAVBAR_COLOR
-                  )
-                }
+                onClick={() => setNavbarColor(DEFAULT_NAVBAR_COLOR)}
                 sx={{
                   textTransform: 'none',
                   borderRadius: 4,
@@ -605,19 +458,11 @@ const GeneralSettingsContent: React.FC<
             mt: 2,
           }}
         >
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-          >
+          <Typography variant="subtitle1" fontWeight="bold">
             Interface Settings
           </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mb: 1 }}
-          >
-            Configure how the application
-            interface behaves.
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            Configure how the application interface behaves.
           </Typography>
 
           <Box
@@ -635,9 +480,7 @@ const GeneralSettingsContent: React.FC<
                 justifyContent: 'space-between',
               }}
             >
-              <Typography variant="body1">
-                Compact Mode
-              </Typography>
+              <Typography variant="body1">Compact Mode</Typography>
               <Button
                 variant="outlined"
                 color="inherit"
@@ -658,9 +501,7 @@ const GeneralSettingsContent: React.FC<
                 justifyContent: 'space-between',
               }}
             >
-              <Typography variant="body1">
-                Dark Mode
-              </Typography>
+              <Typography variant="body1">Dark Mode</Typography>
               <Button
                 variant="outlined"
                 color="inherit"
@@ -681,9 +522,7 @@ const GeneralSettingsContent: React.FC<
                 justifyContent: 'space-between',
               }}
             >
-              <Typography variant="body1">
-                Animations
-              </Typography>
+              <Typography variant="body1">Animations</Typography>
               <Button
                 variant="contained"
                 color="primary"

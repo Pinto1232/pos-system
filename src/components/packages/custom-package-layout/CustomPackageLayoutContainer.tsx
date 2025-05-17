@@ -1,17 +1,11 @@
 'use client';
 
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { apiClient } from '@/api/axiosClient';
 import CustomPackageLayout from './CustomPackageLayout';
 import WaveLoading from '@/components/ui/WaveLoading/WaveLoading';
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, {
-  AlertProps,
-} from '@mui/material/Alert';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useSuccessModal } from '@/contexts/SuccessModalContext';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { useAddOns } from '@/hooks/useAddOns';
@@ -33,67 +27,30 @@ interface CustomPackageLayoutContainerProps {
   selectedPackage: Package;
 }
 
-const Alert = React.forwardRef<
-  HTMLDivElement,
-  AlertProps
->(function Alert(props, ref) {
-  return (
-    <MuiAlert
-      elevation={6}
-      ref={ref}
-      variant="filled"
-      {...props}
-    />
-  );
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const CustomPackageLayoutContainer: React.FC<
-  CustomPackageLayoutContainerProps
-> = ({ selectedPackage }) => {
+const CustomPackageLayoutContainer: React.FC<CustomPackageLayoutContainerProps> = ({ selectedPackage }) => {
   const { showSuccessModal } = useSuccessModal();
   const { currency } = useCurrency();
-  const [currentStep, setCurrentStep] =
-    useState(0);
-  const [steps, setSteps] = useState<string[]>(
-    []
+  const [currentStep, setCurrentStep] = useState(0);
+  const [steps, setSteps] = useState<string[]>([]);
+  const [features, setFeatures] = useState<Feature[]>([]);
+  const [addOns, setAddOns] = useState<AddOn[]>([]);
+  const [usagePricing, setUsagePricing] = useState<UsagePricing[]>([]);
+  const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([]);
+  const [selectedAddOns, setSelectedAddOns] = useState<AddOn[]>([]);
+  const [usageQuantities, setUsageQuantities] = useState<Record<number, number>>({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [calculatedPrice, setCalculatedPrice] = useState<number>(
+    selectedPackage.type.toLowerCase().includes('custom') && selectedPackage.price === 0 ? 129.99 : selectedPackage.price
   );
-  const [features, setFeatures] = useState<
-    Feature[]
-  >([]);
-  const [addOns, setAddOns] = useState<AddOn[]>(
-    []
-  );
-  const [usagePricing, setUsagePricing] =
-    useState<UsagePricing[]>([]);
-  const [selectedFeatures, setSelectedFeatures] =
-    useState<Feature[]>([]);
-  const [selectedAddOns, setSelectedAddOns] =
-    useState<AddOn[]>([]);
-  const [usageQuantities, setUsageQuantities] =
-    useState<Record<number, number>>({});
-  const [isLoading, setIsLoading] =
-    useState(true);
-  // Initialize with the base price from the selected package
-  // For custom packages, this will typically be 129.99 (set in PricingPackageCard)
-  const [calculatedPrice, setCalculatedPrice] =
-    useState<number>(
-      selectedPackage.type
-        .toLowerCase()
-        .includes('custom') &&
-        selectedPackage.price === 0
-        ? 129.99
-        : selectedPackage.price
-    );
-  const [snackbarOpen, setSnackbarOpen] =
-    useState(false);
-  const [snackbarMessage, setSnackbarMessage] =
-    useState('');
-  const [showLoginForm, setShowLoginForm] =
-    useState(false);
-  const [
-    enterpriseFeatures,
-    setEnterpriseFeatures,
-  ] = useState<Record<string, boolean>>({
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [enterpriseFeatures, setEnterpriseFeatures] = useState<Record<string, boolean>>({
     realTimeAnalytics: false,
     customReports: false,
     dataExport: false,
@@ -129,91 +86,48 @@ const CustomPackageLayoutContainer: React.FC<
   );
 
   const defaultStepsNonCustom = React.useMemo(
-    () => [
-      'Package Details',
-      'Select Payment Plan',
-      'Choose Support Level',
-      'Configure Enterprise Features',
-      'Review & Confirm',
-    ],
+    () => ['Package Details', 'Select Payment Plan', 'Choose Support Level', 'Configure Enterprise Features', 'Review & Confirm'],
     []
   );
 
   const buildSteps = useCallback(() => {
-    const builtSteps =
-      selectedPackage.isCustomizable
-        ? [...defaultStepsCustom]
-        : [...defaultStepsNonCustom];
-    console.log('Built steps:', builtSteps);
+    const builtSteps = selectedPackage.isCustomizable ? [...defaultStepsCustom] : [...defaultStepsNonCustom];
+    console.log('Built steps:', JSON.stringify(builtSteps, null, 2));
     return builtSteps;
-  }, [
-    selectedPackage.isCustomizable,
-    defaultStepsCustom,
-    defaultStepsNonCustom,
-  ]);
+  }, [selectedPackage.isCustomizable, defaultStepsCustom, defaultStepsNonCustom]);
 
-  // Use the new useAddOns hook to fetch add-ons
-  const {
-    data: addOnsResponse,
-    isLoading: isAddOnsLoading,
-  } = useAddOns({
+  const { data: addOnsResponse, isLoading: isAddOnsLoading } = useAddOns({
     isActive: true,
   });
 
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        // Fetch core features from the original endpoint
-        const featuresResponse =
-          await apiClient.get<FeaturesResponse>(
-            '/api/pricingpackages/custom/features'
-          );
-        console.log(
-          'Fetched core features response:',
-          featuresResponse.data
-        );
+        const featuresResponse = await apiClient.get<FeaturesResponse>('/api/pricingpackages/custom/features');
+        console.log('Fetched core features response:', JSON.stringify(featuresResponse.data, null, 2));
 
-        const coreFeatures =
-          featuresResponse.data.coreFeatures ||
-          [];
-        const usageData =
-          featuresResponse.data
-            .usageBasedPricing || [];
+        const coreFeatures = featuresResponse.data.coreFeatures || [];
+        const usageData = featuresResponse.data.usageBasedPricing || [];
 
         setFeatures(coreFeatures);
         setUsagePricing(usageData);
 
-        const initialUsageQuantities =
-          usageData.reduce(
-            (
-              acc: Record<number, number>,
-              curr: UsagePricing
-            ) => ({
-              ...acc,
-              [curr.id]: curr.defaultValue,
-            }),
-            {} as Record<number, number>
-          );
-        setUsageQuantities(
-          initialUsageQuantities
+        const initialUsageQuantities = usageData.reduce(
+          (acc: Record<number, number>, curr: UsagePricing) => ({
+            ...acc,
+            [curr.id]: curr.defaultValue,
+          }),
+          {} as Record<number, number>
         );
-        console.log(
-          'Initial usage quantities:',
-          initialUsageQuantities
-        );
+        setUsageQuantities(initialUsageQuantities);
+        console.log('Initial usage quantities:', JSON.stringify(initialUsageQuantities, null, 2));
 
         const newSteps = buildSteps();
         setSteps(newSteps);
         setCurrentStep(0);
-        console.log(
-          'Initialized steps:',
-          newSteps
-        );
+        console.log('Initialized steps:', JSON.stringify(newSteps, null, 2));
       } catch (error) {
-        console.error(
-          'Failed to load package config:',
-          error
-        );
+        console.error('Failed to load package config:', JSON.stringify(error, null, 2));
         const newSteps = buildSteps();
         setSteps(newSteps);
         setCurrentStep(0);
@@ -230,83 +144,45 @@ const CustomPackageLayoutContainer: React.FC<
       setSteps(newSteps);
       setIsLoading(false);
       setCurrentStep(0);
-      console.log(
-        'Non-customizable package. Steps set to:',
-        newSteps
-      );
+      console.log('Non-customizable package. Steps set to:', JSON.stringify(newSteps, null, 2));
     }
   }, [selectedPackage, buildSteps]);
 
-  // Update addOns state when the data from useAddOns hook changes
   useEffect(() => {
     if (addOnsResponse?.data) {
-      console.log(
-        'AddOns data from React Query:',
-        addOnsResponse.data
-      );
+      console.log('AddOns data from React Query:', JSON.stringify(addOnsResponse.data, null, 2));
       setAddOns(addOnsResponse.data);
     }
   }, [addOnsResponse]);
 
-  const validateCurrentStep =
-    useCallback((): boolean => {
-      const currentLabel =
-        steps[currentStep]?.trim() || '';
-      if (
-        currentLabel === 'Select Core Features'
-      ) {
-        const requiredMissing = features.some(
-          (feature) =>
-            feature.isRequired &&
-            !selectedFeatures.some(
-              (f) => f.id === feature.id
-            )
-        );
-        if (requiredMissing) {
-          setSnackbarMessage(
-            'Please select all required features.'
-          );
+  const validateCurrentStep = useCallback((): boolean => {
+    const currentLabel = steps[currentStep]?.trim() || '';
+    if (currentLabel === 'Select Core Features') {
+      const requiredMissing = features.some((feature) => feature.isRequired && !selectedFeatures.some((f) => f.id === feature.id));
+      if (requiredMissing) {
+        setSnackbarMessage('Please select all required features.');
+        setSnackbarOpen(true);
+        return false;
+      }
+    }
+    if (currentLabel === 'Configure Usage') {
+      for (const usage of usagePricing) {
+        const value = usageQuantities[usage.id] ?? usage.defaultValue;
+        if (value < usage.minValue || value > usage.maxValue) {
+          setSnackbarMessage(`For ${usage.name}, please enter a value between ${usage.minValue} and ${usage.maxValue}.`);
           setSnackbarOpen(true);
           return false;
         }
       }
-      if (currentLabel === 'Configure Usage') {
-        for (const usage of usagePricing) {
-          const value =
-            usageQuantities[usage.id] ??
-            usage.defaultValue;
-          if (
-            value < usage.minValue ||
-            value > usage.maxValue
-          ) {
-            setSnackbarMessage(
-              `For ${usage.name}, please enter a value between ${usage.minValue} and ${usage.maxValue}.`
-            );
-            setSnackbarOpen(true);
-            return false;
-          }
-        }
-      }
-      return true;
-    }, [
-      steps,
-      currentStep,
-      features,
-      selectedFeatures,
-      usageQuantities,
-      usagePricing,
-    ]);
+    }
+    return true;
+  }, [steps, currentStep, features, selectedFeatures, usageQuantities, usagePricing]);
 
   const handleNext = useCallback(() => {
     if (!validateCurrentStep()) return;
     setCurrentStep((prev) => {
-      const nextStep = Math.min(
-        prev + 1,
-        steps.length - 1
-      );
-      console.log(
-        `Navigating from step ${prev} to step ${nextStep}`
-      );
+      const nextStep = Math.min(prev + 1, steps.length - 1);
+      console.log(`Navigating from step ${prev} to step ${nextStep}`);
       return nextStep;
     });
   }, [steps, validateCurrentStep]);
@@ -314,9 +190,7 @@ const CustomPackageLayoutContainer: React.FC<
   const handleBack = useCallback(() => {
     setCurrentStep((prev) => {
       const prevStep = Math.max(prev - 1, 0);
-      console.log(
-        `Navigating back from step ${prev} to step ${prevStep}`
-      );
+      console.log(`Navigating back from step ${prev} to step ${prevStep}`);
       return prevStep;
     });
   }, []);
@@ -328,55 +202,30 @@ const CustomPackageLayoutContainer: React.FC<
         name: selectedPackage.title,
         price: calculatedPrice,
         quantity: 1,
-        features: selectedFeatures.map(
-          (f) => f.name
-        ),
+        features: selectedFeatures.map((f) => f.name),
         addOns: selectedAddOns.map((a) => a.name),
-        packageType:
-          selectedPackage.isCustomizable
-            ? 'Custom'
-            : 'Standard',
+        packageType: selectedPackage.isCustomizable ? 'Custom' : 'Standard',
       };
 
-      const existingCartItems = JSON.parse(
-        localStorage.getItem('cartItems') || '[]'
-      );
+      const existingCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
 
-      // Add new item to cart
-      const updatedCart = [
-        ...existingCartItems,
-        cartItem,
-      ];
+      const updatedCart = [...existingCartItems, cartItem];
 
-      // Save updated cart to localStorage
-      localStorage.setItem(
-        'cartItems',
-        JSON.stringify(updatedCart)
-      );
+      localStorage.setItem('cartItems', JSON.stringify(updatedCart));
 
-      setSnackbarMessage(
-        'Package added to cart successfully!'
-      );
+      setSnackbarMessage('Package added to cart successfully!');
       setSnackbarOpen(true);
 
       if (isSignup) {
         setShowLoginForm(true);
       }
     },
-    [
-      selectedPackage,
-      calculatedPrice,
-      selectedFeatures,
-      selectedAddOns,
-      setShowLoginForm,
-    ]
+    [selectedPackage, calculatedPrice, selectedFeatures, selectedAddOns, setShowLoginForm]
   );
 
-  const handleReturnToPackage =
-    useCallback(() => {
-      // No need to set modal state as it's handled by the context
-      console.log('Return to package');
-    }, []);
+  const handleReturnToPackage = useCallback(() => {
+    console.log('Return to package');
+  }, []);
 
   const handleSave = useCallback(
     async (data: {
@@ -397,8 +246,7 @@ const CustomPackageLayoutContainer: React.FC<
         zipCode: string;
       };
     }) => {
-      if (currentStep !== steps.length - 1)
-        return;
+      if (currentStep !== steps.length - 1) return;
       if (!validateCurrentStep()) return;
 
       setIsLoading(true);
@@ -406,33 +254,19 @@ const CustomPackageLayoutContainer: React.FC<
       const request: PackageSelectionRequest = {
         packageId: selectedPackage.id,
         ...(selectedPackage.isCustomizable && {
-          features: selectedFeatures.map(
-            (f) => f.id
-          ),
+          features: selectedFeatures.map((f) => f.id),
           addOns: selectedAddOns.map((a) => a.id),
           usage: usageQuantities,
         }),
       };
 
-      console.log(
-        'Saving package configuration with request:',
-        request
-      );
-      console.log(
-        'Form data captured:',
-        data.formData
-      );
+      console.log('Saving package configuration with request:', JSON.stringify(request, null, 2));
+      console.log('Form data captured:', JSON.stringify(data.formData, null, 2));
 
       try {
-        await apiClient.post(
-          '/api/pricingpackages/custom/select',
-          request
-        );
-        console.log(
-          'Package saved successfully!'
-        );
+        await apiClient.post('/api/pricingpackages/custom/select', request);
+        console.log('Package saved successfully!');
 
-        // Show success message using context
         showSuccessModal({
           message: 'Package saved successfully!',
           onConfirm: handleModalConfirm,
@@ -446,10 +280,8 @@ const CustomPackageLayoutContainer: React.FC<
           calculatedPrice: data.calculatedPrice,
         });
       } catch (error) {
-        console.error('Save failed:', error);
-        setSnackbarMessage(
-          'Error saving package!'
-        );
+        console.error('Save failed:', JSON.stringify(error, null, 2));
+        setSnackbarMessage('Error saving package!');
         setSnackbarOpen(true);
       } finally {
         setIsLoading(false);
@@ -489,81 +321,45 @@ const CustomPackageLayoutContainer: React.FC<
     selectedCurrency?: string;
   } | null;
 
-  const handleShowSuccessMessage = (
-    message: string,
-    packageData?: PackageDataType
-  ) => {
-    // Use the SuccessModalContext to show the success modal
+  const handleShowSuccessMessage = (message: string, packageData?: PackageDataType) => {
     showSuccessModal({
       message: message,
       onConfirm: handleModalConfirm,
       onReturn: handleReturnToPackage,
       selectedPackage: selectedPackage,
-      currentCurrency:
-        packageData?.selectedCurrency,
+      currentCurrency: packageData?.selectedCurrency,
       formData: packageData?.formData,
-      selectedFeatures:
-        packageData?.selectedFeatures,
+      selectedFeatures: packageData?.selectedFeatures,
       selectedAddOns: packageData?.selectedAddOns,
-      usageQuantities:
-        packageData?.usageQuantities,
-      calculatedPrice:
-        packageData?.calculatedPrice,
+      usageQuantities: packageData?.usageQuantities,
+      calculatedPrice: packageData?.calculatedPrice,
     });
   };
 
   useEffect(() => {
     if (selectedPackage.isCustomizable) {
-      const calculatePrice = debounce(
-        async () => {
-          // Ensure we're using the correct base price for custom packages
-          const basePrice =
-            selectedPackage.type
-              .toLowerCase()
-              .includes('custom') &&
-            selectedPackage.price === 0
-              ? 129.99
-              : selectedPackage.price;
+      const calculatePrice = debounce(async () => {
+        const basePrice =
+          selectedPackage.type.toLowerCase().includes('custom') && selectedPackage.price === 0 ? 129.99 : selectedPackage.price;
 
-          const requestBody: PriceCalculationRequest =
-            {
-              packageId: selectedPackage.id,
-              basePrice: basePrice, // Add the base price to the request
-              selectedFeatures:
-                selectedFeatures.map((f) => f.id),
-              selectedAddOns: selectedAddOns.map(
-                (a) => a.id
-              ),
-              usageLimits: usageQuantities,
-            };
+        const requestBody: PriceCalculationRequest = {
+          packageId: selectedPackage.id,
+          basePrice: basePrice,
+          selectedFeatures: selectedFeatures.map((f) => f.id),
+          selectedAddOns: selectedAddOns.map((a) => a.id),
+          usageLimits: usageQuantities,
+        };
 
-          console.log(
-            'Calculating price with request body:',
-            requestBody
-          );
+        console.log('Calculating price with request body:', JSON.stringify(requestBody, null, 2));
 
-          try {
-            const response =
-              await apiClient.post<PriceCalculationResponse>(
-                '/api/pricingpackages/custom/calculate-price',
-                requestBody
-              );
-            console.log(
-              'Price calculation response:',
-              response.data
-            );
-            setCalculatedPrice(
-              response.data.totalPrice
-            );
-          } catch (error) {
-            console.error(
-              'Failed to calculate price:',
-              error
-            );
-          }
-        },
-        300
-      );
+        try {
+          const response = await apiClient.post<PriceCalculationResponse>('/api/pricingpackages/custom/calculate-price', requestBody);
+          console.log('Price calculation response:', JSON.stringify(response.data, null, 2));
+          setCalculatedPrice(response.data.totalPrice);
+        } catch (error) {
+          console.error('Failed to calculate price:', JSON.stringify(error, null, 2));
+        }
+      }, 300);
 
       calculatePrice();
 
@@ -571,35 +367,24 @@ const CustomPackageLayoutContainer: React.FC<
         calculatePrice.cancel();
       };
     }
-  }, [
-    selectedFeatures,
-    selectedAddOns,
-    usageQuantities,
-    selectedPackage,
-  ]);
+  }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
 
-  const handleEnterpriseFeatureToggle =
-    useCallback((featureId: string) => {
-      setEnterpriseFeatures((prev) => ({
-        ...prev,
-        [featureId]: !prev[featureId],
-      }));
-    }, []);
+  const handleEnterpriseFeatureToggle = useCallback((featureId: string) => {
+    setEnterpriseFeatures((prev) => ({
+      ...prev,
+      [featureId]: !prev[featureId],
+    }));
+  }, []);
 
-  if (isLoading || isAddOnsLoading)
-    return <WaveLoading />;
+  if (isLoading || isAddOnsLoading) return <WaveLoading />;
   if (showLoginForm) return <LazyLoginForm />;
 
   return (
     <>
       <CustomPackageLayout
-        isCustomizable={
-          selectedPackage.isCustomizable
-        }
+        isCustomizable={selectedPackage.isCustomizable}
         currentStep={currentStep}
-        onShowSuccessMessage={
-          handleShowSuccessMessage
-        }
+        onShowSuccessMessage={handleShowSuccessMessage}
         steps={steps}
         features={features}
         addOns={addOns}
@@ -611,59 +396,32 @@ const CustomPackageLayoutContainer: React.FC<
         calculatedPrice={calculatedPrice}
         packageDetails={{
           title: selectedPackage.title,
-          description:
-            selectedPackage.description,
-          testPeriod:
-            selectedPackage.testPeriodDays,
+          description: selectedPackage.description,
+          testPeriod: selectedPackage.testPeriodDays,
         }}
         selectedPackage={selectedPackage}
         onNext={handleNext}
         onBack={handleBack}
         onSave={handleSave}
         onFeatureToggle={(features) => {
-          console.log(
-            'Toggling features:',
-            features
-          );
+          console.log('Toggling features:', JSON.stringify(features, null, 2));
           setSelectedFeatures(features);
         }}
         onAddOnToggle={(addOns) => {
-          console.log(
-            'Toggling add-ons:',
-            addOns
-          );
+          console.log('Toggling add-ons:', JSON.stringify(addOns, null, 2));
           setSelectedAddOns(addOns);
         }}
         onUsageChange={(quantities) => {
-          console.log(
-            'Updating usage quantities:',
-            quantities
-          );
+          console.log('Updating usage quantities:', JSON.stringify(quantities, null, 2));
           setUsageQuantities(quantities);
         }}
         setSelectedCurrency={() => {}}
         enterpriseFeatures={enterpriseFeatures}
-        onEnterpriseFeatureToggle={
-          handleEnterpriseFeatureToggle
-        }
-        // Pass the current currency from CurrencyContext
+        onEnterpriseFeatureToggle={handleEnterpriseFeatureToggle}
         currentCurrency={currency}
       />
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={
-            snackbarMessage.includes(
-              'successfully'
-            )
-              ? 'success'
-              : 'warning'
-          }
-        >
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarMessage.includes('successfully') ? 'success' : 'warning'}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

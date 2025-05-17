@@ -1,76 +1,67 @@
 {
-    "semi": true,
-    "trailingComma": "es5",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "useTabs": false,
-    "printWidth": 50,
-    "bracketSpacing": true,
-    "arrowParens": "always",
-    "endOfLine": "auto",
-    "jsxSingleQuote": false,
-    "bracketSameLine": false,
-    "jsxBracketSameLine": false,
-    "proseWrap": "preserve",
-    "overrides": [
-        {
-            "files": [
-                "*.ts",
-                "*.tsx",
-                "*.js",
-                "*.jsx"
-            ],
-            "options": {
-                "printWidth": 50,
-                "tabWidth": 2,
-                "semi": true,
-                "singleQuote": true,
-                "trailingComma": "es5",
-                "bracketSpacing": true,
-                "arrowParens": "always",
-                "endOfLine": "auto",
-                "jsxSingleQuote": false,
-                "bracketSameLine": false,
-                "jsxBracketSameLine": false,
-                "proseWrap": "preserve"
-            }
-        },
-        {
-            "files": [
-                "*.css",
-                "*.scss",
-                "*.module.css",
-                "*.module.scss"
-            ],
-            "options": {
-                "printWidth": 90,
-                "tabWidth": 2,
-                "singleQuote": true,
-                "semi": true
-            }
-        },
-        {
-            "files": [
-                "*.json"
-            ],
-            "options": {
-                "printWidth": 100,
-                "tabWidth": 2,
-                "singleQuote": false,
-                "semi": false
-            }
-        },
-        {
-            "files": [
-                "*.md"
-            ],
-            "options": {
-                "printWidth": 80,
-                "tabWidth": 2,
-                "singleQuote": true,
-                "semi": false,
-                "proseWrap": "always"
-            }
-        }
-    ]
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 120,
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "auto",
+  "jsxSingleQuote": false,
+  "bracketSameLine": false,
+  "proseWrap": "preserve",
+  "quoteProps": "as-needed",
+  "embeddedLanguageFormatting": "auto",
+  "htmlWhitespaceSensitivity": "css",
+  "vueIndentScriptAndStyle": false,
+  "singleAttributePerLine": false,
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "options": {
+        "printWidth": 140,
+        "tabWidth": 2,
+        "semi": true,
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "bracketSpacing": true,
+        "arrowParens": "always",
+        "endOfLine": "auto",
+        "jsxSingleQuote": false,
+        "bracketSameLine": false,
+        "proseWrap": "preserve",
+        "singleAttributePerLine": false,
+        "parser": "babel-ts"
+      }
+    },
+    {
+      "files": ["*.css", "*.scss", "*.module.css", "*.module.scss"],
+      "options": {
+        "printWidth": 120,
+        "tabWidth": 2,
+        "singleQuote": true,
+        "semi": true
+      }
+    },
+    {
+      "files": ["*.json"],
+      "options": {
+        "printWidth": 120,
+        "tabWidth": 2,
+        "singleQuote": false,
+        "semi": false
+      }
+    },
+    {
+      "files": ["*.md"],
+      "options": {
+        "printWidth": 80,
+        "tabWidth": 2,
+        "singleQuote": true,
+        "semi": false,
+        "proseWrap": "always"
+      }
+    }
+  ]
 }

@@ -13,19 +13,12 @@ import { SpinnerProvider } from '@/contexts/SpinnerContext';
 import { TestPeriodProvider } from '@/contexts/TestPeriodContext';
 import SuccessModalProvider from '@/contexts/SuccessModalContext';
 import ChatbotContainer from '@/components/ui/chatbot/ChatbotContainer';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ErrorBoundary from '@/components/ui/errorBoundary/ErrorBoundary';
 
 const queryClient = new QueryClient();
 
-const Layout = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const isDashboard = pathname === '/dashboard';
 
@@ -41,20 +34,21 @@ const Layout = ({
                     <>
                       <NavbarContainer />
                       <NavbarSpacer />
-                      <LazyJumbotron
-                        heading="Pisval Tech Point of Sale System"
-                        subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
-                        backgroundImage="/pos_banner.jpg"
-                        overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
-                      />
+                      {}
+                      {(!pathname.includes('/checkout') || pathname.includes('/checkout/success')) && (
+                        <LazyJumbotron
+                          heading="Pisval Tech Point of Sale System"
+                          subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
+                          backgroundImage="/pos_banner.jpg"
+                          overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
+                        />
+                      )}
                       <SidebarContainer />
                     </>
                   )}
                   <main>{children}</main>
                   <PackageSelectionModal />
-                  {!isDashboard && (
-                    <FooterContainer />
-                  )}
+                  {!isDashboard && <FooterContainer />}
                   <ChatbotContainer />
                 </TestPeriodProvider>
               </SidebarProvider>

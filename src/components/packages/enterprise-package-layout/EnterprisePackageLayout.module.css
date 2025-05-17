@@ -124,11 +124,7 @@
   padding: 1.5rem;
   text-align: center;
   margin-bottom: 1.5rem;
-  background: linear-gradient(
-    to right,
-    rgba(128, 90, 213, 0.05),
-    rgba(159, 122, 234, 0.05)
-  );
+  background: linear-gradient(to right, rgba(128, 90, 213, 0.05), rgba(159, 122, 234, 0.05));
   transition: all 0.3s ease;
 }
 

@@ -1,12 +1,6 @@
 'use client';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Product as ProductType } from '../components/productEdit/types';
 import Image from 'next/image';
 
@@ -22,9 +16,7 @@ interface ProductContextType {
   deleteProduct: (productId: number) => void;
 }
 
-const ProductContext = createContext<
-  ProductContextType | undefined
->(undefined);
+const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 const FALLBACK_IMAGE = '/public/404_icons.png';
 const initialProducts: Product[] = [
@@ -69,107 +61,57 @@ const initialProducts: Product[] = [
 export const ProductProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [products, setProducts] = useState<
-    Product[]
-  >(initialProducts);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const validateAndNormalizeProduct = useCallback(
-    (product: Product): Product => {
-      return {
-        ...product,
-        id: product.id || Date.now(),
-        productName:
-          product.productName ||
-          'Unnamed Product',
-        color: product.color || 'Black',
-        barcode:
-          product.barcode || `BC-${Date.now()}`,
-        sku: product.sku || `SKU-${Date.now()}`,
-        price:
-          typeof product.price === 'number'
-            ? product.price
-            : 0,
-        status: Boolean(product.status),
-        rating:
-          typeof product.rating === 'number'
-            ? product.rating
-            : 0,
-        createdAt:
-          product.createdAt ||
-          new Date().toISOString(),
-        image:
-          product.image ||
-          '/placeholder-image.png',
-        statusProduct: product.status
-          ? 'Active'
-          : 'Inactive',
-      };
-    },
-    []
-  );
+  const validateAndNormalizeProduct = useCallback((product: Product): Product => {
+    return {
+      ...product,
+      id: product.id || Date.now(),
+      productName: product.productName || 'Unnamed Product',
+      color: product.color || 'Black',
+      barcode: product.barcode || `BC-${Date.now()}`,
+      sku: product.sku || `SKU-${Date.now()}`,
+      price: typeof product.price === 'number' ? product.price : 0,
+      status: Boolean(product.status),
+      rating: typeof product.rating === 'number' ? product.rating : 0,
+      createdAt: product.createdAt || new Date().toISOString(),
+      image: product.image || '/placeholder-image.png',
+      statusProduct: product.status ? 'Active' : 'Inactive',
+    };
+  }, []);
 
   useEffect(() => {
-    const validateProduct = (
-      product: Product
-    ): Product => {
+    const validateProduct = (product: Product): Product => {
       return {
         ...product,
         id: product.id || Date.now(),
-        productName:
-          product.productName ||
-          'Unnamed Product',
+        productName: product.productName || 'Unnamed Product',
         color: product.color || 'Black',
-        barcode:
-          product.barcode || `BC-${Date.now()}`,
+        barcode: product.barcode || `BC-${Date.now()}`,
         sku: product.sku || `SKU-${Date.now()}`,
-        price:
-          typeof product.price === 'number'
-            ? product.price
-            : 0,
+        price: typeof product.price === 'number' ? product.price : 0,
         status: Boolean(product.status),
-        rating:
-          typeof product.rating === 'number'
-            ? product.rating
-            : 0,
-        createdAt:
-          product.createdAt ||
-          new Date().toISOString(),
-        image:
-          product.image ||
-          '/placeholder-image.png',
-        statusProduct: product.status
-          ? 'Active'
-          : 'Inactive',
+        rating: typeof product.rating === 'number' ? product.rating : 0,
+        createdAt: product.createdAt || new Date().toISOString(),
+        image: product.image || '/placeholder-image.png',
+        statusProduct: product.status ? 'Active' : 'Inactive',
       };
     };
 
     try {
-      const storedData =
-        localStorage.getItem('products');
+      const storedData = localStorage.getItem('products');
 
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        if (
-          Array.isArray(parsedData) &&
-          parsedData.length > 0
-        ) {
-          const validatedProducts =
-            parsedData.map((product) =>
-              validateProduct(product)
-            );
-          console.log(
-            'ProductContext - Loaded and validated products from localStorage:',
-            validatedProducts
-          );
+        if (Array.isArray(parsedData) && parsedData.length > 0) {
+          const validatedProducts = parsedData.map((product) => validateProduct(product));
+          console.log('ProductContext - Loaded and validated products from localStorage:', JSON.stringify(validatedProducts, null, 2));
           setProducts(validatedProducts);
         }
       }
     } catch (error) {
-      console.error(
-        'Failed to load products from localStorage:',
-        error
-      );
+      console.error('Failed to load products from localStorage:', JSON.stringify(error, null, 2));
     } finally {
       setIsLoaded(true);
     }
@@ -178,58 +120,29 @@ export const ProductProvider: React.FC<{
   useEffect(() => {
     if (isLoaded) {
       try {
-        localStorage.setItem(
-          'products',
-          JSON.stringify(products)
-        );
+        localStorage.setItem('products', JSON.stringify(products));
       } catch (error) {
-        console.error(
-          'Failed to save products to localStorage:',
-          error
-        );
+        console.error('Failed to save products to localStorage:', JSON.stringify(error, null, 2));
       }
     }
   }, [products, isLoaded]);
 
   const addProduct = (newProduct: Product) => {
-    const productToAdd =
-      validateAndNormalizeProduct(newProduct);
-    console.log(
-      'ProductContext - Adding validated product:',
-      productToAdd
-    );
+    const productToAdd = validateAndNormalizeProduct(newProduct);
+    console.log('ProductContext - Adding validated product:', JSON.stringify(productToAdd, null, 2));
 
-    setProducts((currentProducts) => [
-      ...currentProducts,
-      productToAdd,
-    ]);
+    setProducts((currentProducts) => [...currentProducts, productToAdd]);
   };
 
-  const updateProduct = (
-    updatedProduct: Product
-  ) => {
-    const validatedProduct =
-      validateAndNormalizeProduct(updatedProduct);
-    console.log(
-      'ProductContext - Updating with validated product:',
-      validatedProduct
-    );
+  const updateProduct = (updatedProduct: Product) => {
+    const validatedProduct = validateAndNormalizeProduct(updatedProduct);
+    console.log('ProductContext - Updating with validated product:', JSON.stringify(validatedProduct, null, 2));
 
-    setProducts((currentProducts) =>
-      currentProducts.map((product) =>
-        product.id === validatedProduct.id
-          ? validatedProduct
-          : product
-      )
-    );
+    setProducts((currentProducts) => currentProducts.map((product) => (product.id === validatedProduct.id ? validatedProduct : product)));
   };
 
   const deleteProduct = (productId: number) => {
-    setProducts((currentProducts) =>
-      currentProducts.filter(
-        (product) => product.id !== productId
-      )
-    );
+    setProducts((currentProducts) => currentProducts.filter((product) => product.id !== productId));
   };
 
   const contextValue: ProductContextType = {
@@ -240,19 +153,13 @@ export const ProductProvider: React.FC<{
     deleteProduct,
   };
 
-  return (
-    <ProductContext.Provider value={contextValue}>
-      {children}
-    </ProductContext.Provider>
-  );
+  return <ProductContext.Provider value={contextValue}>{children}</ProductContext.Provider>;
 };
 
 export const useProductContext = () => {
   const context = useContext(ProductContext);
   if (!context) {
-    throw new Error(
-      'useProductContext must be used within a ProductProvider'
-    );
+    throw new Error('useProductContext must be used within a ProductProvider');
   }
   return context;
 };
@@ -264,17 +171,7 @@ export const ProductImage: React.FC<{
   const [hasError, setHasError] = useState(false);
   const imageAlt = alt || product.productName;
 
-  const imageSrc =
-    hasError || !product.image
-      ? FALLBACK_IMAGE
-      : product.image;
+  const imageSrc = hasError || !product.image ? FALLBACK_IMAGE : product.image;
 
-  return (
-    <Image
-      src={imageSrc}
-      alt={imageAlt}
-      className={className}
-      onError={() => setHasError(true)}
-    />
-  );
+  return <Image src={imageSrc} alt={imageAlt} className={className} onError={() => setHasError(true)} />;
 };

@@ -7,40 +7,20 @@ const FALLBACK_CONFIG = {
   clientId: 'pos-backend',
 };
 
-console.log(
-  'Environment Variables in Keycloak Setup:'
-);
-console.log(
-  'NEXT_PUBLIC_KEYCLOAK_URL:',
-  process.env.NEXT_PUBLIC_KEYCLOAK_URL ||
-    FALLBACK_CONFIG.url
-);
-console.log(
-  'NEXT_PUBLIC_KEYCLOAK_REALM:',
-  process.env.NEXT_PUBLIC_KEYCLOAK_REALM ||
-    FALLBACK_CONFIG.realm
-);
+console.log('Environment Variables in Keycloak Setup:');
+console.log('NEXT_PUBLIC_KEYCLOAK_URL:', JSON.stringify(process.env.NEXT_PUBLIC_KEYCLOAK_URL || FALLBACK_CONFIG.url, null, 2));
+console.log('NEXT_PUBLIC_KEYCLOAK_REALM:', JSON.stringify(process.env.NEXT_PUBLIC_KEYCLOAK_REALM || FALLBACK_CONFIG.realm, null, 2));
 console.log(
   'NEXT_PUBLIC_KEYCLOAK_CLIENT_ID:',
-  process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID ||
-    FALLBACK_CONFIG.clientId
+  JSON.stringify(process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || FALLBACK_CONFIG.clientId, null, 2)
 );
 
 const envValidation = validateAuthEnvVars();
-console.log(
-  'Environment validation result:',
-  envValidation
-);
+console.log('Environment validation result:', JSON.stringify(envValidation, null, 2));
 
-const keycloakUrl =
-  process.env.NEXT_PUBLIC_KEYCLOAK_URL ||
-  FALLBACK_CONFIG.url;
-const keycloakRealm =
-  process.env.NEXT_PUBLIC_KEYCLOAK_REALM ||
-  FALLBACK_CONFIG.realm;
-const keycloakClientId =
-  process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID ||
-  FALLBACK_CONFIG.clientId;
+const keycloakUrl = process.env.NEXT_PUBLIC_KEYCLOAK_URL || FALLBACK_CONFIG.url;
+const keycloakRealm = process.env.NEXT_PUBLIC_KEYCLOAK_REALM || FALLBACK_CONFIG.realm;
+const keycloakClientId = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || FALLBACK_CONFIG.clientId;
 
 console.log('Using Keycloak configuration:', {
   url: keycloakUrl,

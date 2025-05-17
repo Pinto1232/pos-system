@@ -1,13 +1,9 @@
 import { styled } from '@mui/material/styles';
-import {
-  Box,
-  Button,
-  Paper,
-} from '@mui/material';
+import { Box, Button, Paper } from '@mui/material';
 
 export const Container = styled(Box)({
   display: 'grid',
-  gridTemplateColumns: 'minmax(0, 1fr) 340px', // Increased from 320px to 340px
+  gridTemplateColumns: 'minmax(0, 1fr) 340px',
   gap: '28px',
   padding: '28px',
   backgroundColor: '#f5f5f5',
@@ -138,9 +134,7 @@ export const ActionButton = styled(Button)({
   borderRadius: '8px',
 });
 
-export const CollectPaymentButton = styled(
-  ActionButton
-)({
+export const CollectPaymentButton = styled(ActionButton)({
   backgroundColor: '#52B788',
   color: '#fff',
   fontSize: '16px',
@@ -151,14 +145,12 @@ export const CollectPaymentButton = styled(
   transition: 'all 0.3s ease',
   '&:hover': {
     backgroundColor: '#429670',
-    boxShadow:
-      '0 6px 16px rgba(82, 183, 136, 0.3)',
+    boxShadow: '0 6px 16px rgba(82, 183, 136, 0.3)',
     transform: 'translateY(-2px)',
   },
   '&:active': {
     transform: 'translateY(1px)',
-    boxShadow:
-      '0 2px 8px rgba(82, 183, 136, 0.2)',
+    boxShadow: '0 2px 8px rgba(82, 183, 136, 0.2)',
   },
 });
 
@@ -184,10 +176,9 @@ export const ProductTable = styled(Box)({
     '& .MuiDataGrid-columnHeader': {
       fontWeight: 600,
       padding: '0 16px',
-      '& .MuiDataGrid-columnHeaderTitleContainer':
-        {
-          padding: '0 8px',
-        },
+      '& .MuiDataGrid-columnHeaderTitleContainer': {
+        padding: '0 8px',
+      },
     },
     '& .MuiDataGrid-columnHeaderTitle': {
       overflow: 'hidden',
@@ -218,24 +209,20 @@ export const ProductTable = styled(Box)({
     '&.Mui-selected': {
       backgroundColor: 'rgba(82, 183, 136, 0.08)',
       '&:hover': {
-        backgroundColor:
-          'rgba(82, 183, 136, 0.12)',
+        backgroundColor: 'rgba(82, 183, 136, 0.12)',
       },
     },
   },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell':
-    {
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
-    },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type':
-    {
-      borderBottomLeftRadius: 0,
-    },
-  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type':
-    {
-      borderBottomRightRadius: 0,
-    },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell': {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:first-of-type': {
+    borderBottomLeftRadius: 0,
+  },
+  '& .MuiDataGrid-row:last-child .MuiDataGrid-cell:last-of-type': {
+    borderBottomRightRadius: 0,
+  },
   '& .MuiCheckbox-root': {
     color: '#1E2A3B',
     padding: '4px',
@@ -355,12 +342,10 @@ export const BarcodeCell = styled(HeaderCell)({
   minWidth: '130px',
 });
 
-export const ProductNameCell = styled(HeaderCell)(
-  {
-    flex: 1.8,
-    minWidth: '160px',
-  }
-);
+export const ProductNameCell = styled(HeaderCell)({
+  flex: 1.8,
+  minWidth: '160px',
+});
 
 export const StandardCell = styled(HeaderCell)({
   flex: 0.8,
