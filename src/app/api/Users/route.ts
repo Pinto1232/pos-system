@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server';
 
-// Define the backend API URL
-const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_URL ||
-  'http://localhost:5107';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-// Mock users data with role hierarchy
 const mockUsers = [
   {
     id: 1,
@@ -88,54 +84,35 @@ const mockUsers = [
 
 export async function GET(request: Request) {
   try {
-    // Check if we should use mock data (from environment variable)
-    const useMockData =
-      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
-      'true';
+    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(
-        'Proxying GET request to backend for users'
-      );
+      console.log('Proxying GET request to backend for users');
 
-      // Forward the request to the backend API
-      const response = await fetch(
-        `${BACKEND_API_URL}/api/Users`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // Add a timeout to prevent long waits if backend is down
-          signal: AbortSignal.timeout(3000),
-        }
-      );
+      const response = await fetch(`${BACKEND_API_URL}/api/Users`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+
+        signal: AbortSignal.timeout(3000),
+      });
 
       if (response.ok) {
         const data = await response.json();
-        console.log(
-          'Successfully fetched users from backend'
-        );
+        console.log('Successfully fetched users from backend');
         return NextResponse.json(data);
       } else {
-        console.warn(
-          `Backend API returned status: ${response.status}, serving mock data`
-        );
+        console.warn(`Backend API returned status: ${response.status}, serving mock data`);
       }
     } else {
-      console.log(
-        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
-      );
+      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
     }
 
-    // Return mock data if backend API fails or mock data is enabled
     return NextResponse.json(mockUsers);
   } catch (error) {
-    console.error(
-      'Error proxying request to backend:',
-      error
-    );
-    // Return mock data for development
+    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+
     return NextResponse.json(mockUsers);
   }
 }

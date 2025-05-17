@@ -4,7 +4,6 @@ import React from 'react';
 import Testimonial from './Testimonial';
 
 const TestimonialContainer: React.FC = () => {
-  // About us data
   const aboutUsData = {
     videoSrc: '/testimonial-video.mp4',
     clientName: 'Pinto Manuel',
@@ -20,9 +19,7 @@ const TestimonialContainer: React.FC = () => {
       clientName={aboutUsData.clientName}
       clientPosition={aboutUsData.clientPosition}
       clientCompany={aboutUsData.clientCompany}
-      testimonialText={
-        aboutUsData.testimonialText
-      }
+      testimonialText={aboutUsData.testimonialText}
       sectionTitle="About Us"
     />
   );

@@ -1,48 +1,30 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  IconButton,
-  Badge,
-  Popover,
-  Box,
-  Typography,
-  Divider,
-  Button,
-} from '@mui/material';
-import {
-  Notifications as NotificationsIcon,
-  Settings as SettingsIcon,
-  FilterList as FilterListIcon,
-} from '@mui/icons-material';
+import { IconButton, Badge, Popover, Box, Typography, Divider, Button } from '@mui/material';
+import { Notifications as NotificationsIcon, Settings as SettingsIcon, FilterList as FilterListIcon } from '@mui/icons-material';
 import NotificationList from './NotificationList';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { styled } from '@mui/material/styles';
 
-const StyledBadge = styled(Badge)(
-  ({ theme }) => ({
-    '& .MuiBadge-badge': {
-      backgroundColor: '#ef4444',
-      color: '#fff',
-      fontWeight: 'bold',
-      fontSize: '0.65rem',
-      minWidth: '18px',
-      height: '18px',
-      padding: '0 4px',
-      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    },
-  })
-);
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#ef4444',
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: '0.65rem',
+    minWidth: '18px',
+    height: '18px',
+    padding: '0 4px',
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+  },
+}));
 
 const NotificationDropdown: React.FC = () => {
-  const { unreadCount } =
-    useNotificationContext();
-  const [anchorEl, setAnchorEl] =
-    useState<HTMLButtonElement | null>(null);
+  const { unreadCount } = useNotificationContext();
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const handleClick = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -51,21 +33,12 @@ const NotificationDropdown: React.FC = () => {
   };
 
   const open = Boolean(anchorEl);
-  const id = open
-    ? 'notification-popover'
-    : undefined;
+  const id = open ? 'notification-popover' : undefined;
 
   return (
     <>
-      <IconButton
-        color="inherit"
-        onClick={handleClick}
-        aria-describedby={id}
-      >
-        <StyledBadge
-          badgeContent={unreadCount}
-          color="error"
-        >
+      <IconButton color="inherit" onClick={handleClick} aria-describedby={id}>
+        <StyledBadge badgeContent={unreadCount} color="error">
           <NotificationsIcon />
         </StyledBadge>
       </IconButton>
@@ -88,8 +61,7 @@ const NotificationDropdown: React.FC = () => {
             width: 360,
             maxWidth: '100%',
             borderRadius: 2,
-            boxShadow:
-              '0 8px 16px rgba(0,0,0,0.1)',
+            boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
             overflow: 'hidden',
           },
         }}
@@ -116,10 +88,7 @@ const NotificationDropdown: React.FC = () => {
           </Typography>
 
           <Box>
-            <IconButton
-              size="small"
-              sx={{ mr: 0.5 }}
-            >
+            <IconButton size="small" sx={{ mr: 0.5 }}>
               <FilterListIcon fontSize="small" />
             </IconButton>
             <IconButton size="small">
@@ -137,7 +106,6 @@ const NotificationDropdown: React.FC = () => {
             variant="text"
             fullWidth
             onClick={() => {
-              // Navigate to notifications page
               handleClose();
             }}
           >

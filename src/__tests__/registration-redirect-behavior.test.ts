@@ -1,58 +1,30 @@
-/**
- * Test for the behavior of the handleRegistrationRedirect function
- */
-
-// Import the function directly to test its behavior
 import * as authUtils from '@/utils/authUtils';
 
-// Create a mock implementation of the functions
 jest.mock('@/utils/authUtils', () => {
-  const originalModule = jest.requireActual(
-    '@/utils/authUtils'
-  );
+  const originalModule = jest.requireActual('@/utils/authUtils');
   return {
     ...originalModule,
     markAsNewRegistration: jest.fn(() => {
-      // Mock implementation that sets the flag in localStorage
-      localStorage.setItem(
-        'newRegistration',
-        'true'
-      );
+      localStorage.setItem('newRegistration', 'true');
     }),
-    handleRegistrationRedirect: jest.fn(
-      function () {
-        // Call the actual implementation but with our mocks
-        if (
-          originalModule.isRedirectFromRegistration()
-        ) {
-          // Clear URL parameters
-          if (
-            window.history &&
-            window.history.replaceState
-          ) {
-            window.history.replaceState(
-              {},
-              document.title,
-              window.location.pathname
-            );
-          }
-
-          // Mark as new registration
-          authUtils.markAsNewRegistration();
-
-          // Mock the redirect
-          setTimeout(() => {
-            window.location.href =
-              'http://localhost:8282/realms/pisval-pos-realm/protocol/openid-connect/auth?client_id=pos-backend&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&response_type=code&scope=openid';
-          }, 100);
+    handleRegistrationRedirect: jest.fn(function () {
+      if (originalModule.isRedirectFromRegistration()) {
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
         }
+
+        authUtils.markAsNewRegistration();
+
+        setTimeout(() => {
+          window.location.href =
+            'http://localhost:8282/realms/pisval-pos-realm/protocol/openid-connect/auth?client_id=pos-backend&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&response_type=code&scope=openid';
+        }, 100);
       }
-    ),
+    }),
   };
 });
 
 describe('Registration Redirect Behavior', () => {
-  // Mock localStorage
   const localStorageMock = {
     getItem: jest.fn(),
     setItem: jest.fn(),
@@ -60,7 +32,6 @@ describe('Registration Redirect Behavior', () => {
     clear: jest.fn(),
   };
 
-  // Mock window.location
   const locationMock = {
     href: '',
     origin: 'http://localhost:3000',
@@ -86,11 +57,7 @@ describe('Registration Redirect Behavior', () => {
 
   beforeEach(() => {
     // Setup mocks before each test
-    Object.defineProperty(
-      window,
-      'localStorage',
-      { value: localStorageMock }
-    );
+    Object.defineProperty(window, 'localStorage', { value: localStorageMock });
     Object.defineProperty(window, 'location', {
       value: locationMock,
       writable: true,
@@ -99,7 +66,6 @@ describe('Registration Redirect Behavior', () => {
       value: historyMock,
     });
 
-    // Reset all mocks
     jest.clearAllMocks();
     locationMock.href = '';
     locationMock.search = '';
@@ -107,76 +73,41 @@ describe('Registration Redirect Behavior', () => {
   });
 
   it('should do nothing if not redirected from registration', () => {
-    // Setup
     locationMock.search = '?other=param';
 
-    // Call the function
     authUtils.handleRegistrationRedirect();
 
-    // Check the results
-    expect(
-      historyMock.replaceState
-    ).not.toHaveBeenCalled();
-    expect(
-      localStorageMock.setItem
-    ).not.toHaveBeenCalled();
+    expect(historyMock.replaceState).not.toHaveBeenCalled();
+    expect(localStorageMock.setItem).not.toHaveBeenCalled();
     expect(locationMock.href).toBe('');
   });
 
   it('should handle redirect from registration with session_code', () => {
-    // Setup
     locationMock.search = '?session_code=abc123';
 
-    // Call the function
     authUtils.handleRegistrationRedirect();
 
-    // Check if URL parameters were cleared
-    expect(
-      historyMock.replaceState
-    ).toHaveBeenCalled();
+    expect(historyMock.replaceState).toHaveBeenCalled();
 
-    // Check if markAsNewRegistration was called
-    expect(
-      authUtils.markAsNewRegistration
-    ).toHaveBeenCalled();
+    expect(authUtils.markAsNewRegistration).toHaveBeenCalled();
 
-    // Check if redirect to login was scheduled
     jest.runAllTimers();
-    expect(locationMock.href).toContain(
-      '/realms/pisval-pos-realm/protocol/openid-connect/auth'
-    );
-    expect(locationMock.href).toContain(
-      'client_id=pos-backend'
-    );
-    expect(locationMock.href).toContain(
-      'response_type=code'
-    );
-    expect(locationMock.href).toContain(
-      'scope=openid'
-    );
+    expect(locationMock.href).toContain('/realms/pisval-pos-realm/protocol/openid-connect/auth');
+    expect(locationMock.href).toContain('client_id=pos-backend');
+    expect(locationMock.href).toContain('response_type=code');
+    expect(locationMock.href).toContain('scope=openid');
   });
 
   it('should handle redirect from registration with code', () => {
-    // Setup
     locationMock.search = '?code=xyz789';
 
-    // Call the function
     authUtils.handleRegistrationRedirect();
 
-    // Check if URL parameters were cleared
-    expect(
-      historyMock.replaceState
-    ).toHaveBeenCalled();
+    expect(historyMock.replaceState).toHaveBeenCalled();
 
-    // Check if markAsNewRegistration was called
-    expect(
-      authUtils.markAsNewRegistration
-    ).toHaveBeenCalled();
+    expect(authUtils.markAsNewRegistration).toHaveBeenCalled();
 
-    // Check if redirect to login was scheduled
     jest.runAllTimers();
-    expect(locationMock.href).toContain(
-      '/realms/pisval-pos-realm/protocol/openid-connect/auth'
-    );
+    expect(locationMock.href).toContain('/realms/pisval-pos-realm/protocol/openid-connect/auth');
   });
 });

@@ -1,18 +1,11 @@
 'use client';
 import React, { useState } from 'react';
-import {
-  Menu,
-  MenuItem,
-  Typography,
-  Box,
-  Fade,
-} from '@mui/material';
+import { Menu, MenuItem, Typography, Box, Fade } from '@mui/material';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import CheckIcon from '@mui/icons-material/Check';
 import { FiGlobe } from 'react-icons/fi';
 import styles from './LanguageDropdown.module.css';
 
-// Define available languages with their flags
 const AVAILABLE_LANGUAGES = [
   {
     code: 'en',
@@ -37,34 +30,25 @@ const AVAILABLE_LANGUAGES = [
 ];
 
 const LanguageDropdown: React.FC = () => {
-  // Get default language from localStorage or use English
   const getDefaultLanguage = () => {
     if (typeof window !== 'undefined') {
-      const savedLanguage =
-        localStorage.getItem('language');
+      const savedLanguage = localStorage.getItem('language');
       if (savedLanguage) {
         try {
           return JSON.parse(savedLanguage);
         } catch (e) {
-          console.error(
-            'Error parsing saved language:',
-            e
-          );
+          console.error('Error parsing saved language:', JSON.stringify(e, null, 2));
         }
       }
     }
     return AVAILABLE_LANGUAGES[0];
   };
 
-  const [currentLanguage, setCurrentLanguage] =
-    useState(getDefaultLanguage());
-  const [anchorEl, setAnchorEl] =
-    useState<null | HTMLElement>(null);
+  const [currentLanguage, setCurrentLanguage] = useState(getDefaultLanguage());
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (
-    event: React.MouseEvent<HTMLElement>
-  ) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -72,14 +56,9 @@ const LanguageDropdown: React.FC = () => {
     setAnchorEl(null);
   };
 
-  const handleLanguageSelect = (
-    language: (typeof AVAILABLE_LANGUAGES)[0]
-  ) => {
+  const handleLanguageSelect = (language: (typeof AVAILABLE_LANGUAGES)[0]) => {
     setCurrentLanguage(language);
-    localStorage.setItem(
-      'language',
-      JSON.stringify(language)
-    );
+    localStorage.setItem('language', JSON.stringify(language));
     handleClose();
   };
 
@@ -88,9 +67,7 @@ const LanguageDropdown: React.FC = () => {
       <Box
         component="button"
         onClick={handleClick}
-        aria-controls={
-          open ? 'language-menu' : undefined
-        }
+        aria-controls={open ? 'language-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         title={`Current language: ${currentLanguage.name}`}
@@ -112,18 +89,14 @@ const LanguageDropdown: React.FC = () => {
             marginRight: '4px',
           }}
         />
-        <span className={styles.flagIcon}>
-          {currentLanguage.flag}
-        </span>
+        <span className={styles.flagIcon}>{currentLanguage.flag}</span>
         <ExpandMoreRoundedIcon
           sx={{
             fontSize: '16px',
             color: 'white',
             opacity: 0.9,
             transition: 'transform 0.2s ease',
-            transform: open
-              ? 'rotate(180deg)'
-              : 'rotate(0)',
+            transform: open ? 'rotate(180deg)' : 'rotate(0)',
             ml: '0px',
           }}
         />
@@ -152,29 +125,17 @@ const LanguageDropdown: React.FC = () => {
         {AVAILABLE_LANGUAGES.map((language) => (
           <MenuItem
             key={language.code}
-            onClick={() =>
-              handleLanguageSelect(language)
-            }
-            selected={
-              currentLanguage.code ===
-              language.code
-            }
+            onClick={() => handleLanguageSelect(language)}
+            selected={currentLanguage.code === language.code}
             className={`${styles.menuItem} ${currentLanguage.code === language.code ? styles.selected : ''}`}
           >
-            <Box
-              component="span"
-              className={styles.menuFlagIcon}
-            >
+            <Box component="span" className={styles.menuFlagIcon}>
               {language.flag}
             </Box>
-            <Typography
-              variant="body2"
-              className={styles.languageText}
-            >
+            <Typography variant="body2" className={styles.languageText}>
               {language.name}
             </Typography>
-            {currentLanguage.code ===
-              language.code && (
+            {currentLanguage.code === language.code && (
               <CheckIcon
                 sx={{
                   ml: 'auto',

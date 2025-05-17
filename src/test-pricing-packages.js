@@ -1,148 +1,74 @@
-// This is a simple script to test that pricing packages always show up
-// Run this in the browser console when on the homepage
-
-// Function to test pricing packages display
 function testPricingPackages() {
-  console.log(
-    '=== TESTING PRICING PACKAGES DISPLAY ==='
-  );
+  console.log('=== TESTING PRICING PACKAGES DISPLAY ===');
 
-  // 1. Check if packages are currently displayed
-  const packageCards = document.querySelectorAll(
-    '[class*="PricingPackages_card"]'
-  );
-  console.log(
-    `Found ${packageCards.length} package cards on the page`
-  );
+  const packageCards = document.querySelectorAll('[class*="PricingPackages_card"]');
+  console.log(`Found ${packageCards.length} package cards on the page`);
 
   if (packageCards.length === 0) {
-    console.error(
-      '❌ No pricing packages found on the page!'
-    );
+    console.error('❌ No pricing packages found on the page!');
     return;
   }
 
-  console.log(
-    '✅ Pricing packages are displayed on the page'
-  );
+  console.log('✅ Pricing packages are displayed on the page');
 
-  // 2. Get package titles
-  const packageTitles = Array.from(
-    packageCards
-  ).map((card) => {
-    const titleElement = card.querySelector(
-      '[class*="PricingPackages_title"]'
-    );
-    return titleElement
-      ? titleElement.textContent.trim()
-      : 'Unknown';
+  const packageTitles = Array.from(packageCards).map((card) => {
+    const titleElement = card.querySelector('[class*="PricingPackages_title"]');
+    return titleElement ? titleElement.textContent.trim() : 'Unknown';
   });
 
-  console.log('Package titles:', packageTitles);
+  console.log('Package titles:', JSON.stringify(packageTitles, null, 2));
 
-  // 3. Simulate API failure by temporarily replacing the fetch function
   console.log('Simulating API failure...');
 
-  // Store the original fetch function
   const originalFetch = window.fetch;
 
-  // Replace fetch with a function that fails for pricing packages API calls
   window.fetch = function (url, options) {
     if (url.includes('PricingPackages')) {
-      console.log(
-        '🔄 Intercepted pricing packages API call:',
-        url
-      );
-      return Promise.reject(
-        new Error('Simulated API failure')
-      );
+      console.log('🔄 Intercepted pricing packages API call:', JSON.stringify(url, null, 2));
+      return Promise.reject(new Error('Simulated API failure'));
     }
     return originalFetch(url, options);
   };
 
-  // 4. Trigger a refetch of pricing packages
   console.log('Triggering refetch...');
 
-  // Find and click the retry button if it exists
-  const retryButton = document.querySelector(
-    'button[class*="PricingPackages_retryButton"]'
-  );
+  const retryButton = document.querySelector('button[class*="PricingPackages_retryButton"]');
   if (retryButton) {
-    console.log(
-      'Found retry button, clicking it...'
-    );
+    console.log('Found retry button, clicking it...');
     retryButton.click();
   } else {
-    console.log(
-      'No retry button found, trying to force refetch through React Query cache...'
-    );
-    // This is a more advanced approach that would require access to the React Query client
-    // For simplicity, we'll just reload the page
-    console.log(
-      'Reloading the page to see if fallback packages appear...'
-    );
-    // Uncomment the line below to actually reload the page
-    // window.location.reload();
+    console.log('No retry button found, trying to force refetch through React Query cache...');
+
+    console.log('Reloading the page to see if fallback packages appear...');
   }
 
-  // 5. Check if packages are still displayed after API failure
   setTimeout(() => {
-    const packageCardsAfterFailure =
-      document.querySelectorAll(
-        '[class*="PricingPackages_card"]'
-      );
-    console.log(
-      `Found ${packageCardsAfterFailure.length} package cards after simulated API failure`
-    );
+    const packageCardsAfterFailure = document.querySelectorAll('[class*="PricingPackages_card"]');
+    console.log(`Found ${packageCardsAfterFailure.length} package cards after simulated API failure`);
 
     if (packageCardsAfterFailure.length === 0) {
-      console.error(
-        '❌ No pricing packages found after API failure!'
-      );
+      console.error('❌ No pricing packages found after API failure!');
     } else {
-      console.log(
-        '✅ Pricing packages are still displayed after API failure'
-      );
+      console.log('✅ Pricing packages are still displayed after API failure');
 
-      // Get package titles after failure
-      const packageTitlesAfterFailure =
-        Array.from(packageCardsAfterFailure).map(
-          (card) => {
-            const titleElement =
-              card.querySelector(
-                '[class*="PricingPackages_title"]'
-              );
-            return titleElement
-              ? titleElement.textContent.trim()
-              : 'Unknown';
-          }
-        );
+      const packageTitlesAfterFailure = Array.from(packageCardsAfterFailure).map((card) => {
+        const titleElement = card.querySelector('[class*="PricingPackages_title"]');
+        return titleElement ? titleElement.textContent.trim() : 'Unknown';
+      });
 
-      console.log(
-        'Package titles after API failure:',
-        packageTitlesAfterFailure
-      );
+      console.log('Package titles after API failure:', JSON.stringify(packageTitlesAfterFailure, null, 2));
 
-      // Compare with original titles
-      const samePackages =
-        JSON.stringify(packageTitles) ===
-        JSON.stringify(packageTitlesAfterFailure);
-      console.log(
-        `Packages before and after API failure are ${samePackages ? 'the same' : 'different'}`
-      );
+      const samePackages = JSON.stringify(packageTitles) === JSON.stringify(packageTitlesAfterFailure);
+      console.log(`Packages before and after API failure are ${samePackages ? 'the same' : 'different'}`);
     }
 
-    // Restore the original fetch function
-    console.log(
-      'Restoring original fetch function...'
-    );
+    console.log('Restoring original fetch function...');
     window.fetch = originalFetch;
 
     console.log('=== TEST COMPLETED ===');
   }, 2000);
 }
 
-// Instructions for running the test
 console.log(`
 === PRICING PACKAGES TEST SCRIPT ===
 This script tests whether pricing packages always show up, even when the API fails.

@@ -1,21 +1,6 @@
 'use client';
-import {
-  Suspense,
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-} from 'react';
-import {
-  Button,
-  Modal,
-  Backdrop,
-  Fade,
-  Box,
-  Typography,
-  IconButton,
-  useTheme,
-} from '@mui/material';
+import { Suspense, useState, useEffect, useRef, useContext } from 'react';
+import { Button, Modal, Backdrop, Fade, Box, Typography, IconButton, useTheme } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -25,19 +10,14 @@ import { useCart } from '@/contexts/CartContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { AuthContext } from '@/contexts/AuthContext';
 
-function SuccessContent({
-  onConfirm,
-}: {
-  onConfirm: () => void;
-}) {
+function SuccessContent({ onConfirm }: { onConfirm: () => void }) {
   const [open, setOpen] = useState(true);
   const theme = useTheme();
   const router = useRouter();
   const { clearCart } = useCart();
   const { setLoading } = useSpinner();
   const hasCleared = useRef(false);
-  const { authenticated, token, isInitialized } =
-    useContext(AuthContext);
+  const { authenticated, token, isInitialized } = useContext(AuthContext);
 
   useEffect(() => {
     if (!hasCleared.current) {
@@ -63,60 +43,30 @@ function SuccessContent({
     setOpen(false);
   };
 
-  const handleReturnToDashboard = async (
-    e: React.MouseEvent
-  ) => {
+  const handleReturnToDashboard = async (e: React.MouseEvent) => {
     e.preventDefault();
     onConfirm();
     handleClose();
     setLoading(true);
-    sessionStorage.setItem(
-      'fromPaymentSuccess',
-      'true'
-    );
+    sessionStorage.setItem('fromPaymentSuccess', 'true');
     if (!isInitialized) return;
     if (!authenticated || !token) {
-      router.replace(
-        '/?error=Session expired, please login again'
-      );
+      router.replace('/?error=Session expired, please login again');
       return;
     }
     let payload = null;
     let roles = [];
     try {
-      payload = JSON.parse(
-        atob(token.split('.')[1])
-      );
-      roles =
-        payload?.realm_access?.roles ||
-        payload?.roles ||
-        [];
+      payload = JSON.parse(atob(token.split('.')[1]));
+      roles = payload?.realm_access?.roles || payload?.roles || [];
     } catch {
-      router.replace(
-        '/?error=Session invalid, please login again'
-      );
+      router.replace('/?error=Session invalid, please login again');
       return;
     }
-    // TEMPORARILY DISABLED: Role check is bypassed for development
-    console.log(
-      '⚠️ WARNING: Role check is temporarily disabled for development'
-    );
-    console.log(
-      '⚠️ This should be re-enabled before deploying to production'
-    );
 
-    // Original role check code (commented out)
-    /*
-    if (
-      !roles.includes('dashboard') &&
-      !roles.includes('admin')
-    ) {
-      router.replace(
-        '/?error=You do not have permission to access the dashboard'
-      );
-      return;
-    }
-    */
+    console.log('⚠️ WARNING: Role check is temporarily disabled for development');
+    console.log('⚠️ This should be re-enabled before deploying to production');
+
     setTimeout(() => {
       router.push('/dashboard');
     }, 100);
@@ -175,8 +125,7 @@ function SuccessContent({
               <CheckCircleOutlineIcon
                 sx={{
                   fontSize: 64,
-                  color:
-                    theme.palette.success.main,
+                  color: theme.palette.success.main,
                   mb: 2,
                 }}
               />
@@ -196,14 +145,11 @@ function SuccessContent({
             <Typography
               variant="body1"
               sx={{
-                color:
-                  theme.palette.text.secondary,
+                color: theme.palette.text.secondary,
                 mb: 3,
               }}
             >
-              Thank you for your purchase. Your
-              order has been processed
-              successfully.
+              Thank you for your purchase. Your order has been processed successfully.
             </Typography>
 
             <Button

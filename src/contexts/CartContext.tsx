@@ -1,11 +1,5 @@
 'use client';
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 interface CartItem {
   id: string | number;
@@ -19,61 +13,38 @@ interface CartContextType {
   cartItems: CartItem[];
   cartCount: number;
   addToCart: (item: CartItem) => void;
-  removeFromCart: (
-    itemId: string | number
-  ) => void;
+  removeFromCart: (itemId: string | number) => void;
   clearCart: () => void;
 }
 
-const CartContext = createContext<
-  CartContextType | undefined
->(undefined);
+const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const [cartItems, setCartItems] = useState<
-    CartItem[]
-  >([]);
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  // Load cart items from localStorage on initial render
   useEffect(() => {
-    const storedCart =
-      localStorage.getItem('cartItems');
+    const storedCart = localStorage.getItem('cartItems');
     if (storedCart) {
       try {
         const parsedCart = JSON.parse(storedCart);
         setCartItems(parsedCart);
       } catch (error) {
-        console.error(
-          'Failed to parse cart from localStorage:',
-          error
-        );
+        console.error('Failed to parse cart from localStorage:', JSON.stringify(error, null, 2));
         localStorage.removeItem('cartItems');
       }
     }
   }, []);
 
-  // Save cart items to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem(
-      'cartItems',
-      JSON.stringify(cartItems)
-    );
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
 
   const addToCart = (item: CartItem) => {
     setCartItems((prev) => [...prev, item]);
   };
 
-  const removeFromCart = (
-    itemId: string | number
-  ) => {
-    setCartItems((prev) =>
-      prev.filter((item) => item.id !== itemId)
-    );
+  const removeFromCart = (itemId: string | number) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== itemId));
   };
 
   const clearCart = () => {
@@ -98,9 +69,7 @@ export function CartProvider({
 export function useCart() {
   const context = useContext(CartContext);
   if (context === undefined) {
-    throw new Error(
-      'useCart must be used within a CartProvider'
-    );
+    throw new Error('useCart must be used within a CartProvider');
   }
   return context;
 }

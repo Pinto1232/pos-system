@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 
-// Default mock data for user customization
 const DEFAULT_TAX_SETTINGS = {
   enableTaxCalculation: true,
   defaultTaxRate: 15.0,
@@ -13,24 +12,21 @@ const DEFAULT_TAX_SETTINGS = {
       id: 1,
       name: 'Standard Rate',
       rate: 15.0,
-      description:
-        'Standard VAT rate for most goods and services',
+      description: 'Standard VAT rate for most goods and services',
       isDefault: true,
     },
     {
       id: 2,
       name: 'Reduced Rate',
       rate: 7.5,
-      description:
-        'Reduced rate for specific goods and services',
+      description: 'Reduced rate for specific goods and services',
       isDefault: false,
     },
     {
       id: 3,
       name: 'Zero Rate',
       rate: 0,
-      description:
-        'Zero-rated goods and services',
+      description: 'Zero-rated goods and services',
       isDefault: false,
     },
   ],
@@ -48,21 +44,13 @@ const DEFAULT_REGIONAL_SETTINGS = {
   language: 'en-ZA',
   autoDetectLocation: true,
   enableMultiCurrency: true,
-  supportedCurrencies: [
-    'ZAR',
-    'USD',
-    'EUR',
-    'GBP',
-  ],
+  supportedCurrencies: ['ZAR', 'USD', 'EUR', 'GBP'],
 };
 
 export async function GET() {
   try {
-    console.log(
-      'Serving mock user customization data'
-    );
+    console.log('Serving mock user customization data');
 
-    // Create a mock user customization object
     const mockData = {
       id: 1,
       userId: 'current-user',
@@ -75,10 +63,7 @@ export async function GET() {
 
     return NextResponse.json(mockData);
   } catch (error) {
-    console.error(
-      'Error serving mock data:',
-      error
-    );
+    console.error('Error serving mock data:', JSON.stringify(error, null, 2));
     return NextResponse.json(
       {
         error: 'Failed to serve mock data',

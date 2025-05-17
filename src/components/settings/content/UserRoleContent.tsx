@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Tabs,
-  Tab,
-  Paper,
-} from '@mui/material';
+import { Box, Typography, Tabs, Tab, Paper } from '@mui/material';
 
 import RoleManagement from '../../roles/RoleManagement';
 import UserActivityMonitor from '../../roles/UserActivityMonitor';
@@ -16,16 +10,8 @@ interface UserRoleContentProps {
   setCreateRoleModalOpen: (open: boolean) => void;
 }
 
-/**
- * Component for user and role management content
- */
-const UserRoleContent: React.FC<
-  UserRoleContentProps
-> = ({ selectedRoleTab, setSelectedRoleTab }) => {
-  const handleTabChange = (
-    event: React.SyntheticEvent,
-    newValue: number
-  ) => {
+const UserRoleContent: React.FC<UserRoleContentProps> = ({ selectedRoleTab, setSelectedRoleTab }) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedRoleTab(newValue);
   };
 
@@ -39,9 +25,7 @@ const UserRoleContent: React.FC<
           mb: 2,
         }}
       >
-        <Typography variant="h6">
-          User & Role Management
-        </Typography>
+        <Typography variant="h6">User & Role Management</Typography>
       </Box>
 
       <Paper
@@ -69,12 +53,8 @@ const UserRoleContent: React.FC<
         </Tabs>
 
         <Box sx={{ p: 2 }}>
-          {selectedRoleTab === 0 && (
-            <RoleManagement />
-          )}
-          {selectedRoleTab === 1 && (
-            <UserActivityMonitor />
-          )}
+          {selectedRoleTab === 0 && <RoleManagement />}
+          {selectedRoleTab === 1 && <UserActivityMonitor />}
         </Box>
       </Paper>
     </Box>

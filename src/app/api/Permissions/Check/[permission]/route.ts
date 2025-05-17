@@ -1,74 +1,46 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
-// Define the backend API URL
-const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_URL ||
-  'http://localhost:5107';
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-export async function GET(
-  request: Request,
-  context: { params: { permission: string } }
-) {
+export async function GET(request: Request, context: { params: { permission: string } }) {
   const params = await context.params;
   const permission = params.permission;
 
   try {
-    // Get the authorization header
     const headersList = headers();
-    const authorization = headersList.get(
-      'authorization'
-    );
+    const authorization = headersList.get('authorization');
 
     if (!authorization) {
-      return NextResponse.json(
-        { hasPermission: false },
-        { status: 401 }
-      );
+      return NextResponse.json({ hasPermission: false }, { status: 401 });
     }
 
-    // Check if we should use mock data (from environment variable)
-    const useMockData =
-      process.env.NEXT_PUBLIC_USE_MOCK_DATA ===
-      'true';
+    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
     if (!useMockData) {
-      console.log(
-        `Proxying GET request to backend for permission check: ${permission}`
-      );
+      console.log(`Proxying GET request to backend for permission check: ${permission}`);
 
-      // Forward the request to the backend API
-      const response = await fetch(
-        `${BACKEND_API_URL}/api/KeycloakPermissions/Check/${encodeURIComponent(permission)}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: authorization,
-          },
-          // Add a timeout to prevent long waits if backend is down
-          signal: AbortSignal.timeout(3000),
-        }
-      );
+      const response = await fetch(`${BACKEND_API_URL}/api/KeycloakPermissions/Check/${encodeURIComponent(permission)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: authorization,
+        },
+
+        signal: AbortSignal.timeout(3000),
+      });
 
       if (response.ok) {
         const data = await response.json();
-        console.log(
-          `Successfully checked permission ${permission} from backend`
-        );
+        console.log(`Successfully checked permission ${permission} from backend`);
         return NextResponse.json(data);
       } else {
-        console.warn(
-          `Backend API returned status: ${response.status}, serving mock data`
-        );
+        console.warn(`Backend API returned status: ${response.status}, serving mock data`);
       }
     } else {
-      console.log(
-        'Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)'
-      );
+      console.log('Using mock data (NEXT_PUBLIC_USE_MOCK_DATA=true)');
     }
 
-    // For mock data, check if the permission is in the allowed list
     const allowedPermissions = [
       'users.view',
       'users.create',
@@ -94,15 +66,11 @@ export async function GET(
     ];
 
     return NextResponse.json({
-      hasPermission:
-        allowedPermissions.includes(permission),
+      hasPermission: allowedPermissions.includes(permission),
     });
   } catch (error) {
-    console.error(
-      'Error proxying request to backend:',
-      error
-    );
-    // Return false for any error
+    console.error('Error proxying request to backend:', JSON.stringify(error, null, 2));
+
     return NextResponse.json({
       hasPermission: false,
     });

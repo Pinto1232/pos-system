@@ -2,26 +2,14 @@ interface PerformanceMetric {
   name: string;
   duration: number;
   timestamp: number;
-  type:
-    | 'render'
-    | 'api'
-    | 'interaction'
-    | 'resource';
+  type: 'render' | 'api' | 'interaction' | 'resource';
 }
 
 const MAX_METRICS = 100;
 
 const metrics: PerformanceMetric[] = [];
 
-export const trackMetric = (
-  name: string,
-  duration: number,
-  type:
-    | 'render'
-    | 'api'
-    | 'interaction'
-    | 'resource'
-) => {
+export const trackMetric = (name: string, duration: number, type: 'render' | 'api' | 'interaction' | 'resource') => {
   metrics.unshift({
     name,
     duration,
@@ -34,15 +22,11 @@ export const trackMetric = (
   }
 
   if (duration > getThresholdForType(type)) {
-    console.warn(
-      `Slow ${type} detected: ${name} took ${duration.toFixed(2)}ms`
-    );
+    console.warn(`Slow ${type} detected: ${name} took ${duration.toFixed(2)}ms`);
   }
 };
 
-const getThresholdForType = (
-  type: string
-): number => {
+const getThresholdForType = (type: string): number => {
   switch (type) {
     case 'render':
       return 50;
@@ -61,12 +45,8 @@ export const getMetrics = () => {
   return [...metrics];
 };
 
-export const getMetricsByType = (
-  type: string
-) => {
-  return metrics.filter(
-    (metric) => metric.type === type
-  );
+export const getMetricsByType = (type: string) => {
+  return metrics.filter((metric) => metric.type === type);
 };
 
 export const clearMetrics = () => {
@@ -76,11 +56,7 @@ export const clearMetrics = () => {
 export const measurePerformance = async <T>(
   fn: () => Promise<T> | T,
   name: string,
-  type:
-    | 'render'
-    | 'api'
-    | 'interaction'
-    | 'resource'
+  type: 'render' | 'api' | 'interaction' | 'resource'
 ): Promise<T> => {
   const start = performance.now();
   try {
@@ -90,11 +66,7 @@ export const measurePerformance = async <T>(
     return result;
   } catch (error) {
     const duration = performance.now() - start;
-    trackMetric(
-      `${name} (error)`,
-      duration,
-      type
-    );
+    trackMetric(`${name} (error)`, duration, type);
     throw error;
   }
 };

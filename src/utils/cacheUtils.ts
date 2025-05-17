@@ -2,114 +2,52 @@ import { QueryClient } from '@tanstack/react-query';
 import { addOnKeys } from '@/hooks/useAddOns';
 import { CACHE_TAGS } from '@/app/cache-constants';
 
-/**
- * Utility functions for managing cache in the application
- * These functions work with both React Query client-side cache
- * and Next.js server-side cache
- */
-
-/**
- * Invalidates all AddOns-related queries in the cache
- * @param queryClient The React Query client instance
- */
-export const invalidateAddOnsQueries = (
-  queryClient: QueryClient
-): void => {
+export const invalidateAddOnsQueries = (queryClient: QueryClient): void => {
   console.log('Invalidating all AddOns queries');
   queryClient.invalidateQueries({
     queryKey: addOnKeys.all,
   });
 };
 
-/**
- * Invalidates a specific AddOn query by ID
- * @param queryClient The React Query client instance
- * @param id The ID of the AddOn to invalidate
- */
-export const invalidateAddOnQuery = (
-  queryClient: QueryClient,
-  id: number
-): void => {
-  console.log(
-    `Invalidating AddOn query for ID: ${id}`
-  );
+export const invalidateAddOnQuery = (queryClient: QueryClient, id: number): void => {
+  console.log(`Invalidating AddOn query for ID: ${id}`);
   queryClient.invalidateQueries({
     queryKey: addOnKeys.detail(id),
   });
 };
 
-/**
- * Invalidates AddOn list queries with optional filters
- * @param queryClient The React Query client instance
- * @param filters Optional filters to target specific list queries
- */
-export const invalidateAddOnListQueries = (
-  queryClient: QueryClient,
-  filters?: Record<string, unknown>
-): void => {
+export const invalidateAddOnListQueries = (queryClient: QueryClient, filters?: Record<string, unknown>): void => {
   if (filters) {
-    console.log(
-      `Invalidating AddOn list queries with filters: ${JSON.stringify(filters)}`
-    );
+    console.log(`Invalidating AddOn list queries with filters: ${JSON.stringify(filters)}`);
     queryClient.invalidateQueries({
       queryKey: addOnKeys.list(filters),
     });
   } else {
-    console.log(
-      'Invalidating all AddOn list queries'
-    );
+    console.log('Invalidating all AddOn list queries');
     queryClient.invalidateQueries({
       queryKey: addOnKeys.lists(),
     });
   }
 };
 
-/**
- * Invalidates AddOn categories queries
- * @param queryClient The React Query client instance
- */
-export const invalidateAddOnCategoriesQueries = (
-  queryClient: QueryClient
-): void => {
-  console.log(
-    'Invalidating AddOn categories queries'
-  );
+export const invalidateAddOnCategoriesQueries = (queryClient: QueryClient): void => {
+  console.log('Invalidating AddOn categories queries');
   queryClient.invalidateQueries({
     queryKey: addOnKeys.categories(),
   });
 };
 
-/**
- * Forces a refetch of all AddOns-related queries
- * @param queryClient The React Query client instance
- */
-export const refetchAddOnsQueries = async (
-  queryClient: QueryClient
-): Promise<void> => {
-  console.log(
-    'Forcing refetch of all AddOns queries'
-  );
+export const refetchAddOnsQueries = async (queryClient: QueryClient): Promise<void> => {
+  console.log('Forcing refetch of all AddOns queries');
   await queryClient.refetchQueries({
     queryKey: addOnKeys.all,
   });
 };
 
-/**
- * Clears the entire cache and forces a refetch of active queries
- * Use this as a last resort when you need to completely reset the cache state
- * @param queryClient The React Query client instance
- */
-export const resetEntireCache = async (
-  queryClient: QueryClient
-): Promise<void> => {
-  console.log(
-    '[CACHE] Resetting entire cache and refetching active queries'
-  );
+export const resetEntireCache = async (queryClient: QueryClient): Promise<void> => {
+  console.log('[CACHE] Resetting entire cache and refetching active queries');
 
-  // Before clearing everything, specifically invalidate pricing packages
-  console.log(
-    '[CACHE] Specifically invalidating pricing packages before full clear'
-  );
+  console.log('[CACHE] Specifically invalidating pricing packages before full clear');
   queryClient.invalidateQueries({
     queryKey: ['pricingPackages'],
     refetchType: 'all',
@@ -120,39 +58,24 @@ export const resetEntireCache = async (
     refetchType: 'all',
   });
 
-  // Force a refetch of pricing packages data
   try {
-    console.log(
-      '[CACHE] Forcing refetch of pricing packages data'
-    );
-    await fetch(
-      '/api/pricing-packages?refresh=true',
-      {
-        method: 'GET',
-        headers: {
-          'Cache-Control':
-            'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
-      }
-    );
+    console.log('[CACHE] Forcing refetch of pricing packages data');
+    await fetch('/api/pricing-packages?refresh=true', {
+      method: 'GET',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
+    });
   } catch (error) {
-    console.error(
-      '[CACHE] Error fetching pricing packages:',
-      error
-    );
+    console.error('[CACHE] Error fetching pricing packages:', JSON.stringify(error, null, 2));
   }
 
-  // Clear all React Query cache
-  console.log(
-    '[CACHE] Clearing entire React Query cache'
-  );
+  console.log('[CACHE] Clearing entire React Query cache');
   queryClient.clear();
 
-  // Clear localStorage cache items if they exist
   if (typeof window !== 'undefined') {
-    // Clear any application-specific cache items
     const cacheKeys = [
       'userCustomization',
       'dashboardData',
@@ -160,79 +83,48 @@ export const resetEntireCache = async (
       'categoriesList',
       'recentTransactions',
       'userPreferences',
-      'pricingPackages', // Add pricing packages specifically
+      'pricingPackages',
       'pricingPackagesData',
     ];
 
     cacheKeys.forEach((key) => {
       try {
-        console.log(
-          `[CACHE] Removing ${key} from localStorage`
-        );
+        console.log(`[CACHE] Removing ${key} from localStorage`);
         localStorage.removeItem(key);
       } catch (error) {
-        console.warn(
-          `[CACHE] Failed to remove ${key} from localStorage:`,
-          error
-        );
+        console.warn(`[CACHE] Failed to remove ${key} from localStorage:`, JSON.stringify(error, null, 2));
       }
     });
 
-    // Also try to clear any browser cache for the pricing packages API
-    console.log(
-      '[CACHE] Attempting to clear browser cache for pricing packages'
-    );
+    console.log('[CACHE] Attempting to clear browser cache for pricing packages');
     try {
-      // This is a trick to force the browser to clear its cache for a specific URL
       const timestamp = new Date().getTime();
-      const urls = [
-        `/api/pricing-packages?t=${timestamp}`,
-        `/api/pricing-packages?refresh=true&t=${timestamp}`,
-      ];
+      const urls = [`/api/pricing-packages?t=${timestamp}`, `/api/pricing-packages?refresh=true&t=${timestamp}`];
 
       urls.forEach(async (url) => {
         await fetch(url, {
           method: 'GET',
           headers: {
-            'Cache-Control':
-              'no-cache, no-store, must-revalidate',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
             Pragma: 'no-cache',
             Expires: '0',
           },
         });
       });
     } catch (error) {
-      console.warn(
-        '[CACHE] Error clearing browser cache:',
-        error
-      );
+      console.warn('[CACHE] Error clearing browser cache:', JSON.stringify(error, null, 2));
     }
   }
 
-  // Refetch all active queries to get fresh data
-  console.log(
-    '[CACHE] Refetching all active queries'
-  );
+  console.log('[CACHE] Refetching all active queries');
   await queryClient.refetchQueries();
 };
 
-/**
- * Invalidate specific cache tags in React Query
- * @param queryClient The React Query client
- * @param tags Array of cache tags to invalidate
- */
-export const invalidateCacheTags = (
-  queryClient: QueryClient,
-  tags: string[] = [] // Provide default empty array
-): void => {
-  console.log('Invalidating cache tags:', tags);
+export const invalidateCacheTags = (queryClient: QueryClient, tags: string[] = []): void => {
+  console.log('Invalidating cache tags:', JSON.stringify(tags, null, 2));
 
-  // Add safety check
   if (!tags || !Array.isArray(tags)) {
-    console.warn(
-      'Invalid tags provided to invalidateCacheTags:',
-      tags
-    );
+    console.warn('Invalid tags provided to invalidateCacheTags:', JSON.stringify(tags, null, 2));
     return;
   }
 
@@ -243,104 +135,42 @@ export const invalidateCacheTags = (
   });
 };
 
-/**
- * Prefetch data for common routes to improve navigation experience
- * @param queryClient The React Query client
- */
-export const prefetchCommonData = async (
-  queryClient: QueryClient
-): Promise<void> => {
+export const prefetchCommonData = async (queryClient: QueryClient): Promise<void> => {
   console.log('Prefetching common data');
 
-  // Example of prefetching data for common routes
-  // This would be customized based on your application's needs
-  const prefetchPromises = [
-    // Prefetch pricing packages
-    fetch('/api/pricing-packages').then((res) =>
-      res.json()
-    ),
-
-    // Add other common data prefetching here
-  ];
+  const prefetchPromises = [fetch('/api/pricing-packages').then((res) => res.json())];
 
   try {
-    const [pricingPackages] = await Promise.all(
-      prefetchPromises
-    );
+    const [pricingPackages] = await Promise.all(prefetchPromises);
 
-    // Add safety check before storing in cache
     if (pricingPackages) {
-      queryClient.setQueryData(
-        [CACHE_TAGS.PRICING_PACKAGES],
-        pricingPackages
-      );
+      queryClient.setQueryData([CACHE_TAGS.PRICING_PACKAGES], pricingPackages);
     } else {
-      console.warn(
-        'Received undefined pricing packages data during prefetch'
-      );
+      console.warn('Received undefined pricing packages data during prefetch');
     }
   } catch (error) {
-    console.error(
-      'Error prefetching common data:',
-      error
-    );
+    console.error('Error prefetching common data:', JSON.stringify(error, null, 2));
   }
 };
 
-/**
- * Set up cache event listeners
- * This can be used to monitor cache operations and perform actions
- * @param queryClient The React Query client
- */
-export const setupCacheListeners = (
-  queryClient: QueryClient
-): (() => void) => {
-  // Listen for query cache changes
-  const unsubscribe = queryClient
-    .getQueryCache()
-    .subscribe((event) => {
-      if (
-        process.env.NODE_ENV === 'development'
-      ) {
-        if (event.type === 'added') {
-          console.log(
-            'Query added to cache:',
-            event.query.queryKey
-          );
-        } else if (event.type === 'removed') {
-          console.log(
-            'Query removed from cache:',
-            event.query.queryKey
-          );
-        } else if (event.type === 'updated') {
-          console.log(
-            'Query updated in cache:',
-            event.query.queryKey
-          );
-        }
+export const setupCacheListeners = (queryClient: QueryClient): (() => void) => {
+  const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
+    if (process.env.NODE_ENV === 'development') {
+      if (event.type === 'added') {
+        console.log('Query added to cache:', JSON.stringify(event.query.queryKey, null, 2));
+      } else if (event.type === 'removed') {
+        console.log('Query removed from cache:', JSON.stringify(event.query.queryKey, null, 2));
+      } else if (event.type === 'updated') {
+        console.log('Query updated in cache:', JSON.stringify(event.query.queryKey, null, 2));
       }
-    });
+    }
+  });
 
   return unsubscribe;
 };
 
-/**
- * Create optimized fetch options for data fetching
- * @param cacheTags Array of cache tags to associate with the request
- * @param revalidate Time in seconds to revalidate the data
- */
-export const createFetchOptions = async (
-  cacheTags: string[] | null | undefined = [],
-  revalidate: number = 60
-): Promise<RequestInit> => {
-  // If we're using the async getCacheOptions from caching-config.ts
-  // we would need to await it here, but for client-side usage
-  // we'll create the options directly
-
-  // Ensure cacheTags is always a valid array
-  const safeCacheTags = Array.isArray(cacheTags)
-    ? cacheTags
-    : [];
+export const createFetchOptions = async (cacheTags: string[] | null | undefined = [], revalidate: number = 60): Promise<RequestInit> => {
+  const safeCacheTags = Array.isArray(cacheTags) ? cacheTags : [];
 
   return {
     next: {
@@ -350,31 +180,13 @@ export const createFetchOptions = async (
   } as RequestInit;
 };
 
-/**
- * Check if data is stale and needs refreshing
- * @param timestamp The timestamp when the data was last fetched
- * @param maxAge Maximum age in milliseconds before data is considered stale
- */
-export const isDataStale = (
-  timestamp: number,
-  maxAge: number = 60000 // Default to 1 minute
-): boolean => {
+export const isDataStale = (timestamp: number, maxAge: number = 60000): boolean => {
   return Date.now() - timestamp > maxAge;
 };
 
-/**
- * Refresh home page and common page caches
- * This function is specifically designed to refresh the cache for the home page and other common pages
- * @param queryClient The React Query client instance
- */
-export const refreshCommonPageCaches = async (
-  queryClient: QueryClient
-): Promise<void> => {
-  console.log(
-    '[CACHE] Refreshing home page and common page caches'
-  );
+export const refreshCommonPageCaches = async (queryClient: QueryClient): Promise<void> => {
+  console.log('[CACHE] Refreshing home page and common page caches');
 
-  // Define the common query keys that might be used on the home page and other pages
   const commonQueryKeys = [
     ['products'],
     ['categories'],
@@ -388,10 +200,7 @@ export const refreshCommonPageCaches = async (
     [CACHE_TAGS.TESTIMONIALS],
   ];
 
-  // Specifically target pricing packages cache - this is critical for the home page
-  console.log(
-    '[CACHE] Specifically invalidating pricing packages cache'
-  );
+  console.log('[CACHE] Specifically invalidating pricing packages cache');
   queryClient.invalidateQueries({
     queryKey: ['pricingPackages'],
     refetchType: 'all',
@@ -402,69 +211,43 @@ export const refreshCommonPageCaches = async (
     refetchType: 'all',
   });
 
-  // Invalidate all common query keys
   commonQueryKeys.forEach((key) => {
-    console.log(
-      `[CACHE] Invalidating query key: ${key.join('/')}`
-    );
+    console.log(`[CACHE] Invalidating query key: ${key.join('/')}`);
     queryClient.invalidateQueries({
       queryKey: key,
     });
   });
 
-  // Force a refetch of pricing packages data
   try {
-    console.log(
-      '[CACHE] Forcing refetch of pricing packages data'
-    );
-    await fetch(
-      '/api/pricing-packages?refresh=true',
-      {
-        method: 'GET',
-        headers: {
-          'Cache-Control':
-            'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
-      }
-    );
+    console.log('[CACHE] Forcing refetch of pricing packages data');
+    await fetch('/api/pricing-packages?refresh=true', {
+      method: 'GET',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
+    });
   } catch (error) {
-    console.error(
-      '[CACHE] Error fetching pricing packages:',
-      error
-    );
+    console.error('[CACHE] Error fetching pricing packages:', JSON.stringify(error, null, 2));
   }
 
-  // Refetch queries that are currently active (visible on the page)
-  console.log(
-    '[CACHE] Refetching active queries'
-  );
+  console.log('[CACHE] Refetching active queries');
   await queryClient.refetchQueries({
     type: 'active',
   });
 
-  // If we're on the home page or a common page, force a refetch of relevant data
   if (typeof window !== 'undefined') {
     const path = window.location.pathname;
     console.log(`[CACHE] Current path: ${path}`);
-    if (
-      path === '/' ||
-      path === '/products' ||
-      path === '/pricing-packages'
-    ) {
-      console.log(
-        '[CACHE] On home or pricing page, forcing refetch of all common data'
-      );
+    if (path === '/' || path === '/products' || path === '/pricing-packages') {
+      console.log('[CACHE] On home or pricing page, forcing refetch of all common data');
       await queryClient.refetchQueries({
         queryKey: commonQueryKeys.flat(),
       });
 
-      // For home page, specifically refetch pricing packages
       if (path === '/') {
-        console.log(
-          '[CACHE] On home page, specifically refetching pricing packages'
-        );
+        console.log('[CACHE] On home page, specifically refetching pricing packages');
         await queryClient.refetchQueries({
           queryKey: ['pricingPackages'],
           type: 'all',
@@ -474,47 +257,25 @@ export const refreshCommonPageCaches = async (
   }
 };
 
-/**
- * Safely access properties of potentially undefined objects
- * @param obj The object to access
- * @param path The path to the property (e.g., 'user.profile.name')
- * @param defaultValue The default value to return if the path doesn't exist
- */
-export const safeGet = <T>(
-  obj: unknown,
-  path: string,
-  defaultValue: T
-): T => {
-  if (obj === undefined || obj === null)
-    return defaultValue;
+export const safeGet = <T>(obj: unknown, path: string, defaultValue: T): T => {
+  if (obj === undefined || obj === null) return defaultValue;
 
   try {
     const parts = path.split('.');
-    // We need to use unknown here as we're traversing an object with unknown structure
+
     let result: unknown = obj;
 
     for (const part of parts) {
-      if (
-        result === undefined ||
-        result === null ||
-        typeof result !== 'object'
-      ) {
+      if (result === undefined || result === null || typeof result !== 'object') {
         return defaultValue;
       }
-      // Use type assertion to access property with string index
-      result = (
-        result as Record<string, unknown>
-      )[part];
+
+      result = (result as Record<string, unknown>)[part];
     }
 
-    return result === undefined || result === null
-      ? defaultValue
-      : (result as T);
+    return result === undefined || result === null ? defaultValue : (result as T);
   } catch (error) {
-    console.warn(
-      `Error accessing path ${path}:`,
-      error
-    );
+    console.warn(`Error accessing path ${path}:`, JSON.stringify(error, null, 2));
     return defaultValue;
   }
 };

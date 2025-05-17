@@ -1,17 +1,6 @@
-/**
- * Test script for JSON parsing issues
- *
- * This script can be run in the browser console to test the JSON parsing
- * functionality and identify issues with malformed JSON responses.
- */
-
-/**
- * Test function to simulate and fix JSON parsing issues
- */
 function testJsonParsing() {
   console.log('=== JSON Parsing Test ===');
 
-  // Test cases with various JSON issues
   const testCases = [
     {
       name: 'Valid JSON',
@@ -45,9 +34,7 @@ function testJsonParsing() {
     },
   ];
 
-  // Function to clean JSON text
   function cleanJsonText(text) {
-    // Remove BOM (Byte Order Mark) if present
     let cleaned = text.replace(/^\uFEFF/, '');
 
     // Find the first JSON character ('{' or '[')
@@ -55,14 +42,8 @@ function testJsonParsing() {
     const firstBracket = cleaned.indexOf('[');
 
     let startIndex = -1;
-    if (
-      firstBrace !== -1 &&
-      firstBracket !== -1
-    ) {
-      startIndex = Math.min(
-        firstBrace,
-        firstBracket
-      );
+    if (firstBrace !== -1 && firstBracket !== -1) {
+      startIndex = Math.min(firstBrace, firstBracket);
     } else if (firstBrace !== -1) {
       startIndex = firstBrace;
     } else if (firstBracket !== -1) {
@@ -87,10 +68,7 @@ function testJsonParsing() {
     }
 
     if (endIndex !== -1) {
-      cleaned = cleaned.substring(
-        0,
-        endIndex + 1
-      );
+      cleaned = cleaned.substring(0, endIndex + 1);
     }
 
     return cleaned;
@@ -104,35 +82,23 @@ function testJsonParsing() {
     }
 
     try {
-      // First try standard parsing
       return JSON.parse(text);
     } catch (error) {
-      console.warn(
-        'Standard JSON parsing failed, trying cleanup methods',
-        error
-      );
+      console.warn('Standard JSON parsing failed, trying cleanup methods', JSON.stringify(error, null, 2));
 
       try {
-        // Clean the text before parsing
         const cleanedText = cleanJsonText(text);
         return JSON.parse(cleanedText);
       } catch (cleanError) {
-        console.warn(
-          'Cleaned JSON parsing failed, trying regex extraction',
-          cleanError
-        );
+        console.warn('Cleaned JSON parsing failed, trying regex extraction', JSON.stringify(cleanError, null, 2));
 
         try {
-          // Try to extract JSON using regex
           const jsonMatch = text.match(/\{.*\}/s);
           if (jsonMatch && jsonMatch[0]) {
             return JSON.parse(jsonMatch[0]);
           }
         } catch (regexError) {
-          console.error(
-            'All JSON parsing methods failed',
-            regexError
-          );
+          console.error('All JSON parsing methods failed', JSON.stringify(regexError, null, 2));
         }
 
         return null;
@@ -140,39 +106,21 @@ function testJsonParsing() {
     }
   }
 
-  // Run the tests
   testCases.forEach((testCase) => {
     console.group(`Test: ${testCase.name}`);
-    console.log('Input:', testCase.input);
+    console.log('Input:', JSON.stringify(testCase.input, null, 2));
 
     try {
-      // Try standard JSON.parse
-      const standardResult = JSON.parse(
-        testCase.input
-      );
-      console.log(
-        'Standard JSON.parse succeeded:',
-        standardResult
-      );
+      const standardResult = JSON.parse(testCase.input);
+      console.log('Standard JSON.parse succeeded:', JSON.stringify(standardResult, null, 2));
     } catch (error) {
-      console.log(
-        'Standard JSON.parse failed:',
-        error.message
-      );
+      console.log('Standard JSON.parse failed:', JSON.stringify(error.message, null, 2));
 
-      // Try our safe parsing method
-      const safeResult = safeJsonParse(
-        testCase.input
-      );
+      const safeResult = safeJsonParse(testCase.input);
       if (safeResult) {
-        console.log(
-          'Safe JSON parsing succeeded:',
-          safeResult
-        );
+        console.log('Safe JSON parsing succeeded:', JSON.stringify(safeResult, null, 2));
       } else {
-        console.log(
-          'Safe JSON parsing also failed'
-        );
+        console.log('Safe JSON parsing also failed');
       }
     }
 
@@ -182,7 +130,6 @@ function testJsonParsing() {
   console.log('=== Test Complete ===');
 }
 
-// Instructions for running the test
 console.log(`
 === JSON PARSING TEST SCRIPT ===
 This script tests the JSON parsing functionality and identifies issues with malformed JSON responses.
@@ -197,5 +144,4 @@ The test will:
 - Demonstrate how our safe parsing method handles problematic JSON
 `);
 
-// Export the test function
 window.testJsonParsing = testJsonParsing;

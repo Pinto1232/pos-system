@@ -1,17 +1,10 @@
 'use client';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-} from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import SuccessMessage from '@/components/ui/success-message/SuccessMessage';
 
 interface SuccessModalContextProps {
-  showSuccessModal: (
-    props: SuccessModalProps
-  ) => void;
+  showSuccessModal: (props: SuccessModalProps) => void;
   hideSuccessModal: () => void;
 }
 
@@ -22,12 +15,7 @@ interface SuccessModalProps {
   selectedPackage?: {
     id: number;
     title: string;
-    type:
-      | 'starter'
-      | 'growth'
-      | 'enterprise'
-      | 'custom'
-      | 'premium';
+    type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
     price: number;
     currency?: string;
   };
@@ -51,16 +39,12 @@ interface SuccessModalProps {
   onAddToCart?: (message: string) => void;
 }
 
-const SuccessModalContext = createContext<
-  SuccessModalContextProps | undefined
->(undefined);
+const SuccessModalContext = createContext<SuccessModalContextProps | undefined>(undefined);
 
 export const useSuccessModal = () => {
   const context = useContext(SuccessModalContext);
   if (!context) {
-    throw new Error(
-      'useSuccessModal must be used within a SuccessModalProvider'
-    );
+    throw new Error('useSuccessModal must be used within a SuccessModalProvider');
   }
   return context;
 };
@@ -69,12 +53,9 @@ export const SuccessModalProvider: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [modalProps, setModalProps] =
-    useState<SuccessModalProps | null>(null);
+  const [modalProps, setModalProps] = useState<SuccessModalProps | null>(null);
 
-  const showSuccessModal = (
-    props: SuccessModalProps
-  ) => {
+  const showSuccessModal = (props: SuccessModalProps) => {
     setModalProps(props);
     setIsOpen(true);
   };
@@ -82,8 +63,6 @@ export const SuccessModalProvider: React.FC<{
   const hideSuccessModal = () => {
     setIsOpen(false);
   };
-
-  // We no longer need handleClose as we're using hideSuccessModal directly in the SuccessMessage component
 
   return (
     <SuccessModalContext.Provider
@@ -96,29 +75,17 @@ export const SuccessModalProvider: React.FC<{
       {modalProps && (
         <SuccessMessage
           open={isOpen}
-          onClose={() => {}} // This is no longer used, but kept for compatibility
+          onClose={() => {}}
           message={modalProps.message}
           onConfirm={modalProps.onConfirm}
           onReturn={modalProps.onReturn}
-          selectedPackage={
-            modalProps.selectedPackage
-          }
-          currentCurrency={
-            modalProps.currentCurrency
-          }
+          selectedPackage={modalProps.selectedPackage}
+          currentCurrency={modalProps.currentCurrency}
           formData={modalProps.formData}
-          selectedFeatures={
-            modalProps.selectedFeatures
-          }
-          selectedAddOns={
-            modalProps.selectedAddOns
-          }
-          usageQuantities={
-            modalProps.usageQuantities
-          }
-          calculatedPrice={
-            modalProps.calculatedPrice
-          }
+          selectedFeatures={modalProps.selectedFeatures}
+          selectedAddOns={modalProps.selectedAddOns}
+          usageQuantities={modalProps.usageQuantities}
+          calculatedPrice={modalProps.calculatedPrice}
           onAddToCart={modalProps.onAddToCart}
         />
       )}

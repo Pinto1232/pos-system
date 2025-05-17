@@ -13,18 +13,12 @@ import {
   FormControl,
   Paper,
 } from '@mui/material';
-import {
-  FaPaypal,
-  FaCreditCard,
-  FaStripe,
-} from 'react-icons/fa';
+import { FaPaypal, FaCreditCard, FaStripe } from 'react-icons/fa';
 import styles from './CheckoutForm.module.css';
 import { CheckoutFormProps } from './CheckoutFormInterfaces';
 import Image from 'next/image';
 
-const CheckoutForm: React.FC<
-  CheckoutFormProps
-> = ({
+const CheckoutForm: React.FC<CheckoutFormProps> = ({
   title,
   checkoutFields,
   orderSummaryTitle,
@@ -33,81 +27,47 @@ const CheckoutForm: React.FC<
   onChange,
   onSubmit,
 }) => {
-  const handleSelectChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleSelectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e);
   };
 
   return (
-    <Paper
-      elevation={0}
-      className={styles.checkoutContainer}
-    >
+    <Paper elevation={0} className={styles.checkoutContainer}>
       <Box className={styles.checkoutLeft}>
-        <Typography
-          variant="h5"
-          className={styles.title}
-          sx={{ padding: '1rem' }}
-        >
+        <Typography variant="h5" className={styles.title} sx={{ padding: '1rem' }}>
           {title}
         </Typography>
 
         <form onSubmit={onSubmit}>
-          <Grid
-            container
-            spacing={3}
-            sx={{ padding: '0 1rem' }}
-          >
+          <Grid container spacing={3} sx={{ padding: '0 1rem' }}>
             {checkoutFields.map((field) => {
-              const gridSize =
-                field.name.toLowerCase() ===
-                'address'
-                  ? 12
-                  : 6;
+              const gridSize = field.name.toLowerCase() === 'address' ? 12 : 6;
               return (
-                <Grid
-                  item
-                  xs={12}
-                  sm={gridSize}
-                  key={field.name}
-                >
-                  {field.type === 'select' ||
-                  field.name === 'country' ||
-                  field.name === 'state' ? (
+                <Grid item xs={12} sm={gridSize} key={field.name}>
+                  {field.type === 'select' || field.name === 'country' || field.name === 'state' ? (
                     <TextField
                       select
                       name={field.name}
                       required={field.required}
-                      value={
-                        formData[field.name] || ''
-                      }
-                      onChange={
-                        handleSelectChange
-                      }
+                      value={formData[field.name] || ''}
+                      onChange={handleSelectChange}
                       label={field.label}
                       fullWidth
                       variant="outlined"
                       sx={{
-                        '& .MuiOutlinedInput-root':
-                          {
-                            backgroundColor:
-                              '#f8fafc',
-                            borderRadius: '0px',
-                            '& fieldset': {
-                              borderColor:
-                                'rgba(0, 0, 0, 0.1)',
-                            },
-                            '&:hover fieldset': {
-                              borderColor:
-                                '#1976d2',
-                            },
-                            '&.Mui-focused fieldset':
-                              {
-                                borderColor:
-                                  '#1976d2',
-                              },
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: '#f8fafc',
+                          borderRadius: '0px',
+                          '& fieldset': {
+                            borderColor: 'rgba(0, 0, 0, 0.1)',
                           },
+                          '&:hover fieldset': {
+                            borderColor: '#1976d2',
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: '#1976d2',
+                          },
+                        },
                         '& .MuiInputLabel-root': {
                           color: '#64748b',
                           '&.Mui-focused': {
@@ -120,63 +80,47 @@ const CheckoutForm: React.FC<
                       }}
                     >
                       <MenuItem value="">
-                        <em>
-                          Select {field.label}
-                        </em>
+                        <em>Select {field.label}</em>
                       </MenuItem>
-                      {field.options?.map(
-                        (option: string) => (
-                          <MenuItem
-                            key={option}
-                            value={option}
-                          >
-                            {option}
-                          </MenuItem>
-                        )
-                      )}
+                      {field.options?.map((option: string) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
                     </TextField>
                   ) : (
                     <TextField
                       type={field.type ?? 'text'}
                       name={field.name}
                       required={field.required}
-                      value={
-                        formData[field.name] || ''
-                      }
+                      value={formData[field.name] || ''}
                       onChange={onChange}
                       label={field.label}
                       fullWidth
                       variant="outlined"
                       sx={{
-                        '& .MuiOutlinedInput-root':
-                          {
-                            backgroundColor:
-                              '#f8fafc',
-                            borderRadius: '0px',
-                            '& fieldset': {
-                              borderColor:
-                                'rgba(0, 0, 0, 0.1)',
-                            },
-                            '&:hover fieldset': {
-                              borderColor:
-                                '#1976d2',
-                            },
-                            '&.Mui-focused fieldset':
-                              {
-                                borderColor:
-                                  '#1976d2',
-                              },
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: '#f8fafc',
+                          borderRadius: '0px',
+                          '& fieldset': {
+                            borderColor: 'rgba(0, 0, 0, 0.1)',
                           },
+                          '&:hover fieldset': {
+                            borderColor: '#1976d2',
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: '#1976d2',
+                          },
+                        },
                         '& .MuiInputLabel-root': {
                           color: '#64748b',
                           '&.Mui-focused': {
                             color: '#1976d2',
                           },
                         },
-                        '& .MuiOutlinedInput-input':
-                          {
-                            padding: '12px 14px',
-                          },
+                        '& .MuiOutlinedInput-input': {
+                          padding: '12px 14px',
+                        },
                       }}
                     />
                   )}
@@ -188,49 +132,20 @@ const CheckoutForm: React.FC<
       </Box>
 
       <Box className={styles.checkoutRight}>
-        <Box
-          className={styles.checkoutRightWrapper}
-        >
-          <Typography
-            variant="h5"
-            className={styles.title}
-            sx={{ padding: '1rem' }}
-          >
+        <Box className={styles.checkoutRightWrapper}>
+          <Typography variant="h5" className={styles.title} sx={{ padding: '1rem' }}>
             {orderSummaryTitle}
           </Typography>
 
           <Box className={styles.orderSummary}>
-            <Box
-              className={
-                styles.orderSummaryContent
-              }
-            >
+            <Box className={styles.orderSummaryContent}>
               {orderSummaryItems.map((item) => (
-                <Box
-                  key={item.label}
-                  className={styles.section}
-                >
+                <Box key={item.label} className={styles.section}>
                   <Box className={styles.itemRow}>
-                    <Typography
-                      className={styles.itemLabel}
-                    >
-                      {item.label}
-                    </Typography>
-                    <Typography
-                      className={styles.itemValue}
-                    >
-                      {item.value}
-                    </Typography>
+                    <Typography className={styles.itemLabel}>{item.label}</Typography>
+                    <Typography className={styles.itemValue}>{item.value}</Typography>
                   </Box>
-                  {item.description && (
-                    <Typography
-                      className={
-                        styles.itemDescription
-                      }
-                    >
-                      {item.description}
-                    </Typography>
-                  )}
+                  {item.description && <Typography className={styles.itemDescription}>{item.description}</Typography>}
                 </Box>
               ))}
             </Box>
@@ -243,23 +158,11 @@ const CheckoutForm: React.FC<
             <Typography>
               {orderSummaryItems
                 .reduce((acc, item) => {
-                  if (
-                    typeof item.value === 'number'
-                  ) {
+                  if (typeof item.value === 'number') {
                     return acc + item.value;
                   }
-                  const numericValue = parseFloat(
-                    item.value.replace(
-                      /[^0-9.-]/g,
-                      ''
-                    )
-                  );
-                  return (
-                    acc +
-                    (isNaN(numericValue)
-                      ? 0
-                      : numericValue)
-                  );
+                  const numericValue = parseFloat(item.value.replace(/[^0-9.-]/g, ''));
+                  return acc + (isNaN(numericValue) ? 0 : numericValue);
                 }, 0)
                 .toLocaleString('en-ZA', {
                   style: 'currency',
@@ -269,23 +172,15 @@ const CheckoutForm: React.FC<
           </Box>
 
           <Box className={styles.paymentDetails}>
-            <Typography
-              variant="h6"
-              className={styles.sectionTitle}
-            >
+            <Typography variant="h6" className={styles.sectionTitle}>
               Payment Method
             </Typography>
 
-            <FormControl
-              component="fieldset"
-              fullWidth
-            >
+            <FormControl component="fieldset" fullWidth>
               <RadioGroup
                 aria-label="payment-method"
                 name="paymentMethod"
-                value={
-                  formData.paymentMethod || ''
-                }
+                value={formData.paymentMethod || ''}
                 onChange={handleSelectChange}
               >
                 <FormControlLabel
@@ -308,11 +203,7 @@ const CheckoutForm: React.FC<
                         width: '100%',
                       }}
                     >
-                      <Box
-                        className={
-                          styles.paymentMethodIcon
-                        }
-                      >
+                      <Box className={styles.paymentMethodIcon}>
                         <FaPaypal
                           style={{
                             fontSize: '2rem',
@@ -329,11 +220,7 @@ const CheckoutForm: React.FC<
                           PayPal
                         </Typography>
                       </Box>
-                      <Box
-                        className={
-                          styles.paymentMethodCards
-                        }
-                      >
+                      <Box className={styles.paymentMethodCards}>
                         <Image
                           src="/visa.jpg"
                           alt="Visa"
@@ -358,10 +245,9 @@ const CheckoutForm: React.FC<
                   sx={{
                     margin: 0,
                     width: '100%',
-                    '.MuiFormControlLabel-label':
-                      {
-                        width: '100%',
-                      },
+                    '.MuiFormControlLabel-label': {
+                      width: '100%',
+                    },
                   }}
                 />
 
@@ -385,11 +271,7 @@ const CheckoutForm: React.FC<
                         width: '100%',
                       }}
                     >
-                      <Box
-                        className={
-                          styles.paymentMethodIcon
-                        }
-                      >
+                      <Box className={styles.paymentMethodIcon}>
                         <FaStripe
                           style={{
                             fontSize: '2.5rem',
@@ -411,10 +293,9 @@ const CheckoutForm: React.FC<
                   sx={{
                     margin: 0,
                     width: '100%',
-                    '.MuiFormControlLabel-label':
-                      {
-                        width: '100%',
-                      },
+                    '.MuiFormControlLabel-label': {
+                      width: '100%',
+                    },
                   }}
                 />
 
@@ -438,11 +319,7 @@ const CheckoutForm: React.FC<
                         width: '100%',
                       }}
                     >
-                      <Box
-                        className={
-                          styles.paymentMethodIcon
-                        }
-                      >
+                      <Box className={styles.paymentMethodIcon}>
                         <FaCreditCard
                           style={{
                             fontSize: '1.5rem',
@@ -464,17 +341,15 @@ const CheckoutForm: React.FC<
                   sx={{
                     margin: 0,
                     width: '100%',
-                    '.MuiFormControlLabel-label':
-                      {
-                        width: '100%',
-                      },
+                    '.MuiFormControlLabel-label': {
+                      width: '100%',
+                    },
                   }}
                 />
               </RadioGroup>
             </FormControl>
 
-            {formData.paymentMethod ===
-              'creditCard' && (
+            {formData.paymentMethod === 'creditCard' && (
               <Box sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
@@ -486,13 +361,11 @@ const CheckoutForm: React.FC<
                       onChange={onChange}
                       variant="outlined"
                       sx={{
-                        '& .MuiOutlinedInput-root':
-                          {
-                            '&:hover fieldset': {
-                              borderColor:
-                                '#1a1a1a',
-                            },
+                        '& .MuiOutlinedInput-root': {
+                          '&:hover fieldset': {
+                            borderColor: '#1a1a1a',
                           },
+                        },
                       }}
                     />
                   </Grid>
@@ -517,24 +390,8 @@ const CheckoutForm: React.FC<
                       onChange={onChange}
                       variant="outlined"
                     >
-                      {[
-                        '01',
-                        '02',
-                        '03',
-                        '04',
-                        '05',
-                        '06',
-                        '07',
-                        '08',
-                        '09',
-                        '10',
-                        '11',
-                        '12',
-                      ].map((month) => (
-                        <MenuItem
-                          key={month}
-                          value={month}
-                        >
+                      {['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].map((month) => (
+                        <MenuItem key={month} value={month}>
                           {month}
                         </MenuItem>
                       ))}
@@ -550,16 +407,8 @@ const CheckoutForm: React.FC<
                       onChange={onChange}
                       variant="outlined"
                     >
-                      {Array.from(
-                        { length: 10 },
-                        (_, i) =>
-                          new Date().getFullYear() +
-                          i
-                      ).map((year) => (
-                        <MenuItem
-                          key={year}
-                          value={year}
-                        >
+                      {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map((year) => (
+                        <MenuItem key={year} value={year}>
                           {year}
                         </MenuItem>
                       ))}
@@ -586,7 +435,7 @@ const CheckoutForm: React.FC<
               className={styles.checkoutButton}
               onClick={(e) => {
                 e.preventDefault();
-                // Make sure the form is submitted properly
+
                 if (onSubmit) {
                   onSubmit(e);
                 }

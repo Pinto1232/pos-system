@@ -1,8 +1,7 @@
 import React from 'react';
-import TransactionsTable from './TransactionsTable'; // Presentational component
+import TransactionsTable from './TransactionsTable';
 
 const TransactionsContainer = () => {
-  // Mock data based on the provided file content
   const transactions = [
     {
       id: 'INV-2025-0012',
@@ -32,14 +31,9 @@ const TransactionsContainer = () => {
       cashier: 'Nunes Andrew',
       date: '2025-03-24 14:30',
     },
-    // Add other transactions similarly
   ];
 
-  return (
-    <TransactionsTable
-      transactions={transactions}
-    />
-  );
+  return <TransactionsTable transactions={transactions} />;
 };
 
 export default TransactionsContainer;

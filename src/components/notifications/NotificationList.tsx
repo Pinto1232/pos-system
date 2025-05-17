@@ -1,37 +1,29 @@
 'use client';
 
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  CircularProgress,
-  Divider,
-} from '@mui/material';
+import { Box, Typography, Button, CircularProgress, Divider } from '@mui/material';
 import NotificationItem from './NotificationItem';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { styled } from '@mui/material/styles';
 
-const NotificationListContainer = styled(Box)(
-  ({ theme }) => ({
-    maxHeight: '400px',
-    overflowY: 'auto',
-    padding: theme.spacing(1),
-    '&::-webkit-scrollbar': {
-      width: '4px',
-    },
-    '&::-webkit-scrollbar-track': {
-      background: 'transparent',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      background: theme.palette.divider,
-      borderRadius: '4px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      background: theme.palette.text.disabled,
-    },
-  })
-);
+const NotificationListContainer = styled(Box)(({ theme }) => ({
+  maxHeight: '400px',
+  overflowY: 'auto',
+  padding: theme.spacing(1),
+  '&::-webkit-scrollbar': {
+    width: '4px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: theme.palette.divider,
+    borderRadius: '4px',
+  },
+  '&::-webkit-scrollbar-thumb:hover': {
+    background: theme.palette.text.disabled,
+  },
+}));
 
 const EmptyState = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -43,15 +35,7 @@ const EmptyState = styled(Box)(({ theme }) => ({
 }));
 
 const NotificationList: React.FC = () => {
-  const {
-    notifications,
-    isLoading,
-    error,
-    markAsRead,
-    markAllAsRead,
-    refreshNotifications,
-    unreadCount,
-  } = useNotificationContext();
+  const { notifications, isLoading, error, markAsRead, markAllAsRead, refreshNotifications, unreadCount } = useNotificationContext();
 
   const handleMarkAsRead = async (id: string) => {
     await markAsRead([id]);
@@ -78,19 +62,10 @@ const NotificationList: React.FC = () => {
   if (error) {
     return (
       <EmptyState>
-        <Typography
-          variant="body2"
-          color="error"
-          gutterBottom
-        >
+        <Typography variant="body2" color="error" gutterBottom>
           Error loading notifications
         </Typography>
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={refreshNotifications}
-          sx={{ mt: 1 }}
-        >
+        <Button variant="outlined" size="small" onClick={refreshNotifications} sx={{ mt: 1 }}>
           Retry
         </Button>
       </EmptyState>
@@ -103,12 +78,8 @@ const NotificationList: React.FC = () => {
         <Typography variant="body2" gutterBottom>
           No notifications yet
         </Typography>
-        <Typography
-          variant="caption"
-          color="text.disabled"
-        >
-          We'll notify you when something
-          important happens
+        <Typography variant="caption" color="text.disabled">
+          We'll notify you when something important happens
         </Typography>
       </EmptyState>
     );
@@ -125,17 +96,9 @@ const NotificationList: React.FC = () => {
           py: 1,
         }}
       >
-        <Typography variant="subtitle2">
-          Notifications{' '}
-          {unreadCount > 0 &&
-            `(${unreadCount} unread)`}
-        </Typography>
+        <Typography variant="subtitle2">Notifications {unreadCount > 0 && `(${unreadCount} unread)`}</Typography>
         {unreadCount > 0 && (
-          <Button
-            size="small"
-            onClick={handleMarkAllAsRead}
-            sx={{ fontSize: '0.75rem' }}
-          >
+          <Button size="small" onClick={handleMarkAllAsRead} sx={{ fontSize: '0.75rem' }}>
             Mark all as read
           </Button>
         )}
@@ -145,11 +108,7 @@ const NotificationList: React.FC = () => {
 
       <NotificationListContainer>
         {notifications.map((notification) => (
-          <NotificationItem
-            key={notification.id}
-            notification={notification}
-            onMarkAsRead={handleMarkAsRead}
-          />
+          <NotificationItem key={notification.id} notification={notification} onMarkAsRead={handleMarkAsRead} />
         ))}
       </NotificationListContainer>
     </Box>

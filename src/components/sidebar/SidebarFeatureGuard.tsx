@@ -23,8 +23,7 @@ const pulseAnimation = keyframes`
 const AnimatedLockIcon = styled(LockIcon)`
   font-size: 16px;
   color: rgba(255, 255, 255, 0.9);
-  animation: ${pulseAnimation} 2s infinite
-    ease-in-out;
+  animation: ${pulseAnimation} 2s infinite ease-in-out;
 `;
 
 interface SidebarFeatureGuardProps {
@@ -33,15 +32,8 @@ interface SidebarFeatureGuardProps {
   disabledStyle?: React.CSSProperties;
 }
 
-const SidebarFeatureGuard: React.FC<
-  SidebarFeatureGuardProps
-> = ({
-  featureName,
-  children,
-  disabledStyle = {},
-}) => {
-  const { hasFeatureAccess, subscription } =
-    useUserSubscription();
+const SidebarFeatureGuard: React.FC<SidebarFeatureGuardProps> = ({ featureName, children, disabledStyle = {} }) => {
+  const { hasFeatureAccess, subscription } = useUserSubscription();
   const hasAccess = hasFeatureAccess(featureName);
 
   if (hasAccess) {
@@ -60,21 +52,14 @@ const SidebarFeatureGuard: React.FC<
           >
             Feature Locked
           </div>
-          <div>
-            The {featureName} feature is not
-            included in your current package.
-          </div>
+          <div>The {featureName} feature is not included in your current package.</div>
           <div
             style={{
               fontSize: '0.8rem',
               marginTop: '4px',
             }}
           >
-            You are currently on the{' '}
-            {subscription?.package?.title ||
-              'Free'}{' '}
-            plan. Upgrade your subscription to
-            access this feature.
+            You are currently on the {subscription?.package?.title || 'Free'} plan. Upgrade your subscription to access this feature.
           </div>
           <div
             style={{
@@ -104,25 +89,20 @@ const SidebarFeatureGuard: React.FC<
         onClick={(e) => {
           e.stopPropagation();
 
-          const event = new CustomEvent(
-            'openSettingsModal',
-            {
-              detail: {
-                initialTab: 'Package Management',
-              },
-            }
-          );
+          const event = new CustomEvent('openSettingsModal', {
+            detail: {
+              initialTab: 'Package Management',
+            },
+          });
           window.dispatchEvent(event);
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.opacity = '0.8';
-          e.currentTarget.style.filter =
-            'grayscale(0.5)';
+          e.currentTarget.style.filter = 'grayscale(0.5)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.opacity = '0.6';
-          e.currentTarget.style.filter =
-            'grayscale(0.7)';
+          e.currentTarget.style.filter = 'grayscale(0.7)';
         }}
       >
         {children}
@@ -138,8 +118,7 @@ const SidebarFeatureGuard: React.FC<
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
             borderRadius: '50%',
             padding: '2px',
-            boxShadow:
-              '0 2px 4px rgba(0, 0, 0, 0.2)',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
           }}
         >
           <AnimatedLockIcon data-testid="lock-icon" />

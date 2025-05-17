@@ -1,89 +1,48 @@
-import React, {
-  useState,
-  useEffect,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import ProductEdit from './ProductEdit';
 import { Product } from './types';
 
 const ProductEditContainer: React.FC = () => {
-  const [productsState, setProductsState] =
-    useState<Product[]>(() => {
-      // Initialize state from localStorage if available
-      if (typeof window === 'undefined')
-        return [];
+  const [productsState, setProductsState] = useState<Product[]>(() => {
+    if (typeof window === 'undefined') return [];
 
-      const savedProducts =
-        localStorage.getItem('products');
-      return savedProducts
-        ? JSON.parse(savedProducts)
-        : [];
-    });
+    const savedProducts = localStorage.getItem('products');
+    return savedProducts ? JSON.parse(savedProducts) : [];
+  });
 
-  // Save products to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem(
-      'products',
-      JSON.stringify(productsState)
-    );
+    localStorage.setItem('products', JSON.stringify(productsState));
   }, [productsState]);
 
-  const [itemNoState, setItemNoState] =
-    useState(0);
-  const [subTotalState, setSubTotalState] =
-    useState(0);
-  const [discountState, setDiscountState] =
-    useState(0);
+  const [itemNoState, setItemNoState] = useState(0);
+  const [subTotalState, setSubTotalState] = useState(0);
+  const [discountState, setDiscountState] = useState(0);
 
-  const handleAddItem = (
-    newProduct: Omit<
-      Product,
-      'stock' | 'sales' | 'discount'
-    >,
-    resetForm: () => void
-  ) => {
-    console.log(
-      'ProductEditContainer - Adding new product:',
-      newProduct
-    );
+  const handleAddItem = (newProduct: Omit<Product, 'stock' | 'sales' | 'discount'>, resetForm: () => void) => {
+    console.log('ProductEditContainer - Adding new product:', JSON.stringify(newProduct, null, 2));
     const productWithDefaults: Product = {
       ...newProduct,
-      // Use Date.now() since id is expected to be a number
+
       id: Date.now(),
       stock: 0,
       sales: 0,
       discount: 0,
       price: Number(newProduct.price) || 0,
       rating: Number(newProduct.rating) || 0,
-      image:
-        newProduct.image ||
-        '/placeholder-image.png',
+      image: newProduct.image || '/placeholder-image.png',
       sku: newProduct.sku || '',
-      createdAt:
-        newProduct.createdAt ||
-        new Date().toISOString().split('T')[0],
+      createdAt: newProduct.createdAt || new Date().toISOString().split('T')[0],
     };
 
-    // Add the new product to the existing products array
-    setProductsState((prevProducts) => [
-      ...prevProducts,
-      productWithDefaults,
-    ]);
+    setProductsState((prevProducts) => [...prevProducts, productWithDefaults]);
     setItemNoState((prev) => prev + 1);
-    setSubTotalState(
-      (prev) => prev + productWithDefaults.price
-    );
+    setSubTotalState((prev) => prev + productWithDefaults.price);
 
-    // Reset the form after successful submission
     resetForm();
   };
 
-  const handleUpdateItem = (
-    updatedProduct: Omit<
-      Product,
-      'stock' | 'sales' | 'discount'
-    >
-  ) => {
+  const handleUpdateItem = (updatedProduct: Omit<Product, 'stock' | 'sales' | 'discount'>) => {
     setProductsState((prevProducts) => {
       if (!Array.isArray(prevProducts)) {
         return [];
@@ -104,30 +63,20 @@ const ProductEditContainer: React.FC = () => {
     });
   };
 
-  const handleDeleteItem = (
-    productId: number
-  ) => {
+  const handleDeleteItem = (productId: number) => {
     setProductsState((prevProducts) => {
       if (!Array.isArray(prevProducts)) {
         return [];
       }
 
-      const deletedProduct = prevProducts.find(
-        (p) => p && p.id === productId
-      );
+      const deletedProduct = prevProducts.find((p) => p && p.id === productId);
 
       if (deletedProduct) {
-        setSubTotalState(
-          (prev) =>
-            prev - (deletedProduct.price || 0)
-        );
+        setSubTotalState((prev) => prev - (deletedProduct.price || 0));
         setItemNoState((prev) => prev - 1);
       }
 
-      return prevProducts.filter(
-        (product) =>
-          product && product.id !== productId
-      );
+      return prevProducts.filter((product) => product && product.id !== productId);
     });
   };
 
@@ -145,9 +94,7 @@ const ProductEditContainer: React.FC = () => {
     handleNewSession();
   };
 
-  const handleAddDiscount = () => {
-    // TODO: Implement discount logic
-  };
+  const handleAddDiscount = () => {};
 
   const handleCancelSession = () => {
     handleNewSession();

@@ -1,11 +1,5 @@
-import {
-  Role,
-  RoleCreateRequest,
-  RoleUpdateRequest,
-  UserInRole,
-} from './roleService';
+import { Role, RoleCreateRequest, RoleUpdateRequest, UserInRole } from './roleService';
 
-// Mock roles data
 const mockRoles: Role[] = [
   {
     id: 1,
@@ -36,56 +30,26 @@ const mockRoles: Role[] = [
     id: 2,
     name: 'Manager',
     normalizedName: 'MANAGER',
-    permissions: JSON.stringify([
-      'users.view',
-      'users.create',
-      'users.edit',
-      'roles.view',
-    ]),
-    permissionList: [
-      'users.view',
-      'users.create',
-      'users.edit',
-      'roles.view',
-    ],
+    permissions: JSON.stringify(['users.view', 'users.create', 'users.edit', 'roles.view']),
+    permissionList: ['users.view', 'users.create', 'users.edit', 'roles.view'],
   },
   {
     id: 3,
     name: 'Cashier',
     normalizedName: 'CASHIER',
-    permissions: JSON.stringify([
-      'sales.create',
-      'products.view',
-    ]),
-    permissionList: [
-      'sales.create',
-      'products.view',
-    ],
+    permissions: JSON.stringify(['sales.create', 'products.view']),
+    permissionList: ['sales.create', 'products.view'],
   },
   {
     id: 4,
     name: 'Inventory Manager',
     normalizedName: 'INVENTORY_MANAGER',
-    permissions: JSON.stringify([
-      'products.view',
-      'products.create',
-      'products.edit',
-      'products.delete',
-    ]),
-    permissionList: [
-      'products.view',
-      'products.create',
-      'products.edit',
-      'products.delete',
-    ],
+    permissions: JSON.stringify(['products.view', 'products.create', 'products.edit', 'products.delete']),
+    permissionList: ['products.view', 'products.create', 'products.edit', 'products.delete'],
   },
 ];
 
-// Mock users in roles
-const mockUsersInRoles: Record<
-  number,
-  UserInRole[]
-> = {
+const mockUsersInRoles: Record<number, UserInRole[]> = {
   1: [
     {
       id: 1,
@@ -126,71 +90,37 @@ const mockUsersInRoles: Record<
   ],
 };
 
-// Simulate API delay
-const delay = (ms: number) =>
-  new Promise((resolve) =>
-    setTimeout(resolve, ms)
-  );
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const mockRoleService = {
-  // Get all roles
   getAllRoles: async (): Promise<Role[]> => {
-    console.log(
-      'Using mock role service - getAllRoles'
-    );
-    await delay(500); // Simulate network delay
+    console.log('Using mock role service - getAllRoles');
+    await delay(500);
     return [...mockRoles];
   },
 
-  // Get role by ID
-  getRoleById: async (
-    roleId: number
-  ): Promise<Role> => {
-    console.log(
-      `Using mock role service - getRoleById(${roleId})`
-    );
+  getRoleById: async (roleId: number): Promise<Role> => {
+    console.log(`Using mock role service - getRoleById(${roleId})`);
     await delay(300);
-    const role = Array.isArray(mockRoles)
-      ? mockRoles.find(
-          (r) => r && r.id === roleId
-        )
-      : undefined;
+    const role = Array.isArray(mockRoles) ? mockRoles.find((r) => r && r.id === roleId) : undefined;
     if (!role) {
-      throw new Error(
-        `Role with ID ${roleId} not found`
-      );
+      throw new Error(`Role with ID ${roleId} not found`);
     }
     return { ...role };
   },
 
-  // Get role by name
-  getRoleByName: async (
-    roleName: string
-  ): Promise<Role> => {
-    console.log(
-      `Using mock role service - getRoleByName(${roleName})`
-    );
+  getRoleByName: async (roleName: string): Promise<Role> => {
+    console.log(`Using mock role service - getRoleByName(${roleName})`);
     await delay(300);
-    const role = Array.isArray(mockRoles)
-      ? mockRoles.find(
-          (r) => r && r.name === roleName
-        )
-      : undefined;
+    const role = Array.isArray(mockRoles) ? mockRoles.find((r) => r && r.name === roleName) : undefined;
     if (!role) {
-      throw new Error(
-        `Role with name ${roleName} not found`
-      );
+      throw new Error(`Role with name ${roleName} not found`);
     }
     return { ...role };
   },
 
-  // Get users in role
-  getUsersInRole: async (
-    roleId: number
-  ): Promise<UserInRole[]> => {
-    console.log(
-      `Using mock role service - getUsersInRole(${roleId})`
-    );
+  getUsersInRole: async (roleId: number): Promise<UserInRole[]> => {
+    console.log(`Using mock role service - getUsersInRole(${roleId})`);
     await delay(400);
     const users = mockUsersInRoles[roleId];
     if (!users) {
@@ -199,79 +129,42 @@ const mockRoleService = {
     return [...users];
   },
 
-  // Create a new role
-  createRole: async (
-    roleData: RoleCreateRequest
-  ): Promise<Role> => {
-    console.log(
-      `Using mock role service - createRole(${JSON.stringify(roleData)})`
-    );
+  createRole: async (roleData: RoleCreateRequest): Promise<Role> => {
+    console.log(`Using mock role service - createRole(${JSON.stringify(roleData)})`);
     await delay(600);
     const newRole: Role = {
-      id:
-        Math.max(...mockRoles.map((r) => r.id)) +
-        1,
+      id: Math.max(...mockRoles.map((r) => r.id)) + 1,
       name: roleData.name,
       normalizedName: roleData.name.toUpperCase(),
-      permissions: JSON.stringify(
-        roleData.permissions || []
-      ),
+      permissions: JSON.stringify(roleData.permissions || []),
       permissionList: roleData.permissions || [],
     };
     mockRoles.push(newRole);
     return { ...newRole };
   },
 
-  // Update a role
-  updateRole: async (
-    roleId: number,
-    roleData: RoleUpdateRequest
-  ): Promise<void> => {
-    console.log(
-      `Using mock role service - updateRole(${roleId}, ${JSON.stringify(roleData)})`
-    );
+  updateRole: async (roleId: number, roleData: RoleUpdateRequest): Promise<void> => {
+    console.log(`Using mock role service - updateRole(${roleId}, ${JSON.stringify(roleData)})`);
     await delay(500);
-    const roleIndex = Array.isArray(mockRoles)
-      ? mockRoles.findIndex(
-          (r) => r && r.id === roleId
-        )
-      : -1;
+    const roleIndex = Array.isArray(mockRoles) ? mockRoles.findIndex((r) => r && r.id === roleId) : -1;
     if (roleIndex === -1) {
-      throw new Error(
-        `Role with ID ${roleId} not found`
-      );
+      throw new Error(`Role with ID ${roleId} not found`);
     }
     mockRoles[roleIndex] = {
       ...mockRoles[roleIndex],
       name: roleData.name,
       normalizedName: roleData.name.toUpperCase(),
-      permissions: roleData.permissions
-        ? JSON.stringify(roleData.permissions)
-        : mockRoles[roleIndex].permissions,
-      permissionList:
-        roleData.permissions ||
-        mockRoles[roleIndex].permissionList,
+      permissions: roleData.permissions ? JSON.stringify(roleData.permissions) : mockRoles[roleIndex].permissions,
+      permissionList: roleData.permissions || mockRoles[roleIndex].permissionList,
     };
   },
 
-  // Update role permissions
-  updateRolePermissions: async (
-    roleId: number,
-    permissions: string[]
-  ): Promise<void> => {
-    console.log(
-      `Using mock role service - updateRolePermissions(${roleId}, ${JSON.stringify(permissions)})`
-    );
+  updateRolePermissions: async (roleId: number, permissions: string[]): Promise<void> => {
+    console.log(`Using mock role service - updateRolePermissions(${roleId}, ${JSON.stringify(permissions)})`);
     await delay(500);
-    const roleIndex = Array.isArray(mockRoles)
-      ? mockRoles.findIndex(
-          (r) => r && r.id === roleId
-        )
-      : -1;
+    const roleIndex = Array.isArray(mockRoles) ? mockRoles.findIndex((r) => r && r.id === roleId) : -1;
     if (roleIndex === -1) {
-      throw new Error(
-        `Role with ID ${roleId} not found`
-      );
+      throw new Error(`Role with ID ${roleId} not found`);
     }
     mockRoles[roleIndex] = {
       ...mockRoles[roleIndex],
@@ -280,47 +173,28 @@ const mockRoleService = {
     };
   },
 
-  // Add user to role
-  addUserToRole: async (
-    roleId: number,
-    userId: number
-  ): Promise<void> => {
-    console.log(
-      `Using mock role service - addUserToRole(${roleId}, ${userId})`
-    );
+  addUserToRole: async (roleId: number, userId: number): Promise<void> => {
+    console.log(`Using mock role service - addUserToRole(${roleId}, ${userId})`);
     await delay(500);
 
     try {
-      // Fetch user data from the mock API
       const response = await fetch('/api/Users');
       if (!response.ok) {
         throw new Error('Failed to fetch users');
       }
 
       const users = await response.json();
-      const userToAdd = users.find(
-        (u: any) => u.id === userId
-      );
+      const userToAdd = users.find((u: any) => u.id === userId);
 
       if (!userToAdd) {
-        throw new Error(
-          `User with ID ${userId} not found`
-        );
+        throw new Error(`User with ID ${userId} not found`);
       }
 
-      // Check if the user is already in the role
-      if (
-        mockUsersInRoles[roleId]?.some(
-          (u) => u.id === userId
-        )
-      ) {
-        console.log(
-          `User ${userId} is already in role ${roleId}`
-        );
+      if (mockUsersInRoles[roleId]?.some((u) => u.id === userId)) {
+        console.log(`User ${userId} is already in role ${roleId}`);
         return;
       }
 
-      // Add user to role
       const userInRole: UserInRole = {
         id: userToAdd.id,
         userName: userToAdd.userName,
@@ -328,99 +202,52 @@ const mockRoleService = {
         isActive: userToAdd.isActive,
       };
 
-      // Initialize the array if it doesn't exist
       if (!mockUsersInRoles[roleId]) {
         mockUsersInRoles[roleId] = [];
       }
 
-      // Add the user to the role
       mockUsersInRoles[roleId].push(userInRole);
-      console.log(
-        `Mock: Added user ${userId} to role ${roleId}`
-      );
+      console.log(`Mock: Added user ${userId} to role ${roleId}`);
 
-      // Log the operation for audit purposes
       const timestamp = new Date().toISOString();
-      console.log(
-        `[AUDIT] ${timestamp} - User ${userId} added to role ${roleId}`
-      );
+      console.log(`[AUDIT] ${timestamp} - User ${userId} added to role ${roleId}`);
     } catch (error) {
-      console.error(
-        'Error adding user to role:',
-        error
-      );
+      console.error('Error adding user to role:', JSON.stringify(error, null, 2));
       throw error;
     }
   },
 
-  // Remove user from role
-  removeUserFromRole: async (
-    roleId: number,
-    userId: number
-  ): Promise<void> => {
-    console.log(
-      `Using mock role service - removeUserFromRole(${roleId}, ${userId})`
-    );
+  removeUserFromRole: async (roleId: number, userId: number): Promise<void> => {
+    console.log(`Using mock role service - removeUserFromRole(${roleId}, ${userId})`);
     await delay(500);
 
     try {
-      // Check if the role exists
       if (!mockUsersInRoles[roleId]) {
-        throw new Error(
-          `Role with ID ${roleId} not found or has no users`
-        );
+        throw new Error(`Role with ID ${roleId} not found or has no users`);
       }
 
-      // Check if the user is in the role
-      const userIndex = mockUsersInRoles[
-        roleId
-      ].findIndex((u) => u.id === userId);
+      const userIndex = mockUsersInRoles[roleId].findIndex((u) => u.id === userId);
       if (userIndex === -1) {
-        throw new Error(
-          `User ${userId} is not in role ${roleId}`
-        );
+        throw new Error(`User ${userId} is not in role ${roleId}`);
       }
 
-      // Remove the user from the role
-      mockUsersInRoles[roleId].splice(
-        userIndex,
-        1
-      );
-      console.log(
-        `Mock: Removed user ${userId} from role ${roleId}`
-      );
+      mockUsersInRoles[roleId].splice(userIndex, 1);
+      console.log(`Mock: Removed user ${userId} from role ${roleId}`);
 
-      // Log the operation for audit purposes
       const timestamp = new Date().toISOString();
-      console.log(
-        `[AUDIT] ${timestamp} - User ${userId} removed from role ${roleId}`
-      );
+      console.log(`[AUDIT] ${timestamp} - User ${userId} removed from role ${roleId}`);
     } catch (error) {
-      console.error(
-        'Error removing user from role:',
-        error
-      );
+      console.error('Error removing user from role:', JSON.stringify(error, null, 2));
       throw error;
     }
   },
 
-  // Delete a role
-  deleteRole: async (
-    roleId: number
-  ): Promise<void> => {
-    console.log(
-      `Using mock role service - deleteRole(${roleId})`
-    );
+  deleteRole: async (roleId: number): Promise<void> => {
+    console.log(`Using mock role service - deleteRole(${roleId})`);
     await delay(500);
-    const roleIndex = Array.isArray(mockRoles)
-      ? mockRoles.findIndex(
-          (r) => r && r.id === roleId
-        )
-      : -1;
+    const roleIndex = Array.isArray(mockRoles) ? mockRoles.findIndex((r) => r && r.id === roleId) : -1;
     if (roleIndex === -1) {
-      throw new Error(
-        `Role with ID ${roleId} not found`
-      );
+      throw new Error(`Role with ID ${roleId} not found`);
     }
     mockRoles.splice(roleIndex, 1);
   },

@@ -1,13 +1,7 @@
 'use client';
 
-import React, {
-  memo,
-  useState,
-  useEffect,
-  useContext,
-  useRef,
-} from 'react';
-// import { useRouter } from 'next/navigation';
+import React, { memo, useState, useEffect, useContext, useRef } from 'react';
+
 import styles from './LoginForm.module.css';
 import {
   Box,
@@ -38,121 +32,71 @@ interface LoginFormProps {
   emailPlaceholder?: string;
   passwordPlaceholder?: string;
   buttonText?: string;
-  onSubmit?: (
-    email: string,
-    password: string
-  ) => void;
+  onSubmit?: (email: string, password: string) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = memo(
-  ({
-    title = 'Welcome Back',
-    subtitle = 'Please enter your credentials to access your account',
-    buttonText = 'Sign In',
-    onSubmit,
-  }) => {
-    const { startLoading, stopLoading } =
-      useSpinner();
-    const [error, setError] = useState<
-      string | null
-    >(null);
-    const [isFadingOut, setIsFadingOut] =
-      useState(false);
-    const [snackbarOpen, setSnackbarOpen] =
-      useState(false);
+  ({ title = 'Welcome Back', subtitle = 'Please enter your credentials to access your account', buttonText = 'Sign In', onSubmit }) => {
+    const { startLoading, stopLoading } = useSpinner();
+    const [error, setError] = useState<string | null>(null);
+    const [isFadingOut, setIsFadingOut] = useState(false);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [isLoggedIn] = useState(false);
-    const [showPassword, setShowPassword] =
-      useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [logoError, setLogoError] =
-      useState(false);
-    const [loginAttempt, setLoginAttempt] =
-      useState(0);
-    const [loginStatus, setLoginStatus] =
-      useState('');
+    const [logoError, setLogoError] = useState(false);
+    const [loginAttempt, setLoginAttempt] = useState(0);
+    const [loginStatus, setLoginStatus] = useState('');
 
     // Get the login function from AuthContext
-    const { login, error: authError } =
-      useContext(AuthContext);
+    const { login, error: authError } = useContext(AuthContext);
 
     // Check if backend and Keycloak are available on component mount
     // Use a ref to track if the check has already been performed
-    const serviceCheckPerformedRef =
-      useRef(false);
+    const serviceCheckPerformedRef = useRef(false);
 
     useEffect(() => {
       // Only perform the check once per component instance
-      if (serviceCheckPerformedRef.current)
-        return;
+      if (serviceCheckPerformedRef.current) return;
 
       const checkServices = async () => {
         serviceCheckPerformedRef.current = true;
 
         // Check backend status
         try {
-          console.log(
-            'Checking backend status...'
-          );
-          const backendResponse = await axios.get(
-            'http://localhost:5107/api/test',
-            {
-              timeout: 5000,
-            }
-          );
-          console.log(
-            'Backend status check response:',
-            backendResponse.status
-          );
+          console.log('Checking backend status...');
+          const backendResponse = await axios.get('/api/health', {
+            timeout: 5000,
+          });
+          console.log('Backend status check response:', JSON.stringify(backendResponse.status, null, 2));
         } catch (err) {
-          console.warn(
-            'Backend status check failed:',
-            err
-          );
-          setError(
-            'Backend server may be unavailable. Please try again later or contact support.'
-          );
+          console.warn('Backend status check failed:', JSON.stringify(err, null, 2));
+          setError('Backend server may be unavailable. Please try again later or contact support.');
           setSnackbarOpen(true);
-          return; // Stop if backend is not available
+          return;
         }
 
-        // Check Keycloak status
         try {
-          console.log(
-            'Checking Keycloak status...'
-          );
-          const keycloakResponse =
-            await axios.get(
-              'http://localhost:8282/realms/pisval-pos-realm/.well-known/openid-configuration',
-              {
-                timeout: 5000,
-              }
-            );
-          console.log(
-            'Keycloak status check response:',
-            keycloakResponse.status
-          );
+          console.log('Checking Keycloak status...');
+          const keycloakResponse = await axios.get('http://localhost:8282/realms/pisval-pos-realm/.well-known/openid-configuration', {
+            timeout: 5000,
+          });
+          console.log('Keycloak status check response:', JSON.stringify(keycloakResponse.status, null, 2));
         } catch (err) {
-          console.warn(
-            'Keycloak status check failed:',
-            err
-          );
-          setError(
-            'Authentication server (Keycloak) may be unavailable. Please try again later or contact support.'
-          );
+          console.warn('Keycloak status check failed:', JSON.stringify(err, null, 2));
+          setError('Authentication server (Keycloak) may be unavailable. Please try again later or contact support.');
           setSnackbarOpen(true);
         }
       };
 
       checkServices();
 
-      // Cleanup function to handle component unmounting
       return () => {
         serviceCheckPerformedRef.current = false;
       };
     }, []);
 
-    // Watch for auth errors
     useEffect(() => {
       if (authError) {
         setError(authError);
@@ -162,24 +106,16 @@ const LoginForm: React.FC<LoginFormProps> = memo(
       }
     }, [authError, stopLoading]);
 
-    const handleLogin = async (
-      event: React.FormEvent
-    ) => {
+    const handleLogin = async (event: React.FormEvent) => {
       event.preventDefault();
 
-      // Increase timeout for login process
       startLoading({ timeout: 15000 });
       setIsFadingOut(true);
-      setLoginStatus(
-        'Connecting to authentication server...'
-      );
+      setLoginStatus('Connecting to authentication server...');
 
-      // Track login attempt for retry logic
       const nextAttempt = loginAttempt + 1;
       setLoginAttempt(nextAttempt);
-      console.log(
-        `Login attempt #${nextAttempt}`
-      );
+      console.log(`Login attempt #${nextAttempt}`);
 
       if (!email || !password) {
         setError('Please fill in all fields');
@@ -196,38 +132,18 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
       try {
         // Store credentials in sessionStorage for Keycloak to use
-        sessionStorage.setItem(
-          'kc_username',
-          email
-        );
-        sessionStorage.setItem(
-          'kc_password',
-          password
-        );
+        sessionStorage.setItem('kc_username', email);
+        sessionStorage.setItem('kc_password', password);
 
-        console.log(
-          'Initiating Keycloak login...'
-        );
+        console.log('Initiating Keycloak login...');
 
-        // Use the direct Keycloak login from AuthContext
         await login();
 
-        // The rest of the login flow is handled by AuthContext
-        // which will redirect to the dashboard on success
-
-        // We'll still show a loading state here
         setLoginStatus('Authenticating...');
-
-        // Note: We don't need to manually set tokens or redirect
-        // as that's handled by the AuthContext
       } catch (err: Error | unknown) {
-        console.error(
-          'Login initiation failed:',
-          err
-        );
+        console.error('Login initiation failed:', JSON.stringify(err, null, 2));
 
-        let errorMessage =
-          'Login failed. Please try again.';
+        let errorMessage = 'Login failed. Please try again.';
 
         if (err instanceof Error) {
           errorMessage = `Login error: ${err.message}`;
@@ -242,18 +158,14 @@ const LoginForm: React.FC<LoginFormProps> = memo(
     };
 
     const handleLogoError = () => {
-      console.warn(
-        "Logo image '/Pisval_Logo.jpg' failed to load."
-      );
+      console.warn("Logo image '/Pisval_Logo.jpg' failed to load.");
       setLogoError(true);
     };
 
     return (
       <>
         {!isLoggedIn && (
-          <div
-            className={`${styles.LoginContent} ${isFadingOut ? styles.fadeOut : ''}`}
-          >
+          <div className={`${styles.LoginContent} ${isFadingOut ? styles.fadeOut : ''}`}>
             <Box className={styles.logoContainer}>
               {logoError ? (
                 <Box
@@ -268,9 +180,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                     color: 'text.secondary',
                   }}
                 >
-                  <Typography variant="caption">
-                    Logo
-                  </Typography>
+                  <Typography variant="caption">Logo</Typography>
                 </Box>
               ) : (
                 <Image
@@ -285,23 +195,14 @@ const LoginForm: React.FC<LoginFormProps> = memo(
               )}
             </Box>
 
-            <Typography
-              variant="h6"
-              className={styles.heading}
-            >
+            <Typography variant="h6" className={styles.heading}>
               {title}
             </Typography>
-            <Typography
-              variant="body1"
-              className={styles.subtext}
-            >
+            <Typography variant="body1" className={styles.subtext}>
               {subtitle}
             </Typography>
 
-            <form
-              className={styles.form}
-              onSubmit={handleLogin}
-            >
+            <form className={styles.form} onSubmit={handleLogin}>
               <Box mb={2}>
                 <TextField
                   id="email"
@@ -311,15 +212,12 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                   variant="outlined"
                   fullWidth
                   value={email}
-                  onChange={(e) =>
-                    setEmail(e.target.value)
-                  }
+                  onChange={(e) => setEmail(e.target.value)}
                   className={styles.textField}
                   required
                   slotProps={{
                     inputLabel: {
-                      shrink:
-                        !!email || undefined,
+                      shrink: !!email || undefined,
                     },
                   }}
                 />
@@ -330,46 +228,27 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                   id="password"
                   name="password"
                   label="Password"
-                  type={
-                    showPassword
-                      ? 'text'
-                      : 'password'
-                  }
+                  type={showPassword ? 'text' : 'password'}
                   variant="outlined"
                   fullWidth
                   value={password}
-                  onChange={(e) =>
-                    setPassword(e.target.value)
-                  }
+                  onChange={(e) => setPassword(e.target.value)}
                   slotProps={{
                     input: {
                       endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
-                            aria-label={
-                              showPassword
-                                ? 'Hide password'
-                                : 'Show password'
-                            }
-                            onClick={() =>
-                              setShowPassword(
-                                !showPassword
-                              )
-                            }
+                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            onClick={() => setShowPassword(!showPassword)}
                             edge="end"
                           >
-                            {showPassword ? (
-                              <VisibilityOffIcon />
-                            ) : (
-                              <VisibilityIcon />
-                            )}
+                            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                           </IconButton>
                         </InputAdornment>
                       ),
                     },
                     inputLabel: {
-                      shrink:
-                        !!password || undefined,
+                      shrink: !!password || undefined,
                     },
                   }}
                   className={styles.textField}
@@ -379,42 +258,26 @@ const LoginForm: React.FC<LoginFormProps> = memo(
 
               <Box className={styles.options}>
                 <FormControlLabel
-                  control={
-                    <Checkbox defaultChecked />
-                  }
+                  control={<Checkbox defaultChecked />}
                   label="Remember me"
                   sx={{
-                    '& .MuiFormControlLabel-label':
-                      {
-                        fontSize: '0.75rem',
-                        color: '#64748b',
-                      },
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                    },
                     '& .MuiSvgIcon-root': {
                       fontSize: '1.2rem',
                       color: '#3b82f6',
                     },
                   }}
-                  className={
-                    styles.rememberMeContainer
-                  }
+                  className={styles.rememberMeContainer}
                 />
-                <Link
-                  href="#"
-                  className={
-                    styles.forgotPassword
-                  }
-                >
+                <Link href="#" className={styles.forgotPassword}>
                   Forgot password?
                 </Link>
               </Box>
 
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                className={styles.loginButton}
-                disabled={isFadingOut}
-              >
+              <Button type="submit" variant="contained" fullWidth className={styles.loginButton} disabled={isFadingOut}>
                 {isFadingOut ? (
                   <Box
                     sx={{
@@ -422,30 +285,16 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                       alignItems: 'center',
                     }}
                   >
-                    <CircularProgress
-                      size={20}
-                      color="inherit"
-                      sx={{ mr: 1 }}
-                    />
-                    {loginStatus ||
-                      'Signing in...'}
+                    <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+                    {loginStatus || 'Signing in...'}
                   </Box>
                 ) : (
                   buttonText
                 )}
               </Button>
 
-              <Box
-                className={
-                  styles.registerContainer
-                }
-                mt={2}
-                textAlign="center"
-              >
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                >
+              <Box className={styles.registerContainer} mt={2} textAlign="center">
+                <Typography variant="body2" color="textSecondary">
                   Don&apos;t have an account?{' '}
                   <Link
                     href="#"
@@ -453,9 +302,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
                       e.preventDefault();
                       redirectToKeycloakRegistration();
                     }}
-                    className={
-                      styles.registerLink
-                    }
+                    className={styles.registerLink}
                   >
                     Register now
                   </Link>
@@ -474,13 +321,7 @@ const LoginForm: React.FC<LoginFormProps> = memo(
           }}
           className={styles.snackbar}
         >
-          <Alert
-            onClose={() => setSnackbarOpen(false)}
-            severity="error"
-            variant="filled"
-            sx={{ width: '100%' }}
-            className={styles.alert}
-          >
+          <Alert onClose={() => setSnackbarOpen(false)} severity="error" variant="filled" sx={{ width: '100%' }} className={styles.alert}>
             {error}
           </Alert>
         </Snackbar>

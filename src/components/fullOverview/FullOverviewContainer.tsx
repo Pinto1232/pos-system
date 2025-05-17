@@ -1,32 +1,22 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Grid,
-  Typography,
-  IconButton,
-} from '@mui/material';
+import { Box, Grid, Typography, IconButton } from '@mui/material';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import FullOverviewCard from './FullOverviewCard';
 import { FullOverviewCardProps } from './fullOverviewCard.types';
 
 const FullOverviewContainer: React.FC = () => {
-  const [viewMode, setViewMode] = useState<
-    'grid' | 'list'
-  >('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const handleViewModeToggle = () => {
-    setViewMode((prevMode) =>
-      prevMode === 'grid' ? 'list' : 'grid'
-    );
+    setViewMode((prevMode) => (prevMode === 'grid' ? 'list' : 'grid'));
   };
 
   const cardsData: FullOverviewCardProps[] = [
     {
       variant: 'notification',
       title: 'New Order Received',
-      subTitle:
-        'Order #12345 has been placed successfully',
+      subTitle: 'Order #12345 has been placed successfully',
       details: [
         'Customer: John Doe',
         'Amount: R500.00',
@@ -43,8 +33,7 @@ const FullOverviewContainer: React.FC = () => {
     {
       variant: 'notification',
       title: 'Low Stock Alert',
-      subTitle:
-        'Product inventory is running low',
+      subTitle: 'Product inventory is running low',
       details: [
         'Product: Premium Widget',
         'Current Stock: 5 units',
@@ -61,8 +50,7 @@ const FullOverviewContainer: React.FC = () => {
     {
       variant: 'notification',
       title: 'Payment Failed',
-      subTitle:
-        'Transaction #67890 could not be processed',
+      subTitle: 'Transaction #67890 could not be processed',
       details: [
         'Order ID: #67890',
         'Amount: R750.00',
@@ -79,8 +67,7 @@ const FullOverviewContainer: React.FC = () => {
     {
       variant: 'notification',
       title: 'System Update',
-      subTitle:
-        'New features available in your dashboard',
+      subTitle: 'New features available in your dashboard',
       details: [
         'Version: 2.1.0',
         'Release Date: Today',
@@ -117,19 +104,8 @@ const FullOverviewContainer: React.FC = () => {
         direction: 'up',
       },
       chartData: {
-        labels: [
-          'Mon',
-          'Tue',
-          'Wed',
-          'Thu',
-          'Fri',
-          'Sat',
-          'Sun',
-        ],
-        values: [
-          1200, 1900, 1500, 2200, 1800, 2500,
-          2100,
-        ],
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        values: [1200, 1900, 1500, 2200, 1800, 2500, 2100],
       },
       details: [
         'Total Sales: R15,200',
@@ -148,11 +124,9 @@ const FullOverviewContainer: React.FC = () => {
     <Box sx={{ p: 3 }}>
       <Box
         sx={{
-          background:
-            'linear-gradient(145deg, #ffffff, #f8f9fa)',
+          background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
           borderRadius: '12px',
-          boxShadow:
-            '0 4px 12px rgba(0, 0, 0, 0.04)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
           border: '1px solid rgba(0, 0, 0, 0.05)',
           overflow: 'hidden',
         }}
@@ -163,8 +137,7 @@ const FullOverviewContainer: React.FC = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             p: 2,
-            borderBottom:
-              '1px solid rgba(0, 0, 0, 0.05)',
+            borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
           }}
         >
           <Typography
@@ -176,15 +149,7 @@ const FullOverviewContainer: React.FC = () => {
           >
             Overview Dashboard
           </Typography>
-          <IconButton
-            onClick={handleViewModeToggle}
-          >
-            {viewMode === 'grid' ? (
-              <ViewListIcon />
-            ) : (
-              <ViewModuleIcon />
-            )}
-          </IconButton>
+          <IconButton onClick={handleViewModeToggle}>{viewMode === 'grid' ? <ViewListIcon /> : <ViewModuleIcon />}</IconButton>
         </Box>
         <Box sx={{ p: 2 }}>
           <Grid
@@ -201,17 +166,8 @@ const FullOverviewContainer: React.FC = () => {
             }}
           >
             {cardsData.map((item, idx) => (
-              <Grid
-                item
-                xs={12}
-                sm={viewMode === 'grid' ? 6 : 12}
-                md={viewMode === 'grid' ? 4 : 12}
-                key={idx}
-              >
-                <FullOverviewCard
-                  {...item}
-                  viewMode={viewMode}
-                />
+              <Grid item xs={12} sm={viewMode === 'grid' ? 6 : 12} md={viewMode === 'grid' ? 4 : 12} key={idx}>
+                <FullOverviewCard {...item} viewMode={viewMode} />
               </Grid>
             ))}
           </Grid>

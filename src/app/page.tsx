@@ -13,10 +13,10 @@ export default function Home() {
 
   return (
     <div>
-      {/* Handle registration redirects */}
+      {}
       <RegistrationHandler />
 
-      {/* Display error messages from URL */}
+      {}
       <ErrorAlert />
 
       <Box>

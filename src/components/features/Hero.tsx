@@ -2,12 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import {
-  Box,
-  Typography,
-  Button,
-  Link,
-} from '@mui/material';
+import { Box, Typography, Button, Link } from '@mui/material';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -18,28 +13,14 @@ interface HeroProps {
   ladyImage: string;
 }
 
-function Hero({
-  heading,
-  subheading,
-  ctaPrimary,
-  ctaSecondary,
-  ladyImage,
-}: HeroProps) {
-  const formattedSubheading = subheading
-    .split('\n\n')
-    .map((paragraph, index) => (
-      <React.Fragment key={index}>
-        {paragraph}
-        {index <
-          subheading.split('\n\n').length - 1 && (
-          <br />
-        )}
-        {index <
-          subheading.split('\n\n').length - 1 && (
-          <br />
-        )}
-      </React.Fragment>
-    ));
+function Hero({ heading, subheading, ctaPrimary, ctaSecondary, ladyImage }: HeroProps) {
+  const formattedSubheading = subheading.split('\n\n').map((paragraph, index) => (
+    <React.Fragment key={index}>
+      {paragraph}
+      {index < subheading.split('\n\n').length - 1 && <br />}
+      {index < subheading.split('\n\n').length - 1 && <br />}
+    </React.Fragment>
+  ));
 
   return (
     <Box
@@ -48,7 +29,7 @@ function Hero({
         padding: { xs: '5px', sm: '10px' },
       }}
     >
-      {/* Decorative elements */}
+      {}
       <Box
         sx={{
           position: 'absolute',
@@ -58,8 +39,7 @@ function Hero({
           height: '18px',
           borderRadius: '50%',
           background: 'rgba(0, 204, 255, 0.8)',
-          boxShadow:
-            '0 0 10px rgba(0, 204, 255, 0.5)',
+          boxShadow: '0 0 10px rgba(0, 204, 255, 0.5)',
           zIndex: 1,
           animation: 'pulse 4s infinite',
         }}
@@ -73,8 +53,7 @@ function Hero({
           height: '14px',
           borderRadius: '50%',
           background: 'rgba(255, 105, 180, 0.8)',
-          boxShadow:
-            '0 0 10px rgba(255, 105, 180, 0.5)',
+          boxShadow: '0 0 10px rgba(255, 105, 180, 0.5)',
           zIndex: 1,
           animation: 'pulse 3s infinite',
         }}
@@ -88,8 +67,7 @@ function Hero({
           height: '16px',
           borderRadius: '50%',
           background: 'rgba(147, 51, 234, 0.8)',
-          boxShadow:
-            '0 0 10px rgba(147, 51, 234, 0.5)',
+          boxShadow: '0 0 10px rgba(147, 51, 234, 0.5)',
           zIndex: 1,
           animation: 'pulse 5s infinite',
         }}
@@ -169,10 +147,7 @@ function Hero({
             {formattedSubheading}
           </Typography>
 
-          <Box
-            className={styles.heroButtons}
-            sx={{ position: 'relative' }}
-          >
+          <Box className={styles.heroButtons} sx={{ position: 'relative' }}>
             <Button
               variant="contained"
               className={styles.heroBtnPrimary}
@@ -209,7 +184,7 @@ function Hero({
               {ctaSecondary} &rarr;
             </Link>
 
-            {/* Decorative dot below the button - visible only on laptop screens */}
+            {}
             <Box
               sx={{
                 position: 'absolute',
@@ -218,10 +193,8 @@ function Hero({
                 width: '16px',
                 height: '16px',
                 borderRadius: '50%',
-                background:
-                  'rgba(255, 165, 0, 0.8)',
-                boxShadow:
-                  '0 0 10px rgba(255, 165, 0, 0.5)',
+                background: 'rgba(255, 165, 0, 0.8)',
+                boxShadow: '0 0 10px rgba(255, 165, 0, 0.5)',
                 zIndex: 1,
                 animation: 'pulse 4s infinite',
                 display: {

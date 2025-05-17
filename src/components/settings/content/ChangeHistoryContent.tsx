@@ -26,24 +26,13 @@ interface ChangeHistoryContentProps {
   }[];
 }
 
-/**
- * Component for change history settings content
- */
-const ChangeHistoryContent: React.FC<
-  ChangeHistoryContentProps
-> = ({ changeHistory }) => {
-  const [searchQuery, setSearchQuery] =
-    React.useState('');
+const ChangeHistoryContent: React.FC<ChangeHistoryContentProps> = ({ changeHistory }) => {
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   const filteredHistory = changeHistory.filter(
     (item) =>
-      item.setting
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      new Date(item.timestamp)
-        .toLocaleString()
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
+      item.setting.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      new Date(item.timestamp).toLocaleString().toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -56,16 +45,12 @@ const ChangeHistoryContent: React.FC<
           mb: 2,
         }}
       >
-        <Typography variant="h6">
-          Change History
-        </Typography>
+        <Typography variant="h6">Change History</Typography>
         <TextField
           placeholder="Search changes..."
           size="small"
           value={searchQuery}
-          onChange={(e) =>
-            setSearchQuery(e.target.value)
-          }
+          onChange={(e) => setSearchQuery(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -92,30 +77,16 @@ const ChangeHistoryContent: React.FC<
             bgcolor: '#f9f9f9',
           }}
         >
-          <HistoryIcon
-            sx={{ fontSize: 48, color: '#aaa' }}
-          />
-          <Typography
-            variant="h6"
-            color="text.secondary"
-          >
+          <HistoryIcon sx={{ fontSize: 48, color: '#aaa' }} />
+          <Typography variant="h6" color="text.secondary">
             No Changes Recorded Yet
           </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            align="center"
-          >
-            Changes to settings will be recorded
-            here for auditing purposes.
+          <Typography variant="body2" color="text.secondary" align="center">
+            Changes to settings will be recorded here for auditing purposes.
           </Typography>
         </Paper>
       ) : (
-        <TableContainer
-          component={Paper}
-          variant="outlined"
-          sx={{ borderRadius: 2 }}
-        >
+        <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2 }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -123,105 +94,59 @@ const ChangeHistoryContent: React.FC<
                 <TableCell>Setting</TableCell>
                 <TableCell>Changed By</TableCell>
                 <TableCell>Changes</TableCell>
-                <TableCell align="right">
-                  Actions
-                </TableCell>
+                <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredHistory.map(
-                (change, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      {new Date(
-                        change.timestamp
-                      ).toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={change.setting}
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      Current User
-                    </TableCell>
-                    <TableCell>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: 0.5,
-                        }}
-                      >
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                        >
-                          From:{' '}
-                          {JSON.stringify(
-                            change.oldValue
-                          ).substring(0, 30)}
-                          {JSON.stringify(
-                            change.oldValue
-                          ).length > 30
-                            ? '...'
-                            : ''}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          color="primary"
-                        >
-                          To:{' '}
-                          {JSON.stringify(
-                            change.newValue
-                          ).substring(0, 30)}
-                          {JSON.stringify(
-                            change.newValue
-                          ).length > 30
-                            ? '...'
-                            : ''}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        sx={{
-                          textTransform: 'none',
-                          borderRadius: 2,
-                        }}
-                      >
-                        View Details
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                )
-              )}
+              {filteredHistory.map((change, index) => (
+                <TableRow key={index}>
+                  <TableCell>{new Date(change.timestamp).toLocaleString()}</TableCell>
+                  <TableCell>
+                    <Chip label={change.setting} size="small" color="primary" variant="outlined" />
+                  </TableCell>
+                  <TableCell>Current User</TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0.5,
+                      }}
+                    >
+                      <Typography variant="caption" color="text.secondary">
+                        From: {JSON.stringify(change.oldValue).substring(0, 30)}
+                        {JSON.stringify(change.oldValue).length > 30 ? '...' : ''}
+                      </Typography>
+                      <Typography variant="caption" color="primary">
+                        To: {JSON.stringify(change.newValue).substring(0, 30)}
+                        {JSON.stringify(change.newValue).length > 30 ? '...' : ''}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      sx={{
+                        textTransform: 'none',
+                        borderRadius: 2,
+                      }}
+                    >
+                      View Details
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
 
-              {/* Add some example historical changes */}
+              {}
               {filteredHistory.length > 0 && (
                 <>
                   <TableRow>
+                    <TableCell>{new Date(Date.now() - 86400000).toLocaleString()}</TableCell>
                     <TableCell>
-                      {new Date(
-                        Date.now() - 86400000
-                      ).toLocaleString()}
+                      <Chip label="General Settings" size="small" color="primary" variant="outlined" />
                     </TableCell>
-                    <TableCell>
-                      <Chip
-                        label="General Settings"
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      Admin User
-                    </TableCell>
+                    <TableCell>Admin User</TableCell>
                     <TableCell>
                       <Box
                         sx={{
@@ -230,23 +155,11 @@ const ChangeHistoryContent: React.FC<
                           gap: 0.5,
                         }}
                       >
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                        >
-                          From:{' '}
-                          {
-                            '{ "sidebarColor": "#000000" }'
-                          }
+                        <Typography variant="caption" color="text.secondary">
+                          From: {'{ "sidebarColor": "#000000" }'}
                         </Typography>
-                        <Typography
-                          variant="caption"
-                          color="primary"
-                        >
-                          To:{' '}
-                          {
-                            '{ "sidebarColor": "#173A79" }'
-                          }
+                        <Typography variant="caption" color="primary">
+                          To: {'{ "sidebarColor": "#173A79" }'}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -265,22 +178,11 @@ const ChangeHistoryContent: React.FC<
                   </TableRow>
 
                   <TableRow>
+                    <TableCell>{new Date(Date.now() - 172800000).toLocaleString()}</TableCell>
                     <TableCell>
-                      {new Date(
-                        Date.now() - 172800000
-                      ).toLocaleString()}
+                      <Chip label="Tax Settings" size="small" color="primary" variant="outlined" />
                     </TableCell>
-                    <TableCell>
-                      <Chip
-                        label="Tax Settings"
-                        size="small"
-                        color="primary"
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      Manager User
-                    </TableCell>
+                    <TableCell>Manager User</TableCell>
                     <TableCell>
                       <Box
                         sx={{
@@ -289,23 +191,11 @@ const ChangeHistoryContent: React.FC<
                           gap: 0.5,
                         }}
                       >
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                        >
-                          From:{' '}
-                          {
-                            '{ "defaultTaxRate": 14.0 }'
-                          }
+                        <Typography variant="caption" color="text.secondary">
+                          From: {'{ "defaultTaxRate": 14.0 }'}
                         </Typography>
-                        <Typography
-                          variant="caption"
-                          color="primary"
-                        >
-                          To:{' '}
-                          {
-                            '{ "defaultTaxRate": 15.0 }'
-                          }
+                        <Typography variant="caption" color="primary">
+                          To: {'{ "defaultTaxRate": 15.0 }'}
                         </Typography>
                       </Box>
                     </TableCell>

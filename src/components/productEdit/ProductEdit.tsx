@@ -13,10 +13,7 @@ import {
   Alert,
   Chip,
 } from '@mui/material';
-import {
-  DataGrid,
-  GridColDef,
-} from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import AddIcon from '@mui/icons-material/Add';
@@ -24,10 +21,7 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import {
-  ProductEditProps,
-  Product,
-} from './types';
+import { ProductEditProps, Product } from './types';
 import * as S from './styles';
 import ProductEditModal from './ProductEditModal';
 import { useProductContext } from '@/contexts/ProductContext';
@@ -47,48 +41,30 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   discount,
   onDeleteItem,
 }) => {
-  const [isModalOpen, setIsModalOpen] =
-    React.useState(false);
-  const [viewingProduct, setViewingProduct] =
-    React.useState<Product | null>(null);
-  const [editingProduct, setEditingProduct] =
-    React.useState<Product | null>(null);
-  const { updateProduct, addProduct } =
-    useProductContext();
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [viewingProduct, setViewingProduct] = React.useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = React.useState<Product | null>(null);
+  const { updateProduct, addProduct } = useProductContext();
 
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] =
-    React.useState(9);
+  const [rowsPerPage, setRowsPerPage] = React.useState(9);
 
-  const [snackbarOpen, setSnackbarOpen] =
-    React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] =
-    React.useState('');
-  const [selectedRows, setSelectedRows] =
-    React.useState<string[]>([]);
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [selectedRows, setSelectedRows] = React.useState<string[]>([]);
 
-  const handleChangePage = (
-    _: unknown,
-    newPage: number
-  ) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(
-      parseInt(event.target.value, 10)
-    );
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
   const paginatedProducts = React.useMemo(() => {
     const startIndex = page * rowsPerPage;
-    return products.slice(
-      startIndex,
-      startIndex + rowsPerPage
-    );
+    return products.slice(startIndex, startIndex + rowsPerPage);
   }, [products, page, rowsPerPage]);
 
   const handleOpenModal = () => {
@@ -101,103 +77,59 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     setEditingProduct(null);
   };
 
-  const handleViewProduct = (
-    product: Product
-  ) => {
+  const handleViewProduct = (product: Product) => {
     setViewingProduct(product);
     setEditingProduct(null);
     setIsModalOpen(true);
   };
 
-  const handleEditProduct = (
-    product: Product
-  ) => {
+  const handleEditProduct = (product: Product) => {
     setEditingProduct(product);
     setViewingProduct(null);
     setIsModalOpen(true);
   };
 
   const handleSubmitProduct = (data: Product) => {
-    console.log(
-      'ProductEdit - Received data from modal:',
-      data
-    );
+    console.log('ProductEdit - Received data from modal:', JSON.stringify(data, null, 2));
     const productWithStatus = {
       ...data,
       id: data.id || Date.now(),
-      productName:
-        data.productName || 'Unnamed Product',
+      productName: data.productName || 'Unnamed Product',
       color: data.color || 'Black',
       barcode: data.barcode || `BC-${Date.now()}`,
       sku: data.sku || `SKU-${Date.now()}`,
-      price:
-        typeof data.price === 'number'
-          ? data.price
-          : 0,
+      price: typeof data.price === 'number' ? data.price : 0,
       status: Boolean(data.status),
-      rating:
-        typeof data.rating === 'number'
-          ? data.rating
-          : 0,
-      createdAt:
-        data.createdAt ||
-        new Date().toISOString(),
-      image:
-        data.image || '/placeholder-image.png',
-      statusProduct: Boolean(data.status)
-        ? 'Active'
-        : 'Inactive',
+      rating: typeof data.rating === 'number' ? data.rating : 0,
+      createdAt: data.createdAt || new Date().toISOString(),
+      image: data.image || '/placeholder-image.png',
+      statusProduct: Boolean(data.status) ? 'Active' : 'Inactive',
     };
 
-    console.log(
-      'ProductEdit - Enhanced product data:',
-      productWithStatus
-    );
+    console.log('ProductEdit - Enhanced product data:', JSON.stringify(productWithStatus, null, 2));
 
     if (editingProduct) {
       onUpdateItem(productWithStatus);
       updateProduct(productWithStatus);
 
-      setSnackbarMessage(
-        'Product updated successfully!'
-      );
+      setSnackbarMessage('Product updated successfully!');
       setSnackbarOpen(true);
     } else {
-      onAddItem(
-        productWithStatus,
-        handleCloseModal
-      );
+      onAddItem(productWithStatus, handleCloseModal);
       addProduct(productWithStatus);
 
-      setSnackbarMessage(
-        'Product added successfully!'
-      );
+      setSnackbarMessage('Product added successfully!');
       setSnackbarOpen(true);
     }
 
     try {
-      const existingProducts = JSON.parse(
-        localStorage.getItem('products') || '[]'
-      );
+      const existingProducts = JSON.parse(localStorage.getItem('products') || '[]');
       const updatedProducts = editingProduct
-        ? existingProducts.map((p: Product) =>
-            p.id === productWithStatus.id
-              ? productWithStatus
-              : p
-          )
-        : [
-            ...existingProducts,
-            productWithStatus,
-          ];
-      localStorage.setItem(
-        'products',
-        JSON.stringify(updatedProducts)
-      );
+        ? existingProducts.map((p: Product) => (p.id === productWithStatus.id ? productWithStatus : p))
+        : [...existingProducts, productWithStatus];
+      localStorage.setItem('products', JSON.stringify(updatedProducts));
     } catch (error) {
-      console.error(
-        'Error saving product to localStorage:',
-        error
-      );
+      console.error('Error saving product to localStorage:', JSON.stringify(error, null, 2));
     }
 
     handleCloseModal();
@@ -207,17 +139,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'image',
       headerName: 'Icon',
-      width: 70, // Reduced from 80
+      width: 70,
       renderCell: (params) => (
         <Avatar
-          src={
-            params.value ||
-            '/placeholder-image.png'
-          }
+          src={params.value || '/placeholder-image.png'}
           alt={params.row.productName}
           sx={{
-            width: 36, // Reduced from 40
-            height: 36, // Reduced from 40
+            width: 36,
+            height: 36,
             borderRadius: '4px',
             border: '1px solid #f0f0f0',
           }}
@@ -230,8 +159,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'productName',
       headerName: 'Product Name',
-      flex: 1.8, // Reduced from 2
-      minWidth: 160, // Reduced from 180
+      flex: 1.8,
+      minWidth: 160,
       renderCell: (params) => (
         <Stack
           direction="row"
@@ -265,12 +194,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 padding: '2px 4px',
                 fontSize: '0.7rem',
                 fontWeight: 500,
-                bgcolor: getColorStyles(
-                  params.row.color
-                ).bg,
-                color: getColorStyles(
-                  params.row.color
-                ).text,
+                bgcolor: getColorStyles(params.row.color).bg,
+                color: getColorStyles(params.row.color).text,
                 border: '1px solid #e2e8f0',
                 flexShrink: 0,
                 '@media (max-width: 768px)': {
@@ -286,8 +211,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'sku',
       headerName: 'SKU',
-      flex: 0.8, // Reduced from 1
-      minWidth: 90, // Reduced from 100
+      flex: 0.8,
+      minWidth: 90,
       renderCell: (params) => (
         <Typography
           variant="body2"
@@ -305,8 +230,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'barcode',
       headerName: 'ID Code',
-      flex: 0.8, // Reduced from 1
-      minWidth: 90, // Reduced from 110
+      flex: 0.8,
+      minWidth: 90,
       renderCell: (params) => (
         <Typography
           variant="body2"
@@ -324,16 +249,13 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'price',
       headerName: 'Price',
-      flex: 0.8, // Reduced from 1
-      minWidth: 80, // Reduced from 100
+      flex: 0.8,
+      minWidth: 80,
       type: 'number',
       align: 'left',
       headerAlign: 'left',
       renderCell: (params) => {
-        const price =
-          params.row.price !== undefined
-            ? params.row.price
-            : 0;
+        const price = params.row.price !== undefined ? params.row.price : 0;
         return (
           <Typography
             variant="body2"
@@ -350,8 +272,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'statusProduct',
       headerName: 'Status',
-      flex: 0.9, // Reduced from 1
-      minWidth: 100, // Reduced from 120
+      flex: 0.9,
+      minWidth: 100,
       renderCell: (params) => (
         <Box
           sx={{
@@ -364,9 +286,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             onChange={(e) => {
               const updatedProduct = {
                 ...params.row,
-                statusProduct: e.target.checked
-                  ? 'Active'
-                  : 'Inactive',
+                statusProduct: e.target.checked ? 'Active' : 'Inactive',
                 status: e.target.checked,
               };
               onUpdateItem(updatedProduct);
@@ -375,18 +295,15 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             color="primary"
             size="small"
             sx={{
-              '& .MuiSwitch-switchBase.Mui-checked':
-                {
-                  color: '#52B788',
-                  '&:hover': {
-                    backgroundColor:
-                      'rgba(82, 183, 136, 0.08)',
-                  },
+              '& .MuiSwitch-switchBase.Mui-checked': {
+                color: '#52B788',
+                '&:hover': {
+                  backgroundColor: 'rgba(82, 183, 136, 0.08)',
                 },
-              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
-                {
-                  backgroundColor: '#52B788',
-                },
+              },
+              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                backgroundColor: '#52B788',
+              },
             }}
           />
           <Typography
@@ -394,12 +311,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             sx={{
               ml: 0.5,
               fontSize: '0.75rem',
-              color:
-                params.value === 'Active'
-                  ? '#52B788'
-                  : '#9e9e9e',
+              color: params.value === 'Active' ? '#52B788' : '#9e9e9e',
               '@media (max-width: 768px)': {
-                display: 'none', // Hide text on smaller screens
+                display: 'none',
               },
             }}
           >
@@ -411,8 +325,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'rating',
       headerName: 'Rating',
-      flex: 0.6, // Reduced from 0.7
-      minWidth: 70, // Reduced from 80
+      flex: 0.6,
+      minWidth: 70,
       type: 'number',
       align: 'left',
       headerAlign: 'left',
@@ -430,13 +344,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'createdAt',
       headerName: 'Created At',
-      flex: 0.9, // Reduced from 1
-      minWidth: 110, // Reduced from 120
+      flex: 0.9,
+      minWidth: 110,
       renderCell: (params) => {
         try {
-          const date = new Date(
-            params.row.createdAt
-          );
+          const date = new Date(params.row.createdAt);
           return (
             <Typography variant="body2">
               {date.toLocaleDateString('en-US', {
@@ -447,19 +359,15 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             </Typography>
           );
         } catch {
-          return (
-            <Typography variant="body2">
-              {params.row.createdAt || '-'}
-            </Typography>
-          );
+          return <Typography variant="body2">{params.row.createdAt || '-'}</Typography>;
         }
       },
     },
     {
       field: 'actions',
       headerName: 'Actions',
-      flex: 0.8, // Reduced from 1
-      minWidth: 110, // Reduced from 130
+      flex: 0.8,
+      minWidth: 110,
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
@@ -478,13 +386,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             sx={{
               padding: '4px',
               '&:hover': {
-                backgroundColor:
-                  'rgba(25, 118, 210, 0.08)',
+                backgroundColor: 'rgba(25, 118, 210, 0.08)',
               },
             }}
-            onClick={() =>
-              handleViewProduct(params.row)
-            }
+            onClick={() => handleViewProduct(params.row)}
           >
             <VisibilityIcon fontSize="small" />
           </IconButton>
@@ -494,13 +399,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             sx={{
               padding: '4px',
               '&:hover': {
-                backgroundColor:
-                  'rgba(25, 118, 210, 0.08)',
+                backgroundColor: 'rgba(25, 118, 210, 0.08)',
               },
             }}
-            onClick={() =>
-              handleEditProduct(params.row)
-            }
+            onClick={() => handleEditProduct(params.row)}
           >
             <EditIcon fontSize="small" />
           </IconButton>
@@ -510,13 +412,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             sx={{
               padding: '4px',
               '&:hover': {
-                backgroundColor:
-                  'rgba(211, 47, 47, 0.08)',
+                backgroundColor: 'rgba(211, 47, 47, 0.08)',
               },
             }}
-            onClick={() =>
-              onDeleteItem(params.row.id)
-            }
+            onClick={() => onDeleteItem(params.row.id)}
           >
             <DeleteIcon fontSize="small" />
           </IconButton>
@@ -526,34 +425,19 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   ];
 
   const totalProductsPrice = React.useMemo(() => {
-    return products.reduce(
-      (sum, product) =>
-        sum + (product.price || 0),
-      0
-    );
+    return products.reduce((sum, product) => sum + (product.price || 0), 0);
   }, [products]);
 
-  const selectedProductsPrice =
-    React.useMemo(() => {
-      if (selectedRows.length === 0) return 0;
+  const selectedProductsPrice = React.useMemo(() => {
+    if (selectedRows.length === 0) return 0;
 
-      return products
-        .filter((product) =>
-          selectedRows.includes(
-            product.id.toString()
-          )
-        )
-        .reduce(
-          (sum, product) =>
-            sum + (product.price || 0),
-          0
-        );
-    }, [products, selectedRows]);
+    return products
+      .filter((product) => selectedRows.includes(product.id.toString()))
+      .reduce((sum, product) => sum + (product.price || 0), 0);
+  }, [products, selectedRows]);
 
   const selectedProducts = React.useMemo(() => {
-    return products.filter((product) =>
-      selectedRows.includes(product.id.toString())
-    );
+    return products.filter((product) => selectedRows.includes(product.id.toString()));
   }, [products, selectedRows]);
 
   const handleExportPDF = () => {
@@ -572,30 +456,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     doc.text('Product Inventory Report', 14, 25);
 
     doc.setFontSize(10);
-    doc.text(
-      'Pisval Tech Point of Sale System',
-      14,
-      35
-    );
+    doc.text('Pisval Tech Point of Sale System', 14, 35);
     doc.text('Business Information:', 14, 40);
-    doc.text(
-      'Email: info@pisvaltech.com',
-      14,
-      45
-    );
-    doc.text(
-      'Website: www.pisvaltech.com',
-      14,
-      50
-    );
+    doc.text('Email: info@pisvaltech.com', 14, 45);
+    doc.text('Website: www.pisvaltech.com', 14, 50);
     doc.text('Phone: +27 123 456 789', 14, 55);
 
     doc.setFontSize(10);
-    doc.text(
-      `Generated on: ${new Date().toLocaleString()}`,
-      14,
-      65
-    );
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 65);
 
     const tableData = products.map((product) => [
       product.productName,
@@ -604,24 +472,12 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       `R${(product.price || 0).toFixed(2)}`,
       product.status ? 'Active' : 'Inactive',
       product.rating?.toString() || '-',
-      new Date(
-        product.createdAt || new Date()
-      ).toLocaleDateString(),
+      new Date(product.createdAt || new Date()).toLocaleDateString(),
     ]);
 
     autoTable(doc, {
       startY: 70,
-      head: [
-        [
-          'Product Name',
-          'SKU',
-          'ID Code',
-          'Price',
-          'Status',
-          'Rating',
-          'Created At',
-        ],
-      ],
+      head: [['Product Name', 'SKU', 'ID Code', 'Price', 'Status', 'Rating', 'Created At']],
       body: tableData,
       theme: 'grid',
       headStyles: {
@@ -658,32 +514,20 @@ const ProductEdit: React.FC<ProductEditProps> = ({
 
     doc.save('product-inventory.pdf');
 
-    // Show success notification
-    setSnackbarMessage(
-      'PDF exported successfully!'
-    );
+    setSnackbarMessage('PDF exported successfully!');
     setSnackbarOpen(true);
   };
 
-  // Handle closing the snackbar
-  const handleCloseSnackbar = (
-    _?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
+  const handleCloseSnackbar = (_?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
     setSnackbarOpen(false);
   };
 
-  // Use the subTotal prop if provided, otherwise calculate from products
   const calculatedSubTotal = React.useMemo(() => {
-    return subTotal !== undefined
-      ? subTotal
-      : totalProductsPrice;
+    return subTotal !== undefined ? subTotal : totalProductsPrice;
   }, [totalProductsPrice, subTotal]);
-
-  // We're now using totalProductsPrice directly for the total display
 
   return (
     <Box
@@ -710,10 +554,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               >
                 Inventory
               </Typography>
-              <S.ExportButton
-                startIcon={<PictureAsPdfIcon />}
-                onClick={handleExportPDF}
-              >
+              <S.ExportButton startIcon={<PictureAsPdfIcon />} onClick={handleExportPDF}>
                 Export as PDF
               </S.ExportButton>
             </S.HeaderWrapper>
@@ -724,44 +565,24 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               <Checkbox size="small" />
             </S.CheckboxCell>
             <S.StandardCell>Image</S.StandardCell>
-            <S.ProductNameCell>
-              Product Name
-            </S.ProductNameCell>
+            <S.ProductNameCell>Product Name</S.ProductNameCell>
             <S.StandardCell>SKU</S.StandardCell>
-            <S.StandardCell>
-              ID Code
-            </S.StandardCell>
+            <S.StandardCell>ID Code</S.StandardCell>
             <S.StandardCell>Price</S.StandardCell>
-            <S.StandardCell>
-              Status
-            </S.StandardCell>
-            <S.StandardCell>
-              Rating
-            </S.StandardCell>
-            <S.StandardCell>
-              Created At
-            </S.StandardCell>
-            <S.StandardCell>
-              Actions
-            </S.StandardCell>
+            <S.StandardCell>Status</S.StandardCell>
+            <S.StandardCell>Rating</S.StandardCell>
+            <S.StandardCell>Created At</S.StandardCell>
+            <S.StandardCell>Actions</S.StandardCell>
           </S.TableHeaderRow>
 
           <S.ButtonGroup>
-            <S.AddItemButton
-              variant="contained"
-              onClick={handleOpenModal}
-              startIcon={<AddIcon />}
-            >
+            <S.AddItemButton variant="contained" onClick={handleOpenModal} startIcon={<AddIcon />}>
               Add item manually
             </S.AddItemButton>
             <S.QrCodeButton variant="contained">
               <QrCodeScannerIcon />
             </S.QrCodeButton>
-            <S.NewSessionButton
-              variant="contained"
-              onClick={onNewSession}
-              startIcon={<StorefrontIcon />}
-            >
+            <S.NewSessionButton variant="contained" onClick={onNewSession} startIcon={<StorefrontIcon />}>
               New Session
             </S.NewSessionButton>
           </S.ButtonGroup>
@@ -771,10 +592,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               <S.EmptyStateIcon>
                 <StorefrontIcon />
               </S.EmptyStateIcon>
-              <Typography
-                variant="body1"
-                color="textSecondary"
-              >
+              <Typography variant="body1" color="textSecondary">
                 No items added yet.
               </Typography>
             </S.EmptyStateWrapper>
@@ -787,51 +605,42 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   height: 'auto',
                   border: 'none',
                   borderRadius: '12px',
-                  boxShadow:
-                    '0px 4px 8px rgba(0, 0, 0, 0.04)',
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
                   position: 'relative',
                   zIndex: 1,
                   '& .MuiDataGrid-main': {
                     width: '100%',
                     overflow: 'auto',
                   },
-                  '& .MuiDataGrid-columnHeaders':
-                    {
-                      backgroundColor: '#f8f9fa',
-                      borderBottom:
-                        '1px solid #E0E0E0',
-                    },
-                  '& .MuiDataGrid-cell': {
-                    borderBottom:
-                      '1px solid #E0E0E0',
+                  '& .MuiDataGrid-columnHeaders': {
+                    backgroundColor: '#f8f9fa',
+                    borderBottom: '1px solid #E0E0E0',
                   },
-                  '& .MuiDataGrid-virtualScroller':
-                    {
-                      overflow: 'auto',
-                      '&::-webkit-scrollbar': {
-                        width: '8px',
-                        height: '8px',
-                      },
-                      '&::-webkit-scrollbar-track':
-                        {
-                          background: '#f1f1f1',
-                          borderRadius: '4px',
-                        },
-                      '&::-webkit-scrollbar-thumb':
-                        {
-                          background: '#c1c1c1',
-                          borderRadius: '4px',
-                        },
-                      '&::-webkit-scrollbar-thumb:hover':
-                        {
-                          background: '#a8a8a8',
-                        },
+                  '& .MuiDataGrid-cell': {
+                    borderBottom: '1px solid #E0E0E0',
+                  },
+                  '& .MuiDataGrid-virtualScroller': {
+                    overflow: 'auto',
+                    '&::-webkit-scrollbar': {
+                      width: '8px',
+                      height: '8px',
                     },
+                    '&::-webkit-scrollbar-track': {
+                      background: '#f1f1f1',
+                      borderRadius: '4px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: '#c1c1c1',
+                      borderRadius: '4px',
+                    },
+                    '&::-webkit-scrollbar-thumb:hover': {
+                      background: '#a8a8a8',
+                    },
+                  },
                   '@media (max-width: 768px)': {
-                    '& .MuiDataGrid-columnHeaders':
-                      {
-                        fontSize: '0.8rem',
-                      },
+                    '& .MuiDataGrid-columnHeaders': {
+                      fontSize: '0.8rem',
+                    },
                     '& .MuiDataGrid-cell': {
                       fontSize: '0.8rem',
                     },
@@ -839,12 +648,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 }}
                 hideFooter={true}
                 checkboxSelection
-                onRowSelectionModelChange={(
-                  newSelectionModel
-                ) => {
-                  setSelectedRows(
-                    newSelectionModel as string[]
-                  );
+                onRowSelectionModelChange={(newSelectionModel) => {
+                  setSelectedRows(newSelectionModel as string[]);
                 }}
                 rowSelectionModel={selectedRows}
                 disableColumnMenu
@@ -868,17 +673,13 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={
-                  handleChangeRowsPerPage
-                }
+                onRowsPerPageChange={handleChangeRowsPerPage}
                 rowsPerPageOptions={[9, 18, 27]}
                 sx={{
                   backgroundColor: '#FFFFFF',
                   borderRadius: '0 0 12px 12px',
-                  borderTop:
-                    '1px solid rgba(224, 224, 224, 0.5)',
-                  boxShadow:
-                    '0 2px 4px rgba(0,0,0,0.03)',
+                  borderTop: '1px solid rgba(224, 224, 224, 0.5)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.03)',
                   '& .MuiToolbar-root': {
                     padding: '0 24px',
                     minHeight: '60px',
@@ -895,72 +696,58 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                       justifyContent: 'center',
                     },
                   },
-                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows':
-                    {
-                      color: '#1E2A3B',
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
-                      margin: '0 12px',
-                      '@media (max-width: 768px)':
-                        {
-                          fontSize: '0.8rem',
-                          margin: '0 8px',
-                        },
-                      '@media (max-width: 480px)':
-                        {
-                          fontSize: '0.75rem',
-                          margin: '0 4px',
-                        },
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                    color: '#1E2A3B',
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    margin: '0 12px',
+                    '@media (max-width: 768px)': {
+                      fontSize: '0.8rem',
+                      margin: '0 8px',
                     },
-                  '& .MuiTablePagination-select':
-                    {
-                      paddingTop: '4px',
-                      paddingBottom: '4px',
+                    '@media (max-width: 480px)': {
+                      fontSize: '0.75rem',
+                      margin: '0 4px',
+                    },
+                  },
+                  '& .MuiTablePagination-select': {
+                    paddingTop: '4px',
+                    paddingBottom: '4px',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '6px',
+                    marginRight: '8px',
+                    border: '1px solid #e0e0e0',
+                    '&:focus': {
+                      backgroundColor: '#f0f2f5',
+                      borderColor: '#3b82f6',
+                    },
+                  },
+                  '& .MuiTablePagination-actions': {
+                    marginLeft: '16px',
+                    '@media (max-width: 480px)': {
+                      marginLeft: '8px',
+                    },
+                    '& .MuiIconButton-root': {
+                      padding: '8px',
+                      color: '#1E2A3B',
                       backgroundColor: '#f8f9fa',
-                      borderRadius: '6px',
-                      marginRight: '8px',
                       border: '1px solid #e0e0e0',
-                      '&:focus': {
-                        backgroundColor:
-                          '#f0f2f5',
+                      borderRadius: '6px',
+                      margin: '0 2px',
+                      '&:hover': {
+                        backgroundColor: '#f0f2f5',
                         borderColor: '#3b82f6',
                       },
-                    },
-                  '& .MuiTablePagination-actions':
-                    {
-                      marginLeft: '16px',
-                      '@media (max-width: 480px)':
-                        {
-                          marginLeft: '8px',
-                        },
-                      '& .MuiIconButton-root': {
-                        padding: '8px',
-                        color: '#1E2A3B',
-                        backgroundColor:
-                          '#f8f9fa',
-                        border:
-                          '1px solid #e0e0e0',
-                        borderRadius: '6px',
-                        margin: '0 2px',
-                        '&:hover': {
-                          backgroundColor:
-                            '#f0f2f5',
-                          borderColor: '#3b82f6',
-                        },
-                        '&.Mui-disabled': {
-                          color:
-                            'rgba(0, 0, 0, 0.26)',
-                          backgroundColor:
-                            '#f8f9fa',
-                          border:
-                            '1px solid #e0e0e0',
-                        },
-                        '@media (max-width: 480px)':
-                          {
-                            padding: '6px',
-                          },
+                      '&.Mui-disabled': {
+                        color: 'rgba(0, 0, 0, 0.26)',
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #e0e0e0',
+                      },
+                      '@media (max-width: 480px)': {
+                        padding: '6px',
                       },
                     },
+                  },
                 }}
               />
             </S.ProductTable>
@@ -971,8 +758,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           <Stack spacing={3}>
             <Box
               sx={{
-                borderBottom:
-                  '1px solid rgba(0,0,0,0.06)',
+                borderBottom: '1px solid rgba(0,0,0,0.06)',
                 paddingBottom: '16px',
                 marginBottom: '8px',
               }}
@@ -986,9 +772,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   marginBottom: '4px',
                 }}
               >
-                {selectedRows.length > 0
-                  ? 'Selected Items'
-                  : 'Order Summary'}
+                {selectedRows.length > 0 ? 'Selected Items' : 'Order Summary'}
               </Typography>
               <Typography
                 variant="body2"
@@ -1026,92 +810,77 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   },
                 }}
               >
-                {selectedProducts.map(
-                  (product) => (
+                {selectedProducts.map((product) => (
+                  <Box
+                    key={product.id}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      py: 1,
+                      borderBottom: '1px solid rgba(0,0,0,0.04)',
+                    }}
+                  >
                     <Box
-                      key={product.id}
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent:
-                          'space-between',
-                        py: 1,
-                        borderBottom:
-                          '1px solid rgba(0,0,0,0.04)',
+                        gap: 1.5,
+                        width: '70%',
                       }}
                     >
+                      <Avatar
+                        src={product.image || '/placeholder-image.png'}
+                        alt={product.productName}
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: '4px',
+                          border: '1px solid #f0f0f0',
+                        }}
+                        variant="rounded"
+                      />
                       <Box
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1.5,
-                          width: '70%',
+                          overflow: 'hidden',
                         }}
                       >
-                        <Avatar
-                          src={
-                            product.image ||
-                            '/placeholder-image.png'
-                          }
-                          alt={
-                            product.productName
-                          }
+                        <Typography
+                          variant="body2"
                           sx={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: '4px',
-                            border:
-                              '1px solid #f0f0f0',
-                          }}
-                          variant="rounded"
-                        />
-                        <Box
-                          sx={{
+                            fontWeight: 600,
+                            fontSize: '14px',
+                            color: '#1E2A3B',
                             overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
                           }}
                         >
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              fontWeight: 600,
-                              fontSize: '14px',
-                              color: '#1E2A3B',
-                              overflow: 'hidden',
-                              textOverflow:
-                                'ellipsis',
-                              whiteSpace:
-                                'nowrap',
-                            }}
-                          >
-                            {product.productName}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            sx={{
-                              color: '#64748B',
-                              fontSize: '12px',
-                            }}
-                          >
-                            {product.sku}
-                          </Typography>
-                        </Box>
+                          {product.productName}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: '#64748B',
+                            fontSize: '12px',
+                          }}
+                        >
+                          {product.sku}
+                        </Typography>
                       </Box>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: 600,
-                          fontSize: '14px',
-                          color: '#1E2A3B',
-                        }}
-                      >
-                        R
-                        {(
-                          product.price || 0
-                        ).toFixed(2)}
-                      </Typography>
                     </Box>
-                  )
-                )}
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: '14px',
+                        color: '#1E2A3B',
+                      }}
+                    >
+                      R{(product.price || 0).toFixed(2)}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
             )}
 
@@ -1129,14 +898,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#64748B',
                 }}
               >
-                {selectedRows.length > 0
-                  ? 'Selected Items'
-                  : 'Items'}{' '}
-                (
-                {selectedRows.length > 0
-                  ? selectedRows.length
-                  : products.length}
-                )
+                {selectedRows.length > 0 ? 'Selected Items' : 'Items'} ({selectedRows.length > 0 ? selectedRows.length : products.length})
               </Typography>
               <Typography
                 variant="subtitle1"
@@ -1146,11 +908,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                R
-                {(selectedRows.length > 0
-                  ? selectedProductsPrice
-                  : totalProductsPrice
-                ).toFixed(2)}
+                R{(selectedRows.length > 0 ? selectedProductsPrice : totalProductsPrice).toFixed(2)}
               </Typography>
             </Box>
 
@@ -1159,8 +917,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 <Box
                   sx={{
                     display: 'flex',
-                    justifyContent:
-                      'space-between',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
                   }}
                 >
@@ -1181,18 +938,14 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                       color: '#1E2A3B',
                     }}
                   >
-                    R
-                    {calculatedSubTotal.toFixed(
-                      2
-                    )}
+                    R{calculatedSubTotal.toFixed(2)}
                   </Typography>
                 </Box>
 
                 <Box
                   sx={{
                     display: 'flex',
-                    justifyContent:
-                      'space-between',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
                   }}
                 >
@@ -1200,10 +953,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     variant="subtitle2"
                     sx={{
                       fontSize: '15px',
-                      color:
-                        discount > 0
-                          ? '#52B788'
-                          : '#64748B',
+                      color: discount > 0 ? '#52B788' : '#64748B',
                     }}
                   >
                     Discount
@@ -1213,14 +963,10 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     sx={{
                       fontWeight: 600,
                       fontSize: '16px',
-                      color:
-                        discount > 0
-                          ? '#52B788'
-                          : '#1E2A3B',
+                      color: discount > 0 ? '#52B788' : '#1E2A3B',
                     }}
                   >
-                    {discount > 0 ? '-' : ''}R
-                    {discount.toFixed(2)}
+                    {discount > 0 ? '-' : ''}R{discount.toFixed(2)}
                   </Typography>
                 </Box>
               </>
@@ -1231,10 +977,8 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                borderTop:
-                  '1px solid rgba(0,0,0,0.06)',
-                borderBottom:
-                  '1px solid rgba(0,0,0,0.06)',
+                borderTop: '1px solid rgba(0,0,0,0.06)',
+                borderBottom: '1px solid rgba(0,0,0,0.06)',
                 paddingTop: '16px',
                 paddingBottom: '16px',
                 marginTop: '8px',
@@ -1249,9 +993,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                {selectedRows.length > 0
-                  ? 'Selected Total'
-                  : 'Total'}
+                {selectedRows.length > 0 ? 'Selected Total' : 'Total'}
               </Typography>
               <Typography
                 variant="h6"
@@ -1261,11 +1003,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   color: '#1E2A3B',
                 }}
               >
-                R
-                {(selectedRows.length > 0
-                  ? selectedProductsPrice
-                  : totalProductsPrice
-                ).toFixed(2)}
+                R{(selectedRows.length > 0 ? selectedProductsPrice : totalProductsPrice).toFixed(2)}
               </Typography>
             </Box>
 
@@ -1274,9 +1012,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() =>
-                    setSelectedRows([])
-                  }
+                  onClick={() => setSelectedRows([])}
                   sx={{
                     textTransform: 'none',
                     fontSize: '15px',
@@ -1295,10 +1031,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   variant="outlined"
                   color="primary"
                   onClick={() => {
-                    // Add selected items to cart logic would go here
-                    setSnackbarMessage(
-                      `${selectedRows.length} items added to cart`
-                    );
+                    setSnackbarMessage(`${selectedRows.length} items added to cart`);
                     setSnackbarOpen(true);
                   }}
                   sx={{
@@ -1309,8 +1042,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                     borderColor: '#1E2A3B',
                     color: '#1E2A3B',
                     '&:hover': {
-                      backgroundColor:
-                        'rgba(30, 42, 59, 0.04)',
+                      backgroundColor: 'rgba(30, 42, 59, 0.04)',
                     },
                   }}
                 >
@@ -1319,18 +1051,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               </Stack>
             ) : (
               <>
-                <S.CollectPaymentButton
-                  variant="contained"
-                  onClick={onCollectPayment}
-                >
+                <S.CollectPaymentButton variant="contained" onClick={onCollectPayment}>
                   Collect Payment
                 </S.CollectPaymentButton>
 
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  sx={{ marginTop: '8px' }}
-                >
+                <Stack direction="row" spacing={2} sx={{ marginTop: '8px' }}>
                   <Button
                     variant="outlined"
                     fullWidth
@@ -1342,11 +1067,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                       padding: '10px',
                       borderColor: '#E0E0E0',
                       color: '#1E2A3B',
-                      backgroundColor:
-                        'transparent',
+                      backgroundColor: 'transparent',
                       '&:hover': {
-                        backgroundColor:
-                          'rgba(0,0,0,0.02)',
+                        backgroundColor: 'rgba(0,0,0,0.02)',
                         borderColor: '#1E2A3B',
                       },
                     }}
@@ -1365,11 +1088,9 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                       padding: '10px',
                       borderColor: '#DC3545',
                       color: '#DC3545',
-                      backgroundColor:
-                        'transparent',
+                      backgroundColor: 'transparent',
                       '&:hover': {
-                        backgroundColor:
-                          'rgba(220, 53, 69, 0.04)',
+                        backgroundColor: 'rgba(220, 53, 69, 0.04)',
                         borderColor: '#C82333',
                       },
                     }}
@@ -1386,19 +1107,11 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           open={isModalOpen}
           onClose={handleCloseModal}
           onSubmit={handleSubmitProduct}
-          product={
-            viewingProduct || editingProduct
-          }
-          mode={
-            viewingProduct
-              ? 'view'
-              : editingProduct
-                ? 'edit'
-                : 'add'
-          }
+          product={viewingProduct || editingProduct}
+          mode={viewingProduct ? 'view' : editingProduct ? 'edit' : 'add'}
         />
 
-        {/* Success notification */}
+        {}
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={4000}
@@ -1408,11 +1121,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             horizontal: 'center',
           }}
         >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity="success"
-            sx={{ width: '100%' }}
-          >
+          <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
             {snackbarMessage}
           </Alert>
         </Snackbar>

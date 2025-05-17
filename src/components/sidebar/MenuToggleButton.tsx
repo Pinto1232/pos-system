@@ -4,9 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { MenuToggleButtonProps } from './types';
 
-const MenuToggleButton: React.FC<
-  MenuToggleButtonProps
-> = ({ onClick, isOpen }) => (
+const MenuToggleButton: React.FC<MenuToggleButtonProps> = ({ onClick, isOpen }) => (
   <IconButton
     color="inherit"
     aria-label="toggle drawer"
@@ -35,11 +33,7 @@ const MenuToggleButton: React.FC<
       boxShadow: '0 3px 10px rgba(0, 0, 0, 0.2)',
     }}
   >
-    {isOpen ? (
-      <CloseIcon sx={{ fontSize: '1.5rem' }} />
-    ) : (
-      <MenuIcon sx={{ fontSize: '1.5rem' }} />
-    )}
+    {isOpen ? <CloseIcon sx={{ fontSize: '1.5rem' }} /> : <MenuIcon sx={{ fontSize: '1.5rem' }} />}
   </IconButton>
 );
 

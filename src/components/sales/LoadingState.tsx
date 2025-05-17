@@ -1,17 +1,12 @@
 import React from 'react';
-import {
-  Box,
-  CircularProgress,
-} from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 
 interface LoadingStateProps {
   loading: boolean;
   children: React.ReactNode;
 }
 
-const LoadingState: React.FC<
-  LoadingStateProps
-> = ({ loading, children }) => {
+const LoadingState: React.FC<LoadingStateProps> = ({ loading, children }) => {
   if (loading) {
     return (
       <Box

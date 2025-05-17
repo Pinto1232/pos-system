@@ -25,29 +25,18 @@ interface CreateRoleModalProps {
   newRoleName: string;
   setNewRoleName: (name: string) => void;
   newRoleDescription: string;
-  setNewRoleDescription: (
-    description: string
-  ) => void;
+  setNewRoleDescription: (description: string) => void;
   selectedTemplate: string;
   setSelectedTemplate: (template: string) => void;
   configurePermissionsAfter: boolean;
-  setConfigurePermissionsAfter: (
-    configure: boolean
-  ) => void;
+  setConfigurePermissionsAfter: (configure: boolean) => void;
   roleNameError: string;
   createRolePending: boolean;
   handleCreateRole: () => void;
-  getTemplatePermissions: (
-    template: string
-  ) => string[];
+  getTemplatePermissions: (template: string) => string[];
 }
 
-/**
- * Modal component for creating a new role
- */
-const CreateRoleModal: React.FC<
-  CreateRoleModalProps
-> = ({
+const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
   open,
   onClose,
   newRoleName,
@@ -73,12 +62,9 @@ const CreateRoleModal: React.FC<
         sx: {
           borderRadius: 3,
           overflow: 'hidden',
-          boxShadow:
-            '0 8px 32px rgba(23, 58, 121, 0.2)',
-          background:
-            'linear-gradient(135deg, rgba(23, 58, 121, 0.1) 0%, rgba(23, 58, 121, 0.05) 100%)',
-          border:
-            '1px solid rgba(23, 58, 121, 0.1)',
+          boxShadow: '0 8px 32px rgba(23, 58, 121, 0.2)',
+          background: 'linear-gradient(135deg, rgba(23, 58, 121, 0.1) 0%, rgba(23, 58, 121, 0.05) 100%)',
+          border: '1px solid rgba(23, 58, 121, 0.1)',
           backdropFilter: 'blur(4px)',
         },
       }}
@@ -86,8 +72,7 @@ const CreateRoleModal: React.FC<
       <Box
         sx={{
           p: 2,
-          background:
-            'linear-gradient(135deg, #173A79 0%, #2a5cbb 100%)',
+          background: 'linear-gradient(135deg, #173A79 0%, #2a5cbb 100%)',
           color: 'white',
           display: 'flex',
           justifyContent: 'space-between',
@@ -95,11 +80,7 @@ const CreateRoleModal: React.FC<
         }}
       >
         <Box>
-          <Typography
-            variant="h6"
-            component="div"
-            fontWeight="bold"
-          >
+          <Typography variant="h6" component="div" fontWeight="bold">
             Create New Role
           </Typography>
           <Typography
@@ -110,16 +91,10 @@ const CreateRoleModal: React.FC<
               mb: 0,
             }}
           >
-            Define custom roles with specific
-            permissions
+            Define custom roles with specific permissions
           </Typography>
         </Box>
-        <IconButton
-          edge="end"
-          color="inherit"
-          onClick={onClose}
-          aria-label="close"
-        >
+        <IconButton edge="end" color="inherit" onClick={onClose} aria-label="close">
           <CloseIcon />
         </IconButton>
       </Box>
@@ -139,10 +114,7 @@ const CreateRoleModal: React.FC<
                 gap: 2,
               }}
             >
-              <Typography
-                variant="subtitle1"
-                fontWeight="bold"
-              >
+              <Typography variant="subtitle1" fontWeight="bold">
                 Role Information
               </Typography>
               <TextField
@@ -150,14 +122,9 @@ const CreateRoleModal: React.FC<
                 placeholder="Enter role name"
                 fullWidth
                 value={newRoleName}
-                onChange={(e) =>
-                  setNewRoleName(e.target.value)
-                }
+                onChange={(e) => setNewRoleName(e.target.value)}
                 error={!!roleNameError}
-                helperText={
-                  roleNameError ||
-                  'Choose a descriptive name for this role'
-                }
+                helperText={roleNameError || 'Choose a descriptive name for this role'}
                 autoFocus
               />
               <TextField
@@ -167,11 +134,7 @@ const CreateRoleModal: React.FC<
                 multiline
                 rows={3}
                 value={newRoleDescription}
-                onChange={(e) =>
-                  setNewRoleDescription(
-                    e.target.value
-                  )
-                }
+                onChange={(e) => setNewRoleDescription(e.target.value)}
                 helperText="Describe the purpose and responsibilities of this role"
               />
             </Box>
@@ -185,10 +148,7 @@ const CreateRoleModal: React.FC<
                 height: '100%',
               }}
             >
-              <Typography
-                variant="subtitle1"
-                fontWeight="bold"
-              >
+              <Typography variant="subtitle1" fontWeight="bold">
                 Role Template
               </Typography>
               <TextField
@@ -196,27 +156,15 @@ const CreateRoleModal: React.FC<
                 label="Start with template"
                 fullWidth
                 value={selectedTemplate}
-                onChange={(e) =>
-                  setSelectedTemplate(
-                    e.target.value
-                  )
-                }
+                onChange={(e) => setSelectedTemplate(e.target.value)}
                 helperText="Optionally start with predefined permissions"
               >
                 <MenuItem value="">
-                  <em>
-                    None (Start from scratch)
-                  </em>
+                  <em>None (Start from scratch)</em>
                 </MenuItem>
-                <MenuItem value="manager">
-                  Manager Template
-                </MenuItem>
-                <MenuItem value="cashier">
-                  Cashier Template
-                </MenuItem>
-                <MenuItem value="inventory">
-                  Inventory Staff Template
-                </MenuItem>
+                <MenuItem value="manager">Manager Template</MenuItem>
+                <MenuItem value="cashier">Cashier Template</MenuItem>
+                <MenuItem value="inventory">Inventory Staff Template</MenuItem>
               </TextField>
               <Box
                 sx={{
@@ -228,16 +176,7 @@ const CreateRoleModal: React.FC<
               >
                 <FormControlLabel
                   control={
-                    <Checkbox
-                      checked={
-                        configurePermissionsAfter
-                      }
-                      onChange={(e) =>
-                        setConfigurePermissionsAfter(
-                          e.target.checked
-                        )
-                      }
-                    />
+                    <Checkbox checked={configurePermissionsAfter} onChange={(e) => setConfigurePermissionsAfter(e.target.checked)} />
                   }
                   label="Configure permissions after creation"
                 />
@@ -246,14 +185,10 @@ const CreateRoleModal: React.FC<
           </Grid>
         </Grid>
 
-        {/* Permission Preview Section */}
+        {}
         {selectedTemplate && (
           <Box sx={{ mt: 3 }}>
-            <Typography
-              variant="subtitle1"
-              fontWeight="bold"
-              gutterBottom
-            >
+            <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
               Template Permissions Preview
             </Typography>
             <Paper
@@ -266,21 +201,13 @@ const CreateRoleModal: React.FC<
               }}
             >
               <Grid container spacing={1}>
-                {getTemplatePermissions(
-                  selectedTemplate
-                ).map((permission, index) => (
-                  <Grid
-                    item
-                    xs={6}
-                    sm={4}
-                    key={index}
-                  >
+                {getTemplatePermissions(selectedTemplate).map((permission, index) => (
+                  <Grid item xs={6} sm={4} key={index}>
                     <Chip
                       label={permission}
                       size="small"
                       sx={{
-                        bgcolor:
-                          'rgba(23, 58, 121, 0.1)',
+                        bgcolor: 'rgba(23, 58, 121, 0.1)',
                         color: '#173A79',
                         fontWeight: 500,
                         mb: 1,
@@ -297,8 +224,7 @@ const CreateRoleModal: React.FC<
       <DialogActions
         sx={{
           p: 2,
-          borderTop:
-            '1px solid rgba(23, 58, 121, 0.1)',
+          borderTop: '1px solid rgba(23, 58, 121, 0.1)',
           bgcolor: 'rgba(249, 249, 249, 0.9)',
         }}
       >
@@ -315,14 +241,9 @@ const CreateRoleModal: React.FC<
         </Button>
         <Button
           variant="contained"
-          startIcon={
-            createRolePending ? null : <AddIcon />
-          }
+          startIcon={createRolePending ? null : <AddIcon />}
           onClick={handleCreateRole}
-          disabled={
-            !newRoleName.trim() ||
-            createRolePending
-          }
+          disabled={!newRoleName.trim() || createRolePending}
           sx={{
             borderRadius: 2,
             textTransform: 'none',
@@ -333,14 +254,7 @@ const CreateRoleModal: React.FC<
             minWidth: '120px',
           }}
         >
-          {createRolePending ? (
-            <CircularProgress
-              size={24}
-              color="inherit"
-            />
-          ) : (
-            'Create Role'
-          )}
+          {createRolePending ? <CircularProgress size={24} color="inherit" /> : 'Create Role'}
         </Button>
       </DialogActions>
     </Dialog>

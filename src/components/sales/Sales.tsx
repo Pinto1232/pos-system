@@ -1,9 +1,6 @@
 'use client';
 
-import React, {
-  useState,
-  useEffect,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -27,15 +24,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import InfoIcon from '@mui/icons-material/Info';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-} from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
 const Sales: React.FC<SalesProps> = ({
   data = {
@@ -79,18 +68,12 @@ const Sales: React.FC<SalesProps> = ({
   timeframe = '',
   className,
 }) => {
-  const [selectedMetric, setSelectedMetric] =
-    useState<string | null>(null);
-  const [selectedTab, setSelectedTab] =
-    useState(0);
-  const [inStoreProgress, setInStoreProgress] =
-    useState(0);
-  const [onlineProgress, setOnlineProgress] =
-    useState(0);
-  const [mobileProgress, setMobileProgress] =
-    useState(0);
-  const [desktopProgress, setDesktopProgress] =
-    useState(0);
+  const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [inStoreProgress, setInStoreProgress] = useState(0);
+  const [onlineProgress, setOnlineProgress] = useState(0);
+  const [mobileProgress, setMobileProgress] = useState(0);
+  const [desktopProgress, setDesktopProgress] = useState(0);
 
   useEffect(() => {
     const duration = 1500; // Slightly faster animation
@@ -104,39 +87,16 @@ const Sales: React.FC<SalesProps> = ({
 
     let currentStep = 0;
 
-    const easeOutQuad = (t: number) =>
-      t * (2 - t); // Easing function for smoother animation
+    const easeOutQuad = (t: number) => t * (2 - t); // Easing function for smoother animation
 
     const timer = setInterval(() => {
       currentStep++;
-      const progress = easeOutQuad(
-        currentStep / steps
-      );
+      const progress = easeOutQuad(currentStep / steps);
 
-      setInStoreProgress(
-        Math.min(
-          Math.round(inStoreTarget * progress),
-          inStoreTarget
-        )
-      );
-      setOnlineProgress(
-        Math.min(
-          Math.round(onlineTarget * progress),
-          onlineTarget
-        )
-      );
-      setMobileProgress(
-        Math.min(
-          Math.round(mobileTarget * progress),
-          mobileTarget
-        )
-      );
-      setDesktopProgress(
-        Math.min(
-          Math.round(desktopTarget * progress),
-          desktopTarget
-        )
-      );
+      setInStoreProgress(Math.min(Math.round(inStoreTarget * progress), inStoreTarget));
+      setOnlineProgress(Math.min(Math.round(onlineTarget * progress), onlineTarget));
+      setMobileProgress(Math.min(Math.round(mobileTarget * progress), mobileTarget));
+      setDesktopProgress(Math.min(Math.round(desktopTarget * progress), desktopTarget));
 
       if (currentStep >= steps) {
         clearInterval(timer);
@@ -146,13 +106,8 @@ const Sales: React.FC<SalesProps> = ({
     return () => clearInterval(timer);
   }, []); // Run once on mount
 
-  const formatCurrency = (
-    amount: number,
-    currencyCode: string = 'USD'
-  ) => {
-    // Use appropriate locale based on currency
-    const locale =
-      currencyCode === 'ZAR' ? 'en-ZA' : 'en-US';
+  const formatCurrency = (amount: number, currencyCode: string = 'USD') => {
+    const locale = currencyCode === 'ZAR' ? 'en-ZA' : 'en-US';
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currencyCode,
@@ -165,9 +120,7 @@ const Sales: React.FC<SalesProps> = ({
   };
 
   const handleMetricClick = (metric: string) => {
-    setSelectedMetric(
-      selectedMetric === metric ? null : metric
-    );
+    setSelectedMetric(selectedMetric === metric ? null : metric);
   };
 
   const getMetricDetails = (metric: string) => {
@@ -175,39 +128,28 @@ const Sales: React.FC<SalesProps> = ({
       case 'revenue':
         return {
           title: 'Revenue Details',
-          content: `Current: ${formatCurrency(
-            data.totalRevenue
-          )}\nPrevious: ${formatCurrency(
+          content: `Current: ${formatCurrency(data.totalRevenue)}\nPrevious: ${formatCurrency(
             data.previousRevenue
           )}\nGrowth: ${formatPercentage(data.growthPercentage)}`,
         };
       case 'deals':
         return {
           title: 'Deals Overview',
-          content: `Total Deals: ${
-            data.deals.count
-          }\nWin Rate: ${formatPercentage(
+          content: `Total Deals: ${data.deals.count}\nWin Rate: ${formatPercentage(
             data.deals.winRate
           )}\nGrowth: ${formatPercentage(data.deals.growth)}`,
         };
       case 'winRate':
         return {
           title: 'Win Rate Analysis',
-          content: `Current: ${formatPercentage(
-            data.deals.winRate
-          )}\nGrowth: ${formatPercentage(
-            data.deals.winRateGrowth
-          )}\nTarget: 75%`,
+          content: `Current: ${formatPercentage(data.deals.winRate)}\nGrowth: ${formatPercentage(data.deals.winRateGrowth)}\nTarget: 75%`,
         };
       default:
         return null;
     }
   };
 
-  const handleTabChange = (
-    event: React.SyntheticEvent,
-    newValue: number
-  ) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setSelectedTab(newValue);
   };
 
@@ -258,27 +200,27 @@ const Sales: React.FC<SalesProps> = ({
     switch (type) {
       case 'inStore':
         return {
-          color: '#10b981', // Emerald-500
+          color: '#10b981',
           background: 'rgba(16, 185, 129, 0.12)',
         };
       case 'online':
         return {
-          color: '#3b82f6', // Blue-500
+          color: '#3b82f6',
           background: 'rgba(59, 130, 246, 0.12)',
         };
       case 'mobile':
         return {
-          color: '#f43f5e', // Rose-500
+          color: '#f43f5e',
           background: 'rgba(244, 63, 94, 0.12)',
         };
       case 'desktop':
         return {
-          color: '#8b5cf6', // Violet-500
+          color: '#8b5cf6',
           background: 'rgba(139, 92, 246, 0.12)',
         };
       default:
         return {
-          color: '#10b981', // Emerald-500
+          color: '#10b981',
           background: 'rgba(16, 185, 129, 0.12)',
         };
     }
@@ -291,17 +233,13 @@ const Sales: React.FC<SalesProps> = ({
         p: { xs: 3, sm: 4, md: 5 },
         backgroundColor: '#ffffff',
         borderRadius: '16px',
-        boxShadow:
-          '0 10px 30px rgba(0, 0, 0, 0.04)',
-        border:
-          '1px solid rgba(230, 235, 245, 0.9)',
-        transition:
-          'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.04)',
+        border: '1px solid rgba(230, 235, 245, 0.9)',
+        transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
         position: 'relative',
         overflow: 'hidden',
         '&:hover': {
-          boxShadow:
-            '0 15px 35px rgba(0, 0, 0, 0.06)',
+          boxShadow: '0 15px 35px rgba(0, 0, 0, 0.06)',
         },
         '&::before': {
           content: '""',
@@ -310,13 +248,12 @@ const Sales: React.FC<SalesProps> = ({
           left: 0,
           width: '100%',
           height: '4px',
-          background:
-            'linear-gradient(90deg, #4338ca, #6366f1)',
+          background: 'linear-gradient(90deg, #4338ca, #6366f1)',
           opacity: 0.8,
         },
       }}
     >
-      {/* Header Section */}
+      {}
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -324,8 +261,7 @@ const Sales: React.FC<SalesProps> = ({
         spacing={2}
         mb={3}
         sx={{
-          borderBottom:
-            '1px solid rgba(230, 235, 245, 0.6)',
+          borderBottom: '1px solid rgba(230, 235, 245, 0.6)',
           pb: 2,
         }}
       >
@@ -414,19 +350,11 @@ const Sales: React.FC<SalesProps> = ({
         </Box>
       </Stack>
 
-      {/* Revenue Section */}
+      {}
       <Box mb={5}>
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          spacing={4}
-        >
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={4}>
           <Box flex={1}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={1}
-              mb={2}
-            >
+            <Stack direction="row" alignItems="center" spacing={1} mb={2}>
               <Typography
                 variant="h6"
                 sx={{
@@ -447,8 +375,7 @@ const Sales: React.FC<SalesProps> = ({
                     left: '0',
                     width: '30%',
                     height: '2px',
-                    background:
-                      'linear-gradient(90deg, #4338ca, transparent)',
+                    background: 'linear-gradient(90deg, #4338ca, transparent)',
                     borderRadius: '2px',
                   },
                 }}
@@ -469,11 +396,7 @@ const Sales: React.FC<SalesProps> = ({
                 />
               </Tooltip>
             </Stack>
-            <Stack
-              direction="row"
-              alignItems="baseline"
-              spacing={1}
-            >
+            <Stack direction="row" alignItems="baseline" spacing={1}>
               <Typography
                 variant="h3"
                 sx={{
@@ -484,47 +407,22 @@ const Sales: React.FC<SalesProps> = ({
                     sm: '2rem',
                     md: '2.5rem',
                   },
-                  background:
-                    'linear-gradient(135deg, #4338ca, #6366f1)',
+                  background: 'linear-gradient(135deg, #4338ca, #6366f1)',
                   WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor:
-                    'transparent',
+                  WebkitTextFillColor: 'transparent',
                   letterSpacing: '-0.02em',
                   lineHeight: 1.1,
                 }}
               >
-                {formatCurrency(
-                  data.totalRevenue
-                )}
+                {formatCurrency(data.totalRevenue)}
               </Typography>
-              <Typography
-                variant="h5"
-                sx={{ color: '#666666' }}
-              >
-                .
-                {(
-                  (data.totalRevenue % 1) *
-                  100
-                ).toFixed(0)}
+              <Typography variant="h5" sx={{ color: '#666666' }}>
+                .{((data.totalRevenue % 1) * 100).toFixed(0)}
               </Typography>
               <Chip
-                label={`${
-                  data.growthPercentage > 0
-                    ? '+'
-                    : ''
-                }${formatPercentage(data.growthPercentage)}`}
-                icon={
-                  data.growthPercentage > 0 ? (
-                    <ArrowUpwardIcon />
-                  ) : (
-                    <ArrowDownwardIcon />
-                  )
-                }
-                color={
-                  data.growthPercentage > 0
-                    ? 'success'
-                    : 'error'
-                }
+                label={`${data.growthPercentage > 0 ? '+' : ''}${formatPercentage(data.growthPercentage)}`}
+                icon={data.growthPercentage > 0 ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
+                color={data.growthPercentage > 0 ? 'success' : 'error'}
                 size="small"
                 sx={{
                   height: 30,
@@ -537,26 +435,15 @@ const Sales: React.FC<SalesProps> = ({
                   '& .MuiChip-icon': {
                     fontSize: '1rem',
                   },
-                  boxShadow:
-                    data.growthPercentage > 0
-                      ? '0 4px 12px rgba(76, 175, 80, 0.2)'
-                      : '0 4px 12px rgba(244, 67, 54, 0.2)',
-                  transition:
-                    'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  boxShadow: data.growthPercentage > 0 ? '0 4px 12px rgba(76, 175, 80, 0.2)' : '0 4px 12px rgba(244, 67, 54, 0.2)',
+                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   '&:hover': {
-                    transform:
-                      'translateY(-3px) scale(1.05)',
-                    boxShadow:
-                      data.growthPercentage > 0
-                        ? '0 6px 16px rgba(76, 175, 80, 0.25)'
-                        : '0 6px 16px rgba(244, 67, 54, 0.25)',
+                    transform: 'translateY(-3px) scale(1.05)',
+                    boxShadow: data.growthPercentage > 0 ? '0 6px 16px rgba(76, 175, 80, 0.25)' : '0 6px 16px rgba(244, 67, 54, 0.25)',
                   },
                 }}
               />
-              <Typography
-                variant="body2"
-                sx={{ color: '#666666' }}
-              >
+              <Typography variant="body2" sx={{ color: '#666666' }}>
                 {formatCurrency(data.growthValue)}
               </Typography>
             </Stack>
@@ -572,15 +459,11 @@ const Sales: React.FC<SalesProps> = ({
               }}
             >
               <span>vs prev.</span>
-              <span style={{ fontWeight: 600 }}>
-                {formatCurrency(
-                  data.previousRevenue
-                )}
-              </span>
+              <span style={{ fontWeight: 600 }}>{formatCurrency(data.previousRevenue)}</span>
               <span>{timeframe}</span>
             </Typography>
 
-            {/* Distribution Stats */}
+            {}
             <Stack
               direction={{
                 xs: 'column',
@@ -590,7 +473,7 @@ const Sales: React.FC<SalesProps> = ({
               justifyContent="space-between"
               sx={{ mt: { xs: 2, sm: 0 } }}
             >
-              {/* In Store Progress */}
+              {}
               <Box
                 sx={{
                   position: 'relative',
@@ -600,8 +483,7 @@ const Sales: React.FC<SalesProps> = ({
                   alignItems: 'center',
                   justifyContent: 'center',
                   mb: { xs: 2, sm: 0 },
-                  transition:
-                    'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   '&:hover': {
                     transform: 'scale(1.05)',
                   },
@@ -614,9 +496,7 @@ const Sales: React.FC<SalesProps> = ({
                   thickness={4}
                   sx={{
                     position: 'absolute',
-                    color:
-                      getProgressStyles('inStore')
-                        .background,
+                    color: getProgressStyles('inStore').background,
                     opacity: 0.7,
                   }}
                 />
@@ -627,9 +507,7 @@ const Sales: React.FC<SalesProps> = ({
                   thickness={4}
                   sx={{
                     position: 'absolute',
-                    color:
-                      getProgressStyles('inStore')
-                        .color,
+                    color: getProgressStyles('inStore').color,
                     transform: 'rotate(-90deg)',
                     boxShadow: `0 0 10px ${getProgressStyles('inStore').color}40`,
                     borderRadius: '50%',
@@ -649,10 +527,7 @@ const Sales: React.FC<SalesProps> = ({
                     sx={{
                       fontSize: '1.5rem',
                       fontWeight: 800,
-                      color:
-                        getProgressStyles(
-                          'inStore'
-                        ).color,
+                      color: getProgressStyles('inStore').color,
                       mb: 0.5,
                       letterSpacing: '-0.02em',
                     }}
@@ -683,7 +558,7 @@ const Sales: React.FC<SalesProps> = ({
                 </Box>
               </Box>
 
-              {/* Online Progress */}
+              {}
               <Box
                 sx={{
                   position: 'relative',
@@ -702,9 +577,7 @@ const Sales: React.FC<SalesProps> = ({
                   thickness={3}
                   sx={{
                     position: 'absolute',
-                    color:
-                      getProgressStyles('online')
-                        .background,
+                    color: getProgressStyles('online').background,
                   }}
                 />
                 <CircularProgress
@@ -714,9 +587,7 @@ const Sales: React.FC<SalesProps> = ({
                   thickness={3}
                   sx={{
                     position: 'absolute',
-                    color:
-                      getProgressStyles('online')
-                        .color,
+                    color: getProgressStyles('online').color,
                     transform: 'rotate(-90deg)',
                   }}
                 />
@@ -734,10 +605,7 @@ const Sales: React.FC<SalesProps> = ({
                     sx={{
                       fontSize: '1.25rem',
                       fontWeight: 700,
-                      color:
-                        getProgressStyles(
-                          'online'
-                        ).color,
+                      color: getProgressStyles('online').color,
                       mb: 0.5,
                     }}
                   >
@@ -766,7 +634,7 @@ const Sales: React.FC<SalesProps> = ({
                 </Box>
               </Box>
 
-              {/* Mobile Progress */}
+              {}
               <Box
                 sx={{
                   position: 'relative',
@@ -785,9 +653,7 @@ const Sales: React.FC<SalesProps> = ({
                   thickness={3}
                   sx={{
                     position: 'absolute',
-                    color:
-                      getProgressStyles('mobile')
-                        .background,
+                    color: getProgressStyles('mobile').background,
                   }}
                 />
                 <CircularProgress
@@ -797,9 +663,7 @@ const Sales: React.FC<SalesProps> = ({
                   thickness={3}
                   sx={{
                     position: 'absolute',
-                    color:
-                      getProgressStyles('mobile')
-                        .color,
+                    color: getProgressStyles('mobile').color,
                     transform: 'rotate(-90deg)',
                   }}
                 />
@@ -817,10 +681,7 @@ const Sales: React.FC<SalesProps> = ({
                     sx={{
                       fontSize: '1.25rem',
                       fontWeight: 700,
-                      color:
-                        getProgressStyles(
-                          'mobile'
-                        ).color,
+                      color: getProgressStyles('mobile').color,
                       mb: 0.5,
                     }}
                   >
@@ -849,7 +710,7 @@ const Sales: React.FC<SalesProps> = ({
                 </Box>
               </Box>
 
-              {/* Desktop Progress */}
+              {}
               <Box
                 sx={{
                   position: 'relative',
@@ -868,9 +729,7 @@ const Sales: React.FC<SalesProps> = ({
                   thickness={3}
                   sx={{
                     position: 'absolute',
-                    color:
-                      getProgressStyles('desktop')
-                        .background,
+                    color: getProgressStyles('desktop').background,
                   }}
                 />
                 <CircularProgress
@@ -880,9 +739,7 @@ const Sales: React.FC<SalesProps> = ({
                   thickness={3}
                   sx={{
                     position: 'absolute',
-                    color:
-                      getProgressStyles('desktop')
-                        .color,
+                    color: getProgressStyles('desktop').color,
                     transform: 'rotate(-90deg)',
                   }}
                 />
@@ -900,10 +757,7 @@ const Sales: React.FC<SalesProps> = ({
                     sx={{
                       fontSize: '1.25rem',
                       fontWeight: 700,
-                      color:
-                        getProgressStyles(
-                          'desktop'
-                        ).color,
+                      color: getProgressStyles('desktop').color,
                       mb: 0.5,
                     }}
                   >
@@ -934,28 +788,19 @@ const Sales: React.FC<SalesProps> = ({
             </Stack>
           </Box>
 
-          <Box
-            flex={1.5}
-            sx={{ height: { xs: 200, sm: 260 } }}
-          >
+          <Box flex={1.5} sx={{ height: { xs: 200, sm: 260 } }}>
             <Paper
               elevation={0}
               sx={{
                 p: { xs: 2, sm: 3 },
-                backgroundColor:
-                  'rgba(248, 250, 252, 0.8)',
+                backgroundColor: 'rgba(248, 250, 252, 0.8)',
                 borderRadius: '16px',
-                border:
-                  '1px solid rgba(226, 232, 240, 0.8)',
-                boxShadow:
-                  '0 4px 20px rgba(0, 0, 0, 0.03)',
-                transition:
-                  'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                border: '1px solid rgba(226, 232, 240, 0.8)',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)',
+                transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
                 '&:hover': {
-                  boxShadow:
-                    '0 8px 30px rgba(0, 0, 0, 0.05)',
-                  borderColor:
-                    'rgba(203, 213, 225, 1)',
+                  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.05)',
+                  borderColor: 'rgba(203, 213, 225, 1)',
                 },
               }}
             >
@@ -978,8 +823,7 @@ const Sales: React.FC<SalesProps> = ({
                       left: '0',
                       width: '30%',
                       height: '2px',
-                      background:
-                        'linear-gradient(90deg, #4338ca, transparent)',
+                      background: 'linear-gradient(90deg, #4338ca, transparent)',
                       borderRadius: '2px',
                     },
                   }}
@@ -1022,13 +866,8 @@ const Sales: React.FC<SalesProps> = ({
                   <Tab label="SALES" />
                   <Tab label="GOALS MET" />
                 </Tabs>
-                <Box
-                  sx={{ height: 170, mt: 0.5 }}
-                >
-                  <ResponsiveContainer
-                    width="100%"
-                    height="100%"
-                  >
+                <Box sx={{ height: 170, mt: 0.5 }}>
+                  <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                       data={chartData}
                       margin={{
@@ -1038,11 +877,7 @@ const Sales: React.FC<SalesProps> = ({
                         bottom: 10,
                       }}
                     >
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke="#e0e0e0"
-                        vertical={false}
-                      />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" vertical={false} />
                       <XAxis
                         dataKey="date"
                         axisLine={false}
@@ -1061,39 +896,25 @@ const Sales: React.FC<SalesProps> = ({
                           fontSize: 11,
                         }}
                         domain={[0, 15000]}
-                        ticks={[
-                          0, 5000, 10000, 15000,
-                        ]}
+                        ticks={[0, 5000, 10000, 15000]}
                       />
                       <RechartsTooltip
-                        content={({
-                          active,
-                          payload,
-                          label,
-                        }) => {
-                          if (
-                            active &&
-                            payload &&
-                            payload.length
-                          ) {
+                        content={({ active, payload, label }) => {
+                          if (active && payload && payload.length) {
                             return (
                               <Box
                                 sx={{
-                                  backgroundColor:
-                                    '#4a4a4a',
+                                  backgroundColor: '#4a4a4a',
                                   p: 1,
-                                  borderRadius:
-                                    '4px',
+                                  borderRadius: '4px',
                                   border: 'none',
-                                  boxShadow:
-                                    '0 2px 8px rgba(0,0,0,0.15)',
+                                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                                 }}
                               >
                                 <Typography
                                   sx={{
                                     color: '#fff',
-                                    fontSize:
-                                      '0.7rem',
+                                    fontSize: '0.7rem',
                                     mb: 0.25,
                                   }}
                                 >
@@ -1102,16 +923,11 @@ const Sales: React.FC<SalesProps> = ({
                                 <Typography
                                   sx={{
                                     color: '#fff',
-                                    fontSize:
-                                      '0.8rem',
+                                    fontSize: '0.8rem',
                                     fontWeight: 600,
                                   }}
                                 >
-                                  {
-                                    payload[0]
-                                      .value
-                                  }{' '}
-                                  CLICKS
+                                  {payload[0].value} CLICKS
                                 </Typography>
                               </Box>
                             );
@@ -1130,7 +946,6 @@ const Sales: React.FC<SalesProps> = ({
                           fill: '#4f46e5',
                           stroke: '#fff',
                           strokeWidth: 2,
-                          // boxShadow not supported in SVG
                         }}
                       />
                       <Line
@@ -1144,7 +959,6 @@ const Sales: React.FC<SalesProps> = ({
                           fill: '#f43f5e',
                           stroke: '#fff',
                           strokeWidth: 2,
-                          // boxShadow not supported in SVG
                         }}
                       />
                     </LineChart>
@@ -1158,20 +972,14 @@ const Sales: React.FC<SalesProps> = ({
                     mt: 0,
                   }}
                 >
-                  <Stack
-                    direction="row"
-                    spacing={0.75}
-                    alignItems="center"
-                  >
+                  <Stack direction="row" spacing={0.75} alignItems="center">
                     <Box
                       sx={{
                         width: 8,
                         height: 8,
                         borderRadius: '50%',
-                        backgroundColor:
-                          '#4f46e5',
-                        boxShadow:
-                          '0 0 6px rgba(79, 70, 229, 0.5)',
+                        backgroundColor: '#4f46e5',
+                        boxShadow: '0 0 6px rgba(79, 70, 229, 0.5)',
                       }}
                     />
                     <Typography
@@ -1184,20 +992,14 @@ const Sales: React.FC<SalesProps> = ({
                       CAMPAIGN 1
                     </Typography>
                   </Stack>
-                  <Stack
-                    direction="row"
-                    spacing={0.75}
-                    alignItems="center"
-                  >
+                  <Stack direction="row" spacing={0.75} alignItems="center">
                     <Box
                       sx={{
                         width: 8,
                         height: 8,
                         borderRadius: '50%',
-                        backgroundColor:
-                          '#f43f5e',
-                        boxShadow:
-                          '0 0 6px rgba(244, 63, 94, 0.5)',
+                        backgroundColor: '#f43f5e',
+                        boxShadow: '0 0 6px rgba(244, 63, 94, 0.5)',
                       }}
                     />
                     <Typography
@@ -1217,7 +1019,7 @@ const Sales: React.FC<SalesProps> = ({
         </Stack>
       </Box>
 
-      {/* Metrics Cards */}
+      {}
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         spacing={3}
@@ -1232,8 +1034,7 @@ const Sales: React.FC<SalesProps> = ({
             left: 0,
             width: '60px',
             height: '4px',
-            background:
-              'linear-gradient(90deg, #4338ca, #6366f1)',
+            background: 'linear-gradient(90deg, #4338ca, #6366f1)',
             borderRadius: '4px',
           },
           '& > *': {
@@ -1245,13 +1046,10 @@ const Sales: React.FC<SalesProps> = ({
         <Card
           sx={{
             bgcolor: 'rgba(255, 255, 255, 0.9)',
-            boxShadow:
-              '0 10px 30px rgba(59, 130, 246, 0.1)',
+            boxShadow: '0 10px 30px rgba(59, 130, 246, 0.1)',
             borderRadius: '16px',
-            border:
-              '1px solid rgba(59, 130, 246, 0.2)',
-            transition:
-              'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            border: '1px solid rgba(59, 130, 246, 0.2)',
+            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
             cursor: 'pointer',
             overflow: 'hidden',
             position: 'relative',
@@ -1262,23 +1060,16 @@ const Sales: React.FC<SalesProps> = ({
               left: 0,
               width: '100%',
               height: '4px',
-              background:
-                'linear-gradient(90deg, #3b82f6, #93c5fd)',
+              background: 'linear-gradient(90deg, #3b82f6, #93c5fd)',
             },
             '&:hover': {
               transform: 'translateY(-8px)',
-              boxShadow:
-                '0 20px 40px rgba(59, 130, 246, 0.15)',
+              boxShadow: '0 20px 40px rgba(59, 130, 246, 0.15)',
             },
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              mb={2}
-            >
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
               <Typography
                 variant="overline"
                 sx={{
@@ -1308,11 +1099,9 @@ const Sales: React.FC<SalesProps> = ({
               variant="h4"
               sx={{
                 fontWeight: 800,
-                background:
-                  'linear-gradient(90deg, #3b82f6, #60a5fa)',
+                background: 'linear-gradient(90deg, #3b82f6, #60a5fa)',
                 WebkitBackgroundClip: 'text',
-                WebkitTextFillColor:
-                  'transparent',
+                WebkitTextFillColor: 'transparent',
                 mt: 1,
                 mb: 2,
                 fontSize: {
@@ -1334,20 +1123,15 @@ const Sales: React.FC<SalesProps> = ({
             >
               <LinearProgress
                 variant="determinate"
-                value={Math.min(
-                  (data.topSales / 100) * 100,
-                  100
-                )}
+                value={Math.min((data.topSales / 100) * 100, 100)}
                 sx={{
                   height: 8,
                   borderRadius: 4,
-                  backgroundColor:
-                    'rgba(59, 130, 246, 0.1)',
+                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
                   '& .MuiLinearProgress-bar': {
                     backgroundColor: '#3b82f6',
                     borderRadius: 4,
-                    backgroundImage:
-                      'linear-gradient(90deg, #3b82f6, #60a5fa)',
+                    backgroundImage: 'linear-gradient(90deg, #3b82f6, #60a5fa)',
                   },
                 }}
               />
@@ -1361,11 +1145,7 @@ const Sales: React.FC<SalesProps> = ({
                   fontWeight: 600,
                 }}
               >
-                {Math.min(
-                  (data.topSales / 100) * 100,
-                  100
-                )}
-                %
+                {Math.min((data.topSales / 100) * 100, 100)}%
               </Typography>
             </Box>
           </CardContent>
@@ -1373,19 +1153,15 @@ const Sales: React.FC<SalesProps> = ({
 
         <Card
           sx={{
-            background:
-              'linear-gradient(135deg, #1e293b, #0f172a)',
+            background: 'linear-gradient(135deg, #1e293b, #0f172a)',
             color: 'white',
             borderRadius: '16px',
-            transition:
-              'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
             cursor: 'pointer',
             overflow: 'hidden',
             position: 'relative',
-            boxShadow:
-              '0 10px 30px rgba(15, 23, 42, 0.2)',
-            border:
-              '1px solid rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 10px 30px rgba(15, 23, 42, 0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
             '&::after': {
               content: '""',
               position: 'absolute',
@@ -1393,15 +1169,13 @@ const Sales: React.FC<SalesProps> = ({
               right: 0,
               width: '150px',
               height: '150px',
-              background:
-                'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+              background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
               borderRadius: '50%',
               transform: 'translate(50%, -50%)',
             },
             '&:hover': {
               transform: 'translateY(-8px)',
-              boxShadow:
-                '0 20px 40px rgba(15, 23, 42, 0.3)',
+              boxShadow: '0 20px 40px rgba(15, 23, 42, 0.3)',
             },
           }}
         >
@@ -1414,17 +1188,11 @@ const Sales: React.FC<SalesProps> = ({
               }}
             >
               <Box>
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  spacing={1.5}
-                  mb={2}
-                >
+                <Stack direction="row" alignItems="center" spacing={1.5} mb={2}>
                   <Typography
                     variant="overline"
                     sx={{
-                      color:
-                        'rgba(255,255,255,0.9)',
+                      color: 'rgba(255,255,255,0.9)',
                       letterSpacing: '1.5px',
                       fontWeight: 700,
                       fontSize: '0.75rem',
@@ -1437,10 +1205,8 @@ const Sales: React.FC<SalesProps> = ({
                     <InfoIcon
                       sx={{
                         fontSize: '1.1rem',
-                        color:
-                          'rgba(255,255,255,0.9)',
-                        transition:
-                          'all 0.2s ease',
+                        color: 'rgba(255,255,255,0.9)',
+                        transition: 'all 0.2s ease',
                         '&:hover': {
                           transform: 'scale(1.2)',
                         },
@@ -1459,30 +1225,24 @@ const Sales: React.FC<SalesProps> = ({
                       sm: '2.25rem',
                       md: '2.5rem',
                     },
-                    textShadow:
-                      '0 2px 10px rgba(0,0,0,0.3)',
+                    textShadow: '0 2px 10px rgba(0,0,0,0.3)',
                     letterSpacing: '-0.02em',
                   }}
                 >
-                  {formatCurrency(
-                    data.bestDeal.value
-                  )}
+                  {formatCurrency(data.bestDeal.value)}
                 </Typography>
                 <Stack
                   direction="row"
                   spacing={1}
                   alignItems="center"
                   sx={{
-                    background:
-                      'rgba(255,255,255,0.1)',
+                    background: 'rgba(255,255,255,0.1)',
                     borderRadius: '8px',
                     padding: '8px 12px',
                     transition: 'all 0.2s ease',
                     '&:hover': {
-                      background:
-                        'rgba(255,255,255,0.15)',
-                      transform:
-                        'translateX(4px)',
+                      background: 'rgba(255,255,255,0.15)',
+                      transform: 'translateX(4px)',
                     },
                   }}
                 >
@@ -1507,20 +1267,15 @@ const Sales: React.FC<SalesProps> = ({
                 size="small"
                 sx={{
                   color: 'white',
-                  backgroundColor:
-                    'rgba(255,255,255,0.1)',
+                  backgroundColor: 'rgba(255,255,255,0.1)',
                   width: 40,
                   height: 40,
-                  transition:
-                    'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   '&:hover': {
-                    transform:
-                      'scale(1.15) rotate(10deg)',
+                    transform: 'scale(1.15) rotate(10deg)',
                     color: '#ffd700',
-                    backgroundColor:
-                      'rgba(255,255,255,0.2)',
-                    boxShadow:
-                      '0 0 20px rgba(255, 215, 0, 0.3)',
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    boxShadow: '0 0 20px rgba(255, 215, 0, 0.3)',
                   },
                 }}
               >
@@ -1531,18 +1286,13 @@ const Sales: React.FC<SalesProps> = ({
         </Card>
 
         <Card
-          onClick={() =>
-            handleMetricClick('deals')
-          }
+          onClick={() => handleMetricClick('deals')}
           sx={{
             bgcolor: 'rgba(255, 255, 255, 0.9)',
-            boxShadow:
-              '0 10px 30px rgba(16, 185, 129, 0.1)',
+            boxShadow: '0 10px 30px rgba(16, 185, 129, 0.1)',
             borderRadius: '16px',
-            border:
-              '1px solid rgba(16, 185, 129, 0.2)',
-            transition:
-              'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            border: '1px solid rgba(16, 185, 129, 0.2)',
+            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
             cursor: 'pointer',
             overflow: 'hidden',
             position: 'relative',
@@ -1553,23 +1303,16 @@ const Sales: React.FC<SalesProps> = ({
               left: 0,
               width: '100%',
               height: '4px',
-              background:
-                'linear-gradient(90deg, #10b981, #34d399)',
+              background: 'linear-gradient(90deg, #10b981, #34d399)',
             },
             '&:hover': {
               transform: 'translateY(-8px)',
-              boxShadow:
-                '0 20px 40px rgba(16, 185, 129, 0.15)',
+              boxShadow: '0 20px 40px rgba(16, 185, 129, 0.15)',
             },
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              mb={2}
-            >
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
               <Typography
                 variant="overline"
                 sx={{
@@ -1596,20 +1339,14 @@ const Sales: React.FC<SalesProps> = ({
               </Tooltip>
             </Stack>
             <Box sx={{ position: 'relative' }}>
-              <Stack
-                direction="row"
-                spacing={1.5}
-                alignItems="baseline"
-              >
+              <Stack direction="row" spacing={1.5} alignItems="baseline">
                 <Typography
                   variant="h4"
                   sx={{
                     fontWeight: 800,
-                    background:
-                      'linear-gradient(90deg, #10b981, #34d399)',
+                    background: 'linear-gradient(90deg, #10b981, #34d399)',
                     WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor:
-                      'transparent',
+                    WebkitTextFillColor: 'transparent',
                     mt: 1,
                     mb: 2,
                     fontSize: {
@@ -1626,30 +1363,20 @@ const Sales: React.FC<SalesProps> = ({
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    backgroundColor:
-                      data.deals.growth > 0
-                        ? 'rgba(16, 185, 129, 0.1)'
-                        : 'rgba(244, 63, 94, 0.1)',
+                    backgroundColor: data.deals.growth > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
                     borderRadius: '8px',
                     padding: '4px 10px',
                     transition: 'all 0.2s ease',
                     '&:hover': {
-                      transform:
-                        'translateY(-2px)',
-                      backgroundColor:
-                        data.deals.growth > 0
-                          ? 'rgba(16, 185, 129, 0.15)'
-                          : 'rgba(244, 63, 94, 0.15)',
+                      transform: 'translateY(-2px)',
+                      backgroundColor: data.deals.growth > 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
                     },
                   }}
                 >
                   <Typography
                     variant="body2"
                     sx={{
-                      color:
-                        data.deals.growth > 0
-                          ? '#10b981'
-                          : '#f43f5e',
+                      color: data.deals.growth > 0 ? '#10b981' : '#f43f5e',
                       fontWeight: 700,
                       fontSize: '0.9rem',
                       display: 'flex',
@@ -1681,19 +1408,14 @@ const Sales: React.FC<SalesProps> = ({
                 sx={{
                   mt: 3,
                   p: 2.5,
-                  bgcolor:
-                    'rgba(16, 185, 129, 0.05)',
+                  bgcolor: 'rgba(16, 185, 129, 0.05)',
                   borderRadius: '12px',
-                  border:
-                    '1px solid rgba(16, 185, 129, 0.1)',
-                  boxShadow:
-                    '0 4px 12px rgba(16, 185, 129, 0.05)',
+                  border: '1px solid rgba(16, 185, 129, 0.1)',
+                  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.05)',
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    boxShadow:
-                      '0 6px 16px rgba(16, 185, 129, 0.08)',
-                    bgcolor:
-                      'rgba(16, 185, 129, 0.07)',
+                    boxShadow: '0 6px 16px rgba(16, 185, 129, 0.08)',
+                    bgcolor: 'rgba(16, 185, 129, 0.07)',
                   },
                 }}
               >
@@ -1706,10 +1428,7 @@ const Sales: React.FC<SalesProps> = ({
                     lineHeight: 1.6,
                   }}
                 >
-                  {
-                    getMetricDetails('deals')
-                      ?.content
-                  }
+                  {getMetricDetails('deals')?.content}
                 </Typography>
               </Box>
             )}
@@ -1719,13 +1438,10 @@ const Sales: React.FC<SalesProps> = ({
         <Card
           sx={{
             bgcolor: 'rgba(255, 255, 255, 0.9)',
-            boxShadow:
-              '0 10px 30px rgba(139, 92, 246, 0.1)',
+            boxShadow: '0 10px 30px rgba(139, 92, 246, 0.1)',
             borderRadius: '16px',
-            border:
-              '1px solid rgba(139, 92, 246, 0.2)',
-            transition:
-              'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            border: '1px solid rgba(139, 92, 246, 0.2)',
+            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
             cursor: 'pointer',
             overflow: 'hidden',
             position: 'relative',
@@ -1736,23 +1452,16 @@ const Sales: React.FC<SalesProps> = ({
               left: 0,
               width: '100%',
               height: '4px',
-              background:
-                'linear-gradient(90deg, #8b5cf6, #a78bfa)',
+              background: 'linear-gradient(90deg, #8b5cf6, #a78bfa)',
             },
             '&:hover': {
               transform: 'translateY(-8px)',
-              boxShadow:
-                '0 20px 40px rgba(139, 92, 246, 0.15)',
+              boxShadow: '0 20px 40px rgba(139, 92, 246, 0.15)',
             },
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              mb={2}
-            >
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
               <Typography
                 variant="overline"
                 sx={{
@@ -1782,11 +1491,9 @@ const Sales: React.FC<SalesProps> = ({
               variant="h4"
               sx={{
                 fontWeight: 800,
-                background:
-                  'linear-gradient(90deg, #8b5cf6, #a78bfa)',
+                background: 'linear-gradient(90deg, #8b5cf6, #a78bfa)',
                 WebkitBackgroundClip: 'text',
-                WebkitTextFillColor:
-                  'transparent',
+                WebkitTextFillColor: 'transparent',
                 mt: 1,
                 mb: 2,
                 fontSize: {
@@ -1805,22 +1512,19 @@ const Sales: React.FC<SalesProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: 1.5,
-                backgroundColor:
-                  'rgba(139, 92, 246, 0.08)',
+                backgroundColor: 'rgba(139, 92, 246, 0.08)',
                 borderRadius: '12px',
                 padding: '10px 16px',
                 transition: 'all 0.2s ease',
                 '&:hover': {
-                  backgroundColor:
-                    'rgba(139, 92, 246, 0.12)',
+                  backgroundColor: 'rgba(139, 92, 246, 0.12)',
                   transform: 'translateX(4px)',
                 },
               }}
             >
               <Box
                 sx={{
-                  backgroundColor:
-                    'rgba(139, 92, 246, 0.15)',
+                  backgroundColor: 'rgba(139, 92, 246, 0.15)',
                   borderRadius: '50%',
                   width: 36,
                   height: 36,
@@ -1851,18 +1555,13 @@ const Sales: React.FC<SalesProps> = ({
         </Card>
 
         <Card
-          onClick={() =>
-            handleMetricClick('winRate')
-          }
+          onClick={() => handleMetricClick('winRate')}
           sx={{
             bgcolor: 'rgba(255, 255, 255, 0.9)',
-            boxShadow:
-              '0 10px 30px rgba(245, 158, 11, 0.1)',
+            boxShadow: '0 10px 30px rgba(245, 158, 11, 0.1)',
             borderRadius: '16px',
-            border:
-              '1px solid rgba(245, 158, 11, 0.2)',
-            transition:
-              'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            border: '1px solid rgba(245, 158, 11, 0.2)',
+            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
             cursor: 'pointer',
             overflow: 'hidden',
             position: 'relative',
@@ -1873,23 +1572,16 @@ const Sales: React.FC<SalesProps> = ({
               left: 0,
               width: '100%',
               height: '4px',
-              background:
-                'linear-gradient(90deg, #f59e0b, #fbbf24)',
+              background: 'linear-gradient(90deg, #f59e0b, #fbbf24)',
             },
             '&:hover': {
               transform: 'translateY(-8px)',
-              boxShadow:
-                '0 20px 40px rgba(245, 158, 11, 0.15)',
+              boxShadow: '0 20px 40px rgba(245, 158, 11, 0.15)',
             },
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              mb={2}
-            >
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
               <Typography
                 variant="overline"
                 sx={{
@@ -1916,20 +1608,14 @@ const Sales: React.FC<SalesProps> = ({
               </Tooltip>
             </Stack>
             <Box sx={{ position: 'relative' }}>
-              <Stack
-                direction="row"
-                spacing={1.5}
-                alignItems="baseline"
-              >
+              <Stack direction="row" spacing={1.5} alignItems="baseline">
                 <Typography
                   variant="h4"
                   sx={{
                     fontWeight: 800,
-                    background:
-                      'linear-gradient(90deg, #f59e0b, #fbbf24)',
+                    background: 'linear-gradient(90deg, #f59e0b, #fbbf24)',
                     WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor:
-                      'transparent',
+                    WebkitTextFillColor: 'transparent',
                     mt: 1,
                     mb: 2,
                     fontSize: {
@@ -1940,48 +1626,33 @@ const Sales: React.FC<SalesProps> = ({
                     letterSpacing: '-0.02em',
                   }}
                 >
-                  {formatPercentage(
-                    data.deals.winRate
-                  )}
+                  {formatPercentage(data.deals.winRate)}
                 </Typography>
                 <Box
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    backgroundColor:
-                      data.deals.winRateGrowth > 0
-                        ? 'rgba(16, 185, 129, 0.1)'
-                        : 'rgba(244, 63, 94, 0.1)',
+                    backgroundColor: data.deals.winRateGrowth > 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
                     borderRadius: '8px',
                     padding: '4px 10px',
                     transition: 'all 0.2s ease',
                     '&:hover': {
-                      transform:
-                        'translateY(-2px)',
-                      backgroundColor:
-                        data.deals.winRateGrowth >
-                        0
-                          ? 'rgba(16, 185, 129, 0.15)'
-                          : 'rgba(244, 63, 94, 0.15)',
+                      transform: 'translateY(-2px)',
+                      backgroundColor: data.deals.winRateGrowth > 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
                     },
                   }}
                 >
                   <Typography
                     variant="body2"
                     sx={{
-                      color:
-                        data.deals.winRateGrowth >
-                        0
-                          ? '#10b981'
-                          : '#f43f5e',
+                      color: data.deals.winRateGrowth > 0 ? '#10b981' : '#f43f5e',
                       fontWeight: 700,
                       fontSize: '0.9rem',
                       display: 'flex',
                       alignItems: 'center',
                     }}
                   >
-                    {data.deals.winRateGrowth >
-                    0 ? (
+                    {data.deals.winRateGrowth > 0 ? (
                       <ArrowUpwardIcon
                         sx={{
                           fontSize: '1rem',
@@ -1996,17 +1667,13 @@ const Sales: React.FC<SalesProps> = ({
                         }}
                       />
                     )}
-                    {formatPercentage(
-                      Math.abs(
-                        data.deals.winRateGrowth
-                      )
-                    )}
+                    {formatPercentage(Math.abs(data.deals.winRateGrowth))}
                   </Typography>
                 </Box>
               </Stack>
             </Box>
 
-            {/* Progress indicator */}
+            {}
             <Box
               sx={{
                 position: 'relative',
@@ -2016,20 +1683,15 @@ const Sales: React.FC<SalesProps> = ({
             >
               <LinearProgress
                 variant="determinate"
-                value={Math.min(
-                  data.deals.winRate,
-                  100
-                )}
+                value={Math.min(data.deals.winRate, 100)}
                 sx={{
                   height: 8,
                   borderRadius: 4,
-                  backgroundColor:
-                    'rgba(245, 158, 11, 0.1)',
+                  backgroundColor: 'rgba(245, 158, 11, 0.1)',
                   '& .MuiLinearProgress-bar': {
                     backgroundColor: '#f59e0b',
                     borderRadius: 4,
-                    backgroundImage:
-                      'linear-gradient(90deg, #f59e0b, #fbbf24)',
+                    backgroundImage: 'linear-gradient(90deg, #f59e0b, #fbbf24)',
                   },
                 }}
               />
@@ -2052,19 +1714,14 @@ const Sales: React.FC<SalesProps> = ({
                 sx={{
                   mt: 3,
                   p: 2.5,
-                  bgcolor:
-                    'rgba(245, 158, 11, 0.05)',
+                  bgcolor: 'rgba(245, 158, 11, 0.05)',
                   borderRadius: '12px',
-                  border:
-                    '1px solid rgba(245, 158, 11, 0.1)',
-                  boxShadow:
-                    '0 4px 12px rgba(245, 158, 11, 0.05)',
+                  border: '1px solid rgba(245, 158, 11, 0.1)',
+                  boxShadow: '0 4px 12px rgba(245, 158, 11, 0.05)',
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    boxShadow:
-                      '0 6px 16px rgba(245, 158, 11, 0.08)',
-                    bgcolor:
-                      'rgba(245, 158, 11, 0.07)',
+                    boxShadow: '0 6px 16px rgba(245, 158, 11, 0.08)',
+                    bgcolor: 'rgba(245, 158, 11, 0.07)',
                   },
                 }}
               >
@@ -2077,10 +1734,7 @@ const Sales: React.FC<SalesProps> = ({
                     lineHeight: 1.6,
                   }}
                 >
-                  {
-                    getMetricDetails('winRate')
-                      ?.content
-                  }
+                  {getMetricDetails('winRate')?.content}
                 </Typography>
               </Box>
             )}
@@ -2088,7 +1742,7 @@ const Sales: React.FC<SalesProps> = ({
         </Card>
       </Stack>
 
-      {/* Team Members */}
+      {}
       <Box sx={{ mt: 6, mb: 3 }}>
         <Box
           sx={{
@@ -2097,8 +1751,7 @@ const Sales: React.FC<SalesProps> = ({
             justifyContent: 'space-between',
             mb: 4,
             pb: 1,
-            borderBottom:
-              '1px solid rgba(226, 232, 240, 0.6)',
+            borderBottom: '1px solid rgba(226, 232, 240, 0.6)',
           }}
         >
           <Typography
@@ -2150,359 +1803,302 @@ const Sales: React.FC<SalesProps> = ({
             },
           }}
         >
-          {data.teamPerformance.map(
-            (member: TeamMember) => (
-              <Box
-                key={member.name}
-                sx={{
-                  p: 0,
-                  borderRadius: '12px',
-                  bgcolor: '#ffffff',
-                  boxShadow:
-                    '0 4px 20px rgba(0, 0, 0, 0.03)',
-                  border:
-                    '1px solid rgba(226, 232, 240, 0.7)',
-                  transition:
-                    'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                  cursor: 'pointer',
-                  overflow: 'hidden',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow:
-                      '0 12px 24px rgba(0, 0, 0, 0.05)',
-                    borderColor:
-                      'rgba(203, 213, 225, 1)',
-                    '& .member-avatar': {
-                      transform: 'scale(1.05)',
-                    },
+          {data.teamPerformance.map((member: TeamMember) => (
+            <Box
+              key={member.name}
+              sx={{
+                p: 0,
+                borderRadius: '12px',
+                bgcolor: '#ffffff',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)',
+                border: '1px solid rgba(226, 232, 240, 0.7)',
+                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                cursor: 'pointer',
+                overflow: 'hidden',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 12px 24px rgba(0, 0, 0, 0.05)',
+                  borderColor: 'rgba(203, 213, 225, 1)',
+                  '& .member-avatar': {
+                    transform: 'scale(1.05)',
                   },
+                },
+              }}
+            >
+              {}
+              <Box
+                sx={{
+                  position: 'relative',
+                  height: '60px',
+                  background:
+                    member.percentage >= 0
+                      ? 'linear-gradient(to right, rgba(79, 70, 229, 0.08) 0%, rgba(79, 70, 229, 0.03) 100%)'
+                      : 'linear-gradient(to right, rgba(100, 116, 139, 0.08) 0%, rgba(100, 116, 139, 0.03) 100%)',
+                  borderBottom: '1px solid rgba(226, 232, 240, 0.5)',
+                  mb: 4,
+                }}
+              />
+
+              {}
+              <Avatar
+                className="member-avatar"
+                sx={{
+                  position: 'absolute',
+                  top: '30px',
+                  left: '24px',
+                  width: '48px',
+                  height: '48px',
+                  bgcolor: member.percentage >= 0 ? '#4f46e5' : '#64748b',
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  border: '2px solid #ffffff',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+                  transition: 'transform 0.3s ease',
+                  zIndex: 2,
                 }}
               >
-                {/* Header with gradient background */}
+                {member.name.charAt(0)}
+              </Avatar>
+
+              {}
+              <Box sx={{ px: 3, pb: 3 }}>
+                {}
+                <Box sx={{ ml: 7, mb: 3 }}>
+                  <Typography
+                    sx={{
+                      fontWeight: 600,
+                      color: '#1e293b',
+                      fontSize: '1rem',
+                      mb: 0.25,
+                    }}
+                  >
+                    {member.name}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: '#64748b',
+                      fontSize: '0.8rem',
+                      fontWeight: 500,
+                    }}
+                  >
+                    Sales Representative
+                  </Typography>
+                </Box>
+
+                {}
                 <Box
                   sx={{
-                    position: 'relative',
-                    height: '60px',
-                    background:
-                      member.percentage >= 0
-                        ? 'linear-gradient(to right, rgba(79, 70, 229, 0.08) 0%, rgba(79, 70, 229, 0.03) 100%)'
-                        : 'linear-gradient(to right, rgba(100, 116, 139, 0.08) 0%, rgba(100, 116, 139, 0.03) 100%)',
-                    borderBottom:
-                      '1px solid rgba(226, 232, 240, 0.5)',
-                    mb: 4,
-                  }}
-                />
-
-                {/* Avatar overlapping the header */}
-                <Avatar
-                  className="member-avatar"
-                  sx={{
-                    position: 'absolute',
-                    top: '30px',
-                    left: '24px',
-                    width: '48px',
-                    height: '48px',
-                    bgcolor:
-                      member.percentage >= 0
-                        ? '#4f46e5'
-                        : '#64748b',
-                    fontSize: '1.1rem',
-                    fontWeight: 600,
-                    border: '2px solid #ffffff',
-                    boxShadow:
-                      '0 2px 8px rgba(0, 0, 0, 0.08)',
-                    transition:
-                      'transform 0.3s ease',
-                    zIndex: 2,
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: 2.5,
+                    mb: 3,
                   }}
                 >
-                  {member.name.charAt(0)}
-                </Avatar>
-
-                {/* Content container */}
-                <Box sx={{ px: 3, pb: 3 }}>
-                  {/* Name and title */}
-                  <Box sx={{ ml: 7, mb: 3 }}>
-                    <Typography
-                      sx={{
-                        fontWeight: 600,
-                        color: '#1e293b',
-                        fontSize: '1rem',
-                        mb: 0.25,
-                      }}
-                    >
-                      {member.name}
-                    </Typography>
+                  {}
+                  <Box
+                    sx={{
+                      p: 1.5,
+                      borderRadius: '8px',
+                      bgcolor: 'rgba(241, 245, 249, 0.5)',
+                    }}
+                  >
                     <Typography
                       sx={{
                         color: '#64748b',
-                        fontSize: '0.8rem',
-                        fontWeight: 500,
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        mb: 0.5,
                       }}
                     >
-                      Sales Representative
+                      Revenue
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: '#0f172a',
+                        fontSize: '1rem',
+                        fontWeight: 700,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {formatCurrency(member.revenue)}
                     </Typography>
                   </Box>
 
-                  {/* Stats grid */}
+                  {}
                   <Box
                     sx={{
-                      display: 'grid',
-                      gridTemplateColumns:
-                        '1fr 1fr',
-                      gap: 2.5,
-                      mb: 3,
+                      p: 1.5,
+                      borderRadius: '8px',
+                      bgcolor: 'rgba(241, 245, 249, 0.5)',
                     }}
                   >
-                    {/* Revenue stat */}
-                    <Box
+                    <Typography
                       sx={{
-                        p: 1.5,
-                        borderRadius: '8px',
-                        bgcolor:
-                          'rgba(241, 245, 249, 0.5)',
+                        color: '#64748b',
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        mb: 0.5,
                       }}
                     >
-                      <Typography
-                        sx={{
-                          color: '#64748b',
-                          fontSize: '0.7rem',
-                          fontWeight: 600,
-                          textTransform:
-                            'uppercase',
-                          letterSpacing: '0.5px',
-                          mb: 0.5,
-                        }}
-                      >
-                        Revenue
-                      </Typography>
-                      <Typography
-                        sx={{
-                          color: '#0f172a',
-                          fontSize: '1rem',
-                          fontWeight: 700,
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow:
-                            'ellipsis',
-                        }}
-                      >
-                        {formatCurrency(
-                          member.revenue
-                        )}
-                      </Typography>
-                    </Box>
-
-                    {/* Contribution stat */}
-                    <Box
+                      Contribution
+                    </Typography>
+                    <Typography
                       sx={{
-                        p: 1.5,
-                        borderRadius: '8px',
-                        bgcolor:
-                          'rgba(241, 245, 249, 0.5)',
+                        color: '#0f172a',
+                        fontSize: '1rem',
+                        fontWeight: 700,
                       }}
                     >
-                      <Typography
-                        sx={{
-                          color: '#64748b',
-                          fontSize: '0.7rem',
-                          fontWeight: 600,
-                          textTransform:
-                            'uppercase',
-                          letterSpacing: '0.5px',
-                          mb: 0.5,
-                        }}
-                      >
-                        Contribution
-                      </Typography>
-                      <Typography
-                        sx={{
-                          color: '#0f172a',
-                          fontSize: '1rem',
-                          fontWeight: 700,
-                        }}
-                      >
-                        {formatPercentage(
-                          (member.revenue /
-                            data.totalRevenue) *
-                            100
-                        )}
-                      </Typography>
-                    </Box>
+                      {formatPercentage((member.revenue / data.totalRevenue) * 100)}
+                    </Typography>
                   </Box>
+                </Box>
 
-                  {/* Performance section */}
-                  <Box sx={{ mb: 0 }}>
+                {}
+                <Box sx={{ mb: 0 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      mb: 1.5,
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: '#334155',
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
+                      }}
+                    >
+                      Performance
+                    </Typography>
                     <Box
                       sx={{
                         display: 'flex',
-                        justifyContent:
-                          'space-between',
                         alignItems: 'center',
-                        mb: 1.5,
+                        gap: 0.5,
+                        px: 1.5,
+                        py: 0.5,
+                        borderRadius: '16px',
+                        bgcolor: member.percentage >= 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
                       }}
                     >
+                      {member.percentage >= 0 ? (
+                        <ArrowUpwardIcon
+                          sx={{
+                            fontSize: '0.85rem',
+                            color: '#10b981',
+                          }}
+                        />
+                      ) : (
+                        <ArrowDownwardIcon
+                          sx={{
+                            fontSize: '0.85rem',
+                            color: '#f43f5e',
+                          }}
+                        />
+                      )}
                       <Typography
                         sx={{
-                          color: '#334155',
+                          color: member.percentage >= 0 ? '#10b981' : '#f43f5e',
                           fontSize: '0.85rem',
                           fontWeight: 600,
                         }}
                       >
-                        Performance
+                        {formatPercentage(Math.abs(member.percentage))}
                       </Typography>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 0.5,
-                          px: 1.5,
-                          py: 0.5,
-                          borderRadius: '16px',
-                          bgcolor:
-                            member.percentage >= 0
-                              ? 'rgba(16, 185, 129, 0.1)'
-                              : 'rgba(244, 63, 94, 0.1)',
-                        }}
-                      >
-                        {member.percentage >=
-                        0 ? (
-                          <ArrowUpwardIcon
-                            sx={{
-                              fontSize: '0.85rem',
-                              color: '#10b981',
-                            }}
-                          />
-                        ) : (
-                          <ArrowDownwardIcon
-                            sx={{
-                              fontSize: '0.85rem',
-                              color: '#f43f5e',
-                            }}
-                          />
-                        )}
-                        <Typography
-                          sx={{
-                            color:
-                              member.percentage >=
-                              0
-                                ? '#10b981'
-                                : '#f43f5e',
-                            fontSize: '0.85rem',
-                            fontWeight: 600,
-                          }}
-                        >
-                          {formatPercentage(
-                            Math.abs(
-                              member.percentage
-                            )
-                          )}
-                        </Typography>
-                      </Box>
                     </Box>
+                  </Box>
 
-                    {/* Progress bar with target marker */}
+                  {}
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      mt: 2,
+                      mb: 1,
+                    }}
+                  >
+                    {}
                     <Box
                       sx={{
+                        position: 'absolute',
+                        left: '30%',
+                        top: -2,
+                        bottom: -2,
+                        width: 2,
+                        bgcolor: 'rgba(100, 116, 139, 0.3)',
+                        zIndex: 1,
+                        '&::after': {
+                          content: '""',
+                          position: 'absolute',
+                          top: -3,
+                          left: -3,
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          bgcolor: 'rgba(100, 116, 139, 0.3)',
+                        },
+                      }}
+                    />
+
+                    {}
+                    <LinearProgress
+                      variant="determinate"
+                      value={Math.min(Math.abs(member.percentage), 100)}
+                      sx={{
+                        height: 8,
+                        borderRadius: 4,
+                        backgroundColor: 'rgba(226, 232, 240, 0.5)',
+                        '& .MuiLinearProgress-bar': {
+                          backgroundColor: member.percentage >= 0 ? '#10b981' : '#f43f5e',
+                          borderRadius: 4,
+                        },
                         position: 'relative',
-                        mt: 2,
-                        mb: 1,
+                        zIndex: 2,
+                      }}
+                    />
+
+                    {}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        mt: 0.5,
                       }}
                     >
-                      {/* Target marker */}
-                      <Box
+                      <Typography
+                        variant="caption"
                         sx={{
-                          position: 'absolute',
-                          left: '30%',
-                          top: -2,
-                          bottom: -2,
-                          width: 2,
-                          bgcolor:
-                            'rgba(100, 116, 139, 0.3)',
-                          zIndex: 1,
-                          '&::after': {
-                            content: '""',
-                            position: 'absolute',
-                            top: -3,
-                            left: -3,
-                            width: 8,
-                            height: 8,
-                            borderRadius: '50%',
-                            bgcolor:
-                              'rgba(100, 116, 139, 0.3)',
-                          },
-                        }}
-                      />
-
-                      {/* Progress bar */}
-                      <LinearProgress
-                        variant="determinate"
-                        value={Math.min(
-                          Math.abs(
-                            member.percentage
-                          ),
-                          100
-                        )}
-                        sx={{
-                          height: 8,
-                          borderRadius: 4,
-                          backgroundColor:
-                            'rgba(226, 232, 240, 0.5)',
-                          '& .MuiLinearProgress-bar':
-                            {
-                              backgroundColor:
-                                member.percentage >=
-                                0
-                                  ? '#10b981'
-                                  : '#f43f5e',
-                              borderRadius: 4,
-                            },
-                          position: 'relative',
-                          zIndex: 2,
-                        }}
-                      />
-
-                      {/* Target and current labels */}
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent:
-                            'space-between',
-                          mt: 0.5,
+                          color: '#94a3b8',
+                          fontSize: '0.7rem',
+                          fontWeight: 500,
                         }}
                       >
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: '#94a3b8',
-                            fontSize: '0.7rem',
-                            fontWeight: 500,
-                          }}
-                        >
-                          Current:{' '}
-                          {formatPercentage(
-                            Math.abs(
-                              member.percentage
-                            )
-                          )}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: '#94a3b8',
-                            fontSize: '0.7rem',
-                            fontWeight: 500,
-                          }}
-                        >
-                          Target: 30%
-                        </Typography>
-                      </Box>
+                        Current: {formatPercentage(Math.abs(member.percentage))}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: '#94a3b8',
+                          fontSize: '0.7rem',
+                          fontWeight: 500,
+                        }}
+                      >
+                        Target: 30%
+                      </Typography>
                     </Box>
                   </Box>
                 </Box>
               </Box>
-            )
-          )}
+            </Box>
+          ))}
         </Stack>
       </Box>
     </Box>

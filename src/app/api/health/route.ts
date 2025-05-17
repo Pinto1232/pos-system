@@ -1,29 +1,16 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
-/**
- * Health check API route that proxies to the backend health endpoint
- * This provides a consistent way for the frontend to check backend health
- */
 export async function GET() {
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL ||
-    'http://localhost:5107';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5107';
 
   try {
-    console.log(
-      `Health check: Checking backend at ${apiUrl}/api/Health`
-    );
+    console.log(`Health check: Checking backend at ${apiUrl}/api/Health`);
 
-    // Try to reach the backend health endpoint
-    const response = await axios.get(
-      `${apiUrl}/api/Health`,
-      {
-        timeout: 5000, // 5 second timeout
-      }
-    );
+    const response = await axios.get(`${apiUrl}/api/Health`, {
+      timeout: 5000,
+    });
 
-    // Return the backend's response
     return NextResponse.json({
       status: 'ok',
       backend: {
@@ -33,12 +20,8 @@ export async function GET() {
       },
     });
   } catch (error: any) {
-    console.error(
-      'Health check: Backend health check failed',
-      error
-    );
+    console.error('Health check: Backend health check failed', JSON.stringify(error, null, 2));
 
-    // Return error response
     return NextResponse.json(
       {
         status: 'error',
@@ -49,6 +32,6 @@ export async function GET() {
         },
       },
       { status: 200 }
-    ); // Still return 200 so frontend can handle gracefully
+    );
   }
 }

@@ -1,32 +1,13 @@
 import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-  Snackbar,
-  Alert,
-  CircularProgress,
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Snackbar, Alert, CircularProgress } from '@mui/material';
 import Image from 'next/image';
 import { MdRestore } from 'react-icons/md';
-import {
-  SettingsModalPresentationProps,
-  settingsItems,
-} from './types/settingsTypes';
+import { SettingsModalPresentationProps, settingsItems } from './types/settingsTypes';
 import SettingsNavigation from './components/settings/SettingsNavigation';
 import SettingsContent from './components/settings/SettingsContent';
 import CreateRoleModal from './components/settings/CreateRoleModal';
 
-/**
- * Presentation component for the Settings Modal
- * Responsible for rendering the UI structure without business logic
- */
-const SettingsModalPresentation: React.FC<
-  SettingsModalPresentationProps
-> = ({
+const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
   open,
   onClose,
   isLoading,
@@ -94,31 +75,25 @@ const SettingsModalPresentation: React.FC<
         fullWidth
         aria-labelledby="settings-dialog-title"
         sx={{
-          // Blur effect for the backdrop (background behind the modal)
           '& .MuiBackdrop-root': {
             backdropFilter: 'blur(8px)',
-            backgroundColor:
-              'rgba(23, 58, 121, 0.2)', // Blue tinted background
+            backgroundColor: 'rgba(23, 58, 121, 0.2)',
           },
-          // Styling for the modal paper
+
           '& .MuiDialog-paper': {
             height: '80vh',
             maxHeight: '800px',
             borderRadius: 4,
             overflow: 'hidden',
-            background:
-              'linear-gradient(135deg, rgba(23, 58, 121, 0.1) 0%, rgba(23, 58, 121, 0.05) 100%)',
-            boxShadow:
-              '0 8px 32px rgba(23, 58, 121, 0.15)',
-            border:
-              '1px solid rgba(23, 58, 121, 0.1)',
+            background: 'linear-gradient(135deg, rgba(23, 58, 121, 0.1) 0%, rgba(23, 58, 121, 0.05) 100%)',
+            boxShadow: '0 8px 32px rgba(23, 58, 121, 0.15)',
+            border: '1px solid rgba(23, 58, 121, 0.1)',
             backdropFilter: 'blur(4px)',
-            // Increase height on laptop screen sizes
-            '@media (min-width: 1024px) and (max-width: 1440px)':
-              {
-                height: '90vh',
-                maxHeight: '900px',
-              },
+
+            '@media (min-width: 1024px) and (max-width: 1440px)': {
+              height: '90vh',
+              maxHeight: '900px',
+            },
           },
           '& ::-webkit-scrollbar': {
             display: 'none',
@@ -140,8 +115,7 @@ const SettingsModalPresentation: React.FC<
             alignItems: 'center',
             justifyContent: 'space-between',
             bgcolor: 'rgba(249, 249, 249, 0.9)',
-            borderBottom:
-              '1px solid rgba(23, 58, 121, 0.1)',
+            borderBottom: '1px solid rgba(23, 58, 121, 0.1)',
           }}
         >
           <Box
@@ -151,14 +125,7 @@ const SettingsModalPresentation: React.FC<
               gap: 1,
             }}
           >
-            <Image
-              src={logoPreview}
-              alt="Pisval Tech Logo"
-              width={32}
-              height={32}
-              style={{ borderRadius: '4px' }}
-              unoptimized
-            />
+            <Image src={logoPreview} alt="Pisval Tech Logo" width={32} height={32} style={{ borderRadius: '4px' }} unoptimized />
             Pisval Tech Settings
           </Box>
         </DialogTitle>
@@ -168,26 +135,21 @@ const SettingsModalPresentation: React.FC<
           sx={{
             display: 'flex',
             padding: 0,
-            background:
-              'rgba(255, 255, 255, 0.8)',
-            borderTop:
-              '1px solid rgba(23, 58, 121, 0.1)',
-            borderBottom:
-              '1px solid rgba(23, 58, 121, 0.1)',
+            background: 'rgba(255, 255, 255, 0.8)',
+            borderTop: '1px solid rgba(23, 58, 121, 0.1)',
+            borderBottom: '1px solid rgba(23, 58, 121, 0.1)',
           }}
         >
-          {/* Sidebar Navigation */}
+          {}
           <SettingsNavigation
             selectedSetting={selectedSetting}
-            setSelectedSetting={
-              setSelectedSetting
-            }
+            setSelectedSetting={setSelectedSetting}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             settingsItems={settingsItems}
           />
 
-          {/* Content Area */}
+          {}
           <SettingsContent
             isLoading={isLoading}
             error={error}
@@ -197,57 +159,29 @@ const SettingsModalPresentation: React.FC<
             navbarColor={navbarColor}
             setNavbarColor={setNavbarColor}
             logoPreview={logoPreview}
-            showSidebarColorPicker={
-              showSidebarColorPicker
-            }
-            setShowSidebarColorPicker={
-              setShowSidebarColorPicker
-            }
-            showNavbarColorPicker={
-              showNavbarColorPicker
-            }
-            setShowNavbarColorPicker={
-              setShowNavbarColorPicker
-            }
-            handleLogoFileChange={
-              handleLogoFileChange
-            }
+            showSidebarColorPicker={showSidebarColorPicker}
+            setShowSidebarColorPicker={setShowSidebarColorPicker}
+            showNavbarColorPicker={showNavbarColorPicker}
+            setShowNavbarColorPicker={setShowNavbarColorPicker}
+            handleLogoFileChange={handleLogoFileChange}
             taxSettings={taxSettings}
             setTaxSettings={setTaxSettings}
             regionalSettings={regionalSettings}
-            setRegionalSettings={
-              setRegionalSettings
-            }
+            setRegionalSettings={setRegionalSettings}
             selectedRoleTab={selectedRoleTab}
-            setSelectedRoleTab={
-              setSelectedRoleTab
-            }
-            setCreateRoleModalOpen={
-              setCreateRoleModalOpen
-            }
+            setSelectedRoleTab={setSelectedRoleTab}
+            setCreateRoleModalOpen={setCreateRoleModalOpen}
             packages={packages}
             subscription={subscription}
             availableFeatures={availableFeatures}
-            enableAdditionalPackage={
-              enableAdditionalPackage
-            }
-            disableAdditionalPackage={
-              disableAdditionalPackage
-            }
+            enableAdditionalPackage={enableAdditionalPackage}
+            disableAdditionalPackage={disableAdditionalPackage}
             cacheDuration={cacheDuration}
             setCacheDuration={setCacheDuration}
-            autoRefreshOnFocus={
-              autoRefreshOnFocus
-            }
-            setAutoRefreshOnFocus={
-              setAutoRefreshOnFocus
-            }
-            prefetchImportantData={
-              prefetchImportantData
-            }
-            setPrefetchImportantData={
-              setPrefetchImportantData
-            }
+            autoRefreshOnFocus={autoRefreshOnFocus}
+            setAutoRefreshOnFocus={setAutoRefreshOnFocus}
+            prefetchImportantData={prefetchImportantData}
+            setPrefetchImportantData={setPrefetchImportantData}
             changeHistory={changeHistory}
           />
         </DialogContent>
@@ -256,8 +190,7 @@ const SettingsModalPresentation: React.FC<
           sx={{
             justifyContent: 'space-between',
             padding: '16px 24px',
-            borderTop:
-              '1px solid rgba(23, 58, 121, 0.1)',
+            borderTop: '1px solid rgba(23, 58, 121, 0.1)',
             bgcolor: 'rgba(249, 249, 249, 0.9)',
           }}
         >
@@ -304,11 +237,7 @@ const SettingsModalPresentation: React.FC<
                 }}
               >
                 Import
-                <input
-                  type="file"
-                  accept="application/json"
-                  style={{ display: 'none' }}
-                />
+                <input type="file" accept="application/json" style={{ display: 'none' }} />
               </Button>
             </Box>
 
@@ -351,55 +280,37 @@ const SettingsModalPresentation: React.FC<
                   minWidth: '100px',
                   bgcolor: '#173A79',
                   '&:hover': {
-                    boxShadow:
-                      '0 4px 12px rgba(23, 58, 121, 0.3)',
+                    boxShadow: '0 4px 12px rgba(23, 58, 121, 0.3)',
                     bgcolor: '#0f2d6a',
                   },
                 }}
               >
-                {isSaving ? (
-                  <CircularProgress
-                    size={24}
-                    color="inherit"
-                  />
-                ) : (
-                  'Save'
-                )}
+                {isSaving ? <CircularProgress size={24} color="inherit" /> : 'Save'}
               </Button>
             </Box>
           </Box>
         </DialogActions>
       </Dialog>
 
-      {/* Create Role Modal */}
+      {}
       <CreateRoleModal
         open={createRoleModalOpen}
-        onClose={() =>
-          setCreateRoleModalOpen(false)
-        }
+        onClose={() => setCreateRoleModalOpen(false)}
         newRoleName={newRoleName}
         setNewRoleName={setNewRoleName}
         newRoleDescription={newRoleDescription}
-        setNewRoleDescription={
-          setNewRoleDescription
-        }
+        setNewRoleDescription={setNewRoleDescription}
         selectedTemplate={selectedTemplate}
         setSelectedTemplate={setSelectedTemplate}
-        configurePermissionsAfter={
-          configurePermissionsAfter
-        }
-        setConfigurePermissionsAfter={
-          setConfigurePermissionsAfter
-        }
+        configurePermissionsAfter={configurePermissionsAfter}
+        setConfigurePermissionsAfter={setConfigurePermissionsAfter}
         roleNameError={roleNameError}
         createRolePending={createRolePending}
         handleCreateRole={handleCreateRole}
-        getTemplatePermissions={
-          getTemplatePermissions
-        }
+        getTemplatePermissions={getTemplatePermissions}
       />
 
-      {/* Snackbar for notifications */}
+      {}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
@@ -409,11 +320,7 @@ const SettingsModalPresentation: React.FC<
           horizontal: 'center',
         }}
       >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
-        >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

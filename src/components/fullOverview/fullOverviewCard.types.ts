@@ -1,8 +1,4 @@
-export type FullOverviewCardVariant =
-  | 'overview'
-  | 'bankCard'
-  | 'analytics'
-  | 'notification';
+export type FullOverviewCardVariant = 'overview' | 'bankCard' | 'analytics' | 'notification';
 
 export interface FullOverviewCardProps {
   variant: FullOverviewCardVariant;
@@ -31,11 +27,7 @@ export interface FullOverviewCardProps {
     labels: string[];
     values: number[];
   };
-  notificationType?:
-    | 'success'
-    | 'warning'
-    | 'error'
-    | 'info';
+  notificationType?: 'success' | 'warning' | 'error' | 'info';
   notificationTime?: string;
   notificationIcon?: string;
   onClick?: () => void;

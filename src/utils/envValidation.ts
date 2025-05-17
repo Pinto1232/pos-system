@@ -12,20 +12,13 @@ export function validateAuthEnvVars(): EnvValidationResult {
     'NEXT_PUBLIC_REDIRECT_URI',
   ];
 
-  const loadedVars: Record<
-    string,
-    string | undefined
-  > = {};
+  const loadedVars: Record<string, string | undefined> = {};
   requiredVars.forEach((varName) => {
     loadedVars[varName] = process.env[varName];
-    console.log(
-      `${varName}: ${process.env[varName] || 'Not loaded'}`
-    );
+    console.log(`${varName}: ${process.env[varName] || 'Not loaded'}`);
   });
 
-  const missingVars = requiredVars.filter(
-    (varName) => !process.env[varName]
-  );
+  const missingVars = requiredVars.filter((varName) => !process.env[varName]);
 
   return {
     isValid: missingVars.length === 0,

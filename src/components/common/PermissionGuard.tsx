@@ -1,18 +1,9 @@
 'use client';
 
-import React, {
-  useEffect,
-  useState,
-  useContext,
-  ReactNode,
-} from 'react';
+import React, { useEffect, useState, useContext, ReactNode } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import permissionService from '@/api/permissionService';
-import {
-  CircularProgress,
-  Box,
-  Typography,
-} from '@mui/material';
+import { CircularProgress, Box, Typography } from '@mui/material';
 
 interface PermissionGuardProps {
   permission: string;
@@ -20,26 +11,10 @@ interface PermissionGuardProps {
   fallback?: ReactNode;
 }
 
-/**
- * A component that conditionally renders its children based on whether the user has a specific permission.
- *
- * @param permission The permission to check for (e.g., "users.view")
- * @param children The content to render if the user has the permission
- * @param fallback Optional content to render if the user does not have the permission
- */
-const PermissionGuard: React.FC<
-  PermissionGuardProps
-> = ({
-  permission,
-  children,
-  fallback = null,
-}) => {
-  const { authenticated } =
-    useContext(AuthContext);
-  const [hasPermission, setHasPermission] =
-    useState<boolean | null>(null);
-  const [isLoading, setIsLoading] =
-    useState(true);
+const PermissionGuard: React.FC<PermissionGuardProps> = ({ permission, children, fallback = null }) => {
+  const { authenticated } = useContext(AuthContext);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkPermission = async () => {
@@ -50,16 +25,10 @@ const PermissionGuard: React.FC<
       }
 
       try {
-        const result =
-          await permissionService.hasPermission(
-            permission
-          );
+        const result = await permissionService.hasPermission(permission);
         setHasPermission(result);
       } catch (error) {
-        console.error(
-          `Error checking permission ${permission}:`,
-          error
-        );
+        console.error(`Error checking permission ${permission}:`, JSON.stringify(error, null, 2));
         setHasPermission(false);
       } finally {
         setIsLoading(false);

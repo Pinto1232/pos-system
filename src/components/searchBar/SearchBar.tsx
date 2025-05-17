@@ -1,29 +1,16 @@
 import React, { useState } from 'react';
 import { SearchBarProps } from './searchBar.types';
-import {
-  StyledSearchBar,
-  StyledInput,
-  SearchIconButton,
-} from './searchBar.styles';
+import { StyledSearchBar, StyledInput, SearchIconButton } from './searchBar.styles';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchBar: React.FC<SearchBarProps> = ({
-  placeholder = 'Search...',
-  onSearch,
-  value = '',
-}) => {
-  const [searchValue, setSearchValue] =
-    useState(value);
+const SearchBar: React.FC<SearchBarProps> = ({ placeholder = 'Search...', onSearch, value = '' }) => {
+  const [searchValue, setSearchValue] = useState(value);
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
   };
 
-  const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && onSearch) {
       onSearch(searchValue);
     }
@@ -37,15 +24,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <StyledSearchBar>
-      <StyledInput
-        placeholder={placeholder}
-        value={searchValue}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-      />
-      <SearchIconButton
-        onClick={handleSearchClick}
-      >
+      <StyledInput placeholder={placeholder} value={searchValue} onChange={handleChange} onKeyDown={handleKeyDown} />
+      <SearchIconButton onClick={handleSearchClick}>
         <SearchIcon />
       </SearchIconButton>
     </StyledSearchBar>

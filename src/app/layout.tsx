@@ -9,19 +9,13 @@ import DataPrefetcher from '@/components/cache/DataPrefetcher';
 export const metadata = {
   title: 'Pisval Tech POS',
   description: 'Your POS application',
-  // Add cache-related metadata
+
   other: {
-    'cache-control':
-      'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400',
+    'cache-control': 'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400',
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  // Handle registration redirects on the client side
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   if (typeof window !== 'undefined') {
     handleRegistrationRedirect();
   }

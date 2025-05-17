@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Product } from './types';
 import {
   Dialog,
@@ -62,8 +57,7 @@ const StyledDialogTitle = styled(DialogTitle)({
     transform: 'translateX(-50%)',
     width: '80px',
     height: '3px',
-    background:
-      'linear-gradient(90deg, #52B788 0%, #3B82F6 100%)',
+    background: 'linear-gradient(90deg, #52B788 0%, #3B82F6 100%)',
     borderRadius: '8px',
   },
   '& .MuiTypography-root': {
@@ -79,202 +73,184 @@ const StyledDialogTitle = styled(DialogTitle)({
       display: 'block',
       width: '4px',
       height: '24px',
-      background:
-        'linear-gradient(180deg, #52B788 0%, #3B82F6 100%)',
+      background: 'linear-gradient(180deg, #52B788 0%, #3B82F6 100%)',
       borderRadius: '4px',
     },
   },
 });
 
-const StyledDialogContent = styled(DialogContent)(
-  {
-    padding: '32px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '32px',
-    background: '#FFFFFF',
-    overflowX: 'hidden',
-    '&::-webkit-scrollbar': {
-      width: '6px',
-    },
-    '&::-webkit-scrollbar-track': {
-      background: '#f1f1f1',
-      borderRadius: '10px',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      background: '#c1c1c1',
-      borderRadius: '10px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      background: '#a8a8a8',
-    },
-    '& .MuiTextField-root': {
-      marginBottom: '0',
-      '& .MuiOutlinedInput-root': {
-        backgroundColor: '#F8FAFC',
-        border: '1px solid #E2E8F0',
-        borderRadius: '8px',
-        transition: 'all 0.2s ease-in-out',
-        '& fieldset': {
-          border: 'none',
-        },
-        '&:hover': {
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #3B82F6',
-          boxShadow:
-            '0 2px 8px rgba(59, 130, 246, 0.1)',
-        },
-        '&.Mui-focused': {
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #3B82F6',
-          boxShadow:
-            '0 0 0 3px rgba(59, 130, 246, 0.15)',
-        },
-        '& input': {
-          padding: '12px 16px',
-          fontSize: '14px',
-          '&::placeholder': {
-            color: '#94A3B8',
-            opacity: 1,
-          },
-        },
-        '& .MuiInputAdornment-root': {
-          marginLeft: '16px',
-          marginRight: '-4px',
-          '& .MuiTypography-root': {
-            fontSize: '14px',
-            color: '#64748B',
-          },
-        },
-      },
-      '& .MuiInputLabel-root': {
-        color: '#475569',
-        fontSize: '14px',
-        fontWeight: 500,
-        transform:
-          'translate(16px, 13px) scale(1)',
-        '&.Mui-focused': {
-          color: '#3B82F6',
-          transform:
-            'translate(16px, -9px) scale(0.75)',
-        },
-        '&.MuiInputLabel-shrink': {
-          transform:
-            'translate(16px, -9px) scale(0.75)',
-        },
-      },
-    },
-    '& .MuiFormControl-root': {
-      '& .MuiOutlinedInput-root': {
-        borderRadius: '8px',
-        backgroundColor: '#F8FAFC',
-        border: '1px solid #E2E8F0',
-        '& fieldset': {
-          border: 'none',
-        },
-        '&:hover': {
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #3B82F6',
-          boxShadow:
-            '0 2px 8px rgba(59, 130, 246, 0.1)',
-        },
-        '&.Mui-focused': {
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #3B82F6',
-          boxShadow:
-            '0 0 0 3px rgba(59, 130, 246, 0.15)',
-        },
-      },
-      '& .MuiInputLabel-root': {
-        color: '#475569',
-        '&.Mui-focused': {
-          color: '#3B82F6',
-        },
-      },
-    },
-    '& .MuiSelect-root': {
+const StyledDialogContent = styled(DialogContent)({
+  padding: '32px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '32px',
+  background: '#FFFFFF',
+  overflowX: 'hidden',
+  '&::-webkit-scrollbar': {
+    width: '6px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: '#f1f1f1',
+    borderRadius: '10px',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: '#c1c1c1',
+    borderRadius: '10px',
+  },
+  '&::-webkit-scrollbar-thumb:hover': {
+    background: '#a8a8a8',
+  },
+  '& .MuiTextField-root': {
+    marginBottom: '0',
+    '& .MuiOutlinedInput-root': {
       backgroundColor: '#F8FAFC',
+      border: '1px solid #E2E8F0',
       borderRadius: '8px',
-    },
-    '& .MuiDatePicker-root .MuiOutlinedInput-root':
-      {
-        backgroundColor: '#F8FAFC',
-        border: '1px solid #E2E8F0',
-        borderRadius: '8px',
-        '& fieldset': {
-          border: 'none',
-        },
-        '&:hover': {
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #3B82F6',
-          boxShadow:
-            '0 2px 8px rgba(59, 130, 246, 0.1)',
-        },
-        '&.Mui-focused': {
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #3B82F6',
-          boxShadow:
-            '0 0 0 3px rgba(59, 130, 246, 0.15)',
+      transition: 'all 0.2s ease-in-out',
+      '& fieldset': {
+        border: 'none',
+      },
+      '&:hover': {
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #3B82F6',
+        boxShadow: '0 2px 8px rgba(59, 130, 246, 0.1)',
+      },
+      '&.Mui-focused': {
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #3B82F6',
+        boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.15)',
+      },
+      '& input': {
+        padding: '12px 16px',
+        fontSize: '14px',
+        '&::placeholder': {
+          color: '#94A3B8',
+          opacity: 1,
         },
       },
-    '& .MuiSwitch-root': {
-      width: 42,
-      height: 24,
+      '& .MuiInputAdornment-root': {
+        marginLeft: '16px',
+        marginRight: '-4px',
+        '& .MuiTypography-root': {
+          fontSize: '14px',
+          color: '#64748B',
+        },
+      },
+    },
+    '& .MuiInputLabel-root': {
+      color: '#475569',
+      fontSize: '14px',
+      fontWeight: 500,
+      transform: 'translate(16px, 13px) scale(1)',
+      '&.Mui-focused': {
+        color: '#3B82F6',
+        transform: 'translate(16px, -9px) scale(0.75)',
+      },
+      '&.MuiInputLabel-shrink': {
+        transform: 'translate(16px, -9px) scale(0.75)',
+      },
+    },
+  },
+  '& .MuiFormControl-root': {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '8px',
+      backgroundColor: '#F8FAFC',
+      border: '1px solid #E2E8F0',
+      '& fieldset': {
+        border: 'none',
+      },
+      '&:hover': {
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #3B82F6',
+        boxShadow: '0 2px 8px rgba(59, 130, 246, 0.1)',
+      },
+      '&.Mui-focused': {
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #3B82F6',
+        boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.15)',
+      },
+    },
+    '& .MuiInputLabel-root': {
+      color: '#475569',
+      '&.Mui-focused': {
+        color: '#3B82F6',
+      },
+    },
+  },
+  '& .MuiSelect-root': {
+    backgroundColor: '#F8FAFC',
+    borderRadius: '8px',
+  },
+  '& .MuiDatePicker-root .MuiOutlinedInput-root': {
+    backgroundColor: '#F8FAFC',
+    border: '1px solid #E2E8F0',
+    borderRadius: '8px',
+    '& fieldset': {
+      border: 'none',
+    },
+    '&:hover': {
+      backgroundColor: '#FFFFFF',
+      border: '1px solid #3B82F6',
+      boxShadow: '0 2px 8px rgba(59, 130, 246, 0.1)',
+    },
+    '&.Mui-focused': {
+      backgroundColor: '#FFFFFF',
+      border: '1px solid #3B82F6',
+      boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.15)',
+    },
+  },
+  '& .MuiSwitch-root': {
+    width: 42,
+    height: 24,
+    padding: 0,
+    '& .MuiSwitch-switchBase': {
       padding: 0,
-      '& .MuiSwitch-switchBase': {
-        padding: 0,
-        margin: 2,
-        transitionDuration: '300ms',
-        '&.Mui-checked': {
-          transform: 'translateX(18px)',
-          color: '#fff',
-          '& + .MuiSwitch-track': {
-            background:
-              'linear-gradient(90deg, #52B788 0%, #3B82F6 100%)',
-            opacity: 1,
-            border: 0,
-          },
+      margin: 2,
+      transitionDuration: '300ms',
+      '&.Mui-checked': {
+        transform: 'translateX(18px)',
+        color: '#fff',
+        '& + .MuiSwitch-track': {
+          background: 'linear-gradient(90deg, #52B788 0%, #3B82F6 100%)',
+          opacity: 1,
+          border: 0,
         },
       },
-      '& .MuiSwitch-thumb': {
-        boxSizing: 'border-box',
-        width: 20,
-        height: 20,
-        boxShadow:
-          '0 2px 4px 0 rgba(0, 35, 11, 0.2)',
-      },
-      '& .MuiSwitch-track': {
-        borderRadius: 26 / 2,
-        backgroundColor: '#E2E8F0',
-        opacity: 1,
-      },
     },
-  }
-);
+    '& .MuiSwitch-thumb': {
+      boxSizing: 'border-box',
+      width: 20,
+      height: 20,
+      boxShadow: '0 2px 4px 0 rgba(0, 35, 11, 0.2)',
+    },
+    '& .MuiSwitch-track': {
+      borderRadius: 26 / 2,
+      backgroundColor: '#E2E8F0',
+      opacity: 1,
+    },
+  },
+});
 
-const StyledDialogActions = styled(DialogActions)(
-  {
-    padding: '24px 32px',
-    borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-    gap: '16px',
-    background: '#FFFFFF',
-    justifyContent: 'flex-end',
-    position: 'relative',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      width: '80px',
-      height: '3px',
-      background:
-        'linear-gradient(90deg, #52B788 0%, #3B82F6 100%)',
-      borderRadius: '8px',
-      opacity: 0.5,
-    },
-  }
-);
+const StyledDialogActions = styled(DialogActions)({
+  padding: '24px 32px',
+  borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+  gap: '16px',
+  background: '#FFFFFF',
+  justifyContent: 'flex-end',
+  position: 'relative',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '80px',
+    height: '3px',
+    background: 'linear-gradient(90deg, #52B788 0%, #3B82F6 100%)',
+    borderRadius: '8px',
+    opacity: 0.5,
+  },
+});
 
 const ImageSection = styled(Box)({
   width: '100%',
@@ -300,8 +276,7 @@ const ImageUploadContainer = styled(Box)({
     borderColor: '#3B82F6',
     backgroundColor: 'rgba(59, 130, 246, 0.04)',
     transform: 'translateY(-2px)',
-    boxShadow:
-      '0 12px 28px rgba(59, 130, 246, 0.12)',
+    boxShadow: '0 12px 28px rgba(59, 130, 246, 0.12)',
   },
   '&::before': {
     content: '""',
@@ -310,8 +285,7 @@ const ImageUploadContainer = styled(Box)({
     left: 0,
     right: 0,
     bottom: 0,
-    background:
-      'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(82, 183, 136, 0.05) 100%)',
+    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(82, 183, 136, 0.05) 100%)',
     opacity: 0.5,
     zIndex: 0,
   },
@@ -347,18 +321,14 @@ const FormRow = styled(Box)({
   '&:hover': {
     transform: 'translateY(-2px)',
   },
-  '&:hover .MuiTextField-root .MuiOutlinedInput-root':
-    {
-      borderColor: '#3B82F6',
-      boxShadow:
-        '0 2px 8px rgba(59, 130, 246, 0.1)',
-    },
-  '&:hover .MuiFormControl-root .MuiOutlinedInput-root':
-    {
-      borderColor: '#3B82F6',
-      boxShadow:
-        '0 2px 8px rgba(59, 130, 246, 0.1)',
-    },
+  '&:hover .MuiTextField-root .MuiOutlinedInput-root': {
+    borderColor: '#3B82F6',
+    boxShadow: '0 2px 8px rgba(59, 130, 246, 0.1)',
+  },
+  '&:hover .MuiFormControl-root .MuiOutlinedInput-root': {
+    borderColor: '#3B82F6',
+    boxShadow: '0 2px 8px rgba(59, 130, 246, 0.1)',
+  },
 });
 
 const FormField = styled(Box)({
@@ -381,8 +351,7 @@ const FormField = styled(Box)({
     '&:hover': {
       backgroundColor: '#FFFFFF',
       borderColor: '#3B82F6',
-      boxShadow:
-        '0 2px 8px rgba(59, 130, 246, 0.1)',
+      boxShadow: '0 2px 8px rgba(59, 130, 246, 0.1)',
     },
     '& .MuiFormControlLabel-label': {
       fontSize: '14px',
@@ -412,7 +381,6 @@ interface FormData {
   createdAt: Date;
 }
 
-// Available colors for the color dropdown
 const AVAILABLE_COLORS = [
   'Black',
   'White',
@@ -437,15 +405,7 @@ const AVAILABLE_COLORS = [
   'Lime',
 ];
 
-const ProductEditModal: React.FC<
-  ProductEditModalProps
-> = ({
-  open,
-  onClose,
-  onSubmit,
-  product,
-  mode = 'add',
-}) => {
+const ProductEditModal: React.FC<ProductEditModalProps> = ({ open, onClose, onSubmit, product, mode = 'add' }) => {
   const defaultFormData = useMemo(
     () => ({
       productName: '',
@@ -461,10 +421,8 @@ const ProductEditModal: React.FC<
     []
   );
 
-  const [formData, setFormData] =
-    useState<FormData>(defaultFormData);
-  const [previewImage, setPreviewImage] =
-    useState<string | null>(null);
+  const [formData, setFormData] = useState<FormData>(defaultFormData);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const resetForm = useCallback(() => {
     setFormData({
@@ -475,24 +433,17 @@ const ProductEditModal: React.FC<
   }, [defaultFormData]);
 
   useEffect(() => {
-    if (
-      product &&
-      (mode === 'view' || mode === 'edit')
-    ) {
+    if (product && (mode === 'view' || mode === 'edit')) {
       setFormData({
         productName: product.productName || '',
         color: product.color || 'Black',
         idCode: product.barcode || '',
         sku: product.sku || '',
         price: product.price?.toString() || '',
-        statusProduct: product.status
-          ? 'Active'
-          : 'Inactive',
+        statusProduct: product.status ? 'Active' : 'Inactive',
         rating: product.rating?.toString() || '',
         image: product.image || '',
-        createdAt: new Date(
-          product.createdAt || new Date()
-        ),
+        createdAt: new Date(product.createdAt || new Date()),
       });
       setPreviewImage(product.image || null);
     } else {
@@ -500,28 +451,19 @@ const ProductEditModal: React.FC<
     }
   }, [product, mode, open, resetForm]);
 
-  const handleTextChange =
-    (field: string) =>
-    (
-      event: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement
-      >
-    ) => {
-      setFormData({
-        ...formData,
-        [field]: event.target.value,
-      });
-    };
+  const handleTextChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [field]: event.target.value,
+    });
+  };
 
-  const handleImageUpload = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String =
-          reader.result as string;
+        const base64String = reader.result as string;
         setPreviewImage(base64String);
         setFormData({
           ...formData,
@@ -532,9 +474,7 @@ const ProductEditModal: React.FC<
     }
   };
 
-  const handleDateChange = (
-    date: Date | null
-  ) => {
+  const handleDateChange = (date: Date | null) => {
     if (date) {
       setFormData({
         ...formData,
@@ -555,37 +495,25 @@ const ProductEditModal: React.FC<
     e.preventDefault();
     const newProduct: Product = {
       id: product?.id || Date.now(),
-      productName:
-        formData.productName || 'Unnamed Product',
+      productName: formData.productName || 'Unnamed Product',
       color: formData.color || 'Black',
-      barcode:
-        formData.idCode || `BC-${Date.now()}`,
+      barcode: formData.idCode || `BC-${Date.now()}`,
       sku: formData.sku || `SKU-${Date.now()}`,
       price: parseFloat(formData.price) || 0,
       status: formData.statusProduct === 'Active',
       rating: parseFloat(formData.rating) || 0,
-      image:
-        formData.image ||
-        '/placeholder-image.png',
+      image: formData.image || '/placeholder-image.png',
       createdAt: formData.createdAt.toISOString(),
-      statusProduct:
-        formData.statusProduct === 'Active'
-          ? 'Active'
-          : 'Inactive',
+      statusProduct: formData.statusProduct === 'Active' ? 'Active' : 'Inactive',
     };
-    console.log(
-      'ProductEditModal - Submitting product with complete data:',
-      newProduct
-    );
+    console.log('ProductEditModal - Submitting product with complete data:', JSON.stringify(newProduct, null, 2));
     onSubmit(newProduct);
-    // Reset form data to defaults
+
     resetForm();
   };
 
   return (
-    <LocalizationProvider
-      dateAdapter={AdapterDateFns}
-    >
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
       <StyledDialog
         open={open}
         onClose={() => {
@@ -595,38 +523,21 @@ const ProductEditModal: React.FC<
         maxWidth="md"
         fullWidth
       >
-        <StyledDialogTitle id="product-dialog">
-          {mode === 'view'
-            ? 'View Product'
-            : 'Add New Product'}
-        </StyledDialogTitle>
+        <StyledDialogTitle id="product-dialog">{mode === 'view' ? 'View Product' : 'Add New Product'}</StyledDialogTitle>
         <StyledDialogContent>
           <ImageSection>
             <ImageUploadContainer>
               {mode === 'view' ? (
                 previewImage && (
                   <Box position="relative">
-                    <PreviewImage
-                      src={previewImage}
-                      alt="Product"
-                    />
+                    <PreviewImage src={previewImage} alt="Product" />
                   </Box>
                 )
               ) : (
                 <>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    id="image-upload"
-                    onChange={handleImageUpload}
-                  />
+                  <input type="file" accept="image/*" style={{ display: 'none' }} id="image-upload" onChange={handleImageUpload} />
                   <label htmlFor="image-upload">
-                    <Stack
-                      direction="column"
-                      alignItems="center"
-                      spacing={0.25}
-                    >
+                    <Stack direction="column" alignItems="center" spacing={0.25}>
                       <Box
                         sx={{
                           width: 40,
@@ -634,12 +545,9 @@ const ProductEditModal: React.FC<
                           borderRadius: '50%',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent:
-                            'center',
-                          background:
-                            'linear-gradient(135deg, #3B82F6 0%, #52B788 100%)',
-                          boxShadow:
-                            '0 4px 12px rgba(59, 130, 246, 0.2)',
+                          justifyContent: 'center',
+                          background: 'linear-gradient(135deg, #3B82F6 0%, #52B788 100%)',
+                          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.2)',
                           margin: '0 auto 12px',
                           position: 'relative',
                           zIndex: 1,
@@ -649,11 +557,9 @@ const ProductEditModal: React.FC<
                           sx={{
                             fontSize: 22,
                             color: 'white',
-                            transition:
-                              'transform 0.3s ease',
+                            transition: 'transform 0.3s ease',
                             '&:hover': {
-                              transform:
-                                'scale(1.1)',
+                              transform: 'scale(1.1)',
                             },
                           }}
                         />
@@ -689,33 +595,22 @@ const ProductEditModal: React.FC<
                   </label>
                   {previewImage && (
                     <Box position="relative">
-                      <PreviewImage
-                        src={previewImage}
-                        alt="Preview"
-                      />
+                      <PreviewImage src={previewImage} alt="Preview" />
                       <IconButton
-                        onClick={
-                          handleRemoveImage
-                        }
+                        onClick={handleRemoveImage}
                         sx={{
                           position: 'absolute',
                           top: 8,
                           right: 8,
-                          backgroundColor:
-                            'rgba(255, 255, 255, 0.95)',
-                          boxShadow:
-                            '0 4px 12px rgba(0, 0, 0, 0.15)',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
                           padding: '6px',
                           '&:hover': {
-                            backgroundColor:
-                              '#FFFFFF',
-                            transform:
-                              'scale(1.1)',
-                            boxShadow:
-                              '0 6px 16px rgba(0, 0, 0, 0.2)',
+                            backgroundColor: '#FFFFFF',
+                            transform: 'scale(1.1)',
+                            boxShadow: '0 6px 16px rgba(0, 0, 0, 0.2)',
                           },
-                          transition:
-                            'all 0.2s ease',
+                          transition: 'all 0.2s ease',
                           zIndex: 2,
                         }}
                         size="small"
@@ -742,9 +637,7 @@ const ProductEditModal: React.FC<
                   label="Product Name"
                   placeholder="Enter product name"
                   value={formData.productName}
-                  onChange={handleTextChange(
-                    'productName'
-                  )}
+                  onChange={handleTextChange('productName')}
                   variant="outlined"
                   disabled={mode === 'view'}
                 />
@@ -755,9 +648,7 @@ const ProductEditModal: React.FC<
                   label="ID Code"
                   placeholder="Enter ID code"
                   value={formData.idCode}
-                  onChange={handleTextChange(
-                    'idCode'
-                  )}
+                  onChange={handleTextChange('idCode')}
                   variant="outlined"
                   disabled={mode === 'view'}
                 />
@@ -766,35 +657,23 @@ const ProductEditModal: React.FC<
 
             <FormRow>
               <FormField>
-                <FormControl
-                  fullWidth
-                  disabled={mode === 'view'}
-                >
-                  <InputLabel id="color-select-label">
-                    Color
-                  </InputLabel>
+                <FormControl fullWidth disabled={mode === 'view'}>
+                  <InputLabel id="color-select-label">Color</InputLabel>
                   <Select
                     labelId="color-select-label"
                     id="color-select"
-                    value={
-                      formData.color || 'Black'
-                    }
+                    value={formData.color || 'Black'}
                     label="Color"
                     onChange={(e) => {
-                      const selectedColor = e
-                        .target.value as string;
+                      const selectedColor = e.target.value as string;
                       setFormData({
                         ...formData,
                         color: selectedColor,
                       });
                     }}
                     renderValue={(selected) => {
-                      const safeSelected =
-                        selected || 'Black';
-                      const colorStyles =
-                        getColorStyles(
-                          safeSelected
-                        );
+                      const safeSelected = selected || 'Black';
+                      const colorStyles = getColorStyles(safeSelected);
 
                       return (
                         <Box
@@ -809,26 +688,19 @@ const ProductEditModal: React.FC<
                               width: 28,
                               height: 28,
                               borderRadius: '50%',
-                              backgroundColor:
-                                colorStyles.bg,
-                              border:
-                                '2px solid #fff',
-                              boxShadow:
-                                '0 2px 6px rgba(0,0,0,0.1)',
-                              position:
-                                'relative',
+                              backgroundColor: colorStyles.bg,
+                              border: '2px solid #fff',
+                              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                              position: 'relative',
                               '&::after': {
                                 content: '""',
-                                position:
-                                  'absolute',
+                                position: 'absolute',
                                 top: -2,
                                 left: -2,
                                 right: -2,
                                 bottom: -2,
-                                borderRadius:
-                                  '50%',
-                                border:
-                                  '1px solid #e0e0e0',
+                                borderRadius: '50%',
+                                border: '1px solid #e0e0e0',
                                 opacity: 0.5,
                               },
                             }}
@@ -837,8 +709,7 @@ const ProductEditModal: React.FC<
                             sx={{
                               fontWeight: 500,
                               color: '#475569',
-                              fontSize:
-                                '0.875rem',
+                              fontSize: '0.875rem',
                             }}
                           >
                             {safeSelected}
@@ -852,14 +723,12 @@ const ProductEditModal: React.FC<
                           maxHeight: 380,
                           width: 320,
                           borderRadius: '12px',
-                          boxShadow:
-                            '0 10px 30px rgba(0,0,0,0.15)',
+                          boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
                           padding: '10px',
                           '& .MuiList-root': {
                             padding: '8px',
                             display: 'grid',
-                            gridTemplateColumns:
-                              'repeat(4, 1fr)',
+                            gridTemplateColumns: 'repeat(4, 1fr)',
                             gap: '8px',
                             width: '100%',
                           },
@@ -875,70 +744,55 @@ const ProductEditModal: React.FC<
                       },
                     }}
                   >
-                    {AVAILABLE_COLORS.map(
-                      (color) => (
-                        <MenuItem
-                          key={color}
-                          value={color}
-                          sx={{
-                            borderRadius: '6px',
-                            padding: '6px 8px',
-                            minHeight: 'unset',
-                            '&.Mui-selected': {
-                              backgroundColor:
-                                'rgba(59, 130, 246, 0.12)',
-                              '&:hover': {
-                                backgroundColor:
-                                  'rgba(59, 130, 246, 0.16)',
-                              },
+                    {AVAILABLE_COLORS.map((color) => (
+                      <MenuItem
+                        key={color}
+                        value={color}
+                        sx={{
+                          borderRadius: '6px',
+                          padding: '6px 8px',
+                          minHeight: 'unset',
+                          '&.Mui-selected': {
+                            backgroundColor: 'rgba(59, 130, 246, 0.12)',
+                            '&:hover': {
+                              backgroundColor: 'rgba(59, 130, 246, 0.16)',
                             },
+                          },
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
                           }}
                         >
                           <Box
                             sx={{
-                              display: 'flex',
-                              alignItems:
-                                'center',
-                              gap: 1,
+                              width: 20,
+                              height: 20,
+                              borderRadius: '50%',
+                              backgroundColor: getColorStyles(color).bg,
+                              border: '2px solid #fff',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                              flexShrink: 0,
+                            }}
+                          />
+                          <Typography
+                            sx={{
+                              fontWeight: 500,
+                              color: '#475569',
+                              fontSize: '0.75rem',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
                             }}
                           >
-                            <Box
-                              sx={{
-                                width: 20,
-                                height: 20,
-                                borderRadius:
-                                  '50%',
-                                backgroundColor:
-                                  getColorStyles(
-                                    color
-                                  ).bg,
-                                border:
-                                  '2px solid #fff',
-                                boxShadow:
-                                  '0 2px 4px rgba(0,0,0,0.1)',
-                                flexShrink: 0,
-                              }}
-                            />
-                            <Typography
-                              sx={{
-                                fontWeight: 500,
-                                color: '#475569',
-                                fontSize:
-                                  '0.75rem',
-                                whiteSpace:
-                                  'nowrap',
-                                overflow:
-                                  'hidden',
-                                textOverflow:
-                                  'ellipsis',
-                              }}
-                            >
-                              {color}
-                            </Typography>
-                          </Box>
-                        </MenuItem>
-                      )
-                    )}
+                            {color}
+                          </Typography>
+                        </Box>
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </FormField>
@@ -948,9 +802,7 @@ const ProductEditModal: React.FC<
                   label="SKU"
                   placeholder="Enter SKU"
                   value={formData.sku}
-                  onChange={handleTextChange(
-                    'sku'
-                  )}
+                  onChange={handleTextChange('sku')}
                   variant="outlined"
                   disabled={mode === 'view'}
                 />
@@ -965,9 +817,7 @@ const ProductEditModal: React.FC<
                   placeholder="0.00"
                   type="number"
                   value={formData.price}
-                  onChange={handleTextChange(
-                    'price'
-                  )}
+                  onChange={handleTextChange('price')}
                   variant="outlined"
                   InputProps={{
                     startAdornment: (
@@ -990,9 +840,7 @@ const ProductEditModal: React.FC<
                   label="Rating"
                   type="number"
                   value={formData.rating}
-                  onChange={handleTextChange(
-                    'rating'
-                  )}
+                  onChange={handleTextChange('rating')}
                   variant="outlined"
                   inputProps={{
                     min: 0,
@@ -1009,17 +857,11 @@ const ProductEditModal: React.FC<
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={
-                        formData.statusProduct ===
-                        'Active'
-                      }
+                      checked={formData.statusProduct === 'Active'}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
-                          statusProduct: e.target
-                            .checked
-                            ? 'Active'
-                            : 'Inactive',
+                          statusProduct: e.target.checked ? 'Active' : 'Inactive',
                         });
                       }}
                       disabled={mode === 'view'}
@@ -1028,24 +870,19 @@ const ProductEditModal: React.FC<
                   }
                   label="Status Product"
                   sx={{
-                    '& .MuiFormControlLabel-label':
-                      {
-                        color: '#6C757D',
-                      },
+                    '& .MuiFormControlLabel-label': {
+                      color: '#6C757D',
+                    },
                     '& .MuiSwitch-root': {
-                      '& .MuiSwitch-switchBase.Mui-checked':
-                        {
-                          color: '#52B788',
-                          '&:hover': {
-                            backgroundColor:
-                              'rgba(82, 183, 136, 0.08)',
-                          },
+                      '& .MuiSwitch-switchBase.Mui-checked': {
+                        color: '#52B788',
+                        '&:hover': {
+                          backgroundColor: 'rgba(82, 183, 136, 0.08)',
                         },
-                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
-                        {
-                          backgroundColor:
-                            '#52B788',
-                        },
+                      },
+                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                        backgroundColor: '#52B788',
+                      },
                     },
                   }}
                 />
@@ -1091,30 +928,24 @@ const ProductEditModal: React.FC<
               onClick={handleSubmit}
               variant="contained"
               sx={{
-                background:
-                  'linear-gradient(90deg, #3B82F6 0%, #52B788 100%)',
+                background: 'linear-gradient(90deg, #3B82F6 0%, #52B788 100%)',
                 fontWeight: 600,
                 padding: '8px 24px',
                 borderRadius: '8px',
                 textTransform: 'none',
-                boxShadow:
-                  '0 4px 12px rgba(59, 130, 246, 0.2)',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.2)',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  boxShadow:
-                    '0 8px 16px rgba(59, 130, 246, 0.3)',
+                  boxShadow: '0 8px 16px rgba(59, 130, 246, 0.3)',
                   transform: 'translateY(-2px)',
                 },
                 '&:active': {
                   transform: 'translateY(0)',
-                  boxShadow:
-                    '0 2px 8px rgba(59, 130, 246, 0.2)',
+                  boxShadow: '0 2px 8px rgba(59, 130, 246, 0.2)',
                 },
               }}
             >
-              {mode === 'edit'
-                ? 'Update Product'
-                : 'Add Product'}
+              {mode === 'edit' ? 'Update Product' : 'Add Product'}
             </Button>
           )}
         </StyledDialogActions>

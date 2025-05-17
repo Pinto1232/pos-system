@@ -1,33 +1,20 @@
 'use client';
 
-import React, {
-  useState,
-  createContext,
-  useContext,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, createContext, useContext, useCallback, useMemo } from 'react';
 import LoginForm from '@/components/login-form/LoginForm';
-import {
-  Dialog,
-  DialogContent,
-} from '@mui/material';
+import { Dialog, DialogContent } from '@mui/material';
 import { SpinnerProvider } from '@/contexts/SpinnerContext';
 
 interface LoginFormContextProps {
   toggleLoginForm: () => void;
 }
 
-const LoginFormContext = createContext<
-  LoginFormContextProps | undefined
->(undefined);
+const LoginFormContext = createContext<LoginFormContextProps | undefined>(undefined);
 
 export const useLoginForm = () => {
   const context = useContext(LoginFormContext);
   if (!context) {
-    throw new Error(
-      'useLoginForm must be used within a LoginFormProvider'
-    );
+    throw new Error('useLoginForm must be used within a LoginFormProvider');
   }
   return context;
 };
@@ -37,20 +24,12 @@ export const LoginFormProvider: React.FC<{
 }> = ({ children }) => {
   const [open, setOpen] = useState(false);
 
-  // Use useCallback to memoize the toggleLoginForm function
   const toggleLoginForm = useCallback(() => {
-    console.log(
-      'toggleLoginForm called, current state:',
-      open
-    );
+    console.log('toggleLoginForm called, current state:', JSON.stringify(open, null, 2));
     setOpen((prev) => !prev);
-    console.log(
-      'toggleLoginForm new state:',
-      !open
-    );
+    console.log('toggleLoginForm new state:', JSON.stringify(!open, null, 2));
   }, [open]);
 
-  // Memoize the context value to prevent unnecessary re-renders
   const contextValue = useMemo(
     () => ({
       toggleLoginForm,
@@ -59,9 +38,7 @@ export const LoginFormProvider: React.FC<{
   );
 
   return (
-    <LoginFormContext.Provider
-      value={contextValue}
-    >
+    <LoginFormContext.Provider value={contextValue}>
       {children}
       <Dialog
         open={open}
@@ -73,8 +50,7 @@ export const LoginFormProvider: React.FC<{
             borderRadius: '16px',
             overflow: 'hidden',
             maxWidth: '480px',
-            boxShadow:
-              '0 8px 32px rgba(0, 0, 0, 0.2)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
             backgroundColor: '#ffffff',
             '@media (max-width: 480px)': {
               margin: '16px',
@@ -96,9 +72,7 @@ export const LoginFormProvider: React.FC<{
           }}
         >
           <SpinnerProvider>
-            <LoginForm
-              onClose={toggleLoginForm}
-            />
+            <LoginForm onClose={toggleLoginForm} />
           </SpinnerProvider>
         </DialogContent>
       </Dialog>

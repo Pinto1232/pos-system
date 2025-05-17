@@ -1,28 +1,19 @@
 'use client';
 
-import React, {
-  useState,
-  useEffect,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/dashboard-layout/DashboardLayout';
 import Sidebar from '@/components/sidebar/Sidebar';
 import DashboardMain from '@/components/dashboardMain/dashboardMain';
 const DashboardContainer = () => {
-  const [isDrawerOpen, setIsDrawerOpen] =
-    useState(true);
-  // Initialize with Dashboard as the active section
-  const [activeSection, setActiveSection] =
-    useState<string>('Dashboard');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
-  // We're no longer calling stopLoading here since it's handled in the dashboard page
+  const [activeSection, setActiveSection] = useState<string>('Dashboard');
 
   const handleDrawerToggle = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const handleSectionSelect = (
-    section: string
-  ) => {
+  const handleSectionSelect = (section: string) => {
     setActiveSection(section);
   };
 
@@ -35,9 +26,7 @@ const DashboardContainer = () => {
       iconColor="#FFFFFF"
       navbarBgColor="#1F2937"
     >
-      <DashboardMain
-        activeSection={activeSection}
-      />
+      <DashboardMain activeSection={activeSection} />
     </DashboardLayout>
   );
 };

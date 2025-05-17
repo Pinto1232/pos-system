@@ -6,9 +6,7 @@ interface DashboardMainContainerProps {
   activeSection: string;
 }
 
-const DashboardMainContainer: React.FC<
-  DashboardMainContainerProps
-> = ({ activeSection }) => {
+const DashboardMainContainer: React.FC<DashboardMainContainerProps> = ({ activeSection }) => {
   return (
     <Box
       sx={{
@@ -16,12 +14,10 @@ const DashboardMainContainer: React.FC<
         width: '100%',
         maxWidth: '100%',
         overflow: 'hidden',
-        pb: 4, // Add bottom padding to ensure content doesn't get cut off at the bottom
+        pb: 4,
       }}
     >
-      <DashboardMain
-        activeSection={activeSection}
-      />
+      <DashboardMain activeSection={activeSection} />
     </Box>
   );
 };

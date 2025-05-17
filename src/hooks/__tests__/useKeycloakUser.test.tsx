@@ -21,16 +21,8 @@ const mockAuthContext: AuthContextType = {
   isInitialized: true,
 };
 
-const wrapper = ({
-  children,
-  contextValue = mockAuthContext,
-}: {
-  children: React.ReactNode;
-  contextValue?: AuthContextType;
-}) => (
-  <AuthContext.Provider value={contextValue}>
-    {children}
-  </AuthContext.Provider>
+const wrapper = ({ children, contextValue = mockAuthContext }: { children: React.ReactNode; contextValue?: AuthContextType }) => (
+  <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 );
 
 describe('useKeycloakUser Hook', () => {
@@ -39,13 +31,9 @@ describe('useKeycloakUser Hook', () => {
   });
 
   it('should return null userInfo when not authenticated', () => {
-    const { result } = renderHook(
-      () => useKeycloakUser(),
-      {
-        wrapper: ({ children }) =>
-          wrapper({ children }),
-      }
-    );
+    const { result } = renderHook(() => useKeycloakUser(), {
+      wrapper: ({ children }) => wrapper({ children }),
+    });
 
     expect(result.current.userInfo).toBeNull();
     expect(result.current.isLoading).toBe(false);
@@ -62,9 +50,7 @@ describe('useKeycloakUser Hook', () => {
       sub: 'user-123',
     };
 
-    const encodedPayload = btoa(
-      JSON.stringify(mockPayload)
-    );
+    const encodedPayload = btoa(JSON.stringify(mockPayload));
     const mockToken = `header.${encodedPayload}.signature`;
 
     const contextWithToken = {
@@ -73,25 +59,17 @@ describe('useKeycloakUser Hook', () => {
       authenticated: true,
     };
 
-    global.atob = jest
-      .fn()
-      .mockImplementation((str) => {
-        return Buffer.from(
-          str,
-          'base64'
-        ).toString('binary');
-      });
+    global.atob = jest.fn().mockImplementation((str) => {
+      return Buffer.from(str, 'base64').toString('binary');
+    });
 
-    const { result } = renderHook(
-      () => useKeycloakUser(),
-      {
-        wrapper: ({ children }) =>
-          wrapper({
-            children,
-            contextValue: contextWithToken,
-          }),
-      }
-    );
+    const { result } = renderHook(() => useKeycloakUser(), {
+      wrapper: ({ children }) =>
+        wrapper({
+          children,
+          contextValue: contextWithToken,
+        }),
+    });
 
     expect(result.current.userInfo).toEqual({
       name: 'John Doe',
@@ -110,10 +88,7 @@ describe('useKeycloakUser Hook', () => {
       sub: 'user-456',
     };
 
-    // Base64 encode the payload
-    const encodedPayload = btoa(
-      JSON.stringify(mockPayload)
-    );
+    const encodedPayload = btoa(JSON.stringify(mockPayload));
     const mockToken = `header.${encodedPayload}.signature`;
 
     const contextWithToken = {
@@ -122,26 +97,17 @@ describe('useKeycloakUser Hook', () => {
       authenticated: true,
     };
 
-    // Mock the atob function
-    global.atob = jest
-      .fn()
-      .mockImplementation((str) => {
-        return Buffer.from(
-          str,
-          'base64'
-        ).toString('binary');
-      });
+    global.atob = jest.fn().mockImplementation((str) => {
+      return Buffer.from(str, 'base64').toString('binary');
+    });
 
-    const { result } = renderHook(
-      () => useKeycloakUser(),
-      {
-        wrapper: ({ children }) =>
-          wrapper({
-            children,
-            contextValue: contextWithToken,
-          }),
-      }
-    );
+    const { result } = renderHook(() => useKeycloakUser(), {
+      wrapper: ({ children }) =>
+        wrapper({
+          children,
+          contextValue: contextWithToken,
+        }),
+    });
     expect(result.current.userInfo).toEqual({
       name: 'Unknown User',
       email: '',
@@ -164,25 +130,18 @@ describe('useKeycloakUser Hook', () => {
     const originalConsoleError = console.error;
     console.error = jest.fn();
 
-    const { result } = renderHook(
-      () => useKeycloakUser(),
-      {
-        wrapper: ({ children }) =>
-          wrapper({
-            children,
-            contextValue: contextWithToken,
-          }),
-      }
-    );
+    const { result } = renderHook(() => useKeycloakUser(), {
+      wrapper: ({ children }) =>
+        wrapper({
+          children,
+          contextValue: contextWithToken,
+        }),
+    });
 
-    // Check if error is handled properly
     expect(result.current.userInfo).toBeNull();
     expect(result.current.isLoading).toBe(false);
-    expect(result.current.error).toBe(
-      'Invalid token format'
-    );
+    expect(result.current.error).toBe('Invalid token format');
 
-    // Restore console.error
     console.error = originalConsoleError;
   });
 

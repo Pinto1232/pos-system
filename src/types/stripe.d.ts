@@ -1,4 +1,3 @@
-// src/types/stripe.d.ts
 import { Stripe } from 'stripe';
 
 declare global {
@@ -11,8 +10,6 @@ declare global {
   }
 }
 
-// Remove empty interface or add meaningful extensions
-export interface StripeCheckoutSession
-  extends Stripe.Checkout.Session {
+export interface StripeCheckoutSession extends Stripe.Checkout.Session {
   customField?: string;
 }

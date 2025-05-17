@@ -1,50 +1,13 @@
 import React from 'react';
-import {
-  Box,
-  Button,
-  useTheme,
-} from '@mui/material';
-import {
-  FaStar,
-  FaHeart,
-  FaCheck,
-  FaBell,
-  FaSmile,
-} from 'react-icons/fa';
-import {
-  StyledCard,
-  CircleNumber,
-  Title,
-  BulletList,
-  DataPoint,
-  Percentage,
-  ViewDetails,
-} from './analyticsCard.styles';
+import { Box, Button, useTheme } from '@mui/material';
+import { FaStar, FaHeart, FaCheck, FaBell, FaSmile } from 'react-icons/fa';
+import { StyledCard, CircleNumber, Title, BulletList, DataPoint, Percentage, ViewDetails } from './analyticsCard.styles';
 import { AnalyticsCardProps } from './analyticsCard.types';
 
-const AnalyticsCard: React.FC<
-  AnalyticsCardProps
-> = ({
-  circleText,
-  title,
-  dataPoints,
-  percentage,
-}) => {
+const AnalyticsCard: React.FC<AnalyticsCardProps> = ({ circleText, title, dataPoints, percentage }) => {
   const theme = useTheme();
-  const buttonColors = [
-    '#006D77',
-    '#1E3A8A',
-    '#52B788',
-    '#1F2937',
-    '#F59E0B',
-  ];
-  const buttonIcons = [
-    FaStar,
-    FaHeart,
-    FaCheck,
-    FaBell,
-    FaSmile,
-  ];
+  const buttonColors = ['#006D77', '#1E3A8A', '#52B788', '#1F2937', '#F59E0B'];
+  const buttonIcons = [FaStar, FaHeart, FaCheck, FaBell, FaSmile];
 
   return (
     <StyledCard
@@ -61,22 +24,18 @@ const AnalyticsCard: React.FC<
           md: 320,
         },
         p: { xs: 2, sm: 2.5, md: 3 },
-        boxShadow:
-          '0 4px 12px rgba(0, 0, 0, 0.05)',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
         background: '#ffffff',
         borderRadius: '12px',
-        border:
-          '1px solid rgba(230, 232, 240, 0.8)',
-        transition:
-          'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+        border: '1px solid rgba(230, 232, 240, 0.8)',
+        transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         '&:hover': {
           transform: 'translateY(-4px)',
-          boxShadow:
-            '0 8px 20px rgba(0, 0, 0, 0.08)',
+          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.08)',
           borderColor: 'rgba(210, 215, 235, 1)',
         },
       }}
@@ -95,18 +54,15 @@ const AnalyticsCard: React.FC<
             width: { xs: 36, sm: 40, md: 44 },
             height: { xs: 36, sm: 40, md: 44 },
             mb: 0,
-            background:
-              'linear-gradient(135deg, #4338ca, #6366f1)',
-            boxShadow:
-              '0 4px 12px rgba(99, 102, 241, 0.25)',
+            background: 'linear-gradient(135deg, #4338ca, #6366f1)',
+            boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
             fontSize: {
               xs: '0.85rem',
               sm: '0.9rem',
               md: '1rem',
             },
             fontWeight: 700,
-            border:
-              '2px solid rgba(255, 255, 255, 0.8)',
+            border: '2px solid rgba(255, 255, 255, 0.8)',
             flexShrink: 0,
           }}
         >
@@ -144,9 +100,7 @@ const AnalyticsCard: React.FC<
             },
           }}
         >
-          <span>
-            {percentage.replace('%', '')}
-          </span>
+          <span>{percentage.replace('%', '')}</span>
           <span>%</span>
         </Percentage>
       </Box>
@@ -178,8 +132,7 @@ const AnalyticsCard: React.FC<
             width: '36px',
             height: '3px',
             borderRadius: '2px',
-            background:
-              'linear-gradient(90deg, #6366f1, #a5b4fc)',
+            background: 'linear-gradient(90deg, #6366f1, #a5b4fc)',
           },
         }}
       >
@@ -250,7 +203,7 @@ const AnalyticsCard: React.FC<
           width: '100%',
         }}
       >
-        {/* Action buttons row */}
+        {}
         <Box
           sx={{
             display: 'flex',
@@ -315,7 +268,7 @@ const AnalyticsCard: React.FC<
           })}
         </Box>
 
-        {/* View Details button - centered and contained within card */}
+        {}
         <Box
           sx={{
             width: '100%',
@@ -341,34 +294,26 @@ const AnalyticsCard: React.FC<
                 },
                 fontWeight: 600,
                 color: '#4f46e5',
-                transition:
-                  'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: '4px 10px',
                 borderRadius: '16px',
-                backgroundColor:
-                  'rgba(79, 70, 229, 0.08)',
-                border:
-                  '1px solid rgba(79, 70, 229, 0.2)',
-                boxShadow:
-                  '0 2px 4px rgba(0, 0, 0, 0.02)',
+                backgroundColor: 'rgba(79, 70, 229, 0.08)',
+                border: '1px solid rgba(79, 70, 229, 0.2)',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.02)',
                 '&:hover': {
                   color: '#4338ca',
                   transform: 'translateX(3px)',
-                  backgroundColor:
-                    'rgba(79, 70, 229, 0.12)',
-                  boxShadow:
-                    '0 4px 8px rgba(0, 0, 0, 0.05)',
-                  border:
-                    '1px solid rgba(79, 70, 229, 0.3)',
+                  backgroundColor: 'rgba(79, 70, 229, 0.12)',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)',
+                  border: '1px solid rgba(79, 70, 229, 0.3)',
                 },
                 '&::after': {
                   content: '"→"',
                   marginLeft: '4px',
-                  transition:
-                    'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                  transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
                   fontSize: '1rem',
                 },
                 '&:hover::after': {
