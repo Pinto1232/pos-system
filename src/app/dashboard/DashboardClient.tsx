@@ -5,17 +5,22 @@ import React, { useEffect, useContext, useState } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import DashboardContainer from '@/components/dashboard-layout/DashboardContainer';
 import { useSpinner } from '@/contexts/SpinnerContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { UserSubscriptionData } from './types';
 import DashboardLoading from './DashboardLoading';
+import { DashboardSummary } from './DashboardDataFetcher';
 
 interface DashboardClientProps {
   initialSubscriptionData?: UserSubscriptionData | null;
+  initialDashboardData?: DashboardSummary | null;
 }
 
 const DashboardClient: React.FC<DashboardClientProps> = ({
   initialSubscriptionData,
+  initialDashboardData,
 }) => {
+  const queryClient = useQueryClient();
   const { stopLoading } = useSpinner();
   const { isInitialized } = useContext(AuthContext);
 
@@ -80,7 +85,7 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
       return;
     }
 
-    
+
     if (!authenticated || !token) {
       setAuthStatus({
         isChecking: false,
@@ -91,13 +96,13 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
       return;
     }
 
-    
+
     const processAuth = async () => {
       try {
         let userId: string | null = null;
         let roles: string[] = [];
 
-        
+
         const tokenParts = token.split('.');
         if (tokenParts.length !== 3) {
           throw new Error('Invalid token format');
@@ -106,7 +111,7 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
         const payload = JSON.parse(atob(tokenParts[1]));
         userId = payload.sub || payload.userId || null;
 
-        
+
         if (payload.realm_access && Array.isArray(payload.realm_access.roles)) {
           roles = [...payload.realm_access.roles] as string[];
         }
@@ -125,7 +130,7 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
           }
         }
 
-        
+
         const hasRequiredRole = roles.includes('dashboard') ||
                                roles.includes('admin') ||
                                roles.includes('user') ||
@@ -141,7 +146,7 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
           return;
         }
 
-        
+
         setAuthStatus({
           isChecking: false,
           isAuthorized: true,
@@ -230,7 +235,20 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
     */
   }, [isInitialized, setAuthStatus, setPaymentStatus]);
 
-  // Handle loading state in a separate effect with minimal dependencies
+  // Initialize dashboard data in React Query cache
+  useEffect(() => {
+    if (initialDashboardData) {
+      queryClient.setQueryData(['dashboardSummary'], initialDashboardData);
+    }
+
+    if (initialSubscriptionData) {
+      queryClient.setQueryData(
+        ['userSubscription', initialSubscriptionData.userId],
+        initialSubscriptionData
+      );
+    }
+  }, [initialDashboardData, initialSubscriptionData, queryClient]);
+
   useEffect(() => {
     if (!isInitialized) return;
 

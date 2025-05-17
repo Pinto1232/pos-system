@@ -6,6 +6,7 @@ import React, {
   useState,
   useCallback,
   useRef,
+  useMemo,
 } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApiClient } from '@/api/axiosClient';
@@ -49,7 +50,13 @@ interface PackageData {
   [key: string]: unknown;
 }
 
-const PricingPackagesContainer: React.FC = () => {
+interface PricingPackagesContainerProps {
+  initialPackages?: Package[];
+}
+
+const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
+  initialPackages,
+}) => {
   const { apiClient } = useApiClient();
   const { selectPackage } = usePackageSelection();
   const { authenticated, token } = useContext(AuthContext);
@@ -436,8 +443,33 @@ const PricingPackagesContainer: React.FC = () => {
     console.warn('Using fallback data due to API issues');
   }, []);
 
+  const initialPricePackages = useMemo(() => {
+    if (initialPackages && initialPackages.length > 0) {
+      return {
+        data: initialPackages.map((pkg) => ({
+          id: typeof pkg.id === 'string' ? parseInt(pkg.id, 10) : pkg.id,
+          title: pkg.title,
+          description: pkg.description,
+          icon: pkg.icon,
+          extraDescription: pkg.extraDescription,
+          price: pkg.price,
+          testPeriodDays: pkg.testPeriodDays,
+          type: pkg.type,
+          currency: pkg.currency,
+          multiCurrencyPrices: pkg.multiCurrencyPrices,
+        })),
+        pageSize: 10,
+        pageNumber: 1,
+        totalItems: initialPackages.length,
+      } as PricePackages;
+    }
+    return undefined;
+  }, [initialPackages]);
+
   const { data, error, isLoading, refetch } = useQuery<PricePackages, Error>({
     queryKey: ['pricingPackages'],
+    initialData: initialPricePackages,
+    staleTime: 60 * 1000,
     queryFn: async () => {
       console.log('Executing pricing packages query function');
       try {
@@ -477,7 +509,6 @@ const PricingPackagesContainer: React.FC = () => {
       return delay;
     },
     enabled: true,
-    staleTime: 60 * 1000,
     gcTime: 2 * 60 * 1000,
     refetchOnWindowFocus: true,
     refetchOnMount: true,

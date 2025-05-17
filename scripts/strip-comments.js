@@ -12,6 +12,7 @@ const patterns = [
   'src/**/*.tsx',
   'src/**/*.js',
   'src/**/*.jsx',
+  'scripts/test-strip-comments.js', // Include our test file
 ];
 
 // Exclude patterns - files to skip
@@ -30,6 +31,7 @@ console.log('Working directory:', process.cwd());
 let processedCount = 0;
 let errorCount = 0;
 let skippedFiles = [];
+let inlineCommentsRemoved = 0;
 
 patterns.forEach((pattern) => {
   const files = glob.sync(pattern, {
@@ -72,16 +74,39 @@ patterns.forEach((pattern) => {
       }
 
       try {
-        // Strip comments
+        // Count inline comments before stripping
+        const inlineCommentMatches = (content.match(/\/\/.*$/gm) || []).length;
+
+        // Strip comments with enhanced options to ensure all comments are removed
         const strippedContent = strip(content, {
+          // Preserve newlines to maintain code structure
           preserveNewlines: true,
-          // Set to true if you want to keep JSDoc comments
+          // Set to false to remove all comments including JSDoc
           keepProtected: false,
+          // Ensure both line and block comments are removed
+          line: true,
+          block: true,
         });
+
+        // Count inline comments after stripping
+        const remainingInlineComments = (
+          strippedContent.match(/\/\/.*$/gm) || []
+        ).length;
+        const removedInThisFile =
+          inlineCommentMatches - remainingInlineComments;
+        inlineCommentsRemoved += removedInThisFile;
 
         // Write the file back
         fs.writeFileSync(filePath, strippedContent, 'utf8');
-        console.log(`Processed: ${file}`);
+
+        if (removedInThisFile > 0) {
+          console.log(
+            `Processed: ${file} (removed ${removedInThisFile} inline comments)`
+          );
+        } else {
+          console.log(`Processed: ${file}`);
+        }
+
         processedCount++;
       } catch (stripError) {
         console.error(
@@ -100,6 +125,7 @@ patterns.forEach((pattern) => {
 console.log(
   `Comment stripping completed. Processed ${processedCount} files. Skipped ${errorCount} files with errors.`
 );
+console.log(`Total inline comments removed: ${inlineCommentsRemoved}`);
 
 if (skippedFiles.length > 0) {
   console.log('Skipped files:');

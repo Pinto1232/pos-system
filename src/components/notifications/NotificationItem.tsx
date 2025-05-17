@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Box, Typography, IconButton, Chip, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {
@@ -13,6 +13,7 @@ import {
 import { Notification } from '@/types/notification';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
+import { withOptimization } from '@/utils/withOptimization';
 
 interface NotificationItemProps {
   notification: Notification;
@@ -52,7 +53,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 }) => {
   const router = useRouter();
 
-  const getNotificationIcon = () => {
+  const notificationIcon = useMemo(() => {
     switch (notification.type) {
       case 'success':
         return <CheckCircleIcon sx={{ color: '#22c55e' }} />;
@@ -65,9 +66,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       default:
         return <InfoIcon sx={{ color: '#6b7280' }} />;
     }
-  };
+  }, [notification.type]);
 
-  const getNotificationColor = () => {
+  const notificationColor = useMemo(() => {
     switch (notification.type) {
       case 'success':
         return '#22c55e';
@@ -80,9 +81,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       default:
         return '#6b7280';
     }
-  };
+  }, [notification.type]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (notification.status === 'unread') {
       onMarkAsRead(notification.id);
     }
@@ -90,11 +91,21 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     if (notification.link) {
       router.push(notification.link);
     }
-  };
+  }, [
+    notification.status,
+    notification.id,
+    notification.link,
+    onMarkAsRead,
+    router,
+  ]);
 
-  const formattedTime = formatDistanceToNow(new Date(notification.createdAt), {
-    addSuffix: true,
-  });
+  const formattedTime = useMemo(
+    () =>
+      formatDistanceToNow(new Date(notification.createdAt), {
+        addSuffix: true,
+      }),
+    [notification.createdAt]
+  );
 
   return (
     <NotificationItemContainer
@@ -102,7 +113,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       sx={{
         opacity: notification.status === 'read' ? 0.7 : 1,
         '&::before': {
-          backgroundColor: getNotificationColor(),
+          backgroundColor: notificationColor,
         },
       }}
     >
@@ -114,7 +125,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           pt: 0.5,
         }}
       >
-        {getNotificationIcon()}
+        {notificationIcon}
       </Box>
 
       <Box sx={{ flex: 1 }}>
@@ -187,4 +198,14 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   );
 };
 
-export default NotificationItem;
+export default withOptimization(NotificationItem, {
+  memo: true,
+  propsToCompare: [
+    'notification.id',
+    'notification.status',
+    'notification.type',
+  ],
+  deepComparison: false,
+  trackRenders: process.env.NODE_ENV === 'development',
+  displayName: 'NotificationItem',
+});

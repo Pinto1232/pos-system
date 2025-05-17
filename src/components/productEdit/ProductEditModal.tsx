@@ -17,6 +17,10 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  CircularProgress,
+  Snackbar,
+  Alert,
+  AlertColor,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -262,21 +266,26 @@ const ImageSection = styled(Box)({
 
 const ImageUploadContainer = styled(Box)({
   border: '2px dashed rgba(59, 130, 246, 0.3)',
-  borderRadius: '12px',
-  padding: '20px',
+  borderRadius: '8px',
+  padding: '8px',
   textAlign: 'center',
   cursor: 'pointer',
   transition: 'all 0.3s ease-in-out',
   background: 'rgba(59, 130, 246, 0.02)',
-  maxWidth: '200px',
+  width: '140px',
+  height: '140px',
   margin: '0 auto',
   position: 'relative',
   overflow: 'hidden',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
   '&:hover': {
     borderColor: '#3B82F6',
     backgroundColor: 'rgba(59, 130, 246, 0.04)',
     transform: 'translateY(-2px)',
-    boxShadow: '0 12px 28px rgba(59, 130, 246, 0.12)',
+    boxShadow: '0 8px 16px rgba(59, 130, 246, 0.12)',
   },
   '&::before': {
     content: '""',
@@ -293,18 +302,17 @@ const ImageUploadContainer = styled(Box)({
 });
 
 const PreviewImage = styled('img')({
-  maxWidth: '100%',
-  maxHeight: '140px',
-  marginTop: '12px',
-  borderRadius: '8px',
-  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.08)',
+  width: '50px',
+  height: '50px',
+  borderRadius: '6px',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
   objectFit: 'cover',
   transition: 'all 0.3s ease-in-out',
   position: 'relative',
   zIndex: 1,
   '&:hover': {
     transform: 'scale(1.03)',
-    boxShadow: '0 12px 28px rgba(0, 0, 0, 0.12)',
+    boxShadow: '0 6px 16px rgba(0, 0, 0, 0.12)',
   },
 });
 
@@ -430,6 +438,16 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
 
   const [formData, setFormData] = useState<FormData>(defaultFormData);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [notification, setNotification] = useState<{
+    open: boolean;
+    message: string;
+    severity: AlertColor;
+  }>({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
 
   const resetForm = useCallback(() => {
     setFormData({
@@ -438,6 +456,21 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     });
     setPreviewImage(null);
   }, [defaultFormData]);
+
+  const showNotification = (message: string, severity: AlertColor) => {
+    setNotification({
+      open: true,
+      message,
+      severity,
+    });
+  };
+
+  const handleCloseNotification = () => {
+    setNotification((prev) => ({
+      ...prev,
+      open: false,
+    }));
+  };
 
   useEffect(() => {
     if (product && (mode === 'view' || mode === 'edit')) {
@@ -467,19 +500,113 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
       });
     };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    try {
+      // Set uploading state to true
+      setIsUploading(true);
+
+      // We'll read the file but not set the preview image yet
+
       const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setPreviewImage(base64String);
-        setFormData({
-          ...formData,
-          image: base64String,
-        });
-      };
       reader.readAsDataURL(file);
+
+      const MAX_FILE_SIZE = 5 * 1024 * 1024;
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error('File size exceeds 5MB limit');
+      }
+
+      if (!file.type.startsWith('image/')) {
+        throw new Error('File must be an image');
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      formData.append('quality', '85');
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+          signal: controller.signal,
+
+          headers: {
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+          },
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const result = await response
+            .json()
+            .catch(() => ({ error: 'Unknown error' }));
+          throw new Error(result.error || `Server error: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        setFormData((prevData) => ({
+          ...prevData,
+          image: result.filePath,
+        }));
+
+        setPreviewImage(result.filePath);
+
+        console.log(
+          'Image uploaded successfully:',
+          result.filePath,
+          'Dimensions: 100x100px',
+          'Size:',
+          result.size,
+          'bytes'
+        );
+
+        showNotification('Image uploaded successfully!', 'success');
+      } catch (fetchError) {
+        if (fetchError instanceof Error) {
+          if (fetchError.name === 'AbortError') {
+            throw new Error(
+              'Upload timed out. Please try a smaller image or check your connection.'
+            );
+          } else {
+            throw fetchError;
+          }
+        }
+        throw new Error('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+
+      let errorMessage = 'Failed to upload image. Please try again.';
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          errorMessage =
+            'Upload timed out. Please try a smaller image or check your connection.';
+        } else if (error.message.includes('size exceeds')) {
+          errorMessage = 'Image is too large. Maximum size is 5MB.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      showNotification(errorMessage, 'error');
+
+      if (previewImage && !formData.image) {
+        setPreviewImage(null);
+      }
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -498,10 +625,69 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
       ...formData,
       image: '',
     });
+    showNotification('Image removed', 'info');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (
+      previewImage &&
+      !formData.image &&
+      previewImage.startsWith('data:image')
+    ) {
+      try {
+        setIsUploading(true);
+        showNotification('Uploading image before saving product...', 'info');
+
+        const base64Response = await fetch(previewImage);
+        const blob = await base64Response.blob();
+        const file = new File([blob], 'product-image.jpg', { type: blob.type });
+
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', file);
+        uploadFormData.append('quality', '85');
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: uploadFormData,
+          headers: {
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload image before saving product');
+        }
+
+        const result = await response.json();
+
+        setFormData((prevData) => ({
+          ...prevData,
+          image: result.filePath,
+        }));
+
+        showNotification('Image uploaded successfully!', 'success');
+
+        submitProductWithImage(result.filePath);
+      } catch (error) {
+        console.error('Error uploading image before submit:', error);
+        showNotification(
+          'Failed to upload image. Using placeholder instead.',
+          'error'
+        );
+
+        submitProductWithImage('/placeholder-image.png');
+      } finally {
+        setIsUploading(false);
+      }
+    } else {
+      submitProductWithImage(formData.image);
+    }
+  };
+
+  const submitProductWithImage = (imagePath: string) => {
     const newProduct: Product = {
       id: product?.id || Date.now(),
       productName: formData.productName || 'Unnamed Product',
@@ -511,22 +697,49 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
       price: parseFloat(formData.price) || 0,
       status: formData.statusProduct === 'Active',
       rating: parseFloat(formData.rating) || 0,
-      image: formData.image || '/placeholder-image.png',
+      image: imagePath || '/placeholder-image.png',
       createdAt: formData.createdAt.toISOString(),
       statusProduct:
         formData.statusProduct === 'Active' ? 'Active' : 'Inactive',
     };
+
     console.log(
       'ProductEditModal - Submitting product with complete data:',
       JSON.stringify(newProduct, null, 2)
     );
-    onSubmit(newProduct);
 
+    onSubmit(newProduct);
     resetForm();
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={handleCloseNotification}
+          severity={notification.severity}
+          variant="filled"
+          sx={{
+            width: '100%',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            '& .MuiAlert-icon': {
+              fontSize: '1.2rem',
+            },
+            '& .MuiAlert-message': {
+              fontSize: '0.9rem',
+              fontWeight: 500,
+            },
+          }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
+
       <StyledDialog
         open={open}
         onClose={() => {
@@ -557,31 +770,38 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                     id="image-upload"
                     onChange={handleImageUpload}
                   />
-                  <label htmlFor="image-upload">
+                  <label htmlFor={isUploading ? undefined : 'image-upload'}>
                     <Stack
                       direction="column"
                       alignItems="center"
                       spacing={0.25}
+                      sx={{
+                        cursor: isUploading ? 'not-allowed' : 'pointer',
+                        opacity: isUploading ? 0.7 : 1,
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%',
+                      }}
                     >
                       <Box
                         sx={{
-                          width: 40,
-                          height: 40,
+                          width: 30,
+                          height: 30,
                           borderRadius: '50%',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           background:
                             'linear-gradient(135deg, #3B82F6 0%, #52B788 100%)',
-                          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.2)',
-                          margin: '0 auto 12px',
+                          boxShadow: '0 3px 8px rgba(59, 130, 246, 0.2)',
+                          margin: '0 auto 8px',
                           position: 'relative',
                           zIndex: 1,
                         }}
                       >
                         <CloudUploadIcon
                           sx={{
-                            fontSize: 22,
+                            fontSize: 16,
                             color: 'white',
                             transition: 'transform 0.3s ease',
                             '&:hover': {
@@ -595,8 +815,8 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                         sx={{
                           color: '#475569',
                           fontWeight: 600,
-                          fontSize: '0.875rem',
-                          cursor: 'pointer',
+                          fontSize: '0.75rem',
+                          cursor: isUploading ? 'not-allowed' : 'pointer',
                           lineHeight: 1.2,
                           position: 'relative',
                           zIndex: 1,
@@ -608,47 +828,87 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                         variant="caption"
                         sx={{
                           color: '#94A3B8',
-                          fontSize: '0.75rem',
+                          fontSize: '0.65rem',
                           lineHeight: 1.2,
-                          marginTop: '4px',
+                          marginTop: '2px',
                           position: 'relative',
                           zIndex: 1,
                         }}
                       >
-                        PNG, JPG or GIF
+                        PNG, JPG or GIF (100×100px)
                       </Typography>
                     </Stack>
                   </label>
-                  {previewImage && (
-                    <Box position="relative">
-                      <PreviewImage src={previewImage} alt="Preview" />
-                      <IconButton
-                        onClick={handleRemoveImage}
+                  {isUploading ? (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%',
+                        width: '100%',
+                      }}
+                    >
+                      <CircularProgress
+                        size={40}
                         sx={{
-                          position: 'absolute',
-                          top: 8,
-                          right: 8,
-                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                          padding: '6px',
-                          '&:hover': {
-                            backgroundColor: '#FFFFFF',
-                            transform: 'scale(1.1)',
-                            boxShadow: '0 6px 16px rgba(0, 0, 0, 0.2)',
-                          },
-                          transition: 'all 0.2s ease',
-                          zIndex: 2,
+                          color: '#3B82F6',
+                          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.2)',
+                          mb: 1,
                         }}
-                        size="small"
+                      />
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: '#3B82F6',
+                          fontWeight: 600,
+                          fontSize: '0.8rem',
+                        }}
                       >
-                        <DeleteIcon
+                        Uploading...
+                      </Typography>
+                    </Box>
+                  ) : (
+                    previewImage && (
+                      <Box position="relative">
+                        <PreviewImage
+                          src={previewImage}
+                          alt="Preview"
                           sx={{
-                            color: '#EF4444',
-                            fontSize: '18px',
+                            transition: 'opacity 0.3s ease',
                           }}
                         />
-                      </IconButton>
-                    </Box>
+                        <IconButton
+                          onClick={handleRemoveImage}
+                          sx={{
+                            position: 'absolute',
+                            top: -3,
+                            right: -3,
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            boxShadow: '0 3px 8px rgba(0, 0, 0, 0.18)',
+                            padding: '3px',
+                            width: '20px',
+                            height: '20px',
+                            '&:hover': {
+                              backgroundColor: '#FFFFFF',
+                              transform: 'scale(1.08)',
+                              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.22)',
+                            },
+                            transition: 'all 0.2s ease',
+                            zIndex: 6,
+                          }}
+                          size="small"
+                        >
+                          <DeleteIcon
+                            sx={{
+                              color: '#EF4444',
+                              fontSize: '14px',
+                            }}
+                          />
+                        </IconButton>
+                      </Box>
+                    )
                   )}
                 </>
               )}
@@ -956,25 +1216,45 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
             <Button
               onClick={handleSubmit}
               variant="contained"
+              disabled={isUploading}
               sx={{
-                background: 'linear-gradient(90deg, #3B82F6 0%, #52B788 100%)',
+                background: isUploading
+                  ? 'rgba(203, 213, 225, 0.8)'
+                  : 'linear-gradient(90deg, #3B82F6 0%, #52B788 100%)',
                 fontWeight: 600,
                 padding: '8px 24px',
                 borderRadius: '8px',
                 textTransform: 'none',
                 boxShadow: '0 4px 12px rgba(59, 130, 246, 0.2)',
                 transition: 'all 0.3s ease',
+                minWidth: '160px',
+                position: 'relative',
                 '&:hover': {
-                  boxShadow: '0 8px 16px rgba(59, 130, 246, 0.3)',
-                  transform: 'translateY(-2px)',
+                  boxShadow: isUploading
+                    ? 'none'
+                    : '0 8px 16px rgba(59, 130, 246, 0.3)',
+                  transform: isUploading ? 'none' : 'translateY(-2px)',
                 },
                 '&:active': {
-                  transform: 'translateY(0)',
-                  boxShadow: '0 2px 8px rgba(59, 130, 246, 0.2)',
+                  transform: isUploading ? 'none' : 'translateY(0)',
+                  boxShadow: isUploading
+                    ? 'none'
+                    : '0 2px 8px rgba(59, 130, 246, 0.2)',
                 },
               }}
             >
-              {mode === 'edit' ? 'Update Product' : 'Add Product'}
+              {isUploading ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CircularProgress size={20} sx={{ color: 'white' }} />
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Uploading...
+                  </Typography>
+                </Box>
+              ) : mode === 'edit' ? (
+                'Update Product'
+              ) : (
+                'Add Product'
+              )}
             </Button>
           )}
         </StyledDialogActions>

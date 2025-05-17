@@ -100,6 +100,18 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       'ProductEdit - Received data from modal:',
       JSON.stringify(data, null, 2)
     );
+
+    // Ensure the image path is properly formatted
+    let imagePath = data.image || '/placeholder-image.png';
+
+    if (imagePath.startsWith('data:image')) {
+      console.warn(
+        'Image is still in base64 format. It should have been uploaded to the server.'
+      );
+
+      imagePath = '/placeholder-image.png';
+    }
+
     const productWithStatus = {
       ...data,
       id: data.id || Date.now(),
@@ -111,7 +123,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       status: Boolean(data.status),
       rating: typeof data.rating === 'number' ? data.rating : 0,
       createdAt: data.createdAt || new Date().toISOString(),
-      image: data.image || '/placeholder-image.png',
+      image: imagePath,
       statusProduct: Boolean(data.status) ? 'Active' : 'Inactive',
     };
 

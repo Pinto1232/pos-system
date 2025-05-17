@@ -10,16 +10,27 @@ import {
 } from '@mui/material';
 import { AuthContext } from '@/contexts/AuthContext';
 import styles from './dashboardMain.module.css';
-import ProductTableContainer from '../productTable/ProductTableContainer';
 import { useSpinner } from '@/contexts/SpinnerContext';
-import AnalyticsCardContainer from '../analyticsCard/AnalyticsCardContainer';
-import SearchBarContainer from '../searchBar/SearchBarContainer';
-import FullOverviewContainer from '../fullOverview/FullOverviewContainer';
-import SaleTableContainer from '../saleTable';
 import NotFound from '@/app/404';
-import ProductEditContainer from '../productEdit/ProductEditContainer';
-import SalesContainer from '../sales/salesContainer';
 import FeatureGuard from '../feature-access/FeatureGuard';
+
+const ProductTableContainer = lazy(
+  () => import('../productTable/ProductTableContainer')
+);
+const AnalyticsCardContainer = lazy(
+  () => import('../analyticsCard/AnalyticsCardContainer')
+);
+const SearchBarContainer = lazy(
+  () => import('../searchBar/SearchBarContainer')
+);
+const FullOverviewContainer = lazy(
+  () => import('../fullOverview/FullOverviewContainer')
+);
+const SaleTableContainer = lazy(() => import('../saleTable'));
+const ProductEditContainer = lazy(
+  () => import('../productEdit/ProductEditContainer')
+);
+const SalesContainer = lazy(() => import('../sales/salesContainer'));
 
 const PricingPackagesClient = lazy(
   () => import('@/app/pricing-packages/PricingPackagesClient')
@@ -73,19 +84,39 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
               Dashboard
             </Typography>
             <Box sx={{ mb: isMobile ? 2 : 3 }}>
-              <SearchBarContainer />
+              <Suspense
+                fallback={<Skeleton variant="rectangular" height={60} />}
+              >
+                <SearchBarContainer />
+              </Suspense>
             </Box>
             <Box sx={{ mb: isMobile ? 2 : 3 }}>
-              <SalesContainer />
+              <Suspense
+                fallback={<Skeleton variant="rectangular" height={300} />}
+              >
+                <SalesContainer />
+              </Suspense>
             </Box>
             <Box sx={{ mb: isMobile ? 2 : 3 }}>
-              <AnalyticsCardContainer />
+              <Suspense
+                fallback={<Skeleton variant="rectangular" height={200} />}
+              >
+                <AnalyticsCardContainer />
+              </Suspense>
             </Box>
             <Box sx={{ mb: isMobile ? 2 : 3 }}>
-              <FullOverviewContainer />
+              <Suspense
+                fallback={<Skeleton variant="rectangular" height={200} />}
+              >
+                <FullOverviewContainer />
+              </Suspense>
             </Box>
             <Box sx={{ mb: isMobile ? 2 : 3 }}>
-              <SaleTableContainer />
+              <Suspense
+                fallback={<Skeleton variant="rectangular" height={400} />}
+              >
+                <SaleTableContainer />
+              </Suspense>
             </Box>
           </Box>
         );
