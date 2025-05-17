@@ -256,21 +256,30 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
       typeof window !== 'undefined' &&
       sessionStorage.getItem('freshLogin') === 'true';
 
+    const isMainDashboard =
+      typeof window !== 'undefined' &&
+      (window.location.pathname === '/dashboard' ||
+        window.location.pathname === '/');
+
     if (isFreshLogin) {
       if (typeof window !== 'undefined') {
         sessionStorage.removeItem('freshLogin');
       }
 
-      const loadingTimeout = setTimeout(() => {
-        stopLoading();
-      }, 3000);
+      if (!isMainDashboard) {
+        const loadingTimeout = setTimeout(() => {
+          stopLoading();
+        }, 3000);
+        return () => clearTimeout(loadingTimeout);
+      }
+    }
 
-      return () => clearTimeout(loadingTimeout);
+    if (isMainDashboard) {
+      stopLoading();
     } else {
       const loadingTimeout = setTimeout(() => {
         stopLoading();
       }, 100);
-
       return () => clearTimeout(loadingTimeout);
     }
   }, [isInitialized, stopLoading]);
@@ -280,6 +289,13 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
   );
 
   if (!isInitialized) {
+    const isHomePage =
+      typeof window !== 'undefined' && window.location.pathname === '/';
+
+    if (isHomePage) {
+      return null;
+    }
+
     return <DashboardLoading />;
   }
 

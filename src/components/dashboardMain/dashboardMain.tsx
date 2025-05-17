@@ -45,16 +45,25 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
   const { stopLoading } = useSpinner();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  const [isDataLoaded, setIsDataLoaded] = useState(
+    activeSection === 'Dashboard'
+  );
 
   useEffect(() => {
+    if (activeSection === 'Dashboard') {
+      setIsDataLoaded(true);
+      stopLoading();
+      return;
+    }
+
     const dataLoadingTimer = setTimeout(() => {
       setIsDataLoaded(true);
       stopLoading();
     }, 1500);
 
     return () => clearTimeout(dataLoadingTimer);
-  }, [stopLoading]);
+  }, [stopLoading, activeSection]);
 
   const renderSection = React.useCallback(() => {
     let sectionToRender;
@@ -197,6 +206,13 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
         </Typography>
       </Box>
     );
+  }
+
+  const isHomePage =
+    typeof window !== 'undefined' && window.location.pathname === '/';
+
+  if (isHomePage) {
+    return <div className={styles.container}>{renderSection()}</div>;
   }
 
   return (

@@ -40,7 +40,7 @@ export default async function Dashboard() {
           `user-${userId}`,
         ]}
       >
-        <Suspense fallback={<DashboardLoading />}>
+        <Suspense fallback={null}>
           <DashboardClient
             initialSubscriptionData={userSubscription}
             initialDashboardData={dashboardSummary}
