@@ -170,8 +170,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
                 sx={{
                   height: 20,
                   fontSize: '0.65rem',
-                  backgroundColor: `${getNotificationColor()}20`,
-                  color: getNotificationColor(),
+                  backgroundColor: `${notificationColor}20`,
+                  color: notificationColor,
                   '& .MuiChip-label': {
                     px: 1,
                   },
