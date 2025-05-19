@@ -68,9 +68,21 @@ export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (isDashboard && loading) {
+      const skipLoading =
+        typeof window !== 'undefined' &&
+        sessionStorage.getItem('skipDashboardLoading') === 'true';
+
+      if (skipLoading) {
+        setLoading(false);
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('skipDashboardLoading');
+        }
+        return;
+      }
+
       const dashboardTimeout = setTimeout(() => {
         setLoading(false);
-      }, 5000);
+      }, 3000);
 
       return () => clearTimeout(dashboardTimeout);
     }

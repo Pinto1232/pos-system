@@ -30,7 +30,7 @@ const SaleTableContainer = lazy(() => import('../saleTable'));
 const ProductEditContainer = lazy(
   () => import('../productEdit/ProductEditContainer')
 );
-const SalesContainer = lazy(() => import('../sales/salesContainer'));
+const SalesContainer = lazy(() => import('../sales/containers/SalesContainer'));
 
 const PricingPackagesClient = lazy(
   () => import('@/app/pricing-packages/PricingPackagesClient')

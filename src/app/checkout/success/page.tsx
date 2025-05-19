@@ -56,31 +56,32 @@ function SuccessContent({ onConfirm }: { onConfirm: () => void }) {
     e.preventDefault();
     onConfirm();
     handleClose();
-    setLoading(true);
+
     sessionStorage.setItem('fromPaymentSuccess', 'true');
+
+    sessionStorage.setItem('skipDashboardLoading', 'true');
+
+    setLoading(true);
+
+    await Promise.all([
+      fetch('/api/dashboard/summary', {
+        priority: 'high',
+        cache: 'force-cache',
+      }).catch(() => {}),
+
+      fetch('/api/UserSubscription/user/default-user', {
+        priority: 'high',
+        cache: 'force-cache',
+      }).catch(() => {}),
+    ]);
+
     if (!isInitialized) return;
     if (!authenticated || !token) {
       router.replace('/?error=Session expired, please login again');
       return;
     }
-    let payload = null;
-    let roles = [];
-    try {
-      payload = JSON.parse(atob(token.split('.')[1]));
-      roles = payload?.realm_access?.roles || payload?.roles || [];
-    } catch {
-      router.replace('/?error=Session invalid, please login again');
-      return;
-    }
 
-    console.log(
-      '⚠️ WARNING: Role check is temporarily disabled for development'
-    );
-    console.log('⚠️ This should be re-enabled before deploying to production');
-
-    setTimeout(() => {
-      router.push('/dashboard');
-    }, 100);
+    router.push('/dashboard');
   };
 
   return (

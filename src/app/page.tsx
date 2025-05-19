@@ -1,13 +1,17 @@
 import { Box, Typography } from '@mui/material';
-import PricingPackagesContainer from '@/components/pricing-packages/PricingPackagesContainer';
-import HeroContainer from '@/components/features/HeroContainer';
-import TestimonialContainer from '@/components/testimonial/TestimonialContainer';
-import FeaturesSlider from '@/components/slider/FeaturesSlider';
-import RegistrationHandler from '@/components/auth/RegistrationHandler';
-import ErrorAlert from '@/components/ui/errorAlert/ErrorAlert';
 import { fetchPricingPackagesAction } from '@/app/pricing-packages/actions';
 import { Suspense } from 'react';
 import { CACHE_TAGS, CACHE_TIMES } from '@/app/cache-constants';
+import PricingPackagesContainer from '@/components/pricing-packages/PricingPackagesContainer';
+import RegistrationHandler from '@/components/auth/RegistrationHandler';
+import ErrorAlert from '@/components/ui/errorAlert/ErrorAlert';
+
+import {
+  LazyHeroContainer,
+  LazyTestimonialContainer,
+  LazyFeaturesSlider,
+  DeferredContentLoader,
+} from '@/components/performance/ClientDynamicImports';
 
 export const revalidate = CACHE_TIMES.SEMI_STATIC;
 export const fetchCache = 'force-cache';
@@ -64,12 +68,24 @@ export default async function Home() {
             {description}
           </Typography>
         </Box>
-        <Suspense fallback={<div>Loading pricing packages...</div>}>
+
+        {}
+        <Suspense fallback={null}>
           <PricingPackagesContainer initialPackages={initialPackages} />
         </Suspense>
-        <HeroContainer />
-        <TestimonialContainer />
-        <FeaturesSlider />
+
+        {}
+        <Suspense fallback={null}>
+          <LazyHeroContainer />
+        </Suspense>
+
+        {}
+        <Box id="deferred-content">
+          <DeferredContentLoader>
+            <LazyTestimonialContainer />
+            <LazyFeaturesSlider />
+          </DeferredContentLoader>
+        </Box>
       </Box>
     </div>
   );

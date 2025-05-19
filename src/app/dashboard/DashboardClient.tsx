@@ -256,10 +256,22 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
       typeof window !== 'undefined' &&
       sessionStorage.getItem('freshLogin') === 'true';
 
+    const skipLoading =
+      typeof window !== 'undefined' &&
+      sessionStorage.getItem('skipDashboardLoading') === 'true';
+
     const isMainDashboard =
       typeof window !== 'undefined' &&
       (window.location.pathname === '/dashboard' ||
         window.location.pathname === '/');
+
+    if (skipLoading) {
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('skipDashboardLoading');
+      }
+      stopLoading();
+      return;
+    }
 
     if (isFreshLogin) {
       if (typeof window !== 'undefined') {
