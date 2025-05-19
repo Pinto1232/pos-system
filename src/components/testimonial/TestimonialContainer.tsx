@@ -10,7 +10,7 @@ const TestimonialContainer: React.FC = () => {
     clientPosition: 'CEO',
     clientCompany: 'Pisval Tech',
     testimonialText:
-      "At Pisval Tech, we are dedicated to revolutionizing the retail industry through innovative point of sale solutions. Our journey began with a simple vision: to create a POS system that combines powerful functionality with intuitive design. Today, we serve businesses of all sizes, helping them streamline operations, enhance customer experiences, and drive growth. Our team of passionate experts is committed to continuous improvement and exceptional service. We believe that technology should empower businesses, not complicate them. That's why we've built a solution that adapts to your unique needs and grows with your business.",
+      'At Pisval Tech, we are dedicated to revolutionizing the retail industry through innovative point of sale solutions. Our journey began with a simple vision: to create a POS system that combines powerful functionality with intuitive design. Today, we serve businesses of all sizes, helping them streamline operations, enhance customer experiences, and drive growth. Our team of passionate experts is committed to continuous improvement and exceptional service',
   };
 
   return (

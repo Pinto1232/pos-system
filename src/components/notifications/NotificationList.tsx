@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -11,6 +11,7 @@ import {
 import NotificationItem from './NotificationItem';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { styled } from '@mui/material/styles';
+import { withOptimization } from '@/utils/withOptimization';
 
 const NotificationListContainer = styled(Box)(({ theme }) => ({
   maxHeight: '400px',
@@ -51,13 +52,16 @@ const NotificationList: React.FC = () => {
     unreadCount,
   } = useNotificationContext();
 
-  const handleMarkAsRead = async (id: string) => {
-    await markAsRead([id]);
-  };
+  const handleMarkAsRead = useCallback(
+    async (id: string) => {
+      await markAsRead([id]);
+    },
+    [markAsRead]
+  );
 
-  const handleMarkAllAsRead = async () => {
+  const handleMarkAllAsRead = useCallback(async () => {
     await markAllAsRead();
-  };
+  }, [markAllAsRead]);
 
   if (isLoading) {
     return (
@@ -144,4 +148,8 @@ const NotificationList: React.FC = () => {
   );
 };
 
-export default NotificationList;
+export default withOptimization(NotificationList, {
+  memo: true,
+  trackRenders: process.env.NODE_ENV === 'development',
+  displayName: 'NotificationList',
+});

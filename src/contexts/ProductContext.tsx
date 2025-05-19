@@ -24,7 +24,7 @@ interface ProductContextType {
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
-const FALLBACK_IMAGE = '/public/404_icons.png';
+const FALLBACK_IMAGE = '/404_icons.png';
 const initialProducts: Product[] = [
   {
     id: 1,
@@ -36,7 +36,7 @@ const initialProducts: Product[] = [
     rating: 4.5,
     color: 'Black',
     createdAt: new Date().toISOString(),
-    image: '/public/pos_1.jpg',
+    image: '/pos_1.jpg',
   },
   {
     id: 2,
@@ -48,7 +48,7 @@ const initialProducts: Product[] = [
     rating: 3.8,
     color: 'White',
     createdAt: new Date().toISOString(),
-    image: '/public/pos_2.png',
+    image: '/pos_2.png',
   },
   {
     id: 3,
@@ -60,7 +60,7 @@ const initialProducts: Product[] = [
     rating: 4.2,
     color: 'Blue',
     createdAt: new Date().toISOString(),
-    image: '/public/pos_3.png',
+    image: '/pos_3.png',
   },
 ];
 

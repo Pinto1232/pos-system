@@ -210,7 +210,6 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
             }}
           >
             <CircularProgress />
-            <Typography sx={{ ml: 2 }}>Loading customization...</Typography>
           </Box>
         )}
 

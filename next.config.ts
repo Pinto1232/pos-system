@@ -48,7 +48,9 @@ const nextConfig: NextConfig = {
       'via.placeholder.com',
     ],
     formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 3600, // Increase cache TTL to 1 hour
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   poweredByHeader: false,
   compress: true,

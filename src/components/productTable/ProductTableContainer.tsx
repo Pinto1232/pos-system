@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, lazy, Suspense } from 'react';
 import ProductTable from './ProductTable';
 import { useProductContext } from '@/contexts/ProductContext';
 import { Product } from '../productEdit/types';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { Skeleton } from '@mui/material';
+
+const VirtualizedProductTable = lazy(() => import('./VirtualizedProductTable'));
 
 const ProductTableContainer: React.FC = () => {
   const { products, updateProduct } = useProductContext();
@@ -294,31 +297,54 @@ const ProductTableContainer: React.FC = () => {
     doc.save('product-list.pdf');
   };
 
+  const shouldUseVirtualization = useMemo(() => {
+    return filteredProducts.length > 100;
+  }, [filteredProducts.length]);
+
   return (
-    <ProductTable
-      products={paginatedProducts}
-      selectedProduct={selectedProduct}
-      isViewModalOpen={isViewModalOpen}
-      page={page}
-      rowsPerPage={rowsPerPage}
-      searchQuery={searchQuery}
-      categoryFilter={categoryFilter}
-      ratingFilter={ratingFilter}
-      statusFilter={statusFilter}
-      priceFilter={priceFilter}
-      onView={handleView}
-      onCloseModal={handleCloseModal}
-      onPriceChange={handlePriceChange}
-      onSearchChange={handleSearchChange}
-      onCategoryChange={handleCategoryChange}
-      onRatingChange={handleRatingChange}
-      onStatusChange={handleStatusChange}
-      onStatusToggle={handleStatusToggle}
-      onPageChange={handleChangePage}
-      onRowsPerPageChange={handleChangeRowsPerPage}
-      onResetFilters={handleResetFilters}
-      onExportPDF={handleExportPDF}
-    />
+    <>
+      {shouldUseVirtualization ? (
+        <Suspense fallback={<Skeleton variant="rectangular" height={500} />}>
+          <VirtualizedProductTable
+            products={filteredProducts}
+            selectedProduct={selectedProduct}
+            isViewModalOpen={isViewModalOpen}
+            searchQuery={searchQuery}
+            categoryFilter={categoryFilter}
+            ratingFilter={ratingFilter}
+            statusFilter={statusFilter}
+            priceFilter={priceFilter}
+            onView={handleView}
+            isLoading={false}
+          />
+        </Suspense>
+      ) : (
+        <ProductTable
+          products={paginatedProducts}
+          selectedProduct={selectedProduct}
+          isViewModalOpen={isViewModalOpen}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          searchQuery={searchQuery}
+          categoryFilter={categoryFilter}
+          ratingFilter={ratingFilter}
+          statusFilter={statusFilter}
+          priceFilter={priceFilter}
+          onView={handleView}
+          onCloseModal={handleCloseModal}
+          onPriceChange={handlePriceChange}
+          onSearchChange={handleSearchChange}
+          onCategoryChange={handleCategoryChange}
+          onRatingChange={handleRatingChange}
+          onStatusChange={handleStatusChange}
+          onStatusToggle={handleStatusToggle}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          onResetFilters={handleResetFilters}
+          onExportPDF={handleExportPDF}
+        />
+      )}
+    </>
   );
 };
 
