@@ -14,10 +14,10 @@ import {
   useTheme,
 } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { navbarLinks } from '../../settings';
+import { navbarLinks } from '../../Seetings/settings';
 import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import { useLogout } from '@/hooks/useLogout';
-import SettingsModal from '@/SettingsModal';
+import SettingsModal from '@/Seetings/SettingsModal';
 import eventBus, { UI_EVENTS } from '@/utils/eventBus';
 import { useCustomization } from '@/contexts/CustomizationContext';
 import NotificationDropdown from '@/components/notifications/NotificationDropdown';

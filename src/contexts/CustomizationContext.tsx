@@ -7,7 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
-import { UserCustomization } from '@/SettingsModal';
+import { UserCustomization } from '@/Seetings/SettingsModal';
 import { mockFetchCustomization } from '@/api/mockUserCustomization';
 import eventBus, { UI_EVENTS } from '@/utils/eventBus';
 

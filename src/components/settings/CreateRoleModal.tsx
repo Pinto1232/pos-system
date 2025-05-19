@@ -214,22 +214,25 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({
               }}
             >
               <Grid container spacing={1}>
-                {getTemplatePermissions(selectedTemplate).map(
-                  (permission, index) => (
-                    <Grid item xs={6} sm={4} key={index}>
-                      <Chip
-                        label={permission}
-                        size="small"
-                        sx={{
-                          bgcolor: 'rgba(23, 58, 121, 0.1)',
-                          color: '#173A79',
-                          fontWeight: 500,
-                          mb: 1,
-                        }}
-                      />
-                    </Grid>
-                  )
-                )}
+                {getTemplatePermissions(selectedTemplate).map((permission) => (
+                  <Grid
+                    item
+                    xs={6}
+                    sm={4}
+                    key={`${selectedTemplate}-${permission}`}
+                  >
+                    <Chip
+                      label={permission}
+                      size="small"
+                      sx={{
+                        bgcolor: 'rgba(23, 58, 121, 0.1)',
+                        color: '#173A79',
+                        fontWeight: 500,
+                        mb: 1,
+                      }}
+                    />
+                  </Grid>
+                ))}
               </Grid>
             </Paper>
           </Box>

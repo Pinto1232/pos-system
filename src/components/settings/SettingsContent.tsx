@@ -35,6 +35,9 @@ interface SettingsContentProps {
   setSelectedRoleTab: (tab: number) => void;
   setCreateRoleModalOpen: (open: boolean) => void;
   packages: any[] | undefined;
+  isPackagesLoading?: boolean;
+  packagesError?: Error | null;
+  refetchPackages?: () => void;
   subscription: any;
   availableFeatures: string[];
   enableAdditionalPackage: (packageId: number) => Promise<void>;
@@ -75,6 +78,9 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
   setSelectedRoleTab,
   setCreateRoleModalOpen,
   packages,
+  isPackagesLoading,
+  packagesError,
+  refetchPackages,
   subscription,
   availableFeatures,
   enableAdditionalPackage,
@@ -132,6 +138,9 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
         return (
           <PackageManagementContent
             packages={packages}
+            isLoading={isPackagesLoading}
+            error={packagesError}
+            refetchPackages={refetchPackages}
             subscription={subscription}
             availableFeatures={availableFeatures}
             enableAdditionalPackage={enableAdditionalPackage}
