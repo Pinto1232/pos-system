@@ -1,6 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const SELECTED_PACKAGE_STORAGE_KEY = 'selectedPackage';
 
 export type Package = {
   id: number;
@@ -22,6 +24,8 @@ type PackageSelectionContextType = {
   closeModal: () => void;
   isPackageBeingCustomized: boolean;
   isPackageDisabled: (pkgId: number) => boolean;
+  isPurchasedPackage: (pkgId: number) => boolean;
+  getSavedPackage: () => Package | null;
 };
 
 const PackageSelectionContext = createContext<PackageSelectionContextType>({
@@ -31,7 +35,41 @@ const PackageSelectionContext = createContext<PackageSelectionContextType>({
   closeModal: () => {},
   isPackageBeingCustomized: false,
   isPackageDisabled: () => false,
+  isPurchasedPackage: () => false,
+  getSavedPackage: () => null,
 });
+
+const safeLocalStorage = {
+  getItem: (key: string): string | null => {
+    if (typeof window === 'undefined') return null;
+    try {
+      return localStorage.getItem(key);
+    } catch (error) {
+      console.error(`Error reading ${key} from localStorage:`, error);
+      return null;
+    }
+  },
+  setItem: (key: string, value: string): boolean => {
+    if (typeof window === 'undefined') return false;
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (error) {
+      console.error(`Error writing ${key} to localStorage:`, error);
+      return false;
+    }
+  },
+  removeItem: (key: string): boolean => {
+    if (typeof window === 'undefined') return false;
+    try {
+      localStorage.removeItem(key);
+      return true;
+    } catch (error) {
+      console.error(`Error removing ${key} from localStorage:`, error);
+      return false;
+    }
+  },
+};
 
 export const PackageSelectionProvider: React.FC<{
   children: React.ReactNode;
@@ -40,16 +78,72 @@ export const PackageSelectionProvider: React.FC<{
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPackageBeingCustomized, setIsPackageBeingCustomized] =
     useState(false);
+  const [purchasedPackageId, setPurchasedPackageId] = useState<number | null>(
+    null
+  );
+
+  useEffect(() => {
+    const savedPackageJson = safeLocalStorage.getItem(
+      SELECTED_PACKAGE_STORAGE_KEY
+    );
+    if (savedPackageJson) {
+      try {
+        const savedPackage = JSON.parse(savedPackageJson);
+        setSelectedPackage(savedPackage);
+        setPurchasedPackageId(savedPackage.id);
+        console.log(
+          'Loaded saved package from localStorage:',
+          savedPackage.title
+        );
+      } catch (error) {
+        console.error(
+          'Failed to parse saved package from localStorage:',
+          error
+        );
+        safeLocalStorage.removeItem(SELECTED_PACKAGE_STORAGE_KEY);
+      }
+    }
+  }, []);
+
+  const getSavedPackage = (): Package | null => {
+    const savedPackageJson = safeLocalStorage.getItem(
+      SELECTED_PACKAGE_STORAGE_KEY
+    );
+    if (savedPackageJson) {
+      try {
+        return JSON.parse(savedPackageJson);
+      } catch (error) {
+        console.error(
+          'Failed to parse saved package from localStorage:',
+          error
+        );
+        return null;
+      }
+    }
+    return null;
+  };
 
   const selectPackage = (pkg: Package) => {
     setSelectedPackage(pkg);
     setIsModalOpen(true);
     setIsPackageBeingCustomized(true);
+    setPurchasedPackageId(pkg.id);
+
+    safeLocalStorage.setItem(SELECTED_PACKAGE_STORAGE_KEY, JSON.stringify(pkg));
+
+    if (typeof window !== 'undefined') {
+      const packageSelectedEvent = new CustomEvent('packageSelected', {
+        detail: { packageId: pkg.id },
+      });
+      window.dispatchEvent(packageSelectedEvent);
+      console.log(
+        `Package selected event dispatched for package ID: ${pkg.id}`
+      );
+    }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedPackage(null);
     setIsPackageBeingCustomized(false);
   };
 
@@ -61,6 +155,10 @@ export const PackageSelectionProvider: React.FC<{
     );
   };
 
+  const isPurchasedPackage = (pkgId: number): boolean => {
+    return purchasedPackageId === pkgId;
+  };
+
   return (
     <PackageSelectionContext.Provider
       value={{
@@ -70,6 +168,8 @@ export const PackageSelectionProvider: React.FC<{
         closeModal,
         isPackageBeingCustomized,
         isPackageDisabled,
+        isPurchasedPackage,
+        getSavedPackage,
       }}
     >
       {children}

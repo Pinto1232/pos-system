@@ -1,0 +1,79 @@
+/* Custom styles for package prices in Settings Modal */
+.settingsPrice {
+  font-size: 16px !important;
+  font-weight: 700;
+  color: #111827;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  justify-content: center;
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.settingsCurrency {
+  font-size: 14px !important;
+  font-weight: 600;
+  color: #374151;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.settingsPriceValue {
+  font-size: 16px !important;
+  display: inline-block;
+  word-break: break-word;
+}
+
+.settingsPeriod {
+  font-size: 12px !important;
+  font-weight: 500;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+/* Custom styles for custom package prices */
+.settingsCustomPrice {
+  color: #4287f5;
+  font-weight: 700;
+}
+
+.settingsCustomCurrency {
+  color: #4287f5;
+  font-weight: 600;
+  font-size: 14px !important;
+}
+
+.settingsCustomPriceValue {
+  color: #4287f5;
+  font-weight: 700;
+  font-size: 16px !important;
+}
+
+.settingsCustomPeriod {
+  color: #4287f5;
+  font-weight: 500;
+  font-size: 12px !important;
+}
+
+.settingsCustomPriceContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.settingsCustomPriceLabel {
+  font-size: 12px !important;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: -4px;
+}
+
+.settingsCustomPriceWrapper {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}

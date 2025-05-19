@@ -5,7 +5,6 @@ import { SalesContainerProps, SalesData } from '../types';
 import SalesPresentation from '../SalesPresentation';
 import { Box, Skeleton } from '@mui/material';
 
-
 declare global {
   interface Window {
     __debug_handleTimeframeChange?: (timeframe: string) => void;

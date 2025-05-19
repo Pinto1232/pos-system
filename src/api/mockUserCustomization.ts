@@ -2,7 +2,7 @@ import {
   UserCustomization,
   TaxSettings,
   RegionalSettings,
-} from '@/SettingsModal';
+} from '@/Seetings/SettingsModal';
 
 const STORAGE_KEY = 'userCustomization';
 

@@ -15,10 +15,10 @@ import { MdRestore } from 'react-icons/md';
 import {
   SettingsModalPresentationProps,
   settingsItems,
-} from './types/settingsTypes';
-import SettingsNavigation from './components/settings/SettingsNavigation';
-import SettingsContent from './components/settings/SettingsContent';
-import CreateRoleModal from './components/settings/CreateRoleModal';
+} from '../types/settingsTypes';
+import SettingsNavigation from '../components/settings/SettingsNavigation';
+import SettingsContent from '../components/settings/SettingsContent';
+import CreateRoleModal from '../components/settings/CreateRoleModal';
 
 const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
   open,
@@ -62,6 +62,9 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
   handleCreateRole,
   getTemplatePermissions,
   packages,
+  isPackagesLoading,
+  packagesError,
+  refetchPackages,
   subscription,
   availableFeatures,
   enableAdditionalPackage,
@@ -193,6 +196,9 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
             setSelectedRoleTab={setSelectedRoleTab}
             setCreateRoleModalOpen={setCreateRoleModalOpen}
             packages={packages}
+            isPackagesLoading={isPackagesLoading}
+            packagesError={packagesError}
+            refetchPackages={refetchPackages}
             subscription={subscription}
             availableFeatures={availableFeatures}
             enableAdditionalPackage={enableAdditionalPackage}

@@ -10,13 +10,14 @@ import {
   mockUpdateCustomization,
 } from '@/api/mockUserCustomization';
 import { useUserSubscription } from '@/contexts/UserSubscriptionContext';
+import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 import SettingsModalPresentation from './SettingsModalPresentation';
 import {
   UserCustomization,
   TaxSettings,
   RegionalSettings,
   SettingsModalProps,
-} from './types/settingsTypes';
+} from '../types/settingsTypes';
 
 const DEFAULT_SIDEBAR_COLOR = '#173A79';
 const DEFAULT_LOGO_URL = '/Pisval_Logo.jpg';
@@ -632,10 +633,36 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     disableAdditionalPackage: disablePackage,
   } = useUserSubscription();
 
+  const { selectPackage: selectPackageInContext } = usePackageSelection();
+
   const enableAdditionalPackage = async (packageId: number) => {
     console.log(`Enable package ${packageId}`);
     try {
       await enablePackage(packageId);
+
+      const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
+      if (selectedPkg) {
+        const packageForSelection = {
+          ...selectedPkg,
+          type: selectedPkg.type.includes('custom')
+            ? 'custom'
+            : selectedPkg.type.includes('starter')
+              ? 'starter'
+              : selectedPkg.type.includes('growth')
+                ? 'growth'
+                : selectedPkg.type.includes('enterprise')
+                  ? 'enterprise'
+                  : selectedPkg.type.includes('premium')
+                    ? 'premium'
+                    : 'starter',
+        } as any;
+
+        selectPackageInContext(packageForSelection);
+        console.log(
+          `Package ${packageId} selected in context:`,
+          packageForSelection.title
+        );
+      }
 
       const packageChangedEvent = new CustomEvent('packageChanged');
       window.dispatchEvent(packageChangedEvent);
@@ -664,60 +691,163 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     id: number;
     title: string;
     description: string;
-    type: string;
+    icon: string;
+    extraDescription: string;
     price: number;
+    testPeriodDays: number;
+    type: string;
+    currency?: string;
+    multiCurrencyPrices?: string;
   }
 
-  const { data: packages } = useQuery<Package[]>({
+  const { getSavedPackage } = usePackageSelection();
+
+  const {
+    data: packages,
+    isLoading: isPackagesLoading,
+    error: packagesError,
+    refetch: refetchPackages,
+  } = useQuery<Package[]>({
     queryKey: ['pricingPackages'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/packages');
+        console.log(
+          '[SETTINGS MODAL] Fetching pricing packages for SettingsModal'
+        );
+
+        const savedPackage = getSavedPackage();
+        if (savedPackage) {
+          console.log(
+            '[SETTINGS MODAL] Found saved package in context:',
+            savedPackage.title
+          );
+        }
+
+        const response = await fetch('/api/pricing-packages');
         if (!response.ok) {
-          throw new Error('Failed to fetch packages');
+          throw new Error(
+            `Failed to fetch packages: ${response.status} ${response.statusText}`
+          );
         }
         const data = await response.json();
 
         if (data && data.data && Array.isArray(data.data)) {
-          return data.data;
+          console.log(
+            `[SETTINGS MODAL] Retrieved ${data.data.length} packages from API`
+          );
+
+          data.data.forEach((pkg) => {
+            console.log(`[SETTINGS MODAL] Package: ${pkg.title}`, {
+              id: pkg.id,
+              price: pkg.price,
+              currency: pkg.currency,
+              multiCurrencyPrices: pkg.multiCurrencyPrices,
+              type: pkg.type,
+            });
+          });
+
+          const uniquePackages = data.data.filter(
+            (pkg, index, self) =>
+              index === self.findIndex((p) => p.title === pkg.title)
+          );
+          return uniquePackages;
         }
 
-        return Array.isArray(data)
-          ? data
-          : [
-              {
-                id: 1,
-                title: 'Starter',
-                description:
-                  'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting',
-                type: 'starter',
-                price: 29.99,
-              },
-              {
-                id: 2,
-                title: 'Growth',
-                description:
-                  'Everything in Starter;Multi-store support;Customer loyalty program;Priority support;Advanced reporting;Employee management',
-                type: 'growth',
-                price: 59.99,
-              },
-              {
-                id: 3,
-                title: 'Premium',
-                description:
-                  'Everything in Growth;Advanced inventory forecasting;Custom branding;24/7 support;API access;Advanced analytics;Multi-currency support',
-                type: 'premium',
-                price: 99.99,
-              },
-              {
-                id: 4,
-                title: 'Enterprise',
-                description:
-                  'Everything in Premium;Dedicated account manager;Custom development;White-label solution;Unlimited users;Advanced security features;Data migration assistance',
-                type: 'enterprise',
-                price: 199.99,
-              },
-            ];
+        if (Array.isArray(data)) {
+          console.log(
+            `[SETTINGS MODAL] Retrieved ${data.length} packages from API (array format)`
+          );
+
+          data.forEach((pkg) => {
+            console.log(`[SETTINGS MODAL] Package: ${pkg.title}`, {
+              id: pkg.id,
+              price: pkg.price,
+              currency: pkg.currency,
+              multiCurrencyPrices: pkg.multiCurrencyPrices,
+              type: pkg.type,
+            });
+          });
+
+          return data;
+        }
+
+        console.warn('No valid package data found, using fallback data');
+
+        return [
+          {
+            id: 1,
+            title: 'Starter Plus',
+            description:
+              'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting',
+            icon: 'MUI:StarIcon',
+            extraDescription:
+              'Perfect for small businesses looking for essential features',
+            price: 39.99,
+            testPeriodDays: 14,
+            type: 'starter-plus',
+            currency: 'ZAR',
+            multiCurrencyPrices: '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}',
+          },
+          {
+            id: 2,
+            title: 'Growth Pro',
+            description:
+              'Everything in Growth;Advanced inventory forecasting;Enhanced customer loyalty program;Marketing automation tools;Staff performance tracking',
+            icon: 'MUI:TrendingUpIcon',
+            extraDescription:
+              'Ideal for growing businesses that need advanced features',
+            price: 79.99,
+            testPeriodDays: 14,
+            type: 'growth-pro',
+            currency: 'ZAR',
+            multiCurrencyPrices: '{"ZAR": 1399.99, "EUR": 72.99, "GBP": 63.99}',
+          },
+          {
+            id: 3,
+            title: 'Custom',
+            description:
+              'Tailor-made solutions for your unique business needs;Perfect for businesses requiring customized POS features;Build your own feature set;Pay only for what you need',
+            icon: 'MUI:SettingsIcon',
+            extraDescription:
+              'Bespoke solution tailored to your specific business requirements',
+            price: 129.99,
+            testPeriodDays: 30,
+            type: 'custom-pro',
+            currency: 'ZAR',
+            multiCurrencyPrices:
+              '{"ZAR": 1806.48, "EUR": 119.99, "GBP": 99.99}',
+          },
+          {
+            id: 4,
+            title: 'Enterprise Elite',
+            description:
+              'Comprehensive POS solutions for large enterprises;Includes all advanced features and premium support;Multi-location management;Enterprise-level analytics',
+            icon: 'MUI:BusinessIcon',
+            extraDescription:
+              'Complete solution for large businesses with complex requirements',
+            price: 249.99,
+            testPeriodDays: 30,
+            type: 'enterprise-elite',
+            currency: 'ZAR',
+            multiCurrencyPrices:
+              '{"ZAR": 4299.99, "EUR": 239.99, "GBP": 209.99}',
+          },
+          {
+            id: 5,
+            title: 'Premium Plus',
+            description:
+              'All-inclusive POS package with premium features;Best for businesses looking for top-tier POS solutions;Advanced AI-powered analytics;Predictive inventory management',
+            icon: 'MUI:DiamondIcon',
+            extraDescription:
+              'The ultimate POS experience with cutting-edge features and premium support',
+            price: 349.99,
+            testPeriodDays: 30,
+            type: 'premium-plus',
+            currency: 'ZAR',
+            multiCurrencyPrices:
+              '{"ZAR": 5999.99, "EUR": 319.99, "GBP": 279.99}',
+          },
+        ];
       } catch (error) {
         console.error(
           'Error fetching packages:',
@@ -727,40 +857,83 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         return [
           {
             id: 1,
-            title: 'Starter',
+            title: 'Starter Plus',
             description:
               'Basic POS functionality;Inventory management;Single store support;Email support;Basic reporting',
-            type: 'starter',
-            price: 29.99,
+            icon: 'MUI:StarIcon',
+            extraDescription:
+              'Perfect for small businesses looking for essential features',
+            price: 39.99,
+            testPeriodDays: 14,
+            type: 'starter-plus',
+            currency: 'ZAR',
+            multiCurrencyPrices: '{"ZAR": 699.99, "EUR": 36.99, "GBP": 31.99}',
           },
           {
             id: 2,
-            title: 'Growth',
+            title: 'Growth Pro',
             description:
-              'Everything in Starter;Multi-store support;Customer loyalty program;Priority support;Advanced reporting;Employee management',
-            type: 'growth',
-            price: 59.99,
+              'Everything in Growth;Advanced inventory forecasting;Enhanced customer loyalty program;Marketing automation tools;Staff performance tracking',
+            icon: 'MUI:TrendingUpIcon',
+            extraDescription:
+              'Ideal for growing businesses that need advanced features',
+            price: 79.99,
+            testPeriodDays: 14,
+            type: 'growth-pro',
+            currency: 'ZAR',
+            multiCurrencyPrices: '{"ZAR": 1399.99, "EUR": 72.99, "GBP": 63.99}',
           },
           {
             id: 3,
-            title: 'Premium',
+            title: 'Custom',
             description:
-              'Everything in Growth;Advanced inventory forecasting;Custom branding;24/7 support;API access;Advanced analytics;Multi-currency support',
-            type: 'premium',
-            price: 99.99,
+              'Tailor-made solutions for your unique business needs;Perfect for businesses requiring customized POS features;Build your own feature set;Pay only for what you need',
+            icon: 'MUI:SettingsIcon',
+            extraDescription:
+              'Bespoke solution tailored to your specific business requirements',
+            price: 129.99,
+            testPeriodDays: 30,
+            type: 'custom-pro',
+            currency: 'ZAR',
+            multiCurrencyPrices:
+              '{"ZAR": 2199.99, "EUR": 119.99, "GBP": 99.99}',
           },
           {
             id: 4,
-            title: 'Enterprise',
+            title: 'Enterprise Elite',
             description:
-              'Everything in Premium;Dedicated account manager;Custom development;White-label solution;Unlimited users;Advanced security features;Data migration assistance',
-            type: 'enterprise',
-            price: 199.99,
+              'Comprehensive POS solutions for large enterprises;Includes all advanced features and premium support;Multi-location management;Enterprise-level analytics',
+            icon: 'MUI:BusinessIcon',
+            extraDescription:
+              'Complete solution for large businesses with complex requirements',
+            price: 249.99,
+            testPeriodDays: 30,
+            type: 'enterprise-elite',
+            currency: 'ZAR',
+            multiCurrencyPrices:
+              '{"ZAR": 4299.99, "EUR": 239.99, "GBP": 209.99}',
+          },
+          {
+            id: 5,
+            title: 'Premium Plus',
+            description:
+              'All-inclusive POS package with premium features;Best for businesses looking for top-tier POS solutions;Advanced AI-powered analytics;Predictive inventory management',
+            icon: 'MUI:DiamondIcon',
+            extraDescription:
+              'The ultimate POS experience with cutting-edge features and premium support',
+            price: 349.99,
+            testPeriodDays: 30,
+            type: 'premium-plus',
+            currency: 'ZAR',
+            multiCurrencyPrices:
+              '{"ZAR": 5999.99, "EUR": 319.99, "GBP": 279.99}',
           },
         ];
       }
     },
     enabled: open && selectedSetting === 'Package Management',
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
   });
 
   interface Subscription {
@@ -799,6 +972,35 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     ],
     additionalPackages: [],
   };
+
+  useEffect(() => {
+    const handlePackageSelected = (event: CustomEvent) => {
+      console.log(
+        '[SETTINGS MODAL] Package selection event received:',
+        event.detail
+      );
+      if (
+        event.detail &&
+        event.detail.packageId &&
+        open &&
+        selectedSetting === 'Package Management'
+      ) {
+        refetchPackages();
+      }
+    };
+
+    window.addEventListener(
+      'packageSelected',
+      handlePackageSelected as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        'packageSelected',
+        handlePackageSelected as EventListener
+      );
+    };
+  }, [open, selectedSetting, refetchPackages]);
 
   const availableFeatures = [
     'Dashboard',
@@ -852,6 +1054,9 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       handleCreateRole={handleCreateRole}
       getTemplatePermissions={getTemplatePermissions}
       packages={packages}
+      isPackagesLoading={isPackagesLoading}
+      packagesError={packagesError}
+      refetchPackages={refetchPackages}
       subscription={subscription}
       availableFeatures={availableFeatures}
       enableAdditionalPackage={enableAdditionalPackage}

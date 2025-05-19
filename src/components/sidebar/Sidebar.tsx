@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import Image from 'next/image';
-import { sidebarItems } from '@/settings';
+import { sidebarItems } from '@/Seetings/settings';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { SidebarProps } from './types';
 import SidebarItem from './SidebarItem';

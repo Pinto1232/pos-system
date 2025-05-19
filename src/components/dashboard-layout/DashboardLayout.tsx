@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Navbar from '@/components/sidebar/Navbar';
 import DashboardMainContainer from '../dashboardMain/dashboardMainContainer';
-import SettingsModal, { UserCustomization } from '@/SettingsModal';
+import SettingsModal, { UserCustomization } from '@/Seetings/SettingsModal';
 import { useQuery } from '@tanstack/react-query';
 import useKeycloakUser from '@/hooks/useKeycloakUser';
 import { mockFetchCustomization } from '@/api/mockUserCustomization';

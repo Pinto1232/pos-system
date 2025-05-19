@@ -31,9 +31,10 @@ interface PricingPackageProps {
 
 const PricingPackageCard: React.FC<PricingPackageProps> = memo(
   ({ packageData, onBuyNow }) => {
-    const { isPackageDisabled } = usePackageSelection();
+    const { isPackageDisabled, isPurchasedPackage } = usePackageSelection();
     const { currency, rate, formatPrice, currencySymbol } = useCurrency();
     const isDisabled = isPackageDisabled(packageData.id);
+    const isPurchased = isPurchasedPackage(packageData.id);
 
     const IconComponent =
       iconMap[packageData.icon] || iconMap['MUI:DefaultIcon'];
@@ -132,13 +133,23 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
         </div>
 
         <CardFooter className={styles.footer}>
-          <Button
-            className={`${styles.button} ${isCustom ? styles.contactButton : ''}`}
-            onClick={onBuyNow}
-            disabled={isDisabled}
-          >
-            {isCustom ? 'Customize' : 'Buy Now'}
-          </Button>
+          {isPurchased ? (
+            <Button
+              className={`${styles.button}`}
+              style={{ backgroundColor: '#4CAF50' }}
+              disabled
+            >
+              Current Plan
+            </Button>
+          ) : (
+            <Button
+              className={`${styles.button} ${isCustom ? styles.contactButton : ''}`}
+              onClick={onBuyNow}
+              disabled={isDisabled}
+            >
+              {isCustom ? 'Customize' : 'Buy Now'}
+            </Button>
+          )}
         </CardFooter>
       </Card>
     );

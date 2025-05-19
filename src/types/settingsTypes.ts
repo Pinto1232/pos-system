@@ -96,6 +96,9 @@ export interface SettingsModalPresentationProps {
   handleCreateRole: () => void;
   getTemplatePermissions: (template: string) => string[];
   packages: any[] | undefined;
+  isPackagesLoading?: boolean;
+  packagesError?: Error | null;
+  refetchPackages?: () => void;
   subscription: any;
   availableFeatures: string[];
   enableAdditionalPackage: (packageId: number) => Promise<void>;

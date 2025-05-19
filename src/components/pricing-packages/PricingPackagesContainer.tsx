@@ -518,20 +518,30 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
   useEffect(() => {
     if (data && data.data && Array.isArray(data.data)) {
       console.log(
-        '📦 Retrieved Pricing Packages:',
+        '📦 [HOME PAGE] Retrieved Pricing Packages:',
         JSON.stringify(data, null, 2)
       );
+
+      data.data.forEach((pkg) => {
+        console.log(`[HOME PAGE] Package: ${pkg.title}`, {
+          id: pkg.id,
+          price: pkg.price,
+          currency: pkg.currency,
+          multiCurrencyPrices: pkg.multiCurrencyPrices,
+          type: pkg.type,
+        });
+      });
 
       const customPackage = data.data.find(
         (pkg: PackageData) => pkg.type?.toLowerCase() === 'custom'
       );
       if (customPackage) {
         console.log(
-          'Custom Package Price:',
+          '[HOME PAGE] Custom Package Price:',
           JSON.stringify(customPackage.price, null, 2)
         );
       } else {
-        console.log('No custom package found in data');
+        console.log('[HOME PAGE] No custom package found in data');
       }
     }
   }, [data]);
