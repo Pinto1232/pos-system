@@ -635,15 +635,17 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
 
   const { selectPackage: selectPackageInContext } = usePackageSelection();
 
-  // Track the last enabled package to prevent duplicate operations
-  const [lastEnabledPackageId, setLastEnabledPackageId] = useState<number | null>(null);
+  
+  const [lastEnabledPackageId, setLastEnabledPackageId] = useState<
+    number | null
+  >(null);
   const [isEnablingPackage, setIsEnablingPackage] = useState<boolean>(false);
 
-  // Use useRef to track if an operation is in progress without triggering re-renders
+  
   const enableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingProcessedRef = useRef<number | null>(null);
 
-  // Use useRef to track if a disable operation is in progress
+  
   const disableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingDisabledRef = useRef<number | null>(null);
 
@@ -683,7 +685,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           );
         }
 
-        // Add cache-busting parameter to prevent browser caching
+        
         const timestamp = Date.now();
         const response = await fetch(`/api/pricing-packages?_t=${timestamp}`);
         if (!response.ok) {
@@ -698,16 +700,19 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             `[SETTINGS MODAL] Retrieved ${data.data.length} packages from API`
           );
 
-          // Log only the first few packages to reduce console noise
+          
           const logLimit = Math.min(data.data.length, 3);
           for (let i = 0; i < logLimit; i++) {
             const pkg = data.data[i];
-            console.log(`[SETTINGS MODAL] Package ${i+1}/${data.data.length}: ${pkg.title}`, {
-              id: pkg.id,
-              price: pkg.price,
-              currency: pkg.currency,
-              type: pkg.type,
-            });
+            console.log(
+              `[SETTINGS MODAL] Package ${i + 1}/${data.data.length}: ${pkg.title}`,
+              {
+                id: pkg.id,
+                price: pkg.price,
+                currency: pkg.currency,
+                type: pkg.type,
+              }
+            );
           }
 
           const uniquePackages = data.data.filter(
@@ -722,16 +727,19 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             `[SETTINGS MODAL] Retrieved ${data.length} packages from API (array format)`
           );
 
-          // Log only the first few packages to reduce console noise
+          
           const logLimit = Math.min(data.length, 3);
           for (let i = 0; i < logLimit; i++) {
             const pkg = data[i];
-            console.log(`[SETTINGS MODAL] Package ${i+1}/${data.length}: ${pkg.title}`, {
-              id: pkg.id,
-              price: pkg.price,
-              currency: pkg.currency,
-              type: pkg.type,
-            });
+            console.log(
+              `[SETTINGS MODAL] Package ${i + 1}/${data.length}: ${pkg.title}`,
+              {
+                id: pkg.id,
+                price: pkg.price,
+                currency: pkg.currency,
+                type: pkg.type,
+              }
+            );
           }
 
           return data;
@@ -898,8 +906,8 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       }
     },
     enabled: open && selectedSetting === 'Package Management',
-    staleTime: 300000, // 5 minutes
-    gcTime: 600000, // 10 minutes
+    staleTime: 300000, 
+    gcTime: 600000, 
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -944,264 +952,314 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     additionalPackages: [],
   };
 
-  // Memoize the enableAdditionalPackage function to prevent unnecessary recreations
-  const enableAdditionalPackage = useCallback(async (packageId: number) => {
-    // Prevent duplicate operations on the same package or concurrent operations
-    // Use refs to check state without triggering re-renders
-    if (enableOperationInProgressRef.current || packageBeingProcessedRef.current === packageId) {
-      console.log(`Skipping duplicate enable operation for package ${packageId}`);
-      return;
-    }
-
-    console.log(`Enable package ${packageId}`);
-    // Set refs to track operation state without triggering re-renders
-    enableOperationInProgressRef.current = true;
-    packageBeingProcessedRef.current = packageId;
-
-    // Only update state once to minimize re-renders
-    setIsEnablingPackage(true);
-
-    try {
-      await enablePackage(packageId);
-      setLastEnabledPackageId(packageId);
-
-      const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
-      if (selectedPkg) {
-        // Create a deep copy of the package to avoid reference issues
-        const packageForSelection = JSON.parse(JSON.stringify(selectedPkg));
-
-        // Normalize the package type
-        let normalizedType = 'starter'; // Default fallback
-        if (selectedPkg.type) {
-          if (selectedPkg.type.includes('custom')) {
-            normalizedType = 'custom';
-          } else if (selectedPkg.type.includes('starter')) {
-            normalizedType = 'starter';
-          } else if (selectedPkg.type.includes('growth')) {
-            normalizedType = 'growth';
-          } else if (selectedPkg.type.includes('enterprise')) {
-            normalizedType = 'enterprise';
-          } else if (selectedPkg.type.includes('premium')) {
-            normalizedType = 'premium';
-          }
-        }
-
-        // Set the normalized type
-        packageForSelection.type = normalizedType;
-
+  
+  const enableAdditionalPackage = useCallback(
+    async (packageId: number) => {
+      
+      
+      if (
+        enableOperationInProgressRef.current ||
+        packageBeingProcessedRef.current === packageId
+      ) {
         console.log(
-          `Selecting package in context:`,
-          JSON.stringify({
-            id: packageForSelection.id,
-            title: packageForSelection.title,
-            type: packageForSelection.type,
-            originalType: selectedPkg.type
-          }, null, 2)
+          `Skipping duplicate enable operation for package ${packageId}`
         );
+        return;
+      }
 
-        // For Custom package, we need to be extra careful to prevent UI flashing
-        const isCustomPackage = normalizedType === 'custom';
+      console.log(`Enable package ${packageId}`);
+      
+      enableOperationInProgressRef.current = true;
+      packageBeingProcessedRef.current = packageId;
 
-        // Immediately select the package in context without delay
-        selectPackageInContext(packageForSelection);
-        console.log(`Package ${packageId} selected in context:`, packageForSelection.title);
+      
+      setIsEnablingPackage(true);
 
-        // Only dispatch the event once after the package is selected
-        // and use a flag in the event to prevent recursive updates
-        // For custom packages, we'll skip dispatching the event to prevent UI flashing
-        if (!isCustomPackage) {
-          const packageChangedEvent = new CustomEvent('packageChanged', {
-            detail: {
-              packageId: packageId,
-              fromSettingsModal: true,
-              timestamp: Date.now(), // Add timestamp to make each event unique
-              skipRefetch: true // Add flag to prevent unnecessary refetches
+      try {
+        await enablePackage(packageId);
+        setLastEnabledPackageId(packageId);
+
+        const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
+        if (selectedPkg) {
+          
+          const packageForSelection = JSON.parse(JSON.stringify(selectedPkg));
+
+          
+          let normalizedType = 'starter'; 
+          if (selectedPkg.type) {
+            if (selectedPkg.type.includes('custom')) {
+              normalizedType = 'custom';
+            } else if (selectedPkg.type.includes('starter')) {
+              normalizedType = 'starter';
+            } else if (selectedPkg.type.includes('growth')) {
+              normalizedType = 'growth';
+            } else if (selectedPkg.type.includes('enterprise')) {
+              normalizedType = 'enterprise';
+            } else if (selectedPkg.type.includes('premium')) {
+              normalizedType = 'premium';
             }
-          });
-          window.dispatchEvent(packageChangedEvent);
-        }
+          }
 
-        // Reset the enabling state after a delay
-        const resetDelay = isCustomPackage ? 800 : 300;
-        setTimeout(() => {
-          // Reset all state in one batch
+          
+          packageForSelection.type = normalizedType;
+
+          console.log(
+            `Selecting package in context:`,
+            JSON.stringify(
+              {
+                id: packageForSelection.id,
+                title: packageForSelection.title,
+                type: packageForSelection.type,
+                originalType: selectedPkg.type,
+              },
+              null,
+              2
+            )
+          );
+
+          
+          const isCustomPackage = normalizedType === 'custom';
+
+          
+          selectPackageInContext(packageForSelection);
+          console.log(
+            `Package ${packageId} selected in context:`,
+            packageForSelection.title
+          );
+
+          
+          
+          
+          if (!isCustomPackage) {
+            const packageChangedEvent = new CustomEvent('packageChanged', {
+              detail: {
+                packageId: packageId,
+                fromSettingsModal: true,
+                timestamp: Date.now(), 
+                skipRefetch: true, 
+              },
+            });
+            window.dispatchEvent(packageChangedEvent);
+          }
+
+          
+          const resetDelay = isCustomPackage ? 800 : 300;
+          setTimeout(() => {
+            
+            setIsEnablingPackage(false);
+            enableOperationInProgressRef.current = false;
+            packageBeingProcessedRef.current = null;
+          }, resetDelay);
+        } else {
+          console.warn(
+            `Package with ID ${packageId} not found in available packages`
+          );
+          
           setIsEnablingPackage(false);
           enableOperationInProgressRef.current = false;
           packageBeingProcessedRef.current = null;
-        }, resetDelay);
-      } else {
-        console.warn(`Package with ID ${packageId} not found in available packages`);
-        // Reset all state in one batch
+        }
+
+        console.log(`Package ${packageId} enabled successfully`);
+      } catch (error) {
+        console.error(
+          'Error enabling package:',
+          JSON.stringify(error, null, 2)
+        );
+        
         setIsEnablingPackage(false);
         enableOperationInProgressRef.current = false;
         packageBeingProcessedRef.current = null;
       }
+    },
+    [enablePackage, packages, selectPackageInContext]
+  ); 
 
-      console.log(`Package ${packageId} enabled successfully`);
-    } catch (error) {
-      console.error('Error enabling package:', JSON.stringify(error, null, 2));
-      // Reset all state in one batch
-      setIsEnablingPackage(false);
-      enableOperationInProgressRef.current = false;
-      packageBeingProcessedRef.current = null;
-    }
-  }, [enablePackage, packages, selectPackageInContext]); // Only depend on stable dependencies
-
-  // Memoize the disableAdditionalPackage function to prevent unnecessary recreations
-  const disableAdditionalPackage = useCallback(async (packageId: number) => {
-    // Prevent duplicate operations on the same package or concurrent operations
-    if (disableOperationInProgressRef.current || packageBeingDisabledRef.current === packageId) {
-      console.log(`Skipping duplicate disable operation for package ${packageId}`);
-      return;
-    }
-
-    console.log(`Disable package ${packageId}`);
-    // Set refs to track operation state without triggering re-renders
-    disableOperationInProgressRef.current = true;
-    packageBeingDisabledRef.current = packageId;
-
-    try {
-      await disablePackage(packageId);
-
-      // Check if this is a custom package to prevent UI flashing
-      const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
-      const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
-
-      // Only dispatch the event for non-custom packages to prevent UI flashing
-      if (!isCustomPackage) {
-        // Only dispatch the event once after the package is disabled
-        // and use a flag in the event to prevent recursive updates
-        const packageChangedEvent = new CustomEvent('packageChanged', {
-          detail: {
-            packageId: packageId,
-            fromSettingsModal: true,
-            timestamp: Date.now(), // Add timestamp to make each event unique
-            action: 'disable',
-            skipRefetch: true // Add flag to prevent unnecessary refetches
-          }
-        });
-        window.dispatchEvent(packageChangedEvent);
+  
+  const disableAdditionalPackage = useCallback(
+    async (packageId: number) => {
+      
+      if (
+        disableOperationInProgressRef.current ||
+        packageBeingDisabledRef.current === packageId
+      ) {
+        console.log(
+          `Skipping duplicate disable operation for package ${packageId}`
+        );
+        return;
       }
 
-      console.log(`Package ${packageId} disabled successfully`);
-    } catch (error) {
-      console.error('Error disabling package:', JSON.stringify(error, null, 2));
-    } finally {
-      // Reset the operation state after a delay
-      // Use a longer delay for custom packages
-      const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
-      const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
-      const resetDelay = isCustomPackage ? 800 : 300;
+      console.log(`Disable package ${packageId}`);
+      
+      disableOperationInProgressRef.current = true;
+      packageBeingDisabledRef.current = packageId;
 
-      setTimeout(() => {
-        disableOperationInProgressRef.current = false;
-        packageBeingDisabledRef.current = null;
-      }, resetDelay);
-    }
-  }, [disablePackage, packages]); // Added packages dependency
+      try {
+        await disablePackage(packageId);
 
-  // Track the last processed event timestamp to prevent duplicate processing
+        
+        const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
+        const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
+
+        
+        if (!isCustomPackage) {
+          
+          
+          const packageChangedEvent = new CustomEvent('packageChanged', {
+            detail: {
+              packageId: packageId,
+              fromSettingsModal: true,
+              timestamp: Date.now(), 
+              action: 'disable',
+              skipRefetch: true, 
+            },
+          });
+          window.dispatchEvent(packageChangedEvent);
+        }
+
+        console.log(`Package ${packageId} disabled successfully`);
+      } catch (error) {
+        console.error(
+          'Error disabling package:',
+          JSON.stringify(error, null, 2)
+        );
+      } finally {
+        
+        
+        const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
+        const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
+        const resetDelay = isCustomPackage ? 800 : 300;
+
+        setTimeout(() => {
+          disableOperationInProgressRef.current = false;
+          packageBeingDisabledRef.current = null;
+        }, resetDelay);
+      }
+    },
+    [disablePackage, packages]
+  ); 
+
+  
   const lastProcessedEventRef = useRef<number>(0);
 
-  // Memoize event handlers to prevent unnecessary recreations
-  const handlePackageSelected = useCallback((event: CustomEvent) => {
-    console.log(
-      '[SETTINGS MODAL] Package selection event received:',
-      event.detail
-    );
+  
+  const handlePackageSelected = useCallback(
+    (event: CustomEvent) => {
+      console.log(
+        '[SETTINGS MODAL] Package selection event received:',
+        event.detail
+      );
 
-    // Skip if the event was triggered from this component
-    if (event.detail?.fromSettingsModal) {
-      console.log('[SETTINGS MODAL] Skipping event from settings modal');
-      return;
-    }
-
-    // Skip if the event has the skipRefetch flag
-    if (event.detail?.skipRefetch) {
-      console.log('[SETTINGS MODAL] Skipping refetch due to skipRefetch flag');
-      return;
-    }
-
-    // Debounce events by timestamp to prevent multiple rapid refetches
-    const eventTimestamp = event.detail?.timestamp || Date.now();
-    if (eventTimestamp - lastProcessedEventRef.current < 1000) {
-      console.log('[SETTINGS MODAL] Debouncing event, too soon after last event');
-      return;
-    }
-
-    if (
-      event.detail &&
-      event.detail.packageId &&
-      open &&
-      selectedSetting === 'Package Management'
-    ) {
-      console.log('[SETTINGS MODAL] Processing package selection event, refetching packages');
-      lastProcessedEventRef.current = Date.now();
-
-      // For custom packages, we'll avoid refetching to prevent UI flashing
-      const packageId = event.detail.packageId;
-      const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
-      const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
-
-      if (!isCustomPackage) {
-        refetchPackages();
-      } else {
-        console.log('[SETTINGS MODAL] Skipping refetch for custom package to prevent UI flashing');
+      
+      if (event.detail?.fromSettingsModal) {
+        console.log('[SETTINGS MODAL] Skipping event from settings modal');
+        return;
       }
-    }
-  }, [open, selectedSetting, refetchPackages, packages]);
 
-  const handlePackageChanged = useCallback((event: CustomEvent) => {
-    console.log(
-      '[SETTINGS MODAL] Package changed event received:',
-      event.detail
-    );
+      
+      if (event.detail?.skipRefetch) {
+        console.log(
+          '[SETTINGS MODAL] Skipping refetch due to skipRefetch flag'
+        );
+        return;
+      }
 
-    // Skip if the event was triggered from this component
-    if (event.detail?.fromSettingsModal) {
-      console.log('[SETTINGS MODAL] Skipping event from settings modal');
-      return;
-    }
+      
+      const eventTimestamp = event.detail?.timestamp || Date.now();
+      if (eventTimestamp - lastProcessedEventRef.current < 1000) {
+        console.log(
+          '[SETTINGS MODAL] Debouncing event, too soon after last event'
+        );
+        return;
+      }
 
-    // Skip if the event has the skipRefetch flag
-    if (event.detail?.skipRefetch) {
-      console.log('[SETTINGS MODAL] Skipping refetch due to skipRefetch flag');
-      return;
-    }
+      if (
+        event.detail &&
+        event.detail.packageId &&
+        open &&
+        selectedSetting === 'Package Management'
+      ) {
+        console.log(
+          '[SETTINGS MODAL] Processing package selection event, refetching packages'
+        );
+        lastProcessedEventRef.current = Date.now();
 
-    // Debounce events by timestamp to prevent multiple rapid refetches
-    const eventTimestamp = event.detail?.timestamp || Date.now();
-    if (eventTimestamp - lastProcessedEventRef.current < 1000) {
-      console.log('[SETTINGS MODAL] Debouncing event, too soon after last event');
-      return;
-    }
-
-    if (
-      event.detail &&
-      open &&
-      selectedSetting === 'Package Management'
-    ) {
-      console.log('[SETTINGS MODAL] Processing package changed event, refetching packages');
-      lastProcessedEventRef.current = Date.now();
-
-      // For custom packages, we'll avoid refetching to prevent UI flashing
-      const packageId = event.detail.packageId;
-      if (packageId) {
+        
+        const packageId = event.detail.packageId;
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
 
         if (!isCustomPackage) {
           refetchPackages();
         } else {
-          console.log('[SETTINGS MODAL] Skipping refetch for custom package to prevent UI flashing');
+          console.log(
+            '[SETTINGS MODAL] Skipping refetch for custom package to prevent UI flashing'
+          );
         }
-      } else {
-        refetchPackages();
       }
-    }
-  }, [open, selectedSetting, refetchPackages, packages]);
+    },
+    [open, selectedSetting, refetchPackages, packages]
+  );
 
-  // Set up event listeners with memoized handlers
+  const handlePackageChanged = useCallback(
+    (event: CustomEvent) => {
+      console.log(
+        '[SETTINGS MODAL] Package changed event received:',
+        event.detail
+      );
+
+      
+      if (event.detail?.fromSettingsModal) {
+        console.log('[SETTINGS MODAL] Skipping event from settings modal');
+        return;
+      }
+
+      
+      if (event.detail?.skipRefetch) {
+        console.log(
+          '[SETTINGS MODAL] Skipping refetch due to skipRefetch flag'
+        );
+        return;
+      }
+
+      
+      const eventTimestamp = event.detail?.timestamp || Date.now();
+      if (eventTimestamp - lastProcessedEventRef.current < 1000) {
+        console.log(
+          '[SETTINGS MODAL] Debouncing event, too soon after last event'
+        );
+        return;
+      }
+
+      if (event.detail && open && selectedSetting === 'Package Management') {
+        console.log(
+          '[SETTINGS MODAL] Processing package changed event, refetching packages'
+        );
+        lastProcessedEventRef.current = Date.now();
+
+        
+        const packageId = event.detail.packageId;
+        if (packageId) {
+          const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
+          const isCustomPackage =
+            selectedPkg?.type?.includes('custom') || false;
+
+          if (!isCustomPackage) {
+            refetchPackages();
+          } else {
+            console.log(
+              '[SETTINGS MODAL] Skipping refetch for custom package to prevent UI flashing'
+            );
+          }
+        } else {
+          refetchPackages();
+        }
+      }
+    },
+    [open, selectedSetting, refetchPackages, packages]
+  );
+
+  
   useEffect(() => {
     console.log('[SETTINGS MODAL] Setting up event listeners');
 
@@ -1228,7 +1286,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         handlePackageChanged as EventListener
       );
     };
-  }, [handlePackageSelected, handlePackageChanged]); // Only depend on the memoized handlers
+  }, [handlePackageSelected, handlePackageChanged]); 
 
   const availableFeatures = [
     'Dashboard',

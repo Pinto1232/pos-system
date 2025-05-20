@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import {
   Box,
   Typography,
@@ -229,150 +235,179 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
     }
   }, [getSavedPackage, safeLocalStorage, testPeriod, formatTime]);
 
-  // Use a ref to track event processing state without triggering re-renders
+  
   const isProcessingEventRef = useRef<boolean>(false);
   const lastProcessedEventTimestampRef = useRef<number>(0);
 
-  // Memoize event handlers to prevent unnecessary recreations
-  const handlePackageSelected = useCallback((event: CustomEvent) => {
-    console.log(
-      '[PACKAGE MANAGEMENT] Package selection event received:',
-      event.detail
-    );
+  
+  const handlePackageSelected = useCallback(
+    (event: CustomEvent) => {
+      console.log(
+        '[PACKAGE MANAGEMENT] Package selection event received:',
+        event.detail
+      );
 
-    // Skip if we're already processing an event or if this event was triggered from the settings modal
-    if (isProcessingEventRef.current || (event.detail && event.detail.fromSettingsModal)) {
-      console.log('[PACKAGE MANAGEMENT] Skipping event processing to prevent loops');
-      return;
-    }
-
-    // Debounce events by timestamp to prevent multiple rapid updates
-    const eventTimestamp = event.detail?.timestamp || Date.now();
-    if (eventTimestamp - lastProcessedEventTimestampRef.current < 1000) {
-      console.log('[PACKAGE MANAGEMENT] Debouncing event, too soon after last event');
-      return;
-    }
-
-    if (event.detail && event.detail.packageId) {
-      // Check if this is a custom package to prevent UI flashing
-      const packageId = event.detail.packageId;
-      const selectedPkg = packages.find((pkg) => pkg.id === packageId);
-      const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
-
-      // For custom packages, we'll be more careful to prevent UI flashing
-      if (isCustomPackage) {
-        console.log('[PACKAGE MANAGEMENT] Custom package detected, using special handling');
-
-        // For custom packages, just update the saved package without refetching
-        const savedPkg = getSavedPackage();
-        if (savedPkg) {
-          setSavedPackage(savedPkg);
-        }
+      
+      if (
+        isProcessingEventRef.current ||
+        (event.detail && event.detail.fromSettingsModal)
+      ) {
+        console.log(
+          '[PACKAGE MANAGEMENT] Skipping event processing to prevent loops'
+        );
         return;
       }
 
-      isProcessingEventRef.current = true;
-      lastProcessedEventTimestampRef.current = Date.now();
+      
+      const eventTimestamp = event.detail?.timestamp || Date.now();
+      if (eventTimestamp - lastProcessedEventTimestampRef.current < 1000) {
+        console.log(
+          '[PACKAGE MANAGEMENT] Debouncing event, too soon after last event'
+        );
+        return;
+      }
 
-      console.log('[PACKAGE MANAGEMENT] Processing package selection event');
-
-      // Batch operations to reduce render cycles
-      Promise.resolve().then(async () => {
-        if (refetchPackages && !event.detail.skipRefetch) {
-          await refetchPackages();
-        } else {
-          console.log('[PACKAGE MANAGEMENT] Skipping refetch due to skipRefetch flag');
-        }
-
-        const savedPkg = getSavedPackage();
-        if (savedPkg) {
-          setSavedPackage(savedPkg);
-        }
-
-        // Reset the processing flag after a delay
-        setTimeout(() => {
-          isProcessingEventRef.current = false;
-        }, 500);
-      });
-    }
-  }, [refetchPackages, getSavedPackage, packages]);
-
-  const handlePackageChanged = useCallback((event: CustomEvent) => {
-    console.log(
-      '[PACKAGE MANAGEMENT] Package changed event received:',
-      event.detail
-    );
-
-    // Skip if we're already processing an event or if this event was triggered from the settings modal
-    if (isProcessingEventRef.current || (event.detail && event.detail.fromSettingsModal)) {
-      console.log('[PACKAGE MANAGEMENT] Skipping event processing to prevent loops');
-      return;
-    }
-
-    // Debounce events by timestamp to prevent multiple rapid updates
-    const eventTimestamp = event.detail?.timestamp || Date.now();
-    if (eventTimestamp - lastProcessedEventTimestampRef.current < 1000) {
-      console.log('[PACKAGE MANAGEMENT] Debouncing event, too soon after last event');
-      return;
-    }
-
-    if (event.detail) {
-      // Check if this is a custom package to prevent UI flashing
-      const packageId = event.detail.packageId;
-      if (packageId) {
+      if (event.detail && event.detail.packageId) {
+        
+        const packageId = event.detail.packageId;
         const selectedPkg = packages.find((pkg) => pkg.id === packageId);
         const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
 
-        // For custom packages, we'll be more careful to prevent UI flashing
+        
         if (isCustomPackage) {
-          console.log('[PACKAGE MANAGEMENT] Custom package detected, using special handling');
+          console.log(
+            '[PACKAGE MANAGEMENT] Custom package detected, using special handling'
+          );
 
-          // For custom packages, just update the saved package without refetching
+          
           const savedPkg = getSavedPackage();
           if (savedPkg) {
             setSavedPackage(savedPkg);
           }
           return;
         }
+
+        isProcessingEventRef.current = true;
+        lastProcessedEventTimestampRef.current = Date.now();
+
+        console.log('[PACKAGE MANAGEMENT] Processing package selection event');
+
+        
+        Promise.resolve().then(async () => {
+          if (refetchPackages && !event.detail.skipRefetch) {
+            await refetchPackages();
+          } else {
+            console.log(
+              '[PACKAGE MANAGEMENT] Skipping refetch due to skipRefetch flag'
+            );
+          }
+
+          const savedPkg = getSavedPackage();
+          if (savedPkg) {
+            setSavedPackage(savedPkg);
+          }
+
+          
+          setTimeout(() => {
+            isProcessingEventRef.current = false;
+          }, 500);
+        });
       }
+    },
+    [refetchPackages, getSavedPackage, packages]
+  );
 
-      // Skip refetch if the skipRefetch flag is set
-      if (event.detail.skipRefetch) {
-        console.log('[PACKAGE MANAGEMENT] Skipping refetch due to skipRefetch flag');
+  const handlePackageChanged = useCallback(
+    (event: CustomEvent) => {
+      console.log(
+        '[PACKAGE MANAGEMENT] Package changed event received:',
+        event.detail
+      );
 
-        // Still update the saved package
-        const savedPkg = getSavedPackage();
-        if (savedPkg) {
-          setSavedPackage(savedPkg);
-        }
+      
+      if (
+        isProcessingEventRef.current ||
+        (event.detail && event.detail.fromSettingsModal)
+      ) {
+        console.log(
+          '[PACKAGE MANAGEMENT] Skipping event processing to prevent loops'
+        );
         return;
       }
 
-      isProcessingEventRef.current = true;
-      lastProcessedEventTimestampRef.current = Date.now();
+      
+      const eventTimestamp = event.detail?.timestamp || Date.now();
+      if (eventTimestamp - lastProcessedEventTimestampRef.current < 1000) {
+        console.log(
+          '[PACKAGE MANAGEMENT] Debouncing event, too soon after last event'
+        );
+        return;
+      }
 
-      console.log('[PACKAGE MANAGEMENT] Processing package changed event');
+      if (event.detail) {
+        
+        const packageId = event.detail.packageId;
+        if (packageId) {
+          const selectedPkg = packages.find((pkg) => pkg.id === packageId);
+          const isCustomPackage =
+            selectedPkg?.type?.includes('custom') || false;
 
-      // Batch operations to reduce render cycles
-      Promise.resolve().then(async () => {
-        if (refetchPackages) {
-          await refetchPackages();
+          
+          if (isCustomPackage) {
+            console.log(
+              '[PACKAGE MANAGEMENT] Custom package detected, using special handling'
+            );
+
+            
+            const savedPkg = getSavedPackage();
+            if (savedPkg) {
+              setSavedPackage(savedPkg);
+            }
+            return;
+          }
         }
 
-        const savedPkg = getSavedPackage();
-        if (savedPkg) {
-          setSavedPackage(savedPkg);
+        
+        if (event.detail.skipRefetch) {
+          console.log(
+            '[PACKAGE MANAGEMENT] Skipping refetch due to skipRefetch flag'
+          );
+
+          
+          const savedPkg = getSavedPackage();
+          if (savedPkg) {
+            setSavedPackage(savedPkg);
+          }
+          return;
         }
 
-        // Reset the processing flag after a delay
-        setTimeout(() => {
-          isProcessingEventRef.current = false;
-        }, 500);
-      });
-    }
-  }, [refetchPackages, getSavedPackage, packages]);
+        isProcessingEventRef.current = true;
+        lastProcessedEventTimestampRef.current = Date.now();
 
-  // Set up event listeners with memoized handlers
+        console.log('[PACKAGE MANAGEMENT] Processing package changed event');
+
+        
+        Promise.resolve().then(async () => {
+          if (refetchPackages) {
+            await refetchPackages();
+          }
+
+          const savedPkg = getSavedPackage();
+          if (savedPkg) {
+            setSavedPackage(savedPkg);
+          }
+
+          
+          setTimeout(() => {
+            isProcessingEventRef.current = false;
+          }, 500);
+        });
+      }
+    },
+    [refetchPackages, getSavedPackage, packages]
+  );
+
+  
   useEffect(() => {
     console.log('[PACKAGE MANAGEMENT] Setting up event listeners');
 
@@ -399,7 +434,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         handlePackageChanged as EventListener
       );
     };
-  }, [handlePackageSelected, handlePackageChanged]); // Only depend on the memoized handlers
+  }, [handlePackageSelected, handlePackageChanged]); 
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -550,183 +585,212 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
     return result;
   };
 
-  // Track the last enabled package to prevent duplicate operations
-  const [lastEnabledPackageId, setLastEnabledPackageId] = useState<number | null>(null);
+  
+  const [lastEnabledPackageId, setLastEnabledPackageId] = useState<
+    number | null
+  >(null);
 
-  // Use refs to track operation state without triggering re-renders
+  
   const enableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingProcessedRef = useRef<number | null>(null);
 
-  // Memoize the handleEnablePackage function to prevent unnecessary recreations
-  const handleEnablePackage = useCallback(async (packageId: number) => {
-    // Prevent duplicate operations on the same package using both state and refs
-    if (
-      processingPackageId !== null ||
-      lastEnabledPackageId === packageId ||
-      enableOperationInProgressRef.current ||
-      packageBeingProcessedRef.current === packageId
-    ) {
-      console.log(`[PACKAGE MANAGEMENT] Skipping duplicate enable operation for package ${packageId}`);
-      return;
-    }
+  
+  const handleEnablePackage = useCallback(
+    async (packageId: number) => {
+      
+      if (
+        processingPackageId !== null ||
+        lastEnabledPackageId === packageId ||
+        enableOperationInProgressRef.current ||
+        packageBeingProcessedRef.current === packageId
+      ) {
+        console.log(
+          `[PACKAGE MANAGEMENT] Skipping duplicate enable operation for package ${packageId}`
+        );
+        return;
+      }
 
-    // Set both state and refs to track operation
-    setProcessingPackageId(packageId);
-    enableOperationInProgressRef.current = true;
-    packageBeingProcessedRef.current = packageId;
+      
+      setProcessingPackageId(packageId);
+      enableOperationInProgressRef.current = true;
+      packageBeingProcessedRef.current = packageId;
 
-    try {
-      // For Custom package, add extra delay to prevent UI flashing
-      const selectedPkg = packages.find((pkg) => pkg.id === packageId);
-      const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
+      try {
+        
+        const selectedPkg = packages.find((pkg) => pkg.id === packageId);
+        const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
 
-      console.log(`[PACKAGE MANAGEMENT] Enabling package ${packageId}, isCustom: ${isCustomPackage}`);
+        console.log(
+          `[PACKAGE MANAGEMENT] Enabling package ${packageId}, isCustom: ${isCustomPackage}`
+        );
 
-      await enableAdditionalPackage(packageId);
-      setLastEnabledPackageId(packageId);
+        await enableAdditionalPackage(packageId);
+        setLastEnabledPackageId(packageId);
 
-      if (selectedPkg) {
-        // Normalize the package type
-        let normalizedType = 'starter'; // Default fallback
-        if (selectedPkg.type) {
-          if (selectedPkg.type.includes('custom')) {
-            normalizedType = 'custom';
-          } else if (selectedPkg.type.includes('starter')) {
-            normalizedType = 'starter';
-          } else if (selectedPkg.type.includes('growth')) {
-            normalizedType = 'growth';
-          } else if (selectedPkg.type.includes('enterprise')) {
-            normalizedType = 'enterprise';
-          } else if (selectedPkg.type.includes('premium')) {
-            normalizedType = 'premium';
+        if (selectedPkg) {
+          
+          let normalizedType = 'starter'; 
+          if (selectedPkg.type) {
+            if (selectedPkg.type.includes('custom')) {
+              normalizedType = 'custom';
+            } else if (selectedPkg.type.includes('starter')) {
+              normalizedType = 'starter';
+            } else if (selectedPkg.type.includes('growth')) {
+              normalizedType = 'growth';
+            } else if (selectedPkg.type.includes('enterprise')) {
+              normalizedType = 'enterprise';
+            } else if (selectedPkg.type.includes('premium')) {
+              normalizedType = 'premium';
+            }
           }
-        }
 
-        const packageForSelection = {
-          ...selectedPkg,
-          type: normalizedType
-        } as any;
+          const packageForSelection = {
+            ...selectedPkg,
+            type: normalizedType,
+          } as any;
 
-        // Use a longer delay for Custom package
-        const selectionDelay = isCustomPackage ? 800 : 200;
+          
+          const selectionDelay = isCustomPackage ? 800 : 200;
 
-        console.log(`[PACKAGE MANAGEMENT] Setting up selection with delay: ${selectionDelay}ms`);
-
-        setTimeout(() => {
-          // Batch these operations to reduce render cycles
-          selectPackageInContext(packageForSelection);
           console.log(
-            `[PACKAGE MANAGEMENT] Package ${packageId} selected in context:`,
-            packageForSelection.title
+            `[PACKAGE MANAGEMENT] Setting up selection with delay: ${selectionDelay}ms`
           );
 
-          setSavedPackage(selectedPkg);
-
-          const now = new Date();
-          setPurchaseDate(now);
-          safeLocalStorage.setItem(
-            PURCHASE_DATE_KEY,
-            JSON.stringify(now.toISOString())
-          );
-
-          const nextBilling = new Date(now);
-          nextBilling.setDate(nextBilling.getDate() + 30);
-          setNextBillingDate(nextBilling);
-
-          if (selectedPkg.testPeriodDays > 0) {
-            const newTime = selectedPkg.testPeriodDays * 24 * 60 * 60;
-            setRemainingTime(newTime);
-            safeLocalStorage.setItem(TIMER_STATE_KEY, JSON.stringify(newTime));
-            safeLocalStorage.setItem(
-              TIMER_LAST_UPDATED_KEY,
-              Date.now().toString()
-            );
-            safeLocalStorage.setItem(
-              SELECTED_PACKAGE_DATA_KEY,
-              JSON.stringify(selectedPkg)
-            );
-            console.log(
-              `[PACKAGE MANAGEMENT] Timer reset to ${formatTime(newTime)} for package: ${selectedPkg.title}`
-            );
-          }
-
-          // Use a longer delay for Custom package to release processing state
-          const resetDelay = isCustomPackage ? 1000 : 500;
-          console.log(`[PACKAGE MANAGEMENT] Setting up reset with delay: ${resetDelay}ms`);
-
-          // Release the processing state after everything is done
           setTimeout(() => {
-            console.log(`[PACKAGE MANAGEMENT] Releasing processing state for package ${packageId}`);
-            setProcessingPackageId(null);
-            enableOperationInProgressRef.current = false;
-            packageBeingProcessedRef.current = null;
-          }, resetDelay);
-        }, selectionDelay);
-      } else {
-        console.warn(`[PACKAGE MANAGEMENT] Package with ID ${packageId} not found in available packages`);
-        // Reset all state in one batch
+            
+            selectPackageInContext(packageForSelection);
+            console.log(
+              `[PACKAGE MANAGEMENT] Package ${packageId} selected in context:`,
+              packageForSelection.title
+            );
+
+            setSavedPackage(selectedPkg);
+
+            const now = new Date();
+            setPurchaseDate(now);
+            safeLocalStorage.setItem(
+              PURCHASE_DATE_KEY,
+              JSON.stringify(now.toISOString())
+            );
+
+            const nextBilling = new Date(now);
+            nextBilling.setDate(nextBilling.getDate() + 30);
+            setNextBillingDate(nextBilling);
+
+            if (selectedPkg.testPeriodDays > 0) {
+              const newTime = selectedPkg.testPeriodDays * 24 * 60 * 60;
+              setRemainingTime(newTime);
+              safeLocalStorage.setItem(
+                TIMER_STATE_KEY,
+                JSON.stringify(newTime)
+              );
+              safeLocalStorage.setItem(
+                TIMER_LAST_UPDATED_KEY,
+                Date.now().toString()
+              );
+              safeLocalStorage.setItem(
+                SELECTED_PACKAGE_DATA_KEY,
+                JSON.stringify(selectedPkg)
+              );
+              console.log(
+                `[PACKAGE MANAGEMENT] Timer reset to ${formatTime(newTime)} for package: ${selectedPkg.title}`
+              );
+            }
+
+            
+            const resetDelay = isCustomPackage ? 1000 : 500;
+            console.log(
+              `[PACKAGE MANAGEMENT] Setting up reset with delay: ${resetDelay}ms`
+            );
+
+            
+            setTimeout(() => {
+              console.log(
+                `[PACKAGE MANAGEMENT] Releasing processing state for package ${packageId}`
+              );
+              setProcessingPackageId(null);
+              enableOperationInProgressRef.current = false;
+              packageBeingProcessedRef.current = null;
+            }, resetDelay);
+          }, selectionDelay);
+        } else {
+          console.warn(
+            `[PACKAGE MANAGEMENT] Package with ID ${packageId} not found in available packages`
+          );
+          
+          setProcessingPackageId(null);
+          enableOperationInProgressRef.current = false;
+          packageBeingProcessedRef.current = null;
+        }
+      } catch (error) {
+        console.error('[PACKAGE MANAGEMENT] Error enabling package:', error);
+        
         setProcessingPackageId(null);
         enableOperationInProgressRef.current = false;
         packageBeingProcessedRef.current = null;
       }
-    } catch (error) {
-      console.error('[PACKAGE MANAGEMENT] Error enabling package:', error);
-      // Reset all state in one batch
-      setProcessingPackageId(null);
-      enableOperationInProgressRef.current = false;
-      packageBeingProcessedRef.current = null;
-    }
-  }, [
-    processingPackageId,
-    lastEnabledPackageId,
-    packages,
-    enableAdditionalPackage,
-    selectPackageInContext,
-    setSavedPackage,
-    setPurchaseDate,
-    setNextBillingDate,
-    setRemainingTime,
-    safeLocalStorage,
-    formatTime
-  ]);
+    },
+    [
+      processingPackageId,
+      lastEnabledPackageId,
+      packages,
+      enableAdditionalPackage,
+      selectPackageInContext,
+      setSavedPackage,
+      setPurchaseDate,
+      setNextBillingDate,
+      setRemainingTime,
+      safeLocalStorage,
+      formatTime,
+    ]
+  );
 
-  // Use refs to track disable operation state without triggering re-renders
+  
   const disableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingDisabledRef = useRef<number | null>(null);
 
-  // Memoize the handleDisablePackage function to prevent unnecessary recreations
-  const handleDisablePackage = useCallback(async (packageId: number) => {
-    // Prevent duplicate operations on the same package using both state and refs
-    if (
-      processingPackageId !== null ||
-      disableOperationInProgressRef.current ||
-      packageBeingDisabledRef.current === packageId
-    ) {
-      console.log(`[PACKAGE MANAGEMENT] Skipping duplicate disable operation for package ${packageId}`);
-      return;
-    }
+  
+  const handleDisablePackage = useCallback(
+    async (packageId: number) => {
+      
+      if (
+        processingPackageId !== null ||
+        disableOperationInProgressRef.current ||
+        packageBeingDisabledRef.current === packageId
+      ) {
+        console.log(
+          `[PACKAGE MANAGEMENT] Skipping duplicate disable operation for package ${packageId}`
+        );
+        return;
+      }
 
-    // Set both state and refs to track operation
-    setProcessingPackageId(packageId);
-    disableOperationInProgressRef.current = true;
-    packageBeingDisabledRef.current = packageId;
+      
+      setProcessingPackageId(packageId);
+      disableOperationInProgressRef.current = true;
+      packageBeingDisabledRef.current = packageId;
 
-    try {
-      console.log(`[PACKAGE MANAGEMENT] Disabling package ${packageId}`);
-      await disableAdditionalPackage(packageId);
-      console.log(`[PACKAGE MANAGEMENT] Package ${packageId} disabled successfully`);
-    } catch (error) {
-      console.error('[PACKAGE MANAGEMENT] Error disabling package:', error);
-    } finally {
-      // Add a small delay before resetting state to ensure UI updates properly
-      setTimeout(() => {
-        console.log(`[PACKAGE MANAGEMENT] Releasing disable processing state for package ${packageId}`);
-        setProcessingPackageId(null);
-        disableOperationInProgressRef.current = false;
-        packageBeingDisabledRef.current = null;
-      }, 500);
-    }
-  }, [processingPackageId, disableAdditionalPackage]);
+      try {
+        console.log(`[PACKAGE MANAGEMENT] Disabling package ${packageId}`);
+        await disableAdditionalPackage(packageId);
+        console.log(
+          `[PACKAGE MANAGEMENT] Package ${packageId} disabled successfully`
+        );
+      } catch (error) {
+        console.error('[PACKAGE MANAGEMENT] Error disabling package:', error);
+      } finally {
+        
+        setTimeout(() => {
+          console.log(
+            `[PACKAGE MANAGEMENT] Releasing disable processing state for package ${packageId}`
+          );
+          setProcessingPackageId(null);
+          disableOperationInProgressRef.current = false;
+          packageBeingDisabledRef.current = null;
+        }, 500);
+      }
+    },
+    [processingPackageId, disableAdditionalPackage]
+  );
 
   return (
     <Box sx={{ p: 2 }}>
@@ -901,159 +965,153 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
       )}
 
       <div className={styles.container}>
-        {packages.filter((pkg) =>
-          [
-            'Starter Plus',
-            'Growth Pro',
-            'Custom',
-            'Enterprise Elite',
-            'Premium Plus',
-          ].includes(pkg.title)
-        ).map((pkg) => {
-          const { displayPrice, formattedPrice } = getPackagePrice(pkg);
-          const isCustom = pkg.type?.toLowerCase().includes('custom');
-          const isCurrentSubscription =
-            pkg.id === subscription?.pricingPackageId;
-          const isPurchased =
-            isPurchasedPackage(pkg.id) || savedPackage?.id === pkg.id;
-          const isDisabled = isCurrentSubscription || isPurchased;
-          const IconComponent =
-            iconMap[pkg.icon] || iconMap['MUI:DefaultIcon'];
-          const isProcessing = processingPackageId === pkg.id;
+        {packages
+          .filter((pkg) =>
+            [
+              'Starter Plus',
+              'Growth Pro',
+              'Custom',
+              'Enterprise Elite',
+              'Premium Plus',
+            ].includes(pkg.title)
+          )
+          .map((pkg) => {
+            const { displayPrice, formattedPrice } = getPackagePrice(pkg);
+            const isCustom = pkg.type?.toLowerCase().includes('custom');
+            const isCurrentSubscription =
+              pkg.id === subscription?.pricingPackageId;
+            const isPurchased =
+              isPurchasedPackage(pkg.id) || savedPackage?.id === pkg.id;
+            const isDisabled = isCurrentSubscription || isPurchased;
+            const IconComponent =
+              iconMap[pkg.icon] || iconMap['MUI:DefaultIcon'];
+            const isProcessing = processingPackageId === pkg.id;
 
-          return (
-            <Card
-              key={pkg.id}
-              className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''}`}
-            >
-              {isCustom && <div className={styles.customBadge}>Custom</div>}
-              <CardHeader className={styles.header}>
-                <div className={styles.iconWrapper}>
-                  {IconComponent &&
-                    React.createElement(IconComponent, {
-                      className: styles.icon,
-                    })}
-                </div>
-                <h2 className={styles.title}>{pkg.title}</h2>
-              </CardHeader>
-
-              <CardContent className={styles.content}>
-                <ul>
-                  {pkg.description
-                    .split(';')
-                    .map((desc: string, index: number) => (
-                      <li key={index}>{desc.trim()}</li>
-                    ))}
-                </ul>
-              </CardContent>
-
-              <div className={styles.priceSection}>
-                {pkg.testPeriodDays > 0 && (
-                  <div className={styles.trial}>
-                    {pkg.testPeriodDays} days free trial
+            return (
+              <Card
+                key={pkg.id}
+                className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''}`}
+              >
+                {isCustom && <div className={styles.customBadge}>Custom</div>}
+                <CardHeader className={styles.header}>
+                  <div className={styles.iconWrapper}>
+                    {IconComponent &&
+                      React.createElement(IconComponent, {
+                        className: styles.icon,
+                      })}
                   </div>
-                )}
-                <div className={settingsStyles.settingsPrice}>
-                  {isCustom ? (
-                    <div
-                      className={
-                        settingsStyles.settingsCustomPriceContainer
-                      }
-                    >
-                      <span
-                        className={settingsStyles.settingsCustomPriceLabel}
-                      >
-                        Starting at
-                      </span>
+                  <h2 className={styles.title}>{pkg.title}</h2>
+                </CardHeader>
+
+                <CardContent className={styles.content}>
+                  <ul>
+                    {pkg.description
+                      .split(';')
+                      .map((desc: string, index: number) => (
+                        <li key={index}>{desc.trim()}</li>
+                      ))}
+                  </ul>
+                </CardContent>
+
+                <div className={styles.priceSection}>
+                  {pkg.testPeriodDays > 0 && (
+                    <div className={styles.trial}>
+                      {pkg.testPeriodDays} days free trial
+                    </div>
+                  )}
+                  <div className={settingsStyles.settingsPrice}>
+                    {isCustom ? (
                       <div
-                        className={
-                          settingsStyles.settingsCustomPriceWrapper
-                        }
+                        className={settingsStyles.settingsCustomPriceContainer}
                       >
                         <span
-                          className={settingsStyles.settingsCustomCurrency}
+                          className={settingsStyles.settingsCustomPriceLabel}
                         >
+                          Starting at
+                        </span>
+                        <div
+                          className={settingsStyles.settingsCustomPriceWrapper}
+                        >
+                          <span
+                            className={settingsStyles.settingsCustomCurrency}
+                          >
+                            {currencySymbol}
+                          </span>
+                          <span
+                            className={settingsStyles.settingsCustomPriceValue}
+                          >
+                            {formattedPrice}
+                          </span>
+                          <span className={settingsStyles.settingsCustomPeriod}>
+                            /month
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <span className={settingsStyles.settingsCurrency}>
                           {currencySymbol}
                         </span>
-                        <span
-                          className={
-                            settingsStyles.settingsCustomPriceValue
-                          }
-                        >
+                        <span className={settingsStyles.settingsPriceValue}>
                           {formattedPrice}
                         </span>
-                        <span
-                          className={settingsStyles.settingsCustomPeriod}
-                        >
+                        <span className={settingsStyles.settingsPeriod}>
                           /month
                         </span>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <span className={settingsStyles.settingsCurrency}>
-                        {currencySymbol}
-                      </span>
-                      <span className={settingsStyles.settingsPriceValue}>
-                        {formattedPrice}
-                      </span>
-                      <span className={settingsStyles.settingsPeriod}>
-                        /month
-                      </span>
-                    </>
-                  )}
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              <CardFooter className={styles.footer}>
-                {isCurrentSubscription ? (
-                  <Button
-                    className={styles.button}
-                    disabled
-                    style={{ backgroundColor: '#4CAF50' }}
-                  >
-                    Current Subscription
-                  </Button>
-                ) : isPurchased ? (
-                  <Button
-                    className={styles.button}
-                    disabled
-                    style={{ backgroundColor: '#4CAF50' }}
-                  >
-                    Purchased Plan
-                  </Button>
-                ) : subscription?.additionalPackages?.includes(pkg.id) ? (
-                  <Button
-                    className={styles.button}
-                    onClick={() => handleDisablePackage(pkg.id)}
-                    style={{ backgroundColor: '#ef4444' }}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? (
-                      <CircularProgress size={24} color="inherit" />
-                    ) : (
-                      'Disable'
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    className={styles.button}
-                    onClick={() => handleEnablePackage(pkg.id)}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? (
-                      <CircularProgress size={24} color="inherit" />
-                    ) : pkg.id > subscription?.pricingPackageId ? (
-                      'Upgrade'
-                    ) : (
-                      'Enable'
-                    )}
-                  </Button>
-                )}
-              </CardFooter>
-            </Card>
-          );
-        })}
+                <CardFooter className={styles.footer}>
+                  {isCurrentSubscription ? (
+                    <Button
+                      className={styles.button}
+                      disabled
+                      style={{ backgroundColor: '#4CAF50' }}
+                    >
+                      Current Subscription
+                    </Button>
+                  ) : isPurchased ? (
+                    <Button
+                      className={styles.button}
+                      disabled
+                      style={{ backgroundColor: '#4CAF50' }}
+                    >
+                      Purchased Plan
+                    </Button>
+                  ) : subscription?.additionalPackages?.includes(pkg.id) ? (
+                    <Button
+                      className={styles.button}
+                      onClick={() => handleDisablePackage(pkg.id)}
+                      style={{ backgroundColor: '#ef4444' }}
+                      disabled={isProcessing}
+                    >
+                      {isProcessing ? (
+                        <CircularProgress size={24} color="inherit" />
+                      ) : (
+                        'Disable'
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      className={styles.button}
+                      onClick={() => handleEnablePackage(pkg.id)}
+                      disabled={isProcessing}
+                    >
+                      {isProcessing ? (
+                        <CircularProgress size={24} color="inherit" />
+                      ) : pkg.id > subscription?.pricingPackageId ? (
+                        'Upgrade'
+                      ) : (
+                        'Enable'
+                      )}
+                    </Button>
+                  )}
+                </CardFooter>
+              </Card>
+            );
+          })}
       </div>
     </Box>
   );
