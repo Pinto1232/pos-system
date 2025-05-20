@@ -1068,7 +1068,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                     <Button
                       className={styles.button}
                       disabled
-                      style={{ backgroundColor: '#4CAF50' }}
+                      sx={{ backgroundColor: '#4CAF50' }}
                     >
                       Current Subscription
                     </Button>
@@ -1076,7 +1076,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                     <Button
                       className={styles.button}
                       disabled
-                      style={{ backgroundColor: '#4CAF50' }}
+                      sx={{ backgroundColor: '#4CAF50' }}
                     >
                       Purchased Plan
                     </Button>
@@ -1084,7 +1084,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                     <Button
                       className={styles.button}
                       onClick={() => handleDisablePackage(pkg.id)}
-                      style={{ backgroundColor: '#ef4444' }}
+                      sx={{ backgroundColor: '#ef4444' }}
                       disabled={isProcessing}
                     >
                       {isProcessing ? (

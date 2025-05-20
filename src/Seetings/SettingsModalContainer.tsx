@@ -19,6 +19,14 @@ import {
   SettingsModalProps,
 } from '../types/settingsTypes';
 
+interface Package {
+  id: number;
+  title: string;
+  price: number;
+  currency: string;
+  type: string;
+};
+
 const DEFAULT_SIDEBAR_COLOR = '#173A79';
 const DEFAULT_LOGO_URL = '/Pisval_Logo.jpg';
 const DEFAULT_NAVBAR_COLOR = '#000000';
@@ -716,8 +724,8 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           }
 
           const uniquePackages = data.data.filter(
-            (pkg, index, self) =>
-              index === self.findIndex((p) => p.title === pkg.title)
+            (pkg: Package, index: number, self: Package[]) =>
+              index === self.findIndex((p: Package) => p.title === pkg.title)
           );
           return uniquePackages;
         }
@@ -1180,7 +1188,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         selectedSetting === 'Package Management'
       ) {
         console.log(
-          '[SETTINGS MODAL] Processing package selection event, refetching packages'
+          '[SETTINGS MODAL] Processing package selection event'
         );
         lastProcessedEventRef.current = Date.now();
 
@@ -1193,8 +1201,9 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           refetchPackages();
         } else {
           console.log(
-            '[SETTINGS MODAL] Skipping refetch for custom package to prevent UI flashing'
+            '[SETTINGS MODAL] Skipping refetch and UI update for custom package to prevent flickering'
           );
+          return; // Exit early for custom packages to prevent unnecessary re-renders
         }
       }
     },
