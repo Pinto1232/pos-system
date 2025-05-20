@@ -19,8 +19,82 @@ import ErrorBoundary from '@/components/ui/errorBoundary/ErrorBoundary';
 const queryClient = new QueryClient();
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const pathname = usePathname();
+  const pathname = usePathname() || '';
+
+  // Define different layout types
   const isDashboard = pathname === '/dashboard';
+  const isHomePage = pathname === '/';
+  const isCheckout =
+    pathname.includes('/checkout') && !pathname.includes('/checkout/success');
+  const isCheckoutSuccess = pathname.includes('/checkout/success');
+
+  
+  const renderLayout = () => {
+    
+    if (isDashboard) {
+      return <main className="dashboard-layout">{children}</main>;
+    }
+
+    
+    if (isHomePage) {
+      return (
+        <>
+          <NavbarContainer />
+          <NavbarSpacer />
+          <LazyJumbotron
+            heading="Pisval Tech Point of Sale System"
+            subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
+            backgroundImage="/pos_banner.jpg"
+            overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
+          />
+          <SidebarContainer />
+          <main className="home-layout">{children}</main>
+          <FooterContainer />
+        </>
+      );
+    }
+
+    
+    if (isCheckout) {
+      return (
+        <>
+          <NavbarContainer />
+          <NavbarSpacer />
+          <main className="checkout-layout">{children}</main>
+          <FooterContainer />
+        </>
+      );
+    }
+
+    
+    if (isCheckoutSuccess) {
+      return (
+        <>
+          <NavbarContainer />
+          <NavbarSpacer />
+          <LazyJumbotron
+            heading="Pisval Tech Point of Sale System"
+            subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
+            backgroundImage="/pos_banner.jpg"
+            overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
+          />
+          <SidebarContainer />
+          <main className="checkout-success-layout">{children}</main>
+          <FooterContainer />
+        </>
+      );
+    }
+
+    
+    return (
+      <>
+        <NavbarContainer />
+        <NavbarSpacer />
+        <main className="default-layout">{children}</main>
+        <FooterContainer />
+      </>
+    );
+  };
 
   return (
     <ErrorBoundary>
@@ -30,26 +104,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <PackageSelectionProvider>
               <SidebarProvider>
                 <TestPeriodProvider>
-                  {!isDashboard && (
-                    <>
-                      <NavbarContainer />
-                      <NavbarSpacer />
-                      {}
-                      {(!pathname.includes('/checkout') ||
-                        pathname.includes('/checkout/success')) && (
-                        <LazyJumbotron
-                          heading="Pisval Tech Point of Sale System"
-                          subheading="Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
-                          backgroundImage="/pos_banner.jpg"
-                          overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
-                        />
-                      )}
-                      <SidebarContainer />
-                    </>
-                  )}
-                  <main>{children}</main>
+                  {renderLayout()}
                   <PackageSelectionModal />
-                  {!isDashboard && <FooterContainer />}
                   <ChatbotContainer />
                 </TestPeriodProvider>
               </SidebarProvider>

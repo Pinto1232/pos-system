@@ -42,13 +42,21 @@ interface Package {
   multiCurrencyPrices?: string;
 }
 
+interface Subscription {
+  pricingPackageId: number;
+  package?: {
+    title: string;
+  };
+  additionalPackages?: number[];
+}
+
 interface PackageManagementContentProps {
   packages: Package[] | undefined;
   isLoading?: boolean;
   error?: Error | null;
   refetchPackages?: () => void;
-  subscription: any;
-  availableFeatures: string[];
+  subscription: Subscription;
+  availableFeatures?: string[]; 
   enableAdditionalPackage: (packageId: number) => Promise<void>;
   disableAdditionalPackage: (packageId: number) => Promise<void>;
 }
@@ -59,7 +67,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
   error: externalError,
   refetchPackages,
   subscription,
-  availableFeatures,
+  
   enableAdditionalPackage,
   disableAdditionalPackage,
 }) => {
@@ -88,7 +96,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
   );
 
   const TIMER_STATE_KEY = 'testPeriodTimerState';
-  const SELECTED_PACKAGE_KEY = 'testPeriodSelectedPackage';
+  
   const SELECTED_PACKAGE_DATA_KEY = 'testPeriodSelectedPackageData';
   const TIMER_LAST_UPDATED_KEY = 'timerLastUpdated';
   const PURCHASE_DATE_KEY = 'packagePurchaseDate';
@@ -235,11 +243,9 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
     }
   }, [getSavedPackage, safeLocalStorage, testPeriod, formatTime]);
 
-  
   const isProcessingEventRef = useRef<boolean>(false);
   const lastProcessedEventTimestampRef = useRef<number>(0);
 
-  
   const handlePackageSelected = useCallback(
     (event: CustomEvent) => {
       console.log(
@@ -247,7 +253,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         event.detail
       );
 
-      
       if (
         isProcessingEventRef.current ||
         (event.detail && event.detail.fromSettingsModal)
@@ -258,7 +263,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         return;
       }
 
-      
       const eventTimestamp = event.detail?.timestamp || Date.now();
       if (eventTimestamp - lastProcessedEventTimestampRef.current < 1000) {
         console.log(
@@ -268,18 +272,15 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
       }
 
       if (event.detail && event.detail.packageId) {
-        
         const packageId = event.detail.packageId;
         const selectedPkg = packages.find((pkg) => pkg.id === packageId);
         const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
 
-        
         if (isCustomPackage) {
           console.log(
             '[PACKAGE MANAGEMENT] Custom package detected, using special handling'
           );
 
-          
           const savedPkg = getSavedPackage();
           if (savedPkg) {
             setSavedPackage(savedPkg);
@@ -292,7 +293,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
 
         console.log('[PACKAGE MANAGEMENT] Processing package selection event');
 
-        
         Promise.resolve().then(async () => {
           if (refetchPackages && !event.detail.skipRefetch) {
             await refetchPackages();
@@ -307,7 +307,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             setSavedPackage(savedPkg);
           }
 
-          
           setTimeout(() => {
             isProcessingEventRef.current = false;
           }, 500);
@@ -324,7 +323,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         event.detail
       );
 
-      
       if (
         isProcessingEventRef.current ||
         (event.detail && event.detail.fromSettingsModal)
@@ -335,7 +333,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         return;
       }
 
-      
       const eventTimestamp = event.detail?.timestamp || Date.now();
       if (eventTimestamp - lastProcessedEventTimestampRef.current < 1000) {
         console.log(
@@ -345,20 +342,17 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
       }
 
       if (event.detail) {
-        
         const packageId = event.detail.packageId;
         if (packageId) {
           const selectedPkg = packages.find((pkg) => pkg.id === packageId);
           const isCustomPackage =
             selectedPkg?.type?.includes('custom') || false;
 
-          
           if (isCustomPackage) {
             console.log(
               '[PACKAGE MANAGEMENT] Custom package detected, using special handling'
             );
 
-            
             const savedPkg = getSavedPackage();
             if (savedPkg) {
               setSavedPackage(savedPkg);
@@ -367,13 +361,11 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
           }
         }
 
-        
         if (event.detail.skipRefetch) {
           console.log(
             '[PACKAGE MANAGEMENT] Skipping refetch due to skipRefetch flag'
           );
 
-          
           const savedPkg = getSavedPackage();
           if (savedPkg) {
             setSavedPackage(savedPkg);
@@ -386,7 +378,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
 
         console.log('[PACKAGE MANAGEMENT] Processing package changed event');
 
-        
         Promise.resolve().then(async () => {
           if (refetchPackages) {
             await refetchPackages();
@@ -397,7 +388,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             setSavedPackage(savedPkg);
           }
 
-          
           setTimeout(() => {
             isProcessingEventRef.current = false;
           }, 500);
@@ -407,7 +397,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
     [refetchPackages, getSavedPackage, packages]
   );
 
-  
   useEffect(() => {
     console.log('[PACKAGE MANAGEMENT] Setting up event listeners');
 
@@ -434,7 +423,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         handlePackageChanged as EventListener
       );
     };
-  }, [handlePackageSelected, handlePackageChanged]); 
+  }, [handlePackageSelected, handlePackageChanged]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -585,19 +574,15 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
     return result;
   };
 
-  
   const [lastEnabledPackageId, setLastEnabledPackageId] = useState<
     number | null
   >(null);
 
-  
   const enableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingProcessedRef = useRef<number | null>(null);
 
-  
   const handleEnablePackage = useCallback(
     async (packageId: number) => {
-      
       if (
         processingPackageId !== null ||
         lastEnabledPackageId === packageId ||
@@ -610,13 +595,11 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         return;
       }
 
-      
       setProcessingPackageId(packageId);
       enableOperationInProgressRef.current = true;
       packageBeingProcessedRef.current = packageId;
 
       try {
-        
         const selectedPkg = packages.find((pkg) => pkg.id === packageId);
         const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
 
@@ -628,8 +611,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         setLastEnabledPackageId(packageId);
 
         if (selectedPkg) {
-          
-          let normalizedType = 'starter'; 
+          let normalizedType = 'starter';
           if (selectedPkg.type) {
             if (selectedPkg.type.includes('custom')) {
               normalizedType = 'custom';
@@ -644,12 +626,17 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             }
           }
 
+          
           const packageForSelection = {
             ...selectedPkg,
-            type: normalizedType,
-          } as any;
+            type: normalizedType as
+              | 'custom'
+              | 'starter'
+              | 'growth'
+              | 'enterprise'
+              | 'premium',
+          };
 
-          
           const selectionDelay = isCustomPackage ? 800 : 200;
 
           console.log(
@@ -657,7 +644,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
           );
 
           setTimeout(() => {
-            
             selectPackageInContext(packageForSelection);
             console.log(
               `[PACKAGE MANAGEMENT] Package ${packageId} selected in context:`,
@@ -697,13 +683,11 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
               );
             }
 
-            
             const resetDelay = isCustomPackage ? 1000 : 500;
             console.log(
               `[PACKAGE MANAGEMENT] Setting up reset with delay: ${resetDelay}ms`
             );
 
-            
             setTimeout(() => {
               console.log(
                 `[PACKAGE MANAGEMENT] Releasing processing state for package ${packageId}`
@@ -717,14 +701,14 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
           console.warn(
             `[PACKAGE MANAGEMENT] Package with ID ${packageId} not found in available packages`
           );
-          
+
           setProcessingPackageId(null);
           enableOperationInProgressRef.current = false;
           packageBeingProcessedRef.current = null;
         }
       } catch (error) {
         console.error('[PACKAGE MANAGEMENT] Error enabling package:', error);
-        
+
         setProcessingPackageId(null);
         enableOperationInProgressRef.current = false;
         packageBeingProcessedRef.current = null;
@@ -745,14 +729,11 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
     ]
   );
 
-  
   const disableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingDisabledRef = useRef<number | null>(null);
 
-  
   const handleDisablePackage = useCallback(
     async (packageId: number) => {
-      
       if (
         processingPackageId !== null ||
         disableOperationInProgressRef.current ||
@@ -764,7 +745,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         return;
       }
 
-      
       setProcessingPackageId(packageId);
       disableOperationInProgressRef.current = true;
       packageBeingDisabledRef.current = packageId;
@@ -778,7 +758,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
       } catch (error) {
         console.error('[PACKAGE MANAGEMENT] Error disabling package:', error);
       } finally {
-        
         setTimeout(() => {
           console.log(
             `[PACKAGE MANAGEMENT] Releasing disable processing state for package ${packageId}`
@@ -976,7 +955,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             ].includes(pkg.title)
           )
           .map((pkg) => {
-            const { displayPrice, formattedPrice } = getPackagePrice(pkg);
+            const { formattedPrice } = getPackagePrice(pkg); 
             const isCustom = pkg.type?.toLowerCase().includes('custom');
             const isCurrentSubscription =
               pkg.id === subscription?.pricingPackageId;

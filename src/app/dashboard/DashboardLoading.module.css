@@ -1,0 +1,38 @@
+.loadingContainer {
+  padding: 1rem;
+  text-align: center;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.7);
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+/* Hide on home page and other non-dashboard pages */
+:global(.home-layout) ~ .loadingContainer,
+:global(.checkout-layout) ~ .loadingContainer,
+:global(.checkout-success-layout) ~ .loadingContainer,
+:global(.default-layout) ~ .loadingContainer {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  z-index: -999 !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}

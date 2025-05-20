@@ -130,3 +130,80 @@ a {
   background-color: #ffffff !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
 }
+
+/* Prevent navbar flash */
+.MuiAppBar-root {
+  visibility: visible !important;
+  opacity: 1 !important;
+  background-color: #173a79 !important;
+  transition: background-color 0.3s ease !important;
+}
+
+/* Ensure proper spacing for navbar */
+body {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Fix for dashboard loading component */
+[class*='DashboardLoading'] {
+  background-color: transparent !important;
+  color: transparent !important;
+  position: absolute !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: none !important;
+  animation: none !important;
+  transform: translateY(-100%) !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Specifically target the home page */
+body:has(main.home-layout) [class*='DashboardLoading'],
+body:has(main.checkout-layout) [class*='DashboardLoading'],
+body:has(main.checkout-success-layout) [class*='DashboardLoading'],
+body:has(main.default-layout) [class*='DashboardLoading'] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  z-index: -999 !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(-100%) !important;
+}
+
+/* Prevent any animation or transition on the home page */
+body:has(main.home-layout) * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Prevent dropdown animation specifically */
+@keyframes preventDropdown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+/* Apply to any element that might be causing the dropdown effect */
+body:has(main.home-layout) [class*='DashboardLoading'],
+body:has(main.home-layout) [class*='Loading'],
+body:has(main.home-layout) [class*='loading'] {
+  animation: preventDropdown 0.01s forwards !important;
+  transform: translateY(-100%) !important;
+  max-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

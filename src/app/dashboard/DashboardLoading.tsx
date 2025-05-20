@@ -1,21 +1,46 @@
 'use client';
 
-import React from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Typography } from '@mui/material';
 import { usePathname } from 'next/navigation';
+import styles from './DashboardLoading.module.css';
 
 export default function DashboardLoading() {
   const pathname = usePathname();
+  const [isVisible, setIsVisible] = useState(false);
 
-  const isMainDashboard = pathname === '/dashboard' || pathname === '/';
+  useEffect(() => {
+    
+    const isMainDashboard = pathname === '/dashboard' || pathname === '/';
 
-  if (isMainDashboard) {
-    return null;
-  }
+    
+    const shouldHideLoading =
+      isMainDashboard ||
+      pathname?.includes('/checkout') ||
+      !pathname?.includes('/dashboard') ||
+      !pathname; 
 
+    
+    setIsVisible(!shouldHideLoading);
+
+    
+    const timer = setTimeout(() => {
+      if (shouldHideLoading) {
+        setIsVisible(false);
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
+  
+  const containerClass = `${styles.loadingContainer} ${isVisible ? styles.visible : ''}`;
+
+  
+  
   return (
-    <Box sx={{ p: 4, textAlign: 'center' }}>
+    <div className={containerClass} aria-hidden={!isVisible}>
       <Typography variant="h5">Loading dashboard data...</Typography>
-    </Box>
+    </div>
   );
 }

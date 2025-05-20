@@ -25,7 +25,7 @@ interface Package {
   price: number;
   currency: string;
   type: string;
-};
+}
 
 const DEFAULT_SIDEBAR_COLOR = '#173A79';
 const DEFAULT_LOGO_URL = '/Pisval_Logo.jpg';
@@ -643,17 +643,14 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
 
   const { selectPackage: selectPackageInContext } = usePackageSelection();
 
-  
   const [lastEnabledPackageId, setLastEnabledPackageId] = useState<
     number | null
   >(null);
   const [isEnablingPackage, setIsEnablingPackage] = useState<boolean>(false);
 
-  
   const enableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingProcessedRef = useRef<number | null>(null);
 
-  
   const disableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingDisabledRef = useRef<number | null>(null);
 
@@ -693,7 +690,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           );
         }
 
-        
         const timestamp = Date.now();
         const response = await fetch(`/api/pricing-packages?_t=${timestamp}`);
         if (!response.ok) {
@@ -708,7 +704,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             `[SETTINGS MODAL] Retrieved ${data.data.length} packages from API`
           );
 
-          
           const logLimit = Math.min(data.data.length, 3);
           for (let i = 0; i < logLimit; i++) {
             const pkg = data.data[i];
@@ -735,7 +730,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             `[SETTINGS MODAL] Retrieved ${data.length} packages from API (array format)`
           );
 
-          
           const logLimit = Math.min(data.length, 3);
           for (let i = 0; i < logLimit; i++) {
             const pkg = data[i];
@@ -914,8 +908,8 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       }
     },
     enabled: open && selectedSetting === 'Package Management',
-    staleTime: 300000, 
-    gcTime: 600000, 
+    staleTime: 300000,
+    gcTime: 600000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
@@ -960,11 +954,8 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     additionalPackages: [],
   };
 
-  
   const enableAdditionalPackage = useCallback(
     async (packageId: number) => {
-      
-      
       if (
         enableOperationInProgressRef.current ||
         packageBeingProcessedRef.current === packageId
@@ -976,11 +967,10 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       }
 
       console.log(`Enable package ${packageId}`);
-      
+
       enableOperationInProgressRef.current = true;
       packageBeingProcessedRef.current = packageId;
 
-      
       setIsEnablingPackage(true);
 
       try {
@@ -989,11 +979,9 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
 
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         if (selectedPkg) {
-          
           const packageForSelection = JSON.parse(JSON.stringify(selectedPkg));
 
-          
-          let normalizedType = 'starter'; 
+          let normalizedType = 'starter';
           if (selectedPkg.type) {
             if (selectedPkg.type.includes('custom')) {
               normalizedType = 'custom';
@@ -1008,7 +996,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             }
           }
 
-          
           packageForSelection.type = normalizedType;
 
           console.log(
@@ -1025,35 +1012,28 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             )
           );
 
-          
           const isCustomPackage = normalizedType === 'custom';
 
-          
           selectPackageInContext(packageForSelection);
           console.log(
             `Package ${packageId} selected in context:`,
             packageForSelection.title
           );
 
-          
-          
-          
           if (!isCustomPackage) {
             const packageChangedEvent = new CustomEvent('packageChanged', {
               detail: {
                 packageId: packageId,
                 fromSettingsModal: true,
-                timestamp: Date.now(), 
-                skipRefetch: true, 
+                timestamp: Date.now(),
+                skipRefetch: true,
               },
             });
             window.dispatchEvent(packageChangedEvent);
           }
 
-          
           const resetDelay = isCustomPackage ? 800 : 300;
           setTimeout(() => {
-            
             setIsEnablingPackage(false);
             enableOperationInProgressRef.current = false;
             packageBeingProcessedRef.current = null;
@@ -1062,7 +1042,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           console.warn(
             `Package with ID ${packageId} not found in available packages`
           );
-          
+
           setIsEnablingPackage(false);
           enableOperationInProgressRef.current = false;
           packageBeingProcessedRef.current = null;
@@ -1074,19 +1054,17 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           'Error enabling package:',
           JSON.stringify(error, null, 2)
         );
-        
+
         setIsEnablingPackage(false);
         enableOperationInProgressRef.current = false;
         packageBeingProcessedRef.current = null;
       }
     },
     [enablePackage, packages, selectPackageInContext]
-  ); 
+  );
 
-  
   const disableAdditionalPackage = useCallback(
     async (packageId: number) => {
-      
       if (
         disableOperationInProgressRef.current ||
         packageBeingDisabledRef.current === packageId
@@ -1098,28 +1076,24 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       }
 
       console.log(`Disable package ${packageId}`);
-      
+
       disableOperationInProgressRef.current = true;
       packageBeingDisabledRef.current = packageId;
 
       try {
         await disablePackage(packageId);
 
-        
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
 
-        
         if (!isCustomPackage) {
-          
-          
           const packageChangedEvent = new CustomEvent('packageChanged', {
             detail: {
               packageId: packageId,
               fromSettingsModal: true,
-              timestamp: Date.now(), 
+              timestamp: Date.now(),
               action: 'disable',
-              skipRefetch: true, 
+              skipRefetch: true,
             },
           });
           window.dispatchEvent(packageChangedEvent);
@@ -1132,8 +1106,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           JSON.stringify(error, null, 2)
         );
       } finally {
-        
-        
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
         const resetDelay = isCustomPackage ? 800 : 300;
@@ -1145,12 +1117,10 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       }
     },
     [disablePackage, packages]
-  ); 
+  );
 
-  
   const lastProcessedEventRef = useRef<number>(0);
 
-  
   const handlePackageSelected = useCallback(
     (event: CustomEvent) => {
       console.log(
@@ -1158,13 +1128,11 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         event.detail
       );
 
-      
       if (event.detail?.fromSettingsModal) {
         console.log('[SETTINGS MODAL] Skipping event from settings modal');
         return;
       }
 
-      
       if (event.detail?.skipRefetch) {
         console.log(
           '[SETTINGS MODAL] Skipping refetch due to skipRefetch flag'
@@ -1172,7 +1140,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         return;
       }
 
-      
       const eventTimestamp = event.detail?.timestamp || Date.now();
       if (eventTimestamp - lastProcessedEventRef.current < 1000) {
         console.log(
@@ -1187,12 +1154,9 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         open &&
         selectedSetting === 'Package Management'
       ) {
-        console.log(
-          '[SETTINGS MODAL] Processing package selection event'
-        );
+        console.log('[SETTINGS MODAL] Processing package selection event');
         lastProcessedEventRef.current = Date.now();
 
-        
         const packageId = event.detail.packageId;
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
@@ -1203,7 +1167,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           console.log(
             '[SETTINGS MODAL] Skipping refetch and UI update for custom package to prevent flickering'
           );
-          return; // Exit early for custom packages to prevent unnecessary re-renders
+          return; 
         }
       }
     },
@@ -1217,13 +1181,11 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         event.detail
       );
 
-      
       if (event.detail?.fromSettingsModal) {
         console.log('[SETTINGS MODAL] Skipping event from settings modal');
         return;
       }
 
-      
       if (event.detail?.skipRefetch) {
         console.log(
           '[SETTINGS MODAL] Skipping refetch due to skipRefetch flag'
@@ -1231,7 +1193,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         return;
       }
 
-      
       const eventTimestamp = event.detail?.timestamp || Date.now();
       if (eventTimestamp - lastProcessedEventRef.current < 1000) {
         console.log(
@@ -1246,7 +1207,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         );
         lastProcessedEventRef.current = Date.now();
 
-        
         const packageId = event.detail.packageId;
         if (packageId) {
           const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
@@ -1268,7 +1228,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     [open, selectedSetting, refetchPackages, packages]
   );
 
-  
   useEffect(() => {
     console.log('[SETTINGS MODAL] Setting up event listeners');
 
@@ -1295,7 +1254,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         handlePackageChanged as EventListener
       );
     };
-  }, [handlePackageSelected, handlePackageChanged]); 
+  }, [handlePackageSelected, handlePackageChanged]);
 
   const availableFeatures = [
     'Dashboard',
