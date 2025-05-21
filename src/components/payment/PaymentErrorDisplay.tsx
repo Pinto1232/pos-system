@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Button, Alert, Stack } from '@mui/material';
+import { Box, Button, Alert, Stack } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 interface PaymentErrorDisplayProps {
@@ -168,16 +168,19 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
           justifyContent="center"
           sx={{ mt: 2 }}
         >
-          {actions.map((action, index) => (
-            <Button
-              key={index}
-              variant={action.primary ? 'contained' : 'outlined'}
-              onClick={action.onClick}
-              sx={{ minWidth: 120 }}
-            >
-              {action.label}
-            </Button>
-          ))}
+          {actions.map((action, index) => {
+            if (!action) return null;
+            return (
+              <Button
+                key={index}
+                variant={action.primary ? 'contained' : 'outlined'}
+                onClick={action.onClick}
+                sx={{ minWidth: 120 }}
+              >
+                {action.label}
+              </Button>
+            );
+          })}
 
           {onDismiss && (
             <Button variant="text" onClick={onDismiss} sx={{ ml: 1 }}>

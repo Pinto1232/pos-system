@@ -1,6 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { cookies } from 'next/headers';
+import {
+  TranslationValue,
+  TranslationArray,
+  TranslationObject
+} from '@/services/translationService';
 
 export async function getServerTranslations(
   namespace: string = 'common',
@@ -41,7 +46,7 @@ export async function getServerTranslations(
 
 export async function translateServer(
   key: string,
-  options: Record<string, any> = {},
+  options: Record<string, TranslationValue | TranslationObject> = {},
   namespace: string = 'common',
   language?: string
 ): Promise<string> {
@@ -78,7 +83,7 @@ export async function translateServer(
 }
 
 export async function translateDynamicContentServer<
-  T extends Record<string, any>,
+  T extends Record<string, TranslationValue | TranslationArray | TranslationObject>,
 >(
   content: T,
   keys: (keyof T)[],
@@ -108,11 +113,11 @@ export async function translateDynamicContentServer<
           }
 
           if (translation && typeof translation === 'string') {
-            translatedContent[key] = translation as any;
+            translatedContent[key] = translation as unknown as T[typeof key];
           }
         }
       } else if (Array.isArray(translatedContent[key])) {
-        translatedContent[key] = (translatedContent[key] as any[]).map(
+        translatedContent[key] = (translatedContent[key] as TranslationArray).map(
           (item) => {
             if (typeof item === 'string' && item.includes('.')) {
               const keyParts = item.split('.');
@@ -133,7 +138,7 @@ export async function translateDynamicContentServer<
             }
             return item;
           }
-        ) as any;
+        ) as unknown as T[typeof key];
       }
     }
 

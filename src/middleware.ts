@@ -10,7 +10,6 @@ const MIDDLEWARE_LANGUAGES = [
   { code: 'fr', region: 'France' },
 ];
 
-// API route mappings for case-insensitive handling
 const API_ROUTE_MAPPINGS: Record<string, string> = {
   '/api/pricingpackages': '/api/pricing-packages',
   '/api/auth-token/set-token': '/api/auth-token/set-token',
@@ -21,20 +20,19 @@ acceptLanguage.languages(MIDDLEWARE_LANGUAGES.map((lang) => lang.code));
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Handle case-insensitive API routes
   if (pathname.toLowerCase().startsWith('/api/')) {
-    // Check if this is a known route that needs redirection
     const lowerCasePath = pathname.toLowerCase();
     for (const [pattern, target] of Object.entries(API_ROUTE_MAPPINGS)) {
       if (lowerCasePath.startsWith(pattern.toLowerCase())) {
-        // Create a new URL with the correct case
         const newUrl = new URL(request.url);
         newUrl.pathname = pathname.replace(
           new RegExp(`^${pattern}`, 'i'),
           target
         );
 
-        console.log(`Redirecting API request from ${pathname} to ${newUrl.pathname}`);
+        console.log(
+          `Redirecting API request from ${pathname} to ${newUrl.pathname}`
+        );
         return NextResponse.rewrite(newUrl);
       }
     }
@@ -47,19 +45,16 @@ export function middleware(request: NextRequest) {
     !pathname.startsWith('/api/') &&
     !pathname.includes('.')
   ) {
-    let language;
+    let language: string = 'en'; // Initialize with default value
 
     const languageCookie = request.cookies.get('i18next')?.value;
     if (languageCookie) {
       language = languageCookie;
-    }
-
-    if (!language) {
-      language = acceptLanguage.get(request.headers.get('Accept-Language'));
-    }
-
-    if (!language) {
-      language = 'en';
+    } else {
+      const acceptLang = acceptLanguage.get(request.headers.get('Accept-Language'));
+      if (acceptLang) {
+        language = acceptLang;
+      }
     }
 
     if (!MIDDLEWARE_LANGUAGES.some((lang) => lang.code === language)) {
@@ -100,8 +95,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-    '/api/:path*',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)', '/api/:path*'],
 };

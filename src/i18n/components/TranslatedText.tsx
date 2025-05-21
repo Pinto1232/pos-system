@@ -37,7 +37,6 @@ export const TranslatedText: React.FC<TranslatedTextProps> = ({
         ns: 'common',
       });
 
-      
       if (translatedText === i18nKey) {
         console.warn(
           `Translation key "${i18nKey}" not found, using default value`

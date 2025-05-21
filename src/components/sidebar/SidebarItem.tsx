@@ -69,12 +69,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           transform: 'translateX(4px)',
           boxShadow: isActive ? '0 4px 12px rgba(52, 211, 153, 0.25)' : 'none',
         },
-        transition: 'all 0.3s ease-in-out',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         justifyContent: isCollapsed ? 'center' : 'flex-start',
         py: 1.5,
         borderRadius: '12px',
         margin: '4px 8px',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         boxShadow: isActive ? '0 2px 8px rgba(52, 211, 153, 0.2)' : 'none',
       }}
     >

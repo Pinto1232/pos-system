@@ -691,7 +691,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         }
 
         const timestamp = Date.now();
-        // Use PricingPackages (PascalCase) to match the backend controller route
+
         const response = await fetch(`/api/PricingPackages?_t=${timestamp}`);
         if (!response.ok) {
           throw new Error(

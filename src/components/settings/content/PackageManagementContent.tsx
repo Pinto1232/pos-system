@@ -29,9 +29,8 @@ import {
 import { Button } from '@/components/ui/button/Button';
 import iconMap from '@/utils/icons';
 import { TranslatedText } from '@/i18n';
-import { useTranslationContext } from '@/i18n';
 
-interface Package {
+export interface Package {
   id: number;
   title: string;
   description: string;
@@ -44,7 +43,7 @@ interface Package {
   multiCurrencyPrices?: string;
 }
 
-interface Subscription {
+export interface Subscription {
   pricingPackageId: number;
   package?: {
     title: string;
@@ -80,7 +79,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
     selectPackage: selectPackageInContext,
   } = usePackageSelection();
   const { testPeriod } = useTestPeriod();
-  const { currentLanguage } = useTranslationContext();
   const [packages, setPackages] = useState<Package[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(
     externalIsLoading || true
@@ -462,7 +460,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             '[PACKAGE MANAGEMENT] Fetching packages directly from API'
           );
           setIsLoading(true);
-          // Use PricingPackages (PascalCase) to match the backend controller route
+
           const response = await fetch('/api/PricingPackages');
 
           if (!response.ok) {
@@ -936,7 +934,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             if (refetchPackages) {
               refetchPackages();
             } else {
-              // Use PricingPackages (PascalCase) to match the backend controller route
               fetch('/api/PricingPackages?refresh=true')
                 .then((res) => res.json())
                 .then((data) => {

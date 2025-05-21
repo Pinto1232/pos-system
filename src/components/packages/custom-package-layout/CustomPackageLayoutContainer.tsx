@@ -20,12 +20,40 @@ import {
   PriceCalculationRequest,
   PriceCalculationResponse,
 } from './types';
+import {
+  SuccessMessageData,
+  SavedPackageData,
+  AddOn as IndexAddOn,
+} from './types/index';
 import { debounce } from 'lodash';
 import LazyLoginForm from '@/components/login-form/LoginForm';
 
 interface CustomPackageLayoutContainerProps {
   selectedPackage: Package;
 }
+
+
+const convertToTypesAddOn = (addOn: IndexAddOn): AddOn => {
+  let features: string[] = [];
+  if (typeof addOn.features === 'string') {
+    features = [addOn.features];
+  } else if (Array.isArray(addOn.features)) {
+    features = addOn.features;
+  }
+
+  let dependencies: string[] = [];
+  if (typeof addOn.dependencies === 'string') {
+    dependencies = [addOn.dependencies];
+  } else if (Array.isArray(addOn.dependencies)) {
+    dependencies = addOn.dependencies;
+  }
+
+  return {
+    ...addOn,
+    features,
+    dependencies,
+  } as AddOn;
+};
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
   function Alert(props, ref) {
@@ -289,24 +317,7 @@ const CustomPackageLayoutContainer: React.FC<
   }, []);
 
   const handleSave = useCallback(
-    async (data: {
-      selectedFeatures: Feature[];
-      selectedAddOns: AddOn[];
-      usageQuantities: Record<number, number>;
-      calculatedPrice: number;
-      selectedCurrency: string;
-      formData: {
-        firstName: string;
-        lastName: string;
-        email: string;
-        phone: string;
-        address: string;
-        country: string;
-        state: string;
-        city: string;
-        zipCode: string;
-      };
-    }) => {
+    async (data: SavedPackageData) => {
       if (currentStep !== steps.length - 1) return;
       if (!validateCurrentStep()) return;
 
@@ -368,29 +379,9 @@ const CustomPackageLayoutContainer: React.FC<
     ]
   );
 
-  type PackageDataType = {
-    formData?: {
-      firstName?: string;
-      lastName?: string;
-      email?: string;
-      phone?: string;
-      address?: string;
-      country?: string;
-      state?: string;
-      city?: string;
-      zipCode?: string;
-      [key: string]: string | undefined;
-    };
-    selectedFeatures?: Feature[];
-    selectedAddOns?: AddOn[];
-    usageQuantities?: Record<number, number>;
-    calculatedPrice?: number;
-    selectedCurrency?: string;
-  } | null;
-
   const handleShowSuccessMessage = (
     message: string,
-    packageData?: PackageDataType
+    packageData?: SuccessMessageData
   ) => {
     showSuccessModal({
       message: message,
@@ -494,7 +485,9 @@ const CustomPackageLayoutContainer: React.FC<
         }}
         onAddOnToggle={(addOns) => {
           console.log('Toggling add-ons:', JSON.stringify(addOns, null, 2));
-          setSelectedAddOns(addOns);
+          
+          const convertedAddOns = addOns.map(convertToTypesAddOn);
+          setSelectedAddOns(convertedAddOns);
         }}
         onUsageChange={(quantities) => {
           console.log(

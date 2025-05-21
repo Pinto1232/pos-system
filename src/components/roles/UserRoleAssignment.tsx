@@ -332,7 +332,7 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentProps> = ({ roleId }) => {
         usersInRole?.find((u) => u.id === userId) ||
         (await fetch(`/api/Users`)
           .then((res) => res.json())
-          .then((users) => users.find((u: any) => u.id === userId)));
+          .then((users) => users.find((u: User) => u.id === userId)));
 
       const role = await getRoleDetails(roleId);
 

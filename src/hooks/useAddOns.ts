@@ -5,7 +5,7 @@ import { AddOn } from '@/components/packages/custom-package-layout/types';
 export const addOnKeys = {
   all: ['addOns'] as const,
   lists: () => [...addOnKeys.all, 'list'] as const,
-  list: (filters: Record<string, any>) =>
+  list: (filters: Record<string, unknown>) =>
     [...addOnKeys.lists(), filters] as const,
   details: () => [...addOnKeys.all, 'detail'] as const,
   detail: (id: number) => [...addOnKeys.details(), id] as const,
@@ -26,7 +26,7 @@ interface AddOnFilters {
 
 export const useAddOns = (filters: AddOnFilters = {}) => {
   return useQuery<AddOnsResponse, Error>({
-    queryKey: addOnKeys.list(filters),
+    queryKey: addOnKeys.list(filters as Record<string, unknown>),
     queryFn: async () => {
       const params = new URLSearchParams();
       if (filters.category) params.append('category', filters.category);

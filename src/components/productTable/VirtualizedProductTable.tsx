@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   Paper,
-  TableContainer,
   Typography,
   Chip,
   Rating,
@@ -16,7 +15,6 @@ import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Product } from '@/components/productTable/types';
-import { useProductContext } from '@/contexts/ProductContext';
 
 interface VirtualizedProductTableProps {
   products: Product[];
@@ -31,7 +29,16 @@ interface VirtualizedProductTableProps {
   isLoading?: boolean;
 }
 
-const Row = React.memo(({ index, style, data }: any) => {
+interface RowProps {
+  index: number;
+  style: React.CSSProperties;
+  data: {
+    products: Product[];
+    onView: (product: Product) => void;
+  };
+}
+
+const Row = React.memo(({ index, style, data }: RowProps) => {
   const { products, onView } = data;
   const product = products[index];
 
@@ -52,7 +59,7 @@ const Row = React.memo(({ index, style, data }: any) => {
         <Box
           component="img"
           src={product.image || '/placeholder-product.jpg'}
-          alt={product.name}
+          alt={product.productName || 'Product'}
           sx={{
             width: 40,
             height: 40,
@@ -62,13 +69,13 @@ const Row = React.memo(({ index, style, data }: any) => {
           }}
         />
         <Typography variant="body2" fontWeight="medium">
-          {product.name}
+          {product.productName}
         </Typography>
       </Box>
 
       <Box width="15%">
         <Typography variant="body2" color="text.secondary">
-          {product.idCode}
+          {product.barcode}
         </Typography>
       </Box>
 
@@ -86,15 +93,15 @@ const Row = React.memo(({ index, style, data }: any) => {
 
       <Box width="10%">
         <Chip
-          label={product.status}
+          label={product.statusProduct || (product.status ? 'Active' : 'Inactive')}
           size="small"
           sx={{
             backgroundColor:
-              product.status === 'Active'
+              product.status
                 ? 'rgba(46, 204, 113, 0.1)'
                 : 'rgba(231, 76, 60, 0.1)',
             color:
-              product.status === 'Active'
+              product.status
                 ? 'rgb(46, 204, 113)'
                 : 'rgb(231, 76, 60)',
             fontWeight: 500,

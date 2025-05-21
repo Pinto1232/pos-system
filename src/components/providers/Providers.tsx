@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   QueryClient,
   QueryClientProvider,
@@ -10,7 +10,7 @@ import AuthProvider from '@/contexts/AuthContext';
 import { ProductProvider } from '@/contexts/ProductContext';
 import { CustomizationProvider } from '@/contexts/CustomizationContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
-import { AxiosError } from 'axios';
+
 import AuthWrapper from '@/contexts/AuthWrapper';
 import { CurrencyProvider } from '@/contexts/CurrencyContext';
 import { UserSubscriptionProvider } from '@/contexts/UserSubscriptionContext';
@@ -29,7 +29,10 @@ const defaultQueryOptions: DefaultOptions = {
         JSON.stringify(error, null, 2)
       );
 
-      if (error instanceof AxiosError && error.response?.status === 401) {
+      // Check for Axios error by looking for the response property
+      if (error && typeof error === 'object' && 'response' in error &&
+          error.response && typeof error.response === 'object' &&
+          'status' in error.response && error.response.status === 401) {
         console.warn('Unauthorized (401) - Redirecting to login...');
         return false;
       }

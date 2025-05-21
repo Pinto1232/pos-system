@@ -2,6 +2,16 @@
 
 import { useEffect } from 'react';
 
+
+interface PerformanceEntryWithProcessingStart extends PerformanceEntry {
+  processingStart: number;
+}
+
+interface LayoutShiftEntry extends PerformanceEntry {
+  hadRecentInput: boolean;
+  value: number;
+}
+
 export default function PerformanceMonitor() {
   useEffect(() => {
     if (
@@ -33,7 +43,9 @@ export default function PerformanceMonitor() {
       const fidObserver = new PerformanceObserver((entryList) => {
         const entries = entryList.getEntries();
         entries.forEach((entry) => {
-          const fid = entry.processingStart - entry.startTime;
+          
+          const typedEntry = entry as PerformanceEntryWithProcessingStart;
+          const fid = typedEntry.processingStart - typedEntry.startTime;
           reportMetric('FID', fid);
         });
       });
@@ -45,14 +57,16 @@ export default function PerformanceMonitor() {
 
     try {
       let clsValue = 0;
-      let clsEntries = [];
+      const clsEntries: PerformanceEntry[] = [];
 
       const clsObserver = new PerformanceObserver((entryList) => {
         const entries = entryList.getEntries();
 
         entries.forEach((entry) => {
-          if (!entry.hadRecentInput) {
-            clsValue += entry.value;
+          
+          const layoutShiftEntry = entry as LayoutShiftEntry;
+          if (!layoutShiftEntry.hadRecentInput) {
+            clsValue += layoutShiftEntry.value;
             clsEntries.push(entry);
           }
         });

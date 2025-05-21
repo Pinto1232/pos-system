@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo, DependencyList } from 'react';
+import { useRef, DependencyList } from 'react';
 import { deepEqual } from '@/utils/optimizationUtils';
 
 export function useDeepMemo<T>(
@@ -34,7 +34,7 @@ export function useDeepMemo<T>(
   return ref.current.value;
 }
 
-export function useDeepCallback<T extends (...args: any[]) => any>(
+export function useDeepCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
   dependencies: DependencyList
 ): T {
@@ -42,11 +42,15 @@ export function useDeepCallback<T extends (...args: any[]) => any>(
 }
 
 export function useMemoObject<T extends object>(values: T): T {
-  return useMemo(() => values, Object.values(values)) as T;
+  // Using useDeepMemo instead of useMemo to properly handle object dependencies
+  return useDeepMemo(() => values, [values]);
 }
 
-export default {
+// Named export object to avoid anonymous default export
+const optimizedHooks = {
   useDeepMemo,
   useDeepCallback,
   useMemoObject,
 };
+
+export default optimizedHooks;
