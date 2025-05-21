@@ -95,7 +95,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
 
     return (
       <Card
-        className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''}`}
+        className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''} ${packageData.type}`}
       >
         {isCustom && (
           <div className={styles.customBadge}>

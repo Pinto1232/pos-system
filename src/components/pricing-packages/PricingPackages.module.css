@@ -223,6 +223,33 @@
   color: rgba(66, 135, 245, 0.8);
 }
 
+.custom .extraDescription {
+  color: #2563eb;
+  font-weight: 600;
+  background-color: rgba(37, 99, 235, 0.08);
+}
+
+/* Package-specific styles for extraDescription */
+.starter-plus .extraDescription {
+  color: #4287f5;
+  font-weight: 600;
+}
+
+.growth-pro .extraDescription {
+  color: #4287f5;
+  font-weight: 600;
+}
+
+.enterprise-elite .extraDescription {
+  color: #4287f5;
+  font-weight: 600;
+}
+
+.premium-plus .extraDescription {
+  color: #4287f5;
+  font-weight: 600;
+}
+
 .header {
   padding: 24px 16px 12px;
   display: flex;
@@ -271,10 +298,16 @@
 .extraDescription {
   font-size: 0.85rem;
   color: #4287f5;
-  font-weight: 500;
-  margin-bottom: 12px;
+  font-weight: 600;
+  margin-bottom: 16px;
   text-align: center;
-  padding: 0 8px;
+  padding: 8px;
+  line-height: 1.4;
+  letter-spacing: 0.2px;
+  display: block;
+  width: 100%;
+  border-radius: 4px;
+  background-color: rgba(66, 135, 245, 0.05);
 }
 
 .content ul {
