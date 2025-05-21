@@ -1,53 +1,15 @@
 'use client';
 import React, { useState } from 'react';
-import { Menu, MenuItem, Typography, Box, Fade } from '@mui/material';
+import { Menu, MenuItem, Typography, Box } from '@mui/material';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import CheckIcon from '@mui/icons-material/Check';
 import { FiGlobe } from 'react-icons/fi';
 import styles from './LanguageDropdown.module.css';
-
-const AVAILABLE_LANGUAGES = [
-  {
-    code: 'en',
-    name: 'English',
-    flag: '🇬🇧',
-  },
-  {
-    code: 'pt',
-    name: 'Português',
-    flag: '🇵🇹',
-  },
-  {
-    code: 'es',
-    name: 'Español',
-    flag: '🇪🇸',
-  },
-  {
-    code: 'fr',
-    name: 'Français',
-    flag: '🇫🇷',
-  },
-];
+import { useTranslationContext, AVAILABLE_LANGUAGES } from '@/i18n';
+import FlagIcon from './FlagIcon';
 
 const LanguageDropdown: React.FC = () => {
-  const getDefaultLanguage = () => {
-    if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('language');
-      if (savedLanguage) {
-        try {
-          return JSON.parse(savedLanguage);
-        } catch (e) {
-          console.error(
-            'Error parsing saved language:',
-            JSON.stringify(e, null, 2)
-          );
-        }
-      }
-    }
-    return AVAILABLE_LANGUAGES[0];
-  };
-
-  const [currentLanguage, setCurrentLanguage] = useState(getDefaultLanguage());
+  const { currentLanguage, changeLanguage } = useTranslationContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -60,9 +22,12 @@ const LanguageDropdown: React.FC = () => {
   };
 
   const handleLanguageSelect = (language: (typeof AVAILABLE_LANGUAGES)[0]) => {
-    setCurrentLanguage(language);
-    localStorage.setItem('language', JSON.stringify(language));
     handleClose();
+
+    setTimeout(() => {
+      changeLanguage(language.code);
+      console.log(`Language changed to ${language.code} via dropdown`);
+    }, 100);
   };
 
   return (
@@ -92,7 +57,9 @@ const LanguageDropdown: React.FC = () => {
             marginRight: '4px',
           }}
         />
-        <span className={styles.flagIcon}>{currentLanguage.flag}</span>
+        <span className={styles.flagIcon}>
+          <FlagIcon countryCode={currentLanguage.flag} size={24} />
+        </span>
         <ExpandMoreRoundedIcon
           sx={{
             fontSize: '16px',
@@ -109,21 +76,21 @@ const LanguageDropdown: React.FC = () => {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        TransitionComponent={Fade}
-        transitionDuration={200}
-        className={styles.menuContainer}
-        MenuListProps={{
-          'aria-labelledby': 'language-button',
-          dense: true,
-        }}
-        PaperProps={{
-          elevation: 3,
-          sx: {
-            minWidth: '180px',
-            backgroundColor: '#fff',
-            marginTop: '8px',
+        slotProps={{
+          paper: {
+            elevation: 3,
+            sx: {
+              minWidth: '200px',
+              backgroundColor: '#fff',
+              marginTop: '8px',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              boxShadow: '0 6px 20px rgba(0, 0, 0, 0.1) !important',
+              animation: 'fadeIn 0.2s ease-out forwards',
+            },
           },
         }}
+        className={styles.menuContainer}
       >
         {AVAILABLE_LANGUAGES.map((language) => (
           <MenuItem
@@ -133,7 +100,7 @@ const LanguageDropdown: React.FC = () => {
             className={`${styles.menuItem} ${currentLanguage.code === language.code ? styles.selected : ''}`}
           >
             <Box component="span" className={styles.menuFlagIcon}>
-              {language.flag}
+              <FlagIcon countryCode={language.flag} size={26} />
             </Box>
             <Typography variant="body2" className={styles.languageText}>
               {language.name}
@@ -144,7 +111,6 @@ const LanguageDropdown: React.FC = () => {
                   ml: 'auto',
                   fontSize: '16px',
                   color: '#1976d2',
-                  opacity: 0.9,
                 }}
               />
             )}

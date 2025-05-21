@@ -300,9 +300,7 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
     '⚠️ WARNING: Dashboard rendering check is temporarily disabled for development'
   );
 
-  
   if (!isInitialized) {
-    
     const currentPath =
       typeof window !== 'undefined' ? window.location.pathname : '';
 
@@ -310,19 +308,14 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
     const isHomePage =
       currentPath === '/' || !currentPath.includes('/dashboard');
 
-    
     const isDashboardSubPage =
       currentPath.includes('/dashboard') && currentPath !== '/dashboard';
 
-    
     if (isHomePage) {
       return null;
     }
 
-    
-    
     if (isDashboardSubPage) {
-      
       return (
         <div
           style={{
@@ -336,7 +329,6 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
       );
     }
 
-    
     return null;
   }
 

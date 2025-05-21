@@ -28,6 +28,8 @@ import {
 } from '@/components/ui/card/Card';
 import { Button } from '@/components/ui/button/Button';
 import iconMap from '@/utils/icons';
+import { TranslatedText } from '@/i18n';
+import { useTranslationContext } from '@/i18n';
 
 interface Package {
   id: number;
@@ -56,7 +58,7 @@ interface PackageManagementContentProps {
   error?: Error | null;
   refetchPackages?: () => void;
   subscription: Subscription;
-  availableFeatures?: string[]; 
+  availableFeatures?: string[];
   enableAdditionalPackage: (packageId: number) => Promise<void>;
   disableAdditionalPackage: (packageId: number) => Promise<void>;
 }
@@ -67,7 +69,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
   error: externalError,
   refetchPackages,
   subscription,
-  
+
   enableAdditionalPackage,
   disableAdditionalPackage,
 }) => {
@@ -78,6 +80,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
     selectPackage: selectPackageInContext,
   } = usePackageSelection();
   const { testPeriod } = useTestPeriod();
+  const { currentLanguage } = useTranslationContext();
   const [packages, setPackages] = useState<Package[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(
     externalIsLoading || true
@@ -96,7 +99,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
   );
 
   const TIMER_STATE_KEY = 'testPeriodTimerState';
-  
+
   const SELECTED_PACKAGE_DATA_KEY = 'testPeriodSelectedPackageData';
   const TIMER_LAST_UPDATED_KEY = 'timerLastUpdated';
   const PURCHASE_DATE_KEY = 'packagePurchaseDate';
@@ -459,7 +462,8 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             '[PACKAGE MANAGEMENT] Fetching packages directly from API'
           );
           setIsLoading(true);
-          const response = await fetch('/api/pricing-packages');
+          // Use PricingPackages (PascalCase) to match the backend controller route
+          const response = await fetch('/api/PricingPackages');
 
           if (!response.ok) {
             throw new Error('Failed to fetch packages');
@@ -626,7 +630,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             }
           }
 
-          
           const packageForSelection = {
             ...selectedPkg,
             type: normalizedType as
@@ -774,7 +777,10 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
-        Package Management
+        <TranslatedText
+          i18nKey="settings.packageManagement"
+          defaultValue="Package Management"
+        />
       </Typography>
 
       <Paper
@@ -796,14 +802,22 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         >
           <Box>
             <Typography variant="subtitle1" fontWeight="bold">
-              Current Subscription
+              <TranslatedText
+                i18nKey="settings.currentSubscription"
+                defaultValue="Current Subscription"
+              />
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Your current active subscription package
+              <TranslatedText
+                i18nKey="packages.currentActiveSubscription"
+                defaultValue="Your current active subscription package"
+              />
             </Typography>
           </Box>
           <Chip
-            label="Active"
+            label={
+              <TranslatedText i18nKey="packages.active" defaultValue="Active" />
+            }
             color="success"
             size="small"
             icon={<CheckCircleIcon />}
@@ -871,7 +885,10 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                   gap: '4px',
                 }}
               >
-                <span>Test Period:</span>
+                <TranslatedText
+                  i18nKey="packages.testPeriod"
+                  defaultValue="Test Period:"
+                />
                 <span
                   style={{
                     color: '#F59E0B',
@@ -880,7 +897,10 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                 >
                   {formatTime(remainingTime)}
                 </span>
-                <span>remaining</span>
+                <TranslatedText
+                  i18nKey="packages.remaining"
+                  defaultValue="remaining"
+                />
               </Typography>
             </Box>
           )}
@@ -897,11 +917,16 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
       >
         <Box>
           <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-            Available Packages
+            <TranslatedText
+              i18nKey="packages.availablePackages"
+              defaultValue="Available Packages"
+            />
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Upgrade your subscription or add additional packages to access more
-            features
+            <TranslatedText
+              i18nKey="packages.upgradeDescription"
+              defaultValue="Upgrade your subscription or add additional packages to access more features"
+            />
           </Typography>
         </Box>
         <MuiButton
@@ -911,7 +936,8 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             if (refetchPackages) {
               refetchPackages();
             } else {
-              fetch('/api/pricing-packages?refresh=true')
+              // Use PricingPackages (PascalCase) to match the backend controller route
+              fetch('/api/PricingPackages?refresh=true')
                 .then((res) => res.json())
                 .then((data) => {
                   if (data && data.data) {
@@ -925,7 +951,14 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
           }}
           disabled={isLoading}
         >
-          {isLoading ? <CircularProgress size={20} /> : 'Refresh Packages'}
+          {isLoading ? (
+            <CircularProgress size={20} />
+          ) : (
+            <TranslatedText
+              i18nKey="packages.refreshPackages"
+              defaultValue="Refresh Packages"
+            />
+          )}
         </MuiButton>
       </Box>
 
@@ -955,7 +988,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             ].includes(pkg.title)
           )
           .map((pkg) => {
-            const { formattedPrice } = getPackagePrice(pkg); 
+            const { formattedPrice } = getPackagePrice(pkg);
             const isCustom = pkg.type?.toLowerCase().includes('custom');
             const isCurrentSubscription =
               pkg.id === subscription?.pricingPackageId;
@@ -971,7 +1004,14 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                 key={pkg.id}
                 className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''}`}
               >
-                {isCustom && <div className={styles.customBadge}>Custom</div>}
+                {isCustom && (
+                  <div className={styles.customBadge}>
+                    <TranslatedText
+                      i18nKey="packages.custom"
+                      defaultValue="Custom"
+                    />
+                  </div>
+                )}
                 <CardHeader className={styles.header}>
                   <div className={styles.iconWrapper}>
                     {IconComponent &&
@@ -995,7 +1035,11 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                 <div className={styles.priceSection}>
                   {pkg.testPeriodDays > 0 && (
                     <div className={styles.trial}>
-                      {pkg.testPeriodDays} days free trial
+                      <TranslatedText
+                        i18nKey="packages.freeTrial"
+                        values={{ days: pkg.testPeriodDays }}
+                        defaultValue={`${pkg.testPeriodDays} days free trial`}
+                      />
                     </div>
                   )}
                   <div className={settingsStyles.settingsPrice}>
@@ -1006,7 +1050,10 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                         <span
                           className={settingsStyles.settingsCustomPriceLabel}
                         >
-                          Starting at
+                          <TranslatedText
+                            i18nKey="packages.startingAt"
+                            defaultValue="Starting at"
+                          />
                         </span>
                         <div
                           className={settingsStyles.settingsCustomPriceWrapper}
@@ -1022,7 +1069,10 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                             {formattedPrice}
                           </span>
                           <span className={settingsStyles.settingsCustomPeriod}>
-                            /month
+                            <TranslatedText
+                              i18nKey="packages.perMonth"
+                              defaultValue="/month"
+                            />
                           </span>
                         </div>
                       </div>
@@ -1035,7 +1085,10 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                           {formattedPrice}
                         </span>
                         <span className={settingsStyles.settingsPeriod}>
-                          /month
+                          <TranslatedText
+                            i18nKey="packages.perMonth"
+                            defaultValue="/month"
+                          />
                         </span>
                       </>
                     )}
@@ -1049,7 +1102,10 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                       disabled
                       sx={{ backgroundColor: '#4CAF50' }}
                     >
-                      Current Subscription
+                      <TranslatedText
+                        i18nKey="settings.currentSubscription"
+                        defaultValue="Current Subscription"
+                      />
                     </Button>
                   ) : isPurchased ? (
                     <Button
@@ -1057,7 +1113,10 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                       disabled
                       sx={{ backgroundColor: '#4CAF50' }}
                     >
-                      Purchased Plan
+                      <TranslatedText
+                        i18nKey="packages.purchasedPlan"
+                        defaultValue="Purchased Plan"
+                      />
                     </Button>
                   ) : subscription?.additionalPackages?.includes(pkg.id) ? (
                     <Button
@@ -1069,7 +1128,10 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                       {isProcessing ? (
                         <CircularProgress size={24} color="inherit" />
                       ) : (
-                        'Disable'
+                        <TranslatedText
+                          i18nKey="packages.disable"
+                          defaultValue="Disable"
+                        />
                       )}
                     </Button>
                   ) : (
@@ -1081,9 +1143,15 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                       {isProcessing ? (
                         <CircularProgress size={24} color="inherit" />
                       ) : pkg.id > subscription?.pricingPackageId ? (
-                        'Upgrade'
+                        <TranslatedText
+                          i18nKey="packages.upgrade"
+                          defaultValue="Upgrade"
+                        />
                       ) : (
-                        'Enable'
+                        <TranslatedText
+                          i18nKey="packages.enable"
+                          defaultValue="Enable"
+                        />
                       )}
                     </Button>
                   )}

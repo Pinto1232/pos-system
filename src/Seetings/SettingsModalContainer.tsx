@@ -691,7 +691,8 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         }
 
         const timestamp = Date.now();
-        const response = await fetch(`/api/pricing-packages?_t=${timestamp}`);
+        // Use PricingPackages (PascalCase) to match the backend controller route
+        const response = await fetch(`/api/PricingPackages?_t=${timestamp}`);
         if (!response.ok) {
           throw new Error(
             `Failed to fetch packages: ${response.status} ${response.statusText}`
@@ -1167,7 +1168,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           console.log(
             '[SETTINGS MODAL] Skipping refetch and UI update for custom package to prevent flickering'
           );
-          return; 
+          return;
         }
       }
     },

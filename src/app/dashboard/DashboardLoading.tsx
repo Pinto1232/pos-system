@@ -10,20 +10,16 @@ export default function DashboardLoading() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    
     const isMainDashboard = pathname === '/dashboard' || pathname === '/';
 
-    
     const shouldHideLoading =
       isMainDashboard ||
       pathname?.includes('/checkout') ||
       !pathname?.includes('/dashboard') ||
-      !pathname; 
+      !pathname;
 
-    
     setIsVisible(!shouldHideLoading);
 
-    
     const timer = setTimeout(() => {
       if (shouldHideLoading) {
         setIsVisible(false);
@@ -33,11 +29,8 @@ export default function DashboardLoading() {
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  
   const containerClass = `${styles.loadingContainer} ${isVisible ? styles.visible : ''}`;
 
-  
-  
   return (
     <div className={containerClass} aria-hidden={!isVisible}>
       <Typography variant="h5">Loading dashboard data...</Typography>

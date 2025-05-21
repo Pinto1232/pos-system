@@ -220,7 +220,24 @@ const getSuggestedResponses = (packageType: string): string[] => {
 export const ChatbotProvider: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  // Initialize isOpen from localStorage or default to false
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedState = localStorage.getItem('chatbot_isOpen');
+      // Only open the chatbot if explicitly set to true in localStorage
+      return savedState === 'true' ? true : false;
+    }
+    return false;
+  });
+
+  // Initialize firstVisit state to control auto-showing behavior
+  const [firstVisit, setFirstVisit] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('chatbot_hasVisited') !== 'true';
+    }
+    return true;
+  });
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -242,6 +259,14 @@ export const ChatbotProvider: React.FC<{
   );
 
   const [themeColor, setThemeColor] = useState<string>('#1976d2');
+
+  // Set hasVisited flag in localStorage on first render
+  useEffect(() => {
+    if (firstVisit && typeof window !== 'undefined') {
+      localStorage.setItem('chatbot_hasVisited', 'true');
+      setFirstVisit(false);
+    }
+  }, [firstVisit]);
 
   useEffect(() => {
     if (selectedPackage) {
@@ -341,6 +366,11 @@ export const ChatbotProvider: React.FC<{
     );
     const newIsOpen = !isOpen;
     setIsOpen(newIsOpen);
+
+    // Save state to localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('chatbot_isOpen', newIsOpen.toString());
+    }
   };
 
   const sendBotMessage = (message: string, clearPrevious = false) => {

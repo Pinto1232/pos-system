@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button/Button';
 import iconMap from '@/utils/icons';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { TranslatedText } from '@/i18n';
+import { useTranslationContext } from '@/i18n';
 
 interface PricingPackageProps {
   packageData: {
@@ -33,6 +35,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
   ({ packageData, onBuyNow }) => {
     const { isPackageDisabled, isPurchasedPackage } = usePackageSelection();
     const { currency, rate, formatPrice, currencySymbol } = useCurrency();
+    const { currentLanguage, t } = useTranslationContext();
     const isDisabled = isPackageDisabled(packageData.id);
     const isPurchased = isPurchasedPackage(packageData.id);
 
@@ -79,15 +82,26 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
 
     const displayCurrency = currencySymbol;
 
+    const translatedExtraDescription = t(
+      `packages.extraDescriptions.${packageData.type}`,
+      {
+        defaultValue: packageData.extraDescription,
+      }
+    );
+
     console.log(
-      `Package card ${packageData.title} (${packageData.type}) price: ${displayPrice}, formatted: ${convertedPrice}, currency: ${currency}`
+      `Package card ${packageData.title} (${packageData.type}) price: ${displayPrice}, formatted: ${convertedPrice}, currency: ${currency}, language: ${currentLanguage.code}`
     );
 
     return (
       <Card
         className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''}`}
       >
-        {isCustom && <div className={styles.customBadge}>Custom</div>}
+        {isCustom && (
+          <div className={styles.customBadge}>
+            <TranslatedText i18nKey="packages.custom" defaultValue="Custom" />
+          </div>
+        )}
         <CardHeader className={styles.header}>
           <div className={styles.iconWrapper}>
             {IconComponent &&
@@ -95,38 +109,71 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
                 className: styles.icon,
               })}
           </div>
-          <h2 className={styles.title}>{packageData.title}</h2>
+          <h2 className={styles.title}>
+            <TranslatedText
+              i18nKey={`packages.titles.${packageData.type}`}
+              defaultValue={packageData.title}
+            />
+          </h2>
         </CardHeader>
 
         <CardContent className={styles.content}>
+          <div className={styles.extraDescription}>
+            {translatedExtraDescription}
+          </div>
           <ul>
-            {packageData.description.split(';').map((desc, index) => (
-              <li key={index}>{desc.trim()}</li>
-            ))}
+            {(
+              t(`packages.descriptions.${packageData.type}`, {
+                defaultValue: packageData.description,
+              }) || packageData.description
+            )
+              .split(';')
+              .map((desc: string, index: number) => (
+                <li key={index}>{desc.trim()}</li>
+              ))}
           </ul>
         </CardContent>
 
         <div className={styles.priceSection}>
           {packageData.testPeriodDays > 0 && (
             <div className={styles.trial}>
-              {packageData.testPeriodDays} days free trial
+              <TranslatedText
+                i18nKey="packages.freeTrial"
+                values={{ days: packageData.testPeriodDays }}
+                defaultValue={`${packageData.testPeriodDays} days free trial`}
+              />
             </div>
           )}
           <div className={styles.price}>
             {isCustom ? (
               <div className={styles.customPriceContainer}>
-                <span className={styles.customPriceLabel}>Starting at</span>
+                <span className={styles.customPriceLabel}>
+                  <TranslatedText
+                    i18nKey="packages.startingAt"
+                    defaultValue="Starting at"
+                  />
+                </span>
                 <div className={styles.customPriceWrapper}>
                   <span className={styles.currency}>{displayCurrency}</span>
                   <span className={styles.priceValue}>{convertedPrice}</span>
-                  <span className={styles.period}>/month</span>
+                  <span className={styles.period}>
+                    <TranslatedText
+                      i18nKey="packages.perMonth"
+                      defaultValue="/month"
+                    />
+                  </span>
                 </div>
               </div>
             ) : (
               <>
                 <span className={styles.currency}>{displayCurrency}</span>
                 <span className={styles.priceValue}>{convertedPrice}</span>
-                <span className={styles.period}>/month</span>
+                <span className={styles.period}>
+                  <TranslatedText
+                    i18nKey="packages.perMonth"
+                    defaultValue="/month"
+                  />
+                </span>
               </>
             )}
           </div>
@@ -136,10 +183,13 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
           {isPurchased ? (
             <Button
               className={`${styles.button}`}
-              style={{ backgroundColor: '#4CAF50' }}
+              sx={{ backgroundColor: '#4CAF50' }}
               disabled
             >
-              Current Plan
+              <TranslatedText
+                i18nKey="packages.currentPlan"
+                defaultValue="Current Plan"
+              />
             </Button>
           ) : (
             <Button
@@ -147,7 +197,17 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
               onClick={onBuyNow}
               disabled={isDisabled}
             >
-              {isCustom ? 'Customize' : 'Buy Now'}
+              {isCustom ? (
+                <TranslatedText
+                  i18nKey="packages.customize"
+                  defaultValue="Customize"
+                />
+              ) : (
+                <TranslatedText
+                  i18nKey="packages.buyNow"
+                  defaultValue="Buy Now"
+                />
+              )}
             </Button>
           )}
         </CardFooter>

@@ -87,7 +87,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
 
   const [planDiscount, setPlanDiscount] = useState<number>(0);
   const [supportPrice, setSupportPrice] = useState<number>(0);
-  const [totalPrice, setTotalPrice] = useState<number>(basePrice);
+  const [totalPrice, setTotalPrice] = useState<number>(calculatedPrice || basePrice);
 
   const [checkboxStates, setCheckboxStates] = useState<Record<string, boolean>>(
     {
@@ -281,6 +281,8 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     - Subtotal: ${subtotal}
     - Discount (${planDiscount * 100}%): -${discount}
     - Final total: ${finalTotal}
+    - Initial calculated price: ${calculatedPrice}
+    - Difference from initial: ${finalTotal - calculatedPrice}
     - Currency: ${selectedCurrency}`);
 
     setTotalPrice(finalTotal);
@@ -294,6 +296,9 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
     basePrice,
     planDiscount,
     supportPrice,
+    rate,
+    selectedPackage,
+    calculatedPrice,
   ]);
 
   const handleInfoClick = () => {
@@ -509,7 +514,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = ({
       selectedFeatures,
       selectedAddOns,
       usageQuantities,
-      calculatedPrice: totalPrice,
+      calculatedPrice: totalPrice, // Using calculatedPrice from props for consistency
       selectedCurrency,
       formData,
       planDiscount,

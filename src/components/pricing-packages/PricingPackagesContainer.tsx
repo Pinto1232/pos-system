@@ -254,7 +254,8 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
         `[${new Date().toISOString()}] Network status: ${navigator.onLine ? 'Online' : 'Offline'}`
       );
 
-      const endpoint = `/api/pricingpackages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+      // Use PricingPackages (PascalCase) to match the backend controller route
+      const endpoint = `/api/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
       console.log(
         `[${new Date().toISOString()}] Attempting to fetch pricing packages from: ${endpoint}`
       );

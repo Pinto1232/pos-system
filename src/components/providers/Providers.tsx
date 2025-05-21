@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   QueryClient,
   QueryClientProvider,
@@ -14,6 +14,12 @@ import { AxiosError } from 'axios';
 import AuthWrapper from '@/contexts/AuthWrapper';
 import { CurrencyProvider } from '@/contexts/CurrencyContext';
 import { UserSubscriptionProvider } from '@/contexts/UserSubscriptionContext';
+import { TranslationProvider } from '@/i18n';
+
+const isBrowser = typeof window !== 'undefined';
+if (isBrowser) {
+  import('@/i18n/i18n');
+}
 
 const defaultQueryOptions: DefaultOptions = {
   queries: {
@@ -64,20 +70,22 @@ queryClient.getQueryCache().subscribe((event) => {
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <AuthProvider>
-      <AuthWrapper>
-        <ProductProvider>
-          <CustomizationProvider userId="current-user">
-            <CurrencyProvider>
-              <QueryClientProvider client={queryClient}>
-                <UserSubscriptionProvider>
-                  <NotificationProvider>{children}</NotificationProvider>
-                </UserSubscriptionProvider>
-              </QueryClientProvider>
-            </CurrencyProvider>
-          </CustomizationProvider>
-        </ProductProvider>
-      </AuthWrapper>
-    </AuthProvider>
+    <TranslationProvider>
+      <AuthProvider>
+        <AuthWrapper>
+          <ProductProvider>
+            <CustomizationProvider userId="current-user">
+              <CurrencyProvider>
+                <QueryClientProvider client={queryClient}>
+                  <UserSubscriptionProvider>
+                    <NotificationProvider>{children}</NotificationProvider>
+                  </UserSubscriptionProvider>
+                </QueryClientProvider>
+              </CurrencyProvider>
+            </CustomizationProvider>
+          </ProductProvider>
+        </AuthWrapper>
+      </AuthProvider>
+    </TranslationProvider>
   );
 }
