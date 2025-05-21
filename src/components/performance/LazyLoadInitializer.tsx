@@ -20,13 +20,49 @@ export default function LazyLoadInitializer() {
         console.log('Using system fonts, skipping font optimization');
       } else {
         console.log('Using Next.js font optimization');
+        
+        optimizeFonts([
+          {
+            family: 'Inter',
+            url: '/fonts/inter-var.woff2',
+            display: 'swap',
+          },
+          {
+            family: 'Roboto',
+            url: '/fonts/roboto-regular.woff2',
+            weight: 400,
+            display: 'optional',
+          },
+        ]);
       }
     } catch (error) {
       console.warn('Font optimization error:', error);
     }
 
+    
     setTimeout(() => {
-      console.log('Would load non-critical scripts here');
+      loadScriptsInParallel([
+        {
+          src: '/scripts/analytics.js',
+          options: {
+            strategy: 'lazyOnload',
+            id: 'analytics-script',
+          },
+        },
+        {
+          src: '/scripts/feedback.js',
+          options: {
+            strategy: 'lazyOnload',
+            id: 'feedback-script',
+          },
+        },
+      ])
+        .then(() => {
+          console.log('Non-critical scripts loaded successfully');
+        })
+        .catch((error) => {
+          console.error('Error loading non-critical scripts:', error);
+        });
     }, 3000);
 
     return () => {};

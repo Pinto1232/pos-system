@@ -60,7 +60,7 @@ jest.mock('next/navigation', () => ({
 
 // Mock Next.js link
 jest.mock('next/link', () => {
-  return ({ children, ...props }) => {
+  const MockLink = ({ children, ...props }) => {
     return (
       <a
         {...props}
@@ -73,14 +73,22 @@ jest.mock('next/link', () => {
       </a>
     );
   };
+
+  MockLink.displayName = 'MockLink';
+  return MockLink;
 });
 
 // Mock framer-motion
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }) => <div {...props}>{children}</div>,
-  },
-}));
+jest.mock('framer-motion', () => {
+  const MockMotionDiv = ({ children, ...props }) => <div {...props}>{children}</div>;
+  MockMotionDiv.displayName = 'MockMotionDiv';
+
+  return {
+    motion: {
+      div: MockMotionDiv,
+    },
+  };
+});
 
 // Mock sessionStorage
 const mockSessionStorage = (() => {

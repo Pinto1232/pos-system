@@ -30,7 +30,9 @@ type Package = {
   currency: string;
   multiCurrencyPrices: string;
 };
-import { AxiosInstance } from 'axios';
+// Define a type for the axios client
+import { apiClient } from '@/api/axiosClient';
+type AxiosInstance = typeof apiClient;
 import { PricePackages } from '@/components/pricing-packages/types';
 import { AuthContext } from '@/contexts/AuthContext';
 import { CACHE_TAGS } from '@/app/cache-constants';
@@ -254,7 +256,6 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
         `[${new Date().toISOString()}] Network status: ${navigator.onLine ? 'Online' : 'Offline'}`
       );
 
-      // Use PricingPackages (PascalCase) to match the backend controller route
       const endpoint = `/api/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
       console.log(
         `[${new Date().toISOString()}] Attempting to fetch pricing packages from: ${endpoint}`

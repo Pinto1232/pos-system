@@ -54,6 +54,35 @@ export interface SettingsModalProps {
   initialSetting?: string;
 }
 
+export interface Package {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+  extraDescription: string;
+  price: number;
+  testPeriodDays: number;
+  type: string;
+  currency?: string;
+  multiCurrencyPrices?: string;
+}
+
+export interface Subscription {
+  id: number;
+  userId: string;
+  pricingPackageId: number;
+  package?: {
+    id: number;
+    title: string;
+    type: string;
+  };
+  startDate: string;
+  endDate?: string;
+  isActive: boolean;
+  enabledFeatures: string[];
+  additionalPackages: number[];
+}
+
 export interface SettingsModalPresentationProps {
   open: boolean;
   onClose: () => void;
@@ -95,11 +124,11 @@ export interface SettingsModalPresentationProps {
   createRolePending: boolean;
   handleCreateRole: () => void;
   getTemplatePermissions: (template: string) => string[];
-  packages: any[] | undefined;
+  packages: Package[] | undefined;
   isPackagesLoading?: boolean;
   packagesError?: Error | null;
   refetchPackages?: () => void;
-  subscription: any;
+  subscription: Subscription;
   availableFeatures: string[];
   enableAdditionalPackage: (packageId: number) => Promise<void>;
   disableAdditionalPackage: (packageId: number) => Promise<void>;

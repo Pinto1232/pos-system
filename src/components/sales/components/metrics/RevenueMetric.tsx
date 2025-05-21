@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Stack, Typography, Chip, Tooltip } from '@mui/material';
+import { Stack, Typography, Chip, Tooltip } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';

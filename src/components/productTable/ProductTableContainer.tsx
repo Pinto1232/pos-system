@@ -297,6 +297,21 @@ const ProductTableContainer: React.FC = () => {
     doc.save('product-list.pdf');
   };
 
+  const getPriceFilterRange = (priceFilterValue: string): [number, number] => {
+    switch (priceFilterValue) {
+      case 'R10-R100':
+        return [10, 100];
+      case 'R100-R500':
+        return [100, 500];
+      case 'R500-R1000':
+        return [500, 1000];
+      case 'R1000+':
+        return [1000, 10000]; // Using 10000 as an upper bound for R1000+
+      default:
+        return [0, 10000]; // Default range for 'All'
+    }
+  };
+
   const shouldUseVirtualization = useMemo(() => {
     return filteredProducts.length > 100;
   }, [filteredProducts.length]);
@@ -311,9 +326,9 @@ const ProductTableContainer: React.FC = () => {
             isViewModalOpen={isViewModalOpen}
             searchQuery={searchQuery}
             categoryFilter={categoryFilter}
-            ratingFilter={ratingFilter}
+            ratingFilter={ratingFilter !== 'All' ? parseInt(ratingFilter, 10) : 0}
             statusFilter={statusFilter}
-            priceFilter={priceFilter}
+            priceFilter={getPriceFilterRange(priceFilter)}
             onView={handleView}
             isLoading={false}
           />

@@ -156,7 +156,7 @@ const DealsCard: React.FC<DealsCardProps> = ({
                     }}
                   />
                 )}
-                {Math.abs(deals.growth)}
+                {formatPercentage(Math.abs(deals.growth))}
               </Typography>
             </Box>
           </Stack>

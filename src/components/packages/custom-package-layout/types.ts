@@ -101,7 +101,7 @@ export interface CustomPackageLayoutProps {
         state?: string;
         city?: string;
         zipCode?: string;
-        [key: string]: any;
+        [key: string]: string | number | boolean | undefined;
       };
       selectedFeatures?: Feature[];
       selectedAddOns?: AddOn[];

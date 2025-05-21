@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Fab, Tooltip, Badge, IconButton, Box, Fade, Typography } from '@mui/material';
+import {
+  Fab,
+  Tooltip,
+  Badge,
+  IconButton,
+  Box,
+  Fade,
+  Typography,
+} from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
@@ -72,7 +80,7 @@ const ChatbotButton = () => {
           gap: 1,
         }}
       >
-        {/* Greeting bubble that appears above the button */}
+        {}
         {!isOpen && (
           <Fade in={!isOpen} timeout={800}>
             <Box
@@ -144,7 +152,7 @@ const ChatbotButton = () => {
                 },
               }}
             >
-              {/* Close button */}
+              {}
               <IconButton
                 size="small"
                 onClick={handleClose}
@@ -167,7 +175,7 @@ const ChatbotButton = () => {
                 <CloseIcon fontSize="small" />
               </IconButton>
 
-              {/* Main chat button */}
+              {}
               <Fab
                 onClick={() => {
                   console.log('Chatbot button clicked');

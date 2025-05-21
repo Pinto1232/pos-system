@@ -203,9 +203,7 @@ const ChatbotDialog = () => {
                   letterSpacing: '0.01em',
                 }}
               >
-                {selectedPackage
-                  ? `Pisval Assistant`
-                  : 'Pisval Assistant'}
+                {selectedPackage ? `Pisval Assistant` : 'Pisval Assistant'}
               </Typography>
               <Typography
                 variant="caption"
@@ -247,7 +245,8 @@ const ChatbotDialog = () => {
           flexGrow: 1,
           overflow: 'auto',
           backgroundColor: '#f8f9fa',
-          backgroundImage: 'radial-gradient(circle at 25px 25px, rgba(200, 200, 200, 0.1) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(200, 200, 200, 0.1) 2%, transparent 0%)',
+          backgroundImage:
+            'radial-gradient(circle at 25px 25px, rgba(200, 200, 200, 0.1) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(200, 200, 200, 0.1) 2%, transparent 0%)',
           backgroundSize: '100px 100px',
         }}
       >
@@ -291,12 +290,12 @@ const ChatbotDialog = () => {
                   '@keyframes fadeIn': {
                     '0%': {
                       opacity: 0,
-                      transform: 'translateY(10px)'
+                      transform: 'translateY(10px)',
                     },
                     '100%': {
                       opacity: 1,
-                      transform: 'translateY(0)'
-                    }
+                      transform: 'translateY(0)',
+                    },
                   },
                   animationDelay: `${index * 100}ms`,
                 }}
@@ -331,32 +330,68 @@ const ChatbotDialog = () => {
                         ? `linear-gradient(135deg, ${themeColor}, ${themeColor}dd)`
                         : 'white',
                     color: message.sender === 'user' ? 'white' : 'inherit',
-                    boxShadow: message.sender === 'user'
-                      ? '0 2px 10px rgba(0,0,0,0.1)'
-                      : '0 2px 10px rgba(0,0,0,0.05)',
+                    boxShadow:
+                      message.sender === 'user'
+                        ? '0 2px 10px rgba(0,0,0,0.1)'
+                        : '0 2px 10px rgba(0,0,0,0.05)',
                     position: 'relative',
-                    '&::after': message.sender === 'user'
-                      ? {
-                          content: '""',
-                          position: 'absolute',
-                          bottom: 0,
-                          right: '-8px',
-                          width: '15px',
-                          height: '15px',
-                          backgroundColor: themeColor,
-                          transform: 'rotate(45deg)',
-                          borderRadius: '0 0 3px 0',
-                          zIndex: -1,
-                        }
-                      : {},
+                    '&::after':
+                      message.sender === 'user'
+                        ? {
+                            content: '""',
+                            position: 'absolute',
+                            bottom: 0,
+                            right: '-8px',
+                            width: '15px',
+                            height: '15px',
+                            backgroundColor: themeColor,
+                            transform: 'rotate(45deg)',
+                            borderRadius: '0 0 3px 0',
+                            zIndex: -1,
+                          }
+                        : {},
                   }}
                 >
-                <Typography variant="body1">{message.text}</Typography>
+                  <Typography variant="body1">{message.text}</Typography>
 
-                {message.sender === 'bot' &&
-                  message.features &&
-                  message.features.length > 0 && (
-                    <Box sx={{ mt: 2, mb: 1 }}>
+                  {message.sender === 'bot' &&
+                    message.features &&
+                    message.features.length > 0 && (
+                      <Box sx={{ mt: 2, mb: 1 }}>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            fontWeight: 'bold',
+                            mb: 0.5,
+                          }}
+                        >
+                          Key Features:
+                        </Typography>
+                        <Box component="ul" sx={{ pl: 2, m: 0 }}>
+                          {message.features.map((feature, index) => (
+                            <Typography
+                              component="li"
+                              variant="body2"
+                              key={index}
+                              sx={{ mb: 0.5 }}
+                            >
+                              {feature}
+                            </Typography>
+                          ))}
+                        </Box>
+                      </Box>
+                    )}
+
+                  {message.sender === 'bot' && message.pricing && (
+                    <Box
+                      sx={{
+                        mt: 2,
+                        mb: 1,
+                        p: 1,
+                        bgcolor: 'rgba(0,0,0,0.03)',
+                        borderRadius: 1,
+                      }}
+                    >
                       <Typography
                         variant="subtitle2"
                         sx={{
@@ -364,152 +399,119 @@ const ChatbotDialog = () => {
                           mb: 0.5,
                         }}
                       >
-                        Key Features:
+                        Pricing:
                       </Typography>
-                      <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                        {message.features.map((feature, index) => (
-                          <Typography
-                            component="li"
-                            variant="body2"
+                      {(() => {
+                        const monthlyPrice =
+                          selectedPackage?.multiCurrencyPrices
+                            ? getLocalizedPrice(
+                                message.pricing.monthly,
+                                selectedPackage.multiCurrencyPrices
+                              )
+                            : message.pricing.monthly;
+
+                        const annualPrice = selectedPackage?.multiCurrencyPrices
+                          ? getLocalizedPrice(
+                              message.pricing.annual,
+                              selectedPackage.multiCurrencyPrices
+                            )
+                          : message.pricing.annual;
+
+                        const savingsPercentage = Math.round(
+                          (1 - annualPrice / (monthlyPrice * 12)) * 100
+                        );
+
+                        return (
+                          <>
+                            <Typography variant="body2">
+                              Monthly: {currencySymbol}
+                              {formatCurrencyValue(monthlyPrice)}
+                            </Typography>
+                            <Typography variant="body2">
+                              Annual: {currencySymbol}
+                              {formatCurrencyValue(annualPrice)}
+                              <Typography
+                                component="span"
+                                variant="caption"
+                                sx={{
+                                  color: 'success.main',
+                                }}
+                              >
+                                {' '}
+                                (Save {savingsPercentage}
+                                %)
+                              </Typography>
+                            </Typography>
+                          </>
+                        );
+                      })()}
+                    </Box>
+                  )}
+
+                  {message.sender === 'bot' &&
+                    message.ctaButtons &&
+                    message.ctaButtons.length > 0 && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 1,
+                          mt: 2,
+                        }}
+                      >
+                        {message.ctaButtons.map((button, index) => (
+                          <Button
                             key={index}
-                            sx={{ mb: 0.5 }}
+                            variant="contained"
+                            size="small"
+                            onClick={() =>
+                              handleCtaButtonClick(button.action, button.data)
+                            }
+                            sx={{
+                              bgcolor: themeColor,
+                              '&:hover': {
+                                bgcolor: `${themeColor}dd`,
+                              },
+                            }}
                           >
-                            {feature}
-                          </Typography>
+                            {button.text}
+                          </Button>
                         ))}
                       </Box>
-                    </Box>
-                  )}
+                    )}
 
-                {message.sender === 'bot' && message.pricing && (
-                  <Box
+                  <Typography
+                    variant="caption"
                     sx={{
-                      mt: 2,
-                      mb: 1,
-                      p: 1,
-                      bgcolor: 'rgba(0,0,0,0.03)',
-                      borderRadius: 1,
+                      display: 'block',
+                      mt: 0.5,
+                      textAlign: message.sender === 'user' ? 'right' : 'left',
+                      opacity: 0.7,
                     }}
                   >
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        fontWeight: 'bold',
-                        mb: 0.5,
-                      }}
-                    >
-                      Pricing:
-                    </Typography>
-                    {(() => {
-                      const monthlyPrice = selectedPackage?.multiCurrencyPrices
-                        ? getLocalizedPrice(
-                            message.pricing.monthly,
-                            selectedPackage.multiCurrencyPrices
-                          )
-                        : message.pricing.monthly;
+                    {message.timestamp.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </Typography>
+                </Paper>
 
-                      const annualPrice = selectedPackage?.multiCurrencyPrices
-                        ? getLocalizedPrice(
-                            message.pricing.annual,
-                            selectedPackage.multiCurrencyPrices
-                          )
-                        : message.pricing.annual;
-
-                      const savingsPercentage = Math.round(
-                        (1 - annualPrice / (monthlyPrice * 12)) * 100
-                      );
-
-                      return (
-                        <>
-                          <Typography variant="body2">
-                            Monthly: {currencySymbol}
-                            {formatCurrencyValue(monthlyPrice)}
-                          </Typography>
-                          <Typography variant="body2">
-                            Annual: {currencySymbol}
-                            {formatCurrencyValue(annualPrice)}
-                            <Typography
-                              component="span"
-                              variant="caption"
-                              sx={{
-                                color: 'success.main',
-                              }}
-                            >
-                              {' '}
-                              (Save {savingsPercentage}
-                              %)
-                            </Typography>
-                          </Typography>
-                        </>
-                      );
-                    })()}
-                  </Box>
+                {message.sender === 'user' && (
+                  <Avatar
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      ml: 1.5,
+                      bgcolor: 'white',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      padding: '4px',
+                    }}
+                    alt="User"
+                  >
+                    <PersonIcon sx={{ color: '#f50057', fontSize: 20 }} />
+                  </Avatar>
                 )}
-
-                {message.sender === 'bot' &&
-                  message.ctaButtons &&
-                  message.ctaButtons.length > 0 && (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 1,
-                        mt: 2,
-                      }}
-                    >
-                      {message.ctaButtons.map((button, index) => (
-                        <Button
-                          key={index}
-                          variant="contained"
-                          size="small"
-                          onClick={() =>
-                            handleCtaButtonClick(button.action, button.data)
-                          }
-                          sx={{
-                            bgcolor: themeColor,
-                            '&:hover': {
-                              bgcolor: `${themeColor}dd`,
-                            },
-                          }}
-                        >
-                          {button.text}
-                        </Button>
-                      ))}
-                    </Box>
-                  )}
-
-                <Typography
-                  variant="caption"
-                  sx={{
-                    display: 'block',
-                    mt: 0.5,
-                    textAlign: message.sender === 'user' ? 'right' : 'left',
-                    opacity: 0.7,
-                  }}
-                >
-                  {message.timestamp.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </Typography>
-              </Paper>
-
-              {message.sender === 'user' && (
-                <Avatar
-                  sx={{
-                    width: 36,
-                    height: 36,
-                    ml: 1.5,
-                    bgcolor: 'white',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    padding: '4px',
-                  }}
-                  alt="User"
-                >
-                  <PersonIcon sx={{ color: '#f50057', fontSize: 20 }} />
-                </Avatar>
-              )}
-            </Box>
+              </Box>
             );
           })}
           <div ref={messagesEndRef} />

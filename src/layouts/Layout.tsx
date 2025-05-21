@@ -31,7 +31,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     t('app.marketingTagline')
   );
 
-  
   const isDashboard = pathname === '/dashboard';
   const isHomePage = pathname === '/';
   const isCheckout =

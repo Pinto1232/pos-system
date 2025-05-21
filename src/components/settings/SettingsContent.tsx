@@ -13,6 +13,9 @@ import CacheManagementContent from './content/CacheManagementContent';
 import ChangeHistoryContent from './content/ChangeHistoryContent';
 import { TaxSettings, RegionalSettings } from '../../types/settingsTypes';
 
+// Import types for packages and subscription
+import type { Package, Subscription } from './content/PackageManagementContent';
+
 interface SettingsContentProps {
   isLoading: boolean;
   error: Error | null;
@@ -34,11 +37,11 @@ interface SettingsContentProps {
   selectedRoleTab: number;
   setSelectedRoleTab: (tab: number) => void;
   setCreateRoleModalOpen: (open: boolean) => void;
-  packages: any[] | undefined;
+  packages: Package[] | undefined;
   isPackagesLoading?: boolean;
   packagesError?: Error | null;
   refetchPackages?: () => void;
-  subscription: any;
+  subscription: Subscription;
   availableFeatures: string[];
   enableAdditionalPackage: (packageId: number) => Promise<void>;
   disableAdditionalPackage: (packageId: number) => Promise<void>;

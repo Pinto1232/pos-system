@@ -20,7 +20,14 @@ const HiOutlineSquares2X2 = dynamic(
   { ssr: false, loading: () => <div style={{ width: 50, height: 50 }} /> }
 );
 
-const FeatureItem = memo(({ icon, title, description, link }) => (
+interface FeatureItemProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  link: string;
+}
+
+const FeatureItem = memo(({ icon, title, description, link }: FeatureItemProps) => (
   <div className={styles.slideItem}>
     <div className={styles.iconWrapper}>
       <div className={styles.icon}>{icon}</div>

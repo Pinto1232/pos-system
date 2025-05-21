@@ -82,7 +82,7 @@ export const useMarkAllNotificationsAsRead = () => {
 export const useCreateNotification = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<Notification, Error, CreateNotificationRequest>({
     mutationFn: (request: CreateNotificationRequest) =>
       createNotification(request),
     onSuccess: () => {
