@@ -171,19 +171,19 @@ const Footer: React.FC = memo(() => {
                 md: '30px 20px 20px',
               },
               justifyContent: 'center',
-              textAlign: 'start',
+              textAlign: { xs: 'center', sm: 'start' },
             }}
           >
             <Box
               sx={{
-                textAlign: 'start',
+                textAlign: { xs: 'center', sm: 'start' },
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 Company
@@ -191,7 +191,7 @@ const Footer: React.FC = memo(() => {
               <ul
                 className={styles.list}
                 style={{
-                  textAlign: 'start',
+                  textAlign: 'inherit',
                 }}
               >
                 <li>
@@ -219,14 +219,14 @@ const Footer: React.FC = memo(() => {
 
             <Box
               sx={{
-                textAlign: 'start',
+                textAlign: { xs: 'center', sm: 'start' },
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 Contact
@@ -234,7 +234,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 Tel: +1 5263 2540 981
@@ -242,7 +242,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 Tel: +1 5263 5720 450
@@ -250,7 +250,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 Email: info@info.com
@@ -258,7 +258,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 Email: career@career.com
@@ -267,14 +267,14 @@ const Footer: React.FC = memo(() => {
 
             <Box
               sx={{
-                textAlign: 'start',
+                textAlign: { xs: 'center', sm: 'start' },
               }}
             >
               <Typography
                 variant="h6"
                 className={styles.sectionTitle}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 Cape Town Office
@@ -282,7 +282,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 361 Avisco Green St,
@@ -290,7 +290,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 Lovasa Avenue, Cape Town,
@@ -298,7 +298,7 @@ const Footer: React.FC = memo(() => {
               <Typography
                 className={styles.text}
                 sx={{
-                  textAlign: 'start',
+                  textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
                 90251, US

@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
 
   try {
     if (forceRefresh) {
-      revalidatePath('/api/pricing-packages');
+      revalidatePath('/api/PricingPackages');
     }
 
     const apiUrl =
@@ -439,7 +439,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Invalid secret' }, { status: 401 });
     }
 
-    revalidatePath('/api/pricing-packages');
+    revalidatePath('/api/PricingPackages');
 
     return NextResponse.json({
       revalidated: true,

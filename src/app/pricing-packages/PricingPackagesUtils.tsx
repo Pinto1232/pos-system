@@ -52,9 +52,10 @@ export async function fetchPricingPackagesClient(
   forceRefresh: boolean = false
 ): Promise<Package[]> {
   try {
+    // Use PricingPackages (PascalCase) to match the backend controller route
     const url = forceRefresh
-      ? `/api/pricing-packages?refresh=true&t=${new Date().getTime()}`
-      : '/api/pricing-packages';
+      ? `/api/PricingPackages?refresh=true&t=${new Date().getTime()}`
+      : '/api/PricingPackages';
 
     const options: RequestInit = forceRefresh
       ? {

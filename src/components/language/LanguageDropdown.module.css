@@ -1,69 +1,89 @@
 .flagButton {
-  padding: 4px 8px;
-  border-radius: 6px;
-  background-color: rgba(255, 255, 255, 0.12);
+  padding: 4px 10px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.15);
   border: none;
   transition: all 0.2s ease;
   margin-right: 4px;
   display: flex;
   align-items: center;
-  gap: 2px;
-  min-width: 40px;
+  gap: 4px;
+  min-width: 48px;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .flagButton:hover {
-  background-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  background-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transform: translateY(-1px);
 }
 
 .flagButton:active {
   transform: translateY(0);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .flagIcon {
-  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+  margin-right: 6px;
+  position: relative;
+  width: 24px;
+  flex-shrink: 0;
+  padding: 1px;
+  border-radius: 0;
 }
 
 .menuItem {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  transition: all 0.15s ease;
+  padding: 8px 10px;
+  transition: all 0.2s ease;
   border-radius: 4px;
   margin: 2px 4px;
+  min-height: 42px;
+  position: relative;
 }
 
 .menuItem:hover {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgba(0, 0, 0, 0.06);
 }
 
 .menuItem.selected {
-  background-color: rgba(25, 118, 210, 0.04);
+  background-color: rgba(25, 118, 210, 0.08);
   font-weight: 500;
   position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .languageText {
   font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.2px;
+  font-weight: 400;
+  line-height: 1.2;
+  flex: 1;
+  color: #333;
 }
 
 .menuFlagIcon {
-  font-size: 1.4rem;
-  line-height: 1;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  width: 28px;
+  margin-right: 12px;
+  position: relative;
+  overflow: visible;
+  flex-shrink: 0;
+  padding: 2px;
+  border-radius: 0;
 }
 
 @keyframes fadeIn {
@@ -80,11 +100,13 @@
 
 .menuContainer :global(.MuiMenu-paper) {
   animation: fadeIn 0.2s ease-out forwards;
-  border-radius: 8px !important;
+  border-radius: 6px !important;
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  background-color: #fff !important;
+  min-width: 180px !important;
 }
 
 .menuContainer :global(.MuiMenu-list) {
-  padding: 6px 4px !important;
+  padding: 4px !important;
 }

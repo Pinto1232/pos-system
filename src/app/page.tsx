@@ -1,10 +1,12 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { fetchPricingPackagesAction } from '@/app/pricing-packages/actions';
 import { Suspense } from 'react';
-import { CACHE_TAGS, CACHE_TIMES } from '@/app/cache-constants';
+import { CACHE_TIMES } from '@/app/cache-constants';
 import PricingPackagesContainer from '@/components/pricing-packages/PricingPackagesContainer';
 import RegistrationHandler from '@/components/auth/RegistrationHandler';
 import ErrorAlert from '@/components/ui/errorAlert/ErrorAlert';
+import { getServerTranslations } from '@/utils/serverTranslation';
+import HomeTranslations from '@/components/home/HomeTranslations';
 
 import {
   LazyHeroContainer,
@@ -17,9 +19,12 @@ export const revalidate = CACHE_TIMES.SEMI_STATIC;
 export const fetchCache = 'force-cache';
 
 export async function generateMetadata() {
+  const translations = await getServerTranslations('common');
+
   return {
-    title: 'Pisval Tech POS - Choose Your Plan',
+    title: `Pisval Tech POS - ${translations.home?.chooseYourPlan || 'Choose Your Plan'}`,
     description:
+      translations.home?.planDescription ||
       'Choose the perfect package that suits your business needs. Our flexible pricing options are designed to scale with your growth.',
     other: {
       'cache-control': `public, max-age=${CACHE_TIMES.SEMI_STATIC}, s-maxage=${CACHE_TIMES.SEMI_STATIC * 2}, stale-while-revalidate=${CACHE_TIMES.SEMI_STATIC * 3}`,
@@ -28,11 +33,12 @@ export async function generateMetadata() {
 }
 
 export default async function Home() {
-  const initialPackages = await fetchPricingPackagesAction();
+  const fetchedPackages = await fetchPricingPackagesAction();
 
-  const heading = `Choose Your Plan`;
-  const description =
-    'Choose the perfect package that suits your business needs. Our flexible pricing options are designed to scale with your growth.';
+  const initialPackages = fetchedPackages.map((pkg) => ({
+    ...pkg,
+    id: typeof pkg.id === 'string' ? parseInt(pkg.id, 10) : pkg.id,
+  }));
 
   return (
     <div>
@@ -40,34 +46,7 @@ export default async function Home() {
       <ErrorAlert />
 
       <Box>
-        <Box textAlign="center" mt={5}>
-          <Typography
-            sx={{
-              color: '#000',
-              marginBottom: '0.5rem',
-              fontWeight: 600,
-              fontSize: '2.5rem',
-              letterSpacing: '-0.02em',
-            }}
-            variant="h4"
-            dangerouslySetInnerHTML={{
-              __html: heading,
-            }}
-          />
-          <Typography
-            sx={{
-              color: '#4b5563',
-              maxWidth: '600px',
-              margin: '0 auto',
-              marginBottom: '0.2rem',
-              fontSize: '1.1rem',
-              lineHeight: 1.6,
-              fontWeight: 400,
-            }}
-          >
-            {description}
-          </Typography>
-        </Box>
+        <HomeTranslations />
 
         {}
         <Suspense fallback={null}>

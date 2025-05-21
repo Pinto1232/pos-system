@@ -301,14 +301,35 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
   );
 
   if (!isInitialized) {
+    const currentPath =
+      typeof window !== 'undefined' ? window.location.pathname : '';
+
+    // Determine if we're on the home page or a non-dashboard page
     const isHomePage =
-      typeof window !== 'undefined' && window.location.pathname === '/';
+      currentPath === '/' || !currentPath.includes('/dashboard');
+
+    const isDashboardSubPage =
+      currentPath.includes('/dashboard') && currentPath !== '/dashboard';
 
     if (isHomePage) {
       return null;
     }
 
-    return <DashboardLoading />;
+    if (isDashboardSubPage) {
+      return (
+        <div
+          style={{
+            position: 'relative',
+            minHeight: '100px',
+            overflow: 'hidden',
+          }}
+        >
+          <DashboardLoading />
+        </div>
+      );
+    }
+
+    return null;
   }
 
   return <DashboardContainer />;

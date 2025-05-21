@@ -6,8 +6,8 @@ import styles from './Jumbotron.module.css';
 import { getBlurDataURL } from '@/utils/imageOptimization';
 
 interface JumbotronProps {
-  heading: string;
-  subheading: string;
+  heading: React.ReactNode;
+  subheading: React.ReactNode;
   backgroundImage: string;
   overlayColor?: string;
   height?: string;

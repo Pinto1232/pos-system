@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
   try {
     // If force refresh is requested, revalidate the path
     if (forceRefresh) {
-      revalidatePath('/api/pricingpackages');
+      revalidatePath('/api/PricingPackages');
     }
 
     const apiUrl =

@@ -14,7 +14,8 @@ export async function fetchPricingPackagesAction(
       ? `https://${process.env.VERCEL_URL}`
       : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-    const apiUrl = `${baseUrl}/api/pricing-packages?pageNumber=1&pageSize=10${refresh ? '&refresh=true' : ''}`;
+    // Use PricingPackages (PascalCase) to match the backend controller route
+    const apiUrl = `${baseUrl}/api/PricingPackages?pageNumber=1&pageSize=10${refresh ? '&refresh=true' : ''}`;
 
     const cookieStore = await cookies();
     const token = cookieStore.get('accessToken')?.value;

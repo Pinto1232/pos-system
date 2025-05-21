@@ -12,12 +12,16 @@ import {
   Paper,
   Avatar,
   Button,
+  Slide,
+  Fade,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import PersonIcon from '@mui/icons-material/Person';
 import { useChatbot } from '@/contexts/ChatbotContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
-import { useCurrency, currencySymbols } from '@/contexts/CurrencyContext';
+import { useCurrency } from '@/contexts/CurrencyContext';
 import Image from 'next/image';
 
 const ChatbotDialog = () => {
@@ -31,7 +35,7 @@ const ChatbotDialog = () => {
     themeColor,
   } = useChatbot();
   const { selectedPackage } = usePackageSelection();
-  const { currency, formatPrice, currencySymbol } = useCurrency();
+  const { currency, currencySymbol } = useCurrency();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -102,39 +106,49 @@ const ChatbotDialog = () => {
       onClose={toggleChatbot}
       maxWidth="sm"
       fullWidth={false}
-      PaperProps={{
-        sx: {
-          borderRadius: '16px',
-          borderBottomRightRadius: '0',
-          overflow: 'hidden',
-          maxWidth: '380px',
-          height: '500px',
-          maxHeight: '80vh',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-          marginRight: 0,
-          '@media (max-width: 480px)': {
-            margin: '16px',
-            marginRight: 0,
-            maxWidth: 'calc(100% - 32px)',
-          },
+      slots={{ transition: Slide }}
+      slotProps={{
+        transition: {
+          timeout: 400,
         },
       }}
       sx={{
         zIndex: 9999,
         '& .MuiBackdrop-root': {
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backdropFilter: 'blur(4px)',
         },
         '& .MuiDialog-container': {
           justifyContent: 'flex-end',
           alignItems: 'flex-end',
           paddingRight: '20px',
           paddingBottom: '80px',
+          '@media (max-width: 480px)': {
+            paddingBottom: '16px',
+            paddingRight: '0',
+          },
         },
         '& .MuiPaper-root': {
           margin: 0,
           marginBottom: '10px',
+          borderRadius: '20px',
+          borderBottomRightRadius: '4px',
+          overflow: 'hidden',
+          maxWidth: '400px',
+          height: '550px',
+          maxHeight: '85vh',
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.25)',
+          marginRight: 0,
+          background: 'linear-gradient(to bottom, #ffffff, #f8f9fa)',
+          '@media (max-width: 480px)': {
+            margin: '16px',
+            marginRight: 0,
+            maxWidth: 'calc(100% - 32px)',
+            height: 'calc(100% - 100px)',
+            maxHeight: 'calc(100% - 32px)',
+          },
         },
       }}
     >
@@ -143,39 +157,83 @@ const ChatbotDialog = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '16px',
-          backgroundColor: themeColor,
+          padding: '16px 20px',
+          background: `linear-gradient(135deg, ${themeColor}, ${themeColor}dd)`,
           color: 'white',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          <Image
-            src="/Pisval_Logo.jpg"
-            alt="Pisval Logo"
-            width={24}
-            height={24}
-            style={{
-              borderRadius: '50%',
-              objectFit: 'cover',
+        <Fade in={true} timeout={800}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
             }}
-          />
-          <Typography variant="h6" sx={{ transition: 'all 0.3s ease' }}>
-            {selectedPackage
-              ? `Pisval Assistant - ${selectedPackage.title}`
-              : 'Pisval Assistant'}
-          </Typography>
-        </Box>
+          >
+            <Avatar
+              sx={{
+                width: 36,
+                height: 36,
+                bgcolor: 'white',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                padding: '4px',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <Image
+                src="/Pisval_Logo.jpg"
+                alt="Pisval Logo"
+                width={28}
+                height={28}
+                style={{
+                  objectFit: 'cover',
+                }}
+              />
+            </Avatar>
+            <Box>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 600,
+                  lineHeight: 1.2,
+                  fontSize: '1rem',
+                  letterSpacing: '0.01em',
+                }}
+              >
+                {selectedPackage
+                  ? `Pisval Assistant`
+                  : 'Pisval Assistant'}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  opacity: 0.9,
+                  display: 'block',
+                  marginTop: '2px',
+                  fontSize: '0.75rem',
+                }}
+              >
+                {selectedPackage
+                  ? `${selectedPackage.title} Package Specialist`
+                  : 'Online • Ready to help'}
+              </Typography>
+            </Box>
+          </Box>
+        </Fade>
         <IconButton
           edge="end"
           color="inherit"
           onClick={toggleChatbot}
           aria-label="close"
+          sx={{
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255,0.15)',
+            },
+            transition: 'all 0.2s ease',
+          }}
         >
           <CloseIcon />
         </IconButton>
@@ -183,77 +241,118 @@ const ChatbotDialog = () => {
 
       <DialogContent
         sx={{
-          padding: '16px',
+          padding: '20px',
           display: 'flex',
           flexDirection: 'column',
           flexGrow: 1,
           overflow: 'auto',
-          backgroundColor: '#f5f5f5',
+          backgroundColor: '#f8f9fa',
+          backgroundImage: 'radial-gradient(circle at 25px 25px, rgba(200, 200, 200, 0.1) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(200, 200, 200, 0.1) 2%, transparent 0%)',
+          backgroundSize: '100px 100px',
         }}
       >
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 2,
+            gap: 2.5,
             flexGrow: 1,
             overflowY: 'auto',
             msOverflowStyle: 'none',
-            scrollbarWidth: 'none',
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#ddd transparent',
             '&::-webkit-scrollbar': {
-              display: 'none',
+              width: '6px',
             },
+            '&::-webkit-scrollbar-track': {
+              background: 'transparent',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: '#ddd',
+              borderRadius: '3px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: '#ccc',
+            },
+            paddingRight: '6px',
           }}
         >
-          {messages.map((message) => (
-            <Box
-              key={message.id}
-              sx={{
-                display: 'flex',
-                justifyContent:
-                  message.sender === 'user' ? 'flex-end' : 'flex-start',
-                mb: 1,
-              }}
-            >
-              {message.sender === 'bot' && (
-                <Avatar
-                  sx={{
-                    width: 32,
-                    height: 32,
-                    mr: 1,
-                    bgcolor: themeColor,
-                  }}
-                  alt="Bot"
-                >
-                  <Image
-                    src="/Pisval_Logo.jpg"
-                    alt="Pisval Logo"
-                    width={32}
-                    height={32}
-                    style={{
-                      objectFit: 'cover',
-                    }}
-                  />
-                </Avatar>
-              )}
-
-              <Paper
-                elevation={1}
+          {messages.map((message, index) => {
+            return (
+              <Box
+                key={message.id}
                 sx={{
-                  padding: '10px 16px',
-                  maxWidth: '70%',
-                  borderRadius:
-                    message.sender === 'user'
-                      ? '18px 18px 0 18px'
-                      : '18px 18px 18px 0',
-                  backgroundColor:
-                    message.sender === 'user' ? themeColor : 'white',
-                  color: message.sender === 'user' ? 'white' : 'inherit',
+                  display: 'flex',
+                  justifyContent:
+                    message.sender === 'user' ? 'flex-end' : 'flex-start',
+                  mb: 1,
+                  position: 'relative',
+                  animation: 'fadeIn 0.3s ease-in-out',
+                  '@keyframes fadeIn': {
+                    '0%': {
+                      opacity: 0,
+                      transform: 'translateY(10px)'
+                    },
+                    '100%': {
+                      opacity: 1,
+                      transform: 'translateY(0)'
+                    }
+                  },
+                  animationDelay: `${index * 100}ms`,
                 }}
               >
+                {message.sender === 'bot' && (
+                  <Avatar
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      mr: 1.5,
+                      bgcolor: 'white',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      padding: '4px',
+                    }}
+                    alt="Bot"
+                  >
+                    <SmartToyIcon sx={{ color: themeColor, fontSize: 20 }} />
+                  </Avatar>
+                )}
+
+                <Paper
+                  elevation={message.sender === 'user' ? 1 : 2}
+                  sx={{
+                    padding: '12px 18px',
+                    maxWidth: '75%',
+                    borderRadius:
+                      message.sender === 'user'
+                        ? '18px 18px 0 18px'
+                        : '18px 18px 18px 0',
+                    backgroundColor:
+                      message.sender === 'user'
+                        ? `linear-gradient(135deg, ${themeColor}, ${themeColor}dd)`
+                        : 'white',
+                    color: message.sender === 'user' ? 'white' : 'inherit',
+                    boxShadow: message.sender === 'user'
+                      ? '0 2px 10px rgba(0,0,0,0.1)'
+                      : '0 2px 10px rgba(0,0,0,0.05)',
+                    position: 'relative',
+                    '&::after': message.sender === 'user'
+                      ? {
+                          content: '""',
+                          position: 'absolute',
+                          bottom: 0,
+                          right: '-8px',
+                          width: '15px',
+                          height: '15px',
+                          backgroundColor: themeColor,
+                          transform: 'rotate(45deg)',
+                          borderRadius: '0 0 3px 0',
+                          zIndex: -1,
+                        }
+                      : {},
+                  }}
+                >
                 <Typography variant="body1">{message.text}</Typography>
 
-                {}
                 {message.sender === 'bot' &&
                   message.features &&
                   message.features.length > 0 && (
@@ -282,7 +381,6 @@ const ChatbotDialog = () => {
                     </Box>
                   )}
 
-                {}
                 {message.sender === 'bot' && message.pricing && (
                   <Box
                     sx={{
@@ -348,7 +446,6 @@ const ChatbotDialog = () => {
                   </Box>
                 )}
 
-                {}
                 {message.sender === 'bot' &&
                   message.ctaButtons &&
                   message.ctaButtons.length > 0 && (
@@ -400,18 +497,21 @@ const ChatbotDialog = () => {
               {message.sender === 'user' && (
                 <Avatar
                   sx={{
-                    width: 32,
-                    height: 32,
-                    ml: 1,
-                    bgcolor: '#f50057',
+                    width: 36,
+                    height: 36,
+                    ml: 1.5,
+                    bgcolor: 'white',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    padding: '4px',
                   }}
                   alt="User"
                 >
-                  U
+                  <PersonIcon sx={{ color: '#f50057', fontSize: 20 }} />
                 </Avatar>
               )}
             </Box>
-          ))}
+            );
+          })}
           <div ref={messagesEndRef} />
         </Box>
       </DialogContent>
@@ -459,9 +559,12 @@ const ChatbotDialog = () => {
         component="form"
         sx={{
           display: 'flex',
-          padding: '16px',
-          borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+          padding: '16px 20px 20px',
+          borderTop: '1px solid rgba(0, 0, 0, 0.08)',
           backgroundColor: 'white',
+          boxShadow: '0 -4px 10px rgba(0, 0, 0, 0.03)',
+          position: 'relative',
+          zIndex: 2,
         }}
         onSubmit={(e) => {
           e.preventDefault();
@@ -470,7 +573,7 @@ const ChatbotDialog = () => {
       >
         <TextField
           fullWidth
-          placeholder="Type a message..."
+          placeholder="Type your message here..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
@@ -482,26 +585,51 @@ const ChatbotDialog = () => {
           variant="outlined"
           size="small"
           autoComplete="off"
-          inputProps={{
-            style: { paddingRight: '48px' },
+          slotProps={{
+            input: {
+              style: {
+                paddingRight: '48px',
+                fontSize: '0.95rem',
+                paddingTop: '12px',
+                paddingBottom: '12px',
+              },
+            },
           }}
           sx={{
             position: 'relative',
             '& .MuiOutlinedInput-root': {
               borderRadius: '24px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              },
+              '&.Mui-focused': {
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)',
+              },
               '&.Mui-focused fieldset': {
                 borderColor: themeColor,
+                borderWidth: '1px',
               },
             },
           }}
         />
         <IconButton
           sx={{
-            color: themeColor,
+            color: 'white',
+            backgroundColor: themeColor,
             position: 'absolute',
             right: '24px',
             top: '50%',
             transform: 'translateY(-50%)',
+            width: '36px',
+            height: '36px',
+            '&:hover': {
+              backgroundColor: `${themeColor}dd`,
+            },
+            transition: 'all 0.2s ease',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
           }}
           onClick={handleSend}
           disabled={!input.trim()}

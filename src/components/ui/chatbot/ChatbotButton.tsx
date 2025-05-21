@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Fab, Tooltip, Badge, IconButton, Box, Fade } from '@mui/material';
+import { Fab, Tooltip, Badge, IconButton, Box, Fade, Typography } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import { useChatbot } from '@/contexts/ChatbotContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import Image from 'next/image';
 
 const ChatbotButton = () => {
   const { toggleChatbot, isOpen } = useChatbot();
@@ -57,15 +59,61 @@ const ChatbotButton = () => {
   }, [selectedPackage, isOpen]);
 
   return (
-    <Fade in={isVisible} timeout={300}>
+    <Fade in={isVisible} timeout={500}>
       <Box
         sx={{
           position: 'fixed',
           bottom: '20px',
           right: '20px',
           zIndex: 9998,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          gap: 1,
         }}
       >
+        {/* Greeting bubble that appears above the button */}
+        {!isOpen && (
+          <Fade in={!isOpen} timeout={800}>
+            <Box
+              sx={{
+                backgroundColor: 'white',
+                borderRadius: '18px 18px 0 18px',
+                padding: '10px 16px',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                maxWidth: '220px',
+                marginBottom: '8px',
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: '-8px',
+                  right: '12px',
+                  width: '15px',
+                  height: '15px',
+                  backgroundColor: 'white',
+                  transform: 'rotate(45deg)',
+                  boxShadow: '4px 4px 12px rgba(0, 0, 0, 0.1)',
+                  zIndex: -1,
+                },
+                animation: 'pulse 2s infinite',
+                '@keyframes pulse': {
+                  '0%': { transform: 'scale(1)' },
+                  '50%': { transform: 'scale(1.03)' },
+                  '100%': { transform: 'scale(1)' },
+                },
+                display: showNotification ? 'block' : 'none',
+              }}
+            >
+              <Typography variant="body2" fontWeight="500" color="text.primary">
+                {selectedPackage
+                  ? `Have questions about the ${selectedPackage.title} package?`
+                  : 'Need help with Pisval POS? Chat with us!'}
+              </Typography>
+            </Box>
+          </Fade>
+        )}
+
         <Tooltip
           title={
             selectedPackage
@@ -79,43 +127,68 @@ const ChatbotButton = () => {
             variant="dot"
             invisible={!showNotification}
             overlap="circular"
+            sx={{
+              '& .MuiBadge-badge': {
+                width: '12px',
+                height: '12px',
+                borderRadius: '6px',
+              },
+            }}
           >
-            <Box sx={{ position: 'relative' }}>
-              {}
+            <Box
+              sx={{
+                position: 'relative',
+                transition: 'transform 0.3s ease',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                },
+              }}
+            >
+              {/* Close button */}
               <IconButton
                 size="small"
                 onClick={handleClose}
                 sx={{
                   position: 'absolute',
-                  top: '-10px',
-                  right: '-10px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  top: '-8px',
+                  right: '-8px',
+                  backgroundColor: 'white',
                   border: '1px solid #e0e0e0',
                   zIndex: 9999,
                   padding: '4px',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 1)',
+                    backgroundColor: '#f5f5f5',
                   },
+                  transition: 'all 0.2s ease',
                 }}
                 aria-label="close chatbot"
               >
                 <CloseIcon fontSize="small" />
               </IconButton>
 
-              {}
+              {/* Main chat button */}
               <Fab
-                color="primary"
                 onClick={() => {
                   console.log('Chatbot button clicked');
                   toggleChatbot();
                   setShowNotification(false);
                 }}
-                style={{
+                sx={{
                   margin: 0,
+                  background: 'linear-gradient(45deg, #2563eb, #1d4ed8)',
+                  boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)',
+                  '&:hover': {
+                    background: 'linear-gradient(45deg, #1d4ed8, #1e40af)',
+                    boxShadow: '0 6px 20px rgba(37, 99, 235, 0.5)',
+                  },
+                  transition: 'all 0.3s ease',
+                  width: '60px',
+                  height: '60px',
                 }}
                 aria-label="chat"
               >
-                <ChatIcon />
+                <SupportAgentIcon sx={{ fontSize: 28 }} />
               </Fab>
             </Box>
           </Badge>

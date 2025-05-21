@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+  <rect width="750" height="500" fill="#c60b1e"/>
+  <rect width="750" height="250" y="125" fill="#ffc400"/>
+  <path d="M298.77 250h152.46" stroke="#c60b1e" stroke-width="37.5" fill="none"/>
+  <g id="castle" fill="#c60b1e">
+    <rect width="37.5" height="25" x="356.25" y="175"/>
+    <rect width="37.5" height="12.5" x="356.25" y="200" fill="#ffc400"/>
+    <rect width="12.5" height="12.5" x="356.25" y="200"/>
+    <rect width="12.5" height="12.5" x="381.25" y="200"/>
+    <rect width="37.5" height="25" x="356.25" y="212.5"/>
+    <rect width="75" height="12.5" x="337.5" y="237.5"/>
+  </g>
+  <g id="castle2" fill="#c60b1e">
+    <rect width="37.5" height="25" x="243.75" y="175"/>
+    <rect width="37.5" height="12.5" x="243.75" y="200" fill="#ffc400"/>
+    <rect width="12.5" height="12.5" x="243.75" y="200"/>
+    <rect width="12.5" height="12.5" x="268.75" y="200"/>
+    <rect width="37.5" height="25" x="243.75" y="212.5"/>
+    <rect width="75" height="12.5" x="225" y="237.5"/>
+  </g>
+  <g id="castle3" fill="#c60b1e">
+    <rect width="37.5" height="25" x="468.75" y="175"/>
+    <rect width="37.5" height="12.5" x="468.75" y="200" fill="#ffc400"/>
+    <rect width="12.5" height="12.5" x="468.75" y="200"/>
+    <rect width="12.5" height="12.5" x="493.75" y="200"/>
+    <rect width="37.5" height="25" x="468.75" y="212.5"/>
+    <rect width="75" height="12.5" x="450" y="237.5"/>
+  </g>
+  <g id="lion" fill="#c60b1e">
+    <path d="M375 312.5c-2.5-7.5-7.5-10-12.5-10s-10 2.5-12.5 10l-2.5 25h30l-2.5-25z"/>
+    <circle cx="362.5" cy="300" r="5"/>
+    <path d="M362.5 312.5h-10v10h20v-10z"/>
+    <path d="M350 337.5h25v12.5h-25z"/>
+  </g>
+</svg>
