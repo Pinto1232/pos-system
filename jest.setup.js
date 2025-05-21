@@ -80,7 +80,9 @@ jest.mock('next/link', () => {
 
 // Mock framer-motion
 jest.mock('framer-motion', () => {
-  const MockMotionDiv = ({ children, ...props }) => <div {...props}>{children}</div>;
+  const MockMotionDiv = ({ children, ...props }) => (
+    <div {...props}>{children}</div>
+  );
   MockMotionDiv.displayName = 'MockMotionDiv';
 
   return {

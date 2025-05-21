@@ -27,18 +27,20 @@ interface FeatureItemProps {
   link: string;
 }
 
-const FeatureItem = memo(({ icon, title, description, link }: FeatureItemProps) => (
-  <div className={styles.slideItem}>
-    <div className={styles.iconWrapper}>
-      <div className={styles.icon}>{icon}</div>
+const FeatureItem = memo(
+  ({ icon, title, description, link }: FeatureItemProps) => (
+    <div className={styles.slideItem}>
+      <div className={styles.iconWrapper}>
+        <div className={styles.icon}>{icon}</div>
+      </div>
+      <h3 className={styles.title}>{title}</h3>
+      <p className={styles.description}>{description}</p>
+      <Link href={link} className={styles.learnMore}>
+        Learn more
+      </Link>
     </div>
-    <h3 className={styles.title}>{title}</h3>
-    <p className={styles.description}>{description}</p>
-    <Link href={link} className={styles.learnMore}>
-      Learn more
-    </Link>
-  </div>
-));
+  )
+);
 
 FeatureItem.displayName = 'FeatureItem';
 

@@ -42,11 +42,9 @@ export function useDeepCallback<T extends (...args: unknown[]) => unknown>(
 }
 
 export function useMemoObject<T extends object>(values: T): T {
-  // Using useDeepMemo instead of useMemo to properly handle object dependencies
   return useDeepMemo(() => values, [values]);
 }
 
-// Named export object to avoid anonymous default export
 const optimizedHooks = {
   useDeepMemo,
   useDeepCallback,

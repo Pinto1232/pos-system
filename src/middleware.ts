@@ -45,13 +45,15 @@ export function middleware(request: NextRequest) {
     !pathname.startsWith('/api/') &&
     !pathname.includes('.')
   ) {
-    let language: string = 'en'; // Initialize with default value
+    let language: string = 'en';
 
     const languageCookie = request.cookies.get('i18next')?.value;
     if (languageCookie) {
       language = languageCookie;
     } else {
-      const acceptLang = acceptLanguage.get(request.headers.get('Accept-Language'));
+      const acceptLang = acceptLanguage.get(
+        request.headers.get('Accept-Language')
+      );
       if (acceptLang) {
         language = acceptLang;
       }

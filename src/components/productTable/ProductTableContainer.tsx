@@ -306,9 +306,9 @@ const ProductTableContainer: React.FC = () => {
       case 'R500-R1000':
         return [500, 1000];
       case 'R1000+':
-        return [1000, 10000]; // Using 10000 as an upper bound for R1000+
+        return [1000, 10000];
       default:
-        return [0, 10000]; // Default range for 'All'
+        return [0, 10000];
     }
   };
 
@@ -326,7 +326,9 @@ const ProductTableContainer: React.FC = () => {
             isViewModalOpen={isViewModalOpen}
             searchQuery={searchQuery}
             categoryFilter={categoryFilter}
-            ratingFilter={ratingFilter !== 'All' ? parseInt(ratingFilter, 10) : 0}
+            ratingFilter={
+              ratingFilter !== 'All' ? parseInt(ratingFilter, 10) : 0
+            }
             statusFilter={statusFilter}
             priceFilter={getPriceFilterRange(priceFilter)}
             onView={handleView}

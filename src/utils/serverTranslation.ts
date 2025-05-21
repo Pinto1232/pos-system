@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import {
   TranslationValue,
   TranslationArray,
-  TranslationObject
+  TranslationObject,
 } from '@/services/translationService';
 
 export async function getServerTranslations(
@@ -83,7 +83,10 @@ export async function translateServer(
 }
 
 export async function translateDynamicContentServer<
-  T extends Record<string, TranslationValue | TranslationArray | TranslationObject>,
+  T extends Record<
+    string,
+    TranslationValue | TranslationArray | TranslationObject
+  >,
 >(
   content: T,
   keys: (keyof T)[],
@@ -117,28 +120,28 @@ export async function translateDynamicContentServer<
           }
         }
       } else if (Array.isArray(translatedContent[key])) {
-        translatedContent[key] = (translatedContent[key] as TranslationArray).map(
-          (item) => {
-            if (typeof item === 'string' && item.includes('.')) {
-              const keyParts = item.split('.');
+        translatedContent[key] = (
+          translatedContent[key] as TranslationArray
+        ).map((item) => {
+          if (typeof item === 'string' && item.includes('.')) {
+            const keyParts = item.split('.');
 
-              let translation = translations;
-              for (const part of keyParts) {
-                if (translation && translation[part]) {
-                  translation = translation[part];
-                } else {
-                  translation = null;
-                  break;
-                }
-              }
-
-              if (translation && typeof translation === 'string') {
-                return translation;
+            let translation = translations;
+            for (const part of keyParts) {
+              if (translation && translation[part]) {
+                translation = translation[part];
+              } else {
+                translation = null;
+                break;
               }
             }
-            return item;
+
+            if (translation && typeof translation === 'string') {
+              return translation;
+            }
           }
-        ) as unknown as T[typeof key];
+          return item;
+        }) as unknown as T[typeof key];
       }
     }
 

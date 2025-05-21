@@ -20,7 +20,7 @@ export default function LazyLoadInitializer() {
         console.log('Using system fonts, skipping font optimization');
       } else {
         console.log('Using Next.js font optimization');
-        
+
         optimizeFonts([
           {
             family: 'Inter',
@@ -39,7 +39,6 @@ export default function LazyLoadInitializer() {
       console.warn('Font optimization error:', error);
     }
 
-    
     setTimeout(() => {
       loadScriptsInParallel([
         {

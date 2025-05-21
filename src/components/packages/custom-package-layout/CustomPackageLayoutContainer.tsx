@@ -32,7 +32,6 @@ interface CustomPackageLayoutContainerProps {
   selectedPackage: Package;
 }
 
-
 const convertToTypesAddOn = (addOn: IndexAddOn): AddOn => {
   let features: string[] = [];
   if (typeof addOn.features === 'string') {
@@ -485,7 +484,7 @@ const CustomPackageLayoutContainer: React.FC<
         }}
         onAddOnToggle={(addOns) => {
           console.log('Toggling add-ons:', JSON.stringify(addOns, null, 2));
-          
+
           const convertedAddOns = addOns.map(convertToTypesAddOn);
           setSelectedAddOns(convertedAddOns);
         }}

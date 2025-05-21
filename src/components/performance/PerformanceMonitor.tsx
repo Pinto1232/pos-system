@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 
-
 interface PerformanceEntryWithProcessingStart extends PerformanceEntry {
   processingStart: number;
 }
@@ -43,7 +42,6 @@ export default function PerformanceMonitor() {
       const fidObserver = new PerformanceObserver((entryList) => {
         const entries = entryList.getEntries();
         entries.forEach((entry) => {
-          
           const typedEntry = entry as PerformanceEntryWithProcessingStart;
           const fid = typedEntry.processingStart - typedEntry.startTime;
           reportMetric('FID', fid);
@@ -63,7 +61,6 @@ export default function PerformanceMonitor() {
         const entries = entryList.getEntries();
 
         entries.forEach((entry) => {
-          
           const layoutShiftEntry = entry as LayoutShiftEntry;
           if (!layoutShiftEntry.hadRecentInput) {
             clsValue += layoutShiftEntry.value;

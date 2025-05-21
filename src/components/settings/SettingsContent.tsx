@@ -13,7 +13,6 @@ import CacheManagementContent from './content/CacheManagementContent';
 import ChangeHistoryContent from './content/ChangeHistoryContent';
 import { TaxSettings, RegionalSettings } from '../../types/settingsTypes';
 
-// Import types for packages and subscription
 import type { Package, Subscription } from './content/PackageManagementContent';
 
 interface SettingsContentProps {

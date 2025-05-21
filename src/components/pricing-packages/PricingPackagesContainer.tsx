@@ -30,7 +30,7 @@ type Package = {
   currency: string;
   multiCurrencyPrices: string;
 };
-// Define a type for the axios client
+
 import { apiClient } from '@/api/axiosClient';
 type AxiosInstance = typeof apiClient;
 import { PricePackages } from '@/components/pricing-packages/types';

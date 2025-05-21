@@ -93,17 +93,15 @@ const Row = React.memo(({ index, style, data }: RowProps) => {
 
       <Box width="10%">
         <Chip
-          label={product.statusProduct || (product.status ? 'Active' : 'Inactive')}
+          label={
+            product.statusProduct || (product.status ? 'Active' : 'Inactive')
+          }
           size="small"
           sx={{
-            backgroundColor:
-              product.status
-                ? 'rgba(46, 204, 113, 0.1)'
-                : 'rgba(231, 76, 60, 0.1)',
-            color:
-              product.status
-                ? 'rgb(46, 204, 113)'
-                : 'rgb(231, 76, 60)',
+            backgroundColor: product.status
+              ? 'rgba(46, 204, 113, 0.1)'
+              : 'rgba(231, 76, 60, 0.1)',
+            color: product.status ? 'rgb(46, 204, 113)' : 'rgb(231, 76, 60)',
             fontWeight: 500,
             fontSize: '0.7rem',
           }}

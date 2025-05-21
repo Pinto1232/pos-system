@@ -1,13 +1,13 @@
-// Use the axios instance from axiosClient instead of importing directly
 import { apiClient } from '@/api/axiosClient';
 
-// Define types for translation values
 export type TranslationValue = string | number | boolean | null | undefined;
-// Use recursive types to avoid circular references
+
 export interface TranslationObject {
   [key: string]: TranslationValue | TranslationArray | TranslationObject;
 }
-export type TranslationArray = Array<TranslationValue | TranslationArray | TranslationObject>;
+export type TranslationArray = Array<
+  TranslationValue | TranslationArray | TranslationObject
+>;
 
 export const translationService = {
   getTranslations: async (language: string, namespace: string = 'common') => {
@@ -22,7 +22,12 @@ export const translationService = {
     }
   },
 
-  translateDynamicContent: async <T extends Record<string, TranslationValue | TranslationArray | TranslationObject>>(
+  translateDynamicContent: async <
+    T extends Record<
+      string,
+      TranslationValue | TranslationArray | TranslationObject
+    >,
+  >(
     language: string,
     content: T,
     keys: (keyof T)[]

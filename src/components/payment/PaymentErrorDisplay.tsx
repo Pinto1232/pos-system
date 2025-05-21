@@ -4,6 +4,14 @@ import React from 'react';
 import { Box, Button, Alert, Stack } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
+interface PaymentErrorAction {
+  label: string;
+  onClick: () => void;
+  primary: boolean;
+}
+
+type ActionItem = PaymentErrorAction | null;
+
 interface PaymentErrorDisplayProps {
   errorMessage: string;
   errorType?: string;
@@ -21,7 +29,17 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
   onContactSupport,
   onDismiss,
 }) => {
-  const getUserFriendlyError = (message: string, type: string) => {
+  const getUserFriendlyError = (
+    message: string,
+    type: string
+  ): {
+    title: string;
+    description: string;
+    actions: PaymentErrorAction[];
+  } => {
+    const createActionArray = (items: ActionItem[]): PaymentErrorAction[] => {
+      return items.filter((item): item is PaymentErrorAction => item !== null);
+    };
     switch (type) {
       case 'card_error':
         return {
@@ -29,7 +47,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
           description:
             message ||
             'Your card was declined. Please check your card details or try another payment method.',
-          actions: [
+          actions: createActionArray([
             onUseAnotherCard
               ? {
                   label: 'Try Another Card',
@@ -44,7 +62,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
                   primary: false,
                 }
               : null,
-          ].filter(Boolean),
+          ]),
         };
 
       case 'validation_error':
@@ -52,7 +70,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
           title: 'Invalid Information',
           description:
             message || 'Please check your payment information and try again.',
-          actions: [
+          actions: createActionArray([
             onRetry
               ? {
                   label: 'Try Again',
@@ -60,7 +78,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
                   primary: true,
                 }
               : null,
-          ].filter(Boolean),
+          ]),
         };
 
       case 'server_error':
@@ -69,7 +87,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
           description:
             message ||
             'Our payment system is experiencing issues. Please try again later or contact support.',
-          actions: [
+          actions: createActionArray([
             onRetry
               ? {
                   label: 'Try Again',
@@ -84,7 +102,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
                   primary: false,
                 }
               : null,
-          ].filter(Boolean),
+          ]),
         };
 
       case 'timeout':
@@ -93,7 +111,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
           description:
             message ||
             'Your payment is taking longer than expected. Please check your bank app or account to see if the payment went through before trying again.',
-          actions: [
+          actions: createActionArray([
             onRetry
               ? {
                   label: 'Try Again',
@@ -108,7 +126,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
                   primary: false,
                 }
               : null,
-          ].filter(Boolean),
+          ]),
         };
 
       default:
@@ -117,7 +135,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
           description:
             message ||
             'An unexpected error occurred. Please try again or contact support.',
-          actions: [
+          actions: createActionArray([
             onRetry
               ? {
                   label: 'Try Again',
@@ -132,7 +150,7 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
                   primary: false,
                 }
               : null,
-          ].filter(Boolean),
+          ]),
         };
     }
   };
@@ -168,19 +186,16 @@ const PaymentErrorDisplay: React.FC<PaymentErrorDisplayProps> = ({
           justifyContent="center"
           sx={{ mt: 2 }}
         >
-          {actions.map((action, index) => {
-            if (!action) return null;
-            return (
-              <Button
-                key={index}
-                variant={action.primary ? 'contained' : 'outlined'}
-                onClick={action.onClick}
-                sx={{ minWidth: 120 }}
-              >
-                {action.label}
-              </Button>
-            );
-          })}
+          {actions.map((action: PaymentErrorAction, index: number) => (
+            <Button
+              key={index}
+              variant={action.primary ? 'contained' : 'outlined'}
+              onClick={action.onClick}
+              sx={{ minWidth: 120 }}
+            >
+              {action.label}
+            </Button>
+          ))}
 
           {onDismiss && (
             <Button variant="text" onClick={onDismiss} sx={{ ml: 1 }}>

@@ -29,10 +29,15 @@ const defaultQueryOptions: DefaultOptions = {
         JSON.stringify(error, null, 2)
       );
 
-      // Check for Axios error by looking for the response property
-      if (error && typeof error === 'object' && 'response' in error &&
-          error.response && typeof error.response === 'object' &&
-          'status' in error.response && error.response.status === 401) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'response' in error &&
+        error.response &&
+        typeof error.response === 'object' &&
+        'status' in error.response &&
+        error.response.status === 401
+      ) {
         console.warn('Unauthorized (401) - Redirecting to login...');
         return false;
       }
