@@ -334,7 +334,6 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
       const confirmationPromise = stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/checkout/success`,
           receipt_email: email,
           payment_method_data: {
             billing_details: {
@@ -345,9 +344,10 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
             },
           },
         },
+        redirect: 'if_required', 
       });
 
-      const { error } = await Promise.race([
+      const { error, paymentIntent } = await Promise.race([
         confirmationPromise,
         timeoutPromise.then(() => {
           throw new Error('Payment processing timeout');
@@ -361,6 +361,11 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
         );
         setErrorType(error.type || 'unknown_error');
         setMessage(error.message || 'An unexpected error occurred.');
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        console.log('[DEBUG] Payment succeeded, navigating to success page');
+        
+        
+        window.dispatchEvent(new CustomEvent('paymentSuccess'));
       }
     } catch (error) {
       console.error(
