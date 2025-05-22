@@ -6,7 +6,7 @@ export interface Package {
   extraDescription: string;
   price: number;
   testPeriodDays: number;
-  type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
+  type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'custom-pro' | 'premium';
   isCustomizable: boolean;
   selectedFeatures?: number[] | null;
   selectedAddOns?: number[] | null;

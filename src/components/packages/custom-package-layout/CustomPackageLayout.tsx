@@ -11,6 +11,10 @@ import PackageDetailsStep from './components/steps/PackageDetailsStep';
 import CoreFeaturesStep from './components/steps/CoreFeaturesStep';
 import AddOnsStep from './components/steps/AddOnsStep';
 import UsageStep from './components/steps/UsageStep';
+import PaymentPlanStep from './components/steps/PaymentPlanStep';
+import SupportLevelStep from './components/steps/SupportLevelStep';
+import EnterpriseFeatureStep from './components/steps/EnterpriseFeatureStep';
+import ReviewConfirmStep from './components/steps/ReviewConfirmStep';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
 import {
   SavedPackageData,
@@ -118,6 +122,14 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = (props) => {
         return <AddOnsStep />;
       case 'Configure Usage':
         return <UsageStep />;
+      case 'Select Payment Plan':
+        return <PaymentPlanStep />;
+      case 'Choose Support Level':
+        return <SupportLevelStep />;
+      case 'Configure Enterprise Features':
+        return <EnterpriseFeatureStep />;
+      case 'Review & Confirm':
+        return <ReviewConfirmStep />;
 
       default:
         return null;
