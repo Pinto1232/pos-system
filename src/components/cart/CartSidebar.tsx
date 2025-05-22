@@ -178,13 +178,10 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
 
       localStorage.setItem('validatedCartItems', JSON.stringify(validated));
 
-      
       onClose();
 
-      
       router.push('/checkout');
 
-      
       setIsLoading(false);
     } catch (error) {
       console.error('Checkout Error:', JSON.stringify(error, null, 2));
