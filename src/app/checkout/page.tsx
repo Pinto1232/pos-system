@@ -170,7 +170,6 @@ export default function CheckoutPage() {
     router.push('/checkout/success');
   }, [clearCart, router]);
 
-  
   useEffect(() => {
     const handlePaymentSuccessEvent = () => {
       handlePaymentSuccess();

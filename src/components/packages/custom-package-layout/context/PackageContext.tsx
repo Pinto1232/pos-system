@@ -544,8 +544,6 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
     };
 
     onSave(fullData);
-    
-    
   }, [
     selectedFeatures,
     selectedAddOns,

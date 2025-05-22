@@ -344,7 +344,7 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
             },
           },
         },
-        redirect: 'if_required', 
+        redirect: 'if_required',
       });
 
       const { error, paymentIntent } = await Promise.race([
@@ -363,8 +363,7 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
         setMessage(error.message || 'An unexpected error occurred.');
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
         console.log('[DEBUG] Payment succeeded, navigating to success page');
-        
-        
+
         window.dispatchEvent(new CustomEvent('paymentSuccess'));
       }
     } catch (error) {

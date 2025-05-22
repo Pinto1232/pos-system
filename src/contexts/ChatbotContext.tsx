@@ -220,14 +220,7 @@ const getSuggestedResponses = (packageType: string): string[] => {
 export const ChatbotProvider: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const savedState = localStorage.getItem('chatbot_isOpen');
-
-      return savedState === 'true' ? true : false;
-    }
-    return false;
-  });
+  const [isOpen, setIsOpen] = useState(false);
 
   const [firstVisit, setFirstVisit] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -258,12 +251,24 @@ export const ChatbotProvider: React.FC<{
 
   const [themeColor, setThemeColor] = useState<string>('#1976d2');
 
+  
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
   useEffect(() => {
     if (firstVisit && typeof window !== 'undefined') {
       localStorage.setItem('chatbot_hasVisited', 'true');
       setFirstVisit(false);
     }
   }, [firstVisit]);
+
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 1000); 
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (selectedPackage) {
@@ -350,11 +355,12 @@ export const ChatbotProvider: React.FC<{
 
       setPreviousPackageId(selectedPackage.id);
 
-      if (!isOpen) {
+      
+      if (!isOpen && !isInitialLoad) {
         setIsOpen(true);
       }
     }
-  }, [selectedPackage, isOpen, previousPackageId]);
+  }, [selectedPackage, isOpen, previousPackageId, isInitialLoad]);
 
   const toggleChatbot = () => {
     console.log(
