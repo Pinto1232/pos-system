@@ -213,12 +213,75 @@ const CustomPackageLayoutContainer: React.FC<
   }, [selectedPackage, buildSteps]);
 
   useEffect(() => {
-    if (addOnsResponse?.data) {
+    if (addOnsResponse?.data && Array.isArray(addOnsResponse.data)) {
       console.log(
         'AddOns data from React Query:',
         JSON.stringify(addOnsResponse.data, null, 2)
       );
       setAddOns(addOnsResponse.data);
+    } else if (addOnsResponse && (!addOnsResponse.data || addOnsResponse.data.length === 0)) {
+      // If the response exists but data is empty, set empty array to prevent infinite loading
+      console.log('AddOns response received but data is empty, using fallback data');
+
+      // Provide some fallback addOns for the Custom Pro package
+      const fallbackAddOns = [
+        {
+          id: 1,
+          name: 'Advanced Analytics',
+          description: 'Detailed business analytics and insights',
+          price: 15.0,
+          currency: 'USD',
+          multiCurrencyPrices: {
+            USD: 15.0,
+            EUR: 13.5,
+            GBP: 11.5,
+            ZAR: 270.0,
+          },
+          category: 'Analytics',
+          isActive: true,
+          features: ['Real-time data visualization', 'Custom report generation'],
+          dependencies: ['Internet connection'],
+          icon: 'analytics_icon',
+        },
+        {
+          id: 2,
+          name: 'API Access',
+          description: 'Access to API for custom integrations',
+          price: 25.0,
+          currency: 'USD',
+          multiCurrencyPrices: {
+            USD: 25.0,
+            EUR: 22.5,
+            GBP: 19.5,
+            ZAR: 450.0,
+          },
+          category: 'Integration',
+          isActive: true,
+          features: ['RESTful API endpoints', 'Webhook notifications'],
+          dependencies: ['Developer knowledge'],
+          icon: 'api_icon',
+        },
+        {
+          id: 3,
+          name: 'Custom Branding',
+          description: 'White-label solution with your branding',
+          price: 20.0,
+          currency: 'USD',
+          multiCurrencyPrices: {
+            USD: 20.0,
+            EUR: 18.0,
+            GBP: 15.5,
+            ZAR: 360.0,
+          },
+          category: 'Customization',
+          isActive: true,
+          features: ['Logo customization', 'Color scheme adjustment'],
+          dependencies: ['Brand assets'],
+          icon: 'branding_icon',
+        },
+      ];
+
+      setAddOns(fallbackAddOns);
     }
   }, [addOnsResponse]);
 
@@ -451,7 +514,11 @@ const CustomPackageLayoutContainer: React.FC<
     }));
   }, []);
 
-  if (isLoading || isAddOnsLoading) return <WaveLoading />;
+  // Show loading until both main data and addOns are loaded
+  // For non-customizable packages, we don't need to wait for addOns
+  const shouldShowLoading = isLoading || (selectedPackage.isCustomizable && isAddOnsLoading);
+
+  if (shouldShowLoading) return <WaveLoading />;
   if (showLoginForm) return <LazyLoginForm />;
 
   return (

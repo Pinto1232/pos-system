@@ -26,6 +26,15 @@ const PackageDetailsStep: React.FC = () => {
     handleBack,
   } = usePackageContext();
 
+  // Debug logging for addOns
+  React.useEffect(() => {
+    console.log('PackageDetailsStep - addOns data:', {
+      addOnsLength: addOns?.length || 0,
+      addOns: addOns,
+      isCustomizable,
+    });
+  }, [addOns, isCustomizable]);
+
   const formattedDescription = useMemo(() => {
     return packageDetails.description
       .replace(/([a-z])([A-Z])/g, '$1 $2')
@@ -168,84 +177,105 @@ const PackageDetailsStep: React.FC = () => {
             </Box>
           </Box>
 
-          {addOns.map((addOn) => {
-            const businessKey = `business-${addOn.id}`;
-            const startupKey = `startup-${addOn.id}`;
-            const personalKey = `personal-${addOn.id}`;
+          {addOns && addOns.length > 0 ? (
+            addOns.map((addOn) => {
+              const businessKey = `business-${addOn.id}`;
+              const startupKey = `startup-${addOn.id}`;
+              const personalKey = `personal-${addOn.id}`;
 
-            const addOnPrice =
-              pricingState.featurePrices[addOn.id] ||
-              (addOn.multiCurrencyPrices &&
-              addOn.multiCurrencyPrices[selectedCurrency]
-                ? addOn.multiCurrencyPrices[selectedCurrency]
-                : addOn.price);
+              const addOnPrice =
+                pricingState.featurePrices[addOn.id] ||
+                (addOn.multiCurrencyPrices &&
+                addOn.multiCurrencyPrices[selectedCurrency]
+                  ? addOn.multiCurrencyPrices[selectedCurrency]
+                  : addOn.price);
 
-            return (
-              <Box className={styles.tableRow} key={addOn.id}>
-                <Box className={styles.featureColumn}>
-                  {addOn.name}
-                  <Typography
-                    variant="caption"
+              return (
+                <Box className={styles.tableRow} key={addOn.id}>
+                  <Box className={styles.featureColumn}>
+                    {addOn.name}
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        display: 'block',
+                        color: 'text.secondary',
+                        fontSize: '0.7rem',
+                      }}
+                    >
+                      {formatPrice(selectedCurrency, addOnPrice)}
+                    </Typography>
+                  </Box>
+                  <Box
+                    className={styles.planColumn}
+                    data-label="Business"
                     sx={{
-                      display: 'block',
-                      color: 'text.secondary',
-                      fontSize: '0.7rem',
+                      backgroundColor: checkboxStates[businessKey]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                      transition: 'background-color 0.3s ease',
                     }}
                   >
-                    {formatPrice(selectedCurrency, addOnPrice)}
-                  </Typography>
+                    <Checkbox
+                      checked={checkboxStates[businessKey] || false}
+                      onChange={() => handleCheckboxChange(businessKey)}
+                      aria-label={`Select ${addOn.name} for Business plan`}
+                    />
+                  </Box>
+                  <Box
+                    className={styles.planColumn}
+                    data-label="Startup"
+                    sx={{
+                      backgroundColor: checkboxStates[startupKey]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                      transition: 'background-color 0.3s ease',
+                    }}
+                  >
+                    <Checkbox
+                      checked={checkboxStates[startupKey] || false}
+                      onChange={() => handleCheckboxChange(startupKey)}
+                      aria-label={`Select ${addOn.name} for Startup plan`}
+                    />
+                  </Box>
+                  <Box
+                    className={styles.planColumn}
+                    data-label="Personal"
+                    sx={{
+                      backgroundColor: checkboxStates[personalKey]
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                      transition: 'background-color 0.3s ease',
+                    }}
+                  >
+                    <Checkbox
+                      checked={checkboxStates[personalKey] || false}
+                      onChange={() => handleCheckboxChange(personalKey)}
+                      aria-label={`Select ${addOn.name} for Personal plan`}
+                    />
+                  </Box>
                 </Box>
-                <Box
-                  className={styles.planColumn}
-                  data-label="Business"
+              );
+            })
+          ) : (
+            <Box className={styles.tableRow}>
+              <Box className={styles.featureColumn}>
+                <Typography
+                  variant="body2"
                   sx={{
-                    backgroundColor: checkboxStates[businessKey]
-                      ? 'rgba(76, 175, 80, 0.1)'
-                      : 'transparent',
-                    transition: 'background-color 0.3s ease',
+                    color: 'text.secondary',
+                    fontStyle: 'italic',
+                    textAlign: 'center',
+                    padding: '2rem',
                   }}
                 >
-                  <Checkbox
-                    checked={checkboxStates[businessKey] || false}
-                    onChange={() => handleCheckboxChange(businessKey)}
-                    aria-label={`Select ${addOn.name} for Business plan`}
-                  />
-                </Box>
-                <Box
-                  className={styles.planColumn}
-                  data-label="Startup"
-                  sx={{
-                    backgroundColor: checkboxStates[startupKey]
-                      ? 'rgba(76, 175, 80, 0.1)'
-                      : 'transparent',
-                    transition: 'background-color 0.3s ease',
-                  }}
-                >
-                  <Checkbox
-                    checked={checkboxStates[startupKey] || false}
-                    onChange={() => handleCheckboxChange(startupKey)}
-                    aria-label={`Select ${addOn.name} for Startup plan`}
-                  />
-                </Box>
-                <Box
-                  className={styles.planColumn}
-                  data-label="Personal"
-                  sx={{
-                    backgroundColor: checkboxStates[personalKey]
-                      ? 'rgba(76, 175, 80, 0.1)'
-                      : 'transparent',
-                    transition: 'background-color 0.3s ease',
-                  }}
-                >
-                  <Checkbox
-                    checked={checkboxStates[personalKey] || false}
-                    onChange={() => handleCheckboxChange(personalKey)}
-                    aria-label={`Select ${addOn.name} for Personal plan`}
-                  />
-                </Box>
+                  No add-ons available at the moment. Please try again later.
+                </Typography>
               </Box>
-            );
-          })}
+              <Box className={styles.planColumn}></Box>
+              <Box className={styles.planColumn}></Box>
+              <Box className={styles.planColumn}></Box>
+            </Box>
+          )}
         </Box>
       </Box>
 

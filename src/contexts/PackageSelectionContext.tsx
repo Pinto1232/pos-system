@@ -12,7 +12,7 @@ export type Package = {
   extraDescription: string;
   price: number;
   testPeriodDays: number;
-  type: 'custom' | 'starter' | 'growth' | 'enterprise' | 'premium';
+  type: 'custom' | 'custom-pro' | 'starter' | 'growth' | 'enterprise' | 'premium';
   currency?: string;
   multiCurrencyPrices?: string;
 };
