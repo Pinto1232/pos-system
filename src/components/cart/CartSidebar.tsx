@@ -16,6 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { FaTrash, FaShoppingCart } from 'react-icons/fa';
 import { HiShoppingCart } from 'react-icons/hi';
 import { styled } from '@mui/material/styles';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import CheckoutModal from '@/components/payment/CheckoutModal';
 
@@ -117,6 +118,7 @@ const formatPrice = (amount: number) => {
 };
 
 const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
+  const router = useRouter();
   const { cartItems, removeFromCart } = useCart();
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
@@ -176,9 +178,14 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
 
       localStorage.setItem('validatedCartItems', JSON.stringify(validated));
 
-      setTimeout(() => {
-        window.location.href = '/checkout';
-      }, 2000);
+      
+      onClose();
+
+      
+      router.push('/checkout');
+
+      
+      setIsLoading(false);
     } catch (error) {
       console.error('Checkout Error:', JSON.stringify(error, null, 2));
       alert(

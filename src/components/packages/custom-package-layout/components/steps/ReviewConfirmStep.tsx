@@ -22,7 +22,6 @@ import {
   FaHeadset,
   FaBuilding,
   FaCalendarAlt,
-  FaShoppingCart,
 } from 'react-icons/fa';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
@@ -458,7 +457,6 @@ const ReviewConfirmStep: React.FC = () => {
                 variant="contained"
                 fullWidth
                 size="large"
-                startIcon={<FaShoppingCart />}
                 onClick={handleSave}
                 disabled={loading}
                 sx={{
@@ -470,7 +468,7 @@ const ReviewConfirmStep: React.FC = () => {
                   fontWeight: 600,
                 }}
               >
-                {loading ? 'Processing...' : 'Add to Cart'}
+                {loading ? 'Processing...' : 'Confirm'}
               </Button>
 
               <Typography

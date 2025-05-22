@@ -170,6 +170,19 @@ export default function CheckoutPage() {
     router.push('/checkout/success');
   }, [clearCart, router]);
 
+  
+  useEffect(() => {
+    const handlePaymentSuccessEvent = () => {
+      handlePaymentSuccess();
+    };
+
+    window.addEventListener('paymentSuccess', handlePaymentSuccessEvent);
+
+    return () => {
+      window.removeEventListener('paymentSuccess', handlePaymentSuccessEvent);
+    };
+  }, [handlePaymentSuccess]);
+
   return (
     <Container maxWidth="lg" className={styles.checkoutContainer}>
       <Box sx={{ my: 4 }}>
