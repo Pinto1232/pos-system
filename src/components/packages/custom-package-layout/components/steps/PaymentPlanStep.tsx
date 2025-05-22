@@ -1,7 +1,14 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Card, CardContent, Button, Chip } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Button,
+  Chip,
+} from '@mui/material';
 import { FaCheck, FaCalendarAlt, FaCalendarCheck } from 'react-icons/fa';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
@@ -23,13 +30,14 @@ const PaymentPlanStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  // Icon mapping for payment plans
+  
   const getIconForPlan = (planName: string) => {
     return planName === 'Monthly' ? <FaCalendarAlt /> : <FaCalendarCheck />;
   };
 
   const calculatePlanPrice = (discountPercentage: number) => {
-    const subtotal = basePrice + pricingState.totalFeaturePrice + pricingState.supportPrice;
+    const subtotal =
+      basePrice + pricingState.totalFeaturePrice + pricingState.supportPrice;
     const discountAmount = subtotal * discountPercentage;
     return subtotal - discountAmount;
   };
@@ -51,132 +59,182 @@ const PaymentPlanStep: React.FC = () => {
         </Typography>
       </Box>
 
-      <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' } }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 2,
+          gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+        }}
+      >
         {paymentPlansLoading ? (
           <Typography>Loading payment plans...</Typography>
         ) : (
           paymentPlans.map((plan) => {
             const isSelected = selectedPlanIndex === plan.id;
             const planPrice = calculatePlanPrice(plan.discountPercentage);
-            const monthlySavings = plan.discountPercentage > 0 ? calculateMonthlySavings(plan.discountPercentage) : 0;
+            const monthlySavings =
+              plan.discountPercentage > 0
+                ? calculateMonthlySavings(plan.discountPercentage)
+                : 0;
 
-          return (
-            <Card
-              key={plan.id}
-              sx={{
-                position: 'relative',
-                cursor: 'pointer',
-                border: isSelected ? '2px solid #2563eb' : '1px solid #e2e8f0',
-                backgroundColor: isSelected ? '#f8fafc' : 'white',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  borderColor: '#2563eb',
-                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.15)',
-                },
-              }}
-              onClick={() => handlePlanSelect(plan.id)}
-            >
-              {plan.isPopular && (
-                <Chip
-                  label="Most Popular"
-                  size="small"
-                  sx={{
-                    position: 'absolute',
-                    top: -8,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    backgroundColor: '#2563eb',
-                    color: 'white',
-                    fontWeight: 600,
-                    zIndex: 1,
-                  }}
-                />
-              )}
+            return (
+              <Card
+                key={plan.id}
+                sx={{
+                  position: 'relative',
+                  cursor: 'pointer',
+                  border: isSelected
+                    ? '2px solid #2563eb'
+                    : '1px solid #e2e8f0',
+                  backgroundColor: isSelected ? '#f8fafc' : 'white',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    borderColor: '#2563eb',
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.15)',
+                  },
+                }}
+                onClick={() => handlePlanSelect(plan.id)}
+              >
+                {plan.isPopular && (
+                  <Chip
+                    label="Most Popular"
+                    size="small"
+                    sx={{
+                      position: 'absolute',
+                      top: -8,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      backgroundColor: '#2563eb',
+                      color: 'white',
+                      fontWeight: 600,
+                      zIndex: 1,
+                    }}
+                  />
+                )}
 
-              <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Box sx={{ mr: 2, color: '#2563eb', fontSize: '1.5rem' }}>
-                    {getIconForPlan(plan.name)}
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
-                      {plan.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {plan.description}
-                    </Typography>
-                  </Box>
-                  {isSelected && (
-                    <Box
-                      sx={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: '50%',
-                        backgroundColor: '#2563eb',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                      }}
-                    >
-                      <FaCheck size={12} />
+                <CardContent sx={{ p: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box sx={{ mr: 2, color: '#2563eb', fontSize: '1.5rem' }}>
+                      {getIconForPlan(plan.name)}
                     </Box>
-                  )}
-                </Box>
-
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="h4" sx={{ fontWeight: 700, color: '#173a79' }}>
-                    {formatPrice(selectedCurrency, planPrice)}
-                    <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-                      / {plan.period}
-                    </Typography>
-                  </Typography>
-
-                  {plan.discountPercentage > 0 && (
-                    <Box sx={{ mt: 1 }}>
-                      {plan.discountLabel && (
-                        <Chip
-                          label={plan.discountLabel}
-                          size="small"
-                          sx={{
-                            backgroundColor: '#dcfce7',
-                            color: '#166534',
-                            fontWeight: 600,
-                            mr: 1,
-                          }}
-                        />
-                      )}
+                    <Box sx={{ flex: 1 }}>
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: 600, mb: 0.5 }}
+                      >
+                        {plan.name}
+                      </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Save {formatPrice(selectedCurrency, monthlySavings)} per month
+                        {plan.description}
                       </Typography>
                     </Box>
-                  )}
-                </Box>
+                    {isSelected && (
+                      <Box
+                        sx={{
+                          width: 24,
+                          height: 24,
+                          borderRadius: '50%',
+                          backgroundColor: '#2563eb',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                        }}
+                      >
+                        <FaCheck size={12} />
+                      </Box>
+                    )}
+                  </Box>
 
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <FaCheck size={12} style={{ marginRight: 8, color: '#16a34a' }} />
-                    Billed every {plan.period}
-                  </Typography>
-                  <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <FaCheck size={12} style={{ marginRight: 8, color: '#16a34a' }} />
-                    Cancel anytime
-                  </Typography>
-                  <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                    <FaCheck size={12} style={{ marginRight: 8, color: '#16a34a' }} />
-                    Full feature access
-                  </Typography>
-                  {plan.discountPercentage > 0 && (
-                    <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                      <FaCheck size={12} style={{ marginRight: 8, color: '#16a34a' }} />
-                      {Math.round(plan.discountPercentage * 100)}% discount applied
+                  <Box sx={{ mb: 2 }}>
+                    <Typography
+                      variant="h4"
+                      sx={{ fontWeight: 700, color: '#173a79' }}
+                    >
+                      {formatPrice(selectedCurrency, planPrice)}
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ ml: 1 }}
+                      >
+                        / {plan.period}
+                      </Typography>
                     </Typography>
-                  )}
-                </Box>
-              </CardContent>
-            </Card>
-          );
-        })
+
+                    {plan.discountPercentage > 0 && (
+                      <Box sx={{ mt: 1 }}>
+                        {plan.discountLabel && (
+                          <Chip
+                            label={plan.discountLabel}
+                            size="small"
+                            sx={{
+                              backgroundColor: '#dcfce7',
+                              color: '#166534',
+                              fontWeight: 600,
+                              mr: 1,
+                            }}
+                          />
+                        )}
+                        <Typography variant="body2" color="text.secondary">
+                          Save {formatPrice(selectedCurrency, monthlySavings)}{' '}
+                          per month
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+
+                  <Box
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+                  >
+                    <Typography
+                      variant="body2"
+                      sx={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      <FaCheck
+                        size={12}
+                        style={{ marginRight: 8, color: '#16a34a' }}
+                      />
+                      Billed every {plan.period}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      <FaCheck
+                        size={12}
+                        style={{ marginRight: 8, color: '#16a34a' }}
+                      />
+                      Cancel anytime
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      <FaCheck
+                        size={12}
+                        style={{ marginRight: 8, color: '#16a34a' }}
+                      />
+                      Full feature access
+                    </Typography>
+                    {plan.discountPercentage > 0 && (
+                      <Typography
+                        variant="body2"
+                        sx={{ display: 'flex', alignItems: 'center' }}
+                      >
+                        <FaCheck
+                          size={12}
+                          style={{ marginRight: 8, color: '#16a34a' }}
+                        />
+                        {Math.round(plan.discountPercentage * 100)}% discount
+                        applied
+                      </Typography>
+                    )}
+                  </Box>
+                </CardContent>
+              </Card>
+            );
+          })
         )}
       </Box>
 
@@ -207,14 +265,35 @@ const PaymentPlanStep: React.FC = () => {
           </Box>
         )}
         {pricingState.planDiscount > 0 && (
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, color: '#16a34a' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mb: 1,
+              color: '#16a34a',
+            }}
+          >
             <Typography variant="body2">Plan Discount:</Typography>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              -{formatPrice(selectedCurrency, (basePrice + pricingState.totalFeaturePrice + pricingState.supportPrice) * pricingState.planDiscount)}
+              -
+              {formatPrice(
+                selectedCurrency,
+                (basePrice +
+                  pricingState.totalFeaturePrice +
+                  pricingState.supportPrice) *
+                  pricingState.planDiscount
+              )}
             </Typography>
           </Box>
         )}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 2, borderTop: '1px solid #e2e8f0' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            pt: 2,
+            borderTop: '1px solid #e2e8f0',
+          }}
+        >
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             Total:
           </Typography>

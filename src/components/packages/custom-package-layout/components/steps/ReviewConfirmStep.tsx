@@ -1,8 +1,29 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Card, CardContent, Divider, Chip, List, ListItem, ListItemIcon, ListItemText, Button } from '@mui/material';
-import { FaCheck, FaBox, FaCog, FaPlus, FaHeadset, FaBuilding, FaCalendarAlt, FaShoppingCart } from 'react-icons/fa';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Divider,
+  Chip,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Button,
+} from '@mui/material';
+import {
+  FaCheck,
+  FaBox,
+  FaCog,
+  FaPlus,
+  FaHeadset,
+  FaBuilding,
+  FaCalendarAlt,
+  FaShoppingCart,
+} from 'react-icons/fa';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import NavigationButtons from '../shared/NavigationButtons';
@@ -29,17 +50,23 @@ const ReviewConfirmStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  // Support level names (still static for now)
-  const supportLevels = ['Basic Support', 'Priority Support', 'Premium Support'];
+  
+  const supportLevels = [
+    'Basic Support',
+    'Priority Support',
+    'Premium Support',
+  ];
 
-  // Get selected enterprise features
+  
   const getSelectedEnterpriseFeatures = () => {
     if (!enterpriseFeatures) return [];
     return Object.entries(enterpriseFeatures)
       .filter(([_, selected]) => selected)
       .map(([key, _]) => {
-        // Convert camelCase to readable format
-        return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+        
+        return key
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/^./, (str) => str.toUpperCase());
       });
   };
 
@@ -56,19 +83,34 @@ const ReviewConfirmStep: React.FC = () => {
         </Typography>
       </Box>
 
-      <Box sx={{ display: 'grid', gap: 3, gridTemplateColumns: { xs: '1fr', lg: '2fr 1fr' } }}>
-        {/* Configuration Summary */}
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 3,
+          gridTemplateColumns: { xs: '1fr', lg: '2fr 1fr' },
+        }}
+      >
+        {}
         <Box>
-          {/* Package Details */}
+          {}
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <FaBox style={{ marginRight: 12, color: '#2563eb', fontSize: '1.25rem' }} />
+                <FaBox
+                  style={{
+                    marginRight: 12,
+                    color: '#2563eb',
+                    fontSize: '1.25rem',
+                  }}
+                />
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   Package Details
                 </Typography>
               </Box>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: '#173a79', mb: 1 }}>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 700, color: '#173a79', mb: 1 }}
+              >
                 {packageDetails.title}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -82,12 +124,18 @@ const ReviewConfirmStep: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Selected Features */}
+          {}
           {selectedFeatures.length > 0 && (
             <Card sx={{ mb: 3 }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <FaCog style={{ marginRight: 12, color: '#10b981', fontSize: '1.25rem' }} />
+                  <FaCog
+                    style={{
+                      marginRight: 12,
+                      color: '#10b981',
+                      fontSize: '1.25rem',
+                    }}
+                  />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     Core Features ({selectedFeatures.length})
                   </Typography>
@@ -103,7 +151,10 @@ const ReviewConfirmStep: React.FC = () => {
                         secondary={feature.description}
                         primaryTypographyProps={{ fontWeight: 600 }}
                       />
-                      <Typography variant="body2" sx={{ fontWeight: 600, color: '#173a79' }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 600, color: '#173a79' }}
+                      >
                         {formatPrice(selectedCurrency, feature.basePrice)}
                       </Typography>
                     </ListItem>
@@ -113,12 +164,18 @@ const ReviewConfirmStep: React.FC = () => {
             </Card>
           )}
 
-          {/* Selected Add-ons */}
+          {}
           {selectedAddOns.length > 0 && (
             <Card sx={{ mb: 3 }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <FaPlus style={{ marginRight: 12, color: '#f59e0b', fontSize: '1.25rem' }} />
+                  <FaPlus
+                    style={{
+                      marginRight: 12,
+                      color: '#f59e0b',
+                      fontSize: '1.25rem',
+                    }}
+                  />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     Add-ons ({selectedAddOns.length})
                   </Typography>
@@ -134,7 +191,10 @@ const ReviewConfirmStep: React.FC = () => {
                         secondary={addOn.description}
                         primaryTypographyProps={{ fontWeight: 600 }}
                       />
-                      <Typography variant="body2" sx={{ fontWeight: 600, color: '#173a79' }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 600, color: '#173a79' }}
+                      >
                         {formatPrice(selectedCurrency, addOn.price)}
                       </Typography>
                     </ListItem>
@@ -144,12 +204,18 @@ const ReviewConfirmStep: React.FC = () => {
             </Card>
           )}
 
-          {/* Usage Configuration */}
+          {}
           {Object.keys(usageQuantities).length > 0 && (
             <Card sx={{ mb: 3 }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <FaCog style={{ marginRight: 12, color: '#8b5cf6', fontSize: '1.25rem' }} />
+                  <FaCog
+                    style={{
+                      marginRight: 12,
+                      color: '#8b5cf6',
+                      fontSize: '1.25rem',
+                    }}
+                  />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     Usage Configuration
                   </Typography>
@@ -157,7 +223,9 @@ const ReviewConfirmStep: React.FC = () => {
                 <List dense>
                   {Object.entries(usageQuantities).map(([idStr, quantity]) => {
                     const id = parseInt(idStr);
-                    const usageItem = usagePricing.find(item => item.id === id);
+                    const usageItem = usagePricing.find(
+                      (item) => item.id === id
+                    );
                     if (!usageItem) return null;
 
                     return (
@@ -170,8 +238,14 @@ const ReviewConfirmStep: React.FC = () => {
                           secondary={usageItem.description}
                           primaryTypographyProps={{ fontWeight: 600 }}
                         />
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#173a79' }}>
-                          {formatPrice(selectedCurrency, usageItem.pricePerUnit * quantity)}
+                        <Typography
+                          variant="body2"
+                          sx={{ fontWeight: 600, color: '#173a79' }}
+                        >
+                          {formatPrice(
+                            selectedCurrency,
+                            usageItem.pricePerUnit * quantity
+                          )}
                         </Typography>
                       </ListItem>
                     );
@@ -181,12 +255,18 @@ const ReviewConfirmStep: React.FC = () => {
             </Card>
           )}
 
-          {/* Enterprise Features */}
+          {}
           {selectedEnterpriseFeatures.length > 0 && (
             <Card sx={{ mb: 3 }}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <FaBuilding style={{ marginRight: 12, color: '#dc2626', fontSize: '1.25rem' }} />
+                  <FaBuilding
+                    style={{
+                      marginRight: 12,
+                      color: '#dc2626',
+                      fontSize: '1.25rem',
+                    }}
+                  />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     Enterprise Features ({selectedEnterpriseFeatures.length})
                   </Typography>
@@ -209,7 +289,7 @@ const ReviewConfirmStep: React.FC = () => {
           )}
         </Box>
 
-        {/* Pricing Summary */}
+        {}
         <Box>
           <Card sx={{ position: 'sticky', top: 20 }}>
             <CardContent>
@@ -217,11 +297,17 @@ const ReviewConfirmStep: React.FC = () => {
                 Order Summary
               </Typography>
 
-              {/* Payment Plan */}
+              {}
               {selectedPlanIndex !== null && (
                 <Box sx={{ mb: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <FaCalendarAlt style={{ marginRight: 8, color: '#2563eb', fontSize: '1rem' }} />
+                    <FaCalendarAlt
+                      style={{
+                        marginRight: 8,
+                        color: '#2563eb',
+                        fontSize: '1rem',
+                      }}
+                    />
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                       Billing Plan
                     </Typography>
@@ -234,13 +320,24 @@ const ReviewConfirmStep: React.FC = () => {
                     ) : (
                       <>
                         <Typography variant="body2" color="text.secondary">
-                          {paymentPlans.find(plan => plan.id === selectedPlanIndex)?.name || 'Unknown Plan'}
+                          {paymentPlans.find(
+                            (plan) => plan.id === selectedPlanIndex
+                          )?.name || 'Unknown Plan'}
                         </Typography>
-                        {paymentPlans.find(plan => plan.id === selectedPlanIndex)?.discountLabel && (
+                        {paymentPlans.find(
+                          (plan) => plan.id === selectedPlanIndex
+                        )?.discountLabel && (
                           <Chip
-                            label={paymentPlans.find(plan => plan.id === selectedPlanIndex)?.discountLabel}
+                            label={
+                              paymentPlans.find(
+                                (plan) => plan.id === selectedPlanIndex
+                              )?.discountLabel
+                            }
                             size="small"
-                            sx={{ backgroundColor: '#dcfce7', color: '#166534' }}
+                            sx={{
+                              backgroundColor: '#dcfce7',
+                              color: '#166534',
+                            }}
                           />
                         )}
                       </>
@@ -249,11 +346,17 @@ const ReviewConfirmStep: React.FC = () => {
                 </Box>
               )}
 
-              {/* Support Level */}
+              {}
               {selectedSupportIndex !== null && (
                 <Box sx={{ mb: 3 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <FaHeadset style={{ marginRight: 8, color: '#10b981', fontSize: '1rem' }} />
+                    <FaHeadset
+                      style={{
+                        marginRight: 8,
+                        color: '#10b981',
+                        fontSize: '1rem',
+                      }}
+                    />
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                       Support Level
                     </Typography>
@@ -266,9 +369,15 @@ const ReviewConfirmStep: React.FC = () => {
 
               <Divider sx={{ my: 2 }} />
 
-              {/* Price Breakdown */}
+              {}
               <Box sx={{ mb: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 1,
+                  }}
+                >
                   <Typography variant="body2">Base Package:</Typography>
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
                     {formatPrice(selectedCurrency, basePrice)}
@@ -276,16 +385,31 @@ const ReviewConfirmStep: React.FC = () => {
                 </Box>
 
                 {pricingState.totalFeaturePrice > 0 && (
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 1,
+                    }}
+                  >
                     <Typography variant="body2">Features & Add-ons:</Typography>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {formatPrice(selectedCurrency, pricingState.totalFeaturePrice)}
+                      {formatPrice(
+                        selectedCurrency,
+                        pricingState.totalFeaturePrice
+                      )}
                     </Typography>
                   </Box>
                 )}
 
                 {pricingState.supportPrice > 0 && (
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 1,
+                    }}
+                  >
                     <Typography variant="body2">Support:</Typography>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                       {formatPrice(selectedCurrency, pricingState.supportPrice)}
@@ -294,10 +418,24 @@ const ReviewConfirmStep: React.FC = () => {
                 )}
 
                 {pricingState.planDiscount > 0 && (
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, color: '#10b981' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      mb: 1,
+                      color: '#10b981',
+                    }}
+                  >
                     <Typography variant="body2">Plan Discount:</Typography>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      -{formatPrice(selectedCurrency, (basePrice + pricingState.totalFeaturePrice + pricingState.supportPrice) * pricingState.planDiscount)}
+                      -
+                      {formatPrice(
+                        selectedCurrency,
+                        (basePrice +
+                          pricingState.totalFeaturePrice +
+                          pricingState.supportPrice) *
+                          pricingState.planDiscount
+                      )}
                     </Typography>
                   </Box>
                 )}
@@ -305,11 +443,16 @@ const ReviewConfirmStep: React.FC = () => {
 
               <Divider sx={{ my: 2 }} />
 
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+              <Box
+                sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}
+              >
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                   Total:
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: '#173a79' }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 700, color: '#173a79' }}
+                >
                   {formatPrice(selectedCurrency, pricingState.totalPrice)}
                 </Typography>
               </Box>
@@ -333,7 +476,11 @@ const ReviewConfirmStep: React.FC = () => {
                 {loading ? 'Processing...' : 'Add to Cart'}
               </Button>
 
-              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center', mt: 2 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: 'block', textAlign: 'center', mt: 2 }}
+              >
                 You can modify your selection before checkout
               </Typography>
             </CardContent>

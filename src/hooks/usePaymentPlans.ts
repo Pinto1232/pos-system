@@ -1,7 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { PaymentPlan, PaymentPlansResponse } from '@/app/api/payment-plans/route';
+import {
+  PaymentPlan,
+  PaymentPlansResponse,
+} from '@/app/api/payment-plans/route';
 
 interface UsePaymentPlansOptions {
   currency?: string;
@@ -21,13 +24,10 @@ interface UsePaymentPlansReturn {
   getApplicablePlans: (userType?: string, region?: string) => PaymentPlan[];
 }
 
-export const usePaymentPlans = (options: UsePaymentPlansOptions = {}): UsePaymentPlansReturn => {
-  const {
-    currency = 'USD',
-    region,
-    userType,
-    autoFetch = true,
-  } = options;
+export const usePaymentPlans = (
+  options: UsePaymentPlansOptions = {}
+): UsePaymentPlansReturn => {
+  const { currency = 'USD', region, userType, autoFetch = true } = options;
 
   const [paymentPlans, setPaymentPlans] = useState<PaymentPlan[]>([]);
   const [defaultPlanId, setDefaultPlanId] = useState<number | null>(null);
@@ -56,14 +56,16 @@ export const usePaymentPlans = (options: UsePaymentPlansOptions = {}): UsePaymen
       }
 
       const data: PaymentPlansResponse = await response.json();
-      
+
       setPaymentPlans(data.plans);
       setDefaultPlanId(data.defaultPlanId);
-      
-      console.log(`Loaded ${data.plans.length} payment plans for currency: ${currency}`);
-      
+
+      console.log(
+        `Loaded ${data.plans.length} payment plans for currency: ${currency}`
+      );
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
       console.error('Error fetching payment plans:', err);
     } finally {
@@ -77,38 +79,47 @@ export const usePaymentPlans = (options: UsePaymentPlansOptions = {}): UsePaymen
     }
   }, [fetchPaymentPlans, autoFetch]);
 
-  const getDiscountPercentage = useCallback((planId: number): number => {
-    const plan = paymentPlans.find(p => p.id === planId);
-    return plan?.discountPercentage || 0;
-  }, [paymentPlans]);
+  const getDiscountPercentage = useCallback(
+    (planId: number): number => {
+      const plan = paymentPlans.find((p) => p.id === planId);
+      return plan?.discountPercentage || 0;
+    },
+    [paymentPlans]
+  );
 
-  const getPlanById = useCallback((planId: number): PaymentPlan | undefined => {
-    return paymentPlans.find(p => p.id === planId);
-  }, [paymentPlans]);
+  const getPlanById = useCallback(
+    (planId: number): PaymentPlan | undefined => {
+      return paymentPlans.find((p) => p.id === planId);
+    },
+    [paymentPlans]
+  );
 
-  const getApplicablePlans = useCallback((
-    filterUserType?: string, 
-    filterRegion?: string
-  ): PaymentPlan[] => {
-    return paymentPlans.filter(plan => {
-      // Check if plan is applicable for user type
-      const userTypeMatch = !filterUserType || 
-        plan.applicableUserTypes.includes('*') || 
-        plan.applicableUserTypes.includes(filterUserType);
+  const getApplicablePlans = useCallback(
+    (filterUserType?: string, filterRegion?: string): PaymentPlan[] => {
+      return paymentPlans.filter((plan) => {
+        
+        const userTypeMatch =
+          !filterUserType ||
+          plan.applicableUserTypes.includes('*') ||
+          plan.applicableUserTypes.includes(filterUserType);
 
-      // Check if plan is applicable for region
-      const regionMatch = !filterRegion || 
-        plan.applicableRegions.includes('*') || 
-        plan.applicableRegions.includes(filterRegion);
+        
+        const regionMatch =
+          !filterRegion ||
+          plan.applicableRegions.includes('*') ||
+          plan.applicableRegions.includes(filterRegion);
 
-      // Check if plan is currently valid (if dates are specified)
-      const now = new Date();
-      const validFromMatch = !plan.validFrom || new Date(plan.validFrom) <= now;
-      const validToMatch = !plan.validTo || new Date(plan.validTo) >= now;
+        
+        const now = new Date();
+        const validFromMatch =
+          !plan.validFrom || new Date(plan.validFrom) <= now;
+        const validToMatch = !plan.validTo || new Date(plan.validTo) >= now;
 
-      return userTypeMatch && regionMatch && validFromMatch && validToMatch;
-    });
-  }, [paymentPlans]);
+        return userTypeMatch && regionMatch && validFromMatch && validToMatch;
+      });
+    },
+    [paymentPlans]
+  );
 
   return {
     paymentPlans,

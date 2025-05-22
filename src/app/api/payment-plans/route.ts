@@ -25,7 +25,7 @@ export interface PaymentPlansResponse {
   currency: string;
 }
 
-// Fallback payment plans for offline/backend unavailable scenarios
+
 const fallbackPaymentPlans: PaymentPlansResponse = {
   plans: [
     {
@@ -89,20 +89,21 @@ export async function GET(request: NextRequest) {
   const forceRefresh = searchParams.get('refresh') === 'true';
 
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL || 
-                   process.env.NEXT_PUBLIC_API_URL || 
-                   'http://localhost:5107';
-    
+    const apiUrl =
+      process.env.NEXT_PUBLIC_BACKEND_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      'http://localhost:5107';
+
     const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
-    
+
     const queryParams = new URLSearchParams({
       currency,
       ...(region && { region }),
       ...(userType && { userType }),
     });
-    
+
     const endpoint = `${baseUrl}/api/paymentplans?${queryParams}`;
-    
+
     console.log(`Fetching payment plans from: ${endpoint}`);
 
     const controller = new AbortController();
@@ -120,31 +121,43 @@ export async function GET(request: NextRequest) {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        console.warn(`Payment plans API returned status ${response.status}, using fallback`);
+        console.warn(
+          `Payment plans API returned status ${response.status}, using fallback`
+        );
         const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING);
-        return NextResponse.json(fallbackPaymentPlans, { status: 200, headers });
+        return NextResponse.json(fallbackPaymentPlans, {
+          status: 200,
+          headers,
+        });
       }
 
       const data: PaymentPlansResponse = await response.json();
+
       
-      // Validate response structure
-      if (!data.plans || !Array.isArray(data.plans) || data.plans.length === 0) {
-        console.warn('Invalid payment plans response structure, using fallback');
+      if (
+        !data.plans ||
+        !Array.isArray(data.plans) ||
+        data.plans.length === 0
+      ) {
+        console.warn(
+          'Invalid payment plans response structure, using fallback'
+        );
         const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING);
-        return NextResponse.json(fallbackPaymentPlans, { status: 200, headers });
+        return NextResponse.json(fallbackPaymentPlans, {
+          status: 200,
+          headers,
+        });
       }
 
       console.log(`Successfully fetched ${data.plans.length} payment plans`);
       const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING);
       return NextResponse.json(data, { status: 200, headers });
-
     } catch (fetchError) {
       clearTimeout(timeoutId);
       console.error('Error fetching payment plans:', fetchError);
       const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING);
       return NextResponse.json(fallbackPaymentPlans, { status: 200, headers });
     }
-
   } catch (error) {
     console.error('Payment plans API error:', error);
     const headers = await getCacheControlHeaders(CACHE_TIMES.PRICING);
