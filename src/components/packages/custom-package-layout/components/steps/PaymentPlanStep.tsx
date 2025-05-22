@@ -30,7 +30,6 @@ const PaymentPlanStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  
   const getIconForPlan = (planName: string) => {
     return planName === 'Monthly' ? <FaCalendarAlt /> : <FaCalendarCheck />;
   };

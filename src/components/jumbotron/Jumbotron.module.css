@@ -56,7 +56,7 @@
 .content {
   text-align: center;
   color: #fff;
-  margin-top: 12em;
+  margin-top: 2em;
   max-width: 1200px;
   width: 100%;
   padding: 0 20px;
@@ -159,7 +159,7 @@
   }
 
   .content {
-    margin-top: 8em;
+    margin-top: 1.5em;
   }
 
   .heading {
@@ -178,7 +178,7 @@
   }
 
   .content {
-    margin-top: 6em;
+    margin-top: 1em;
   }
 
   .heading {
@@ -197,7 +197,7 @@
   }
 
   .content {
-    margin-top: 4em;
+    margin-top: 0.5em;
   }
 
   .heading {

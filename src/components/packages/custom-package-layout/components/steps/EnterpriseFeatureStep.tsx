@@ -37,7 +37,6 @@ const EnterpriseFeatureStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  
   const featureCategories = [
     {
       id: 'analytics',

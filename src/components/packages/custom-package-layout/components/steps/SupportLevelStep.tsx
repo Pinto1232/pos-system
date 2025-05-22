@@ -40,7 +40,6 @@ const SupportLevelStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  
   const supportLevels = [
     {
       id: 0,

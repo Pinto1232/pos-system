@@ -84,7 +84,6 @@ interface PackageContextType {
   convertPrice: (price: number) => number;
   formatCurrencyPrice: (price: number) => string;
 
-  
   paymentPlans: Array<{
     id: number;
     name: string;
@@ -174,7 +173,6 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
     currencySymbol,
   } = useCurrency();
 
-  
   const {
     paymentPlans,
     isLoading: paymentPlansLoading,
@@ -442,7 +440,7 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
         }));
       } else {
         setSelectedPlanIndex(index);
-        
+
         const newDiscount = getDiscountPercentage(index);
         setPricingState((prev: PricingState) => ({
           ...prev,
@@ -735,7 +733,6 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
       convertPrice,
       formatCurrencyPrice,
 
-      
       paymentPlans,
       paymentPlansLoading,
 

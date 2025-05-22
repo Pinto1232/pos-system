@@ -178,8 +178,10 @@ body:has(main.default-layout) [class*='DashboardLoading'] {
   transform: translateY(-100%) !important;
 }
 
-/* Prevent any animation or transition on the home page */
-body:has(main.home-layout) * {
+/* Prevent problematic animations on the home page, but allow jumbotron animations */
+body:has(main.home-layout) [class*='DashboardLoading'],
+body:has(main.home-layout) [class*='Loading']:not([class*='jumbotron']),
+body:has(main.home-layout) [class*='loading']:not([class*='jumbotron']) {
   transition: none !important;
   animation: none !important;
 }

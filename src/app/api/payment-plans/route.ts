@@ -25,7 +25,6 @@ export interface PaymentPlansResponse {
   currency: string;
 }
 
-
 const fallbackPaymentPlans: PaymentPlansResponse = {
   plans: [
     {
@@ -133,7 +132,6 @@ export async function GET(request: NextRequest) {
 
       const data: PaymentPlansResponse = await response.json();
 
-      
       if (
         !data.plans ||
         !Array.isArray(data.plans) ||

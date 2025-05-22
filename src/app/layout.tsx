@@ -34,11 +34,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {}
-        {}
-        <link rel="preconnect" href="https://example.com" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#173a79" />
+        <link rel="preconnect" href="https://js.stripe.com" />
         <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://js.stripe.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://api.stripe.com" />
       </head>
       <body>
         <CartProvider>

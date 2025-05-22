@@ -6,7 +6,7 @@ import LazyJumbotron from '@/components/jumbotron/Jumbotron';
 import PackageSelectionModal from '@/components/packages/PackageSelectionModal';
 import NavbarContainer from '@/components/ui/navbar/NavbarContainer';
 import NavbarSpacer from '@/components/ui/navbar/NavbarSpacer';
-import SidebarContainer from '@/components/ui/sidebar/homeSidebarContainer';
+
 import { PackageSelectionProvider } from '@/contexts/PackageSelectionContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
 import { SpinnerProvider } from '@/contexts/SpinnerContext';
@@ -63,7 +63,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             backgroundImage="/pos_banner.jpg"
             overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
           />
-          <SidebarContainer />
           <main className="home-layout">{children}</main>
           <FooterContainer />
         </>
@@ -102,7 +101,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             backgroundImage="/pos_banner.jpg"
             overlayColor="linear-gradient(to bottom, rgba(0,0,100,0.6), rgba(0,0,100,0.1))"
           />
-          <SidebarContainer />
           <main className="checkout-success-layout">{children}</main>
           <FooterContainer />
         </>

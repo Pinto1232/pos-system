@@ -97,19 +97,16 @@ export const usePaymentPlans = (
   const getApplicablePlans = useCallback(
     (filterUserType?: string, filterRegion?: string): PaymentPlan[] => {
       return paymentPlans.filter((plan) => {
-        
         const userTypeMatch =
           !filterUserType ||
           plan.applicableUserTypes.includes('*') ||
           plan.applicableUserTypes.includes(filterUserType);
 
-        
         const regionMatch =
           !filterRegion ||
           plan.applicableRegions.includes('*') ||
           plan.applicableRegions.includes(filterRegion);
 
-        
         const now = new Date();
         const validFromMatch =
           !plan.validFrom || new Date(plan.validFrom) <= now;

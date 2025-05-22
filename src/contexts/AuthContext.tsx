@@ -421,8 +421,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         pkceMethod: 'S256',
         responseMode: 'query',
         enableLogging: true,
-        silentCheckSsoRedirectUri:
-          window.location.origin + '/silent-check-sso.html',
+
+        silentCheckSsoRedirectUri: undefined,
         silentCheckSsoFallback: false,
       });
 

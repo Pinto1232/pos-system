@@ -93,6 +93,37 @@ export function middleware(request: NextRequest) {
     response.headers.set('Surrogate-Control', cacheControl);
   }
 
+  const keycloakUrl =
+    process.env.NEXT_PUBLIC_KEYCLOAK_URL || 'http://localhost:8282';
+  const cspDirectives = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.network https://checkout.stripe.com https://q.stripe.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "img-src 'self' data: https: blob: https://images.unsplash.com https://picsum.photos https://via.placeholder.com https://q.stripe.com",
+    "font-src 'self' data: https://fonts.gstatic.com",
+    "connect-src 'self' " +
+      keycloakUrl +
+      ' http://localhost:5107 https://api.stripe.com https://checkout.stripe.com https://m.stripe.network https://q.stripe.com wss://ws.stripe.com https://openexchangerates.org',
+    "frame-src 'self' " +
+      keycloakUrl +
+      ' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://q.stripe.com',
+    "frame-ancestors 'self' " +
+      keycloakUrl +
+      ' http://localhost:3000 http://localhost:3001 http://localhost:3002',
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self' https://checkout.stripe.com",
+    "worker-src 'self' blob:",
+    "child-src 'self' blob:",
+    "manifest-src 'self'",
+  ].join('; ');
+
+  response.headers.set('Content-Security-Policy', cspDirectives);
+
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+
   return response;
 }
 

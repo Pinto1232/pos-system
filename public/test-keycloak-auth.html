@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keycloak Authentication Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-warning { background-color: #ffc107; }
+        .status-info { background-color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Keycloak Authentication Test</h1>
+        <p>This page tests the complete Keycloak authentication flow including CORS, CSP, and iframe embedding.</p>
+
+        <div class="test-section">
+            <h3>Configuration</h3>
+            <div id="config-info"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Connection Tests</h3>
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="clearResults()">Clear Results</button>
+            <div id="connection-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Authentication Test</h3>
+            <button onclick="testAuthentication()" id="auth-btn">Test Authentication</button>
+            <button onclick="logout()" id="logout-btn" disabled>Logout</button>
+            <div id="auth-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Iframe Test</h3>
+            <button onclick="testIframe()">Test Keycloak Iframe</button>
+            <div id="iframe-results"></div>
+            <div id="iframe-container" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/keycloak-js@26.1.1/dist/keycloak.min.js"></script>
+    <script>
+        const CONFIG = {
+            keycloakUrl: 'http://localhost:8282',
+            realm: 'pisval-pos-realm',
+            clientId: 'pos-backend'
+        };
+
+        let keycloak = null;
+
+        function addResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `
+                <span class="status-indicator status-${type}"></span>
+                <strong>${new Date().toLocaleTimeString()}</strong>: ${message}
+            `;
+            container.appendChild(resultDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearResults() {
+            ['connection-results', 'auth-results', 'iframe-results'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+        }
+
+        function displayConfig() {
+            const configDiv = document.getElementById('config-info');
+            configDiv.innerHTML = `
+                <div class="test-result info">
+                    <strong>Keycloak Configuration:</strong><br>
+                    URL: ${CONFIG.keycloakUrl}<br>
+                    Realm: ${CONFIG.realm}<br>
+                    Client ID: ${CONFIG.clientId}<br>
+                    Origin: ${window.location.origin}
+                </div>
+            `;
+        }
+
+        async function testWellKnownConfig() {
+            try {
+                addResult('connection-results', 'Testing well-known configuration...', 'info');
+                const url = `${CONFIG.keycloakUrl}/realms/${CONFIG.realm}/.well-known/openid-configuration`;
+
+                const response = await fetch(url);
+                if (response.ok) {
+                    const config = await response.json();
+                    addResult('connection-results', '✅ Well-known configuration accessible', 'success');
+                    addResult('connection-results', `Issuer: ${config.issuer}`, 'info');
+                    return config;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                addResult('connection-results', `❌ Well-known config failed: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        async function testCorsHeaders() {
+            try {
+                addResult('connection-results', 'Testing CORS headers...', 'info');
+                const url = `${CONFIG.keycloakUrl}/realms/${CONFIG.realm}/.well-known/openid-configuration`;
+
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': window.location.origin
+                    }
+                });
+
+                const corsOrigin = response.headers.get('access-control-allow-origin');
+                const corsCredentials = response.headers.get('access-control-allow-credentials');
+
+                if (corsOrigin) {
+                    addResult('connection-results', `✅ CORS headers present: ${corsOrigin}`, 'success');
+                    if (corsCredentials === 'true') {
+                        addResult('connection-results', '✅ CORS credentials allowed', 'success');
+                    }
+                    return true;
+                } else {
+                    addResult('connection-results', '❌ No CORS headers found', 'error');
+                    return false;
+                }
+            } catch (error) {
+                addResult('connection-results', `❌ CORS test failed: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function testKeycloakInit() {
+            try {
+                addResult('connection-results', 'Testing Keycloak initialization...', 'info');
+
+                keycloak = new Keycloak({
+                    url: CONFIG.keycloakUrl,
+                    realm: CONFIG.realm,
+                    clientId: CONFIG.clientId
+                });
+
+                const authenticated = await keycloak.init({
+                    onLoad: 'check-sso',
+                    // Disable silent SSO to avoid CSP iframe issues
+                    silentCheckSsoRedirectUri: undefined,
+                    checkLoginIframe: false
+                });
+
+                if (authenticated) {
+                    addResult('connection-results', '✅ User is already authenticated', 'success');
+                    document.getElementById('auth-btn').textContent = 'Already Authenticated';
+                    document.getElementById('logout-btn').disabled = false;
+                } else {
+                    addResult('connection-results', '✅ Keycloak initialized (not authenticated)', 'info');
+                }
+
+                return true;
+            } catch (error) {
+                addResult('connection-results', `❌ Keycloak init failed: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function runAllTests() {
+            clearResults();
+            addResult('connection-results', 'Starting comprehensive tests...', 'info');
+
+            const wellKnown = await testWellKnownConfig();
+            const cors = await testCorsHeaders();
+            const keycloakInit = await testKeycloakInit();
+
+            addResult('connection-results', '--- Test Summary ---', 'info');
+            addResult('connection-results', `Well-known config: ${wellKnown ? '✅' : '❌'}`, wellKnown ? 'success' : 'error');
+            addResult('connection-results', `CORS headers: ${cors ? '✅' : '❌'}`, cors ? 'success' : 'error');
+            addResult('connection-results', `Keycloak init: ${keycloakInit ? '✅' : '❌'}`, keycloakInit ? 'success' : 'error');
+
+            if (wellKnown && cors && keycloakInit) {
+                addResult('connection-results', '🎉 All tests passed! Keycloak is ready for authentication.', 'success');
+            } else {
+                addResult('connection-results', '⚠️ Some tests failed. Check the issues above.', 'warning');
+            }
+        }
+
+        async function testAuthentication() {
+            if (!keycloak) {
+                addResult('auth-results', 'Please run connection tests first', 'warning');
+                return;
+            }
+
+            try {
+                addResult('auth-results', 'Starting authentication...', 'info');
+                await keycloak.login({
+                    redirectUri: window.location.href
+                });
+            } catch (error) {
+                addResult('auth-results', `❌ Authentication failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function logout() {
+            if (!keycloak) {
+                addResult('auth-results', 'Keycloak not initialized', 'warning');
+                return;
+            }
+
+            try {
+                addResult('auth-results', 'Logging out...', 'info');
+                await keycloak.logout({
+                    redirectUri: window.location.href
+                });
+            } catch (error) {
+                addResult('auth-results', `❌ Logout failed: ${error.message}`, 'error');
+            }
+        }
+
+        function testIframe() {
+            addResult('iframe-results', 'Testing Keycloak iframe embedding...', 'info');
+
+            const container = document.getElementById('iframe-container');
+            container.innerHTML = '';
+
+            const iframe = document.createElement('iframe');
+            iframe.src = `${CONFIG.keycloakUrl}/realms/${CONFIG.realm}/protocol/openid-connect/auth?client_id=${CONFIG.clientId}&response_type=code&scope=openid&redirect_uri=${encodeURIComponent(window.location.href)}`;
+            iframe.width = '100%';
+            iframe.height = '400px';
+            iframe.style.border = '1px solid #ddd';
+            iframe.style.borderRadius = '5px';
+
+            iframe.onload = function() {
+                addResult('iframe-results', '✅ Iframe loaded successfully', 'success');
+            };
+
+            iframe.onerror = function() {
+                addResult('iframe-results', '❌ Iframe failed to load', 'error');
+            };
+
+            container.appendChild(iframe);
+
+            // Test CSP violations
+            document.addEventListener('securitypolicyviolation', function(e) {
+                if (e.blockedURI.includes('localhost:8282')) {
+                    addResult('iframe-results', `❌ CSP violation: ${e.violatedDirective} - ${e.blockedURI}`, 'error');
+                }
+            });
+
+            setTimeout(() => {
+                try {
+                    // Try to access iframe content (will fail due to CORS, but shouldn't cause CSP violation)
+                    iframe.contentWindow.location.href;
+                    addResult('iframe-results', '✅ No CSP violations detected', 'success');
+                } catch (e) {
+                    // Expected CORS error, not a CSP issue
+                    addResult('iframe-results', '✅ Iframe accessible (CORS error is expected)', 'success');
+                }
+            }, 2000);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            displayConfig();
+            addResult('connection-results', 'Page loaded. Ready to test Keycloak integration.', 'info');
+        });
+    </script>
+</body>
+</html>

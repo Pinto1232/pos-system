@@ -50,20 +50,17 @@ const ReviewConfirmStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  
   const supportLevels = [
     'Basic Support',
     'Priority Support',
     'Premium Support',
   ];
 
-  
   const getSelectedEnterpriseFeatures = () => {
     if (!enterpriseFeatures) return [];
     return Object.entries(enterpriseFeatures)
       .filter(([_, selected]) => selected)
       .map(([key, _]) => {
-        
         return key
           .replace(/([A-Z])/g, ' $1')
           .replace(/^./, (str) => str.toUpperCase());

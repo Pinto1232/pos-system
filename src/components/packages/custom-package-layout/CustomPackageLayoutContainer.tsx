@@ -223,12 +223,10 @@ const CustomPackageLayoutContainer: React.FC<
       addOnsResponse &&
       (!addOnsResponse.data || addOnsResponse.data.length === 0)
     ) {
-      
       console.log(
         'AddOns response received but data is empty, using fallback data'
       );
 
-      
       const fallbackAddOns = [
         {
           id: 1,
@@ -522,8 +520,6 @@ const CustomPackageLayoutContainer: React.FC<
     }));
   }, []);
 
-  
-  
   const shouldShowLoading =
     isLoading || (selectedPackage.isCustomizable && isAddOnsLoading);
 

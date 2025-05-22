@@ -62,6 +62,34 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_LOGIN_REDIRECT: process.env.NEXT_PUBLIC_LOGIN_REDIRECT,
     NEXT_PUBLIC_LOGOUT_REDIRECT: process.env.NEXT_PUBLIC_LOGOUT_REDIRECT,
   },
+  async headers() {
+    const keycloakUrl =
+      process.env.NEXT_PUBLIC_KEYCLOAK_URL || 'http://localhost:8282';
+    return [
+      {
+        source: '/silent-check-sso.html',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: `ALLOW-FROM ${keycloakUrl}`,
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: `frame-ancestors 'self' ${keycloakUrl} http://localhost:3000 http://localhost:3001 http://localhost:3002; default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self' ${keycloakUrl} https://openexchangerates.org;`,
+          },
+        ],
+      },
+      {
+        source: '/checkout/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.network; style-src 'self' 'unsafe-inline'; connect-src 'self' ${keycloakUrl} http://localhost:5107 https://api.stripe.com https://openexchangerates.org; frame-src 'self' https://js.stripe.com https://hooks.stripe.com; img-src 'self' data: https:; font-src 'self' data:;`,
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
