@@ -219,11 +219,16 @@ const CustomPackageLayoutContainer: React.FC<
         JSON.stringify(addOnsResponse.data, null, 2)
       );
       setAddOns(addOnsResponse.data);
-    } else if (addOnsResponse && (!addOnsResponse.data || addOnsResponse.data.length === 0)) {
-      // If the response exists but data is empty, set empty array to prevent infinite loading
-      console.log('AddOns response received but data is empty, using fallback data');
+    } else if (
+      addOnsResponse &&
+      (!addOnsResponse.data || addOnsResponse.data.length === 0)
+    ) {
+      
+      console.log(
+        'AddOns response received but data is empty, using fallback data'
+      );
 
-      // Provide some fallback addOns for the Custom Pro package
+      
       const fallbackAddOns = [
         {
           id: 1,
@@ -239,7 +244,10 @@ const CustomPackageLayoutContainer: React.FC<
           },
           category: 'Analytics',
           isActive: true,
-          features: ['Real-time data visualization', 'Custom report generation'],
+          features: [
+            'Real-time data visualization',
+            'Custom report generation',
+          ],
           dependencies: ['Internet connection'],
           icon: 'analytics_icon',
         },
@@ -514,9 +522,10 @@ const CustomPackageLayoutContainer: React.FC<
     }));
   }, []);
 
-  // Show loading until both main data and addOns are loaded
-  // For non-customizable packages, we don't need to wait for addOns
-  const shouldShowLoading = isLoading || (selectedPackage.isCustomizable && isAddOnsLoading);
+  
+  
+  const shouldShowLoading =
+    isLoading || (selectedPackage.isCustomizable && isAddOnsLoading);
 
   if (shouldShowLoading) return <WaveLoading />;
   if (showLoginForm) return <LazyLoginForm />;

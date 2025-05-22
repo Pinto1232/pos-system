@@ -26,7 +26,7 @@ const PackageDetailsStep: React.FC = () => {
     handleBack,
   } = usePackageContext();
 
-  // Debug logging for addOns
+  
   React.useEffect(() => {
     console.log('PackageDetailsStep - addOns data:', {
       addOnsLength: addOns?.length || 0,

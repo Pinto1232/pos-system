@@ -1,8 +1,26 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Card, CardContent, Switch, FormControlLabel, Chip, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
-import { FaChartLine, FaBuilding, FaShieldAlt, FaCode, FaExpandAlt, FaCheck } from 'react-icons/fa';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Switch,
+  FormControlLabel,
+  Chip,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material';
+import {
+  FaChartLine,
+  FaBuilding,
+  FaShieldAlt,
+  FaCode,
+  FaExpandAlt,
+  FaCheck,
+} from 'react-icons/fa';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import NavigationButtons from '../shared/NavigationButtons';
@@ -19,7 +37,7 @@ const EnterpriseFeatureStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  // Enterprise feature categories
+  
   const featureCategories = [
     {
       id: 'analytics',
@@ -31,7 +49,8 @@ const EnterpriseFeatureStep: React.FC = () => {
         {
           key: 'realTimeAnalytics',
           name: 'Real-time Analytics',
-          description: 'Live dashboard with real-time sales, inventory, and customer data',
+          description:
+            'Live dashboard with real-time sales, inventory, and customer data',
         },
         {
           key: 'customReports',
@@ -146,10 +165,12 @@ const EnterpriseFeatureStep: React.FC = () => {
 
   const getCategorySelectedCount = (categoryId: string) => {
     if (!enterpriseFeatures) return 0;
-    const category = featureCategories.find(cat => cat.id === categoryId);
+    const category = featureCategories.find((cat) => cat.id === categoryId);
     if (!category) return 0;
 
-    return category.features.filter(feature => enterpriseFeatures[feature.key]).length;
+    return category.features.filter(
+      (feature) => enterpriseFeatures[feature.key]
+    ).length;
   };
 
   return (
@@ -159,7 +180,8 @@ const EnterpriseFeatureStep: React.FC = () => {
           Configure Enterprise Features
         </Typography>
         <Typography variant="body2" className={styles.sectionDescription}>
-          Select advanced enterprise features to enhance your POS system. You can only select features from one category at a time.
+          Select advanced enterprise features to enhance your POS system. You
+          can only select features from one category at a time.
         </Typography>
 
         {getSelectedFeaturesCount() > 0 && (
@@ -182,7 +204,9 @@ const EnterpriseFeatureStep: React.FC = () => {
               key={category.id}
               disabled={isDisabled && !hasSelectedFeatures}
               sx={{
-                border: hasSelectedFeatures ? `2px solid ${category.color}` : '1px solid #e2e8f0',
+                border: hasSelectedFeatures
+                  ? `2px solid ${category.color}`
+                  : '1px solid #e2e8f0',
                 borderRadius: '8px !important',
                 '&:before': { display: 'none' },
                 '&.Mui-disabled': {
@@ -194,15 +218,21 @@ const EnterpriseFeatureStep: React.FC = () => {
               <AccordionSummary
                 expandIcon={<FaExpandAlt />}
                 sx={{
-                  backgroundColor: hasSelectedFeatures ? `${category.color}10` : 'transparent',
+                  backgroundColor: hasSelectedFeatures
+                    ? `${category.color}10`
+                    : 'transparent',
                   borderRadius: '8px',
                   '& .MuiAccordionSummary-content': {
                     alignItems: 'center',
                   },
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <Box sx={{ mr: 2, color: category.color, fontSize: '1.5rem' }}>
+                <Box
+                  sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                >
+                  <Box
+                    sx={{ mr: 2, color: category.color, fontSize: '1.5rem' }}
+                  >
                     {category.icon}
                   </Box>
                   <Box sx={{ flex: 1 }}>
@@ -237,35 +267,58 @@ const EnterpriseFeatureStep: React.FC = () => {
               </AccordionSummary>
 
               <AccordionDetails sx={{ pt: 0 }}>
-                <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' } }}>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: 2,
+                    gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+                  }}
+                >
                   {category.features.map((feature) => {
-                    const isFeatureSelected = enterpriseFeatures?.[feature.key] || false;
+                    const isFeatureSelected =
+                      enterpriseFeatures?.[feature.key] || false;
 
                     return (
                       <Card
                         key={feature.key}
                         sx={{
-                          border: isFeatureSelected ? `2px solid ${category.color}` : '1px solid #e2e8f0',
-                          backgroundColor: isFeatureSelected ? `${category.color}05` : 'white',
+                          border: isFeatureSelected
+                            ? `2px solid ${category.color}`
+                            : '1px solid #e2e8f0',
+                          backgroundColor: isFeatureSelected
+                            ? `${category.color}05`
+                            : 'white',
                           transition: 'all 0.3s ease',
                         }}
                       >
                         <CardContent sx={{ p: 2 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'flex-start',
+                              justifyContent: 'space-between',
+                            }}
+                          >
                             <Box sx={{ flex: 1, mr: 2 }}>
-                              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                              <Typography
+                                variant="subtitle1"
+                                sx={{ fontWeight: 600, mb: 1 }}
+                              >
                                 {feature.name}
                                 {isFeatureSelected && (
                                   <FaCheck
                                     size={14}
                                     style={{
                                       marginLeft: 8,
-                                      color: category.color
+                                      color: category.color,
                                     }}
                                   />
                                 )}
                               </Typography>
-                              <Typography variant="body2" color="text.secondary">
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
                                 {feature.description}
                               </Typography>
                             </Box>
@@ -273,15 +326,21 @@ const EnterpriseFeatureStep: React.FC = () => {
                               control={
                                 <Switch
                                   checked={isFeatureSelected}
-                                  onChange={() => handleEnterpriseFeatureToggle(feature.key, category.id)}
+                                  onChange={() =>
+                                    handleEnterpriseFeatureToggle(
+                                      feature.key,
+                                      category.id
+                                    )
+                                  }
                                   disabled={isDisabled && !isFeatureSelected}
                                   sx={{
                                     '& .MuiSwitch-switchBase.Mui-checked': {
                                       color: category.color,
                                     },
-                                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                      backgroundColor: category.color,
-                                    },
+                                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track':
+                                      {
+                                        backgroundColor: category.color,
+                                      },
                                   }}
                                 />
                               }
@@ -301,9 +360,23 @@ const EnterpriseFeatureStep: React.FC = () => {
       </Box>
 
       {getSelectedFeaturesCount() === 0 && (
-        <Box sx={{ mt: 3, p: 3, backgroundColor: '#f0f9ff', borderRadius: 2, border: '1px solid #bae6fd' }}>
-          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
-            💡 <strong>Tip:</strong> Enterprise features are optional. You can select features from one category to enhance your POS system, or skip this step to continue with the standard package.
+        <Box
+          sx={{
+            mt: 3,
+            p: 3,
+            backgroundColor: '#f0f9ff',
+            borderRadius: 2,
+            border: '1px solid #bae6fd',
+          }}
+        >
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ textAlign: 'center' }}
+          >
+            💡 <strong>Tip:</strong> Enterprise features are optional. You can
+            select features from one category to enhance your POS system, or
+            skip this step to continue with the standard package.
           </Typography>
         </Box>
       )}

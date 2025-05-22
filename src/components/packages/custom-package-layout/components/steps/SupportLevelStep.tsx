@@ -1,8 +1,27 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Card, CardContent, Chip, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { FaCheck, FaHeadset, FaCrown, FaRocket, FaPhone, FaEnvelope, FaClock, FaUsers } from 'react-icons/fa';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Chip,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
+import {
+  FaCheck,
+  FaHeadset,
+  FaCrown,
+  FaRocket,
+  FaPhone,
+  FaEnvelope,
+  FaClock,
+  FaUsers,
+} from 'react-icons/fa';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import NavigationButtons from '../shared/NavigationButtons';
@@ -21,7 +40,7 @@ const SupportLevelStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  // Support level options
+  
   const supportLevels = [
     {
       id: 0,
@@ -95,7 +114,13 @@ const SupportLevelStep: React.FC = () => {
         </Typography>
       </Box>
 
-      <Box sx={{ display: 'grid', gap: 3, gridTemplateColumns: { xs: '1fr', lg: 'repeat(3, 1fr)' } }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 3,
+          gridTemplateColumns: { xs: '1fr', lg: 'repeat(3, 1fr)' },
+        }}
+      >
         {supportLevels.map((support) => {
           const isSelected = selectedSupportIndex === support.id;
           const supportPrice = calculateSupportPrice(support.multiplier);
@@ -166,29 +191,50 @@ const SupportLevelStep: React.FC = () => {
                 </Box>
 
                 <Box sx={{ mb: 3 }}>
-                  <Typography variant="h4" sx={{ fontWeight: 700, color: '#173a79' }}>
-                    {support.multiplier === 0 ? 'Free' : `+${formatPrice(selectedCurrency, supportPrice)}`}
-                    <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                  <Typography
+                    variant="h4"
+                    sx={{ fontWeight: 700, color: '#173a79' }}
+                  >
+                    {support.multiplier === 0
+                      ? 'Free'
+                      : `+${formatPrice(selectedCurrency, supportPrice)}`}
+                    <Typography
+                      component="span"
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ ml: 1 }}
+                    >
                       {support.multiplier === 0 ? 'included' : '/ month'}
                     </Typography>
                   </Typography>
 
                   {support.multiplier > 0 && (
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                      {Math.round(support.multiplier * 100)}% of base package price
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 1 }}
+                    >
+                      {Math.round(support.multiplier * 100)}% of base package
+                      price
                     </Typography>
                   )}
                 </Box>
 
                 <Box sx={{ mb: 3 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <FaClock size={14} style={{ marginRight: 8, color: '#16a34a' }} />
+                    <FaClock
+                      size={14}
+                      style={{ marginRight: 8, color: '#16a34a' }}
+                    />
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                       Response Time: {support.responseTime}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <FaUsers size={14} style={{ marginRight: 8, color: '#16a34a' }} />
+                    <FaUsers
+                      size={14}
+                      style={{ marginRight: 8, color: '#16a34a' }}
+                    />
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                       Availability: {support.availability}
                     </Typography>
@@ -205,7 +251,7 @@ const SupportLevelStep: React.FC = () => {
                         primary={feature}
                         primaryTypographyProps={{
                           variant: 'body2',
-                          sx: { fontSize: '0.875rem' }
+                          sx: { fontSize: '0.875rem' },
                         }}
                       />
                     </ListItem>
@@ -224,7 +270,10 @@ const SupportLevelStep: React.FC = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
           <Typography variant="body2">Base Package + Features:</Typography>
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
-            {formatPrice(selectedCurrency, basePrice + pricingState.totalFeaturePrice)}
+            {formatPrice(
+              selectedCurrency,
+              basePrice + pricingState.totalFeaturePrice
+            )}
           </Typography>
         </Box>
         {pricingState.supportPrice > 0 && (
@@ -236,14 +285,35 @@ const SupportLevelStep: React.FC = () => {
           </Box>
         )}
         {pricingState.planDiscount > 0 && (
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, color: '#16a34a' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mb: 1,
+              color: '#16a34a',
+            }}
+          >
             <Typography variant="body2">Plan Discount:</Typography>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              -{formatPrice(selectedCurrency, (basePrice + pricingState.totalFeaturePrice + pricingState.supportPrice) * pricingState.planDiscount)}
+              -
+              {formatPrice(
+                selectedCurrency,
+                (basePrice +
+                  pricingState.totalFeaturePrice +
+                  pricingState.supportPrice) *
+                  pricingState.planDiscount
+              )}
             </Typography>
           </Box>
         )}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 2, borderTop: '1px solid #e2e8f0' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            pt: 2,
+            borderTop: '1px solid #e2e8f0',
+          }}
+        >
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             Total Monthly:
           </Typography>

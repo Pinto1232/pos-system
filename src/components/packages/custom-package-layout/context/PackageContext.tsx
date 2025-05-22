@@ -24,6 +24,7 @@ import {
 } from '../utils/selectionUtils';
 import { getItemPrice } from '../utils/priceUtils';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { usePaymentPlans } from '@/hooks/usePaymentPlans';
 
 interface PackageContextType {
   currentStep: number;
@@ -82,6 +83,19 @@ interface PackageContextType {
   getCurrentCurrencySymbol: () => string;
   convertPrice: (price: number) => number;
   formatCurrencyPrice: (price: number) => string;
+
+  
+  paymentPlans: Array<{
+    id: number;
+    name: string;
+    period: string;
+    discountPercentage: number;
+    discountLabel: string | null;
+    description: string;
+    isPopular: boolean;
+    isDefault: boolean;
+  }>;
+  paymentPlansLoading: boolean;
 }
 
 const PackageContext = createContext<PackageContextType | undefined>(undefined);
@@ -159,6 +173,16 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
     rate,
     currencySymbol,
   } = useCurrency();
+
+  
+  const {
+    paymentPlans,
+    isLoading: paymentPlansLoading,
+    getDiscountPercentage,
+  } = usePaymentPlans({
+    currency: propsCurrency || contextCurrency,
+    autoFetch: true,
+  });
 
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
   const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>(
@@ -410,8 +434,6 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
 
   const handlePlanSelect = useCallback(
     (index: number) => {
-      const planDiscounts = [0, 0.1, 0.15, 0.2, 0];
-
       if (selectedPlanIndex === index) {
         setSelectedPlanIndex(null);
         setPricingState((prev: PricingState) => ({
@@ -420,15 +442,15 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
         }));
       } else {
         setSelectedPlanIndex(index);
-        const newDiscount =
-          index < planDiscounts.length ? planDiscounts[index] : 0;
+        
+        const newDiscount = getDiscountPercentage(index);
         setPricingState((prev: PricingState) => ({
           ...prev,
           planDiscount: newDiscount,
         }));
       }
     },
-    [selectedPlanIndex]
+    [selectedPlanIndex, getDiscountPercentage]
   );
 
   const handleSupportSelect = useCallback(
@@ -713,6 +735,10 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
       convertPrice,
       formatCurrencyPrice,
 
+      
+      paymentPlans,
+      paymentPlansLoading,
+
       handleShowSuccessMessage,
     }),
     [
@@ -763,6 +789,8 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
       getCurrentCurrencySymbol,
       convertPrice,
       formatCurrencyPrice,
+      paymentPlans,
+      paymentPlansLoading,
       handleShowSuccessMessage,
     ]
   );
