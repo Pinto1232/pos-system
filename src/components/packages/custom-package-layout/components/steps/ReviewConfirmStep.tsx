@@ -21,14 +21,15 @@ const ReviewConfirmStep: React.FC = () => {
     selectedPlanIndex,
     selectedSupportIndex,
     enterpriseFeatures,
+    paymentPlans,
+    paymentPlansLoading,
     handleSave,
     handleBack,
     loading,
     backLoading,
   } = usePackageContext();
 
-  // Payment plan names
-  const paymentPlans = ['Monthly', 'Quarterly', 'Semi-Annual', 'Annual'];
+  // Support level names (still static for now)
   const supportLevels = ['Basic Support', 'Priority Support', 'Premium Support'];
 
   // Get selected enterprise features
@@ -225,16 +226,26 @@ const ReviewConfirmStep: React.FC = () => {
                       Billing Plan
                     </Typography>
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    {paymentPlans[selectedPlanIndex]}
-                    {selectedPlanIndex > 0 && (
-                      <Chip
-                        label={`${Math.round([0, 0.1, 0.15, 0.2][selectedPlanIndex] * 100)}% OFF`}
-                        size="small"
-                        sx={{ ml: 1, backgroundColor: '#dcfce7', color: '#166534' }}
-                      />
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {paymentPlansLoading ? (
+                      <Typography variant="body2" color="text.secondary">
+                        Loading...
+                      </Typography>
+                    ) : (
+                      <>
+                        <Typography variant="body2" color="text.secondary">
+                          {paymentPlans.find(plan => plan.id === selectedPlanIndex)?.name || 'Unknown Plan'}
+                        </Typography>
+                        {paymentPlans.find(plan => plan.id === selectedPlanIndex)?.discountLabel && (
+                          <Chip
+                            label={paymentPlans.find(plan => plan.id === selectedPlanIndex)?.discountLabel}
+                            size="small"
+                            sx={{ backgroundColor: '#dcfce7', color: '#166534' }}
+                          />
+                        )}
+                      </>
                     )}
-                  </Typography>
+                  </Box>
                 </Box>
               )}
 

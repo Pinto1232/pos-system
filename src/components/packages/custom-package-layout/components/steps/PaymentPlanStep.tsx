@@ -14,6 +14,8 @@ const PaymentPlanStep: React.FC = () => {
     selectedCurrency,
     formatPrice,
     selectedPlanIndex,
+    paymentPlans,
+    paymentPlansLoading,
     handlePlanSelect,
     handleNext,
     handleBack,
@@ -21,59 +23,20 @@ const PaymentPlanStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  // Payment plan options with discounts
-  const paymentPlans = [
-    {
-      id: 0,
-      name: 'Monthly',
-      period: '1 month',
-      discount: 0,
-      discountLabel: null,
-      description: 'Pay monthly with full flexibility',
-      icon: <FaCalendarAlt />,
-      popular: false,
-    },
-    {
-      id: 1,
-      name: 'Quarterly',
-      period: '3 months',
-      discount: 0.1,
-      discountLabel: '10% OFF',
-      description: 'Save 10% with quarterly billing',
-      icon: <FaCalendarCheck />,
-      popular: false,
-    },
-    {
-      id: 2,
-      name: 'Semi-Annual',
-      period: '6 months',
-      discount: 0.15,
-      discountLabel: '15% OFF',
-      description: 'Save 15% with semi-annual billing',
-      icon: <FaCalendarCheck />,
-      popular: true,
-    },
-    {
-      id: 3,
-      name: 'Annual',
-      period: '12 months',
-      discount: 0.2,
-      discountLabel: '20% OFF',
-      description: 'Maximum savings with annual billing',
-      icon: <FaCalendarCheck />,
-      popular: false,
-    },
-  ];
+  // Icon mapping for payment plans
+  const getIconForPlan = (planName: string) => {
+    return planName === 'Monthly' ? <FaCalendarAlt /> : <FaCalendarCheck />;
+  };
 
-  const calculatePlanPrice = (discount: number) => {
+  const calculatePlanPrice = (discountPercentage: number) => {
     const subtotal = basePrice + pricingState.totalFeaturePrice + pricingState.supportPrice;
-    const discountAmount = subtotal * discount;
+    const discountAmount = subtotal * discountPercentage;
     return subtotal - discountAmount;
   };
 
-  const calculateMonthlySavings = (discount: number) => {
+  const calculateMonthlySavings = (discountPercentage: number) => {
     const monthlyPrice = calculatePlanPrice(0);
-    const discountedPrice = calculatePlanPrice(discount);
+    const discountedPrice = calculatePlanPrice(discountPercentage);
     return monthlyPrice - discountedPrice;
   };
 
@@ -89,10 +52,13 @@ const PaymentPlanStep: React.FC = () => {
       </Box>
 
       <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' } }}>
-        {paymentPlans.map((plan) => {
-          const isSelected = selectedPlanIndex === plan.id;
-          const planPrice = calculatePlanPrice(plan.discount);
-          const monthlySavings = plan.discount > 0 ? calculateMonthlySavings(plan.discount) : 0;
+        {paymentPlansLoading ? (
+          <Typography>Loading payment plans...</Typography>
+        ) : (
+          paymentPlans.map((plan) => {
+            const isSelected = selectedPlanIndex === plan.id;
+            const planPrice = calculatePlanPrice(plan.discountPercentage);
+            const monthlySavings = plan.discountPercentage > 0 ? calculateMonthlySavings(plan.discountPercentage) : 0;
 
           return (
             <Card
@@ -110,7 +76,7 @@ const PaymentPlanStep: React.FC = () => {
               }}
               onClick={() => handlePlanSelect(plan.id)}
             >
-              {plan.popular && (
+              {plan.isPopular && (
                 <Chip
                   label="Most Popular"
                   size="small"
@@ -130,7 +96,7 @@ const PaymentPlanStep: React.FC = () => {
               <CardContent sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Box sx={{ mr: 2, color: '#2563eb', fontSize: '1.5rem' }}>
-                    {plan.icon}
+                    {getIconForPlan(plan.name)}
                   </Box>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
@@ -166,18 +132,20 @@ const PaymentPlanStep: React.FC = () => {
                     </Typography>
                   </Typography>
 
-                  {plan.discount > 0 && (
+                  {plan.discountPercentage > 0 && (
                     <Box sx={{ mt: 1 }}>
-                      <Chip
-                        label={plan.discountLabel}
-                        size="small"
-                        sx={{
-                          backgroundColor: '#dcfce7',
-                          color: '#166534',
-                          fontWeight: 600,
-                          mr: 1,
-                        }}
-                      />
+                      {plan.discountLabel && (
+                        <Chip
+                          label={plan.discountLabel}
+                          size="small"
+                          sx={{
+                            backgroundColor: '#dcfce7',
+                            color: '#166534',
+                            fontWeight: 600,
+                            mr: 1,
+                          }}
+                        />
+                      )}
                       <Typography variant="body2" color="text.secondary">
                         Save {formatPrice(selectedCurrency, monthlySavings)} per month
                       </Typography>
@@ -198,17 +166,18 @@ const PaymentPlanStep: React.FC = () => {
                     <FaCheck size={12} style={{ marginRight: 8, color: '#16a34a' }} />
                     Full feature access
                   </Typography>
-                  {plan.discount > 0 && (
+                  {plan.discountPercentage > 0 && (
                     <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
                       <FaCheck size={12} style={{ marginRight: 8, color: '#16a34a' }} />
-                      {Math.round(plan.discount * 100)}% discount applied
+                      {Math.round(plan.discountPercentage * 100)}% discount applied
                     </Typography>
                   )}
                 </Box>
               </CardContent>
             </Card>
           );
-        })}
+        })
+        )}
       </Box>
 
       <Box sx={{ mt: 4, p: 3, backgroundColor: '#f8fafc', borderRadius: 2 }}>
