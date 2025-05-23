@@ -7,12 +7,11 @@ export interface Package {
   price: number;
   testPeriodDays: number;
   type:
-    | 'starter'
-    | 'growth'
-    | 'enterprise'
-    | 'custom'
+    | 'starter-plus'
+    | 'growth-pro'
+    | 'enterprise-elite'
     | 'custom-pro'
-    | 'premium';
+    | 'premium-plus';
   isCustomizable: boolean;
   selectedFeatures?: number[] | null;
   selectedAddOns?: number[] | null;

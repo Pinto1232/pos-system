@@ -223,7 +223,7 @@ export async function GET(request: Request) {
     console.log('Total items:', JSON.stringify(data.totalItems, null, 2));
     console.log(
       'Response structure:',
-      JSON.stringify(Object.keys(data, null, 2))
+      JSON.stringify(Object.keys(data), null, 2)
     );
 
     if (data.data && Array.isArray(data.data)) {
@@ -255,7 +255,7 @@ export async function GET(request: Request) {
         console.log('  Icon:', JSON.stringify(addOn.icon, null, 2));
         console.log(
           '  Properties:',
-          JSON.stringify(Object.keys(addOn, null, 2))
+          JSON.stringify(Object.keys(addOn), null, 2)
         );
       });
 

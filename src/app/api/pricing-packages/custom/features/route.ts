@@ -1,22 +1,31 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_API_URL =
   process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     console.log('Proxying GET request to backend for custom package features');
+
+    const authHeader = request.headers.get('authorization');
+    console.log('Authorization header present:', !!authHeader);
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+    };
+
+    if (authHeader) {
+      headers.Authorization = authHeader;
+    }
 
     const response = await fetch(
       `${BACKEND_API_URL}/api/PricingPackages/custom/features`,
       {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
+        headers,
         cache: 'no-store',
       }
     );
@@ -26,14 +35,14 @@ export async function GET() {
         `Backend API returned status: ${response.status}, serving fallback data`
       );
 
-      // Return fallback data if backend is not available
       return NextResponse.json({
         coreFeatures: [],
         addOns: [
           {
             id: 1,
             name: 'Premium Support',
-            description: '24/7 priority customer support with dedicated account manager',
+            description:
+              '24/7 priority customer support with dedicated account manager',
             price: 49.99,
             currency: 'USD',
             multiCurrencyPrices: {
@@ -79,7 +88,8 @@ export async function GET() {
           {
             id: 3,
             name: 'Multi-Location Management',
-            description: 'Manage multiple store locations from a single dashboard',
+            description:
+              'Manage multiple store locations from a single dashboard',
             price: 25.0,
             currency: 'USD',
             multiCurrencyPrices: {
@@ -156,17 +166,18 @@ export async function GET() {
   } catch (error) {
     console.error(
       'Error fetching custom package features:',
-      JSON.stringify(error, null, 2)
+      error instanceof Error ? error.message : String(error)
     );
+    console.error('Full error details:', error);
 
-    // Return fallback data on error
     return NextResponse.json({
       coreFeatures: [],
       addOns: [
         {
           id: 1,
           name: 'Premium Support',
-          description: '24/7 priority customer support with dedicated account manager',
+          description:
+            '24/7 priority customer support with dedicated account manager',
           price: 49.99,
           currency: 'USD',
           multiCurrencyPrices: {
@@ -212,7 +223,8 @@ export async function GET() {
         {
           id: 3,
           name: 'Multi-Location Management',
-          description: 'Manage multiple store locations from a single dashboard',
+          description:
+            'Manage multiple store locations from a single dashboard',
           price: 25.0,
           currency: 'USD',
           multiCurrencyPrices: {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { apiClient } from '@/api/axiosClient';
+import { useApiClient } from '@/api/axiosClient';
 import CustomPackageLayout from './CustomPackageLayout';
 import WaveLoading from '@/components/ui/WaveLoading/WaveLoading';
 import Snackbar from '@mui/material/Snackbar';
@@ -63,6 +63,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
 const CustomPackageLayoutContainer: React.FC<
   CustomPackageLayoutContainerProps
 > = ({ selectedPackage }) => {
+  const { apiClient } = useApiClient();
   const { showSuccessModal } = useSuccessModal();
   const { currency } = useCurrency();
   const [currentStep, setCurrentStep] = useState(0);
@@ -154,7 +155,7 @@ const CustomPackageLayoutContainer: React.FC<
     const fetchConfig = async () => {
       try {
         const featuresResponse = await apiClient.get<FeaturesResponse>(
-          '/api/pricingpackages/custom/features'
+          '/api/pricing-packages/custom/features'
         );
         console.log(
           'Fetched core features response:',
@@ -166,7 +167,7 @@ const CustomPackageLayoutContainer: React.FC<
         const usageData = featuresResponse.data.usageBasedPricing || [];
 
         setFeatures(coreFeatures);
-        setAddOns(customAddOns); // Set add-ons from custom features response
+        setAddOns(customAddOns);
         setUsagePricing(usageData);
 
         console.log(
@@ -194,8 +195,9 @@ const CustomPackageLayoutContainer: React.FC<
       } catch (error) {
         console.error(
           'Failed to load package config:',
-          JSON.stringify(error, null, 2)
+          error instanceof Error ? error.message : String(error)
         );
+        console.error('Full error details:', error);
         const newSteps = buildSteps();
         setSteps(newSteps);
         setCurrentStep(0);
@@ -217,7 +219,7 @@ const CustomPackageLayoutContainer: React.FC<
         JSON.stringify(newSteps, null, 2)
       );
     }
-  }, [selectedPackage, buildSteps]);
+  }, [selectedPackage, buildSteps, apiClient]);
 
   useEffect(() => {
     if (addOnsResponse?.data && !selectedPackage.isCustomizable) {
@@ -348,7 +350,7 @@ const CustomPackageLayoutContainer: React.FC<
       );
 
       try {
-        await apiClient.post('/api/pricingpackages/custom/select', request);
+        await apiClient.post('/api/pricing-packages/custom/select', request);
         console.log('Package saved successfully!');
 
         showSuccessModal({
@@ -364,7 +366,11 @@ const CustomPackageLayoutContainer: React.FC<
           calculatedPrice: data.calculatedPrice,
         });
       } catch (error) {
-        console.error('Save failed:', JSON.stringify(error, null, 2));
+        console.error(
+          'Save failed:',
+          error instanceof Error ? error.message : String(error)
+        );
+        console.error('Full error details:', error);
         setSnackbarMessage('Error saving package!');
         setSnackbarOpen(true);
       } finally {
@@ -382,6 +388,7 @@ const CustomPackageLayoutContainer: React.FC<
       showSuccessModal,
       handleModalConfirm,
       handleReturnToPackage,
+      apiClient,
     ]
   );
 
@@ -427,7 +434,7 @@ const CustomPackageLayoutContainer: React.FC<
 
         try {
           const response = await apiClient.post<PriceCalculationResponse>(
-            '/api/pricingpackages/custom/calculate-price',
+            '/api/pricing-packages/custom/calculate-price',
             requestBody
           );
           console.log(
@@ -438,8 +445,9 @@ const CustomPackageLayoutContainer: React.FC<
         } catch (error) {
           console.error(
             'Failed to calculate price:',
-            JSON.stringify(error, null, 2)
+            error instanceof Error ? error.message : String(error)
           );
+          console.error('Full error details:', error);
         }
       }, 300);
 
@@ -449,7 +457,13 @@ const CustomPackageLayoutContainer: React.FC<
         calculatePrice.cancel();
       };
     }
-  }, [selectedFeatures, selectedAddOns, usageQuantities, selectedPackage]);
+  }, [
+    selectedFeatures,
+    selectedAddOns,
+    usageQuantities,
+    selectedPackage,
+    apiClient,
+  ]);
 
   const handleEnterpriseFeatureToggle = useCallback((featureId: string) => {
     setEnterpriseFeatures((prev) => ({

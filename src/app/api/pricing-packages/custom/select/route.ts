@@ -5,21 +5,35 @@ const BACKEND_API_URL =
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('Proxying POST request to backend for custom package selection');
+    console.log(
+      'Proxying POST request to backend for custom package selection'
+    );
 
     const body = await request.json();
-    console.log('Package selection request body:', JSON.stringify(body, null, 2));
+    console.log(
+      'Package selection request body:',
+      JSON.stringify(body, null, 2)
+    );
+
+    const authHeader = request.headers.get('authorization');
+    console.log('Authorization header present:', !!authHeader);
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+    };
+
+    if (authHeader) {
+      headers.Authorization = authHeader;
+    }
 
     const response = await fetch(
       `${BACKEND_API_URL}/api/PricingPackages/custom/select`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
+        headers,
         body: JSON.stringify(body),
         cache: 'no-store',
       }
@@ -29,8 +43,7 @@ export async function POST(request: NextRequest) {
       console.warn(
         `Backend API returned status: ${response.status}, returning fallback success response`
       );
-      
-      // Return fallback success response
+
       return NextResponse.json({
         message: 'Custom package selection saved successfully (fallback)',
         packageId: body.packageId,
@@ -47,10 +60,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error(
       'Error saving custom package selection:',
-      JSON.stringify(error, null, 2)
+      error instanceof Error ? error.message : String(error)
     );
-    
-    // Return fallback success response on error
+    console.error('Full error details:', error);
+
     return NextResponse.json({
       message: 'Custom package selection saved successfully (fallback)',
       error: false,

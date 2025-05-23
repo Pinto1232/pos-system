@@ -13,12 +13,11 @@ export type Package = {
   price: number;
   testPeriodDays: number;
   type:
-    | 'custom'
+    | 'starter-plus'
+    | 'growth-pro'
+    | 'enterprise-elite'
     | 'custom-pro'
-    | 'starter'
-    | 'growth'
-    | 'enterprise'
-    | 'premium';
+    | 'premium-plus';
   currency?: string;
   multiCurrencyPrices?: string;
 };

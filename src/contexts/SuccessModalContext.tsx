@@ -15,7 +15,17 @@ interface SuccessModalProps {
   selectedPackage?: {
     id: number;
     title: string;
-    type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
+    type:
+      | 'starter'
+      | 'growth'
+      | 'enterprise'
+      | 'custom'
+      | 'custom-pro'
+      | 'premium'
+      | 'starter-plus'
+      | 'growth-pro'
+      | 'enterprise-elite'
+      | 'premium-plus';
     price: number;
     currency?: string;
   };

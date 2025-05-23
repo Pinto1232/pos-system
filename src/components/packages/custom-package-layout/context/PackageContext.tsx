@@ -24,6 +24,8 @@ import {
 } from '../utils/selectionUtils';
 import { getItemPrice } from '../utils/priceUtils';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { usePaymentPlans } from '@/hooks/usePaymentPlans';
+import type { PaymentPlan } from '@/app/api/payment-plans/route';
 
 interface PackageContextType {
   currentStep: number;
@@ -82,6 +84,9 @@ interface PackageContextType {
   getCurrentCurrencySymbol: () => string;
   convertPrice: (price: number) => number;
   formatCurrencyPrice: (price: number) => string;
+
+  paymentPlans: PaymentPlan[];
+  paymentPlansLoading: boolean;
 }
 
 const PackageContext = createContext<PackageContextType | undefined>(undefined);
@@ -159,6 +164,8 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
     rate,
     currencySymbol,
   } = useCurrency();
+
+  const { paymentPlans, isLoading: paymentPlansLoading } = usePaymentPlans();
 
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
   const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>(
@@ -712,6 +719,9 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
       formatCurrencyPrice,
 
       handleShowSuccessMessage,
+
+      paymentPlans,
+      paymentPlansLoading,
     }),
     [
       currentStep,
@@ -762,6 +772,8 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
       convertPrice,
       formatCurrencyPrice,
       handleShowSuccessMessage,
+      paymentPlans,
+      paymentPlansLoading,
     ]
   );
 

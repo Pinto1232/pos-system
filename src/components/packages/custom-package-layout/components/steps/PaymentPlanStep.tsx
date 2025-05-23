@@ -1,18 +1,12 @@
 'use client';
 
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  Chip,
-} from '@mui/material';
+import { Box, Typography, Card, CardContent, Chip } from '@mui/material';
 import { FaCheck, FaCalendarAlt, FaCalendarCheck } from 'react-icons/fa';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import NavigationButtons from '../shared/NavigationButtons';
+import type { PaymentPlan } from '@/app/api/payment-plans/route';
 
 const PaymentPlanStep: React.FC = () => {
   const {
@@ -66,9 +60,13 @@ const PaymentPlanStep: React.FC = () => {
         }}
       >
         {paymentPlansLoading ? (
-          <Typography>Loading payment plans...</Typography>
-        ) : (
-          paymentPlans.map((plan) => {
+          <Box sx={{ gridColumn: '1 / -1', textAlign: 'center', py: 4 }}>
+            <Typography variant="h6" color="text.secondary">
+              Loading payment plans...
+            </Typography>
+          </Box>
+        ) : paymentPlans && paymentPlans.length > 0 ? (
+          paymentPlans.map((plan: PaymentPlan) => {
             const isSelected = selectedPlanIndex === plan.id;
             const planPrice = calculatePlanPrice(plan.discountPercentage);
             const monthlySavings =
@@ -234,6 +232,16 @@ const PaymentPlanStep: React.FC = () => {
               </Card>
             );
           })
+        ) : (
+          <Box sx={{ gridColumn: '1 / -1', textAlign: 'center', py: 4 }}>
+            <Typography variant="h6" color="error">
+              No payment plans available
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              Please try refreshing the page or contact support if the issue
+              persists.
+            </Typography>
+          </Box>
         )}
       </Box>
 

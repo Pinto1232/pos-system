@@ -5,21 +5,35 @@ const BACKEND_API_URL =
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('Proxying POST request to backend for custom package price calculation');
+    console.log(
+      'Proxying POST request to backend for custom package price calculation'
+    );
 
     const body = await request.json();
-    console.log('Price calculation request body:', JSON.stringify(body, null, 2));
+    console.log(
+      'Price calculation request body:',
+      JSON.stringify(body, null, 2)
+    );
+
+    const authHeader = request.headers.get('authorization');
+    console.log('Authorization header present:', !!authHeader);
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+    };
+
+    if (authHeader) {
+      headers.Authorization = authHeader;
+    }
 
     const response = await fetch(
       `${BACKEND_API_URL}/api/PricingPackages/custom/calculate-price`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
+        headers,
         body: JSON.stringify(body),
         cache: 'no-store',
       }
@@ -29,27 +43,26 @@ export async function POST(request: NextRequest) {
       console.warn(
         `Backend API returned status: ${response.status}, calculating fallback price`
       );
-      
-      // Calculate fallback price
+
       const basePrice = body.basePrice || 49.99;
       let totalPrice = basePrice;
-      
-      // Add feature prices (assuming $10 per feature)
+
       if (body.selectedFeatures && body.selectedFeatures.length > 0) {
         totalPrice += body.selectedFeatures.length * 10;
       }
-      
-      // Add add-on prices (assuming $15 per add-on)
+
       if (body.selectedAddOns && body.selectedAddOns.length > 0) {
         totalPrice += body.selectedAddOns.length * 15;
       }
-      
-      // Add usage-based pricing (assuming $5 per unit)
+
       if (body.usageLimits) {
-        const totalUsage = Object.values(body.usageLimits).reduce((sum: number, value: any) => sum + (Number(value) || 0), 0);
+        const totalUsage = Object.values(body.usageLimits).reduce(
+          (sum: number, value: unknown) => sum + (Number(value) || 0),
+          0
+        );
         totalPrice += totalUsage * 5;
       }
-      
+
       return NextResponse.json({
         basePrice,
         totalPrice,
@@ -63,10 +76,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error(
       'Error calculating custom package price:',
-      JSON.stringify(error, null, 2)
+      error instanceof Error ? error.message : String(error)
     );
-    
-    // Return fallback calculation on error
+    console.error('Full error details:', error);
+
     const basePrice = 49.99;
     return NextResponse.json({
       basePrice,

@@ -30,15 +30,17 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
   currency,
   formatPrice,
 }) => {
-  const addOnPrice = addOn.multiCurrencyPrices
-    ? addOn.multiCurrencyPrices[currency]
-    : addOn.price;
+  const addOnPrice = React.useMemo(() => {
+    return addOn.multiCurrencyPrices
+      ? addOn.multiCurrencyPrices[currency]
+      : addOn.price;
+  }, [addOn.multiCurrencyPrices, addOn.price, currency]);
 
-  const handleToggle = () => {
+  const handleToggle = React.useCallback(() => {
     onToggle(addOn);
-  };
+  }, [onToggle, addOn]);
 
-  const renderIcon = () => {
+  const renderIcon = React.useCallback(() => {
     if (!addOn.icon) return null;
 
     switch (addOn.icon) {
@@ -55,43 +57,40 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
       default:
         return null;
     }
-  };
+  }, [addOn.icon]);
 
-  const parseFeatures = (): string[] => {
+  const features = React.useMemo(() => {
     if (!addOn.features) return [];
-
     if (Array.isArray(addOn.features)) {
       return addOn.features;
     }
 
     try {
-      return JSON.parse(addOn.features);
+      return JSON.parse(addOn.features as string);
     } catch {
       return [];
     }
-  };
+  }, [addOn.features]);
 
-  const parseDependencies = (): string[] => {
+  const dependencies = React.useMemo(() => {
     if (!addOn.dependencies) return [];
-
     if (Array.isArray(addOn.dependencies)) {
       return addOn.dependencies;
     }
 
     try {
-      return JSON.parse(addOn.dependencies);
+      return JSON.parse(addOn.dependencies as string);
     } catch {
       return [];
     }
-  };
+  }, [addOn.dependencies]);
 
-  const features = parseFeatures();
-  const dependencies = parseDependencies();
-
-  const ariaProps = getSelectableItemProps(
-    isSelected,
-    `Add-on: ${addOn.name}, Price: ${formatPrice(currency, addOnPrice)}`
-  );
+  const ariaProps = React.useMemo(() => {
+    return getSelectableItemProps(
+      isSelected,
+      `Add-on: ${addOn.name}, Price: ${formatPrice(currency, addOnPrice)}`
+    );
+  }, [isSelected, addOn.name, formatPrice, currency, addOnPrice]);
 
   return (
     <Box
@@ -184,7 +183,7 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
                 role="list"
                 aria-label={`Features of ${addOn.name}`}
               >
-                {features.map((feature, idx) => (
+                {features.map((feature: string, idx: number) => (
                   <Typography
                     key={idx}
                     component="li"
@@ -225,7 +224,7 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
                 role="list"
                 aria-label={`Requirements for ${addOn.name}`}
               >
-                {dependencies.map((dep, idx) => (
+                {dependencies.map((dep: string, idx: number) => (
                   <Typography
                     key={idx}
                     component="li"
