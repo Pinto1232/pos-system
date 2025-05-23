@@ -15,6 +15,11 @@ const API_ROUTE_MAPPINGS: Record<string, string> = {
   '/api/auth-token/set-token': '/api/auth-token/set-token',
 };
 
+// Routes that should be proxied to the backend
+const BACKEND_PROXY_ROUTES = [
+  '/api/currency',
+];
+
 acceptLanguage.languages(MIDDLEWARE_LANGUAGES.map((lang) => lang.code));
 
 export function middleware(request: NextRequest) {
@@ -22,6 +27,19 @@ export function middleware(request: NextRequest) {
 
   if (pathname.toLowerCase().startsWith('/api/')) {
     const lowerCasePath = pathname.toLowerCase();
+
+    // Check if this route should be proxied to the backend
+    for (const proxyRoute of BACKEND_PROXY_ROUTES) {
+      if (lowerCasePath.startsWith(proxyRoute.toLowerCase())) {
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5107';
+        const targetUrl = new URL(pathname + request.nextUrl.search, backendUrl);
+
+        console.log(`Proxying API request from ${pathname} to ${targetUrl.toString()}`);
+        return NextResponse.rewrite(targetUrl);
+      }
+    }
+
+    // Handle internal route mappings
     for (const [pattern, target] of Object.entries(API_ROUTE_MAPPINGS)) {
       if (lowerCasePath.startsWith(pattern.toLowerCase())) {
         const newUrl = new URL(request.url);

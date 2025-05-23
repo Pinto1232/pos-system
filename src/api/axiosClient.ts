@@ -33,15 +33,22 @@ interface CacheEntry<T = unknown> {
 
 const requestCache = new Map<string, CacheEntry>();
 
+const getBaseURL = () => {
+  // Use environment variable or fallback to localhost:5107
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5107';
+  console.log('Using API baseURL:', baseURL);
+  return baseURL;
+};
+
 const apiClient = axios.create({
-  baseURL: '',
+  baseURL: getBaseURL(),
   withCredentials: true,
   timeout: DEFAULT_TIMEOUT,
 });
 
 console.log(
   'API Client initialized with baseURL:',
-  JSON.stringify(process.env.NEXT_PUBLIC_API_URL, null, 2)
+  JSON.stringify(apiClient.defaults.baseURL, null, 2)
 );
 
 const getErrorMessageForStatus = (status: number): string => {
@@ -61,6 +68,12 @@ const getErrorMessageForStatus = (status: number): string => {
   }
 };
 
+// List of endpoints that should not include Authorization header
+const ANONYMOUS_ENDPOINTS = [
+  '/api/currency/location',
+  '/api/currency/available',
+];
+
 const useApiClient = () => {
   const spinnerContext = useContext(SpinnerContext);
   const queryClient = useQueryClient();
@@ -69,16 +82,28 @@ const useApiClient = () => {
     const requestInterceptor = apiClient.interceptors.request.use(
       (config) => {
         try {
-          const token = localStorage.getItem('accessToken');
-          if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-            console.log(
-              'Added token to request:',
-              JSON.stringify(config.url, null, 2)
-            );
+          // Check if this endpoint should be anonymous
+          const isAnonymousEndpoint = ANONYMOUS_ENDPOINTS.some(endpoint =>
+            config.url?.includes(endpoint)
+          );
+
+          if (!isAnonymousEndpoint) {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+              config.headers.Authorization = `Bearer ${token}`;
+              console.log(
+                'Added token to request:',
+                JSON.stringify(config.url, null, 2)
+              );
+            } else {
+              console.log(
+                'No token available for request:',
+                JSON.stringify(config.url, null, 2)
+              );
+            }
           } else {
             console.log(
-              'No token available for request:',
+              'Skipping token for anonymous endpoint:',
               JSON.stringify(config.url, null, 2)
             );
           }
