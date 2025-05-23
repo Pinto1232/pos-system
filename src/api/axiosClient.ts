@@ -34,7 +34,7 @@ interface CacheEntry<T = unknown> {
 const requestCache = new Map<string, CacheEntry>();
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5107',
+  baseURL: '',
   withCredentials: true,
   timeout: DEFAULT_TIMEOUT,
 });
