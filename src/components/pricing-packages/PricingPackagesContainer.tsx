@@ -617,6 +617,8 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
     [newPackageTypes]
   );
 
+  const processLogRef = useRef({ lastDataKey: '', lastFilteredCount: 0 });
+
   const processPackages = useCallback(
     (packagesData: PackageData[]): Package[] => {
       if (
@@ -631,7 +633,12 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
         return [];
       }
 
-      console.log('Processing packages data:', packagesData.length, 'items');
+      // Only log if the data has changed
+      const dataKey = `${packagesData.length}-${packagesData.map((p) => p?.id).join(',')}`;
+      if (processLogRef.current.lastDataKey !== dataKey) {
+        processLogRef.current.lastDataKey = dataKey;
+        console.log('Processing packages data:', packagesData.length, 'items');
+      }
 
       const filteredPackages = packagesData.filter((pkg: PackageData) => {
         if (!pkg) return false;
@@ -639,11 +646,14 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
         return newPackageTypes.includes(type);
       });
 
-      console.log(
-        'Filtered to new packages:',
-        filteredPackages.length,
-        'items'
-      );
+      if (processLogRef.current.lastFilteredCount !== filteredPackages.length) {
+        processLogRef.current.lastFilteredCount = filteredPackages.length;
+        console.log(
+          'Filtered to new packages:',
+          filteredPackages.length,
+          'items'
+        );
+      }
 
       if (filteredPackages.length === 0) {
         console.warn('No packages matched the expected types after filtering');
@@ -656,51 +666,74 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
     [newPackageTypes, createPackageFromData]
   );
 
-  let packagesToDisplay: Package[] = [];
-  let showError = false;
+  const { packagesToDisplay, showError } = useMemo(() => {
+    let packages: Package[] = [];
+    let hasError = false;
 
-  if (!authenticated) {
-    console.log('User not authenticated, cannot display packages');
-    showError = true;
-  } else if (isLoading) {
-    console.log('Loading packages from backend');
-  } else if (error) {
-    console.warn(
-      'Error from backend, but using fallback data:',
-      JSON.stringify(error, null, 2)
-    );
+    if (!authenticated) {
+      console.log('User not authenticated, cannot display packages');
+      hasError = true;
+    } else if (isLoading) {
+      console.log('Loading packages from backend');
+    } else if (error) {
+      console.warn(
+        'Error from backend, but using fallback data:',
+        JSON.stringify(error, null, 2)
+      );
 
-    packagesToDisplay = processPackages(fallbackPackages.data);
-  } else if (!data || !data.data || !Array.isArray(data.data)) {
-    console.warn('Invalid data structure from backend, using fallback data');
+      packages = processPackages(fallbackPackages.data);
+    } else if (!data || !data.data || !Array.isArray(data.data)) {
+      console.warn('Invalid data structure from backend, using fallback data');
 
-    packagesToDisplay = processPackages(fallbackPackages.data);
-  } else if (data.data.length === 0) {
-    console.warn('Empty data array from backend, using fallback data');
+      packages = processPackages(fallbackPackages.data);
+    } else if (data.data.length === 0) {
+      console.warn('Empty data array from backend, using fallback data');
 
-    packagesToDisplay = processPackages(fallbackPackages.data);
-  } else {
-    console.log('Using packages from API');
-    packagesToDisplay = processPackages(data.data);
-  }
+      packages = processPackages(fallbackPackages.data);
+    } else {
+      console.log('Using packages from API');
+      packages = processPackages(data.data);
+    }
+
+    return { packagesToDisplay: packages, showError: hasError };
+  }, [
+    authenticated,
+    isLoading,
+    error,
+    data,
+    processPackages,
+    fallbackPackages.data,
+  ]);
 
   const retryIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const retryCallback = () => {
-      console.log(
-        `[${new Date().toISOString()}] Attempting periodic retry to fetch real data`
-      );
-      refetch();
+      if (
+        usingFallbackData &&
+        (!data || !data.data || data.data.length === 0)
+      ) {
+        console.log(
+          `[${new Date().toISOString()}] Attempting periodic retry to fetch real data`
+        );
+        refetch();
+      }
     };
 
-    if (usingFallbackData && !retryIntervalRef.current) {
+    if (
+      usingFallbackData &&
+      !retryIntervalRef.current &&
+      (!data || !data.data || data.data.length === 0)
+    ) {
       console.log(
         `[${new Date().toISOString()}] Setting up periodic retry for real data`
       );
 
       retryIntervalRef.current = setInterval(retryCallback, 30000);
-    } else if (!usingFallbackData && retryIntervalRef.current) {
+    } else if (
+      (!usingFallbackData || (data && data.data && data.data.length > 0)) &&
+      retryIntervalRef.current
+    ) {
       console.log(
         `[${new Date().toISOString()}] Clearing periodic retry - using real data now`
       );
@@ -714,57 +747,77 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
         retryIntervalRef.current = null;
       }
     };
-  }, [usingFallbackData, refetch]);
+  }, [usingFallbackData, refetch, data]);
 
-  if (packagesToDisplay.length === 0 && authenticated && !isLoading) {
-    console.warn(
-      `[${new Date().toISOString()}] No packages to display after all fallbacks`
-    );
-    showError = true;
-  }
+  const packageTypesLogRef = useRef<string>('');
 
-  const packages = [...packagesToDisplay];
+  const packages = useMemo(() => {
+    if (packagesToDisplay.length === 0 && authenticated && !isLoading) {
+      console.warn(
+        `[${new Date().toISOString()}] No packages to display after all fallbacks`
+      );
+    }
 
-  const packageOrder: Record<string, number> = {
-    'starter-plus': 1,
-    'growth-pro': 2,
-    'custom-pro': 3,
-    'enterprise-elite': 4,
-    'premium-plus': 5,
-  };
+    const workingPackages = [...packagesToDisplay];
 
-  if (packages.length === 0 || usingFallbackData) {
-    console.log('Using fallback packages to ensure we have all package types');
+    const packageOrder: Record<string, number> = {
+      'starter-plus': 1,
+      'growth-pro': 2,
+      'custom-pro': 3,
+      'enterprise-elite': 4,
+      'premium-plus': 5,
+    };
 
-    const existingTypes = new Set(packages.map((pkg) => pkg.type));
+    if (workingPackages.length === 0 || usingFallbackData) {
+      console.log(
+        'Using fallback packages to ensure we have all package types'
+      );
 
-    for (const pkgType of newPackageTypes) {
-      if (!existingTypes.has(pkgType)) {
-        const fallbackPkg = fallbackPackages.data.find(
-          (pkg) => (pkg.type?.toLowerCase() || '') === pkgType
-        );
+      const existingTypes = new Set(workingPackages.map((pkg) => pkg.type));
 
-        if (fallbackPkg) {
-          const processedPkg = createPackageFromData(fallbackPkg);
-          packages.push(processedPkg);
-          existingTypes.add(pkgType);
-          console.log(`Added missing package type from fallback: ${pkgType}`);
+      for (const pkgType of newPackageTypes) {
+        if (!existingTypes.has(pkgType)) {
+          const fallbackPkg = fallbackPackages.data.find(
+            (pkg) => (pkg.type?.toLowerCase() || '') === pkgType
+          );
+
+          if (fallbackPkg) {
+            const processedPkg = createPackageFromData(fallbackPkg);
+            workingPackages.push(processedPkg);
+            existingTypes.add(pkgType);
+            console.log(`Added missing package type from fallback: ${pkgType}`);
+          }
         }
       }
     }
-  }
 
-  // Sort packages based on the defined order
-  packages.sort((a, b) => {
-    const orderA = packageOrder[a.type as string] || 999;
-    const orderB = packageOrder[b.type as string] || 999;
-    return orderA - orderB;
-  });
+    // Sort packages based on the defined order
+    workingPackages.sort((a, b) => {
+      const orderA = packageOrder[a.type as string] || 999;
+      const orderB = packageOrder[b.type as string] || 999;
+      return orderA - orderB;
+    });
 
-  console.log(
-    'Packages after sorting and ensuring all types exist:',
-    packages.map((pkg) => pkg.type)
-  );
+    // Only log if package types have changed
+    const packageTypesKey = workingPackages.map((pkg) => pkg.type).join(',');
+    if (packageTypesLogRef.current !== packageTypesKey) {
+      packageTypesLogRef.current = packageTypesKey;
+      console.log(
+        'Packages after sorting and ensuring all types exist:',
+        workingPackages.map((pkg) => pkg.type)
+      );
+    }
+
+    return workingPackages;
+  }, [
+    packagesToDisplay,
+    authenticated,
+    isLoading,
+    usingFallbackData,
+    newPackageTypes,
+    createPackageFromData,
+    fallbackPackages.data,
+  ]);
 
   // Show snackbar when using fallback data
   useEffect(() => {
@@ -784,19 +837,24 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
     setSnackbarSeverity,
   ]);
 
-  // Log the packages being rendered
+  // Log the packages being rendered (memoized to prevent infinite loops)
+  const dataLogRef = useRef<string>('');
   useEffect(() => {
     if (data && data.data && data.data.length > 0) {
-      console.log(
-        `[CONTAINER] Rendering pricing packages at ${new Date().toISOString()}`
-      );
-      console.log(`[CONTAINER] Rendered pricing data (first item):`, {
-        id: data.data[0].id,
-        title: data.data[0].title,
-        price: data.data[0].price,
-        timestamp: new Date().toISOString(),
-        usingFallbackData: usingFallbackData,
-      });
+      const currentDataKey = `${data.data[0].id}-${data.data[0].title}-${usingFallbackData}`;
+      if (dataLogRef.current !== currentDataKey) {
+        dataLogRef.current = currentDataKey;
+        console.log(
+          `[CONTAINER] Rendering pricing packages at ${new Date().toISOString()}`
+        );
+        console.log(`[CONTAINER] Rendered pricing data (first item):`, {
+          id: data.data[0].id,
+          title: data.data[0].title,
+          price: data.data[0].price,
+          timestamp: new Date().toISOString(),
+          usingFallbackData: usingFallbackData,
+        });
+      }
     }
   }, [data, usingFallbackData]);
 
@@ -873,19 +931,20 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
                 onBuyNow={() => {
                   const packageForSelection = {
                     ...pkg,
-
-                    type: pkg.type.includes('custom')
-                      ? 'custom'
-                      : pkg.type.includes('starter')
-                        ? 'starter'
-                        : pkg.type.includes('growth')
-                          ? 'growth'
-                          : pkg.type.includes('enterprise')
-                            ? 'enterprise'
-                            : pkg.type.includes('premium')
-                              ? 'premium'
-                              : 'starter',
-                  } as import('@/contexts/PackageSelectionContext').Package;
+                    type:
+                      pkg.type === 'custom-pro'
+                        ? 'custom-pro'
+                        : pkg.type === 'starter-plus'
+                          ? 'starter-plus'
+                          : pkg.type === 'growth-pro'
+                            ? 'growth-pro'
+                            : pkg.type === 'enterprise-elite'
+                              ? 'enterprise-elite'
+                              : pkg.type === 'premium-plus'
+                                ? 'premium-plus'
+                                : 'starter-plus',
+                    isCustomizable: pkg.type === 'custom-pro',
+                  } as unknown as import('@/contexts/PackageSelectionContext').Package;
 
                   selectPackage(packageForSelection);
                 }}

@@ -66,47 +66,80 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = (props) => {
 
   const { setTestPeriod } = useTestPeriod();
 
-  const initialData = {
-    features: props.features,
-    addOns: convertAddOns(props.addOns),
-    usagePricing: props.usagePricing,
-    selectedFeatures: props.selectedFeatures,
-    selectedAddOns: convertAddOns(props.selectedAddOns),
-    usageQuantities: props.usageQuantities,
-    basePrice: props.basePrice,
-    calculatedPrice: props.calculatedPrice,
-    packageDetails: props.packageDetails,
-    selectedPackage: props.selectedPackage,
-    isCustomizable: props.isCustomizable,
-    currentStep: props.currentStep,
-    enterpriseFeatures: props.enterpriseFeatures,
-    currentCurrency: props.currentCurrency,
-  };
+  const initialData = React.useMemo(
+    () => ({
+      features: props.features,
+      addOns: convertAddOns(props.addOns),
+      usagePricing: props.usagePricing,
+      selectedFeatures: props.selectedFeatures,
+      selectedAddOns: convertAddOns(props.selectedAddOns),
+      usageQuantities: props.usageQuantities,
+      basePrice: props.basePrice,
+      calculatedPrice: props.calculatedPrice,
+      packageDetails: props.packageDetails,
+      selectedPackage: props.selectedPackage,
+      isCustomizable: props.isCustomizable,
+      currentStep: props.currentStep,
+      enterpriseFeatures: props.enterpriseFeatures,
+      currentCurrency: props.currentCurrency,
+    }),
+    [
+      props.features,
+      props.addOns,
+      props.usagePricing,
+      props.selectedFeatures,
+      props.selectedAddOns,
+      props.usageQuantities,
+      props.basePrice,
+      props.calculatedPrice,
+      props.packageDetails,
+      props.selectedPackage,
+      props.isCustomizable,
+      props.currentStep,
+      props.enterpriseFeatures,
+      props.currentCurrency,
+    ]
+  );
 
-  const callbacks = {
-    onNext: props.onNext,
-    onBack: props.onBack,
-    onSave: (data: SavedPackageData) => {
-      setTestPeriod(props.selectedPackage.testPeriodDays);
-      props.onSave(data);
+  const callbacks = React.useMemo(
+    () => ({
+      onNext: props.onNext,
+      onBack: props.onBack,
+      onSave: (data: SavedPackageData) => {
+        setTestPeriod(props.selectedPackage.testPeriodDays);
+        props.onSave(data);
 
-      if (props.onShowSuccessMessage) {
-        const successMessage = 'Package configuration saved successfully!';
-        const successData = createSuccessMessage(successMessage, data);
-        props.onShowSuccessMessage(successMessage, successData);
-      }
-    },
-    onFeatureToggle: props.onFeatureToggle,
-    onAddOnToggle: (addOns: IndexAddOn[]) => {
-      props.onAddOnToggle(addOns);
-    },
-    onUsageChange: props.onUsageChange,
-    setSelectedCurrency: props.setSelectedCurrency,
-    onEnterpriseFeatureToggle: props.onEnterpriseFeatureToggle,
-    onShowSuccessMessage: props.onShowSuccessMessage,
-  };
+        if (props.onShowSuccessMessage) {
+          const successMessage = 'Package configuration saved successfully!';
+          const successData = createSuccessMessage(successMessage, data);
+          props.onShowSuccessMessage(successMessage, successData);
+        }
+      },
+      onFeatureToggle: props.onFeatureToggle,
+      onAddOnToggle: (addOns: IndexAddOn[]) => {
+        props.onAddOnToggle(addOns);
+      },
+      onUsageChange: props.onUsageChange,
+      setSelectedCurrency: props.setSelectedCurrency,
+      onEnterpriseFeatureToggle: props.onEnterpriseFeatureToggle,
+      onShowSuccessMessage: props.onShowSuccessMessage,
+    }),
+    [
+      props.onNext,
+      props.onBack,
+      props.onSave,
+      props.onFeatureToggle,
+      props.onAddOnToggle,
+      props.onUsageChange,
+      props.setSelectedCurrency,
+      props.onEnterpriseFeatureToggle,
+      props.onShowSuccessMessage,
+      props.selectedPackage.testPeriodDays,
+      setTestPeriod,
+    ]
+  );
 
-  const renderStepContent = () => {
+  const renderStepContent = React.useCallback(() => {
     const currentLabel = steps[currentStep]?.trim() || '';
 
     if (!currentLabel) {
@@ -134,7 +167,7 @@ const CustomPackageLayout: React.FC<CustomPackageLayoutProps> = (props) => {
       default:
         return null;
     }
-  };
+  }, [steps, currentStep]);
 
   return (
     <PackageProvider initialData={initialData} callbacks={callbacks}>

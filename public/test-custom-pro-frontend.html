@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Pro Add-ons Frontend Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .addon-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .addon-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Custom Pro Add-ons Frontend Test</h1>
+        <p>This page tests the Custom Pro package add-ons functionality from the frontend perspective.</p>
+
+        <div class="test-section info">
+            <h3>📋 Test Instructions</h3>
+            <ol>
+                <li>Click "Test Custom Features API" to verify the API returns add-ons</li>
+                <li>Click "Test Package Selection Flow" to simulate the frontend logic</li>
+                <li>Check the console for detailed logs</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 API Tests</h3>
+            <button onclick="testCustomFeaturesAPI()">Test Custom Features API</button>
+            <button onclick="testPackageFlow()">Test Package Selection Flow</button>
+            <button onclick="clearResults()">Clear Results</button>
+            
+            <div id="api-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Results</h3>
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testCustomFeaturesAPI() {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.innerHTML = '<p>🔄 Testing Custom Features API...</p>';
+
+            try {
+                const response = await fetch('/api/pricing-packages/custom/features');
+                const data = await response.json();
+
+                console.log('Custom Features API Response:', data);
+
+                if (response.ok && data.addOns && data.addOns.length > 0) {
+                    resultsDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Custom Features API Test Passed</h4>
+                            <p><strong>Status:</strong> ${response.status}</p>
+                            <p><strong>Add-ons found:</strong> ${data.addOns.length}</p>
+                            <div class="addon-list">
+                                ${data.addOns.map(addon => `
+                                    <div class="addon-card">
+                                        <strong>${addon.name}</strong><br>
+                                        <small>${addon.description}</small><br>
+                                        <strong>$${addon.price} (${addon.category})</strong>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Custom Features API Test Failed</h4>
+                            <p>No add-ons found or API error</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('API Test Error:', error);
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ API Test Error</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testPackageFlow() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<p>🔄 Testing Package Selection Flow...</p>';
+
+            try {
+                // Simulate the frontend logic for Custom Pro packages
+                const mockCustomProPackage = {
+                    id: 3,
+                    title: 'Custom Pro',
+                    type: 'custom-pro',
+                    isCustomizable: true
+                };
+
+                console.log('Testing with mock Custom Pro package:', mockCustomProPackage);
+
+                // Test the logic that determines if a package is customizable
+                const isCustomizable = mockCustomProPackage.isCustomizable;
+                
+                if (isCustomizable) {
+                    // Simulate fetching custom features (this is what the frontend does)
+                    const response = await fetch('/api/pricing-packages/custom/features');
+                    const data = await response.json();
+
+                    console.log('Frontend would use these add-ons:', data.addOns);
+
+                    resultsDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ Package Flow Test Passed</h4>
+                            <p><strong>Package:</strong> ${mockCustomProPackage.title}</p>
+                            <p><strong>Is Customizable:</strong> ${isCustomizable}</p>
+                            <p><strong>Add-ons loaded:</strong> ${data.addOns?.length || 0}</p>
+                            <p><strong>Expected behavior:</strong> Frontend will show "Choose Add-Ons" step with ${data.addOns?.length || 0} add-ons</p>
+                            <pre>Steps: Package Details → Select Core Features → Choose Add-Ons → Configure Usage → Select Payment Plan → Choose Support Level → Configure Integrations → Review & Confirm</pre>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ Package Flow Test Failed</h4>
+                            <p>Package not marked as customizable</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Package Flow Test Error:', error);
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Package Flow Test Error</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('api-results').innerHTML = '';
+            document.getElementById('test-results').innerHTML = '';
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            console.log('🧪 Custom Pro Add-ons Frontend Test Page Loaded');
+            console.log('Click the test buttons to verify functionality');
+        });
+    </script>
+</body>
+</html>

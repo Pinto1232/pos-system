@@ -5,7 +5,6 @@ import { Modal, Box, Typography, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import styles from './PackageSelectionModal.module.css';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
-import { useSpinner } from '@/contexts/SpinnerContext';
 import { Package as CustomPackage } from '@/components/packages/custom-package-layout/types';
 import CustomPackageLayoutContainer from '@/components/packages/custom-package-layout/CustomPackageLayoutContainer';
 import StarterPackageLayout from '@/components/packages/starter-package-layout/StarterPackageLayout';
@@ -15,7 +14,6 @@ import PremiumPackageLayout from './premium-package-layout/PremiumPackageLayout'
 
 const PackageSelectionModal: React.FC = memo(() => {
   const { selectedPackage, isModalOpen, closeModal } = usePackageSelection();
-  const { loading } = useSpinner();
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,7 +28,7 @@ const PackageSelectionModal: React.FC = memo(() => {
     }
   };
 
-  if (!selectedPackage || loading) return null;
+  if (!selectedPackage) return null;
 
   const renderPackageLayout = () => {
     const packageType = selectedPackage.type.toLowerCase();
@@ -41,19 +39,34 @@ const PackageSelectionModal: React.FC = memo(() => {
           selectedPackage={selectedPackage as CustomPackage}
         />
       );
-    } else if (packageType.includes('starter')) {
-      return <StarterPackageLayout selectedPackage={selectedPackage} />;
-    } else if (packageType.includes('growth')) {
-      return <GrowthPackageLayout selectedPackage={selectedPackage} />;
-    } else if (packageType.includes('enterprise')) {
-      return <EnterprisePackageLayout selectedPackage={selectedPackage} />;
-    } else if (packageType.includes('premium')) {
-      return <PremiumPackageLayout selectedPackage={selectedPackage} />;
     } else {
-      console.warn(
-        `Unknown package type: ${packageType}. Defaulting to Starter package layout.`
-      );
-      return <StarterPackageLayout selectedPackage={selectedPackage} />;
+      const adaptedPackage = {
+        ...selectedPackage,
+        type: packageType.includes('starter')
+          ? ('starter' as const)
+          : packageType.includes('growth')
+            ? ('growth' as const)
+            : packageType.includes('enterprise')
+              ? ('enterprise' as const)
+              : packageType.includes('premium')
+                ? ('premium' as const)
+                : ('starter' as const),
+      };
+
+      if (packageType.includes('starter')) {
+        return <StarterPackageLayout selectedPackage={adaptedPackage} />;
+      } else if (packageType.includes('growth')) {
+        return <GrowthPackageLayout selectedPackage={adaptedPackage} />;
+      } else if (packageType.includes('enterprise')) {
+        return <EnterprisePackageLayout selectedPackage={adaptedPackage} />;
+      } else if (packageType.includes('premium')) {
+        return <PremiumPackageLayout selectedPackage={adaptedPackage} />;
+      } else {
+        console.warn(
+          `Unknown package type: ${packageType}. Defaulting to Starter package layout.`
+        );
+        return <StarterPackageLayout selectedPackage={adaptedPackage} />;
+      }
     }
   };
 

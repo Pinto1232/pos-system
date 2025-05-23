@@ -380,7 +380,69 @@ const ReviewConfirmStep: React.FC = () => {
                   </Typography>
                 </Box>
 
-                {pricingState.totalFeaturePrice > 0 && (
+                {}
+                {selectedAddOns.length > 0 && (
+                  <Box sx={{ mb: 1 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                      Selected Add-ons:
+                    </Typography>
+                    {selectedAddOns.map((addOn) => {
+                      const addOnPrice =
+                        addOn.multiCurrencyPrices &&
+                        addOn.multiCurrencyPrices[selectedCurrency]
+                          ? addOn.multiCurrencyPrices[selectedCurrency]
+                          : addOn.price;
+
+                      return (
+                        <Box
+                          key={addOn.id}
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            mb: 0.5,
+                            pl: 2,
+                          }}
+                        >
+                          <Typography variant="caption" color="text.secondary">
+                            • {addOn.name}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {formatPrice(selectedCurrency, addOnPrice)}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        mb: 1,
+                        borderTop: '1px solid #e0e0e0',
+                        pt: 0.5,
+                      }}
+                    >
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        Add-ons Subtotal:
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {formatPrice(
+                          selectedCurrency,
+                          selectedAddOns.reduce((sum, addOn) => {
+                            const price =
+                              addOn.multiCurrencyPrices &&
+                              addOn.multiCurrencyPrices[selectedCurrency]
+                                ? addOn.multiCurrencyPrices[selectedCurrency]
+                                : addOn.price;
+                            return sum + price;
+                          }, 0)
+                        )}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+
+                {}
+                {selectedFeatures.length > 0 && (
                   <Box
                     sx={{
                       display: 'flex',
@@ -388,11 +450,15 @@ const ReviewConfirmStep: React.FC = () => {
                       mb: 1,
                     }}
                   >
-                    <Typography variant="body2">Features & Add-ons:</Typography>
+                    <Typography variant="body2">Core Features:</Typography>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                       {formatPrice(
                         selectedCurrency,
-                        pricingState.totalFeaturePrice
+                        selectedFeatures.reduce((sum, feature) => {
+                          const featurePrice =
+                            pricingState.featurePrices[feature.id] || 0;
+                          return sum + featurePrice;
+                        }, 0)
                       )}
                     </Typography>
                   </Box>

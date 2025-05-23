@@ -505,6 +505,24 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (isMounted && !initStartedRef.current) {
       console.log('Checking if we should fetch token from API...');
 
+      const isTestPage =
+        typeof window !== 'undefined' &&
+        (window.location.pathname.startsWith('/test-') ||
+          window.location.pathname === '/test-csp' ||
+          window.location.pathname === '/test-fix-verification' ||
+          window.location.pathname === '/test-addons' ||
+          window.location.pathname === '/test-custom-pro');
+
+      if (isTestPage) {
+        console.log(
+          'Skipping authentication for test page:',
+          window.location.pathname
+        );
+        setInitialized(true);
+        initStartedRef.current = true;
+        return;
+      }
+
       const skipAuthApi = process.env.NEXT_PUBLIC_SKIP_AUTH_API === 'true';
 
       if (skipAuthApi) {

@@ -1,6 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/api/axiosClient';
 import { AddOn } from '@/components/packages/custom-package-layout/types';
+import {
+  transformBackendAddOnToFrontend,
+  transformBackendAddOnsToFrontend,
+  transformFrontendAddOnToBackend,
+  BackendAddOn,
+} from '@/utils/dataTransformers';
 
 export const addOnKeys = {
   all: ['addOns'] as const,
@@ -11,6 +17,11 @@ export const addOnKeys = {
   detail: (id: number) => [...addOnKeys.details(), id] as const,
   categories: () => [...addOnKeys.all, 'categories'] as const,
 };
+
+interface BackendAddOnsResponse {
+  totalItems: number;
+  data: BackendAddOn[];
+}
 
 interface AddOnsResponse {
   totalItems: number;
@@ -40,8 +51,17 @@ export const useAddOns = (filters: AddOnFilters = {}) => {
       const queryString = params.toString() ? `?${params.toString()}` : '';
 
       console.log(`Fetching AddOns with filters: ${queryString}`);
-      const response = await apiClient.get(`/api/AddOns${queryString}`);
-      return response.data;
+      const response = await apiClient.get<BackendAddOnsResponse>(
+        `/api/AddOns${queryString}`
+      );
+
+      // Transform backend data to frontend format
+      const transformedData: AddOnsResponse = {
+        totalItems: response.data.totalItems,
+        data: transformBackendAddOnsToFrontend(response.data.data),
+      };
+
+      return transformedData;
     },
     staleTime: 60 * 1000, // 1 minute
   });
@@ -55,8 +75,10 @@ export const useAddOn = (id: number) => {
     queryKey: addOnKeys.detail(id),
     queryFn: async () => {
       console.log(`Fetching AddOn with ID: ${id}`);
-      const response = await apiClient.get(`/api/AddOns/${id}`);
-      return response.data;
+      const response = await apiClient.get<BackendAddOn>(`/api/AddOns/${id}`);
+
+      // Transform backend data to frontend format
+      return transformBackendAddOnToFrontend(response.data);
     },
     staleTime: 60 * 1000, // 1 minute
   });
@@ -83,8 +105,15 @@ export const useCreateAddOn = () => {
   return useMutation({
     mutationFn: async (newAddOn: Omit<AddOn, 'id'>) => {
       console.log('Creating new AddOn:', JSON.stringify(newAddOn, null, 2));
-      const response = await apiClient.post('/api/AddOns', newAddOn);
-      return response.data;
+
+      const backendAddOn = transformFrontendAddOnToBackend(newAddOn);
+
+      const response = await apiClient.post<BackendAddOn>(
+        '/api/AddOns',
+        backendAddOn
+      );
+
+      return transformBackendAddOnToFrontend(response.data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -103,8 +132,15 @@ export const useUpdateAddOn = () => {
         `Updating AddOn with ID ${id}:`,
         JSON.stringify(data, null, 2)
       );
-      const response = await apiClient.put(`/api/AddOns/${id}`, data);
-      return response.data;
+
+      const backendData = transformFrontendAddOnToBackend(data);
+
+      const response = await apiClient.put<BackendAddOn>(
+        `/api/AddOns/${id}`,
+        backendData
+      );
+
+      return transformBackendAddOnToFrontend(response.data);
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({

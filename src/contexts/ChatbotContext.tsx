@@ -73,51 +73,55 @@ const getPackageColor = (packageType: string): string => {
 
 const getPackageFeatures = (packageType: string): string[] => {
   switch (packageType) {
-    case 'starter':
+    case 'starter-plus':
       return [
-        'Basic inventory management',
-        'Simple sales tracking',
-        'Customer management',
-        'Single user account',
+        'Basic POS functionality',
+        'Inventory management',
+        'Single store support',
         'Email support',
+        'Basic reporting',
+        'Customer database',
+        'Simple analytics',
       ];
-    case 'growth':
+    case 'growth-pro':
       return [
-        'Advanced inventory management',
-        'Detailed sales analytics',
-        'Customer loyalty program',
-        'Up to 5 user accounts',
-        'Email and chat support',
+        'Everything in Starter Plus',
+        'Advanced inventory forecasting',
+        'Enhanced customer loyalty program',
+        'Marketing automation tools',
+        'Staff performance tracking',
+        'Customizable dashboards',
         'Mobile app access',
       ];
-    case 'premium':
+    case 'premium-plus':
       return [
-        'Everything in Growth package',
-        'Advanced reporting',
-        'Multi-location support',
-        'Integrated marketing tools',
-        'Up to 15 user accounts',
-        'Priority customer support',
-        'API access',
+        'All-inclusive POS package',
+        'Advanced AI-powered analytics',
+        'Predictive inventory management',
+        'Omnichannel integration',
+        'VIP support',
+        'Quarterly business reviews',
+        'Custom reporting',
       ];
-    case 'enterprise':
+    case 'enterprise-elite':
       return [
-        'Everything in Premium package',
-        'Custom integrations',
+        'Comprehensive POS solutions',
+        'Multi-location management',
+        'Enterprise-level analytics',
+        'Custom API integrations',
+        'White-label options',
         'Dedicated account manager',
-        'Unlimited users',
-        'Advanced security features',
-        '24/7 priority support',
-        'Custom branding',
-        'On-site training',
+        'Priority 24/7 support',
       ];
-    case 'custom':
+    case 'custom-pro':
       return [
-        'Choose your own features',
+        'Tailor-made solutions',
+        'Build your own feature set',
         'Pay only for what you need',
         'Flexible scaling options',
-        'Custom development available',
-        'Tailored support options',
+        'Industry-specific solutions',
+        'Personalized onboarding',
+        'Professional customization services',
       ];
     default:
       return [
@@ -137,34 +141,34 @@ const getPackagePricing = (
   currency: string;
 } => {
   switch (packageType) {
-    case 'starter':
+    case 'starter-plus':
       return {
-        monthly: 29.99,
-        annual: 299.9,
+        monthly: 39.99,
+        annual: 399.9,
         currency: 'USD',
       };
-    case 'growth':
+    case 'growth-pro':
       return {
-        monthly: 59.99,
-        annual: 599.9,
+        monthly: 79.99,
+        annual: 799.9,
         currency: 'USD',
       };
-    case 'premium':
+    case 'premium-plus':
       return {
-        monthly: 99.99,
-        annual: 999.9,
+        monthly: 349.99,
+        annual: 3499.9,
         currency: 'USD',
       };
-    case 'enterprise':
+    case 'enterprise-elite':
       return {
-        monthly: 199.99,
-        annual: 1999.9,
+        monthly: 249.99,
+        annual: 2499.9,
         currency: 'USD',
       };
-    case 'custom':
+    case 'custom-pro':
       return {
-        monthly: 0,
-        annual: 0,
+        monthly: 129.99,
+        annual: 1299.9,
         currency: 'USD',
       };
     default:
@@ -178,31 +182,31 @@ const getPackagePricing = (
 
 const getSuggestedResponses = (packageType: string): string[] => {
   switch (packageType) {
-    case 'starter':
+    case 'starter-plus':
       return [
         'Tell me about pricing',
         'What features are included?',
-        'How does it compare to Growth?',
+        'How does it compare to Growth Pro?',
       ];
-    case 'growth':
+    case 'growth-pro':
       return [
         'What advanced features do I get?',
         'Is there a free trial?',
-        'How does it compare to Premium?',
+        'How does it compare to Premium Plus?',
       ];
-    case 'premium':
+    case 'premium-plus':
       return [
         'What makes this your best value?',
-        'Do you offer support?',
-        'Can I customize any features?',
+        'Do you offer VIP support?',
+        'What AI features are included?',
       ];
-    case 'enterprise':
+    case 'enterprise-elite':
       return [
         'Do you offer dedicated support?',
         'Can I get a custom quote?',
         'What security features are included?',
       ];
-    case 'custom':
+    case 'custom-pro':
       return [
         'How do I select features?',
         'What is the pricing structure?',
@@ -251,7 +255,6 @@ export const ChatbotProvider: React.FC<{
 
   const [themeColor, setThemeColor] = useState<string>('#1976d2');
 
-  
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
@@ -261,11 +264,10 @@ export const ChatbotProvider: React.FC<{
     }
   }, [firstVisit]);
 
-  
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitialLoad(false);
-    }, 1000); 
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -355,7 +357,6 @@ export const ChatbotProvider: React.FC<{
 
       setPreviousPackageId(selectedPackage.id);
 
-      
       if (!isOpen && !isInitialLoad) {
         setIsOpen(true);
       }
@@ -459,20 +460,20 @@ export const ChatbotProvider: React.FC<{
 
   const getPackageDescription = (packageType: string): string => {
     switch (packageType) {
-      case 'starter':
-        return "I see you're looking at our Starter Package! This is perfect for small businesses just getting started. It includes essential POS features like basic inventory management, simple sales tracking, and customer management. Would you like to know more about specific features or pricing details?";
+      case 'starter-plus':
+        return "I see you're looking at our Starter Plus Package! This is perfect for small businesses looking for essential features. It includes basic POS functionality, inventory management, single store support, email support, basic reporting, customer database, and simple analytics. Would you like to know more about specific features or pricing details?";
 
-      case 'growth':
-        return "Great choice with the Growth Package! This mid-tier option is designed for expanding businesses. You'll get advanced inventory management, detailed sales analytics, multi-user support, and customer loyalty programs. Is there a specific aspect of this package you'd like me to explain further?";
+      case 'growth-pro':
+        return "Great choice with the Growth Pro Package! This advanced option is designed for expanding businesses. You'll get everything in Starter Plus plus advanced inventory forecasting, enhanced customer loyalty programs, marketing automation tools, staff performance tracking, customizable dashboards, and mobile app access. Is there a specific aspect of this package you'd like me to explain further?";
 
-      case 'premium':
-        return "You've selected our Premium Package! This comprehensive solution includes everything in the Growth package plus advanced reporting, multi-location support, integrated marketing tools, and priority customer support. Would you like me to highlight any specific premium features?";
+      case 'premium-plus':
+        return "You've selected our Premium Plus Package! This all-inclusive solution features advanced AI-powered analytics, predictive inventory management, omnichannel integration, VIP support, quarterly business reviews, and custom reporting. Would you like me to highlight any specific premium features?";
 
-      case 'enterprise':
-        return 'Excellent choice with our Enterprise Package! This top-tier solution is tailored for large businesses with complex needs. It includes custom integrations, dedicated account management, unlimited users, advanced security features, and 24/7 priority support. What specific enterprise needs are you looking to address?';
+      case 'enterprise-elite':
+        return 'Excellent choice with our Enterprise Elite Package! This comprehensive solution is tailored for large organizations with complex requirements. It includes multi-location management, enterprise-level analytics, custom API integrations, white-label options, dedicated account manager, and priority 24/7 support. What specific enterprise needs are you looking to address?';
 
-      case 'custom':
-        return "I see you're exploring our Custom Package option! This allows you to build a solution tailored exactly to your business needs. You can select specific features, add-ons, and usage-based pricing that makes sense for your operation. Would you like suggestions on which features might be most valuable for your business?";
+      case 'custom-pro':
+        return "I see you're exploring our Custom Pro Package option! This allows you to build a solution tailored exactly to your business needs with professional customization services. You can select specific features, add-ons, and create industry-specific solutions with personalized onboarding. Would you like suggestions on which features might be most valuable for your business?";
 
       default:
         return `I notice you're looking at our ${packageType} package. This is a great choice for your business needs. Would you like to know more about the specific features included?`;
@@ -504,27 +505,27 @@ export const ChatbotProvider: React.FC<{
       lowerMessage.includes('starter') ||
       lowerMessage.includes('basic')
     ) {
-      return getPackageDescription('starter');
+      return getPackageDescription('starter-plus');
     } else if (
       lowerMessage.includes('growth') ||
       lowerMessage.includes('medium')
     ) {
-      return getPackageDescription('growth');
+      return getPackageDescription('growth-pro');
     } else if (
       lowerMessage.includes('premium') ||
       lowerMessage.includes('advanced')
     ) {
-      return getPackageDescription('premium');
+      return getPackageDescription('premium-plus');
     } else if (
       lowerMessage.includes('enterprise') ||
       lowerMessage.includes('large')
     ) {
-      return getPackageDescription('enterprise');
+      return getPackageDescription('enterprise-elite');
     } else if (
       lowerMessage.includes('custom') ||
       lowerMessage.includes('tailored')
     ) {
-      return getPackageDescription('custom');
+      return getPackageDescription('custom-pro');
     } else {
       return "I'm not sure I understand. Could you please rephrase your question about our POS system?";
     }

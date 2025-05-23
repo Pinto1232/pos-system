@@ -979,7 +979,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
             [
               'Starter Plus',
               'Growth Pro',
-              'Custom',
+              'Custom Pro',
               'Enterprise Elite',
               'Premium Plus',
             ].includes(pkg.title)

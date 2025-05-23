@@ -2,11 +2,12 @@
 
 import React, { useMemo } from 'react';
 import { Box, Typography, Checkbox, Button } from '@mui/material';
-import { FaCalendarAlt, FaCalendarCheck } from 'react-icons/fa';
+import { FaCalendarCheck } from 'react-icons/fa';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import PriceDisplay from '../shared/PriceDisplay';
 import NavigationButtons from '../shared/NavigationButtons';
+import type { PaymentPlan } from '@/app/api/payment-plans/route';
 
 const PackageDetailsStep: React.FC = () => {
   const {
@@ -20,19 +21,33 @@ const PackageDetailsStep: React.FC = () => {
     checkboxStates,
     handleCheckboxChange,
     isAnyCheckboxSelected,
-    handleSave,
+    handleNext,
     loading,
     backLoading,
     handleBack,
+    paymentPlans,
+    paymentPlansLoading,
+    selectedPlanIndex,
+    handlePlanSelect,
   } = usePackageContext();
 
   React.useEffect(() => {
-    console.log('PackageDetailsStep - addOns data:', {
-      addOnsLength: addOns?.length || 0,
-      addOns: addOns,
-      isCustomizable,
-    });
-  }, [addOns, isCustomizable]);
+    console.log(
+      '[PACKAGE_DETAILS_STEP] Add-Ons Debug:',
+      JSON.stringify(
+        {
+          timestamp: new Date().toISOString(),
+          addOnsLength: addOns?.length || 0,
+          addOns: addOns,
+          isCustomizable,
+          checkboxStatesKeys: Object.keys(checkboxStates),
+          checkboxStatesCount: Object.keys(checkboxStates).length,
+        },
+        null,
+        2
+      )
+    );
+  }, [addOns, isCustomizable, checkboxStates]);
 
   const formattedDescription = useMemo(() => {
     return packageDetails.description
@@ -82,9 +97,9 @@ const PackageDetailsStep: React.FC = () => {
         <Box className={styles.featuresTable}>
           <Box className={styles.tableHeader}>
             <Box className={styles.featureColumn}></Box>
-            <Box className={styles.planColumn}>Business</Box>
-            <Box className={styles.planColumn}>Startup</Box>
-            <Box className={styles.planColumn}>Personal</Box>
+            <Box className={styles.planColumn}>Monthly</Box>
+            <Box className={styles.planColumn}>Quarterly</Box>
+            <Box className={styles.planColumn}>Annual</Box>
           </Box>
 
           <Box
@@ -93,87 +108,112 @@ const PackageDetailsStep: React.FC = () => {
               borderBottom: '2px solid #e0e0e0',
             }}
           >
-            <Box className={styles.featureColumn}>Billing Period</Box>
-            <Box className={styles.planColumn}>
-              <Button
-                variant="contained"
-                className={styles.priceTabActive}
+            <Box className={styles.featureColumn}>
+              <Typography
+                variant="body2"
                 sx={{
-                  minWidth: '100px',
-                  backgroundColor: '#2563eb',
-                  '&:hover': {
-                    backgroundColor: '#1d4ed8',
-                  },
+                  fontWeight: 600,
+                  color: '#173a79',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
                 }}
-                startIcon={<FaCalendarAlt />}
-                aria-label="Monthly billing period"
               >
-                Monthly
-              </Button>
+                <FaCalendarCheck />
+                Billing Period
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  display: 'block',
+                  color: 'text.secondary',
+                  fontSize: '0.7rem',
+                }}
+              >
+                Choose your preferred billing cycle
+              </Typography>
             </Box>
-            <Box className={styles.planColumn}>
-              <Button
-                variant="outlined"
-                className={styles.priceTab}
-                sx={{
-                  minWidth: '60px',
-                  borderColor: '#e2e8f0',
-                  color: '#64748b',
-                  '&:hover': {
-                    borderColor: '#cbd5e1',
-                    backgroundColor: '#f8fafc',
-                  },
-                }}
-                startIcon={<FaCalendarCheck />}
-                aria-label="Yearly billing period with 20% discount"
-              >
-                yrs
-                <span
-                  style={{
-                    backgroundColor: '#dcfce7',
-                    color: '#166534',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    fontSize: '0.75rem',
-                    marginLeft: '8px',
+            {paymentPlansLoading ? (
+              <>
+                <Box className={styles.planColumn}>
+                  <Typography variant="body2" color="text.secondary">
+                    Loading...
+                  </Typography>
+                </Box>
+                <Box className={styles.planColumn}>
+                  <Typography variant="body2" color="text.secondary">
+                    Loading...
+                  </Typography>
+                </Box>
+                <Box className={styles.planColumn}>
+                  <Typography variant="body2" color="text.secondary">
+                    Loading...
+                  </Typography>
+                </Box>
+              </>
+            ) : (
+              (paymentPlans || []).slice(0, 3).map((plan: PaymentPlan) => (
+                <Box
+                  key={plan.id}
+                  className={styles.planColumn}
+                  data-label={plan.name}
+                  sx={{
+                    backgroundColor:
+                      selectedPlanIndex === plan.id
+                        ? 'rgba(76, 175, 80, 0.1)'
+                        : 'transparent',
+                    transition: 'background-color 0.3s ease',
                   }}
                 >
-                  -20%
-                </span>
-              </Button>
-            </Box>
-            <Box className={styles.planColumn}>
-              <Button
-                variant="outlined"
-                className={styles.priceTab}
-                sx={{
-                  minWidth: '60px',
-                  borderColor: '#e2e8f0',
-                  flexWrap: 'nowrap',
-                  color: '#64748b',
-                  '&:hover': {
-                    borderColor: '#cbd5e1',
-                    backgroundColor: '#f8fafc',
-                  },
-                }}
-                startIcon={<FaCalendarCheck />}
-                aria-label="2-year billing period with 30% discount"
-              >
-                2yrs
-                <span
-                  style={{
-                    backgroundColor: '#dcfce7',
-                    color: '#166534',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    fontSize: '0.75rem',
-                    marginLeft: '8px',
-                  }}
-                >
-                  -30%
-                </span>
-              </Button>
-            </Box>
+                  <Button
+                    variant={
+                      selectedPlanIndex === plan.id ? 'contained' : 'outlined'
+                    }
+                    size="small"
+                    onClick={() => handlePlanSelect(plan.id)}
+                    startIcon={<FaCalendarCheck />}
+                    aria-label={`${plan.name} billing period${plan.discountLabel ? ` with ${plan.discountLabel}` : ''}`}
+                    sx={{
+                      minWidth: '80px',
+                      ...(selectedPlanIndex === plan.id
+                        ? {
+                            backgroundColor: '#2563eb',
+                            '&:hover': {
+                              backgroundColor: '#1d4ed8',
+                            },
+                          }
+                        : {
+                            borderColor: '#e2e8f0',
+                            color: '#64748b',
+                            '&:hover': {
+                              borderColor: '#cbd5e1',
+                              backgroundColor: '#f8fafc',
+                            },
+                          }),
+                    }}
+                  >
+                    {plan.period
+                      .replace(' month', 'mo')
+                      .replace(' months', 'mo')
+                      .replace('12 mo', '1yr')}
+                    {plan.discountLabel && (
+                      <span
+                        style={{
+                          backgroundColor: '#dcfce7',
+                          color: '#166534',
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          marginLeft: '8px',
+                        }}
+                      >
+                        {plan.discountLabel}
+                      </span>
+                    )}
+                  </Button>
+                </Box>
+              ))
+            )}
           </Box>
 
           {addOns && addOns.length > 0 ? (
@@ -280,20 +320,20 @@ const PackageDetailsStep: React.FC = () => {
 
       <NavigationButtons
         onBack={handleBack}
-        onSave={handleSave}
+        onNext={handleNext}
         backLabel="Back"
-        saveLabel="Continue"
+        nextLabel="Continue"
         isBackDisabled={backLoading}
-        isSaveDisabled={
+        isNextDisabled={
           loading ||
           !isAnyCheckboxSelected() ||
           (isCustomizable && pricingState.totalFeaturePrice === 0)
         }
         isBackLoading={backLoading}
-        isSaveLoading={loading}
+        isNextLoading={loading}
         showBackButton={true}
-        showNextButton={false}
-        showSaveButton={true}
+        showNextButton={true}
+        showSaveButton={false}
       />
     </Box>
   );

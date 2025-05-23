@@ -89,9 +89,14 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
       }
     );
 
-    console.log(
-      `Package card ${packageData.title} (${packageData.type}) price: ${displayPrice}, formatted: ${convertedPrice}, currency: ${currency}, language: ${currentLanguage.code}`
-    );
+    const priceLogRef = React.useRef<string>('');
+    const currentPriceKey = `${packageData.title}-${displayPrice}-${currency}`;
+    if (priceLogRef.current !== currentPriceKey) {
+      priceLogRef.current = currentPriceKey;
+      console.log(
+        `Package card ${packageData.title} (${packageData.type}) price: ${displayPrice}, formatted: ${convertedPrice}, currency: ${currency}, language: ${currentLanguage.code}`
+      );
+    }
 
     return (
       <Card
