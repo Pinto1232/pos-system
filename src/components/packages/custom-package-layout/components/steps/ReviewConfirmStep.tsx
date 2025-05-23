@@ -231,7 +231,6 @@ const ReviewConfirmStep: React.FC = () => {
                         </ListItemIcon>
                         <ListItemText
                           primary={`${usageItem.name}: ${quantity} ${usageItem.unit}`}
-                          secondary={usageItem.description}
                           primaryTypographyProps={{ fontWeight: 600 }}
                         />
                         <Typography

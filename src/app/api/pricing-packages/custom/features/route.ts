@@ -36,7 +36,112 @@ export async function GET(request: NextRequest) {
       );
 
       return NextResponse.json({
-        coreFeatures: [],
+        coreFeatures: [
+          {
+            id: 1,
+            name: 'Point of Sale',
+            description: 'Basic POS functionality with sales processing',
+            basePrice: 10.0,
+            isRequired: true,
+            multiCurrencyPrices: {
+              USD: 10.0,
+              EUR: 9.0,
+              GBP: 7.5,
+              ZAR: 180.0,
+            },
+          },
+          {
+            id: 2,
+            name: 'Inventory Management',
+            description: 'Track and manage inventory levels',
+            basePrice: 5.0,
+            isRequired: true,
+            multiCurrencyPrices: {
+              USD: 5.0,
+              EUR: 4.5,
+              GBP: 3.75,
+              ZAR: 90.0,
+            },
+          },
+          {
+            id: 3,
+            name: 'Customer Management',
+            description: 'Manage customer information and purchase history',
+            basePrice: 5.0,
+            isRequired: false,
+            multiCurrencyPrices: {
+              USD: 5.0,
+              EUR: 4.5,
+              GBP: 3.75,
+              ZAR: 90.0,
+            },
+          },
+          {
+            id: 4,
+            name: 'Reporting',
+            description: 'Basic sales and inventory reports',
+            basePrice: 5.0,
+            isRequired: false,
+            multiCurrencyPrices: {
+              USD: 5.0,
+              EUR: 4.5,
+              GBP: 3.75,
+              ZAR: 90.0,
+            },
+          },
+          {
+            id: 5,
+            name: 'Employee Management',
+            description: 'Manage employee accounts and permissions',
+            basePrice: 7.5,
+            isRequired: false,
+            multiCurrencyPrices: {
+              USD: 7.5,
+              EUR: 6.75,
+              GBP: 5.65,
+              ZAR: 135.0,
+            },
+          },
+          {
+            id: 6,
+            name: 'Multi-store Support',
+            description: 'Support for multiple store locations',
+            basePrice: 15.0,
+            isRequired: false,
+            multiCurrencyPrices: {
+              USD: 15.0,
+              EUR: 13.5,
+              GBP: 11.25,
+              ZAR: 270.0,
+            },
+          },
+          {
+            id: 7,
+            name: 'Loyalty Program',
+            description: 'Customer loyalty and rewards program',
+            basePrice: 10.0,
+            isRequired: false,
+            multiCurrencyPrices: {
+              USD: 10.0,
+              EUR: 9.0,
+              GBP: 7.5,
+              ZAR: 180.0,
+            },
+          },
+          {
+            id: 8,
+            name: 'E-commerce Integration',
+            description: 'Integration with online store',
+            basePrice: 20.0,
+            isRequired: false,
+            multiCurrencyPrices: {
+              USD: 20.0,
+              EUR: 18.0,
+              GBP: 15.0,
+              ZAR: 360.0,
+            },
+          },
+        ],
         addOns: [
           {
             id: 1,
@@ -171,7 +276,112 @@ export async function GET(request: NextRequest) {
     console.error('Full error details:', error);
 
     return NextResponse.json({
-      coreFeatures: [],
+      coreFeatures: [
+        {
+          id: 1,
+          name: 'Point of Sale',
+          description: 'Basic POS functionality with sales processing',
+          basePrice: 10.0,
+          isRequired: true,
+          multiCurrencyPrices: {
+            USD: 10.0,
+            EUR: 9.0,
+            GBP: 7.5,
+            ZAR: 180.0,
+          },
+        },
+        {
+          id: 2,
+          name: 'Inventory Management',
+          description: 'Track and manage inventory levels',
+          basePrice: 5.0,
+          isRequired: true,
+          multiCurrencyPrices: {
+            USD: 5.0,
+            EUR: 4.5,
+            GBP: 3.75,
+            ZAR: 90.0,
+          },
+        },
+        {
+          id: 3,
+          name: 'Customer Management',
+          description: 'Manage customer information and purchase history',
+          basePrice: 5.0,
+          isRequired: false,
+          multiCurrencyPrices: {
+            USD: 5.0,
+            EUR: 4.5,
+            GBP: 3.75,
+            ZAR: 90.0,
+          },
+        },
+        {
+          id: 4,
+          name: 'Reporting',
+          description: 'Basic sales and inventory reports',
+          basePrice: 5.0,
+          isRequired: false,
+          multiCurrencyPrices: {
+            USD: 5.0,
+            EUR: 4.5,
+            GBP: 3.75,
+            ZAR: 90.0,
+          },
+        },
+        {
+          id: 5,
+          name: 'Employee Management',
+          description: 'Manage employee accounts and permissions',
+          basePrice: 7.5,
+          isRequired: false,
+          multiCurrencyPrices: {
+            USD: 7.5,
+            EUR: 6.75,
+            GBP: 5.65,
+            ZAR: 135.0,
+          },
+        },
+        {
+          id: 6,
+          name: 'Multi-store Support',
+          description: 'Support for multiple store locations',
+          basePrice: 15.0,
+          isRequired: false,
+          multiCurrencyPrices: {
+            USD: 15.0,
+            EUR: 13.5,
+            GBP: 11.25,
+            ZAR: 270.0,
+          },
+        },
+        {
+          id: 7,
+          name: 'Loyalty Program',
+          description: 'Customer loyalty and rewards program',
+          basePrice: 10.0,
+          isRequired: false,
+          multiCurrencyPrices: {
+            USD: 10.0,
+            EUR: 9.0,
+            GBP: 7.5,
+            ZAR: 180.0,
+          },
+        },
+        {
+          id: 8,
+          name: 'E-commerce Integration',
+          description: 'Integration with online store',
+          basePrice: 20.0,
+          isRequired: false,
+          multiCurrencyPrices: {
+            USD: 20.0,
+            EUR: 18.0,
+            GBP: 15.0,
+            ZAR: 360.0,
+          },
+        },
+      ],
       addOns: [
         {
           id: 1,

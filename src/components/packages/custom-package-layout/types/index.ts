@@ -65,6 +65,7 @@ export interface FormData {
   state: string;
   city: string;
   zipCode: string;
+  [key: string]: string | number | boolean | undefined;
 }
 
 export interface PackageDetails {

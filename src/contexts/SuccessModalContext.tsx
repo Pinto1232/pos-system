@@ -45,7 +45,12 @@ interface SuccessModalProps {
   selectedPackage?: {
     id: number;
     title: string;
-    type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
+    type:
+      | 'starter-plus'
+      | 'growth-pro'
+      | 'enterprise-elite'
+      | 'custom-pro'
+      | 'premium-plus';
     price: number;
     currency?: string;
   };

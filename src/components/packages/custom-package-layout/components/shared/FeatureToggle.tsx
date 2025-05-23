@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Typography, Checkbox } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { FaCheck } from 'react-icons/fa';
-import styles from '../../CustomPackageLayout.module.css';
 import { Feature } from '../../types';
 import {
   handleKeyboardAction,
@@ -43,69 +42,129 @@ const FeatureToggle: React.FC<FeatureToggleProps> = ({
 
   return (
     <Box
-      className={`${styles.featureItem} ${isSelected ? styles.selectedFeature : ''}`}
+      sx={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: 2,
+        width: '100%',
+        cursor: 'pointer',
+      }}
       onClick={handleToggle}
       onKeyDown={(e) => handleKeyboardAction(e, handleToggle)}
       tabIndex={0}
       {...ariaProps}
     >
-      <Box>
-        <Typography className={styles.featureName}>{feature.name}</Typography>
-        <Box>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={isSelected}
-                onChange={handleToggle}
-                inputProps={{ 'aria-label': `Select ${feature.name}` }}
-              />
-            }
-            label={
-              <Box display="flex" alignItems="center">
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  width="100%"
-                >
-                  <span>{feature.name}</span>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: 600,
-                      color: '#2563eb',
-                      backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      marginLeft: '8px',
-                    }}
-                  >
-                    {formatPrice(currency, featurePrice)}
-                  </Typography>
-                </Box>
-                {isSelected && (
-                  <Typography
-                    variant="body2"
-                    className={styles.featureDescription}
-                    sx={{
-                      marginLeft: 1,
-                    }}
-                  >
-                    <FaCheck aria-hidden="true" />
-                  </Typography>
-                )}
+      <Checkbox
+        checked={isSelected}
+        onChange={handleToggle}
+        inputProps={{ 'aria-label': `Select ${feature.name}` }}
+        sx={{
+          color: '#cbd5e1',
+          '&.Mui-checked': {
+            color: '#2563eb',
+          },
+          '& .MuiSvgIcon-root': {
+            fontSize: '1.4rem',
+          },
+        }}
+      />
+
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            mb: 1,
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              color: '#1e293b',
+              fontSize: '1.1rem',
+              lineHeight: 1.3,
+            }}
+          >
+            {feature.name}
+          </Typography>
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 700,
+                color: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                fontSize: '0.9rem',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {formatPrice(currency, featurePrice)}
+            </Typography>
+
+            {isSelected && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '24px',
+                  height: '24px',
+                  backgroundColor: '#10b981',
+                  borderRadius: '50%',
+                  color: 'white',
+                }}
+              >
+                <FaCheck size={12} aria-hidden="true" />
               </Box>
-            }
-          />
-          {isSelected && showDescription && (
-            <Box className={styles.featureDescriptionContainer}>
-              <InfoIcon className={styles.infoIcon} aria-hidden="true" />
-              <Typography variant="body2" className={styles.featureDescription}>
-                {feature.description}
-              </Typography>
-            </Box>
-          )}
+            )}
+          </Box>
         </Box>
+
+        {isSelected && showDescription && feature.description && (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 1,
+              mt: 2,
+              p: 2,
+              backgroundColor: 'rgba(37, 99, 235, 0.05)',
+              borderRadius: '8px',
+              border: '1px solid rgba(37, 99, 235, 0.1)',
+            }}
+          >
+            <InfoIcon
+              sx={{
+                color: '#2563eb',
+                fontSize: '1.1rem',
+                mt: 0.1,
+                flexShrink: 0,
+              }}
+              aria-hidden="true"
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#475569',
+                fontSize: '0.9rem',
+                lineHeight: 1.5,
+              }}
+            >
+              {feature.description}
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );

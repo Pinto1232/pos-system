@@ -945,7 +945,22 @@
   /* Improve step content on mobile */
   .stepContent {
     margin: 0.5rem 0 1.5rem;
-    min-height: 250px;
+    min-height: 300px;
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .featuresContainer {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .sectionHeader {
+    font-size: 1.25rem !important;
+  }
+
+  .sectionDescription {
+    font-size: 0.9rem !important;
   }
 }
 

@@ -42,12 +42,14 @@ const PackageDetailsStep: React.FC = () => {
           isCustomizable,
           checkboxStatesKeys: Object.keys(checkboxStates),
           checkboxStatesCount: Object.keys(checkboxStates).length,
+          checkboxStatesValues: checkboxStates,
+          isAnySelected: isAnyCheckboxSelected(),
         },
         null,
         2
       )
     );
-  }, [addOns, isCustomizable, checkboxStates]);
+  }, [addOns, isCustomizable, checkboxStates, isAnyCheckboxSelected]);
 
   const formattedDescription = useMemo(() => {
     return packageDetails.description
@@ -324,11 +326,7 @@ const PackageDetailsStep: React.FC = () => {
         backLabel="Back"
         nextLabel="Continue"
         isBackDisabled={backLoading}
-        isNextDisabled={
-          loading ||
-          !isAnyCheckboxSelected() ||
-          (isCustomizable && pricingState.totalFeaturePrice === 0)
-        }
+        isNextDisabled={loading || !isAnyCheckboxSelected()}
         isBackLoading={backLoading}
         isNextLoading={loading}
         showBackButton={true}
