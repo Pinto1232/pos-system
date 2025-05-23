@@ -9,7 +9,7 @@ import { useCurrency } from '@/contexts/CurrencyContext';
 
 const AuthContext = React.createContext({
   authenticated: true,
-  setAuthenticated: (value: boolean) => {},
+  setAuthenticated: () => {},
   token: null,
 });
 
@@ -40,7 +40,11 @@ jest.mock('@/contexts/CurrencyContext', () => ({
 }));
 
 jest.mock('../PricingPackageCard', () => {
-  return function MockPricingPackageCard({ packageData }: any) {
+  return function MockPricingPackageCard({
+    packageData,
+  }: {
+    packageData: { type: string; title: string };
+  }) {
     return (
       <div data-testid={`package-card-${packageData.type}`}>
         {packageData.title}
@@ -83,6 +87,7 @@ describe('PricingPackagesContainer Component', () => {
         value={{
           authenticated: true,
           setAuthenticated: jest.fn(),
+          token: null,
         }}
       >
         <PricingPackagesContainer />
@@ -109,6 +114,7 @@ describe('PricingPackagesContainer Component', () => {
         value={{
           authenticated: true,
           setAuthenticated: jest.fn(),
+          token: null,
         }}
       >
         <PricingPackagesContainer />
@@ -128,6 +134,7 @@ describe('PricingPackagesContainer Component', () => {
         value={{
           authenticated: false,
           setAuthenticated: jest.fn(),
+          token: null,
         }}
       >
         <PricingPackagesContainer />

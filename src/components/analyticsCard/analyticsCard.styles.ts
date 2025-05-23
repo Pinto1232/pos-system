@@ -126,7 +126,7 @@ export const DataPoint = styled('li')(({ theme }) => ({
   },
 }));
 
-export const Percentage = styled(Typography)(({ theme }) => ({
+export const Percentage = styled(Typography)(() => ({
   fontWeight: 600,
   fontSize: '1.5rem',
   marginTop: 0,
@@ -148,7 +148,7 @@ export const Percentage = styled(Typography)(({ theme }) => ({
   },
 }));
 
-export const ViewDetails = styled(Typography)(({ theme }) => ({
+export const ViewDetails = styled(Typography)(() => ({
   marginTop: 0,
   fontSize: '0.9rem',
   fontWeight: 600,

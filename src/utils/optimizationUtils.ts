@@ -2,17 +2,17 @@ import { useRef, useEffect, DependencyList } from 'react';
 
 export function useRenderTracker(
   componentName: string,
-  props: Record<string, any>,
+  props: Record<string, unknown>,
   dependencies?: DependencyList
 ): void {
   const renderCount = useRef(0);
-  const prevProps = useRef<Record<string, any>>({});
-  const prevDeps = useRef<any[]>([]);
+  const prevProps = useRef<Record<string, unknown>>({});
+  const prevDeps = useRef<unknown[]>([]);
 
   useEffect(() => {
     renderCount.current += 1;
 
-    const changedProps: Record<string, { from: any; to: any }> = {};
+    const changedProps: Record<string, { from: unknown; to: unknown }> = {};
     Object.keys(props).forEach((key) => {
       if (prevProps.current[key] !== props[key]) {
         changedProps[key] = {
@@ -22,7 +22,7 @@ export function useRenderTracker(
       }
     });
 
-    const changedDeps: Record<number, { from: any; to: any }> = {};
+    const changedDeps: Record<number, { from: unknown; to: unknown }> = {};
     if (dependencies) {
       dependencies.forEach((dep, index) => {
         if (prevDeps.current[index] !== dep) {
@@ -58,7 +58,7 @@ export function useRenderTracker(
   });
 }
 
-export function isPlainObject(obj: any): boolean {
+export function isPlainObject(obj: unknown): boolean {
   return (
     obj !== null &&
     typeof obj === 'object' &&
@@ -67,7 +67,7 @@ export function isPlainObject(obj: any): boolean {
   );
 }
 
-export function deepEqual(a: any, b: any): boolean {
+export function deepEqual(a: unknown, b: unknown): boolean {
   if (a === b) return true;
 
   if (a == null || b == null) return a === b;
@@ -87,14 +87,16 @@ export function deepEqual(a: any, b: any): boolean {
   }
 
   if (isPlainObject(a) && isPlainObject(b)) {
-    const keysA = Object.keys(a);
-    const keysB = Object.keys(b);
+    const objA = a as Record<string, unknown>;
+    const objB = b as Record<string, unknown>;
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
 
     if (keysA.length !== keysB.length) return false;
 
     for (const key of keysA) {
-      if (!Object.prototype.hasOwnProperty.call(b, key)) return false;
-      if (!deepEqual(a[key], b[key])) return false;
+      if (!Object.prototype.hasOwnProperty.call(objB, key)) return false;
+      if (!deepEqual(objA[key], objB[key])) return false;
     }
 
     return true;
@@ -106,7 +108,10 @@ export function deepEqual(a: any, b: any): boolean {
 export function createMemoComparison(
   propsToCompare: string[] = [],
   useDeepComparison = false
-): (prevProps: any, nextProps: any) => boolean {
+): (
+  prevProps: Record<string, unknown>,
+  nextProps: Record<string, unknown>
+) => boolean {
   return (prevProps, nextProps) => {
     const keys =
       propsToCompare.length > 0

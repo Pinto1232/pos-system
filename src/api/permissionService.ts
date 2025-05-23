@@ -77,21 +77,11 @@ const initKeycloakAuthz = () => {
   return keycloakAuthzClient;
 };
 
-const mapKeycloakPermissions = (permissions: any[]): PermissionInfo[] => {
-  return permissions.map((permission) => ({
-    id: permission.id,
-    name: permission.name,
-    displayName: permission.displayName || permission.name,
-    category: permission.type || 'Default',
-    description: permission.description,
-  }));
-};
-
 const permissionService = {
   getAllPermissions: async (): Promise<PermissionInfo[]> => {
     try {
       const authzClient = initKeycloakAuthz();
-      if (authzClient) {
+      if (authzClient && keycloak.clientId) {
         try {
           await authzClient.getPermissions(keycloak.clientId);
 

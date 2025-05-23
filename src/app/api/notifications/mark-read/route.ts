@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { MarkAsReadRequest } from '@/types/notification';
 
-let MOCK_NOTIFICATIONS = [
+const MOCK_NOTIFICATIONS = [
   {
     id: '1',
     title: 'Low Stock Alert',
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(request: Request) {
+export async function PUT() {
   try {
     MOCK_NOTIFICATIONS.forEach((notification) => {
       notification.status = 'read';

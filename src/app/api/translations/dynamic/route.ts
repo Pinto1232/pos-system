@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
           }
         }
       } else if (Array.isArray(translatedContent[key])) {
-        translatedContent[key] = (translatedContent[key] as any[]).map(
+        translatedContent[key] = (translatedContent[key] as unknown[]).map(
           (item) => {
             if (typeof item === 'string' && item.includes('.')) {
               const keyParts = item.split('.');

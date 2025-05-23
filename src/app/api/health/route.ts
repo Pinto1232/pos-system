@@ -19,7 +19,7 @@ export async function GET() {
         details: response.data,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(
       'Health check: Backend health check failed',
       JSON.stringify(error, null, 2)
@@ -31,7 +31,7 @@ export async function GET() {
         backend: {
           status: 'offline',
           url: apiUrl,
-          error: error.message,
+          error: error instanceof Error ? error.message : 'Unknown error',
         },
       },
       { status: 200 }

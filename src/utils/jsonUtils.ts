@@ -3,7 +3,7 @@ export function extractJsonObjects(text: string): unknown[] {
     return [];
   }
 
-  const results: any[] = [];
+  const results: unknown[] = [];
   let currentPos = 0;
 
   while (currentPos < text.length) {
@@ -27,10 +27,11 @@ export function extractJsonObjects(text: string): unknown[] {
       try {
         const parsed = JSON.parse(jsonStr);
         results.push(parsed);
-      } catch (e) {
+      } catch (error) {
         console.warn(
           'Found invalid JSON object:',
-          jsonStr.substring(0, 100) + '...'
+          jsonStr.substring(0, 100) + '...',
+          error
         );
       }
     }
@@ -89,7 +90,7 @@ export function safeJsonParse<T>(
     if (validator) {
       console.log(
         `Validation result for object #${index + 1}:`,
-        JSON.stringify(validator(obj, null, 2))
+        JSON.stringify(validator(obj))
       );
     }
   });
@@ -163,7 +164,10 @@ export function cleanJsonText(text: string): string {
  * @param space - Optional number of spaces for indentation
  * @returns The JSON string or null if stringification fails
  */
-export function safeJsonStringify(value: any, space?: number): string | null {
+export function safeJsonStringify(
+  value: unknown,
+  space?: number
+): string | null {
   try {
     return JSON.stringify(value, null, space);
   } catch (error) {
@@ -186,14 +190,18 @@ export function isValidJson(text: string): boolean {
   try {
     JSON.parse(text);
     return true;
-  } catch (error) {
+  } catch (parseError) {
+    console.debug('JSON parse validation failed:', parseError);
     return false;
   }
 }
 
-export default {
+const jsonUtils = {
   safeJsonParse,
   cleanJsonText,
   safeJsonStringify,
   isValidJson,
+  extractJsonObjects,
 };
+
+export default jsonUtils;

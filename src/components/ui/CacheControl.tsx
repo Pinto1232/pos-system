@@ -132,7 +132,7 @@ const CacheControl: React.FC<CacheControlProps> = ({
         Cache Control
       </Typography>
       <Typography variant="body2" color="text.secondary" paragraph>
-        If you're experiencing issues with data not updating, you can try
+        If you&apos;re experiencing issues with data not updating, you can try
         refreshing the data or resetting the cache.
       </Typography>
       <Box sx={{ display: 'flex', gap: 2 }}>

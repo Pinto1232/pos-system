@@ -66,8 +66,8 @@ function PricingPackagesError() {
           Error loading pricing packages
         </Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
-          We're having trouble loading our pricing information. Please try again
-          later.
+          We&apos;re having trouble loading our pricing information. Please try
+          again later.
         </Typography>
       </Box>
     </Box>

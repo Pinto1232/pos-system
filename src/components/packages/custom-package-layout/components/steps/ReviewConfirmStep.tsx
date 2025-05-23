@@ -58,8 +58,8 @@ const ReviewConfirmStep: React.FC = () => {
   const getSelectedEnterpriseFeatures = () => {
     if (!enterpriseFeatures) return [];
     return Object.entries(enterpriseFeatures)
-      .filter(([_, selected]) => selected)
-      .map(([key, _]) => {
+      .filter(([, selected]) => selected)
+      .map(([key]) => {
         return key
           .replace(/([A-Z])/g, ' $1')
           .replace(/^./, (str) => str.toUpperCase());

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const useRenderTracker = (
   componentName: string,
-  props?: Record<string, any>
+  props?: Record<string, unknown>
 ) => {
   const renderCount = React.useRef(0);
   const prevProps = React.useRef(props);
@@ -40,13 +40,13 @@ export const useRenderTracker = (
   return renderCount.current;
 };
 
-export const withRenderTracker = <P extends object>(
+export const withRenderTracker = <P extends Record<string, unknown>>(
   WrappedComponent: React.ComponentType<P>,
   componentName: string
 ) => {
-  const TrackedComponent = React.forwardRef<any, P>((props, ref) => {
+  const TrackedComponent = React.forwardRef<unknown, P>((props) => {
     useRenderTracker(componentName, props);
-    return <WrappedComponent {...props} ref={ref} />;
+    return React.createElement(WrappedComponent, props as P);
   });
 
   TrackedComponent.displayName = `withRenderTracker(${componentName})`;
@@ -54,7 +54,7 @@ export const withRenderTracker = <P extends object>(
 };
 
 export const useRenderTime = (componentName: string) => {
-  const startTime = React.useRef<number>();
+  const startTime = React.useRef<number | undefined>(undefined);
 
   if (!startTime.current) {
     startTime.current = performance.now();
@@ -71,7 +71,7 @@ export const useRenderTime = (componentName: string) => {
   });
 };
 
-export const useStabilityTracker = (value: any, name: string) => {
+export const useStabilityTracker = (value: unknown, name: string) => {
   const prevValue = React.useRef(value);
   const isStable = React.useRef(true);
 
@@ -105,12 +105,12 @@ export const PerformanceMonitor: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [renderCount, setRenderCount] = React.useState(0);
   const [lastRenderTime, setLastRenderTime] = React.useState<number>(0);
-  const startTime = React.useRef<number>();
+  const startTime = React.useRef<number | undefined>(undefined);
 
   React.useEffect(() => {
     startTime.current = performance.now();
     setRenderCount((prev) => prev + 1);
-  });
+  }, []);
 
   React.useEffect(() => {
     if (startTime.current) {
@@ -135,14 +135,17 @@ export const PerformanceMonitor: React.FC<{ children: React.ReactNode }> = ({
         }
       }
     }
-  });
+  }, [renderCount]);
 
-  return (
-    <>
-      {children}
-      {process.env.NODE_ENV === 'development' && (
-        <div
-          style={{
+  return React.createElement(
+    React.Fragment,
+    null,
+    children,
+    process.env.NODE_ENV === 'development' &&
+      React.createElement(
+        'div',
+        {
+          style: {
             position: 'fixed',
             top: 10,
             right: 10,
@@ -153,19 +156,18 @@ export const PerformanceMonitor: React.FC<{ children: React.ReactNode }> = ({
             fontSize: '12px',
             zIndex: 9999,
             fontFamily: 'monospace',
-          }}
-        >
-          Renders: {renderCount} | Last: {lastRenderTime.toFixed(1)}ms
-        </div>
-      )}
-    </>
+          },
+        },
+        `Renders: ${renderCount} | Last: ${lastRenderTime.toFixed(1)}ms`
+      )
   );
 };
 
-export const useStableCallback = <T extends (...args: any[]) => any>(
+export const useStableCallback = <T extends (...args: unknown[]) => unknown>(
   callback: T,
   deps: React.DependencyList
 ): T => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   return React.useCallback(callback, deps);
 };
 
@@ -173,6 +175,7 @@ export const useStableObject = <T>(
   factory: () => T,
   deps: React.DependencyList
 ): T => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   return React.useMemo(factory, deps);
 };
 
@@ -180,7 +183,7 @@ export const useDependencyTracker = (
   deps: React.DependencyList,
   name: string
 ) => {
-  const prevDeps = React.useRef<React.DependencyList>();
+  const prevDeps = React.useRef<React.DependencyList | undefined>(undefined);
 
   React.useEffect(() => {
     if (prevDeps.current && process.env.NODE_ENV === 'development') {
@@ -198,5 +201,5 @@ export const useDependencyTracker = (
       }
     }
     prevDeps.current = deps;
-  }, deps);
+  }, [deps, name]);
 };

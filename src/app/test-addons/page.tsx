@@ -16,10 +16,23 @@ interface AddOn {
   icon?: string;
 }
 
+interface CoreFeature {
+  id: string | number;
+  name: string;
+  description?: string;
+}
+
+interface UsageBasedPricing {
+  id: string | number;
+  name: string;
+  price: number;
+  unit?: string;
+}
+
 interface FeaturesResponse {
-  coreFeatures: any[];
+  coreFeatures: CoreFeature[];
   addOns: AddOn[];
-  usageBasedPricing: any[];
+  usageBasedPricing: UsageBasedPricing[];
 }
 
 export default function TestAddOnsPage() {
@@ -209,8 +222,8 @@ export default function TestAddOnsPage() {
             returning add-ons.
             <br />
             <small>
-              The Custom Pro package will still show "No add-ons available at
-              the moment."
+              The Custom Pro package will still show &quot;No add-ons available
+              at the moment.&quot;
             </small>
           </div>
         )}
@@ -232,12 +245,12 @@ export default function TestAddOnsPage() {
               /pricing-packages
             </a>
           </li>
-          <li>Click on the "Custom Pro" package</li>
-          <li>Navigate to the "Package Details" step (first step)</li>
+          <li>Click on the &quot;Custom Pro&quot; package</li>
+          <li>Navigate to the &quot;Package Details&quot; step (first step)</li>
           <li>Look for add-ons in the table below the pricing information</li>
           <li>
-            You should now see the add-ons listed instead of "No add-ons
-            available at the moment"
+            You should now see the add-ons listed instead of &quot;No add-ons
+            available at the moment&quot;
           </li>
         </ol>
       </div>

@@ -1,5 +1,21 @@
 import Keycloak from 'keycloak-js';
 
+interface AuthorizationPermission {
+  resource_set_name?: string;
+  resource_set_id?: string;
+  scopes?: string[];
+}
+
+interface TokenPayload {
+  authorization?: {
+    permissions?: AuthorizationPermission[];
+  };
+}
+
+interface TokenResponse {
+  access_token: string;
+}
+
 export class KeycloakAuthzClient {
   private keycloak: Keycloak;
   private rpt: string | null = null;
@@ -14,6 +30,11 @@ export class KeycloakAuthzClient {
     }
 
     try {
+      const clientId = this.keycloak.clientId;
+      if (!clientId) {
+        throw new Error('Keycloak client ID is not configured');
+      }
+
       const response = await fetch(
         `${this.keycloak.authServerUrl}/realms/${this.keycloak.realm}/protocol/openid-connect/token`,
         {
@@ -24,10 +45,10 @@ export class KeycloakAuthzClient {
           body: new URLSearchParams({
             grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
             ticket: ticket,
-            client_id: this.keycloak.clientId,
+            client_id: clientId,
             client_secret: '', // Add client secret if needed
             submit_request: 'true',
-            audience: this.keycloak.clientId,
+            audience: clientId,
           }),
         }
       );
@@ -36,7 +57,7 @@ export class KeycloakAuthzClient {
         throw new Error(`Authorization request failed: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as TokenResponse;
       this.rpt = data.access_token;
       return this.rpt;
     } catch (error) {
@@ -60,18 +81,21 @@ export class KeycloakAuthzClient {
     }
 
     try {
-      const body: Record<string, any> = {
-        grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
-        audience: resourceServerId,
-        response_include_resource_name: true,
-      };
+      const bodyParams = new URLSearchParams();
+      bodyParams.append(
+        'grant_type',
+        'urn:ietf:params:oauth:grant-type:uma-ticket'
+      );
+      bodyParams.append('audience', resourceServerId);
+      bodyParams.append('response_include_resource_name', 'true');
 
       if (permissions && permissions.length > 0) {
-        body.permission = permissions.map((p) => {
+        permissions.forEach((p) => {
           if (p.scopes && p.scopes.length > 0) {
-            return `${p.id}#${p.scopes.join(' ')}`;
+            bodyParams.append('permission', `${p.id}#${p.scopes.join(' ')}`);
+          } else {
+            bodyParams.append('permission', p.id);
           }
-          return p.id;
         });
       }
 
@@ -83,7 +107,7 @@ export class KeycloakAuthzClient {
             'Content-Type': 'application/x-www-form-urlencoded',
             Authorization: `Bearer ${this.keycloak.token}`,
           },
-          body: new URLSearchParams(body),
+          body: bodyParams,
         }
       );
 
@@ -91,7 +115,7 @@ export class KeycloakAuthzClient {
         throw new Error(`Permission request failed: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as TokenResponse;
       this.rpt = data.access_token;
       return this.rpt;
     } catch (error) {
@@ -106,35 +130,45 @@ export class KeycloakAuthzClient {
   async hasPermission(resource: string, scope?: string): Promise<boolean> {
     try {
       if (!this.rpt) {
-        await this.getPermissions(this.keycloak.clientId);
+        const clientId = this.keycloak.clientId;
+        if (!clientId) {
+          throw new Error('Keycloak client ID is not configured');
+        }
+        await this.getPermissions(clientId);
       }
 
-      const tokenParts = this.rpt!.split('.');
+      if (!this.rpt) {
+        return false;
+      }
+
+      const tokenParts = this.rpt.split('.');
       if (tokenParts.length !== 3) {
         return false;
       }
 
-      const payload = JSON.parse(atob(tokenParts[1]));
+      const payload = JSON.parse(atob(tokenParts[1])) as TokenPayload;
 
       if (!payload.authorization || !payload.authorization.permissions) {
         return false;
       }
 
-      return payload.authorization.permissions.some((permission: any) => {
-        const resourceMatch =
-          permission.resource_set_name === resource ||
-          permission.resource_set_id === resource;
+      return payload.authorization.permissions.some(
+        (permission: AuthorizationPermission) => {
+          const resourceMatch =
+            permission.resource_set_name === resource ||
+            permission.resource_set_id === resource;
 
-        if (!scope) {
-          return resourceMatch;
+          if (!scope) {
+            return resourceMatch;
+          }
+
+          return (
+            resourceMatch &&
+            permission.scopes &&
+            permission.scopes.includes(scope)
+          );
         }
-
-        return (
-          resourceMatch &&
-          permission.scopes &&
-          permission.scopes.includes(scope)
-        );
-      });
+      );
     } catch (error) {
       console.error(
         'Error checking permission:',

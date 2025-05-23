@@ -1,27 +1,27 @@
-type EventCallback = (data: any) => void;
+type EventCallback<T = unknown> = (data: T) => void;
 
 interface EventBus {
-  on(event: string, callback: EventCallback): void;
-  off(event: string, callback: EventCallback): void;
-  emit(event: string, data?: any): void;
+  on<T = unknown>(event: string, callback: EventCallback<T>): void;
+  off<T = unknown>(event: string, callback: EventCallback<T>): void;
+  emit<T = unknown>(event: string, data?: T): void;
 }
 
 class EventBusImpl implements EventBus {
-  private events: Record<string, EventCallback[]> = {};
+  private events: Record<string, EventCallback<unknown>[]> = {};
 
-  on(event: string, callback: EventCallback): void {
+  on<T = unknown>(event: string, callback: EventCallback<T>): void {
     if (!this.events[event]) {
       this.events[event] = [];
     }
-    this.events[event].push(callback);
+    this.events[event].push(callback as EventCallback<unknown>);
   }
 
-  off(event: string, callback: EventCallback): void {
+  off<T = unknown>(event: string, callback: EventCallback<T>): void {
     if (!this.events[event]) return;
     this.events[event] = this.events[event].filter((cb) => cb !== callback);
   }
 
-  emit(event: string, data?: any): void {
+  emit<T = unknown>(event: string, data?: T): void {
     if (!this.events[event]) return;
     this.events[event].forEach((callback) => {
       try {

@@ -1,9 +1,18 @@
 import { NextResponse } from 'next/server';
 
+interface User {
+  id: number;
+  userName: string;
+  email: string;
+  isActive: boolean;
+  lastLogin: string | null;
+  securityLevel: string;
+}
+
 const BACKEND_API_URL =
   process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
-let mockUsersInRoles: Record<string, any[]> = {};
+let mockUsersInRoles: Record<string, User[]> = {};
 
 const initMockData = async () => {
   try {
@@ -89,7 +98,7 @@ export async function POST(
     const baseUrl = `${url.protocol}//${url.host}`;
     const usersResponse = await fetch(`${baseUrl}/api/Users`);
     const users = await usersResponse.json();
-    const user = users.find((u: any) => u.id === parseInt(userId));
+    const user = users.find((u: User) => u.id === parseInt(userId));
 
     if (!user) {
       return NextResponse.json(

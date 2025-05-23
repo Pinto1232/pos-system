@@ -81,10 +81,14 @@ describe('Custom Package Layout Performance Tests', () => {
     id: 1,
     title: 'Custom Pro',
     description: 'Custom Pro package',
+    icon: 'custom-icon',
+    extraDescription: 'Additional description for Custom Pro',
     price: 100,
     currency: 'USD',
     testPeriodDays: 30,
+    type: 'custom-pro' as const,
     isCustomizable: true,
+    multiCurrencyPrices: '{"USD": 100, "EUR": 90}',
     features: [],
     addOns: [],
     usagePricing: [],
@@ -117,16 +121,12 @@ describe('Custom Package Layout Performance Tests', () => {
           <button onClick={() => setCounter((c) => c + 1)}>
             Increment: {counter}
           </button>
-          <CustomPackageLayoutContainer
-            selectedPackage={mockSelectedPackage}
-            onClose={() => {}}
-            onSave={() => {}}
-          />
+          <CustomPackageLayoutContainer selectedPackage={mockSelectedPackage} />
         </div>
       );
     };
 
-    const { rerender } = render(
+    render(
       <TestWrapper>
         <TestComponent />
       </TestWrapper>
@@ -146,11 +146,7 @@ describe('Custom Package Layout Performance Tests', () => {
   it('should handle rapid state changes efficiently', async () => {
     const { container } = render(
       <TestWrapper>
-        <CustomPackageLayoutContainer
-          selectedPackage={mockSelectedPackage}
-          onClose={() => {}}
-          onSave={() => {}}
-        />
+        <CustomPackageLayoutContainer selectedPackage={mockSelectedPackage} />
       </TestWrapper>
     );
 
@@ -185,11 +181,7 @@ describe('Custom Package Layout Performance Tests', () => {
           <button onClick={() => setForceUpdate(Date.now())}>
             Force Update
           </button>
-          <CustomPackageLayoutContainer
-            selectedPackage={mockSelectedPackage}
-            onClose={() => {}}
-            onSave={() => {}}
-          />
+          <CustomPackageLayoutContainer selectedPackage={mockSelectedPackage} />
         </div>
       );
     };
@@ -214,13 +206,13 @@ describe('Custom Package Layout Performance Tests', () => {
   });
 
   it('should have stable callback references', () => {
-    let callbackReferences: any[] = [];
+    const callbackReferences: (() => void)[] = [];
 
     const TestComponent = () => {
       const [counter, setCounter] = React.useState(0);
 
-      const handleSave = React.useCallback((data: any) => {
-        console.log('Save called', data);
+      const handleSave = React.useCallback(() => {
+        console.log('Save called');
       }, []);
 
       // Track callback reference stability
@@ -233,11 +225,7 @@ describe('Custom Package Layout Performance Tests', () => {
           <button onClick={() => setCounter((c) => c + 1)}>
             Count: {counter}
           </button>
-          <CustomPackageLayoutContainer
-            selectedPackage={mockSelectedPackage}
-            onClose={() => {}}
-            onSave={handleSave}
-          />
+          <CustomPackageLayoutContainer selectedPackage={mockSelectedPackage} />
         </div>
       );
     };
@@ -261,7 +249,7 @@ describe('Custom Package Layout Performance Tests', () => {
   });
 
   it('should not recreate objects unnecessarily', () => {
-    const objectReferences: any[] = [];
+    const objectReferences: Record<string, unknown>[] = [];
 
     const TestComponent = () => {
       const [counter, setCounter] = React.useState(0);
@@ -285,11 +273,7 @@ describe('Custom Package Layout Performance Tests', () => {
           <button onClick={() => setCounter((c) => c + 1)}>
             Count: {counter}
           </button>
-          <CustomPackageLayoutContainer
-            selectedPackage={mockSelectedPackage}
-            onClose={() => {}}
-            onSave={() => {}}
-          />
+          <CustomPackageLayoutContainer selectedPackage={mockSelectedPackage} />
         </div>
       );
     };
@@ -314,8 +298,12 @@ describe('Custom Package Layout Performance Tests', () => {
 
 describe('Performance Utilities', () => {
   it('should track render counts in development', () => {
+    // Mock NODE_ENV instead of trying to modify it directly
     const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development';
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'development',
+      configurable: true,
+    });
 
     const TestComponent = () => {
       const renderCount = React.useRef(0);
@@ -331,6 +319,10 @@ describe('Performance Utilities', () => {
     rerender(<TestComponent />);
     expect(screen.getByText('Render count: 2')).toBeInTheDocument();
 
-    process.env.NODE_ENV = originalEnv;
+    // Restore original NODE_ENV
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: originalEnv,
+      configurable: true,
+    });
   });
 });

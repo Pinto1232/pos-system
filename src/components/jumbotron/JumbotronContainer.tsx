@@ -1,6 +1,6 @@
 import React from 'react';
 import Jumbotron from './Jumbotron';
-import { useTranslationContext, TranslatedText } from '@/i18n';
+import { TranslatedText } from '@/i18n';
 
 interface JumbotronContainerProps {
   heading?: React.ReactNode;
@@ -15,8 +15,6 @@ const JumbotronContainer: React.FC<JumbotronContainerProps> = ({
   backgroundImage,
   overlayColor,
 }) => {
-  const { t } = useTranslationContext();
-
   const finalHeading = heading || (
     <TranslatedText
       i18nKey="app.fullName"

@@ -16,8 +16,6 @@ import {
   FaCheck,
   FaHeadset,
   FaCrown,
-  FaRocket,
-  FaPhone,
   FaEnvelope,
   FaClock,
   FaUsers,

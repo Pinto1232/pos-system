@@ -107,8 +107,10 @@ export function initImageLazyLoading(): void {
   });
 }
 
-export default {
+const lazyLoadObserver = {
   createLazyLoadObserver,
   initLazyLoad,
   initImageLazyLoading,
 };
+
+export default lazyLoadObserver;

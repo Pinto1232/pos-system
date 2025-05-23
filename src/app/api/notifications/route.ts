@@ -3,6 +3,8 @@ import {
   Notification,
   NotificationFilters,
   NotificationResponse,
+  NotificationStatus,
+  NotificationType,
 } from '@/types/notification';
 
 const MOCK_NOTIFICATIONS: Notification[] = [
@@ -82,9 +84,18 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
+    const statusParam = searchParams.get('status');
+    const typeParam = searchParams.get('type');
+
     const filters: NotificationFilters = {
-      status: (searchParams.get('status') as any) || undefined,
-      type: (searchParams.get('type') as any) || undefined,
+      status:
+        statusParam && ['read', 'unread'].includes(statusParam)
+          ? (statusParam as NotificationStatus)
+          : undefined,
+      type:
+        typeParam && ['success', 'warning', 'error', 'info'].includes(typeParam)
+          ? (typeParam as NotificationType)
+          : undefined,
       limit: searchParams.get('limit')
         ? parseInt(searchParams.get('limit') as string)
         : undefined,

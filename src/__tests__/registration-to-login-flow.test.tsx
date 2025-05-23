@@ -122,6 +122,11 @@ describe('Registration to Login Flow', () => {
   });
 
   it('should simulate the complete registration to login flow', async () => {
+    // Verify keycloak mock is properly configured
+    expect(keycloak.init).toBeDefined();
+    expect(keycloak.login).toBeDefined();
+    expect(keycloak.authenticated).toBe(true);
+
     act(() => {
       authUtils.redirectToKeycloakRegistration();
     });

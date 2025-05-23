@@ -59,7 +59,7 @@ interface JwtPayload {
   preferred_username?: string;
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     console.log('Processing current-user customization request');
 

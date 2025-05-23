@@ -225,7 +225,7 @@ const mockPermissions = [
   },
 ];
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 

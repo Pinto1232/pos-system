@@ -86,8 +86,10 @@ export function loadScriptsInParallel(
   );
 }
 
-export default {
+const scriptOptimization = {
   loadScript,
   loadScriptsSequentially,
   loadScriptsInParallel,
 };
+
+export default scriptOptimization;

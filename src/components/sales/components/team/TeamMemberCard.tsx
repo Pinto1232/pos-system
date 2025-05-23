@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Avatar, Typography, Stack, LinearProgress } from '@mui/material';
+import { Box, Avatar, Typography, LinearProgress } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { TeamMember } from '../../types';

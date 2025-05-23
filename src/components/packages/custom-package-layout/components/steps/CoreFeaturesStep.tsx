@@ -5,7 +5,6 @@ import { Box, Typography, Button } from '@mui/material';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import FeatureToggle from '../shared/FeatureToggle';
-import NavigationButtons from '../shared/NavigationButtons';
 
 const CoreFeaturesStep: React.FC = () => {
   const {

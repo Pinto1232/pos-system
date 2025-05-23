@@ -30,7 +30,6 @@ const EnterpriseFeatureStep: React.FC = () => {
     enterpriseFeatures,
     handleEnterpriseFeatureToggle,
     isEnterpriseFeatureDisabled,
-    isAnyEnterpriseFeatureSelected,
     handleNext,
     handleBack,
     loading,

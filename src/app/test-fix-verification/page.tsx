@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -25,18 +25,24 @@ interface TestResult {
   test: string;
   status: 'success' | 'error' | 'pending';
   message: string;
-  details?: any;
+  details?:
+    | Record<string, unknown>
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
 }
 
 const TestFixVerificationPage: React.FC = () => {
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [isRunning, setIsRunning] = useState(false);
 
-  const addTestResult = (result: TestResult) => {
+  const addTestResult = useCallback((result: TestResult) => {
     setTestResults((prev) => [...prev, result]);
-  };
+  }, []);
 
-  const runTests = async () => {
+  const runTests = useCallback(async () => {
     setIsRunning(true);
     setTestResults([]);
 
@@ -73,7 +79,7 @@ const TestFixVerificationPage: React.FC = () => {
         test: 'Custom Features API',
         status: 'error',
         message: '❌ FAILED: Error fetching add-ons data',
-        details: error,
+        details: error instanceof Error ? error.message : String(error),
       });
     }
 
@@ -109,16 +115,16 @@ const TestFixVerificationPage: React.FC = () => {
         test: 'Regular Add-Ons API',
         status: 'error',
         message: '❌ FAILED: Error fetching add-ons data',
-        details: error,
+        details: error instanceof Error ? error.message : String(error),
       });
     }
 
     setIsRunning(false);
-  };
+  }, [addTestResult]);
 
   useEffect(() => {
     runTests();
-  }, []);
+  }, [runTests]);
 
   return (
     <Box sx={{ maxWidth: 1200, margin: '0 auto', padding: 3 }}>
@@ -133,8 +139,8 @@ const TestFixVerificationPage: React.FC = () => {
           </Typography>
           <Typography variant="body1" paragraph>
             <strong>Problem:</strong> Add-ons were not displaying in the Custom
-            Pro package's Package Details step, showing "No add-ons available at
-            the moment" instead of the actual add-ons data.
+            Pro package&apos;s Package Details step, showing &quot;No add-ons
+            available at the moment&quot; instead of the actual add-ons data.
           </Typography>
           <Typography variant="body1" paragraph>
             <strong>Root Cause:</strong> Race condition where the
@@ -237,7 +243,7 @@ const TestFixVerificationPage: React.FC = () => {
             </li>
             <li>
               <Typography variant="body2" paragraph>
-                Select the "Custom Pro" package
+                Select the &quot;Custom Pro&quot; package
               </Typography>
             </li>
             <li>
@@ -261,8 +267,8 @@ const TestFixVerificationPage: React.FC = () => {
             </li>
             <li>
               <Typography variant="body2" paragraph>
-                Confirm that the "No add-ons available at the moment" message is
-                no longer displayed
+                Confirm that the &quot;No add-ons available at the moment&quot;
+                message is no longer displayed
               </Typography>
             </li>
           </Box>

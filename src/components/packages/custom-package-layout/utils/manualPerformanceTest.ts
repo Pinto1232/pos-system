@@ -10,6 +10,16 @@ interface PerformanceTestResult {
   details: string;
 }
 
+interface PerformanceMemory {
+  usedJSHeapSize: number;
+  totalJSHeapSize: number;
+  jsHeapSizeLimit: number;
+}
+
+interface PerformanceWithMemory extends Performance {
+  memory: PerformanceMemory;
+}
+
 export class PerformanceBenchmark {
   private results: PerformanceTestResult[] = [];
   private startTime: number = 0;
@@ -83,7 +93,7 @@ export class PerformanceBenchmark {
 export const usePerformanceMeasurement = (componentName: string) => {
   const renderCount = React.useRef(0);
   const renderTimes = React.useRef<number[]>([]);
-  const startTime = React.useRef<number>();
+  const startTime = React.useRef<number | null>(null);
 
   if (!startTime.current) {
     startTime.current = performance.now();
@@ -115,7 +125,7 @@ export const usePerformanceMeasurement = (componentName: string) => {
       }
     }
 
-    startTime.current = undefined;
+    startTime.current = null;
   });
 
   return {
@@ -183,7 +193,7 @@ export const manualTestInstructions = `
 
 Expected Results After Optimization:
 ✅ Modal opening: < 3 renders, < 100ms
-✅ Feature toggles: < 2 renders, < 50ms  
+✅ Feature toggles: < 2 renders, < 50ms
 ✅ Add-on selection: < 2 renders, < 50ms
 ✅ Pricing updates: < 1 render, < 20ms
 ✅ Step navigation: < 2 renders, < 30ms
@@ -216,7 +226,7 @@ export const logPerformanceSummary = () => {
 
 export const trackMemoryUsage = () => {
   if ('memory' in performance) {
-    const memory = (performance as any).memory;
+    const memory = (performance as PerformanceWithMemory).memory;
     return {
       used: Math.round(memory.usedJSHeapSize / 1048576),
       total: Math.round(memory.totalJSHeapSize / 1048576),
@@ -226,7 +236,7 @@ export const trackMemoryUsage = () => {
   return null;
 };
 
-export default {
+const performanceTestUtils = {
   PerformanceBenchmark,
   usePerformanceMeasurement,
   performanceTestScenarios,
@@ -234,3 +244,5 @@ export default {
   logPerformanceSummary,
   trackMemoryUsage,
 };
+
+export default performanceTestUtils;

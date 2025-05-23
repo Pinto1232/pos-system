@@ -229,7 +229,7 @@ const mockRoleService = {
       }
 
       const users = await response.json();
-      const userToAdd = users.find((u: any) => u.id === userId);
+      const userToAdd = users.find((u: { id: number }) => u.id === userId);
 
       if (!userToAdd) {
         throw new Error(`User with ID ${userId} not found`);

@@ -13,12 +13,13 @@ import {
   Paper,
   Divider,
   Chip,
-  Grid,
   Card,
   CardContent,
   Alert,
   Snackbar,
+  SelectChangeEvent,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import {
   NotificationType,
@@ -57,7 +58,7 @@ const NotificationDemo = () => {
     }));
   };
 
-  const handleTypeChange = (e: any) => {
+  const handleTypeChange = (e: SelectChangeEvent<NotificationType>) => {
     setFormData((prev) => ({
       ...prev,
       type: e.target.value as NotificationType,
@@ -123,7 +124,7 @@ const NotificationDemo = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={5}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <Paper sx={{ p: 3, mb: 3 }}>
             <Typography variant="h6" gutterBottom>
               Create New Notification
@@ -187,7 +188,7 @@ const NotificationDemo = () => {
                     label="Add tag"
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
-                    onKeyPress={(e) => {
+                    onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
                         handleAddTag();
@@ -277,7 +278,7 @@ const NotificationDemo = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={7}>
+        <Grid size={{ xs: 12, md: 7 }}>
           <Paper
             sx={{
               p: 3,

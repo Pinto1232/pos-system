@@ -19,14 +19,6 @@ import {
   SettingsModalProps,
 } from '../types/settingsTypes';
 
-interface Package {
-  id: number;
-  title: string;
-  price: number;
-  currency: string;
-  type: string;
-}
-
 const DEFAULT_SIDEBAR_COLOR = '#173A79';
 const DEFAULT_LOGO_URL = '/Pisval_Logo.jpg';
 const DEFAULT_NAVBAR_COLOR = '#000000';
@@ -643,11 +635,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
 
   const { selectPackage: selectPackageInContext } = usePackageSelection();
 
-  const [lastEnabledPackageId, setLastEnabledPackageId] = useState<
-    number | null
-  >(null);
-  const [isEnablingPackage, setIsEnablingPackage] = useState<boolean>(false);
-
   const enableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingProcessedRef = useRef<number | null>(null);
 
@@ -972,11 +959,8 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       enableOperationInProgressRef.current = true;
       packageBeingProcessedRef.current = packageId;
 
-      setIsEnablingPackage(true);
-
       try {
         await enablePackage(packageId);
-        setLastEnabledPackageId(packageId);
 
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         if (selectedPkg) {
@@ -1035,7 +1019,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
 
           const resetDelay = isCustomPackage ? 800 : 300;
           setTimeout(() => {
-            setIsEnablingPackage(false);
             enableOperationInProgressRef.current = false;
             packageBeingProcessedRef.current = null;
           }, resetDelay);
@@ -1044,7 +1027,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             `Package with ID ${packageId} not found in available packages`
           );
 
-          setIsEnablingPackage(false);
           enableOperationInProgressRef.current = false;
           packageBeingProcessedRef.current = null;
         }
@@ -1056,7 +1038,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           JSON.stringify(error, null, 2)
         );
 
-        setIsEnablingPackage(false);
         enableOperationInProgressRef.current = false;
         packageBeingProcessedRef.current = null;
       }

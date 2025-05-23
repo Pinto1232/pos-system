@@ -62,8 +62,10 @@ export function optimizeFonts(fonts: FontDefinition[]): void {
   }
 }
 
-export default {
+const fontOptimization = {
   preloadFonts,
   injectFontFace,
   optimizeFonts,
 };
+
+export default fontOptimization;

@@ -9,9 +9,6 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
-    const width = 100;
-    const height = 100;
-
     const quality = parseInt(formData.get('quality') as string) || 85;
 
     if (!file) {
@@ -37,8 +34,6 @@ export async function POST(request: NextRequest) {
 
     let processedImageBuffer;
     try {
-      const outputFormat = 'webp';
-
       processedImageBuffer = await sharp(buffer)
         .resize({
           width: 100,

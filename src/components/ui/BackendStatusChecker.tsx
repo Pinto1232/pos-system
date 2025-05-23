@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Alert,
   Box,
@@ -30,7 +30,7 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
 
-  const checkStatus = async () => {
+  const checkStatus = useCallback(async () => {
     setLoading(true);
     try {
       try {
@@ -76,14 +76,14 @@ const BackendStatusChecker: React.FC<BackendStatusCheckerProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [onStatusChange]);
 
   useEffect(() => {
     checkStatus();
 
     const interval = setInterval(checkStatus, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [checkStatus]);
 
   if (loading && !status) {
     return (

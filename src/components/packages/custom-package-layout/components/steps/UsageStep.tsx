@@ -5,7 +5,6 @@ import { Box, Typography, Button } from '@mui/material';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import UsageInput from '../shared/UsageInput';
-import NavigationButtons from '../shared/NavigationButtons';
 
 const UsageStep: React.FC = () => {
   const {

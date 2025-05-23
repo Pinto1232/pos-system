@@ -260,10 +260,10 @@ const useApiClient = () => {
     }
   ) => {
     return useMutation<TData, Error, TVariables>({
-      mutationFn: async (postData: TVariables) => {
+      mutationFn: async (postData: TVariables): Promise<TData> => {
         const startTime = performance.now();
 
-        const { data } = await apiClient.post<TData>(url, postData, {
+        const response = await apiClient.post<TData>(url, postData, {
           timeout: config?.timeout || DEFAULT_TIMEOUT,
           suppressAuthErrors: config?.suppressAuthErrors,
         });
@@ -275,7 +275,7 @@ const useApiClient = () => {
           );
         }
 
-        return data;
+        return response.data;
       },
       onSuccess: () => {
         if (config?.invalidateQueries && config.invalidateQueries.length > 0) {
@@ -299,7 +299,7 @@ const useApiClient = () => {
     config?: RequestConfig
   ) => {
     return useMutation<TData, Error, TVariables>({
-      mutationFn: async (customization: TVariables) => {
+      mutationFn: async (customization: TVariables): Promise<TData> => {
         console.log(
           'Updating customization with endpoint:',
           JSON.stringify(endpoint, null, 2)
@@ -310,7 +310,7 @@ const useApiClient = () => {
         );
 
         try {
-          const { data } = await apiClient.post<TData>(
+          const response = await apiClient.post<TData>(
             endpoint,
             customization,
             {
@@ -320,9 +320,9 @@ const useApiClient = () => {
           );
           console.log(
             'Customization update successful, received data:',
-            JSON.stringify(data, null, 2)
+            JSON.stringify(response.data, null, 2)
           );
-          return data;
+          return response.data;
         } catch (error) {
           console.error(
             'Error updating customization:',

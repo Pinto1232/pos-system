@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, useTheme } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { FaStar, FaHeart, FaCheck, FaBell, FaSmile } from 'react-icons/fa';
 import {
   StyledCard,
@@ -18,7 +18,6 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
   dataPoints,
   percentage,
 }) => {
-  const theme = useTheme();
   const buttonColors = ['#006D77', '#1E3A8A', '#52B788', '#1F2937', '#F59E0B'];
   const buttonIcons = [FaStar, FaHeart, FaCheck, FaBell, FaSmile];
 

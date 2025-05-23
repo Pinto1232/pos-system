@@ -4,6 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Alert, Button, Paper } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 
+interface ExchangeRatesResponse {
+  base: string;
+  rates: Record<string, number>;
+  timestamp?: number;
+  disclaimer?: string;
+  license?: string;
+}
+
 export default function TestCSPPage() {
   const [stripeStatus, setStripeStatus] = useState<
     'loading' | 'success' | 'error'
@@ -15,7 +23,8 @@ export default function TestCSPPage() {
     'loading' | 'success' | 'error'
   >('loading');
   const [cspErrors, setCspErrors] = useState<string[]>([]);
-  const [exchangeRates, setExchangeRates] = useState<any>(null);
+  const [exchangeRates, setExchangeRates] =
+    useState<ExchangeRatesResponse | null>(null);
 
   useEffect(() => {
     const testStripe = async () => {

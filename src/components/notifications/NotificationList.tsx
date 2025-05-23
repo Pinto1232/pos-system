@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -102,7 +102,7 @@ const NotificationList: React.FC = () => {
           No notifications yet
         </Typography>
         <Typography variant="caption" color="text.disabled">
-          We'll notify you when something important happens
+          We&apos;ll notify you when something important happens
         </Typography>
       </EmptyState>
     );

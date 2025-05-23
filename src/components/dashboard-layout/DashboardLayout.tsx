@@ -55,7 +55,7 @@ interface DashboardLayoutProps {
   textColor?: string;
   iconColor?: string;
   navbarBgColor?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({

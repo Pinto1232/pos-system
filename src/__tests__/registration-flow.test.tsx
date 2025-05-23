@@ -36,10 +36,11 @@ jest.mock('@/utils/authUtils', () => ({
 
 jest.mock('@/components/auth/RegistrationHandler', () => {
   return function MockRegistrationHandler() {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { handleRegistrationRedirect } = require('@/utils/authUtils');
     React.useEffect(() => {
       handleRegistrationRedirect();
-    }, []);
+    }, [handleRegistrationRedirect]);
     return <div data-testid="registration-handler"></div>;
   };
 });

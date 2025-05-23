@@ -70,8 +70,6 @@ interface SuccessMessageProps {
 const SuccessMessage: React.FC<SuccessMessageProps> = memo(
   ({
     open,
-
-    onClose,
     message,
     onReturn,
     onConfirm,

@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import DashboardClient from './DashboardClient';
-import DashboardLoading from './DashboardLoading';
 import { fetchUserSubscriptionData } from './UserSubscriptionFetcher';
 import AuthCheck from './AuthCheck';
 import ErrorBoundary from './ErrorBoundary';

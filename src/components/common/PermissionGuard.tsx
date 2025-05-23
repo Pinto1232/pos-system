@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useContext, ReactNode } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import permissionService from '@/api/permissionService';
-import { CircularProgress, Box, Typography } from '@mui/material';
+import { CircularProgress, Box } from '@mui/material';
 
 interface PermissionGuardProps {
   permission: string;

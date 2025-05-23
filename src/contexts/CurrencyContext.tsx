@@ -153,7 +153,7 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({
     };
 
     fetchCurrency();
-  }, []);
+  }, [fetchExchangeRate]);
 
   const handleSetCurrency = useCallback(
     (newCurrency: string) => {

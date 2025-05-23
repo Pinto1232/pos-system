@@ -5,7 +5,6 @@ import { Box, Typography, Button } from '@mui/material';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import AddOnToggle from '../shared/AddOnToggle';
-import NavigationButtons from '../shared/NavigationButtons';
 
 const AddOnsStep: React.FC = () => {
   const {

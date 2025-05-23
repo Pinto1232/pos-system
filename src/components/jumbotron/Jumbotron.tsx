@@ -27,7 +27,7 @@ const JumbotronComponent: React.FC<JumbotronProps> = ({
 
     setWindowWidth(window.innerWidth);
 
-    const resizeObserver = new ResizeObserver((entries) => {
+    const resizeObserver = new ResizeObserver(() => {
       setWindowWidth(window.innerWidth);
     });
 

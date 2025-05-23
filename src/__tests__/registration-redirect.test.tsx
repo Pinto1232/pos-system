@@ -63,10 +63,12 @@ describe('Registration Redirect Functionality', () => {
       writable: true,
     });
 
-    const { isRedirectFromRegistration } = require('@/utils/authUtils');
-    isRedirectFromRegistration.mockReturnValue(true);
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const authUtils = require('@/utils/authUtils');
+    authUtils.isRedirectFromRegistration.mockReturnValue(true);
 
     jest.isolateModules(() => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { handleRegistrationRedirect } = require('@/utils/authUtils');
 
       if (typeof window !== 'undefined') {

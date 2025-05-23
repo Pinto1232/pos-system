@@ -20,10 +20,18 @@ import OrderSummary from '@/components/payment/OrderSummary';
 import PaymentErrorDisplay from '@/components/payment/PaymentErrorDisplay';
 import styles from './checkout.module.css';
 
+interface CartItem {
+  id: string | number;
+  name: string;
+  price: number;
+  quantity: number;
+  stripePriceId: string;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { cartItems: contextCartItems, clearCart } = useCart();
-  const [effectiveCartItems, setEffectiveCartItems] = useState<any[]>([]);
+  const [effectiveCartItems, setEffectiveCartItems] = useState<CartItem[]>([]);
 
   const [paymentState, setPaymentState] = useState({
     clientSecret: null as string | null,
@@ -162,7 +170,7 @@ export default function CheckoutPage() {
         });
       }
     };
-  }, [getEffectiveCartItems, updatePaymentState]);
+  }, [getEffectiveCartItems, updatePaymentState, effectiveCartItems]);
 
   const handlePaymentSuccess = useCallback(() => {
     clearCart();

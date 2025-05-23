@@ -10,12 +10,10 @@ import {
   Fade,
   Typography,
 } from '@mui/material';
-import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import { useChatbot } from '@/contexts/ChatbotContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
-import Image from 'next/image';
 
 const ChatbotButton = () => {
   const { toggleChatbot, isOpen } = useChatbot();

@@ -24,7 +24,7 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
   const { stopLoading } = useSpinner();
   const { isInitialized } = useContext(AuthContext);
 
-  const [authStatus, setAuthStatus] = useState({
+  const [, setAuthStatus] = useState({
     isChecking: true,
     isAuthorized: false,
     errorMessage: '',

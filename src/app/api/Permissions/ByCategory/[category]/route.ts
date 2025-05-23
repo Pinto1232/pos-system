@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
 
+interface Permission {
+  id?: number;
+  name: string;
+  displayName: string;
+  category: string;
+  description?: string;
+}
+
 const BACKEND_API_URL =
   process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
 
@@ -17,7 +25,7 @@ async function getPermissionsByCategory(category: string) {
     const allPermissions = await response.json();
 
     return allPermissions.filter(
-      (permission: any) => permission.category === category
+      (permission: Permission) => permission.category === category
     );
   } catch (error) {
     console.error(

@@ -126,39 +126,51 @@ export function transformFrontendAddOnsToBackend(
 /**
  * Validate if an object is a valid backend AddOn
  */
-export function isValidBackendAddOn(obj: any): obj is BackendAddOn {
+export function isValidBackendAddOn(obj: unknown): obj is BackendAddOn {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+
+  const candidate = obj as Record<string, unknown>;
+
   return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    typeof obj.id === 'number' &&
-    typeof obj.name === 'string' &&
-    typeof obj.description === 'string' &&
-    typeof obj.price === 'number' &&
-    typeof obj.currency === 'string' &&
-    typeof obj.multiCurrencyPrices === 'string' &&
-    typeof obj.category === 'string' &&
-    typeof obj.isActive === 'boolean' &&
-    typeof obj.features === 'string' &&
-    typeof obj.dependencies === 'string' &&
-    typeof obj.icon === 'string'
+    typeof candidate.id === 'number' &&
+    typeof candidate.name === 'string' &&
+    typeof candidate.description === 'string' &&
+    typeof candidate.price === 'number' &&
+    typeof candidate.currency === 'string' &&
+    typeof candidate.multiCurrencyPrices === 'string' &&
+    typeof candidate.category === 'string' &&
+    typeof candidate.isActive === 'boolean' &&
+    typeof candidate.features === 'string' &&
+    typeof candidate.dependencies === 'string' &&
+    typeof candidate.icon === 'string'
   );
 }
 
-export function isValidFrontendAddOn(obj: any): obj is FrontendAddOn {
+export function isValidFrontendAddOn(obj: unknown): obj is FrontendAddOn {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+
+  const candidate = obj as Record<string, unknown>;
+
   return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    typeof obj.id === 'number' &&
-    typeof obj.name === 'string' &&
-    typeof obj.description === 'string' &&
-    typeof obj.price === 'number' &&
-    (obj.currency === undefined || typeof obj.currency === 'string') &&
-    (obj.multiCurrencyPrices === undefined ||
-      typeof obj.multiCurrencyPrices === 'object') &&
-    (obj.category === undefined || typeof obj.category === 'string') &&
-    (obj.isActive === undefined || typeof obj.isActive === 'boolean') &&
-    (obj.features === undefined || Array.isArray(obj.features)) &&
-    (obj.dependencies === undefined || Array.isArray(obj.dependencies)) &&
-    (obj.icon === undefined || typeof obj.icon === 'string')
+    typeof candidate.id === 'number' &&
+    typeof candidate.name === 'string' &&
+    typeof candidate.description === 'string' &&
+    typeof candidate.price === 'number' &&
+    (candidate.currency === undefined ||
+      typeof candidate.currency === 'string') &&
+    (candidate.multiCurrencyPrices === undefined ||
+      typeof candidate.multiCurrencyPrices === 'object') &&
+    (candidate.category === undefined ||
+      typeof candidate.category === 'string') &&
+    (candidate.isActive === undefined ||
+      typeof candidate.isActive === 'boolean') &&
+    (candidate.features === undefined || Array.isArray(candidate.features)) &&
+    (candidate.dependencies === undefined ||
+      Array.isArray(candidate.dependencies)) &&
+    (candidate.icon === undefined || typeof candidate.icon === 'string')
   );
 }

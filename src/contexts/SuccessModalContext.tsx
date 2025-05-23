@@ -8,6 +8,36 @@ interface SuccessModalContextProps {
   hideSuccessModal: () => void;
 }
 
+interface Feature {
+  id: number;
+  name: string;
+  description: string;
+  basePrice: number;
+  isRequired: boolean;
+  multiCurrencyPrices?: Record<string, number>;
+}
+
+interface AddOn {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  multiCurrencyPrices?: Record<string, number>;
+}
+
+interface FormData {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  zipCode?: string;
+  [key: string]: string | number | boolean | undefined;
+}
+
 interface SuccessModalProps {
   message?: string;
   onConfirm: (isSignup: boolean) => void;
@@ -15,35 +45,14 @@ interface SuccessModalProps {
   selectedPackage?: {
     id: number;
     title: string;
-    type:
-      | 'starter'
-      | 'growth'
-      | 'enterprise'
-      | 'custom'
-      | 'custom-pro'
-      | 'premium'
-      | 'starter-plus'
-      | 'growth-pro'
-      | 'enterprise-elite'
-      | 'premium-plus';
+    type: 'starter' | 'growth' | 'enterprise' | 'custom' | 'premium';
     price: number;
     currency?: string;
   };
   currentCurrency?: string;
-  formData?: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phone?: string;
-    address?: string;
-    country?: string;
-    state?: string;
-    city?: string;
-    zipCode?: string;
-    [key: string]: any;
-  };
-  selectedFeatures?: Array<any>;
-  selectedAddOns?: Array<any>;
+  formData?: FormData;
+  selectedFeatures?: Feature[];
+  selectedAddOns?: AddOn[];
   usageQuantities?: Record<number, number>;
   calculatedPrice?: number;
   onAddToCart?: (message: string) => void;

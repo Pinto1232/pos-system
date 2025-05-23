@@ -1,21 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Button,
-  Box,
-  Typography,
-  Paper,
-  Grid,
-  Alert,
-  Snackbar,
-} from '@mui/material';
+import { Button, Typography, Paper, Alert, Snackbar } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CachedIcon from '@mui/icons-material/Cached';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import {
-  revalidatePathAction,
-  revalidateTagAction,
   revalidatePricingPackagesAction,
   revalidateDashboardAction,
   revalidateAllCacheAction,
@@ -50,14 +41,14 @@ export default function CacheManager() {
         Cache Management
       </Typography>
 
-      <Typography variant="body2" color="text.secondary" paragraph>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Use these controls to manually revalidate cached data in the
-        application. This is useful when you've made changes that should be
+        application. This is useful when you&apos;ve made changes that should be
         immediately visible to users.
       </Typography>
 
       <Grid container spacing={2} sx={{ mt: 2 }}>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Button
             variant="outlined"
             fullWidth
@@ -74,7 +65,7 @@ export default function CacheManager() {
           </Button>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Button
             variant="outlined"
             fullWidth
@@ -91,7 +82,7 @@ export default function CacheManager() {
           </Button>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <Button
             variant="outlined"
             color="warning"

@@ -10,7 +10,7 @@ export interface UserSubscriptionData {
   startDate: string;
   isActive: boolean;
   enabledFeatures: string[];
-  additionalPackages: any[];
+  additionalPackages: number[];
 }
 
 export interface DashboardData {
