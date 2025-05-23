@@ -2,15 +2,35 @@
 
 import React, { useState, useEffect } from 'react';
 
+interface AddOn {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  currency: string;
+  category: string;
+  isActive: boolean;
+  features: string[];
+  dependencies: string[];
+  icon: string;
+}
+
+interface CustomFeaturesResponse {
+  coreFeatures: unknown[];
+  addOns: AddOn[];
+  usageBasedPricing: unknown[];
+}
+
 export default function TestCustomProPage() {
-  const [customFeatures, setCustomFeatures] = useState<any>(null);
+  const [customFeatures, setCustomFeatures] =
+    useState<CustomFeaturesResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCustomFeatures = async () => {
       try {
-        const response = await fetch('/api/pricing-packages/custom/features');
+        const response = await fetch('/api/PricingPackages/custom/features');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -85,7 +105,7 @@ export default function TestCustomProPage() {
             <strong>✅ SUCCESS:</strong> Found {addOns.length} add-ons in custom
             features response!
             <ul style={{ marginTop: '1rem' }}>
-              {addOns.map((addOn: any, index: number) => (
+              {addOns.map((addOn: AddOn, index: number) => (
                 <li key={index}>
                   <strong>{addOn.name}</strong> - ${addOn.price} (
                   {addOn.description})
@@ -105,8 +125,8 @@ export default function TestCustomProPage() {
             response.
             <br />
             <small>
-              The Custom Pro package will still show "No add-ons available at
-              the moment."
+              The Custom Pro package will still show &quot;No add-ons available
+              at the moment.&quot;
             </small>
           </div>
         )}
@@ -130,12 +150,16 @@ export default function TestCustomProPage() {
               </a>
             </li>
             <li>
-              Click on the "Custom Pro" package (which has isCustomizable: true)
+              Click on the &quot;Custom Pro&quot; package (which has
+              isCustomizable: true)
             </li>
-            <li>In the "Package Details" step, look for the add-ons table</li>
             <li>
-              You should now see the add-ons listed instead of "No add-ons
-              available at the moment"
+              In the &quot;Package Details&quot; step, look for the add-ons
+              table
+            </li>
+            <li>
+              You should now see the add-ons listed instead of &quot;No add-ons
+              available at the moment&quot;
             </li>
           </ol>
         </div>
@@ -171,8 +195,8 @@ export default function TestCustomProPage() {
             returning add-ons.
             <br />
             <small>
-              The Custom Pro package will still show "No add-ons available at
-              the moment."
+              The Custom Pro package will still show &quot;No add-ons available
+              at the moment.&quot;
             </small>
           </div>
         )}
@@ -206,8 +230,8 @@ export default function TestCustomProPage() {
               non-customizable packages
             </li>
             <li>
-              ✅ Custom Pro packages now properly display add-ons in the "Choose
-              Add-Ons" step
+              ✅ Custom Pro packages now properly display add-ons in the
+              &quot;Choose Add-Ons&quot; step
             </li>
             <li>
               ✅ Add-ons include: Premium Support, Advanced Analytics,

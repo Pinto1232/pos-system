@@ -124,7 +124,7 @@ export async function GET(request: NextRequest) {
 
     const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
 
-    const endpoint = `${baseUrl}/api/pricingpackages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    const endpoint = `${baseUrl}/api/PricingPackages?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
     console.log(`Using backend API URL: ${baseUrl}`);
     console.log(`Fetching pricing packages from: ${endpoint}`);
