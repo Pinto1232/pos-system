@@ -23,9 +23,13 @@ describe('Currency API Integration (Real HTTP)', () => {
 
     // Check if frontend and backend are running
     try {
-      await axios.get(`${FRONTEND_URL}/api/currency/location`, { timeout: 2000 });
-    } catch (error) {
-      console.warn('Frontend or backend not running, skipping integration tests');
+      await axios.get(`${FRONTEND_URL}/api/currency/location`, {
+        timeout: 2000,
+      });
+    } catch {
+      console.warn(
+        'Frontend or backend not running, skipping integration tests'
+      );
       // Mark tests as skipped
       process.env.SKIP_INTEGRATION_TESTS = 'true';
     }
@@ -47,7 +51,7 @@ describe('Currency API Integration (Real HTTP)', () => {
       if (typeof data === 'string' && data.trim()) {
         try {
           data = JSON.parse(data);
-        } catch (e) {
+        } catch {
           // If parsing fails, the test will fail on the property checks below
         }
       }
@@ -64,7 +68,9 @@ describe('Currency API Integration (Real HTTP)', () => {
         return;
       }
 
-      const response = await axios.get(`${FRONTEND_URL}/api/currency/available`);
+      const response = await axios.get(
+        `${FRONTEND_URL}/api/currency/available`
+      );
 
       expect(response.status).toBe(200);
       expect(Array.isArray(response.data)).toBe(true);
@@ -94,7 +100,7 @@ describe('Currency API Integration (Real HTTP)', () => {
       if (typeof data === 'string' && data.trim()) {
         try {
           data = JSON.parse(data);
-        } catch (e) {
+        } catch {
           // If parsing fails, the test will fail on the property checks below
         }
       }
@@ -125,11 +131,14 @@ describe('Currency API Integration (Real HTTP)', () => {
       }
 
       // Make request without any authorization
-      const response = await axios.get(`${FRONTEND_URL}/api/currency/location`, {
-        headers: {
-          // Explicitly no Authorization header
+      const response = await axios.get(
+        `${FRONTEND_URL}/api/currency/location`,
+        {
+          headers: {
+            // Explicitly no Authorization header
+          },
         }
-      });
+      );
 
       expect(response.status).toBe(200);
     });

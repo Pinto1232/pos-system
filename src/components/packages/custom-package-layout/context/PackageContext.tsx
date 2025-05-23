@@ -20,7 +20,6 @@ import type {
 import {
   toggleItemSelection,
   updateUsageQuantity,
-  toggleCheckboxWithReset,
 } from '../utils/selectionUtils';
 import { getItemPrice } from '../utils/priceUtils';
 import { useCurrency } from '@/contexts/CurrencyContext';
@@ -146,6 +145,12 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
     currentCurrency: propsCurrency,
   } = initialData;
 
+  
+  React.useEffect(() => {
+    console.log('PackageProvider - features from initialData:', features);
+    console.log('PackageProvider - features length:', features.length);
+  }, [features]);
+
   const {
     onNext,
     onBack,
@@ -210,16 +215,28 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
 
   // Checkbox states for package selection
   const [checkboxStates, setCheckboxStates] = useState<Record<string, boolean>>(
-    addOns.reduce(
-      (acc, addOn) => {
-        acc[`business-${addOn.id}`] = false;
-        acc[`startup-${addOn.id}`] = false;
-        acc[`personal-${addOn.id}`] = false;
-        return acc;
-      },
-      {} as Record<string, boolean>
-    )
+    {}
   );
+
+  // Initialize checkbox states when addOns are loaded
+  React.useEffect(() => {
+    if (addOns.length > 0) {
+      const initialStates = addOns.reduce(
+        (acc, addOn) => {
+          acc[`monthly-${addOn.id}`] = false;
+          acc[`quarterly-${addOn.id}`] = false;
+          acc[`annual-${addOn.id}`] = false;
+          return acc;
+        },
+        {} as Record<string, boolean>
+      );
+      console.log(
+        '[PACKAGE_CONTEXT] Initializing checkbox states:',
+        initialStates
+      );
+      setCheckboxStates(initialStates);
+    }
+  }, [addOns]);
 
   // Pricing state
   const [pricingState, setPricingState] = useState<PricingState>({
@@ -411,9 +428,26 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
     []
   );
 
-  const handleCheckboxChange = useCallback((id: string) => {
-    setCheckboxStates((prevState) => toggleCheckboxWithReset(id, prevState));
-  }, []);
+  const handleCheckboxChange = useCallback(
+    (id: string) => {
+      console.log('[PACKAGE_CONTEXT] Checkbox change:', {
+        id,
+        currentState: checkboxStates[id],
+      });
+      setCheckboxStates((prevState) => {
+        const newState = {
+          ...prevState,
+          [id]: !prevState[id],
+        };
+        console.log(
+          '[PACKAGE_CONTEXT] New checkbox states - any selected:',
+          Object.values(newState).some((v) => v)
+        );
+        return newState;
+      });
+    },
+    [checkboxStates]
+  );
 
   const handlePlanSelect = useCallback(
     (index: number) => {
@@ -565,7 +599,11 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
   ]);
 
   const isAnyCheckboxSelected = useCallback(() => {
-    return Object.values(checkboxStates).some((value) => value === true);
+    const result = Object.values(checkboxStates).some(
+      (value) => value === true
+    );
+    console.log('[PACKAGE_CONTEXT] isAnyCheckboxSelected result:', result);
+    return result;
   }, [checkboxStates]);
 
   const isAnyEnterpriseFeatureSelected = useCallback(() => {

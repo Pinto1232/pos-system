@@ -22,7 +22,7 @@ interface RequestConfig {
   suppressAuthErrors?: boolean;
 }
 
-const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 30000; 
 
 const CACHE_MAX_AGE = 60 * 1000;
 
@@ -34,10 +34,12 @@ interface CacheEntry<T = unknown> {
 const requestCache = new Map<string, CacheEntry>();
 
 const getBaseURL = () => {
-  // Use environment variable or fallback to localhost:5107
-  const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5107';
-  console.log('Using API baseURL:', baseURL);
-  return baseURL;
+  
+  
+  const frontendBaseURL =
+    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  console.log('Using frontend baseURL for API routes:', frontendBaseURL);
+  return frontendBaseURL;
 };
 
 const apiClient = axios.create({
@@ -68,10 +70,15 @@ const getErrorMessageForStatus = (status: number): string => {
   }
 };
 
-// List of endpoints that should not include Authorization header
+
+
 const ANONYMOUS_ENDPOINTS = [
   '/api/currency/location',
   '/api/currency/available',
+  '/api/pricing-packages/custom/features',
+  '/api/pricing-packages/custom/calculate-price',
+  '/api/pricing-packages/custom/select',
+  '/api/health',
 ];
 
 const useApiClient = () => {
@@ -82,8 +89,8 @@ const useApiClient = () => {
     const requestInterceptor = apiClient.interceptors.request.use(
       (config) => {
         try {
-          // Check if this endpoint should be anonymous
-          const isAnonymousEndpoint = ANONYMOUS_ENDPOINTS.some(endpoint =>
+          
+          const isAnonymousEndpoint = ANONYMOUS_ENDPOINTS.some((endpoint) =>
             config.url?.includes(endpoint)
           );
 
@@ -155,7 +162,7 @@ const useApiClient = () => {
             );
           } else if (!error.response) {
             spinnerContext.setError(
-              'Network error. Please check your backend server connection.'
+              'Network error. Please check your connection and try again.'
             );
           }
         }
@@ -165,14 +172,33 @@ const useApiClient = () => {
             'Network Error or Server Unreachable:',
             JSON.stringify(error.message, null, 2)
           );
+          console.error('Full error object:', error);
+          console.error('Error code:', error.code);
+          console.error('Error config:', error.config);
 
-          const baseUrl = apiClient.defaults.baseURL || 'http://localhost:5107';
+          const baseUrl = apiClient.defaults.baseURL || 'http://localhost:3000';
           console.error(
-            `Unable to connect to backend server at ${baseUrl}. Please ensure the server is running.`
+            `Unable to connect to frontend API at ${baseUrl}. Please ensure the frontend server is running.`
           );
+
+          
+          if (
+            error.code === 'ECONNABORTED' ||
+            error.message.includes('timeout')
+          ) {
+            console.error(
+              'Request timed out - this may indicate server overload or network issues'
+            );
+            return Promise.reject(
+              new Error(
+                `Request timeout: The API at ${baseUrl} took too long to respond. Please try again or check your network connection.`
+              )
+            );
+          }
+
           return Promise.reject(
             new Error(
-              `Network error: Unable to connect to backend server at ${baseUrl}. Please ensure the server is running and try again.`
+              `Network error: Unable to connect to API at ${baseUrl}. Please ensure the frontend server is running and try again.`
             )
           );
         }

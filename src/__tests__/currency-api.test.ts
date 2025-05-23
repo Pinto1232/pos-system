@@ -6,7 +6,10 @@
  * and ensuring anonymous endpoints don't send Authorization headers.
  */
 
-import { fetchUserLocation, fetchAvailableCurrencies } from '../api/currencyApi';
+import {
+  fetchUserLocation,
+  fetchAvailableCurrencies,
+} from '../api/currencyApi';
 
 // Mock the axios client to avoid making real HTTP requests during tests
 jest.mock('../api/axiosClient', () => ({
@@ -78,9 +81,12 @@ describe('Currency API', () => {
       const result = await fetchAvailableCurrencies();
 
       // Assert
-      expect(mockApiClient.get).toHaveBeenCalledWith('/api/currency/available', {
-        timeout: 5000,
-      });
+      expect(mockApiClient.get).toHaveBeenCalledWith(
+        '/api/currency/available',
+        {
+          timeout: 5000,
+        }
+      );
       expect(result).toEqual(mockCurrencies);
     });
 
@@ -93,16 +99,19 @@ describe('Currency API', () => {
       const result = await fetchAvailableCurrencies();
 
       // Assert
-      expect(mockApiClient.get).toHaveBeenCalledWith('/api/currency/available', {
-        timeout: 5000,
-      });
+      expect(mockApiClient.get).toHaveBeenCalledWith(
+        '/api/currency/available',
+        {
+          timeout: 5000,
+        }
+      );
 
       // Should return the fallback currencies array
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
 
       // Check that it includes expected fallback currencies
-      const currencyCodes = result.map(currency => currency.code);
+      const currencyCodes = result.map((currency) => currency.code);
       expect(currencyCodes).toContain('USD');
       expect(currencyCodes).toContain('EUR');
       expect(currencyCodes).toContain('ZAR');

@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import AddOnToggle from '../shared/AddOnToggle';
+import NavigationButtons from '../shared/NavigationButtons';
 
 const AddOnsStep: React.FC = () => {
   const {
@@ -13,86 +14,81 @@ const AddOnsStep: React.FC = () => {
     handleAddOnToggle,
     selectedCurrency,
     formatPrice,
-    pricingState,
     handleNext,
+    handleBack,
+    loading,
+    backLoading,
   } = usePackageContext();
 
   return (
-    <Box className={styles.featuresContainer}>
-      <Box className={styles.sectionHeader}>
-        <Typography variant="h5">Choose Add-Ons</Typography>
-        <Typography variant="body2" className={styles.sectionDescription}>
-          Select additional features to enhance your package. Each add-on comes
-          with its own pricing.
-        </Typography>
-      </Box>
-      {addOns.length > 0 ? (
-        addOns.map((addOn) => (
-          <AddOnToggle
-            key={addOn.id}
-            addOn={addOn}
-            isSelected={selectedAddOns.some((a) => a.id === addOn.id)}
-            onToggle={handleAddOnToggle}
-            currency={selectedCurrency}
-            formatPrice={formatPrice}
-          />
-        ))
-      ) : (
-        <Box className={styles.emptyState}>
-          <Typography variant="h6">No add-ons available</Typography>
-          <Button
-            variant="outlined"
-            onClick={handleNext}
-            aria-label="Continue to next step"
-          >
-            Continue
-          </Button>
-        </Box>
-      )}
+    <Box>
+      <Typography variant="h5" className={styles.sectionHeader}>
+        Choose Add-Ons
+      </Typography>
+      <Typography variant="body1" className={styles.sectionDescription}>
+        Enhance your package with additional features and capabilities. Each
+        add-on is carefully designed to extend your system&apos;s functionality.
+      </Typography>
 
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          mt: 3,
-          pt: 2,
-          borderTop: '1px solid #e2e8f0',
-        }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleNext}
-          sx={{
-            minWidth: '200px',
-            backgroundColor: '#2563eb',
-            '&:hover': {
-              backgroundColor: '#1d4ed8',
-            },
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '10px 16px',
-          }}
-          aria-label="Continue to next step"
-        >
-          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-            Continue
-          </Typography>
-          <Typography
-            variant="body2"
+      <Box className={styles.featuresContainer}>
+        {addOns.length > 0 ? (
+          addOns.map((addOn) => (
+            <AddOnToggle
+              key={addOn.id}
+              addOn={addOn}
+              isSelected={selectedAddOns.some((a) => a.id === addOn.id)}
+              onToggle={handleAddOnToggle}
+              currency={selectedCurrency}
+              formatPrice={formatPrice}
+            />
+          ))
+        ) : (
+          <Box
             sx={{
-              fontWeight: 600,
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              padding: '4px 8px',
-              borderRadius: '4px',
-              marginLeft: '8px',
+              textAlign: 'center',
+              padding: '3rem',
+              background: 'rgba(255, 255, 255, 0.9)',
+              borderRadius: '16px',
+              border: '1px solid rgba(226, 232, 240, 0.6)',
+              backdropFilter: 'blur(10px)',
             }}
           >
-            {formatPrice(selectedCurrency, pricingState.totalPrice)}
-          </Typography>
-        </Button>
+            <Typography
+              variant="h6"
+              sx={{
+                color: '#64748b',
+                mb: 2,
+                fontWeight: 600,
+              }}
+            >
+              No add-ons available
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                color: '#94a3b8',
+                mb: 3,
+              }}
+            >
+              Continue to the next step to proceed with your package
+              configuration.
+            </Typography>
+          </Box>
+        )}
       </Box>
+
+      <NavigationButtons
+        onNext={handleNext}
+        onBack={handleBack}
+        nextLabel="Continue"
+        backLabel="Back"
+        isNextDisabled={false}
+        isNextLoading={loading}
+        isBackLoading={backLoading}
+        showBackButton={true}
+        showNextButton={true}
+        showSaveButton={false}
+      />
     </Box>
   );
 };

@@ -15,8 +15,17 @@ interface AddOn {
   icon: string;
 }
 
+interface CoreFeature {
+  id: number;
+  name: string;
+  description: string;
+  basePrice: number;
+  isRequired: boolean;
+  multiCurrencyPrices?: Record<string, number>;
+}
+
 interface CustomFeaturesResponse {
-  coreFeatures: unknown[];
+  coreFeatures: CoreFeature[];
   addOns: AddOn[];
   usageBasedPricing: unknown[];
 }
@@ -73,10 +82,11 @@ export default function TestCustomProPage() {
   }
 
   const addOns = customFeatures?.addOns || [];
+  const coreFeatures = customFeatures?.coreFeatures || [];
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Testing Custom Pro Package Add-ons</h1>
+      <h1>Testing Custom Pro Package Features & Add-ons</h1>
 
       <div style={{ marginBottom: '2rem' }}>
         <h2>Custom Features API Response</h2>
@@ -90,6 +100,47 @@ export default function TestCustomProPage() {
         >
           {JSON.stringify(customFeatures, null, 2)}
         </pre>
+      </div>
+
+      <div style={{ marginBottom: '2rem' }}>
+        <h2>Core Features Extraction Test</h2>
+        {coreFeatures.length > 0 ? (
+          <div
+            style={{
+              backgroundColor: '#e8f5e8',
+              padding: '1rem',
+              borderRadius: '4px',
+            }}
+          >
+            <strong>✅ SUCCESS:</strong> Found {coreFeatures.length} core
+            features in custom features response!
+            <ul style={{ marginTop: '1rem' }}>
+              {coreFeatures.map((feature: CoreFeature, index: number) => (
+                <li key={index}>
+                  <strong>{feature.name}</strong> - ${feature.basePrice} (
+                  {feature.description}){' '}
+                  {feature.isRequired ? '- Required' : '- Optional'}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div
+            style={{
+              backgroundColor: '#ffe8e8',
+              padding: '1rem',
+              borderRadius: '4px',
+            }}
+          >
+            <strong>❌ FAILED:</strong> No core features found in custom
+            features response.
+            <br />
+            <small>
+              The Select Core Features step will show &quot;No features
+              available&quot;.
+            </small>
+          </div>
+        )}
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
@@ -154,12 +205,16 @@ export default function TestCustomProPage() {
               isCustomizable: true)
             </li>
             <li>
-              In the &quot;Package Details&quot; step, look for the add-ons
-              table
+              In the &quot;Select Core Features&quot; step, you should see core
+              features listed
             </li>
             <li>
-              You should now see the add-ons listed instead of &quot;No add-ons
-              available at the moment&quot;
+              In the &quot;Choose Add-Ons&quot; step, you should see add-ons
+              listed
+            </li>
+            <li>
+              Both steps should now have Back and Continue buttons properly
+              positioned
             </li>
           </ol>
         </div>
@@ -167,7 +222,7 @@ export default function TestCustomProPage() {
 
       <div style={{ marginBottom: '2rem' }}>
         <h2>Fix Status</h2>
-        {addOns.length > 0 ? (
+        {coreFeatures.length > 0 && addOns.length > 0 ? (
           <div
             style={{
               backgroundColor: '#e8f5e8',
@@ -176,11 +231,13 @@ export default function TestCustomProPage() {
             }}
           >
             <strong>✅ FIX SUCCESSFUL:</strong> Custom Pro package will now
-            display add-ons in the Package Details section!
+            display core features and add-ons with proper navigation!
             <br />
             <small>
-              The custom features endpoint is returning {addOns.length} add-ons
-              that will be used by customizable packages.
+              The custom features endpoint is returning {coreFeatures.length}{' '}
+              core features and {addOns.length} add-ons that will be used by
+              customizable packages. Navigation buttons have been added to the
+              Select Core Features step.
             </small>
           </div>
         ) : (
@@ -192,11 +249,10 @@ export default function TestCustomProPage() {
             }}
           >
             <strong>❌ FIX FAILED:</strong> Custom features endpoint is not
-            returning add-ons.
+            returning complete data.
             <br />
             <small>
-              The Custom Pro package will still show &quot;No add-ons available
-              at the moment.&quot;
+              Core Features: {coreFeatures.length}, Add-ons: {addOns.length}
             </small>
           </div>
         )}
@@ -214,29 +270,33 @@ export default function TestCustomProPage() {
           <strong>🔧 CHANGES MADE:</strong>
           <ul style={{ marginTop: '0.5rem' }}>
             <li>
-              ✅ Modified <code>CustomPackageLayoutContainer.tsx</code> to
-              extract add-ons from custom features response
-            </li>
-            <li>
-              ✅ Updated logic to use custom add-ons for customizable packages
-              instead of general add-ons
-            </li>
-            <li>
               ✅ Enhanced <code>/api/pricing-packages/custom/features</code>{' '}
-              endpoint with 5 comprehensive add-ons
+              endpoint with 8 core features and 5 comprehensive add-ons
             </li>
             <li>
-              ✅ Added conditional logic to only use general add-ons for
-              non-customizable packages
+              ✅ Added core features: Point of Sale, Inventory Management,
+              Customer Management, Reporting, Employee Management, Multi-store
+              Support, Loyalty Program, E-commerce Integration
             </li>
             <li>
-              ✅ Custom Pro packages now properly display add-ons in the
-              &quot;Choose Add-Ons&quot; step
+              ✅ Updated <code>CoreFeaturesStep.tsx</code> to use
+              NavigationButtons component
+            </li>
+            <li>✅ Added Back button to Select Core Features step</li>
+            <li>
+              ✅ Repositioned Continue button with proper styling and price
+              display
             </li>
             <li>
-              ✅ Add-ons include: Premium Support, Advanced Analytics,
-              Multi-Location Management, API Integration Suite, Enhanced
-              Security
+              ✅ Fixed empty core features data issue that was showing &quot;No
+              features available&quot;
+            </li>
+            <li>
+              ✅ Core features now display with proper pricing and
+              multi-currency support
+            </li>
+            <li>
+              ✅ Navigation buttons are consistently positioned across all steps
             </li>
           </ul>
         </div>
