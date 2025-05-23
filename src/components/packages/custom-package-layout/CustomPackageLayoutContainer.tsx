@@ -162,10 +162,17 @@ const CustomPackageLayoutContainer: React.FC<
         );
 
         const coreFeatures = featuresResponse.data.coreFeatures || [];
+        const customAddOns = featuresResponse.data.addOns || [];
         const usageData = featuresResponse.data.usageBasedPricing || [];
 
         setFeatures(coreFeatures);
+        setAddOns(customAddOns); // Set add-ons from custom features response
         setUsagePricing(usageData);
+
+        console.log(
+          'Set custom add-ons for customizable package:',
+          JSON.stringify(customAddOns, null, 2)
+        );
 
         const initialUsageQuantities = usageData.reduce(
           (acc: Record<number, number>, curr: UsagePricing) => ({
@@ -213,14 +220,14 @@ const CustomPackageLayoutContainer: React.FC<
   }, [selectedPackage, buildSteps]);
 
   useEffect(() => {
-    if (addOnsResponse?.data) {
+    if (addOnsResponse?.data && !selectedPackage.isCustomizable) {
       console.log(
-        'AddOns data from React Query:',
+        'AddOns data from React Query (for non-customizable package):',
         JSON.stringify(addOnsResponse.data, null, 2)
       );
       setAddOns(addOnsResponse.data);
     }
-  }, [addOnsResponse]);
+  }, [addOnsResponse, selectedPackage.isCustomizable]);
 
   const validateCurrentStep = useCallback((): boolean => {
     const currentLabel = steps[currentStep]?.trim() || '';
@@ -345,7 +352,7 @@ const CustomPackageLayoutContainer: React.FC<
         console.log('Package saved successfully!');
 
         showSuccessModal({
-          message: 'Package configuration saved successfully!',
+          message: 'Package saved successfully!',
           onConfirm: handleModalConfirm,
           onReturn: handleReturnToPackage,
           selectedPackage: selectedPackage,
