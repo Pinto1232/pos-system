@@ -84,15 +84,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       return;
     }
 
-    console.log(
-      'CheckoutModal useEffect - open:',
-      open,
-      'cartItems:',
-      JSON.stringify(cartItems, null, 2)
-    );
-
     if (!cartItems || cartItems.length === 0) {
-      console.error('Cart is empty in CheckoutModal');
       updatePaymentState({
         isLoading: false,
         errorType: 'validation_error',
@@ -102,8 +94,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       return;
     }
 
-    console.log('Cart has items, proceeding with payment intent creation');
-
     const createPaymentIntent = async () => {
       updatePaymentState({
         isLoading: true,
@@ -111,43 +101,22 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       });
 
       try {
-        console.log(
-          'Sending request to create payment intent with cart items:',
-          JSON.stringify(cartItems, null, 2)
-        );
-
-        const requestBody = JSON.stringify({
-          cartItems,
-        });
-        console.log('Request body:', JSON.stringify(requestBody, null, 2));
-
         const response = await fetch('/api/create-payment-intent', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: requestBody,
+          body: JSON.stringify({
+            cartItems,
+          }),
         });
-
-        console.log(
-          'Response status:',
-          JSON.stringify(response.status, null, 2)
-        );
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error(
-            'Error response from API:',
-            JSON.stringify(errorData, null, 2)
-          );
           throw new Error(errorData.error || 'Failed to create payment intent');
         }
 
         const responseData = await response.json();
-        console.log(
-          'Success response from API:',
-          JSON.stringify(responseData, null, 2)
-        );
         const { clientSecret } = responseData;
 
         updatePaymentState({
@@ -156,14 +125,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
           paymentStep: 'payment_form',
         });
       } catch (error) {
-        console.error(
-          'Error creating payment intent:',
-          JSON.stringify(
-            error instanceof Error ? error.message : error,
-            null,
-            2
-          )
-        );
         updatePaymentState({
           isLoading: false,
           error:
@@ -247,22 +208,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       </DialogTitle>
 
       <DialogContent className={styles.dialogContent}>
-        {}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            p: 1,
-            fontSize: '10px',
-            color: '#999',
-            zIndex: 1000,
-          }}
-        >
-          Loading: {paymentState.isLoading ? 'true' : 'false'}, Error:{' '}
-          {paymentState.error ? 'true' : 'false'}, ClientSecret:{' '}
-          {paymentState.clientSecret ? 'present' : 'missing'}
-        </Box>
 
         {paymentState.isLoading ? (
           <Box className={styles.loadingContainer}>
@@ -308,10 +253,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       paymentStep: 'payment_form',
                     });
                   } catch (error) {
-                    console.error(
-                      'Error creating payment intent:',
-                      JSON.stringify(error, null, 2)
-                    );
                     updatePaymentState({
                       isLoading: false,
                       error:
