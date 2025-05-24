@@ -24,69 +24,39 @@ const getPublishableKey = () => {
 };
 
 const publishableKey = getPublishableKey();
-console.log(
-  '[DEBUG] Stripe publishable key:',
-  JSON.stringify(publishableKey, null, 2)
-);
 
 // Verify the publishable key format
 const isValidPublishableKey =
   publishableKey &&
   (publishableKey.startsWith('pk_test_') ||
     publishableKey.startsWith('pk_live_'));
-console.log(
-  '[DEBUG] Is publishable key valid format:',
-  JSON.stringify(isValidPublishableKey, null, 2)
-);
 
 const getStripePromise = () => {
   if (!isValidPublishableKey) {
-    console.error(
-      '[DEBUG] Invalid Stripe publishable key format:',
-      publishableKey ? `${publishableKey.substring(0, 10)}...` : 'missing'
-    );
+    console.error('Invalid Stripe publishable key format');
     return null;
   }
 
   try {
-    console.log(
-      '[DEBUG] Initializing Stripe with key:',
-      publishableKey.substring(0, 10) + '...'
-    );
     return loadStripe(publishableKey);
   } catch (error) {
-    console.error(
-      '[DEBUG] Error initializing Stripe:',
-      JSON.stringify(error, null, 2)
-    );
+    console.error('Error initializing Stripe:', error);
     return null;
   }
 };
 
 const stripePromise = getStripePromise();
-console.log(
-  '[DEBUG] Stripe initialization started, promise created:',
-  JSON.stringify(!!stripePromise, null, 2)
-);
 
 const ensureStripeLoaded = async () => {
   if (!stripePromise) {
-    console.error('[DEBUG] Stripe promise is not available');
     return null;
   }
 
   try {
     const stripe = await stripePromise;
-    console.log(
-      '[DEBUG] Stripe loaded successfully:',
-      JSON.stringify(!!stripe, null, 2)
-    );
     return stripe;
   } catch (error) {
-    console.error(
-      '[DEBUG] Error loading Stripe:',
-      JSON.stringify(error, null, 2)
-    );
+    console.error('Error loading Stripe:', error);
     return null;
   }
 };
@@ -537,6 +507,8 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
       </form>
     </Box>
   );
-};
+});
+
+StripePaymentForm.displayName = 'StripePaymentForm';
 
 export default StripePaymentFormWrapper;

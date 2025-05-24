@@ -84,11 +84,9 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     const items = getEffectiveCartItems();
-    console.log('Effective cart items:', JSON.stringify(items, null, 2));
     setEffectiveCartItems(items);
 
     if (!items || items.length === 0) {
-      console.error('Cart is empty in CheckoutPage');
       updatePaymentState({
         isLoading: false,
         errorType: 'validation_error',
@@ -98,55 +96,29 @@ export default function CheckoutPage() {
       return;
     }
 
-    setTimeout(() => {
-      createPaymentIntent(items);
-    }, 100);
-
-    const createPaymentIntent = async (itemsToUse = null) => {
+    const createPaymentIntent = async (itemsToUse: CartItem[]) => {
       updatePaymentState({
         isLoading: true,
         error: null,
       });
 
       try {
-        const cartItemsToSend = itemsToUse || effectiveCartItems;
-        console.log(
-          'Sending request to create payment intent with cart items:',
-          JSON.stringify(cartItemsToSend, null, 2)
-        );
-
-        const requestBody = JSON.stringify({
-          cartItems: cartItemsToSend,
-        });
-        console.log('Request body:', JSON.stringify(requestBody, null, 2));
-
         const response = await fetch('/api/create-payment-intent', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: requestBody,
+          body: JSON.stringify({
+            cartItems: itemsToUse,
+          }),
         });
-
-        console.log(
-          'Response status:',
-          JSON.stringify(response.status, null, 2)
-        );
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error(
-            'Error response from API:',
-            JSON.stringify(errorData, null, 2)
-          );
           throw new Error(errorData.error || 'Failed to create payment intent');
         }
 
         const responseData = await response.json();
-        console.log(
-          'Success response from API:',
-          JSON.stringify(responseData, null, 2)
-        );
         const { clientSecret } = responseData;
 
         updatePaymentState({
@@ -155,10 +127,6 @@ export default function CheckoutPage() {
           paymentStep: 'payment_form',
         });
       } catch (error) {
-        console.error(
-          'Error creating payment intent:',
-          JSON.stringify(error, null, 2)
-        );
         updatePaymentState({
           isLoading: false,
           error:
@@ -170,7 +138,14 @@ export default function CheckoutPage() {
         });
       }
     };
-  }, [getEffectiveCartItems, updatePaymentState, effectiveCartItems]);
+
+    // Small delay to prevent immediate re-render
+    const timeoutId = setTimeout(() => {
+      createPaymentIntent(items);
+    }, 50);
+
+    return () => clearTimeout(timeoutId);
+  }, [getEffectiveCartItems, updatePaymentState]);
 
   const handlePaymentSuccess = useCallback(() => {
     clearCart();
@@ -245,7 +220,7 @@ export default function CheckoutPage() {
                     <PaymentErrorDisplay
                       errorMessage={paymentState.error}
                       errorType={paymentState.errorType}
-                      onRetry={() => {
+                      onRetry={useCallback(() => {
                         const currentItems = getEffectiveCartItems();
                         if (!currentItems || currentItems.length === 0) {
                           updatePaymentState({
@@ -261,6 +236,7 @@ export default function CheckoutPage() {
                           isLoading: true,
                           error: null,
                         });
+
                         const retryPaymentIntent = async () => {
                           try {
                             const response = await fetch(
@@ -292,10 +268,6 @@ export default function CheckoutPage() {
                               paymentStep: 'payment_form',
                             });
                           } catch (error) {
-                            console.error(
-                              'Error creating payment intent:',
-                              JSON.stringify(error, null, 2)
-                            );
                             updatePaymentState({
                               isLoading: false,
                               error:
@@ -308,7 +280,7 @@ export default function CheckoutPage() {
                           }
                         };
                         retryPaymentIntent();
-                      }}
+                      }, [getEffectiveCartItems, updatePaymentState])}
                       onDismiss={() => router.push('/cart')}
                     />
                   </Box>

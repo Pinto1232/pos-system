@@ -24,15 +24,15 @@ interface OrderSummaryProps {
   cartItems: CartItem[];
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ cartItems }) => {
-  const formatPrice = (amount: number) => {
+const OrderSummary: React.FC<OrderSummaryProps> = React.memo(({ cartItems }) => {
+  const formatPrice = useMemo(() => (amount: number) => {
     return new Intl.NumberFormat('en-ZA', {
       style: 'currency',
       currency: 'ZAR',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);
-  };
+  }, []);
 
   const subtotal = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
@@ -41,11 +41,6 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ cartItems }) => {
 
   const tax = useMemo(() => subtotal * 0.15, [subtotal]);
   const total = useMemo(() => subtotal + tax, [subtotal, tax]);
-
-  console.log(
-    'Rendering OrderSummary with cart items:',
-    JSON.stringify(cartItems, null, 2)
-  );
 
   return (
     <Paper
@@ -156,6 +151,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ cartItems }) => {
       </Box>
     </Paper>
   );
-};
+});
+
+OrderSummary.displayName = 'OrderSummary';
 
 export default OrderSummary;
