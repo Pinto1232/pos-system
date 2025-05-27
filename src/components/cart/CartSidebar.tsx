@@ -149,7 +149,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
   const taxAmount = totalPrice * 0.15;
   const finalTotal = totalPrice + taxAmount;
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     setIsLoading(true);
     try {
       console.log(
@@ -177,6 +177,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
       }
 
       localStorage.setItem('validatedCartItems', JSON.stringify(validated));
+
+      
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       onClose();
 

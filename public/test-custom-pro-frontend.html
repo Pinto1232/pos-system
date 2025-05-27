@@ -78,7 +78,7 @@
             <button onclick="testCustomFeaturesAPI()">Test Custom Features API</button>
             <button onclick="testPackageFlow()">Test Package Selection Flow</button>
             <button onclick="clearResults()">Clear Results</button>
-            
+
             <div id="api-results"></div>
         </div>
 
@@ -153,7 +153,7 @@
 
                 // Test the logic that determines if a package is customizable
                 const isCustomizable = mockCustomProPackage.isCustomizable;
-                
+
                 if (isCustomizable) {
                     // Simulate fetching custom features (this is what the frontend does)
                     const response = await fetch('/api/pricing-packages/custom/features');
@@ -168,7 +168,7 @@
                             <p><strong>Is Customizable:</strong> ${isCustomizable}</p>
                             <p><strong>Add-ons loaded:</strong> ${data.addOns?.length || 0}</p>
                             <p><strong>Expected behavior:</strong> Frontend will show "Choose Add-Ons" step with ${data.addOns?.length || 0} add-ons</p>
-                            <pre>Steps: Package Details → Select Core Features → Choose Add-Ons → Configure Usage → Select Payment Plan → Choose Support Level → Configure Integrations → Review & Confirm</pre>
+                            <pre>Steps: Package Details → Select Core Features → Choose Add-Ons → Configure Usage → Select Payment Plan → Choose Support Level → Review & Confirm</pre>
                         </div>
                     `;
                 } else {

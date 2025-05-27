@@ -28,6 +28,82 @@ async function makeRequest(url, options = {}) {
   });
 }
 
+// Helper function to run individual test
+async function runIndividualTest(test) {
+  try {
+    console.log(`Testing: ${test.name}`);
+    const response = await makeRequest(
+      test.url,
+      test.headers ? { headers: test.headers } : {}
+    );
+    const isSuccess = test.expectedStatus.includes(response.statusCode);
+
+    if (isSuccess) {
+      console.log(`✅ ${test.name}: PASS (${response.statusCode})`);
+      return { test: test.name, status: 'success' };
+    } else if (
+      test.name === 'Well-known Configuration' &&
+      response.statusCode === 404
+    ) {
+      console.log(
+        `⚠️ ${test.name}: WARNING (${response.statusCode}) - treating as non-critical`
+      );
+      return { test: test.name, status: 'warning' };
+    } else {
+      console.log(`❌ ${test.name}: FAIL (${response.statusCode})`);
+      return { test: test.name, status: 'error' };
+    }
+  } catch (error) {
+    console.log(`❌ ${test.name}: ERROR - ${error.message}`);
+    return { test: test.name, status: 'error' };
+  }
+}
+
+// Helper function to determine overall health
+function determineOverallHealth(results) {
+  const errorCount = results.filter((r) => r.status === 'error').length;
+  const warningCount = results.filter((r) => r.status === 'warning').length;
+  const successCount = results.filter((r) => r.status === 'success').length;
+
+  if (errorCount === 0 && warningCount === 0) {
+    return 'healthy';
+  } else if (errorCount === 0 && successCount >= 2) {
+    return 'healthy';
+  } else if (errorCount === 0) {
+    return 'degraded';
+  } else if (errorCount <= 1 && successCount >= 2) {
+    return 'degraded';
+  } else {
+    return 'unhealthy';
+  }
+}
+
+// Helper function to print results summary
+function printResultsSummary(results, overall) {
+  const errorCount = results.filter((r) => r.status === 'error').length;
+  const warningCount = results.filter((r) => r.status === 'warning').length;
+  const successCount = results.filter((r) => r.status === 'success').length;
+
+  console.log('\n📊 Results Summary:');
+  console.log(`✅ Success: ${successCount}`);
+  console.log(`⚠️ Warnings: ${warningCount}`);
+  console.log(`❌ Errors: ${errorCount}`);
+  console.log(`🎯 Overall Status: ${overall.toUpperCase()}`);
+
+  if (overall === 'unhealthy') {
+    console.log(
+      '\n❌ Still reporting unhealthy - additional fixes may be needed'
+    );
+  } else {
+    console.log(
+      '\n✅ Diagnostics should now report healthy/degraded instead of unhealthy'
+    );
+    console.log(
+      'The "Keycloak diagnostics indicate unhealthy state" error should be resolved'
+    );
+  }
+}
+
 async function simulateDiagnostics() {
   console.log('🧪 Testing Fixed Keycloak Diagnostics Logic\n');
 
@@ -60,72 +136,15 @@ async function simulateDiagnostics() {
 
   const results = [];
 
+  // Run all tests
   for (const test of tests) {
-    try {
-      console.log(`Testing: ${test.name}`);
-      const response = await makeRequest(
-        test.url,
-        test.headers ? { headers: test.headers } : {}
-      );
-      const isSuccess = test.expectedStatus.includes(response.statusCode);
-
-      if (isSuccess) {
-        console.log(`✅ ${test.name}: PASS (${response.statusCode})`);
-        results.push({ test: test.name, status: 'success' });
-      } else if (
-        test.name === 'Well-known Configuration' &&
-        response.statusCode === 404
-      ) {
-        console.log(
-          `⚠️ ${test.name}: WARNING (${response.statusCode}) - treating as non-critical`
-        );
-        results.push({ test: test.name, status: 'warning' });
-      } else {
-        console.log(`❌ ${test.name}: FAIL (${response.statusCode})`);
-        results.push({ test: test.name, status: 'error' });
-      }
-    } catch (error) {
-      console.log(`❌ ${test.name}: ERROR - ${error.message}`);
-      results.push({ test: test.name, status: 'error' });
-    }
+    const result = await runIndividualTest(test);
+    results.push(result);
   }
 
-  // Apply the new health determination logic
-  const errorCount = results.filter((r) => r.status === 'error').length;
-  const warningCount = results.filter((r) => r.status === 'warning').length;
-  const successCount = results.filter((r) => r.status === 'success').length;
-
-  let overall;
-  if (errorCount === 0 && warningCount === 0) {
-    overall = 'healthy';
-  } else if (errorCount === 0 && successCount >= 2) {
-    overall = 'healthy';
-  } else if (errorCount === 0) {
-    overall = 'degraded';
-  } else if (errorCount <= 1 && successCount >= 2) {
-    overall = 'degraded';
-  } else {
-    overall = 'unhealthy';
-  }
-
-  console.log('\n📊 Results Summary:');
-  console.log(`✅ Success: ${successCount}`);
-  console.log(`⚠️ Warnings: ${warningCount}`);
-  console.log(`❌ Errors: ${errorCount}`);
-  console.log(`🎯 Overall Status: ${overall.toUpperCase()}`);
-
-  if (overall === 'unhealthy') {
-    console.log(
-      '\n❌ Still reporting unhealthy - additional fixes may be needed'
-    );
-  } else {
-    console.log(
-      '\n✅ Diagnostics should now report healthy/degraded instead of unhealthy'
-    );
-    console.log(
-      'The "Keycloak diagnostics indicate unhealthy state" error should be resolved'
-    );
-  }
+  // Determine overall health and print summary
+  const overall = determineOverallHealth(results);
+  printResultsSummary(results, overall);
 
   return overall;
 }

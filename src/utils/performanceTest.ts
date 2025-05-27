@@ -1,7 +1,3 @@
-
-
-
-
 interface RenderMetrics {
   componentName: string;
   renderCount: number;
@@ -66,17 +62,11 @@ class PerformanceMonitor {
 
 export const performanceMonitor = PerformanceMonitor.getInstance();
 
-
-
-
 export function useRenderTracker(componentName: string): void {
   if (process.env.NODE_ENV === 'development') {
     performanceMonitor.trackRender(componentName);
   }
 }
-
-
-
 
 export function withRenderTracking<P extends object>(
   Component: React.ComponentType<P>,

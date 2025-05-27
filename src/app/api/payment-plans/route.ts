@@ -82,15 +82,15 @@ const fallbackPaymentPlans: PaymentPlansResponse = {
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const currency = searchParams.get('currency') || 'USD';
+  const currency = searchParams.get('currency') ?? 'USD';
   const region = searchParams.get('region');
   const userType = searchParams.get('userType');
   const forceRefresh = searchParams.get('refresh') === 'true';
 
   try {
     const apiUrl =
-      process.env.NEXT_PUBLIC_BACKEND_API_URL ||
-      process.env.NEXT_PUBLIC_API_URL ||
+      process.env.NEXT_PUBLIC_BACKEND_API_URL ??
+      process.env.NEXT_PUBLIC_API_URL ??
       'http://localhost:5107';
 
     const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;

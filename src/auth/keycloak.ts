@@ -3,7 +3,6 @@ import { getAuthConfig } from '@/utils/envValidation';
 
 console.log('🔧 Initializing Keycloak configuration...');
 
-
 const authConfig = getAuthConfig();
 
 console.log('📋 Keycloak Configuration Summary:');
@@ -26,13 +25,11 @@ if (authConfig.validation.source === 'fallback') {
   console.log('✅ Using environment variables');
 }
 
-
 const keycloak = new Keycloak({
   url: authConfig.keycloakUrl,
   realm: authConfig.realm,
   clientId: authConfig.clientId,
 });
-
 
 export { authConfig };
 export default keycloak;

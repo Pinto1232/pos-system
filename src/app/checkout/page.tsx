@@ -139,7 +139,6 @@ export default function CheckoutPage() {
       }
     };
 
-    
     const timeoutId = setTimeout(() => {
       createPaymentIntent(items);
     }, 50);

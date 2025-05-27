@@ -9,7 +9,7 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import { KeycloakInstance } from 'keycloak-js';
+import Keycloak from 'keycloak-js';
 import keycloakInstance, { authConfig } from '@/auth/keycloak';
 import { isKeycloakError } from '@/types/keycloak';
 import { validateAuthEnvVars } from '@/utils/envValidation';
@@ -38,9 +38,9 @@ const getKeycloakConfig = () => {
     clientId: authConfig.clientId,
     redirectUri: authConfig.redirectUri,
     loginRedirect:
-      process.env.NEXT_PUBLIC_LOGIN_REDIRECT || FALLBACK_CONFIG.loginRedirect,
+      process.env.NEXT_PUBLIC_LOGIN_REDIRECT ?? FALLBACK_CONFIG.loginRedirect,
     logoutRedirect:
-      process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || FALLBACK_CONFIG.logoutRedirect,
+      process.env.NEXT_PUBLIC_LOGOUT_REDIRECT ?? FALLBACK_CONFIG.logoutRedirect,
     validation: authConfig.validation,
   };
 };
@@ -156,7 +156,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const keycloakRef = useRef<KeycloakInstance>(keycloakInstance);
+  const keycloakRef = useRef<Keycloak>(keycloakInstance);
 
   const configRef = useRef(getKeycloakConfig());
 
@@ -234,7 +234,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []); 
 
   const handleTokenRefresh = useCallback(
-    async (kc: KeycloakInstance, retryCount = 0) => {
+    async (kc: Keycloak, retryCount = 0) => {
       try {
         console.log('Attempting token refresh');
         const refreshed = await kc.updateToken(70);
@@ -253,17 +253,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           setTimeout(() => {
             handleTokenRefresh(kc);
           }, refreshTime);
-        } else {
-          if (kc.token) {
-            const refreshTime = calculateRefreshTime(kc.token);
-            console.log(
-              `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
-            );
+        } else if (kc.token) {
+          const refreshTime = calculateRefreshTime(kc.token);
+          console.log(
+            `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+          );
 
-            setTimeout(() => {
-              handleTokenRefresh(kc);
-            }, refreshTime);
-          }
+          setTimeout(() => {
+            handleTokenRefresh(kc);
+          }, refreshTime);
         }
       } catch (refreshError) {
         console.error(
@@ -382,26 +380,44 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [handleTokenRefresh]); 
 
   
+  const handleRealmCheckFailure = useCallback(
+    async (config: ReturnType<typeof getKeycloakConfig>) => {
+      console.log('Running comprehensive Keycloak diagnostics...');
 
-  const initializeAuth = useCallback(async (): Promise<() => void> => {
-    
-    if (typeof window === 'undefined') return () => {};
+      try {
+        const diagnostics = await runKeycloakDiagnostics(
+          config.url,
+          config.realm,
+          config.clientId
+        );
+        logDiagnostics(diagnostics);
 
-    const kc = keycloakRef.current;
-    let refreshTimeout: NodeJS.Timeout | null = null;
+        if (diagnostics.overall === 'unhealthy') {
+          console.warn(
+            'Keycloak diagnostics indicate unhealthy state - this may be normal in development'
+          );
+          console.log(
+            'Proceeding with authentication despite diagnostic warnings...'
+          );
+        } else if (diagnostics.overall === 'degraded') {
+          console.log(
+            'Keycloak diagnostics show some issues but core functionality appears to work'
+          );
+        }
+      } catch (diagError) {
+        console.error('Failed to run diagnostics:', diagError);
+      }
 
-    if (refreshTimeout) {
-      clearTimeout(refreshTimeout);
-      refreshTimeout = null;
-    }
+      console.log(
+        'Proceeding with Keycloak initialization despite realm check failure...'
+      );
+    },
+    []
+  );
 
-    console.log('Starting Keycloak initialization...');
-
-    const config = configRef.current;
-    console.log('Using Keycloak config:', JSON.stringify(config, null, 2));
-
-    try {
-      
+  
+  const checkRealmAccessibility = useCallback(
+    async (config: ReturnType<typeof getKeycloakConfig>) => {
       const realmCheckUrl = `${config.url}/realms/${config.realm}/.well-known/openid_configuration`;
       console.log('Checking Keycloak realm accessibility:', realmCheckUrl);
 
@@ -426,42 +442,119 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (realmError) {
         console.warn('✗ Keycloak realm check failed:', realmError);
-        console.log('Running comprehensive Keycloak diagnostics...');
-
-        
-        try {
-          const diagnostics = await runKeycloakDiagnostics(
-            config.url,
-            config.realm,
-            config.clientId
-          );
-          logDiagnostics(diagnostics);
-
-          if (diagnostics.overall === 'unhealthy') {
-            console.warn(
-              'Keycloak diagnostics indicate unhealthy state - this may be normal in development'
-            );
-            console.log(
-              'Proceeding with authentication despite diagnostic warnings...'
-            );
-          } else if (diagnostics.overall === 'degraded') {
-            console.log(
-              'Keycloak diagnostics show some issues but core functionality appears to work'
-            );
-          }
-        } catch (diagError) {
-          console.error('Failed to run diagnostics:', diagError);
-        }
-
-        console.log(
-          'Proceeding with Keycloak initialization despite realm check failure...'
-        );
-        
+        await handleRealmCheckFailure(config);
       }
+    },
+    [handleRealmCheckFailure]
+  );
+
+  
+  const handleSuccessfulAuthentication = useCallback(
+    async (
+      kc: Keycloak,
+      refreshTimeoutRef: { current: NodeJS.Timeout | null }
+    ) => {
+      if (kc.token) {
+        console.log('Setting token in state and cookie');
+        setToken(kc.token);
+        localStorage.setItem('accessToken', kc.token);
+        await setTokenCookie(kc.token);
+
+        const refreshTime = calculateRefreshTime(kc.token);
+        console.log(
+          `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
+        );
+
+        refreshTimeoutRef.current = setTimeout(() => {
+          handleTokenRefresh(kc);
+        }, refreshTime);
+
+        if (window.location.pathname === '/after-auth') {
+          window.location.href = '/';
+        }
+      } else {
+        console.warn('Authenticated but no token available');
+      }
+
+      setInitialized(true);
+    },
+    [handleTokenRefresh]
+  );
+
+  
+  const handleUnauthenticatedState = useCallback(async () => {
+    console.log('Not authenticated, redirecting to login');
+    setInitialized(true);
+
+    console.log('Performing login redirect...');
+    if (typeof window !== 'undefined') {
+      const loginRedirect = window.location.origin + '/';
+
+      try {
+        await keycloakRef.current.login({
+          redirectUri: loginRedirect,
+          prompt: 'login',
+        });
+      } catch (err) {
+        console.error('Login redirect error:', JSON.stringify(err, null, 2));
+        setError(
+          err instanceof Error
+            ? `Login redirect failed: ${err.message}`
+            : 'Login redirect failed'
+        );
+      }
+    }
+  }, []);
+
+  
+  const handleAuthenticationError = useCallback((err: unknown) => {
+    console.error('Authentication Error:', JSON.stringify(err, null, 2));
+    let errorMessage = 'Unknown authentication error';
+
+    if (err instanceof Error) {
+      errorMessage = `Authentication error: ${err.message}`;
+    } else if (isKeycloakError(err)) {
+      if (err.error && err.error_description) {
+        errorMessage = `Keycloak Error: ${err.error} - ${err.error_description}`;
+      } else if (err.error) {
+        errorMessage = `Keycloak Error: ${err.error}`;
+      }
+    } else if (typeof err === 'object' && err !== null) {
+      errorMessage = `Authentication error: ${JSON.stringify(err)}`;
+    }
+
+    console.error(
+      'Final error message:',
+      JSON.stringify(errorMessage, null, 2)
+    );
+    setError(errorMessage);
+    localStorage.removeItem('accessToken');
+    clearTokenCookie();
+    setInitialized(true);
+  }, []);
+
+  const initializeAuth = useCallback(async (): Promise<() => void> => {
+    
+    if (typeof window === 'undefined') return () => {};
+
+    const kc = keycloakRef.current;
+    const refreshTimeoutRef = { current: null as NodeJS.Timeout | null };
+
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+      refreshTimeoutRef.current = null;
+    }
+
+    console.log('Starting Keycloak initialization...');
+
+    const config = configRef.current;
+    console.log('Using Keycloak config:', JSON.stringify(config, null, 2));
+
+    try {
+      await checkRealmAccessibility(config);
 
       const isNewRegistration =
         localStorage.getItem('newRegistration') === 'true';
-
       const onLoadOption = isNewRegistration ? 'login-required' : 'check-sso';
 
       console.log(
@@ -478,7 +571,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         pkceMethod: 'S256',
         responseMode: 'query',
         enableLogging: true,
-
         silentCheckSsoRedirectUri: undefined,
         silentCheckSsoFallback: false,
       });
@@ -493,91 +585,27 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
 
       if (authenticated) {
-        if (kc.token) {
-          console.log('Setting token in state and cookie');
-          setToken(kc.token);
-          localStorage.setItem('accessToken', kc.token);
-          await setTokenCookie(kc.token);
-
-          const refreshTime = calculateRefreshTime(kc.token);
-          console.log(
-            `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
-          );
-
-          refreshTimeout = setTimeout(() => {
-            handleTokenRefresh(kc);
-          }, refreshTime);
-
-          if (window.location.pathname === '/after-auth') {
-            window.location.href = '/';
-          }
-        } else {
-          console.warn('Authenticated but no token available');
-        }
-
-        setInitialized(true);
+        await handleSuccessfulAuthentication(kc, refreshTimeoutRef);
       } else {
-        console.log('Not authenticated, redirecting to login');
-        setInitialized(true);
-
-        
-        console.log('Performing login redirect...');
-        if (typeof window !== 'undefined') {
-          const loginRedirect = window.location.origin + '/';
-
-          try {
-            await keycloakRef.current.login({
-              redirectUri: loginRedirect,
-              prompt: 'login',
-            });
-          } catch (err) {
-            console.error(
-              'Login redirect error:',
-              JSON.stringify(err, null, 2)
-            );
-            setError(
-              err instanceof Error
-                ? `Login redirect failed: ${err.message}`
-                : 'Login redirect failed'
-            );
-          }
-        }
+        await handleUnauthenticatedState();
       }
     } catch (err: unknown) {
-      console.error('Authentication Error Raw:', JSON.stringify(err, null, 2));
-      let errorMessage = 'Unknown authentication error';
-      console.error('Authentication Error:', JSON.stringify(err, null, 2));
-
-      if (err instanceof Error) {
-        errorMessage = `Authentication error: ${err.message}`;
-      } else if (isKeycloakError(err)) {
-        if (err.error && err.error_description) {
-          errorMessage = `Keycloak Error: ${err.error} - ${err.error_description}`;
-        } else if (err.error) {
-          errorMessage = `Keycloak Error: ${err.error}`;
-        }
-      } else if (typeof err === 'object' && err !== null) {
-        errorMessage = `Authentication error: ${JSON.stringify(err)}`;
-      }
-
-      console.error(
-        'Final error message:',
-        JSON.stringify(errorMessage, null, 2)
-      );
-      setError(errorMessage);
-      localStorage.removeItem('accessToken');
-      clearTokenCookie();
-      setInitialized(true);
+      handleAuthenticationError(err);
     }
 
     return () => {
-      if (refreshTimeout) {
+      if (refreshTimeoutRef.current) {
         console.log('Cleaning up refresh timeout');
-        clearTimeout(refreshTimeout);
-        refreshTimeout = null;
+        clearTimeout(refreshTimeoutRef.current);
+        refreshTimeoutRef.current = null;
       }
     };
-  }, [handleTokenRefresh]); 
+  }, [
+    checkRealmAccessibility,
+    handleSuccessfulAuthentication,
+    handleUnauthenticatedState,
+    handleAuthenticationError,
+  ]);
 
   useEffect(() => {
     if (isMounted && !initStartedRef.current) {

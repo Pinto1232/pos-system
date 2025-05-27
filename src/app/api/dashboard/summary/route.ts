@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { CACHE_TIMES } from '@/app/cache-constants';
 
 const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+  process.env.NEXT_PUBLIC_BACKEND_API_URL ?? 'http://localhost:5107';
 
 const mockDashboardSummary = {
   recentSales: [

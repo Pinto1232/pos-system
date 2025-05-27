@@ -1,8 +1,3 @@
-
-
-
-
-
 interface RenderData {
   componentName: string;
   renderCount: number;
@@ -25,11 +20,8 @@ interface PerformanceReport {
 }
 
 class PerformanceAnalyzer {
-  private renderData: Map<string, RenderData> = new Map();
-  private isEnabled: boolean = process.env.NODE_ENV === 'development';
-
-  
-
+  private readonly renderData: Map<string, RenderData> = new Map();
+  private readonly isEnabled: boolean = process.env.NODE_ENV === 'development';
 
   recordRender(
     componentName: string,
@@ -60,15 +52,11 @@ class PerformanceAnalyzer {
     }
   }
 
-  
-
-
   generateReport(): PerformanceReport {
     const components = Array.from(this.renderData.values());
 
-    
     const slowComponents = components
-      .filter((c) => c.averageTime > 16) 
+      .filter((c) => c.averageTime > 16)
       .sort((a, b) => b.averageTime - a.averageTime)
       .slice(0, 10);
 
@@ -77,7 +65,6 @@ class PerformanceAnalyzer {
       .sort((a, b) => b.renderCount - a.renderCount)
       .slice(0, 10);
 
-    
     const recommendations: string[] = [];
 
     if (slowComponents.length > 0) {
@@ -92,7 +79,6 @@ class PerformanceAnalyzer {
       );
     }
 
-    
     const highPropsChangeComponents = components.filter(
       (c) => c.renderCount > 5 && c.propsChanges / c.renderCount > 0.8
     );
@@ -103,7 +89,6 @@ class PerformanceAnalyzer {
       );
     }
 
-    
     const totalRenders = components.reduce((sum, c) => sum + c.renderCount, 0);
     const totalTime = components.reduce((sum, c) => sum + c.totalTime, 0);
     const averageRenderTime = totalRenders > 0 ? totalTime / totalRenders : 0;
@@ -120,9 +105,6 @@ class PerformanceAnalyzer {
       },
     };
   }
-
-  
-
 
   printReport() {
     if (!this.isEnabled) return;
@@ -168,31 +150,20 @@ class PerformanceAnalyzer {
     console.groupEnd();
   }
 
-  
-
-
   clear() {
     this.renderData.clear();
   }
 
-  
-
-
   getComponentData(componentName: string): RenderData | undefined {
     return this.renderData.get(componentName);
   }
-
-  
-
 
   getAllData(): RenderData[] {
     return Array.from(this.renderData.values());
   }
 }
 
-
 export const performanceAnalyzer = new PerformanceAnalyzer();
-
 
 export const recordRender = (
   componentName: string,
@@ -209,7 +180,6 @@ export const printPerformanceReport = () => {
 export const clearPerformanceData = () => {
   performanceAnalyzer.clear();
 };
-
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   setInterval(() => {

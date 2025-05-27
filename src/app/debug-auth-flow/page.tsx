@@ -11,7 +11,6 @@ export default function DebugAuthFlow() {
   const [authState, setAuthState] = useState<string>('checking');
 
   useEffect(() => {
-    
     const params = new URLSearchParams(window.location.search);
     const paramObj: Record<string, string> = {};
     params.forEach((value, key) => {
@@ -19,7 +18,6 @@ export default function DebugAuthFlow() {
     });
     setUrlParams(paramObj);
 
-    
     const storageData: Record<string, string> = {};
     const keys = [
       'newRegistration',
@@ -35,7 +33,6 @@ export default function DebugAuthFlow() {
     });
     setLocalStorageData(storageData);
 
-    
     const hasOAuth2Params =
       params.has('state') &&
       params.has('session_state') &&

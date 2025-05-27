@@ -1,8 +1,3 @@
-
-
-
-
-
 export interface DiagnosticResult {
   test: string;
   status: 'success' | 'warning' | 'error';
@@ -24,7 +19,6 @@ export async function runKeycloakDiagnostics(
   const results: DiagnosticResult[] = [];
   const recommendations: string[] = [];
 
-  
   try {
     const serverResponse = await fetch(keycloakUrl, {
       method: 'GET',
@@ -66,7 +60,6 @@ export async function runKeycloakDiagnostics(
     );
   }
 
-  
   try {
     const realmResponse = await fetch(`${keycloakUrl}/realms/${realm}`, {
       method: 'GET',
@@ -74,7 +67,6 @@ export async function runKeycloakDiagnostics(
     });
 
     if (realmResponse.status === 405) {
-      
       results.push({
         test: 'Realm Existence',
         status: 'success',
@@ -110,7 +102,6 @@ export async function runKeycloakDiagnostics(
     });
   }
 
-  
   try {
     const wellKnownResponse = await fetch(
       `${keycloakUrl}/realms/${realm}/.well-known/openid_configuration`,
@@ -136,7 +127,6 @@ export async function runKeycloakDiagnostics(
         },
       });
     } else if (wellKnownResponse.status === 404) {
-      
       results.push({
         test: 'Well-known Configuration',
         status: 'warning',
@@ -173,7 +163,6 @@ export async function runKeycloakDiagnostics(
     });
   }
 
-  
   try {
     const corsResponse = await fetch(
       `${keycloakUrl}/realms/${realm}/.well-known/openid_configuration`,
@@ -224,7 +213,6 @@ export async function runKeycloakDiagnostics(
     });
   }
 
-  
   const errorCount = results.filter((r) => r.status === 'error').length;
   const warningCount = results.filter((r) => r.status === 'warning').length;
   const successCount = results.filter((r) => r.status === 'success').length;
@@ -233,12 +221,10 @@ export async function runKeycloakDiagnostics(
   if (errorCount === 0 && warningCount === 0) {
     overall = 'healthy';
   } else if (errorCount === 0 && successCount >= 2) {
-    
     overall = 'healthy';
   } else if (errorCount === 0) {
     overall = 'degraded';
   } else if (errorCount <= 1 && successCount >= 2) {
-    
     overall = 'degraded';
   } else {
     overall = 'unhealthy';
