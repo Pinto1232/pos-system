@@ -31,7 +31,6 @@ const FALLBACK_CONFIG = {
 };
 
 const getKeycloakConfig = () => {
-  
   return {
     url: authConfig.keycloakUrl,
     realm: authConfig.realm,
@@ -195,7 +194,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       clearTokenCookie();
       setToken(null);
 
-      
       if (document.body) {
         const config = configRef.current;
         const logoutRedirect = window.encodeURIComponent(config.logoutRedirect);
@@ -231,7 +229,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         window.location.href = configRef.current.logoutRedirect;
       }
     }
-  }, []); 
+  }, []);
 
   const handleTokenRefresh = useCallback(
     async (kc: Keycloak, retryCount = 0) => {
@@ -377,9 +375,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         err instanceof Error ? `Login failed: ${err.message}` : 'Login failed'
       );
     }
-  }, [handleTokenRefresh]); 
+  }, [handleTokenRefresh]);
 
-  
   const handleRealmCheckFailure = useCallback(
     async (config: ReturnType<typeof getKeycloakConfig>) => {
       console.log('Running comprehensive Keycloak diagnostics...');
@@ -415,7 +412,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
-  
   const checkRealmAccessibility = useCallback(
     async (config: ReturnType<typeof getKeycloakConfig>) => {
       const realmCheckUrl = `${config.url}/realms/${config.realm}/.well-known/openid_configuration`;
@@ -448,7 +444,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     [handleRealmCheckFailure]
   );
 
-  
   const handleSuccessfulAuthentication = useCallback(
     async (
       kc: Keycloak,
@@ -481,7 +476,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     [handleTokenRefresh]
   );
 
-  
   const handleUnauthenticatedState = useCallback(async () => {
     console.log('Not authenticated, redirecting to login');
     setInitialized(true);
@@ -506,7 +500,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  
   const handleAuthenticationError = useCallback((err: unknown) => {
     console.error('Authentication Error:', JSON.stringify(err, null, 2));
     let errorMessage = 'Unknown authentication error';
@@ -534,7 +527,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const initializeAuth = useCallback(async (): Promise<() => void> => {
-    
     if (typeof window === 'undefined') return () => {};
 
     const kc = keycloakRef.current;

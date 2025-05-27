@@ -22,7 +22,6 @@ const RenderTracker: React.FC<RenderTrackerProps> = ({
   const startTime = useRef<number>(0);
   const isEnabled = process.env.NODE_ENV === 'development';
 
-  
   useEffect(() => {
     if (!isEnabled) {
       return;
@@ -42,21 +41,18 @@ const RenderTracker: React.FC<RenderTrackerProps> = ({
       `🔄 [RENDER] ${componentName} - Render #${renderCount.current} (${renderTime.toFixed(2)}ms)`
     );
 
-    
     if (renderCount.current > warnThreshold) {
       console.warn(
         `⚠️ [PERFORMANCE] ${componentName} has rendered ${renderCount.current} times. Consider optimization.`
       );
     }
 
-    
     if (renderTime > 16) {
       console.warn(
         `⚠️ [SLOW RENDER] ${componentName} took ${renderTime.toFixed(2)}ms (target: <16ms for 60fps)`
       );
     }
 
-    
     if (trackProps && Object.keys(props).length > 0) {
       const changedProps: Record<string, { from: unknown; to: unknown }> = {};
 
@@ -125,7 +121,6 @@ export function useRenderTracker(
   const startTime = useRef<number>(0);
   const isEnabled = process.env.NODE_ENV === 'development';
 
-  
   useEffect(() => {
     if (!isEnabled) {
       return;
@@ -146,21 +141,18 @@ export function useRenderTracker(
       `🔄 [RENDER] ${componentName} - Render #${renderCount.current} (${renderTime.toFixed(2)}ms)`
     );
 
-    
     if (renderCount.current > (options.warnThreshold ?? 5)) {
       console.warn(
         `⚠️ [PERFORMANCE] ${componentName} has rendered ${renderCount.current} times. Consider optimization.`
       );
     }
 
-    
     if (renderTime > 16) {
       console.warn(
         `⚠️ [SLOW RENDER] ${componentName} took ${renderTime.toFixed(2)}ms (target: <16ms for 60fps)`
       );
     }
 
-    
     if (
       options.trackProps !== false &&
       props &&

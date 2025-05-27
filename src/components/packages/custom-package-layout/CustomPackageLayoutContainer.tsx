@@ -9,6 +9,8 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useSuccessModal } from '@/contexts/SuccessModalContext';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { useAddOns } from '@/hooks/useAddOns';
+import { usePackageDataPreloader } from '@/hooks/usePackageDataPreloader';
+import { usePriceCalculation } from '@/hooks/usePriceCalculation';
 
 import {
   Package,
@@ -17,15 +19,12 @@ import {
   UsagePricing,
   FeaturesResponse,
   PackageSelectionRequest,
-  PriceCalculationRequest,
-  PriceCalculationResponse,
 } from './types';
 import {
   SuccessMessageData,
   SavedPackageData,
   AddOn as IndexAddOn,
 } from './types/index';
-import { debounce } from 'lodash';
 import LazyLoginForm from '@/components/login-form/LoginForm';
 
 interface CustomPackageLayoutContainerProps {
@@ -66,6 +65,7 @@ const CustomPackageLayoutContainer: React.FC<
   const { apiClient } = useApiClient();
   const { showSuccessModal } = useSuccessModal();
   const { currency } = useCurrency();
+  const { getCachedData } = usePackageDataPreloader();
   const [currentStep, setCurrentStep] = useState(0);
   const [steps, setSteps] = useState<string[]>([]);
   const [features, setFeatures] = useState<Feature[]>([]);
@@ -78,12 +78,17 @@ const CustomPackageLayoutContainer: React.FC<
   >({});
   const [isLoading, setIsLoading] = useState(true);
 
-  const [calculatedPrice, setCalculatedPrice] = useState<number>(
+  const basePrice =
     selectedPackage.type.toLowerCase().includes('custom') &&
-      selectedPackage.price === 0
+    selectedPackage.price === 0
       ? 129.99
-      : selectedPackage.price
-  );
+      : selectedPackage.price;
+
+  const { calculatedPrice, calculatePrice } = usePriceCalculation({
+    packageId: selectedPackage.id,
+    basePrice,
+    isCustomizable: selectedPackage.isCustomizable,
+  });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [showLoginForm, setShowLoginForm] = useState(false);
@@ -151,74 +156,90 @@ const CustomPackageLayoutContainer: React.FC<
   });
 
   useEffect(() => {
-    const fetchConfig = async () => {
-      try {
-        const featuresResponse = await apiClient.get<FeaturesResponse>(
-          '/api/pricing-packages/custom/features'
-        );
-        console.log(
-          'Fetched core features response:',
-          JSON.stringify(featuresResponse.data, null, 2)
-        );
+    const initializePackageData = async () => {
+      setIsLoading(true);
 
-        const coreFeatures = featuresResponse.data.coreFeatures || [];
-        const customAddOns = featuresResponse.data.addOns || [];
-        const usageData = featuresResponse.data.usageBasedPricing || [];
+      if (selectedPackage.isCustomizable) {
+        const cachedData = getCachedData();
 
-        setFeatures(coreFeatures);
-        setAddOns(customAddOns);
-        setUsagePricing(usageData);
+        if (cachedData) {
+          console.log('Using cached package data for faster loading');
+          setFeatures(cachedData.features);
+          setAddOns(cachedData.addOns);
+          setUsagePricing(cachedData.usagePricing);
 
-        console.log(
-          'Set custom add-ons for customizable package:',
-          JSON.stringify(customAddOns, null, 2)
-        );
+          const initialUsageQuantities = cachedData.usagePricing.reduce(
+            (acc: Record<number, number>, curr: UsagePricing) => ({
+              ...acc,
+              [curr.id]: curr.defaultValue,
+            }),
+            {} as Record<number, number>
+          );
+          setUsageQuantities(initialUsageQuantities);
 
-        const initialUsageQuantities = usageData.reduce(
-          (acc: Record<number, number>, curr: UsagePricing) => ({
-            ...acc,
-            [curr.id]: curr.defaultValue,
-          }),
-          {} as Record<number, number>
-        );
-        setUsageQuantities(initialUsageQuantities);
-        console.log(
-          'Initial usage quantities:',
-          JSON.stringify(initialUsageQuantities, null, 2)
-        );
+          const newSteps = buildSteps();
+          setSteps(newSteps);
+          setCurrentStep(0);
+          setIsLoading(false);
 
+          console.log('Package data loaded from cache');
+          return;
+        }
+
+        try {
+          const featuresResponse = await apiClient.get<FeaturesResponse>(
+            '/api/pricing-packages/custom/features'
+          );
+          console.log(
+            'Fetched core features response:',
+            JSON.stringify(featuresResponse.data, null, 2)
+          );
+
+          const coreFeatures = featuresResponse.data.coreFeatures || [];
+          const customAddOns = featuresResponse.data.addOns || [];
+          const usageData = featuresResponse.data.usageBasedPricing || [];
+
+          setFeatures(coreFeatures);
+          setAddOns(customAddOns);
+          setUsagePricing(usageData);
+
+          const initialUsageQuantities = usageData.reduce(
+            (acc: Record<number, number>, curr: UsagePricing) => ({
+              ...acc,
+              [curr.id]: curr.defaultValue,
+            }),
+            {} as Record<number, number>
+          );
+          setUsageQuantities(initialUsageQuantities);
+
+          const newSteps = buildSteps();
+          setSteps(newSteps);
+          setCurrentStep(0);
+          console.log('Initialized steps:', JSON.stringify(newSteps, null, 2));
+        } catch (error) {
+          console.error(
+            'Failed to load package config:',
+            error instanceof Error ? error.message : String(error)
+          );
+          const newSteps = buildSteps();
+          setSteps(newSteps);
+          setCurrentStep(0);
+        }
+      } else {
         const newSteps = buildSteps();
         setSteps(newSteps);
         setCurrentStep(0);
-        console.log('Initialized steps:', JSON.stringify(newSteps, null, 2));
-      } catch (error) {
-        console.error(
-          'Failed to load package config:',
-          error instanceof Error ? error.message : String(error)
+        console.log(
+          'Non-customizable package. Steps set to:',
+          JSON.stringify(newSteps, null, 2)
         );
-        console.error('Full error details:', error);
-        const newSteps = buildSteps();
-        setSteps(newSteps);
-        setCurrentStep(0);
-      } finally {
-        setIsLoading(false);
       }
+
+      setIsLoading(false);
     };
 
-    setIsLoading(true);
-    if (selectedPackage.isCustomizable) {
-      fetchConfig();
-    } else {
-      const newSteps = buildSteps();
-      setSteps(newSteps);
-      setIsLoading(false);
-      setCurrentStep(0);
-      console.log(
-        'Non-customizable package. Steps set to:',
-        JSON.stringify(newSteps, null, 2)
-      );
-    }
-  }, [selectedPackage, buildSteps, apiClient]);
+    initializePackageData();
+  }, [selectedPackage, buildSteps, apiClient, getCachedData]);
 
   useEffect(() => {
     if (addOnsResponse?.data && !selectedPackage.isCustomizable) {
@@ -296,7 +317,7 @@ const CustomPackageLayoutContainer: React.FC<
       };
 
       const existingCartItems = JSON.parse(
-        localStorage.getItem('cartItems') || '[]'
+        localStorage.getItem('cartItems') ?? '[]'
       );
 
       const updatedCart = [...existingCartItems, cartItem];
@@ -411,57 +432,18 @@ const CustomPackageLayoutContainer: React.FC<
 
   useEffect(() => {
     if (selectedPackage.isCustomizable) {
-      const calculatePrice = debounce(async () => {
-        const basePrice =
-          selectedPackage.type.toLowerCase().includes('custom') &&
-          selectedPackage.price === 0
-            ? 129.99
-            : selectedPackage.price;
-
-        const requestBody: PriceCalculationRequest = {
-          packageId: selectedPackage.id,
-          basePrice: basePrice,
-          selectedFeatures: selectedFeatures.map((f) => f.id),
-          selectedAddOns: selectedAddOns.map((a) => a.id),
-          usageLimits: usageQuantities,
-        };
-
-        console.log(
-          'Calculating price with request body:',
-          JSON.stringify(requestBody, null, 2)
-        );
-
-        try {
-          const response = await apiClient.post<PriceCalculationResponse>(
-            '/api/pricing-packages/custom/calculate-price',
-            requestBody
-          );
-          console.log(
-            'Price calculation response:',
-            JSON.stringify(response.data, null, 2)
-          );
-          setCalculatedPrice(response.data.totalPrice);
-        } catch (error) {
-          console.error(
-            'Failed to calculate price:',
-            error instanceof Error ? error.message : String(error)
-          );
-          console.error('Full error details:', error);
-        }
-      }, 300);
-
-      calculatePrice();
-
-      return () => {
-        calculatePrice.cancel();
-      };
+      calculatePrice(
+        selectedFeatures.map((f) => f.id),
+        selectedAddOns.map((a) => a.id),
+        usageQuantities
+      );
     }
   }, [
     selectedFeatures,
     selectedAddOns,
     usageQuantities,
-    selectedPackage,
-    apiClient,
+    selectedPackage.isCustomizable,
+    calculatePrice,
   ]);
 
   const handleEnterpriseFeatureToggle = useCallback((featureId: string) => {
@@ -471,7 +453,11 @@ const CustomPackageLayoutContainer: React.FC<
     }));
   }, []);
 
-  if (isLoading || isAddOnsLoading) return <WaveLoading />;
+  const shouldShowLoading =
+    (isLoading && !getCachedData()) ||
+    (!selectedPackage.isCustomizable && isAddOnsLoading);
+
+  if (shouldShowLoading) return <WaveLoading />;
   if (showLoginForm) return <LazyLoginForm />;
 
   return (

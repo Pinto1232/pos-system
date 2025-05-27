@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+  process.env.NEXT_PUBLIC_BACKEND_API_URL ?? 'http://localhost:5107';
 
 export async function GET(request: NextRequest) {
   try {
     console.log('Proxying GET request to backend for custom package features');
+    console.log('Backend API URL:', BACKEND_API_URL);
 
     const authHeader = request.headers.get('authorization');
     console.log('Authorization header present:', !!authHeader);
@@ -32,7 +33,11 @@ export async function GET(request: NextRequest) {
 
     if (!response.ok) {
       console.warn(
-        `Backend API returned status: ${response.status}, serving fallback data`
+        `Backend API returned status: ${response.status} ${response.statusText}, serving fallback data`
+      );
+      console.warn(
+        'Response details:',
+        await response.text().catch(() => 'Unable to read response')
       );
 
       return NextResponse.json({
@@ -261,12 +266,101 @@ export async function GET(request: NextRequest) {
             icon: 'security_icon',
           },
         ],
-        usageBasedPricing: [],
+        usageBasedPricing: [
+          {
+            id: 1,
+            featureId: 1,
+            name: 'Number of Transactions',
+            unit: 'transactions/month',
+            minValue: 1000,
+            maxValue: 100000,
+            pricePerUnit: 0.01,
+            defaultValue: 1000,
+            multiCurrencyPrices: {
+              USD: 0.01,
+              EUR: 0.009,
+              GBP: 0.0075,
+              ZAR: 0.18,
+            },
+          },
+          {
+            id: 2,
+            featureId: 2,
+            name: 'Number of Products',
+            unit: 'products',
+            minValue: 100,
+            maxValue: 10000,
+            pricePerUnit: 0.05,
+            defaultValue: 100,
+            multiCurrencyPrices: {
+              USD: 0.05,
+              EUR: 0.045,
+              GBP: 0.0375,
+              ZAR: 0.9,
+            },
+          },
+          {
+            id: 3,
+            featureId: 3,
+            name: 'Number of Users',
+            unit: 'users',
+            minValue: 1,
+            maxValue: 100,
+            pricePerUnit: 5.0,
+            defaultValue: 1,
+            multiCurrencyPrices: {
+              USD: 5.0,
+              EUR: 4.5,
+              GBP: 3.75,
+              ZAR: 90.0,
+            },
+          },
+          {
+            id: 4,
+            featureId: 6,
+            name: 'Number of Stores',
+            unit: 'stores',
+            minValue: 1,
+            maxValue: 50,
+            pricePerUnit: 10.0,
+            defaultValue: 1,
+            multiCurrencyPrices: {
+              USD: 10.0,
+              EUR: 9.0,
+              GBP: 7.5,
+              ZAR: 180.0,
+            },
+          },
+          {
+            id: 5,
+            featureId: 7,
+            name: 'Number of Loyalty Members',
+            unit: 'members',
+            minValue: 100,
+            maxValue: 10000,
+            pricePerUnit: 0.02,
+            defaultValue: 100,
+            multiCurrencyPrices: {
+              USD: 0.02,
+              EUR: 0.018,
+              GBP: 0.015,
+              ZAR: 0.36,
+            },
+          },
+        ],
       });
     }
 
     const data = await response.json();
     console.log('Successfully fetched custom package features from backend');
+    console.log(
+      'Usage pricing data length:',
+      data.usageBasedPricing?.length ?? 0
+    );
+    console.log(
+      'Usage pricing data:',
+      JSON.stringify(data.usageBasedPricing, null, 2)
+    );
     return NextResponse.json(data);
   } catch (error) {
     console.error(
@@ -501,7 +595,88 @@ export async function GET(request: NextRequest) {
           icon: 'security_icon',
         },
       ],
-      usageBasedPricing: [],
+      usageBasedPricing: [
+        {
+          id: 1,
+          featureId: 1,
+          name: 'Number of Transactions',
+          unit: 'transactions/month',
+          minValue: 1000,
+          maxValue: 100000,
+          pricePerUnit: 0.01,
+          defaultValue: 1000,
+          multiCurrencyPrices: {
+            USD: 0.01,
+            EUR: 0.009,
+            GBP: 0.0075,
+            ZAR: 0.18,
+          },
+        },
+        {
+          id: 2,
+          featureId: 2,
+          name: 'Number of Products',
+          unit: 'products',
+          minValue: 100,
+          maxValue: 10000,
+          pricePerUnit: 0.05,
+          defaultValue: 100,
+          multiCurrencyPrices: {
+            USD: 0.05,
+            EUR: 0.045,
+            GBP: 0.0375,
+            ZAR: 0.9,
+          },
+        },
+        {
+          id: 3,
+          featureId: 3,
+          name: 'Number of Users',
+          unit: 'users',
+          minValue: 1,
+          maxValue: 100,
+          pricePerUnit: 5.0,
+          defaultValue: 1,
+          multiCurrencyPrices: {
+            USD: 5.0,
+            EUR: 4.5,
+            GBP: 3.75,
+            ZAR: 90.0,
+          },
+        },
+        {
+          id: 4,
+          featureId: 6,
+          name: 'Number of Stores',
+          unit: 'stores',
+          minValue: 1,
+          maxValue: 50,
+          pricePerUnit: 10.0,
+          defaultValue: 1,
+          multiCurrencyPrices: {
+            USD: 10.0,
+            EUR: 9.0,
+            GBP: 7.5,
+            ZAR: 180.0,
+          },
+        },
+        {
+          id: 5,
+          featureId: 7,
+          name: 'Number of Loyalty Members',
+          unit: 'members',
+          minValue: 100,
+          maxValue: 10000,
+          pricePerUnit: 0.02,
+          defaultValue: 100,
+          multiCurrencyPrices: {
+            USD: 0.02,
+            EUR: 0.018,
+            GBP: 0.015,
+            ZAR: 0.36,
+          },
+        },
+      ],
     });
   }
 }

@@ -14,7 +14,7 @@ import PremiumPackageLayout from './premium-package-layout/PremiumPackageLayout'
 
 const PackageSelectionModal: React.FC = memo(() => {
   const { selectedPackage, isModalOpen, closeModal } = usePackageSelection();
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
     if (isModalOpen && modalRef.current) {
@@ -30,6 +30,16 @@ const PackageSelectionModal: React.FC = memo(() => {
 
   if (!selectedPackage) return null;
 
+  const getPackageTypeFromString = (
+    packageType: string
+  ): 'starter' | 'growth' | 'enterprise' | 'premium' => {
+    if (packageType.includes('starter')) return 'starter';
+    if (packageType.includes('growth')) return 'growth';
+    if (packageType.includes('enterprise')) return 'enterprise';
+    if (packageType.includes('premium')) return 'premium';
+    return 'starter';
+  };
+
   const renderPackageLayout = () => {
     const packageType = selectedPackage.type.toLowerCase();
 
@@ -39,38 +49,34 @@ const PackageSelectionModal: React.FC = memo(() => {
           selectedPackage={selectedPackage as CustomPackage}
         />
       );
-    } else {
-      const adaptedPackage = {
-        ...selectedPackage,
-        type: packageType.includes('starter')
-          ? ('starter' as const)
-          : packageType.includes('growth')
-            ? ('growth' as const)
-            : packageType.includes('enterprise')
-              ? ('enterprise' as const)
-              : packageType.includes('premium')
-                ? ('premium' as const)
-                : ('starter' as const),
-      };
+    }
 
-      if (packageType.includes('starter')) {
+    const normalizedType = getPackageTypeFromString(packageType);
+    const adaptedPackage = {
+      ...selectedPackage,
+      type: normalizedType,
+    };
+
+    switch (normalizedType) {
+      case 'starter':
         return <StarterPackageLayout selectedPackage={adaptedPackage} />;
-      } else if (packageType.includes('growth')) {
+      case 'growth':
         return <GrowthPackageLayout selectedPackage={adaptedPackage} />;
-      } else if (packageType.includes('enterprise')) {
+      case 'enterprise':
         return <EnterprisePackageLayout selectedPackage={adaptedPackage} />;
-      } else if (packageType.includes('premium')) {
+      case 'premium':
         return <PremiumPackageLayout selectedPackage={adaptedPackage} />;
-      } else {
+      default:
         console.warn(
           `Unknown package type: ${packageType}. Defaulting to Starter package layout.`
         );
         return <StarterPackageLayout selectedPackage={adaptedPackage} />;
-      }
     }
   };
 
   console.log('Selected Package:', JSON.stringify(selectedPackage, null, 2));
+
+  const modalClassName = `${styles.modal} ${styles[selectedPackage.type + 'Modal']}`;
 
   return (
     <Modal
@@ -78,6 +84,7 @@ const PackageSelectionModal: React.FC = memo(() => {
       onClose={closeModal}
       aria-modal="true"
       keepMounted={false}
+      onKeyDown={handleKeyDown}
       slotProps={{
         backdrop: {
           style: {
@@ -88,14 +95,13 @@ const PackageSelectionModal: React.FC = memo(() => {
       disableEnforceFocus={false}
       disableAutoFocus={false}
     >
-      <Box
+      <dialog
         ref={modalRef}
-        className={`${styles.modal} ${styles[`${selectedPackage.type}Modal`]}`}
+        className={modalClassName}
         aria-labelledby="package-selection-modal-title"
         aria-describedby="package-selection-modal-description"
-        role="dialog"
         tabIndex={-1}
-        onKeyDown={handleKeyDown}
+        open={isModalOpen}
       >
         <Box
           className={styles.modalHeader}
@@ -128,7 +134,7 @@ const PackageSelectionModal: React.FC = memo(() => {
         >
           {renderPackageLayout()}
         </div>
-      </Box>
+      </dialog>
     </Modal>
   );
 });
@@ -136,7 +142,41 @@ const PackageSelectionModal: React.FC = memo(() => {
 PackageSelectionModal.displayName = 'PackageSelectionModal';
 
 const LazyPackageSelectionModal = () => (
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense
+    fallback={
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '200px',
+          fontSize: '16px',
+          color: '#666',
+        }}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <div
+            style={{
+              width: '40px',
+              height: '40px',
+              border: '3px solid #f3f3f3',
+              borderTop: '3px solid #3498db',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 10px',
+            }}
+          />
+          Preparing package...
+        </div>
+        <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+      </div>
+    }
+  >
     <PackageSelectionModal />
   </Suspense>
 );
