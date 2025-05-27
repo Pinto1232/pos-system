@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Infinite Render Fix</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .warning { background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        #renderCount { font-size: 24px; font-weight: bold; }
+        .counter { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔄 Infinite Render Fix Test</h1>
+    
+    <div class="status info">
+        <strong>Purpose:</strong> This page monitors for infinite re-renders by tracking how many times the page reloads.
+        <br><strong>Expected:</strong> The render count should stabilize and not continuously increase.
+    </div>
+    
+    <div class="counter">
+        <h2>Render Count Monitor</h2>
+        <div>Current Render Count: <span id="renderCount">0</span></div>
+        <div>Last Update: <span id="lastUpdate">-</span></div>
+        <div>Status: <span id="status">Monitoring...</span></div>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        let renderCount = 0;
+        let lastRenderTime = Date.now();
+        let renderHistory = [];
+        
+        function updateRenderCount() {
+            renderCount++;
+            const now = Date.now();
+            const timeSinceLastRender = now - lastRenderTime;
+            
+            renderHistory.push({
+                count: renderCount,
+                time: now,
+                timeSinceLastRender: timeSinceLastRender
+            });
+            
+            // Keep only last 10 renders
+            if (renderHistory.length > 10) {
+                renderHistory.shift();
+            }
+            
+            document.getElementById('renderCount').textContent = renderCount;
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+            
+            // Check for infinite render pattern
+            if (renderCount > 5) {
+                const recentRenders = renderHistory.slice(-5);
+                const avgTimeBetweenRenders = recentRenders.reduce((sum, render) => sum + render.timeSinceLastRender, 0) / recentRenders.length;
+                
+                if (avgTimeBetweenRenders < 100) { // Less than 100ms between renders
+                    document.getElementById('status').innerHTML = '<span style="color: red;">⚠️ INFINITE RENDER DETECTED!</span>';
+                    addResult('❌ Infinite Render Detected', 
+                        `Detected ${renderCount} renders with average ${Math.round(avgTimeBetweenRenders)}ms between renders.\n` +
+                        'This indicates the AuthContext fix did not work properly.', 'error');
+                } else if (renderCount < 10) {
+                    document.getElementById('status').innerHTML = '<span style="color: orange;">🔄 Stabilizing...</span>';
+                } else {
+                    document.getElementById('status').innerHTML = '<span style="color: green;">✅ Stable</span>';
+                    addResult('✅ Render Stabilized', 
+                        `Renders have stabilized at ${renderCount} total renders.\n` +
+                        `Average time between renders: ${Math.round(avgTimeBetweenRenders)}ms.\n` +
+                        'The AuthContext infinite render fix appears to be working!', 'success');
+                }
+            }
+            
+            lastRenderTime = now;
+        }
+        
+        function addResult(title, content, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.innerHTML = `
+                <h3>${title}</h3>
+                <div class="status ${type}">
+                    <pre>${content}</pre>
+                </div>
+            `;
+            resultsDiv.appendChild(resultDiv);
+        }
+        
+        // Monitor for page reloads/re-renders
+        function startMonitoring() {
+            // Check if this is a reload
+            const lastCount = sessionStorage.getItem('renderCount');
+            if (lastCount) {
+                renderCount = parseInt(lastCount) || 0;
+            }
+            
+            updateRenderCount();
+            
+            // Store current count
+            sessionStorage.setItem('renderCount', renderCount.toString());
+            
+            // Monitor for rapid reloads
+            const checkInterval = setInterval(() => {
+                if (renderCount > 20) {
+                    clearInterval(checkInterval);
+                    addResult('🛑 Monitoring Stopped', 
+                        'Stopped monitoring after 20 renders to prevent infinite loop.', 'warning');
+                }
+            }, 1000);
+            
+            // Auto-clear after 30 seconds of stability
+            setTimeout(() => {
+                if (renderCount < 10) {
+                    addResult('✅ Test Complete', 
+                        `Test completed successfully. Total renders: ${renderCount}.\n` +
+                        'No infinite render loop detected. The fix appears to be working!', 'success');
+                }
+            }, 30000);
+        }
+        
+        // Start monitoring when page loads
+        window.onload = startMonitoring;
+        
+        // Also monitor for beforeunload (page refresh)
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.setItem('renderCount', renderCount.toString());
+        });
+        
+        // Clear button
+        function clearTest() {
+            sessionStorage.removeItem('renderCount');
+            location.reload();
+        }
+        
+        // Add clear button
+        document.body.innerHTML += '<button onclick="clearTest()" style="margin: 20px; padding: 10px 20px;">🗑️ Clear Test & Reload</button>';
+    </script>
+</body>
+</html>

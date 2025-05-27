@@ -167,7 +167,7 @@ export const useStableCallback = <T extends (...args: unknown[]) => unknown>(
   callback: T,
   deps: React.DependencyList
 ): T => {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   return React.useCallback(callback, deps);
 };
 
@@ -175,7 +175,7 @@ export const useStableObject = <T>(
   factory: () => T,
   deps: React.DependencyList
 ): T => {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   return React.useMemo(factory, deps);
 };
 

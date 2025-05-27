@@ -6,6 +6,8 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useMemo,
+  useCallback,
 } from 'react';
 import { UserCustomization } from '@/types/settingsTypes';
 import { mockFetchCustomization } from '@/api/mockUserCustomization';
@@ -103,39 +105,46 @@ export const CustomizationProvider: React.FC<CustomizationProviderProps> = ({
     }
   }, [customization]);
 
-  const updateCustomization = (updated: UserCustomization) => {
-    console.log(
-      'CustomizationContext: Updating customization',
-      JSON.stringify(updated, null, 2)
-    );
+  const updateCustomization = useCallback(
+    (updated: UserCustomization) => {
+      console.log(
+        'CustomizationContext: Updating customization',
+        JSON.stringify(updated, null, 2)
+      );
 
-    setCustomization(updated);
+      setCustomization(updated);
 
-    setNavbarColor(updated.navbarColor || DEFAULT_NAVBAR_COLOR);
-    setSidebarColor(updated.sidebarColor || DEFAULT_SIDEBAR_COLOR);
-    setLogoUrl(updated.logoUrl || DEFAULT_LOGO_URL);
+      setNavbarColor(updated.navbarColor || DEFAULT_NAVBAR_COLOR);
+      setSidebarColor(updated.sidebarColor || DEFAULT_SIDEBAR_COLOR);
+      setLogoUrl(updated.logoUrl || DEFAULT_LOGO_URL);
 
-    console.log(
-      'CustomizationContext: Emitting customization update event with navbarColor:',
-      JSON.stringify(updated.navbarColor || DEFAULT_NAVBAR_COLOR, null, 2)
-    );
-    eventBus.emit(UI_EVENTS.CUSTOMIZATION_UPDATED, {
-      navbarColor: updated.navbarColor || DEFAULT_NAVBAR_COLOR,
-      sidebarColor: updated.sidebarColor || DEFAULT_SIDEBAR_COLOR,
-      logoUrl: updated.logoUrl || DEFAULT_LOGO_URL,
-    });
-  };
+      console.log(
+        'CustomizationContext: Emitting customization update event with navbarColor:',
+        JSON.stringify(updated.navbarColor || DEFAULT_NAVBAR_COLOR, null, 2)
+      );
+      eventBus.emit(UI_EVENTS.CUSTOMIZATION_UPDATED, {
+        navbarColor: updated.navbarColor || DEFAULT_NAVBAR_COLOR,
+        sidebarColor: updated.sidebarColor || DEFAULT_SIDEBAR_COLOR,
+        logoUrl: updated.logoUrl || DEFAULT_LOGO_URL,
+      });
+    },
+    [DEFAULT_NAVBAR_COLOR, DEFAULT_SIDEBAR_COLOR, DEFAULT_LOGO_URL]
+  );
+
+  
+  const contextValue = useMemo(
+    () => ({
+      customization,
+      updateCustomization,
+      navbarColor,
+      sidebarColor,
+      logoUrl,
+    }),
+    [customization, updateCustomization, navbarColor, sidebarColor, logoUrl]
+  );
 
   return (
-    <CustomizationContext.Provider
-      value={{
-        customization,
-        updateCustomization,
-        navbarColor,
-        sidebarColor,
-        logoUrl,
-      }}
-    >
+    <CustomizationContext.Provider value={contextValue}>
       {children}
     </CustomizationContext.Provider>
   );

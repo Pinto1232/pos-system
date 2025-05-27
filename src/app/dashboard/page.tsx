@@ -8,7 +8,7 @@ import { CACHE_TIMES, CACHE_TAGS } from '../cache-constants';
 import { fetchDashboardSummary } from './DashboardDataFetcher';
 
 export const dynamic = 'force-dynamic';
-export const revalidate = CACHE_TIMES.DASHBOARD;
+export const revalidate = 1800; 
 
 export async function generateMetadata() {
   return {

@@ -97,7 +97,7 @@ export const SpinnerProvider = ({ children }: { children: ReactNode }) => {
       error,
       setError,
     }),
-    [loading, setLoading, startLoading, stopLoading, error, setError]
+    [loading, startLoading, stopLoading, error]
   );
 
   return (

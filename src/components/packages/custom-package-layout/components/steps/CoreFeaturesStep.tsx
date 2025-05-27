@@ -22,7 +22,6 @@ const CoreFeaturesStep: React.FC = () => {
     backLoading,
   } = usePackageContext();
 
-  
   React.useEffect(() => {
     console.log('CoreFeaturesStep - Features:', features);
     console.log('CoreFeaturesStep - Features length:', features.length);

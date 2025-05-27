@@ -22,7 +22,7 @@ interface RequestConfig {
   suppressAuthErrors?: boolean;
 }
 
-const DEFAULT_TIMEOUT = 30000; 
+const DEFAULT_TIMEOUT = 30000;
 
 const CACHE_MAX_AGE = 60 * 1000;
 
@@ -34,8 +34,6 @@ interface CacheEntry<T = unknown> {
 const requestCache = new Map<string, CacheEntry>();
 
 const getBaseURL = () => {
-  
-  
   const frontendBaseURL =
     process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   console.log('Using frontend baseURL for API routes:', frontendBaseURL);
@@ -70,8 +68,6 @@ const getErrorMessageForStatus = (status: number): string => {
   }
 };
 
-
-
 const ANONYMOUS_ENDPOINTS = [
   '/api/currency/location',
   '/api/currency/available',
@@ -89,7 +85,6 @@ const useApiClient = () => {
     const requestInterceptor = apiClient.interceptors.request.use(
       (config) => {
         try {
-          
           const isAnonymousEndpoint = ANONYMOUS_ENDPOINTS.some((endpoint) =>
             config.url?.includes(endpoint)
           );
@@ -181,7 +176,6 @@ const useApiClient = () => {
             `Unable to connect to frontend API at ${baseUrl}. Please ensure the frontend server is running.`
           );
 
-          
           if (
             error.code === 'ECONNABORTED' ||
             error.message.includes('timeout')

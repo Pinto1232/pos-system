@@ -10,9 +10,13 @@ import React, {
   useMemo,
 } from 'react';
 import { KeycloakInstance } from 'keycloak-js';
-import keycloakInstance from '@/auth/keycloak';
+import keycloakInstance, { authConfig } from '@/auth/keycloak';
 import { isKeycloakError } from '@/types/keycloak';
 import { validateAuthEnvVars } from '@/utils/envValidation';
+import {
+  runKeycloakDiagnostics,
+  logDiagnostics,
+} from '@/utils/keycloakDiagnostics';
 
 const MAX_REFRESH_RETRIES = 3;
 const RETRY_DELAY_MS = 2000;
@@ -20,24 +24,26 @@ const RETRY_DELAY_MS = 2000;
 const FALLBACK_CONFIG = {
   url: 'http://localhost:8282',
   realm: 'pisval-pos-realm',
-  clientId: 'pos-backend',
+  clientId: 'pos-frontend',
   redirectUri: 'http://localhost:3000/after-auth',
   loginRedirect: 'http://localhost:3000/',
   logoutRedirect: 'http://localhost:3000/login',
 };
 
-const getKeycloakConfig = () => ({
-  url: process.env.NEXT_PUBLIC_KEYCLOAK_URL || FALLBACK_CONFIG.url,
-  realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM || FALLBACK_CONFIG.realm,
-  clientId:
-    process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || FALLBACK_CONFIG.clientId,
-  redirectUri:
-    process.env.NEXT_PUBLIC_REDIRECT_URI || FALLBACK_CONFIG.redirectUri,
-  loginRedirect:
-    process.env.NEXT_PUBLIC_LOGIN_REDIRECT || FALLBACK_CONFIG.loginRedirect,
-  logoutRedirect:
-    process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || FALLBACK_CONFIG.logoutRedirect,
-});
+const getKeycloakConfig = () => {
+  
+  return {
+    url: authConfig.keycloakUrl,
+    realm: authConfig.realm,
+    clientId: authConfig.clientId,
+    redirectUri: authConfig.redirectUri,
+    loginRedirect:
+      process.env.NEXT_PUBLIC_LOGIN_REDIRECT || FALLBACK_CONFIG.loginRedirect,
+    logoutRedirect:
+      process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || FALLBACK_CONFIG.logoutRedirect,
+    validation: authConfig.validation,
+  };
+};
 
 export interface AuthContextProps {
   token: string | null;
@@ -166,10 +172,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
 
     const envValidation = validateAuthEnvVars();
-    if (!envValidation.isValid) {
+    console.log('🔍 Environment validation in AuthContext:', {
+      isValid: envValidation.isValid,
+      source: envValidation.source,
+      context: envValidation.context,
+      missingVars: envValidation.missingVars,
+    });
+
+    if (envValidation.source === 'fallback') {
       console.warn(
-        `Using fallback values for: ${envValidation.missingVars.join(', ')}`
+        `⚠️ Using fallback configuration - environment variables not properly loaded`
       );
+      console.warn('Missing variables:', envValidation.missingVars);
+    } else {
+      console.log('✅ Environment variables loaded successfully');
     }
   }, []);
 
@@ -179,7 +195,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       clearTokenCookie();
       setToken(null);
 
-      if (isMounted) {
+      
+      if (document.body) {
         const config = configRef.current;
         const logoutRedirect = window.encodeURIComponent(config.logoutRedirect);
         console.log(
@@ -210,11 +227,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err) {
       console.error('Manual logout failed:', JSON.stringify(err, null, 2));
-      if (isMounted) {
+      if (typeof window !== 'undefined') {
         window.location.href = configRef.current.logoutRedirect;
       }
     }
-  }, [isMounted]);
+  }, []); 
 
   const handleTokenRefresh = useCallback(
     async (kc: KeycloakInstance, retryCount = 0) => {
@@ -276,7 +293,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = useCallback(async () => {
     console.log('Login requested');
     try {
-      if (isMounted) {
+      if (typeof window !== 'undefined') {
         const config = configRef.current;
 
         const loginRedirect = window.location.origin + '/';
@@ -362,31 +379,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         err instanceof Error ? `Login failed: ${err.message}` : 'Login failed'
       );
     }
-  }, [isMounted, handleTokenRefresh]);
+  }, [handleTokenRefresh]); 
 
-  const performLogin = useCallback(async () => {
-    console.log('Performing login redirect...');
-    if (isMounted) {
-      const loginRedirect = window.location.origin + '/';
-
-      try {
-        await keycloakRef.current.login({
-          redirectUri: loginRedirect,
-          prompt: 'login',
-        });
-      } catch (err) {
-        console.error('Login redirect error:', JSON.stringify(err, null, 2));
-        setError(
-          err instanceof Error
-            ? `Login redirect failed: ${err.message}`
-            : 'Login redirect failed'
-        );
-      }
-    }
-  }, [isMounted]);
+  
 
   const initializeAuth = useCallback(async (): Promise<() => void> => {
-    if (!isMounted) return () => {};
+    
+    if (typeof window === 'undefined') return () => {};
 
     const kc = keycloakRef.current;
     let refreshTimeout: NodeJS.Timeout | null = null;
@@ -402,6 +401,64 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     console.log('Using Keycloak config:', JSON.stringify(config, null, 2));
 
     try {
+      
+      const realmCheckUrl = `${config.url}/realms/${config.realm}/.well-known/openid_configuration`;
+      console.log('Checking Keycloak realm accessibility:', realmCheckUrl);
+
+      try {
+        const realmResponse = await fetch(realmCheckUrl, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+          },
+          signal: AbortSignal.timeout(5000),
+        });
+
+        if (!realmResponse.ok) {
+          console.warn(
+            `Realm well-known endpoint not accessible: ${realmResponse.status} ${realmResponse.statusText}`
+          );
+          console.log(
+            'Proceeding with Keycloak initialization despite well-known endpoint issue...'
+          );
+        } else {
+          console.log('✓ Keycloak realm is accessible');
+        }
+      } catch (realmError) {
+        console.warn('✗ Keycloak realm check failed:', realmError);
+        console.log('Running comprehensive Keycloak diagnostics...');
+
+        
+        try {
+          const diagnostics = await runKeycloakDiagnostics(
+            config.url,
+            config.realm,
+            config.clientId
+          );
+          logDiagnostics(diagnostics);
+
+          if (diagnostics.overall === 'unhealthy') {
+            console.warn(
+              'Keycloak diagnostics indicate unhealthy state - this may be normal in development'
+            );
+            console.log(
+              'Proceeding with authentication despite diagnostic warnings...'
+            );
+          } else if (diagnostics.overall === 'degraded') {
+            console.log(
+              'Keycloak diagnostics show some issues but core functionality appears to work'
+            );
+          }
+        } catch (diagError) {
+          console.error('Failed to run diagnostics:', diagError);
+        }
+
+        console.log(
+          'Proceeding with Keycloak initialization despite realm check failure...'
+        );
+        
+      }
+
       const isNewRegistration =
         localStorage.getItem('newRegistration') === 'true';
 
@@ -463,7 +520,28 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log('Not authenticated, redirecting to login');
         setInitialized(true);
 
-        await performLogin();
+        
+        console.log('Performing login redirect...');
+        if (typeof window !== 'undefined') {
+          const loginRedirect = window.location.origin + '/';
+
+          try {
+            await keycloakRef.current.login({
+              redirectUri: loginRedirect,
+              prompt: 'login',
+            });
+          } catch (err) {
+            console.error(
+              'Login redirect error:',
+              JSON.stringify(err, null, 2)
+            );
+            setError(
+              err instanceof Error
+                ? `Login redirect failed: ${err.message}`
+                : 'Login redirect failed'
+            );
+          }
+        }
       }
     } catch (err: unknown) {
       console.error('Authentication Error Raw:', JSON.stringify(err, null, 2));
@@ -499,7 +577,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         refreshTimeout = null;
       }
     };
-  }, [isMounted, handleTokenRefresh, performLogin]);
+  }, [handleTokenRefresh]); 
 
   useEffect(() => {
     if (isMounted && !initStartedRef.current) {

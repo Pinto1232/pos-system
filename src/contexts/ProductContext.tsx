@@ -6,6 +6,7 @@ import React, {
   useState,
   useEffect,
   useCallback,
+  useMemo,
 } from 'react';
 import { Product as ProductType } from '../components/productEdit/types';
 import Image from 'next/image';
@@ -147,43 +148,53 @@ export const ProductProvider: React.FC<{
     }
   }, [products, isLoaded]);
 
-  const addProduct = (newProduct: Product) => {
-    const productToAdd = validateAndNormalizeProduct(newProduct);
-    console.log(
-      'ProductContext - Adding validated product:',
-      JSON.stringify(productToAdd, null, 2)
-    );
+  const addProduct = useCallback(
+    (newProduct: Product) => {
+      const productToAdd = validateAndNormalizeProduct(newProduct);
+      console.log(
+        'ProductContext - Adding validated product:',
+        JSON.stringify(productToAdd, null, 2)
+      );
 
-    setProducts((currentProducts) => [...currentProducts, productToAdd]);
-  };
+      setProducts((currentProducts) => [...currentProducts, productToAdd]);
+    },
+    [validateAndNormalizeProduct]
+  );
 
-  const updateProduct = (updatedProduct: Product) => {
-    const validatedProduct = validateAndNormalizeProduct(updatedProduct);
-    console.log(
-      'ProductContext - Updating with validated product:',
-      JSON.stringify(validatedProduct, null, 2)
-    );
+  const updateProduct = useCallback(
+    (updatedProduct: Product) => {
+      const validatedProduct = validateAndNormalizeProduct(updatedProduct);
+      console.log(
+        'ProductContext - Updating with validated product:',
+        JSON.stringify(validatedProduct, null, 2)
+      );
 
-    setProducts((currentProducts) =>
-      currentProducts.map((product) =>
-        product.id === validatedProduct.id ? validatedProduct : product
-      )
-    );
-  };
+      setProducts((currentProducts) =>
+        currentProducts.map((product) =>
+          product.id === validatedProduct.id ? validatedProduct : product
+        )
+      );
+    },
+    [validateAndNormalizeProduct]
+  );
 
-  const deleteProduct = (productId: number) => {
+  const deleteProduct = useCallback((productId: number) => {
     setProducts((currentProducts) =>
       currentProducts.filter((product) => product.id !== productId)
     );
-  };
+  }, []);
 
-  const contextValue: ProductContextType = {
-    products,
-    isLoaded,
-    addProduct,
-    updateProduct,
-    deleteProduct,
-  };
+  
+  const contextValue = useMemo(
+    () => ({
+      products,
+      isLoaded,
+      addProduct,
+      updateProduct,
+      deleteProduct,
+    }),
+    [products, isLoaded, addProduct, updateProduct, deleteProduct]
+  );
 
   return (
     <ProductContext.Provider value={contextValue}>

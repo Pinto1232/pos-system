@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keycloak Authentication Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Keycloak Authentication Test</h1>
+    
+    <div id="status" class="status info">
+        Testing Keycloak configuration...
+    </div>
+    
+    <div>
+        <button onclick="testRealmAccess()">Test Realm Access</button>
+        <button onclick="testOpenIDConfig()">Test OpenID Config</button>
+        <button onclick="testAuthFlow()">Test Auth Flow</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        const KEYCLOAK_URL = 'http://localhost:8282';
+        const REALM = 'pisval-pos-realm';
+        const CLIENT_ID = 'pos-frontend';
+        
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+        
+        function addResult(title, content, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.innerHTML = `
+                <h3>${title}</h3>
+                <div class="status ${type}">
+                    <pre>${content}</pre>
+                </div>
+            `;
+            resultsDiv.appendChild(resultDiv);
+        }
+        
+        async function testRealmAccess() {
+            updateStatus('Testing realm access...', 'info');
+            
+            try {
+                const response = await fetch(`${KEYCLOAK_URL}/realms/${REALM}`);
+                const data = await response.text();
+                
+                if (response.ok) {
+                    addResult('✅ Realm Access Test', `Status: ${response.status}\nResponse: ${data}`, 'success');
+                    updateStatus('Realm access test passed', 'success');
+                } else {
+                    addResult('❌ Realm Access Test', `Status: ${response.status}\nResponse: ${data}`, 'error');
+                    updateStatus('Realm access test failed', 'error');
+                }
+            } catch (error) {
+                addResult('❌ Realm Access Test', `Error: ${error.message}`, 'error');
+                updateStatus('Realm access test failed', 'error');
+            }
+        }
+        
+        async function testOpenIDConfig() {
+            updateStatus('Testing OpenID configuration...', 'info');
+            
+            try {
+                const response = await fetch(`${KEYCLOAK_URL}/realms/${REALM}/.well-known/openid_configuration`, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.text();
+                
+                if (response.ok) {
+                    const config = JSON.parse(data);
+                    addResult('✅ OpenID Configuration Test', 
+                        `Status: ${response.status}\nIssuer: ${config.issuer}\nAuth Endpoint: ${config.authorization_endpoint}`, 
+                        'success');
+                    updateStatus('OpenID configuration test passed', 'success');
+                } else {
+                    addResult('❌ OpenID Configuration Test', `Status: ${response.status}\nResponse: ${data}`, 'error');
+                    updateStatus('OpenID configuration test failed', 'error');
+                }
+            } catch (error) {
+                addResult('❌ OpenID Configuration Test', `Error: ${error.message}`, 'error');
+                updateStatus('OpenID configuration test failed', 'error');
+            }
+        }
+        
+        async function testAuthFlow() {
+            updateStatus('Testing authentication flow...', 'info');
+            
+            try {
+                // Test if we can access the authorization endpoint
+                const authUrl = `${KEYCLOAK_URL}/realms/${REALM}/protocol/openid-connect/auth?client_id=${CLIENT_ID}&response_type=code&scope=openid&redirect_uri=http://localhost:3000/after-auth&state=test`;
+                
+                addResult('🔗 Auth Flow Test', 
+                    `Auth URL: ${authUrl}\n\nClick the link below to test authentication:\n`, 
+                    'info');
+                
+                // Add a clickable link
+                const resultsDiv = document.getElementById('results');
+                const linkDiv = document.createElement('div');
+                linkDiv.innerHTML = `<a href="${authUrl}" target="_blank" style="color: blue; text-decoration: underline;">Test Authentication Flow</a>`;
+                resultsDiv.appendChild(linkDiv);
+                
+                updateStatus('Auth flow test prepared - click the link above', 'success');
+            } catch (error) {
+                addResult('❌ Auth Flow Test', `Error: ${error.message}`, 'error');
+                updateStatus('Auth flow test failed', 'error');
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            updateStatus('Results cleared', 'info');
+        }
+        
+        // Auto-run basic tests on page load
+        window.onload = function() {
+            setTimeout(() => {
+                testRealmAccess();
+                setTimeout(() => {
+                    testOpenIDConfig();
+                }, 1000);
+            }, 500);
+        };
+    </script>
+</body>
+</html>

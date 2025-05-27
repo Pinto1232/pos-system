@@ -1,6 +1,6 @@
-/**
- * Performance testing utilities for checkout optimization
- */
+
+
+
 
 interface RenderMetrics {
   componentName: string;
@@ -54,9 +54,11 @@ class PerformanceMonitor {
     if (!this.isEnabled) return;
 
     console.group('🚀 Performance Metrics');
-    this.getMetrics().forEach(metric => {
+    this.getMetrics().forEach((metric) => {
       const status = metric.renderCount > 5 ? '⚠️' : '✅';
-      console.log(`${status} ${metric.componentName}: ${metric.renderCount} renders`);
+      console.log(
+        `${status} ${metric.componentName}: ${metric.renderCount} renders`
+      );
     });
     console.groupEnd();
   }
@@ -64,24 +66,25 @@ class PerformanceMonitor {
 
 export const performanceMonitor = PerformanceMonitor.getInstance();
 
-/**
- * Hook to track component renders in development
- */
+
+
+
 export function useRenderTracker(componentName: string): void {
   if (process.env.NODE_ENV === 'development') {
     performanceMonitor.trackRender(componentName);
   }
 }
 
-/**
- * Higher-order component to track renders
- */
+
+
+
 export function withRenderTracking<P extends object>(
   Component: React.ComponentType<P>,
   componentName?: string
 ): React.ComponentType<P> {
   const WrappedComponent = (props: P) => {
-    const name = componentName || Component.displayName || Component.name || 'Unknown';
+    const name =
+      componentName || Component.displayName || Component.name || 'Unknown';
     useRenderTracker(name);
     return <Component {...props} />;
   };

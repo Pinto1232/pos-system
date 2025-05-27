@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
-import TranslationExample from '@/components/examples/TranslationExample';
+
 import { TranslatedText } from '@/i18n';
 
 export default function TranslationDemoPage() {
@@ -16,7 +16,10 @@ export default function TranslationDemoPage() {
           Translation System Demo
         </Typography>
 
-        <TranslationExample />
+        {}
+        <Typography variant="body1">
+          Translation demo component is temporarily disabled.
+        </Typography>
       </Box>
     </Container>
   );

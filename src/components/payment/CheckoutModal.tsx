@@ -208,7 +208,6 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({
       </DialogTitle>
 
       <DialogContent className={styles.dialogContent}>
-
         {paymentState.isLoading ? (
           <Box className={styles.loadingContainer}>
             <CircularProgress size={40} />

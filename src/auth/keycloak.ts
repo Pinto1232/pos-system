@@ -1,60 +1,38 @@
 import Keycloak from 'keycloak-js';
-import { validateAuthEnvVars } from '@/utils/envValidation';
+import { getAuthConfig } from '@/utils/envValidation';
 
-const FALLBACK_CONFIG = {
-  url: 'http://localhost:8282',
-  realm: 'pisval-pos-realm',
-  clientId: 'pos-backend',
-};
+console.log('🔧 Initializing Keycloak configuration...');
 
-console.log('Environment Variables in Keycloak Setup:');
-console.log(
-  'NEXT_PUBLIC_KEYCLOAK_URL:',
-  JSON.stringify(
-    process.env.NEXT_PUBLIC_KEYCLOAK_URL || FALLBACK_CONFIG.url,
-    null,
-    2
-  )
-);
-console.log(
-  'NEXT_PUBLIC_KEYCLOAK_REALM:',
-  JSON.stringify(
-    process.env.NEXT_PUBLIC_KEYCLOAK_REALM || FALLBACK_CONFIG.realm,
-    null,
-    2
-  )
-);
-console.log(
-  'NEXT_PUBLIC_KEYCLOAK_CLIENT_ID:',
-  JSON.stringify(
-    process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || FALLBACK_CONFIG.clientId,
-    null,
-    2
-  )
-);
 
-const envValidation = validateAuthEnvVars();
-console.log(
-  'Environment validation result:',
-  JSON.stringify(envValidation, null, 2)
-);
+const authConfig = getAuthConfig();
 
-const keycloakUrl = process.env.NEXT_PUBLIC_KEYCLOAK_URL || FALLBACK_CONFIG.url;
-const keycloakRealm =
-  process.env.NEXT_PUBLIC_KEYCLOAK_REALM || FALLBACK_CONFIG.realm;
-const keycloakClientId =
-  process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || FALLBACK_CONFIG.clientId;
+console.log('📋 Keycloak Configuration Summary:');
+console.log(`  URL: ${authConfig.keycloakUrl}`);
+console.log(`  Realm: ${authConfig.realm}`);
+console.log(`  Client ID: ${authConfig.clientId}`);
+console.log(`  Redirect URI: ${authConfig.redirectUri}`);
+console.log(`  Source: ${authConfig.validation.source}`);
+console.log(`  Context: ${authConfig.validation.context}`);
+console.log(`  Valid: ${authConfig.validation.isValid}`);
 
-console.log('Using Keycloak configuration:', {
-  url: keycloakUrl,
-  realm: keycloakRealm,
-  clientId: keycloakClientId,
-});
+if (authConfig.validation.source === 'fallback') {
+  console.warn(
+    '⚠️ Using fallback configuration - environment variables not loaded'
+  );
+  console.warn('Missing variables:', authConfig.validation.missingVars);
+} else if (authConfig.validation.source === 'runtime') {
+  console.log('✅ Using mixed environment and fallback configuration');
+} else {
+  console.log('✅ Using environment variables');
+}
+
 
 const keycloak = new Keycloak({
-  url: keycloakUrl,
-  realm: keycloakRealm,
-  clientId: keycloakClientId,
+  url: authConfig.keycloakUrl,
+  realm: authConfig.realm,
+  clientId: authConfig.clientId,
 });
 
+
+export { authConfig };
 export default keycloak;

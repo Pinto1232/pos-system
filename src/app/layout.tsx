@@ -3,7 +3,6 @@ import { LoginFormProvider } from '@/contexts/LoginFormContext';
 import './globals.css';
 import Layout from '@/layouts/Layout';
 import { CartProvider } from '@/contexts/CartContext';
-import { handleRegistrationRedirect } from '@/utils/authUtils';
 import DataPrefetcher from '@/components/cache/DataPrefetcher';
 
 import LazyLoadInitializer from '@/components/performance/LazyLoadInitializer';
@@ -27,10 +26,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (typeof window !== 'undefined') {
-    handleRegistrationRedirect();
-  }
-
   return (
     <html lang="en">
       <head>

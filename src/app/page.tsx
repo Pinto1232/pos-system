@@ -15,7 +15,7 @@ import {
   DeferredContentLoader,
 } from '@/components/performance/ClientDynamicImports';
 
-export const revalidate = CACHE_TIMES.SEMI_STATIC;
+export const revalidate = 3600; 
 export const fetchCache = 'force-cache';
 
 export async function generateMetadata() {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import {
   List,
   ListItem,
@@ -44,42 +44,57 @@ const SubItems: React.FC<SubItemsProps> = ({
     }
   }, [activeItem, subItems]);
 
-  const handleSubItemClick = (label: string) => {
-    onItemClick(label, parentLabel);
-    setActiveSubItem(label);
-    // Save to localStorage (redundant but for safety)
-    localStorage.setItem('sidebarActiveItem', label);
-  };
+  const handleSubItemClick = useCallback(
+    (label: string) => {
+      onItemClick(label, parentLabel);
+      setActiveSubItem(label);
+      // Save to localStorage (redundant but for safety)
+      localStorage.setItem('sidebarActiveItem', label);
+    },
+    [onItemClick, parentLabel]
+  );
+
+  
+  const collapseEasing = useMemo(
+    () => ({
+      enter: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      exit: 'cubic-bezier(0.34, 0.01, 0.64, 1)',
+    }),
+    []
+  );
+
+  const collapseSx = useMemo(
+    () => ({
+      transition: 'all 700ms cubic-bezier(0.34, 1.56, 0.64, 1) !important',
+      '& .MuiCollapse-wrapper': {
+        transitionProperty: 'height, opacity, transform',
+        transitionDuration: '700ms',
+        transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        opacity: isExpanded ? 1 : 0,
+        transform: isExpanded ? 'translateY(0)' : 'translateY(-10px)',
+      },
+    }),
+    [isExpanded]
+  );
+
+  const listSx = useMemo(
+    () => ({
+      padding: '4px 8px',
+      marginLeft: '8px',
+      borderLeft: `1px dashed ${textColor ? `${textColor}40` : 'rgba(255, 255, 255, 0.2)'}`,
+    }),
+    [textColor]
+  );
 
   return (
     <Collapse
       in={isExpanded}
       timeout={700}
-      easing={{
-        enter: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-        exit: 'cubic-bezier(0.34, 0.01, 0.64, 1)',
-      }}
-      sx={{
-        transition: 'all 700ms cubic-bezier(0.34, 1.56, 0.64, 1) !important',
-        '& .MuiCollapse-wrapper': {
-          transitionProperty: 'height, opacity, transform',
-          transitionDuration: '700ms',
-          transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-          opacity: isExpanded ? 1 : 0,
-          transform: isExpanded ? 'translateY(0)' : 'translateY(-10px)',
-        },
-      }}
+      easing={collapseEasing}
+      sx={collapseSx}
       unmountOnExit
     >
-      <List
-        component="div"
-        disablePadding
-        sx={{
-          padding: '4px 8px',
-          marginLeft: '8px',
-          borderLeft: `1px dashed ${textColor ? `${textColor}40` : 'rgba(255, 255, 255, 0.2)'}`,
-        }}
-      >
+      <List component="div" disablePadding sx={listSx}>
         {subItems.map((subItem) => (
           <SubItemFeatureGuard key={subItem.label} featureName={subItem.label}>
             <ListItem
@@ -172,4 +187,4 @@ const SubItems: React.FC<SubItemsProps> = ({
   );
 };
 
-export default SubItems;
+export default React.memo(SubItems);

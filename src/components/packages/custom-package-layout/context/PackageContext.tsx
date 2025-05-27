@@ -145,7 +145,6 @@ export const PackageProvider: React.FC<PackageProviderProps> = ({
     currentCurrency: propsCurrency,
   } = initialData;
 
-  
   React.useEffect(() => {
     console.log('PackageProvider - features from initialData:', features);
     console.log('PackageProvider - features length:', features.length);

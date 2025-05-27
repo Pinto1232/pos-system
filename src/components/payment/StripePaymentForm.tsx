@@ -233,281 +233,283 @@ interface StripePaymentFormProps {
   onMounted: () => void;
 }
 
-const StripePaymentForm: React.FC<StripePaymentFormProps> = ({ onMounted }) => {
-  const stripe = useStripe();
-  const elements = useElements();
+const StripePaymentForm: React.FC<StripePaymentFormProps> = React.memo(
+  ({ onMounted }) => {
+    const stripe = useStripe();
+    const elements = useElements();
 
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
-  const [errorType, setErrorType] = useState<string>('unknown_error');
-  const [isLoading, setIsLoading] = useState(false);
-  const [stripeInitialized, setStripeInitialized] = useState(false);
+    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState<string | null>(null);
+    const [errorType, setErrorType] = useState<string>('unknown_error');
+    const [isLoading, setIsLoading] = useState(false);
+    const [stripeInitialized, setStripeInitialized] = useState(false);
 
-  const mountedRef = useRef(false);
+    const mountedRef = useRef(false);
 
-  useEffect(() => {
-    if (stripe && elements && !mountedRef.current) {
-      setStripeInitialized(true);
-      onMounted();
-      mountedRef.current = true;
-    }
-  }, [stripe, elements, onMounted]);
+    useEffect(() => {
+      if (stripe && elements && !mountedRef.current) {
+        setStripeInitialized(true);
+        onMounted();
+        mountedRef.current = true;
+      }
+    }, [stripe, elements, onMounted]);
 
-  useEffect(() => {
-    if (!stripe) {
-      console.log('[DEBUG] Stripe not available in useEffect');
-      return;
-    }
+    useEffect(() => {
+      if (!stripe) {
+        console.log('[DEBUG] Stripe not available in useEffect');
+        return;
+      }
 
-    console.log('[DEBUG] Stripe is available, ready for payment processing');
-  }, [stripe]);
+      console.log('[DEBUG] Stripe is available, ready for payment processing');
+    }, [stripe]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('[DEBUG] Payment form submit handler called');
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log('[DEBUG] Payment form submit handler called');
 
-    if (!stripeInitialized) {
-      console.error('[DEBUG] Submit attempted but Stripe not initialized');
-      setErrorType('stripe_error');
-      setMessage(
-        'Payment system is still initializing. Please wait a moment and try again.'
-      );
-      return;
-    }
-
-    if (!stripe || !elements) {
-      console.error(
-        '[DEBUG] Submit attempted but Stripe or Elements not loaded',
-        {
-          stripeLoaded: !!stripe,
-          elementsLoaded: !!elements,
-        }
-      );
-      setErrorType('stripe_error');
-      setMessage(
-        'Payment system not fully loaded. Please refresh the page and try again.'
-      );
-      return;
-    }
-
-    setIsLoading(true);
-    console.log('[DEBUG] Confirming payment with Stripe');
-
-    try {
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(
-          () => reject(new Error('Payment processing timeout')),
-          30000
+      if (!stripeInitialized) {
+        console.error('[DEBUG] Submit attempted but Stripe not initialized');
+        setErrorType('stripe_error');
+        setMessage(
+          'Payment system is still initializing. Please wait a moment and try again.'
         );
-      });
+        return;
+      }
 
-      const confirmationPromise = stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          receipt_email: email,
-          payment_method_data: {
-            billing_details: {
-              phone: '', // Provide an empty string for phone since we set it to 'never' in the PaymentElement
-              address: {
-                line2: '', // Provide an empty string for address.line2 since we set it to 'never' in the PaymentElement
+      if (!stripe || !elements) {
+        console.error(
+          '[DEBUG] Submit attempted but Stripe or Elements not loaded',
+          {
+            stripeLoaded: !!stripe,
+            elementsLoaded: !!elements,
+          }
+        );
+        setErrorType('stripe_error');
+        setMessage(
+          'Payment system not fully loaded. Please refresh the page and try again.'
+        );
+        return;
+      }
+
+      setIsLoading(true);
+      console.log('[DEBUG] Confirming payment with Stripe');
+
+      try {
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(
+            () => reject(new Error('Payment processing timeout')),
+            30000
+          );
+        });
+
+        const confirmationPromise = stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            receipt_email: email,
+            payment_method_data: {
+              billing_details: {
+                phone: '', // Provide an empty string for phone since we set it to 'never' in the PaymentElement
+                address: {
+                  line2: '', // Provide an empty string for address.line2 since we set it to 'never' in the PaymentElement
+                },
               },
             },
           },
-        },
-        redirect: 'if_required',
-      });
+          redirect: 'if_required',
+        });
 
-      const { error, paymentIntent } = await Promise.race([
-        confirmationPromise,
-        timeoutPromise.then(() => {
-          throw new Error('Payment processing timeout');
-        }),
-      ]);
+        const { error, paymentIntent } = await Promise.race([
+          confirmationPromise,
+          timeoutPromise.then(() => {
+            throw new Error('Payment processing timeout');
+          }),
+        ]);
 
-      if (error) {
+        if (error) {
+          console.error(
+            '[DEBUG] Payment confirmation error:',
+            JSON.stringify(error, null, 2)
+          );
+          setErrorType(error.type || 'unknown_error');
+          setMessage(error.message || 'An unexpected error occurred.');
+        } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+          console.log('[DEBUG] Payment succeeded, navigating to success page');
+
+          window.dispatchEvent(new CustomEvent('paymentSuccess'));
+        }
+      } catch (error) {
         console.error(
-          '[DEBUG] Payment confirmation error:',
+          '[DEBUG] Exception during payment confirmation:',
           JSON.stringify(error, null, 2)
         );
-        setErrorType(error.type || 'unknown_error');
-        setMessage(error.message || 'An unexpected error occurred.');
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        console.log('[DEBUG] Payment succeeded, navigating to success page');
-
-        window.dispatchEvent(new CustomEvent('paymentSuccess'));
+        if (
+          error instanceof Error &&
+          error.message === 'Payment processing timeout'
+        ) {
+          setErrorType('timeout');
+          setMessage(
+            'Payment is taking longer than expected. Please check your bank app or account to see if the payment went through before trying again.'
+          );
+        } else {
+          setErrorType('unknown_error');
+          setMessage('An unexpected error occurred. Please try again.');
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error(
-        '[DEBUG] Exception during payment confirmation:',
-        JSON.stringify(error, null, 2)
-      );
-      if (
-        error instanceof Error &&
-        error.message === 'Payment processing timeout'
-      ) {
-        setErrorType('timeout');
-        setMessage(
-          'Payment is taking longer than expected. Please check your bank app or account to see if the payment went through before trying again.'
-        );
-      } else {
-        setErrorType('unknown_error');
-        setMessage('An unexpected error occurred. Please try again.');
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
 
-  console.log('[DEBUG] Rendering StripePaymentForm component');
+    console.log('[DEBUG] Rendering StripePaymentForm component');
 
-  return (
-    <Box
-      className={styles.paymentFormContainer}
-      sx={{
-        backgroundColor: '#ffffff !important',
-        color: '#333333 !important',
-        borderRadius: '6px',
-        p: 2,
-        minHeight: '320px',
-        position: 'relative',
-        display: 'block !important',
-        visibility: 'visible !important',
-        opacity: 1,
-      }}
-    >
+    return (
       <Box
-        component="div"
-        className={styles.formTitle}
+        className={styles.paymentFormContainer}
         sx={{
-          fontSize: '1rem',
-          fontWeight: 600,
-          mb: 2,
-          textAlign: 'center',
-        }}
-      >
-        Payment Details
-      </Box>
-
-      {}
-      <Box
-        sx={{
-          fontSize: '10px',
-          color: '#999',
-          mb: 2,
-        }}
-      >
-        Stripe loaded: {stripe ? 'yes' : 'no'}, Elements loaded:{' '}
-        {elements ? 'yes' : 'no'}, Initialized:{' '}
-        {stripeInitialized ? 'yes' : 'no'}
-      </Box>
-
-      <form
-        id="payment-form"
-        onSubmit={handleSubmit}
-        className={styles.paymentForm}
-        style={{
-          backgroundColor: '#ffffff',
-          minHeight: '240px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '14px',
+          backgroundColor: '#ffffff !important',
+          color: '#333333 !important',
+          borderRadius: '6px',
+          p: 2,
+          minHeight: '320px',
           position: 'relative',
-          zIndex: 1040,
+          display: 'block !important',
+          visibility: 'visible !important',
+          opacity: 1,
         }}
       >
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 1030,
-          }}
-        >
-          <LinkAuthenticationElement
-            id="link-authentication-element"
-            onChange={(e) => setEmail(e.value.email)}
-            options={{
-              defaultValues: {
-                email: email || '',
-              },
-            }}
-          />
-        </div>
-
         <Box
+          component="div"
+          className={styles.formTitle}
           sx={{
-            backgroundColor: '#ffffff',
-            p: 1.5,
-            border: '1px solid #e0e0e0',
-            borderRadius: '6px',
-            mb: 1.5,
-            position: 'relative',
-            zIndex: 1020,
-            minHeight: '150px',
+            fontSize: '1rem',
+            fontWeight: 600,
+            mb: 2,
+            textAlign: 'center',
           }}
         >
-          <PaymentElement
-            id="payment-element"
-            options={{
-              layout: {
-                type: 'tabs',
-                defaultCollapsed: false,
-                spacedAccordionItems: false,
-              },
-              fields: {
-                billingDetails: {
-                  name: 'auto',
-                  email: 'auto',
-                  phone: 'never',
-                  address: {
-                    country: 'auto',
-                    line1: 'auto',
-                    line2: 'never',
-                    city: 'auto',
-                    state: 'auto',
-                    postalCode: 'auto',
-                  },
-                },
-              },
-              paymentMethodOrder: ['card', 'apple_pay', 'google_pay'],
-            }}
-          />
+          Payment Details
         </Box>
 
-        <Button
-          disabled={isLoading || !stripe || !elements}
-          type="submit"
-          variant="contained"
-          fullWidth
-          className={styles.payButton}
+        {}
+        <Box
+          sx={{
+            fontSize: '10px',
+            color: '#999',
+            mb: 2,
+          }}
         >
-          {isLoading ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            'Pay Now'
-          )}
-        </Button>
+          Stripe loaded: {stripe ? 'yes' : 'no'}, Elements loaded:{' '}
+          {elements ? 'yes' : 'no'}, Initialized:{' '}
+          {stripeInitialized ? 'yes' : 'no'}
+        </Box>
 
-        {message && errorType !== 'unknown_error' ? (
-          <PaymentErrorDisplay
-            errorMessage={message}
-            errorType={errorType}
-            onRetry={() => {
-              setMessage(null);
-              setErrorType('unknown_error');
+        <form
+          id="payment-form"
+          onSubmit={handleSubmit}
+          className={styles.paymentForm}
+          style={{
+            backgroundColor: '#ffffff',
+            minHeight: '240px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px',
+            position: 'relative',
+            zIndex: 1040,
+          }}
+        >
+          <div
+            style={{
+              position: 'relative',
+              zIndex: 1030,
             }}
-          />
-        ) : (
-          message && (
-            <Box className={styles.paymentMessage}>
-              <Typography variant="body2" color="textPrimary">
-                {message}
-              </Typography>
-            </Box>
-          )
-        )}
-      </form>
-    </Box>
-  );
-});
+          >
+            <LinkAuthenticationElement
+              id="link-authentication-element"
+              onChange={(e) => setEmail(e.value.email)}
+              options={{
+                defaultValues: {
+                  email: email || '',
+                },
+              }}
+            />
+          </div>
+
+          <Box
+            sx={{
+              backgroundColor: '#ffffff',
+              p: 1.5,
+              border: '1px solid #e0e0e0',
+              borderRadius: '6px',
+              mb: 1.5,
+              position: 'relative',
+              zIndex: 1020,
+              minHeight: '150px',
+            }}
+          >
+            <PaymentElement
+              id="payment-element"
+              options={{
+                layout: {
+                  type: 'tabs',
+                  defaultCollapsed: false,
+                  spacedAccordionItems: false,
+                },
+                fields: {
+                  billingDetails: {
+                    name: 'auto',
+                    email: 'auto',
+                    phone: 'never',
+                    address: {
+                      country: 'auto',
+                      line1: 'auto',
+                      line2: 'never',
+                      city: 'auto',
+                      state: 'auto',
+                      postalCode: 'auto',
+                    },
+                  },
+                },
+                paymentMethodOrder: ['card', 'apple_pay', 'google_pay'],
+              }}
+            />
+          </Box>
+
+          <Button
+            disabled={isLoading || !stripe || !elements}
+            type="submit"
+            variant="contained"
+            fullWidth
+            className={styles.payButton}
+          >
+            {isLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              'Pay Now'
+            )}
+          </Button>
+
+          {message && errorType !== 'unknown_error' ? (
+            <PaymentErrorDisplay
+              errorMessage={message}
+              errorType={errorType}
+              onRetry={() => {
+                setMessage(null);
+                setErrorType('unknown_error');
+              }}
+            />
+          ) : (
+            message && (
+              <Box className={styles.paymentMessage}>
+                <Typography variant="body2" color="textPrimary">
+                  {message}
+                </Typography>
+              </Box>
+            )
+          )}
+        </form>
+      </Box>
+    );
+  }
+);
 
 StripePaymentForm.displayName = 'StripePaymentForm';
 

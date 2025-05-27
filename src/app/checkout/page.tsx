@@ -139,7 +139,7 @@ export default function CheckoutPage() {
       }
     };
 
-    // Small delay to prevent immediate re-render
+    
     const timeoutId = setTimeout(() => {
       createPaymentIntent(items);
     }, 50);
