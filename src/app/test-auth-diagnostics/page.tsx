@@ -32,7 +32,6 @@ export default function TestAuthDiagnostics() {
   };
 
   useEffect(() => {
-    
     runDiagnostics();
   }, []);
 

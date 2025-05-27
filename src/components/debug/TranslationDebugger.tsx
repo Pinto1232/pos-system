@@ -37,7 +37,6 @@ const TranslationDebugger: React.FC = () => {
   );
 
   useEffect(() => {
-    
     const resourceBundle = i18n.getResourceBundle(
       currentLanguage.code,
       'common'

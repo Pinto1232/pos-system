@@ -118,7 +118,6 @@ const CustomPackageLayoutContainer: React.FC<
       'Configure Usage',
       'Select Payment Plan',
       'Choose Support Level',
-      'Configure Integrations',
       'Review & Confirm',
     ],
     []

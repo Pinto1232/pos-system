@@ -17,24 +17,24 @@
 </head>
 <body>
     <h1>🔧 Keycloak Diagnostics Fix Test</h1>
-    
+
     <div class="status info">
         <strong>Purpose:</strong> This page tests if the Keycloak diagnostics fix is working correctly.
         <br>The fix should prevent "Keycloak diagnostics indicate unhealthy state" errors.
     </div>
-    
+
     <div>
         <button onclick="testDiagnostics()">🧪 Test Fixed Diagnostics</button>
         <button onclick="clearResults()">🗑️ Clear Results</button>
     </div>
-    
+
     <div id="results"></div>
-    
+
     <script>
         const KEYCLOAK_URL = 'http://localhost:8282';
         const REALM = 'pisval-pos-realm';
         const CLIENT_ID = 'pos-frontend';
-        
+
         function addResult(title, content, type = 'info') {
             const resultsDiv = document.getElementById('results');
             const resultDiv = document.createElement('div');
@@ -46,68 +46,71 @@
             `;
             resultsDiv.appendChild(resultDiv);
         }
-        
-        async function runKeycloakDiagnostics(keycloakUrl, realm, clientId) {
-            const results = [];
-            const recommendations = [];
-            
-            // Test 1: Basic Keycloak server connectivity
+
+        // Helper function to test server connectivity
+        async function testServerConnectivity(keycloakUrl) {
             try {
                 const serverResponse = await fetch(keycloakUrl, {
                     method: 'GET',
                     signal: AbortSignal.timeout(5000)
                 });
-                
+
                 if (serverResponse.ok || serverResponse.status === 302) {
-                    results.push({
+                    return {
                         test: 'Keycloak Server Connectivity',
                         status: 'success',
                         message: 'Keycloak server is accessible'
-                    });
+                    };
                 } else {
-                    results.push({
+                    return {
                         test: 'Keycloak Server Connectivity',
                         status: 'error',
                         message: `Keycloak server returned ${serverResponse.status}`
-                    });
+                    };
                 }
             } catch (error) {
-                results.push({
+                console.error('Server connectivity test failed:', error.message);
+                return {
                     test: 'Keycloak Server Connectivity',
                     status: 'error',
                     message: 'Cannot connect to Keycloak server'
-                });
+                };
             }
-            
-            // Test 2: Realm accessibility
+        }
+
+        // Helper function to test realm accessibility
+        async function testRealmAccessibility(keycloakUrl, realm) {
             try {
                 const realmResponse = await fetch(`${keycloakUrl}/realms/${realm}`, {
                     method: 'GET',
                     signal: AbortSignal.timeout(5000)
                 });
-                
+
                 if (realmResponse.status === 405 || realmResponse.status === 200) {
-                    results.push({
+                    return {
                         test: 'Realm Existence',
                         status: 'success',
                         message: 'Realm exists and is accessible'
-                    });
+                    };
                 } else if (realmResponse.status === 404) {
-                    results.push({
+                    return {
                         test: 'Realm Existence',
                         status: 'error',
                         message: 'Realm not found'
-                    });
+                    };
                 }
             } catch (error) {
-                results.push({
+                console.error('Realm accessibility test failed:', error.message);
+                return {
                     test: 'Realm Existence',
                     status: 'error',
                     message: 'Failed to check realm existence'
-                });
+                };
             }
-            
-            // Test 3: Well-known configuration endpoint (with fix)
+        }
+
+        // Helper function to test well-known configuration
+        async function testWellKnownConfiguration(keycloakUrl, realm) {
             try {
                 const wellKnownResponse = await fetch(`${keycloakUrl}/realms/${realm}/.well-known/openid_configuration`, {
                     method: 'GET',
@@ -116,120 +119,155 @@
                     },
                     signal: AbortSignal.timeout(5000)
                 });
-                
+
                 if (wellKnownResponse.ok) {
-                    results.push({
+                    return {
                         test: 'Well-known Configuration',
                         status: 'success',
                         message: 'OpenID Connect configuration is accessible'
-                    });
+                    };
                 } else if (wellKnownResponse.status === 404) {
-                    // 404 is common in development setups - treat as warning, not error
-                    results.push({
+                    return {
                         test: 'Well-known Configuration',
                         status: 'warning',
                         message: 'OpenID configuration endpoint not found - this is common in development setups'
-                    });
+                    };
                 } else {
-                    results.push({
+                    return {
                         test: 'Well-known Configuration',
                         status: 'error',
                         message: `Well-known configuration not accessible: ${wellKnownResponse.status}`
-                    });
+                    };
                 }
             } catch (error) {
-                results.push({
+                console.error('Well-known configuration test failed:', error.message);
+                return {
                     test: 'Well-known Configuration',
                     status: 'warning',
                     message: 'Failed to fetch well-known configuration - treating as non-critical'
-                });
+                };
             }
-            
-            // Test 4: JWKS endpoint
+        }
+
+        // Helper function to test JWKS endpoint
+        async function testJwksEndpoint(keycloakUrl, realm) {
             try {
                 const jwksResponse = await fetch(`${keycloakUrl}/realms/${realm}/protocol/openid-connect/certs`, {
                     method: 'GET',
                     signal: AbortSignal.timeout(5000)
                 });
-                
+
                 if (jwksResponse.ok) {
-                    results.push({
+                    return {
                         test: 'JWKS Endpoint',
                         status: 'success',
                         message: 'JWKS endpoint is accessible'
-                    });
+                    };
                 } else {
-                    results.push({
+                    return {
                         test: 'JWKS Endpoint',
                         status: 'error',
                         message: `JWKS endpoint returned ${jwksResponse.status}`
-                    });
+                    };
                 }
             } catch (error) {
-                results.push({
+                console.error('JWKS endpoint test failed:', error.message);
+                return {
                     test: 'JWKS Endpoint',
                     status: 'error',
                     message: 'Failed to access JWKS endpoint'
-                });
+                };
             }
-            
-            // Determine overall health (with improved logic)
+        }
+
+        // Helper function to determine overall health status
+        function determineOverallHealth(results) {
             const errorCount = results.filter(r => r.status === 'error').length;
             const warningCount = results.filter(r => r.status === 'warning').length;
             const successCount = results.filter(r => r.status === 'success').length;
-            
-            let overall;
+
             if (errorCount === 0 && warningCount === 0) {
-                overall = 'healthy';
+                return 'healthy';
             } else if (errorCount === 0 && successCount >= 2) {
-                // If we have no errors and at least 2 successful tests, consider it healthy
-                overall = 'healthy';
+                return 'healthy';
             } else if (errorCount === 0) {
-                overall = 'degraded';
+                return 'degraded';
             } else if (errorCount <= 1 && successCount >= 2) {
-                // If we have minimal errors but core functionality works, consider it degraded
-                overall = 'degraded';
+                return 'degraded';
             } else {
-                overall = 'unhealthy';
+                return 'unhealthy';
             }
-            
+        }
+
+        async function runKeycloakDiagnostics(keycloakUrl, realm, clientId) {
+            const results = [];
+            const recommendations = [];
+
+            // Run all diagnostic tests
+            const serverTest = await testServerConnectivity(keycloakUrl);
+            results.push(serverTest);
+
+            const realmTest = await testRealmAccessibility(keycloakUrl, realm);
+            results.push(realmTest);
+
+            const wellKnownTest = await testWellKnownConfiguration(keycloakUrl, realm);
+            results.push(wellKnownTest);
+
+            const jwksTest = await testJwksEndpoint(keycloakUrl, realm);
+            results.push(jwksTest);
+
+            const overall = determineOverallHealth(results);
+
             return { overall, results, recommendations };
         }
-        
+
         async function testDiagnostics() {
             addResult('🔄 Running Diagnostics...', 'Testing Keycloak connectivity with fixed logic...', 'info');
-            
+
             try {
                 const diagnostics = await runKeycloakDiagnostics(KEYCLOAK_URL, REALM, CLIENT_ID);
-                
+
                 let resultText = `Overall Status: ${diagnostics.overall.toUpperCase()}\n\n`;
                 resultText += 'Test Results:\n';
-                
+
                 diagnostics.results.forEach(result => {
-                    const icon = result.status === 'success' ? '✅' : result.status === 'warning' ? '⚠️' : '❌';
+                    let icon;
+                    if (result.status === 'success') {
+                        icon = '✅';
+                    } else if (result.status === 'warning') {
+                        icon = '⚠️';
+                    } else {
+                        icon = '❌';
+                    }
                     resultText += `${icon} ${result.test}: ${result.message}\n`;
                 });
-                
-                const resultType = diagnostics.overall === 'healthy' ? 'success' : 
-                                 diagnostics.overall === 'degraded' ? 'warning' : 'error';
-                
+
+                let resultType;
+                if (diagnostics.overall === 'healthy') {
+                    resultType = 'success';
+                } else if (diagnostics.overall === 'degraded') {
+                    resultType = 'warning';
+                } else {
+                    resultType = 'error';
+                }
+
                 addResult('🎯 Diagnostics Results', resultText, resultType);
-                
+
                 if (diagnostics.overall === 'unhealthy') {
                     addResult('❌ Fix Status', 'The fix did not work - diagnostics still report unhealthy', 'error');
                 } else {
                     addResult('✅ Fix Status', 'SUCCESS! Diagnostics now report healthy/degraded instead of unhealthy.\nThe "Keycloak diagnostics indicate unhealthy state" error should be resolved.', 'success');
                 }
-                
+
             } catch (error) {
                 addResult('❌ Test Failed', `Error running diagnostics: ${error.message}`, 'error');
             }
         }
-        
+
         function clearResults() {
             document.getElementById('results').innerHTML = '';
         }
-        
+
         // Auto-run test on page load
         window.onload = function() {
             setTimeout(testDiagnostics, 1000);

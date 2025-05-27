@@ -131,7 +131,6 @@ export const CustomizationProvider: React.FC<CustomizationProviderProps> = ({
     [DEFAULT_NAVBAR_COLOR, DEFAULT_SIDEBAR_COLOR, DEFAULT_LOGO_URL]
   );
 
-  
   const contextValue = useMemo(
     () => ({
       customization,

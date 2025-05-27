@@ -123,18 +123,23 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
         </CardHeader>
 
         <CardContent className={styles.content}>
-          <div className={styles.extraDescription}>
-            {translatedExtraDescription}
-          </div>
-          <ul>
+          {translatedExtraDescription && (
+            <div className={styles.extraDescription} role="complementary">
+              {translatedExtraDescription}
+            </div>
+          )}
+          <ul role="list" aria-label="Package features">
             {(
               t(`packages.descriptions.${packageData.type}`, {
                 defaultValue: packageData.description,
               }) || packageData.description
             )
               .split(';')
+              .filter((desc: string) => desc.trim().length > 0)
               .map((desc: string, index: number) => (
-                <li key={index}>{desc.trim()}</li>
+                <li key={index} role="listitem">
+                  <span>{desc.trim()}</span>
+                </li>
               ))}
           </ul>
         </CardContent>

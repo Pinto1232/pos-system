@@ -20,7 +20,7 @@
 </head>
 <body>
     <h1>🔐 Keycloak Admin Access Test</h1>
-    
+
     <div class="status info">
         <strong>Purpose:</strong> Test your new permanent Keycloak admin credentials and verify access to administrative functions.
     </div>
@@ -33,13 +33,13 @@
             <p>✅ Set username (e.g., "keycloak-admin"), email, and enable user</p>
             <p>✅ Set a strong password in Credentials tab (set Temporary = OFF)</p>
         </div>
-        
+
         <div class="step">
             <h3>Step 2: Assign Admin Roles</h3>
             <p>✅ Role mappings → Realm roles: assign "admin" and "create-realm"</p>
             <p>✅ Client roles → realm-management: assign "realm-admin", "manage-users", "manage-clients"</p>
         </div>
-        
+
         <div class="step">
             <h3>Step 3: Test New Admin Access</h3>
             <p>✅ Logout from current session</p>
@@ -51,17 +51,17 @@
     <div class="test-section">
         <h2>🧪 Admin Access Test</h2>
         <p>Use this section to test if your new admin credentials can access Keycloak admin endpoints:</p>
-        
+
         <div>
-            <label>Admin Username:</label><br>
+            <label for="adminUsername">Admin Username:</label><br>
             <input type="text" id="adminUsername" placeholder="keycloak-admin" value="keycloak-admin">
         </div>
-        
+
         <div>
-            <label>Admin Password:</label><br>
+            <label for="adminPassword">Admin Password:</label><br>
             <input type="password" id="adminPassword" placeholder="Enter admin password">
         </div>
-        
+
         <button onclick="testAdminAccess()">🔍 Test Admin Access</button>
         <button onclick="testRealmAccess()">🏰 Test Realm Access</button>
         <button onclick="clearResults()">🗑️ Clear Results</button>
@@ -119,17 +119,17 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    addResult('✅ Admin Authentication Success', 
+                    addResult('✅ Admin Authentication Success',
                         `Successfully authenticated as admin user: ${username}\n` +
                         `Token type: ${data.token_type}\n` +
                         `Expires in: ${data.expires_in} seconds\n` +
                         'Admin credentials are working correctly!', 'success');
-                    
+
                     // Test admin API access
                     await testAdminAPI(data.access_token);
                 } else {
                     const errorText = await response.text();
-                    addResult('❌ Admin Authentication Failed', 
+                    addResult('❌ Admin Authentication Failed',
                         `Status: ${response.status}\n` +
                         `Response: ${errorText}\n` +
                         'Please check your admin credentials and try again.', 'error');
@@ -152,12 +152,12 @@
                 if (realmsResponse.ok) {
                     const realms = await realmsResponse.json();
                     const realmNames = realms.map(r => r.realm).join(', ');
-                    addResult('✅ Admin API Access Success', 
+                    addResult('✅ Admin API Access Success',
                         `Successfully accessed admin API\n` +
                         `Available realms: ${realmNames}\n` +
                         `Total realms: ${realms.length}`, 'success');
                 } else {
-                    addResult('⚠️ Limited Admin Access', 
+                    addResult('⚠️ Limited Admin Access',
                         `Admin authentication worked but API access limited\n` +
                         `Status: ${realmsResponse.status}\n` +
                         'You may need additional role assignments.', 'warning');
@@ -179,13 +179,13 @@
 
                 if (realmResponse.ok) {
                     const realmData = await realmResponse.json();
-                    addResult('✅ Realm Access Success', 
+                    addResult('✅ Realm Access Success',
                         `Realm: ${realmData.realm}\n` +
                         `Display Name: ${realmData.displayName || 'Not set'}\n` +
                         `Enabled: ${realmData.enabled}\n` +
                         'POS realm is accessible and properly configured!', 'success');
                 } else {
-                    addResult('❌ Realm Access Failed', 
+                    addResult('❌ Realm Access Failed',
                         `Status: ${realmResponse.status}\n` +
                         'The pisval-pos-realm may not be properly configured.', 'error');
                 }

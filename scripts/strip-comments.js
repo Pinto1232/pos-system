@@ -33,12 +33,7 @@ const strip = require('strip-comments');
 const glob = require('glob');
 
 // Define file patterns to process
-const patterns = [
-  'src/**/*.ts',
-  'src/**/*.tsx',
-  'src/**/*.js',
-  'src/**/*.jsx',
-];
+const patterns = ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.js', 'src/**/*.jsx'];
 
 // Exclude patterns - files to skip
 const excludePatterns = [
@@ -112,8 +107,11 @@ function stripCommentsPreservingEslint(content) {
   });
 
   // Calculate removed comments
-  const remainingLineComments = (strippedContent.match(/\/\/.*$/gm) || []).length;
-  const remainingBlockComments = (strippedContent.match(/\/\*[\s\S]*?\*\//gm) || []).length;
+  const remainingLineComments = (strippedContent.match(/\/\/.*$/gm) || [])
+    .length;
+  const remainingBlockComments = (
+    strippedContent.match(/\/\*[\s\S]*?\*\//gm) || []
+  ).length;
   const remainingTotal = remainingLineComments + remainingBlockComments;
   stats.regularCommentsRemoved = stats.totalCommentsFound - remainingTotal;
 
@@ -176,7 +174,7 @@ patterns.forEach((pattern) => {
       try {
         // Use custom function to strip comments while preserving ESLint directives
         const result = stripCommentsPreservingEslint(content);
-        
+
         // Write the file back
         fs.writeFileSync(filePath, result.content, 'utf8');
 
@@ -185,7 +183,10 @@ patterns.forEach((pattern) => {
         totalEslintCommentsPreserved += result.stats.eslintCommentsPreserved;
 
         // Log processing details
-        if (result.stats.eslintCommentsPreserved > 0 || result.stats.regularCommentsRemoved > 0) {
+        if (
+          result.stats.eslintCommentsPreserved > 0 ||
+          result.stats.regularCommentsRemoved > 0
+        ) {
           console.log(
             `Processed: ${file} (removed ${result.stats.regularCommentsRemoved} comments, preserved ${result.stats.eslintCommentsPreserved} ESLint directives)`
           );

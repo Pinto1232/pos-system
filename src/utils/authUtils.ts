@@ -27,22 +27,17 @@ export const redirectToKeycloakRegistration = (
 export const isRedirectFromRegistration = (): boolean => {
   const urlParams = new URLSearchParams(window.location.search);
 
-  
-  
   const hasRegistrationMarker =
     urlParams.has('session_code') ||
     (urlParams.has('code') &&
       localStorage.getItem('pendingRegistration') === 'true');
 
-  
-  
   const hasOAuth2Params =
     urlParams.has('state') &&
     urlParams.has('session_state') &&
     urlParams.has('iss') &&
     urlParams.has('code');
 
-  
   if (hasOAuth2Params && !localStorage.getItem('pendingRegistration')) {
     console.log(
       'Detected OAuth2 authorization code response, not registration redirect'
@@ -61,7 +56,6 @@ export const handleRegistrationRedirect = (): void => {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 
-    
     localStorage.removeItem('pendingRegistration');
     markAsNewRegistration();
 
@@ -82,7 +76,6 @@ export const handleRegistrationRedirect = (): void => {
       window.location.href = loginUrl;
     }, 100);
   } else {
-    
     const urlParams = new URLSearchParams(window.location.search);
     const hasOAuth2Params =
       urlParams.has('state') &&
@@ -94,7 +87,7 @@ export const handleRegistrationRedirect = (): void => {
       console.log(
         'OAuth2 authorization code detected, letting Keycloak handle authentication'
       );
-      
+
       return;
     }
   }

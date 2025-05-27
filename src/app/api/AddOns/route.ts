@@ -15,7 +15,7 @@ interface AddOn {
 }
 
 const BACKEND_API_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:5107';
+  process.env.NEXT_PUBLIC_BACKEND_API_URL ?? 'http://localhost:5107';
 
 const fallbackAddOns = [
   {
@@ -146,8 +146,8 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const category = url.searchParams.get('category');
     const isActive = url.searchParams.get('isActive');
-    const pageNumber = url.searchParams.get('pageNumber') || '1';
-    const pageSize = url.searchParams.get('pageSize') || '50';
+    const pageNumber = url.searchParams.get('pageNumber') ?? '1';
+    const pageSize = url.searchParams.get('pageSize') ?? '50';
 
     let queryString = `?pageNumber=${pageNumber}&pageSize=${pageSize}`;
     if (category) queryString += `&category=${category}`;

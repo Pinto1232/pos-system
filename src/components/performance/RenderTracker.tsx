@@ -4,15 +4,11 @@ import React, { useRef, useEffect } from 'react';
 
 interface RenderTrackerProps {
   componentName: string;
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
   children?: React.ReactNode;
   trackProps?: boolean;
   warnThreshold?: number;
 }
-
-
-
-
 
 const RenderTracker: React.FC<RenderTrackerProps> = ({
   componentName,
@@ -22,18 +18,24 @@ const RenderTracker: React.FC<RenderTrackerProps> = ({
   warnThreshold = 5,
 }) => {
   const renderCount = useRef(0);
-  const prevProps = useRef<Record<string, any>>({});
+  const prevProps = useRef<Record<string, unknown>>({});
   const startTime = useRef<number>(0);
+  const isEnabled = process.env.NODE_ENV === 'development';
 
   
-  if (process.env.NODE_ENV !== 'development') {
-    return <>{children}</>;
-  }
+  useEffect(() => {
+    if (!isEnabled) {
+      return;
+    }
 
-  renderCount.current += 1;
-  startTime.current = performance.now();
+    renderCount.current += 1;
+    startTime.current = performance.now();
+  });
 
   useEffect(() => {
+    if (!isEnabled) {
+      return;
+    }
     const renderTime = performance.now() - startTime.current;
 
     console.log(
@@ -56,7 +58,7 @@ const RenderTracker: React.FC<RenderTrackerProps> = ({
 
     
     if (trackProps && Object.keys(props).length > 0) {
-      const changedProps: Record<string, { from: any; to: any }> = {};
+      const changedProps: Record<string, { from: unknown; to: unknown }> = {};
 
       Object.keys(props).forEach((key) => {
         if (prevProps.current[key] !== props[key]) {
@@ -73,17 +75,18 @@ const RenderTracker: React.FC<RenderTrackerProps> = ({
 
       prevProps.current = { ...props };
     }
-  });
+  }, [componentName, props, trackProps, warnThreshold, isEnabled]);
+
+  if (!isEnabled) {
+    return <>{children}</>;
+  }
 
   return <>{children}</>;
 };
 
 export default RenderTracker;
 
-
-
-
-export function withRenderTracker<P extends object>(
+export function withRenderTracker<P extends Record<string, unknown>>(
   Component: React.ComponentType<P>,
   componentName?: string,
   options: {
@@ -94,7 +97,7 @@ export function withRenderTracker<P extends object>(
   const WrappedComponent = (props: P) => (
     <RenderTracker
       componentName={
-        componentName || Component.displayName || Component.name || 'Component'
+        componentName ?? Component.displayName ?? Component.name ?? 'Component'
       }
       props={props}
       trackProps={options.trackProps}
@@ -104,35 +107,39 @@ export function withRenderTracker<P extends object>(
     </RenderTracker>
   );
 
-  WrappedComponent.displayName = `withRenderTracker(${componentName || Component.displayName || Component.name})`;
+  WrappedComponent.displayName = `withRenderTracker(${componentName ?? Component.displayName ?? Component.name})`;
 
   return WrappedComponent;
 }
 
-
-
-
 export function useRenderTracker(
   componentName: string,
-  props?: Record<string, any>,
+  props?: Record<string, unknown>,
   options: {
     trackProps?: boolean;
     warnThreshold?: number;
   } = {}
 ) {
   const renderCount = useRef(0);
-  const prevProps = useRef<Record<string, any>>({});
+  const prevProps = useRef<Record<string, unknown>>({});
   const startTime = useRef<number>(0);
+  const isEnabled = process.env.NODE_ENV === 'development';
 
   
-  if (process.env.NODE_ENV !== 'development') {
-    return;
-  }
+  useEffect(() => {
+    if (!isEnabled) {
+      return;
+    }
 
-  renderCount.current += 1;
-  startTime.current = performance.now();
+    renderCount.current += 1;
+    startTime.current = performance.now();
+  });
 
   useEffect(() => {
+    if (!isEnabled) {
+      return;
+    }
+
     const renderTime = performance.now() - startTime.current;
 
     console.log(
@@ -140,7 +147,7 @@ export function useRenderTracker(
     );
 
     
-    if (renderCount.current > (options.warnThreshold || 5)) {
+    if (renderCount.current > (options.warnThreshold ?? 5)) {
       console.warn(
         `⚠️ [PERFORMANCE] ${componentName} has rendered ${renderCount.current} times. Consider optimization.`
       );
@@ -159,7 +166,7 @@ export function useRenderTracker(
       props &&
       Object.keys(props).length > 0
     ) {
-      const changedProps: Record<string, { from: any; to: any }> = {};
+      const changedProps: Record<string, { from: unknown; to: unknown }> = {};
 
       Object.keys(props).forEach((key) => {
         if (prevProps.current[key] !== props[key]) {
@@ -176,5 +183,11 @@ export function useRenderTracker(
 
       prevProps.current = { ...props };
     }
-  });
+  }, [
+    componentName,
+    props,
+    options.trackProps,
+    options.warnThreshold,
+    isEnabled,
+  ]);
 }

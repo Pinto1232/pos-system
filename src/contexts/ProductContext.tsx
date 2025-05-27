@@ -184,7 +184,6 @@ export const ProductProvider: React.FC<{
     );
   }, []);
 
-  
   const contextValue = useMemo(
     () => ({
       products,

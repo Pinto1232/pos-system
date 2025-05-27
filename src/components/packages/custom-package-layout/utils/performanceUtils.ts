@@ -167,7 +167,6 @@ export const useStableCallback = <T extends (...args: unknown[]) => unknown>(
   callback: T,
   deps: React.DependencyList
 ): T => {
-  
   return React.useCallback(callback, deps);
 };
 
@@ -175,7 +174,6 @@ export const useStableObject = <T>(
   factory: () => T,
   deps: React.DependencyList
 ): T => {
-  
   return React.useMemo(factory, deps);
 };
 
