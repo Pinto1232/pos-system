@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button/Button';
 import iconMap from '@/utils/icons';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { usePackageDataPreloader } from '@/hooks/usePackageDataPreloader';
 import { TranslatedText } from '@/i18n';
 import { useTranslationContext } from '@/i18n';
 
@@ -36,6 +37,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
     const { isPackageDisabled, isPurchasedPackage } = usePackageSelection();
     const { currency, rate, formatPrice, currencySymbol } = useCurrency();
     const { currentLanguage, t } = useTranslationContext();
+    const { preloadData } = usePackageDataPreloader();
     const isDisabled = isPackageDisabled(packageData.id);
     const isPurchased = isPurchasedPackage(packageData.id);
 
@@ -82,6 +84,14 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
 
     const displayCurrency = currencySymbol;
 
+    const handleMouseEnter = React.useCallback(() => {
+      if (isCustom) {
+        preloadData().catch((error) => {
+          console.warn('Failed to preload package data on hover:', error);
+        });
+      }
+    }, [isCustom, preloadData]);
+
     const translatedExtraDescription = t(
       `packages.extraDescriptions.${packageData.type}`,
       {
@@ -101,6 +111,7 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
     return (
       <Card
         className={`${styles.card} ${isCustom ? styles.custom : ''} ${isDisabled ? styles.disabled : ''} ${packageData.type}`}
+        onMouseEnter={handleMouseEnter}
       >
         {isCustom && (
           <div className={styles.customBadge}>
@@ -123,22 +134,21 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
         </CardHeader>
 
         <CardContent className={styles.content}>
-          {translatedExtraDescription && (
-            <div className={styles.extraDescription} role="complementary">
-              {translatedExtraDescription}
-            </div>
-          )}
-          <ul role="list" aria-label="Package features">
+          <div className={styles.extraDescription}>
+            {translatedExtraDescription}
+          </div>
+          <ul>
             {(
               t(`packages.descriptions.${packageData.type}`, {
                 defaultValue: packageData.description,
               }) || packageData.description
             )
               .split(';')
-              .filter((desc: string) => desc.trim().length > 0)
               .map((desc: string, index: number) => (
-                <li key={index} role="listitem">
-                  <span>{desc.trim()}</span>
+                <li
+                  key={`${packageData.id}-desc-${index}-${desc.slice(0, 10)}`}
+                >
+                  {desc.trim()}
                 </li>
               ))}
           </ul>

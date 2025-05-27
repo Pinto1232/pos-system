@@ -12,6 +12,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useApiClient } from '@/api/axiosClient';
 import styles from './PricingPackages.module.css';
 import PricingPackageCard from './PricingPackageCard';
+import PackagePreloader from '@/components/packages/PackagePreloader';
 import { Alert, Snackbar, Button, Box, CircularProgress } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CacheControl from '@/components/ui/CacheControl';
@@ -915,48 +916,50 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
         />
       </Box>
 
-      <div
-        className={styles.container}
-        style={{
-          width: '100%',
-          margin: '0 auto',
-        }}
-      >
-        {packages.length > 0 ? (
-          packages.map((pkg: Package) =>
-            pkg ? (
-              <PricingPackageCard
-                key={pkg.id}
-                packageData={pkg}
-                onBuyNow={() => {
-                  const packageForSelection = {
-                    ...pkg,
-                    type:
-                      pkg.type === 'custom-pro'
-                        ? 'custom-pro'
-                        : pkg.type === 'starter-plus'
-                          ? 'starter-plus'
-                          : pkg.type === 'growth-pro'
-                            ? 'growth-pro'
-                            : pkg.type === 'enterprise-elite'
-                              ? 'enterprise-elite'
-                              : pkg.type === 'premium-plus'
-                                ? 'premium-plus'
-                                : 'starter-plus',
-                    isCustomizable: pkg.type === 'custom-pro',
-                  } as unknown as import('@/contexts/PackageSelectionContext').Package;
+      <PackagePreloader>
+        <div
+          className={styles.container}
+          style={{
+            width: '100%',
+            margin: '0 auto',
+          }}
+        >
+          {packages.length > 0 ? (
+            packages.map((pkg: Package) =>
+              pkg ? (
+                <PricingPackageCard
+                  key={pkg.id}
+                  packageData={pkg}
+                  onBuyNow={() => {
+                    const packageForSelection = {
+                      ...pkg,
+                      type:
+                        pkg.type === 'custom-pro'
+                          ? 'custom-pro'
+                          : pkg.type === 'starter-plus'
+                            ? 'starter-plus'
+                            : pkg.type === 'growth-pro'
+                              ? 'growth-pro'
+                              : pkg.type === 'enterprise-elite'
+                                ? 'enterprise-elite'
+                                : pkg.type === 'premium-plus'
+                                  ? 'premium-plus'
+                                  : 'starter-plus',
+                      isCustomizable: pkg.type === 'custom-pro',
+                    } as unknown as import('@/contexts/PackageSelectionContext').Package;
 
-                  selectPackage(packageForSelection);
-                }}
-              />
-            ) : null
-          )
-        ) : (
-          <div className={styles.message}>
-            No pricing packages available at this time.
-          </div>
-        )}
-      </div>
+                    selectPackage(packageForSelection);
+                  }}
+                />
+              ) : null
+            )
+          ) : (
+            <div className={styles.message}>
+              No pricing packages available at this time.
+            </div>
+          )}
+        </div>
+      </PackagePreloader>
 
       {showError && (
         <div className={styles.errorNotice}>

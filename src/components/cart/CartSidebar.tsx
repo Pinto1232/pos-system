@@ -178,7 +178,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
 
       localStorage.setItem('validatedCartItems', JSON.stringify(validated));
 
-      
       await new Promise((resolve) => setTimeout(resolve, 800));
 
       onClose();
