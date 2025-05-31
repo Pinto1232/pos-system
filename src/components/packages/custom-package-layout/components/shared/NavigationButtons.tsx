@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button, CircularProgress } from '@mui/material';
 import styles from '../../CustomPackageLayout.module.css';
 import { handleKeyboardAction } from '../../utils/accessibilityUtils';
@@ -40,6 +40,8 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   showNextButton = true,
   showSaveButton = false,
 }) => {
+  const whiteSpinnerStyle = useMemo(() => ({ color: 'white' }), []);
+
   return (
     <div className={styles.packageDetailsControls}>
       {showBackButton && (
@@ -67,7 +69,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           tabIndex={0}
         >
           {isNextLoading ? (
-            <CircularProgress size={20} sx={{ color: 'white' }} />
+            <CircularProgress size={20} sx={whiteSpinnerStyle} />
           ) : (
             nextLabel
           )}
@@ -85,7 +87,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           tabIndex={0}
         >
           {isSaveLoading ? (
-            <CircularProgress size={20} sx={{ color: 'white' }} />
+            <CircularProgress size={20} sx={whiteSpinnerStyle} />
           ) : (
             saveLabel
           )}

@@ -9,7 +9,7 @@ import {
   CircularProgress,
   Container,
   Paper,
-  Grid,
+  Stack,
   Divider,
   Breadcrumbs,
 } from '@mui/material';
@@ -82,6 +82,116 @@ export default function CheckoutPage() {
     });
   }, [updatePaymentState]);
 
+  const handleRetryPayment = useCallback(() => {
+    const currentItems = getEffectiveCartItems();
+    if (!currentItems || currentItems.length === 0) {
+      updatePaymentState({
+        isLoading: false,
+        errorType: 'validation_error',
+        error:
+          'Your cart is empty. Please add items to your cart before checkout.',
+      });
+      return;
+    }
+
+    updatePaymentState({
+      isLoading: true,
+      error: null,
+    });
+
+    const retryPaymentIntent = async () => {
+      try {
+        const response = await fetch('/api/create-payment-intent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            cartItems: currentItems,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error ?? 'Failed to create payment intent');
+        }
+
+        const { clientSecret } = await response.json();
+
+        updatePaymentState({
+          clientSecret,
+          isLoading: false,
+          paymentStep: 'payment_form',
+        });
+      } catch (error) {
+        updatePaymentState({
+          isLoading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to initialize payment',
+          errorType: 'server_error',
+          paymentStep: 'error',
+        });
+      }
+    };
+    retryPaymentIntent();
+  }, [getEffectiveCartItems, updatePaymentState]);
+
+  const renderPaymentContent = () => {
+    if (paymentState.isLoading) {
+      return (
+        <Box className={styles.loadingContainer}>
+          <CircularProgress size={40} />
+          <Typography variant="body1" sx={{ mt: 2 }}>
+            Preparing your checkout...
+          </Typography>
+        </Box>
+      );
+    }
+
+    if (paymentState.error) {
+      return (
+        <Box className={styles.errorContainer}>
+          <PaymentErrorDisplay
+            errorMessage={paymentState.error}
+            errorType={paymentState.errorType}
+            onRetry={handleRetryPayment}
+            onDismiss={() => router.push('/cart')}
+          />
+        </Box>
+      );
+    }
+
+    return (
+      <Box>
+        <Typography variant="h6" gutterBottom>
+          Payment Information
+        </Typography>
+        <Divider sx={{ mb: 3 }} />
+        {paymentState.clientSecret ? (
+          <StripePaymentForm
+            clientSecret={paymentState.clientSecret}
+            onMounted={handleFormMounted}
+          />
+        ) : (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '300px',
+            }}
+          >
+            <Typography>
+              Failed to initialize payment form. Please try again.
+            </Typography>
+          </Box>
+        )}
+      </Box>
+    );
+  };
+
   useEffect(() => {
     const items = getEffectiveCartItems();
     setEffectiveCartItems(items);
@@ -115,7 +225,7 @@ export default function CheckoutPage() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to create payment intent');
+          throw new Error(errorData.error ?? 'Failed to create payment intent');
         }
 
         const responseData = await response.json();
@@ -190,7 +300,7 @@ export default function CheckoutPage() {
             <Typography variant="h6" gutterBottom>
               Your cart is empty
             </Typography>
-            <Typography variant="body1" paragraph>
+            <Typography variant="body1" sx={{ mb: 2 }}>
               Please add items to your cart before proceeding to checkout.
             </Typography>
             <Button
@@ -204,115 +314,13 @@ export default function CheckoutPage() {
             </Button>
           </Paper>
         ) : (
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={8}>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={4}>
+            <Box sx={{ flex: 2 }}>
               <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
-                {paymentState.isLoading ? (
-                  <Box className={styles.loadingContainer}>
-                    <CircularProgress size={40} />
-                    <Typography variant="body1" sx={{ mt: 2 }}>
-                      Preparing your checkout...
-                    </Typography>
-                  </Box>
-                ) : paymentState.error ? (
-                  <Box className={styles.errorContainer}>
-                    <PaymentErrorDisplay
-                      errorMessage={paymentState.error}
-                      errorType={paymentState.errorType}
-                      onRetry={useCallback(() => {
-                        const currentItems = getEffectiveCartItems();
-                        if (!currentItems || currentItems.length === 0) {
-                          updatePaymentState({
-                            isLoading: false,
-                            errorType: 'validation_error',
-                            error:
-                              'Your cart is empty. Please add items to your cart before checkout.',
-                          });
-                          return;
-                        }
-
-                        updatePaymentState({
-                          isLoading: true,
-                          error: null,
-                        });
-
-                        const retryPaymentIntent = async () => {
-                          try {
-                            const response = await fetch(
-                              '/api/create-payment-intent',
-                              {
-                                method: 'POST',
-                                headers: {
-                                  'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                  cartItems: currentItems,
-                                }),
-                              }
-                            );
-
-                            if (!response.ok) {
-                              const errorData = await response.json();
-                              throw new Error(
-                                errorData.error ||
-                                  'Failed to create payment intent'
-                              );
-                            }
-
-                            const { clientSecret } = await response.json();
-
-                            updatePaymentState({
-                              clientSecret,
-                              isLoading: false,
-                              paymentStep: 'payment_form',
-                            });
-                          } catch (error) {
-                            updatePaymentState({
-                              isLoading: false,
-                              error:
-                                error instanceof Error
-                                  ? error.message
-                                  : 'Failed to initialize payment',
-                              errorType: 'server_error',
-                              paymentStep: 'error',
-                            });
-                          }
-                        };
-                        retryPaymentIntent();
-                      }, [getEffectiveCartItems, updatePaymentState])}
-                      onDismiss={() => router.push('/cart')}
-                    />
-                  </Box>
-                ) : (
-                  <Box>
-                    <Typography variant="h6" gutterBottom>
-                      Payment Information
-                    </Typography>
-                    <Divider sx={{ mb: 3 }} />
-                    {paymentState.clientSecret ? (
-                      <StripePaymentForm
-                        clientSecret={paymentState.clientSecret}
-                        onMounted={handleFormMounted}
-                      />
-                    ) : (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          height: '300px',
-                        }}
-                      >
-                        <Typography>
-                          Failed to initialize payment form. Please try again.
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-                )}
+                {renderPaymentContent()}
               </Paper>
-            </Grid>
-            <Grid item xs={12} md={4}>
+            </Box>
+            <Box sx={{ flex: 1 }}>
               <Paper
                 elevation={3}
                 sx={{
@@ -338,8 +346,8 @@ export default function CheckoutPage() {
                   </Button>
                 </Box>
               </Paper>
-            </Grid>
-          </Grid>
+            </Box>
+          </Stack>
         )}
       </Box>
     </Container>

@@ -18,13 +18,6 @@ import { Product } from '@/components/productTable/types';
 
 interface VirtualizedProductTableProps {
   products: Product[];
-  selectedProduct: Product | null;
-  isViewModalOpen: boolean;
-  searchQuery: string;
-  categoryFilter: string;
-  ratingFilter: number;
-  statusFilter: string;
-  priceFilter: [number, number];
   onView: (product: Product) => void;
   isLoading?: boolean;
 }
@@ -58,8 +51,8 @@ const Row = React.memo(({ index, style, data }: RowProps) => {
       <Box width="25%" sx={{ display: 'flex', alignItems: 'center' }}>
         <Box
           component="img"
-          src={product.image || '/placeholder-product.jpg'}
-          alt={product.productName || 'Product'}
+          src={product.image ?? '/placeholder-product.jpg'}
+          alt={product.productName ?? 'Product'}
           sx={{
             width: 40,
             height: 40,
@@ -94,7 +87,7 @@ const Row = React.memo(({ index, style, data }: RowProps) => {
       <Box width="10%">
         <Chip
           label={
-            product.statusProduct || (product.status ? 'Active' : 'Inactive')
+            product.statusProduct ?? (product.status ? 'Active' : 'Inactive')
           }
           size="small"
           sx={{
@@ -138,7 +131,7 @@ const Row = React.memo(({ index, style, data }: RowProps) => {
 
 Row.displayName = 'ProductTableRow';
 
-const TableHeader = () => (
+const TableHeader = React.memo(() => (
   <Box
     sx={{
       display: 'flex',
@@ -171,7 +164,9 @@ const TableHeader = () => (
       <Typography variant="subtitle2">Actions</Typography>
     </Box>
   </Box>
-);
+));
+
+TableHeader.displayName = 'TableHeader';
 
 const VirtualizedProductTable: React.FC<VirtualizedProductTableProps> = ({
   products,

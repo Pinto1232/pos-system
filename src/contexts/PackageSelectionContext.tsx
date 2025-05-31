@@ -1,6 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 
 const SELECTED_PACKAGE_STORAGE_KEY = 'selectedPackage';
 
@@ -110,7 +117,7 @@ export const PackageSelectionProvider: React.FC<{
     }
   }, []);
 
-  const getSavedPackage = (): Package | null => {
+  const getSavedPackage = useCallback((): Package | null => {
     const savedPackageJson = safeLocalStorage.getItem(
       SELECTED_PACKAGE_STORAGE_KEY
     );
@@ -126,9 +133,9 @@ export const PackageSelectionProvider: React.FC<{
       }
     }
     return null;
-  };
+  }, []);
 
-  const selectPackage = (pkg: Package) => {
+  const selectPackage = useCallback((pkg: Package) => {
     setSelectedPackage(pkg);
     setIsModalOpen(true);
     setIsPackageBeingCustomized(true);
@@ -145,38 +152,56 @@ export const PackageSelectionProvider: React.FC<{
         `Package selected event dispatched for package ID: ${pkg.id}`
       );
     }
-  };
+  }, []);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setIsPackageBeingCustomized(false);
-  };
+  }, []);
 
-  const isPackageDisabled = (pkgId: number): boolean => {
-    return (
-      isPackageBeingCustomized &&
-      selectedPackage !== null &&
-      selectedPackage.id !== pkgId
-    );
-  };
+  const isPackageDisabled = useCallback(
+    (pkgId: number): boolean => {
+      return (
+        isPackageBeingCustomized &&
+        selectedPackage !== null &&
+        selectedPackage.id !== pkgId
+      );
+    },
+    [isPackageBeingCustomized, selectedPackage]
+  );
 
-  const isPurchasedPackage = (pkgId: number): boolean => {
-    return purchasedPackageId === pkgId;
-  };
+  const isPurchasedPackage = useCallback(
+    (pkgId: number): boolean => {
+      return purchasedPackageId === pkgId;
+    },
+    [purchasedPackageId]
+  );
+
+  const contextValue = useMemo(
+    () => ({
+      selectedPackage,
+      isModalOpen,
+      selectPackage,
+      closeModal,
+      isPackageBeingCustomized,
+      isPackageDisabled,
+      isPurchasedPackage,
+      getSavedPackage,
+    }),
+    [
+      selectedPackage,
+      isModalOpen,
+      isPackageBeingCustomized,
+      isPackageDisabled,
+      isPurchasedPackage,
+      selectPackage,
+      closeModal,
+      getSavedPackage,
+    ]
+  );
 
   return (
-    <PackageSelectionContext.Provider
-      value={{
-        selectedPackage,
-        isModalOpen,
-        selectPackage,
-        closeModal,
-        isPackageBeingCustomized,
-        isPackageDisabled,
-        isPurchasedPackage,
-        getSavedPackage,
-      }}
-    >
+    <PackageSelectionContext.Provider value={contextValue}>
       {children}
     </PackageSelectionContext.Provider>
   );

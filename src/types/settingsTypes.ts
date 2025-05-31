@@ -151,6 +151,65 @@ export interface SettingsModalPresentationProps {
   isSaving?: boolean;
 }
 
+export interface SubscriptionDetails {
+  id: number;
+  userId: string;
+  package: {
+    id: number;
+    title: string;
+    type: string;
+    price: number;
+  };
+  status: string;
+  isActive: boolean;
+  startDate: string;
+  endDate?: string;
+  trialStart?: string;
+  trialEnd?: string;
+  currentPeriodStart?: string;
+  currentPeriodEnd?: string;
+  nextBillingDate?: string;
+  cancelAtPeriodEnd: boolean;
+  canceledAt?: string;
+  currency: string;
+  paymentMethod?: {
+    type: string;
+    card?: {
+      brand: string;
+      last4: string;
+      expMonth: number;
+      expYear: number;
+    };
+  };
+  enabledFeatures: string[];
+}
+
+export interface BillingHistoryItem {
+  id: string;
+  amount: number;
+  currency: string;
+  date: string;
+  status: string;
+  invoiceUrl?: string;
+  invoicePdf?: string;
+  description: string;
+}
+
+export interface ChangePlanRequest {
+  userId: string;
+  newPackageId: number;
+  prorated: boolean;
+}
+
+export interface UpdatePaymentMethodRequest {
+  userId: string;
+  paymentMethodId: string;
+}
+
+export interface SubscriptionActionRequest {
+  userId: string;
+}
+
 export const settingsItems: SettingsItem[] = [
   {
     label: 'General Settings',
@@ -173,6 +232,10 @@ export const settingsItems: SettingsItem[] = [
   {
     label: 'User & Role Management',
     tooltip: 'Manage users, roles, and permissions for system access',
+  },
+  {
+    label: 'Subscription Management',
+    tooltip: 'Manage your subscription plan, billing, and payment methods',
   },
   {
     label: 'Package Management',

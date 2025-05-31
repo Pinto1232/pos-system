@@ -1,11 +1,18 @@
-import React from 'react';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import GeneralSettingsContent from './content/GeneralSettingsContent';
 import TaxSettingsContent from './content/TaxSettingsContent';
 import RegionalSettingsContent from './content/RegionalSettingsContent';
 import BusinessInfoContent from './content/BusinessInfoContent';
 import UserRoleContent from './content/UserRoleContent';
 import PackageManagementContent from './content/PackageManagementContent';
+import SubscriptionManagement from './content/SubscriptionManagement';
 import EmailSettingsContent from './content/EmailSettingsContent';
 import SystemBackupContent from './content/SystemBackupContent';
 import ApiIntegrationsContent from './content/ApiIntegrationsContent';
@@ -95,6 +102,20 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
   setPrefetchImportantData,
   changeHistory,
 }) => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    'success' | 'error' | 'info' | 'warning'
+  >('success');
+
+  const handleSnackbar = (
+    message: string,
+    severity: 'success' | 'error' | 'info' | 'warning'
+  ) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
   const renderSettingContent = () => {
     switch (selectedSetting) {
       case 'General Settings':
@@ -136,6 +157,8 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
             setCreateRoleModalOpen={setCreateRoleModalOpen}
           />
         );
+      case 'Subscription Management':
+        return <SubscriptionManagement onSnackbar={handleSnackbar} />;
       case 'Package Management':
         return (
           <PackageManagementContent
@@ -243,6 +266,22 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
           </Box>
         )}
       </Box>
+
+      {}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

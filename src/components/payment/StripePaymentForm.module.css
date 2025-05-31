@@ -103,7 +103,7 @@
 }
 
 /* Fix for Stripe iframe visibility */
-:global(iframe) {
+.paymentFormContainer :global(iframe) {
   position: relative;
   z-index: 1000 !important; /* Reduced from 10000 to a more reasonable value */
   display: block !important;
@@ -112,7 +112,7 @@
 }
 
 /* Ensure Stripe tabs are visible */
-:global(.StripeTabsContainer) {
+.paymentFormContainer :global(.StripeTabsContainer) {
   position: relative;
   z-index: 1000 !important; /* Reduced from 10000 to a more reasonable value */
   display: block !important;
@@ -121,7 +121,7 @@
 }
 
 /* Ensure Stripe payment method buttons are visible */
-:global(.StripePaymentMethodButton) {
+.paymentFormContainer :global(.StripePaymentMethodButton) {
   position: relative;
   z-index: 1000 !important; /* Reduced from 10000 to a more reasonable value */
   display: block !important;

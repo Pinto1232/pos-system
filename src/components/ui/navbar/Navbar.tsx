@@ -125,60 +125,87 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
     [safeLocalStorage, formatTime]
   );
 
-  useEffect(() => {
+  const isValidTimerData = useCallback(
+    (timerState: unknown, packageId: unknown): boolean => {
+      return (
+        typeof timerState === 'number' &&
+        timerState > 0 &&
+        typeof packageId === 'number'
+      );
+    },
+    []
+  );
+
+  const parseStoredTimerData = useCallback(() => {
     const storedTimerState = safeLocalStorage.getItem(TIMER_STATE_KEY);
     const storedPackageId = safeLocalStorage.getItem(SELECTED_PACKAGE_KEY);
-    const storedPackageData = safeLocalStorage.getItem(
-      SELECTED_PACKAGE_DATA_KEY
-    );
 
-    if (storedTimerState && storedPackageId) {
-      try {
-        const parsedTimerState = JSON.parse(storedTimerState);
-        const parsedPackageId = JSON.parse(storedPackageId);
-
-        if (
-          typeof parsedTimerState === 'number' &&
-          parsedTimerState > 0 &&
-          typeof parsedPackageId === 'number'
-        ) {
-          const lastUpdated = safeLocalStorage.getItem(TIMER_LAST_UPDATED_KEY);
-          if (lastUpdated) {
-            const elapsedSeconds = Math.floor(
-              (Date.now() - parseInt(lastUpdated)) / 1000
-            );
-            const adjustedTime = Math.max(0, parsedTimerState - elapsedSeconds);
-            setRemainingTime(adjustedTime);
-            lastSelectedPackageIdRef.current = parsedPackageId;
-
-            console.log(
-              `Timer restored from localStorage: ${formatTime(adjustedTime)}`
-            );
-
-            if (storedPackageData) {
-              try {
-                const packageData = JSON.parse(storedPackageData);
-                console.log(`For package: ${packageData.title}`);
-              } catch (e) {
-                console.error('Error parsing stored package data:', e);
-              }
-            }
-
-            return;
-          } else {
-            setRemainingTime(parsedTimerState);
-            lastSelectedPackageIdRef.current = parsedPackageId;
-            console.log(
-              `Timer restored from localStorage (no timestamp): ${formatTime(parsedTimerState)}`
-            );
-            return;
-          }
-        }
-      } catch (error) {
-        console.error('Error parsing stored timer state:', error);
-      }
+    if (!storedTimerState || !storedPackageId) {
+      return null;
     }
 
+    try {
+      const parsedTimerState = JSON.parse(storedTimerState);
+      const parsedPackageId = JSON.parse(storedPackageId);
+
+      if (isValidTimerData(parsedTimerState, parsedPackageId)) {
+        return { parsedTimerState, parsedPackageId };
+      }
+    } catch (error) {
+      console.error('Error parsing stored timer state:', error);
+    }
+
+    return null;
+  }, [safeLocalStorage, isValidTimerData]);
+
+  const restoreTimerWithTimestamp = useCallback(
+    (parsedTimerState: number, parsedPackageId: number) => {
+      const lastUpdated = safeLocalStorage.getItem(TIMER_LAST_UPDATED_KEY);
+
+      if (lastUpdated) {
+        const elapsedSeconds = Math.floor(
+          (Date.now() - parseInt(lastUpdated)) / 1000
+        );
+        const adjustedTime = Math.max(0, parsedTimerState - elapsedSeconds);
+        setRemainingTime(adjustedTime);
+        lastSelectedPackageIdRef.current = parsedPackageId;
+
+        console.log(
+          `Timer restored from localStorage: ${formatTime(adjustedTime)}`
+        );
+
+        const storedPackageData = safeLocalStorage.getItem(
+          SELECTED_PACKAGE_DATA_KEY
+        );
+        if (storedPackageData) {
+          try {
+            const packageData = JSON.parse(storedPackageData);
+            console.log(`For package: ${packageData.title}`);
+          } catch (e) {
+            console.error('Error parsing stored package data:', e);
+          }
+        }
+
+        return true;
+      }
+
+      return false;
+    },
+    [safeLocalStorage, formatTime]
+  );
+
+  const restoreTimerWithoutTimestamp = useCallback(
+    (parsedTimerState: number, parsedPackageId: number) => {
+      setRemainingTime(parsedTimerState);
+      lastSelectedPackageIdRef.current = parsedPackageId;
+      console.log(
+        `Timer restored from localStorage (no timestamp): ${formatTime(parsedTimerState)}`
+      );
+    },
+    [formatTime]
+  );
+
+  const initializeDefaultTimer = useCallback(() => {
     if (testPeriod > 0) {
       const initialTime = testPeriod * 24 * 60 * 60;
       setRemainingTime(initialTime);
@@ -188,7 +215,30 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
     } else {
       console.log('No test period available for initialization');
     }
-  }, [safeLocalStorage, testPeriod, formatTime]);
+  }, [testPeriod, formatTime]);
+
+  useEffect(() => {
+    const timerData = parseStoredTimerData();
+
+    if (timerData) {
+      const { parsedTimerState, parsedPackageId } = timerData;
+      const restored = restoreTimerWithTimestamp(
+        parsedTimerState,
+        parsedPackageId
+      );
+
+      if (!restored) {
+        restoreTimerWithoutTimestamp(parsedTimerState, parsedPackageId);
+      }
+    } else {
+      initializeDefaultTimer();
+    }
+  }, [
+    parseStoredTimerData,
+    restoreTimerWithTimestamp,
+    restoreTimerWithoutTimestamp,
+    initializeDefaultTimer,
+  ]);
 
   useEffect(() => {
     if (selectedPackage) {
@@ -249,6 +299,20 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
     startLoading({ timeout: 3000 });
     router.push('/');
   };
+
+  const iconButtonStyles = useMemo(
+    () => ({
+      padding: {
+        xs: '8px',
+        sm: '12px',
+      },
+      fontSize: {
+        xs: '1.2rem',
+        sm: '1.4rem',
+      },
+    }),
+    []
+  );
 
   useEffect(() => {
     if (appBarRef.current) {
@@ -395,16 +459,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
               onClick={() => {
                 toggleLoginForm();
               }}
-              sx={{
-                padding: {
-                  xs: '8px',
-                  sm: '12px',
-                },
-                fontSize: {
-                  xs: '1.2rem',
-                  sm: '1.4rem',
-                },
-              }}
+              sx={iconButtonStyles}
             >
               <LoginIcon fontSize="inherit" />
             </IconButton>
@@ -412,16 +467,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
             <IconButton
               color="inherit"
               onClick={handleCartClick}
-              sx={{
-                padding: {
-                  xs: '8px',
-                  sm: '12px',
-                },
-                fontSize: {
-                  xs: '1.2rem',
-                  sm: '1.4rem',
-                },
-              }}
+              sx={iconButtonStyles}
             >
               <Badge badgeContent={cartCount} color="error">
                 <IoCartOutline size="1em" />

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import styles from './Button.module.css';
 
 interface ButtonProps {
@@ -15,27 +15,31 @@ interface ButtonProps {
   sx?: React.CSSProperties;
 }
 
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  className,
-  onClick,
-  startIcon,
-  type = 'button',
-  variant = 'contained',
-  fullWidth = false,
-  disabled = false,
-  sx,
-}) => {
-  return (
-    <button
-      className={`${styles.button} ${className} ${styles[variant]} ${fullWidth ? styles.fullWidth : ''} ${disabled ? styles.disabled : ''}`}
-      onClick={onClick}
-      type={type}
-      disabled={disabled}
-      style={sx}
-    >
-      {startIcon && <span className={styles.startIcon}>{startIcon}</span>}
-      {children}
-    </button>
-  );
-};
+export const Button: React.FC<ButtonProps> = memo(
+  ({
+    children,
+    className,
+    onClick,
+    startIcon,
+    type = 'button',
+    variant = 'contained',
+    fullWidth = false,
+    disabled = false,
+    sx,
+  }) => {
+    return (
+      <button
+        className={`${styles.button} ${className} ${styles[variant]} ${fullWidth ? styles.fullWidth : ''} ${disabled ? styles.disabled : ''}`}
+        onClick={onClick}
+        type={type}
+        disabled={disabled}
+        style={sx}
+      >
+        {startIcon && <span className={styles.startIcon}>{startIcon}</span>}
+        {children}
+      </button>
+    );
+  }
+);
+
+Button.displayName = 'Button';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './ErrorModal.css';
 
 interface ErrorModalProps {
@@ -6,7 +6,7 @@ interface ErrorModalProps {
   onClose: () => void;
 }
 
-const ErrorModal: React.FC<ErrorModalProps> = ({ message, onClose }) => {
+const ErrorModal: React.FC<ErrorModalProps> = memo(({ message, onClose }) => {
   return (
     <div className="error-modal-overlay">
       <div className="error-modal">
@@ -31,6 +31,8 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ message, onClose }) => {
       </div>
     </div>
   );
-};
+});
+
+ErrorModal.displayName = 'ErrorModal';
 
 export default ErrorModal;

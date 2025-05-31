@@ -6,6 +6,7 @@ import React, {
   useState,
   useEffect,
   useCallback,
+  useMemo,
 } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import useKeycloakUser from '@/hooks/useKeycloakUser';
@@ -34,7 +35,7 @@ interface UserSubscriptionContextType {
   hasFeatureAccess: (featureName: string) => boolean;
   enableAdditionalPackage: (packageId: number) => Promise<void>;
   disableAdditionalPackage: (packageId: number) => Promise<void>;
-  refreshSubscription: () => void;
+  refreshSubscription: () => Promise<void>;
 }
 
 const UserSubscriptionContext = createContext<
@@ -458,19 +459,31 @@ export const UserSubscriptionProvider: React.FC<{
     }
   }, [userId, refetch]);
 
+  const contextValue = useMemo(
+    () => ({
+      subscription: subscription || null,
+      isLoading,
+      error,
+      availableFeatures,
+      hasFeatureAccess,
+      enableAdditionalPackage,
+      disableAdditionalPackage,
+      refreshSubscription,
+    }),
+    [
+      subscription,
+      isLoading,
+      error,
+      availableFeatures,
+      hasFeatureAccess,
+      enableAdditionalPackage,
+      disableAdditionalPackage,
+      refreshSubscription,
+    ]
+  );
+
   return (
-    <UserSubscriptionContext.Provider
-      value={{
-        subscription: subscription || null,
-        isLoading,
-        error,
-        availableFeatures,
-        hasFeatureAccess,
-        enableAdditionalPackage,
-        disableAdditionalPackage,
-        refreshSubscription,
-      }}
-    >
+    <UserSubscriptionContext.Provider value={contextValue}>
       {children}
     </UserSubscriptionContext.Provider>
   );

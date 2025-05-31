@@ -19,7 +19,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { AuthContext } from '@/contexts/AuthContext';
 
-function SuccessContent({ onConfirm }: { onConfirm: () => void }) {
+function SuccessContent({ onConfirm }: { readonly onConfirm: () => void }) {
   const [open, setOpen] = useState(true);
   const theme = useTheme();
   const router = useRouter();
