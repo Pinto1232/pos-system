@@ -187,12 +187,21 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('✅ Environment variables loaded successfully');
     }
   }, []);
-
   const handleCleanLogout = useCallback(async () => {
     try {
       localStorage.removeItem('accessToken');
-      clearTokenCookie();
+      localStorage.removeItem('newRegistration');
+      localStorage.removeItem('pendingRegistration');
+      sessionStorage.removeItem('kc_username');
+      sessionStorage.removeItem('kc_password');
+
+      await fetch('/api/auth-token/clear-token', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
       setToken(null);
+      setInitialized(false);
 
       if (document.body) {
         const config = configRef.current;
@@ -450,10 +459,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       refreshTimeoutRef: { current: NodeJS.Timeout | null }
     ) => {
       if (kc.token) {
-        console.log('Setting token in state and cookie');
+        console.log('Setting token in secure cookie');
         setToken(kc.token);
-        localStorage.setItem('accessToken', kc.token);
-        await setTokenCookie(kc.token);
+
+        await fetch('/api/auth-token/set-token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token: kc.token }),
+          credentials: 'include',
+        });
 
         const refreshTime = calculateRefreshTime(kc.token);
         console.log(
@@ -555,15 +571,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         'isNewRegistration:',
         JSON.stringify(isNewRegistration, null, 2)
       );
-
       const authenticated = await kc.init({
         onLoad: onLoadOption,
-        redirectUri: window.location.origin + '/',
+        redirectUri: window.location.origin + config.loginRedirect,
         checkLoginIframe: false,
         pkceMethod: 'S256',
         responseMode: 'query',
         enableLogging: true,
-        silentCheckSsoRedirectUri: undefined,
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/silent-check-sso.html',
         silentCheckSsoFallback: false,
       });
 

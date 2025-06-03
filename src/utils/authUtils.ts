@@ -52,7 +52,10 @@ export const handleRegistrationRedirect = (): void => {
   if (isRedirectFromRegistration()) {
     console.log('Detected redirect from Keycloak registration');
 
-    if (window.history && window.history.replaceState) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasOAuth2Params = urlParams.has('state') && urlParams.has('code');
+
+    if (!hasOAuth2Params && window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 

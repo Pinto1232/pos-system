@@ -1,7 +1,13 @@
 'use client';
 
-import React, { memo, useState, useEffect, useContext, useRef } from 'react';
-
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from 'react';
 import styles from './LoginForm.module.css';
 import {
   Box,
@@ -16,371 +22,314 @@ import {
   InputAdornment,
   CircularProgress,
 } from '@mui/material';
-
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Image from 'next/image';
 import { Button } from '../ui/button/Button';
-import axios from 'axios';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { redirectToKeycloakRegistration } from '@/utils/authUtils';
 import { AuthContext } from '@/contexts/AuthContext';
+import keycloakInstance from '@/auth/keycloak';
 
-interface LoginFormProps {
-  title?: string;
-  subtitle?: string;
-  emailPlaceholder?: string;
-  passwordPlaceholder?: string;
-  buttonText?: string;
-  onSubmit?: (email: string, password: string) => void;
-}
+const LoginForm = memo(() => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  const [logoError, setLogoError] = useState(false);
+  const [loginStatus, setLoginStatus] = useState('');
+  const { startLoading, stopLoading } = useSpinner();
+  const { login, error: authError } = useContext(AuthContext);
+  const serviceCheckPerformedRef = useRef(false);
 
-const LoginForm: React.FC<LoginFormProps> = memo(
-  ({
-    title = 'Welcome Back',
-    subtitle = 'Please enter your credentials to access your account',
-    buttonText = 'Sign In',
-    onSubmit,
-  }) => {
-    const { startLoading, stopLoading } = useSpinner();
-    const [error, setError] = useState<string | null>(null);
-    const [isFadingOut, setIsFadingOut] = useState(false);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [isLoggedIn] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [logoError, setLogoError] = useState(false);
-    const [loginAttempt, setLoginAttempt] = useState(0);
-    const [loginStatus, setLoginStatus] = useState('');
-
-    // Get the login function from AuthContext
-    const { login, error: authError } = useContext(AuthContext);
-
-    // Check if backend and Keycloak are available on component mount
-    // Use a ref to track if the check has already been performed
-    const serviceCheckPerformedRef = useRef(false);
-
-    useEffect(() => {
-      // Only perform the check once per component instance
-      if (serviceCheckPerformedRef.current) return;
-
-      const checkServices = async () => {
-        serviceCheckPerformedRef.current = true;
-
-        // Check backend status
-        try {
-          console.log('Checking backend status...');
-          const backendResponse = await axios.get('/api/health', {
-            timeout: 5000,
-          });
-          console.log(
-            'Backend status check response:',
-            JSON.stringify(backendResponse.status, null, 2)
-          );
-        } catch (err) {
-          console.warn(
-            'Backend status check failed:',
-            JSON.stringify(err, null, 2)
-          );
-          setError(
-            'Backend server may be unavailable. Please try again later or contact support.'
-          );
-          setSnackbarOpen(true);
-          return;
-        }
-
-        try {
-          console.log('Checking Keycloak status...');
-          const keycloakResponse = await axios.get(
-            'http://localhost:8282/realms/pisval-pos-realm/.well-known/openid-configuration',
-            {
-              timeout: 5000,
-            }
-          );
-          console.log(
-            'Keycloak status check response:',
-            JSON.stringify(keycloakResponse.status, null, 2)
-          );
-        } catch (err) {
-          console.warn(
-            'Keycloak status check failed:',
-            JSON.stringify(err, null, 2)
-          );
-          setError(
-            'Authentication server (Keycloak) may be unavailable. Please try again later or contact support.'
-          );
-          setSnackbarOpen(true);
-        }
-      };
-
-      checkServices();
-
-      return () => {
-        serviceCheckPerformedRef.current = false;
-      };
-    }, []);
-
-    useEffect(() => {
-      if (authError) {
-        setError(authError);
-        setSnackbarOpen(true);
-        setIsFadingOut(false);
-        stopLoading();
-      }
-    }, [authError, stopLoading]);
-
-    const handleLogin = async (event: React.FormEvent) => {
-      event.preventDefault();
-
-      startLoading({ timeout: 15000 });
-      setIsFadingOut(true);
-      setLoginStatus('Connecting to authentication server...');
-
-      const nextAttempt = loginAttempt + 1;
-      setLoginAttempt(nextAttempt);
-      console.log(`Login attempt #${nextAttempt}`);
-
-      if (!email || !password) {
-        setError('Please fill in all fields');
-        setSnackbarOpen(true);
-        setIsFadingOut(false);
-        stopLoading();
-        setLoginStatus('');
-        return;
-      }
-
-      if (onSubmit) {
-        onSubmit(email, password);
-      }
-
+  const checkKeycloakAvailability = useCallback(async () => {
+    if (!serviceCheckPerformedRef.current) {
+      serviceCheckPerformedRef.current = true;
       try {
-        // Store credentials in sessionStorage for Keycloak to use
-        sessionStorage.setItem('kc_username', email);
-        sessionStorage.setItem('kc_password', password);
+        const wellKnownUrl = `${keycloakInstance.authServerUrl}/realms/${keycloakInstance.realm}/.well-known/openid-configuration`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-        console.log('Initiating Keycloak login...');
+        try {
+          const response = await fetch(wellKnownUrl, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+            signal: controller.signal,
+          });
 
-        await login();
+          clearTimeout(timeoutId);
 
-        setLoginStatus('Authenticating...');
-      } catch (err: Error | unknown) {
-        console.error('Login initiation failed:', JSON.stringify(err, null, 2));
+          if (!response.ok) {
+            throw new Error('Authentication service is not accessible');
+          }
 
-        let errorMessage = 'Login failed. Please try again.';
+          const config = await response.json();
+          if (!config.authorization_endpoint) {
+            throw new Error('Invalid Keycloak configuration');
+          }
 
-        if (err instanceof Error) {
-          errorMessage = `Login error: ${err.message}`;
+          console.log('Keycloak is available and configured correctly');
+        } catch (fetchError: unknown) {
+          if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+            throw new Error('Authentication service is not responding');
+          }
+          throw new Error(
+            fetchError instanceof Error
+              ? fetchError.message
+              : 'Authentication service is not available'
+          );
         }
-
-        setError(errorMessage);
+      } catch (err) {
+        console.error('Keycloak availability check failed:', err);
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Authentication service is temporarily unavailable. Please try again later.'
+        );
         setSnackbarOpen(true);
-        setIsFadingOut(false);
         stopLoading();
-        setLoginStatus('');
       }
+    }
+  }, [stopLoading, setError, setSnackbarOpen]);
+
+  useEffect(() => {
+    if (!serviceCheckPerformedRef.current) {
+      checkKeycloakAvailability();
+    }
+    return () => {
+      serviceCheckPerformedRef.current = false;
     };
+  }, [checkKeycloakAvailability]);
 
-    const handleLogoError = () => {
-      console.warn("Logo image '/Pisval_Logo.jpg' failed to load.");
-      setLogoError(true);
-    };
+  useEffect(() => {
+    if (authError) {
+      setError(authError);
+      setSnackbarOpen(true);
+      setIsFadingOut(false);
+      stopLoading();
+    }
+  }, [authError, stopLoading]);
 
-    return (
-      <>
-        {!isLoggedIn && (
-          <div
-            className={`${styles.LoginContent} ${isFadingOut ? styles.fadeOut : ''}`}
-          >
-            <Box className={styles.logoContainer}>
-              {logoError ? (
-                <Box
-                  sx={{
-                    width: 60,
-                    height: 60,
-                    backgroundColor: 'grey.300',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 1,
-                    color: 'text.secondary',
-                  }}
-                >
-                  <Typography variant="caption">Logo</Typography>
-                </Box>
-              ) : (
-                <Image
-                  src="/Pisval_Logo.jpg"
-                  alt="POS Logo"
-                  width={60}
-                  height={60}
-                  className={styles.logoImage}
-                  onError={handleLogoError}
-                  priority
-                />
-              )}
-            </Box>
+  useEffect(() => {
+    checkKeycloakAvailability();
+  }, [checkKeycloakAvailability]);
 
-            <Typography variant="h6" className={styles.heading}>
-              {title}
-            </Typography>
-            <Typography variant="body1" className={styles.subtext}>
-              {subtitle}
-            </Typography>
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-            <form className={styles.form} onSubmit={handleLogin}>
-              <Box mb={2}>
-                <TextField
-                  id="email"
-                  name="email"
-                  type="email"
-                  label="Email"
-                  variant="outlined"
-                  fullWidth
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={styles.textField}
-                  required
-                  slotProps={{
-                    inputLabel: {
-                      shrink: !!email || undefined,
-                    },
-                  }}
-                />
-              </Box>
+    setError(null);
+    setSnackbarOpen(false);
+    setLoginStatus('Authenticating...');
 
-              <Box mb={2}>
-                <TextField
-                  id="password"
-                  name="password"
-                  label="Password"
-                  type={showPassword ? 'text' : 'password'}
-                  variant="outlined"
-                  fullWidth
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label={
-                              showPassword ? 'Hide password' : 'Show password'
-                            }
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <VisibilityOffIcon />
-                            ) : (
-                              <VisibilityIcon />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    },
-                    inputLabel: {
-                      shrink: !!password || undefined,
-                    },
-                  }}
-                  className={styles.textField}
-                  required
-                />
-              </Box>
+    const loginTimeout = setTimeout(() => {
+      stopLoading();
+      setError('Login request timed out. Please try again.');
+      setSnackbarOpen(true);
+      setLoginStatus('');
+      setIsFadingOut(false);
+    }, 20000);
 
-              <Box className={styles.options}>
-                <FormControlLabel
-                  control={<Checkbox defaultChecked />}
-                  label="Remember me"
-                  sx={{
-                    '& .MuiFormControlLabel-label': {
-                      fontSize: '0.75rem',
-                      color: '#64748b',
-                    },
-                    '& .MuiSvgIcon-root': {
-                      fontSize: '1.2rem',
-                      color: '#3b82f6',
-                    },
-                  }}
-                  className={styles.rememberMeContainer}
-                />
-                <Link href="#" className={styles.forgotPassword}>
-                  Forgot password?
-                </Link>
-              </Box>
+    startLoading();
+    setIsFadingOut(true);
 
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                className={styles.loginButton}
-                disabled={isFadingOut}
-              >
-                {isFadingOut ? (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <CircularProgress
-                      size={20}
-                      color="inherit"
-                      sx={{ mr: 1 }}
-                    />
-                    {loginStatus || 'Signing in...'}
-                  </Box>
-                ) : (
-                  buttonText
-                )}
-              </Button>
+    try {
+      if (!email || !password) {
+        throw new Error('Please enter both email and password');
+      }
 
-              <Box
-                className={styles.registerContainer}
-                mt={2}
-                textAlign="center"
-              >
-                <Typography variant="body2" color="textSecondary">
-                  Don&apos;t have an account?{' '}
-                  <Link
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      redirectToKeycloakRegistration();
-                    }}
-                    className={styles.registerLink}
-                  >
-                    Register now
-                  </Link>
-                </Typography>
-              </Box>
-            </form>
-          </div>
-        )}
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={() => setSnackbarOpen(false)}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          className={styles.snackbar}
+      sessionStorage.setItem('kc_username', email);
+      sessionStorage.setItem('kc_password', password);
+
+      await login().catch((error) => {
+        throw error;
+      });
+
+      clearTimeout(loginTimeout);
+    } catch (err) {
+      clearTimeout(loginTimeout);
+      console.error('Login failed:', err);
+
+      let errorMessage = 'Login failed. Please try again.';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'object' && err && 'error' in err) {
+        const keycloakError = err as {
+          error: string;
+          error_description?: string;
+        };
+        if (keycloakError.error === 'invalid_grant') {
+          errorMessage = 'Invalid username or password';
+        } else if (keycloakError.error_description) {
+          errorMessage = keycloakError.error_description;
+        }
+      }
+
+      setError(errorMessage);
+      setSnackbarOpen(true);
+      setIsFadingOut(false);
+      stopLoading();
+      setLoginStatus('');
+
+      // Clear stored credentials on error
+      sessionStorage.removeItem('kc_username');
+      sessionStorage.removeItem('kc_password');
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={`${styles.LoginContent} ${isFadingOut ? styles.fadeOut : ''}`}
+      >
+        <div className={styles.logoContainer}>
+          {!logoError && (
+            <Image
+              src="/Pisval_Logo.jpg"
+              alt="Pisval Logo"
+              width={150}
+              height={150}
+              onError={() => setLogoError(true)}
+              priority
+            />
+          )}
+        </div>
+
+        <Typography variant="h5" component="h1" gutterBottom align="center">
+          Welcome Back
+        </Typography>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          gutterBottom
+          align="center"
         >
-          <Alert
-            onClose={() => setSnackbarOpen(false)}
-            severity="error"
-            variant="filled"
-            sx={{ width: '100%' }}
-            className={styles.alert}
+          Please enter your credentials to access your account
+        </Typography>
+
+        <form onSubmit={handleLogin} className={styles.form}>
+          <TextField
+            fullWidth
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            variant="outlined"
+            margin="normal"
+            required
+            autoComplete="email"
+          />
+
+          <TextField
+            fullWidth
+            label="Password"
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            variant="outlined"
+            margin="normal"
+            required
+            autoComplete="current-password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="Remember me"
+          />
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            className={styles.submitButton}
           >
-            {error}
+            Sign In
+          </Button>
+
+          <Box mt={2} textAlign="center">
+            <Link
+              component="button"
+              variant="body2"
+              onClick={() => redirectToKeycloakRegistration()}
+              className={styles.registerLink}
+            >
+              {"Don't have an account? Register here"}
+            </Link>
+          </Box>
+        </form>
+      </div>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        className={styles.snackbar}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={
+            error?.toLowerCase().includes('server') ? 'warning' : 'error'
+          }
+          variant="filled"
+          sx={{ width: '100%' }}
+          className={styles.alert}
+        >
+          {error}
+          {error?.toLowerCase().includes('server') && (
+            <Box sx={{ mt: 1 }}>
+              <Typography variant="caption">
+                This might be a temporary issue. Please try again in a few
+                minutes or contact support if the problem persists.
+              </Typography>
+            </Box>
+          )}
+        </Alert>
+      </Snackbar>
+
+      {loginStatus && (
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 2000,
+          }}
+        >
+          <Alert severity="info" icon={<CircularProgress size={20} />}>
+            {loginStatus}
           </Alert>
-        </Snackbar>
-      </>
-    );
-  }
-);
+        </Box>
+      )}
+    </>
+  );
+});
 
 LoginForm.displayName = 'LoginForm';
 

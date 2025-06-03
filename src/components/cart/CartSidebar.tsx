@@ -180,18 +180,28 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
 
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      onClose();
+      try {
+        await router.push('/checkout');
 
-      router.push('/checkout');
-
-      setIsLoading(false);
+        onClose();
+      } catch (navigationError) {
+        console.error('Navigation Error:', navigationError);
+        throw new Error(
+          'Failed to navigate to checkout page. Please try again.'
+        );
+      }
     } catch (error) {
       console.error('Checkout Error:', JSON.stringify(error, null, 2));
-      alert(
+
+      const errorMessage =
         error instanceof Error
           ? error.message
-          : 'Checkout failed. Please try again or contact support.'
-      );
+          : typeof error === 'object' && error !== null && 'message' in error
+            ? String(error.message)
+            : 'Checkout failed. Please try again or contact support.';
+
+      alert(errorMessage);
+    } finally {
       setIsLoading(false);
     }
   };

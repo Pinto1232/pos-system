@@ -1,0 +1,17 @@
+.loginButton {
+  position: relative;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  position: absolute;
+  left: 50%;
+  margin-left: -10px;
+}
+
+.buttonText {
+  margin-left: 20px;
+}
