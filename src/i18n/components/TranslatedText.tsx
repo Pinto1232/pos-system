@@ -31,6 +31,7 @@ export const TranslatedText: React.FC<TranslatedTextProps> = ({
 
   if (isBrowser) {
     try {
+      console.log(`Translating key: ${i18nKey}, default: ${defaultValue}`);
       translatedText = t(i18nKey, {
         ...values,
         defaultValue,
@@ -42,6 +43,8 @@ export const TranslatedText: React.FC<TranslatedTextProps> = ({
           `Translation key "${i18nKey}" not found, using default value`
         );
         translatedText = defaultValue || i18nKey;
+      } else {
+        console.log(`Translated text for ${i18nKey}:`, translatedText);
       }
     } catch (error) {
       console.error(`Translation error for key ${i18nKey}:`, error);

@@ -1,477 +1,214 @@
 'use client';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import useKeycloakUser from '@/hooks/useKeycloakUser';
+import { sidebarItems } from '../Seetings/settings';
 
-export interface UserSubscription {
+interface PackageDetail {
   id: number;
-  userId: string;
-  pricingPackageId: number;
-  package?: {
-    id: number;
-    title: string;
-    type: string;
-  };
-  startDate: string;
-  endDate?: string;
-  isActive: boolean;
-  enabledFeatures: string[];
-  additionalPackages: number[];
+  title: string;
+  type: string;
+  price?: number;
 }
+
+interface Subscription {
+  package: PackageDetail;
+  features?: string[];
+}
+
+type PackageLevel = 'Basic' | 'PremiumPlus';
 
 interface UserSubscriptionContextType {
-  subscription: UserSubscription | null;
+  subscription: Subscription | null;
+  hasFeatureAccess: (featureName: string) => boolean;
+  updateSubscription: (newSubscription: Subscription) => void;
+  getCurrentPackageLevel: () => PackageLevel | null;
+  refreshSubscription: () => Promise<void>;
   isLoading: boolean;
   error: Error | null;
-  availableFeatures: string[];
-  hasFeatureAccess: (featureName: string) => boolean;
-  enableAdditionalPackage: (packageId: number) => Promise<void>;
-  disableAdditionalPackage: (packageId: number) => Promise<void>;
-  refreshSubscription: () => void;
 }
 
-const UserSubscriptionContext = createContext<
-  UserSubscriptionContextType | undefined
->(undefined);
+const UserSubscriptionContext =
+  createContext<UserSubscriptionContextType | null>(null);
 
-export const useUserSubscription = () => {
-  const context = useContext(UserSubscriptionContext);
-  if (context === undefined) {
-    throw new Error(
-      'useUserSubscription must be used within a UserSubscriptionProvider'
-    );
-  }
-  return context;
-};
-
-const userSubscriptionCache = new Map<
-  string,
-  {
-    subscription: UserSubscription | null;
-    timestamp: number;
-  }
->();
-const SUBSCRIPTION_CACHE_TTL = 5 * 60 * 1000;
-
-const fetchUserSubscription = async (
-  userId: string
-): Promise<UserSubscription | null> => {
-  const now = Date.now();
-  const cachedData = userSubscriptionCache.get(userId);
-  if (cachedData && now - cachedData.timestamp < SUBSCRIPTION_CACHE_TTL) {
-    console.log(`Using cached subscription for user: ${userId}`);
-    return cachedData.subscription;
-  }
-
-  try {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`Fetching subscription for user: ${userId}`);
-    }
-
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
-    if (useMockData) {
-      console.log(
-        'Using mock subscription data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true'
-      );
-      const mockSubscription = {
-        id: 1,
-        userId,
-        pricingPackageId: 1,
-        package: {
-          id: 1,
-          title: 'Starter',
-          type: 'starter',
-        },
-        startDate: new Date().toISOString(),
-        isActive: true,
-        enabledFeatures: [
-          'Dashboard',
-          'Products List',
-          'Add/Edit Product',
-          'Sales Reports',
-          'Inventory Management',
-          'Customer Management',
-        ],
-        additionalPackages: [],
-      };
-
-      userSubscriptionCache.set(userId, {
-        subscription: mockSubscription,
-        timestamp: now,
-      });
-
-      return mockSubscription;
-    }
-
-    console.log(`Making API request to: /api/UserSubscription/user/${userId}`);
-    const response = await fetch(`/api/UserSubscription/user/${userId}`, {
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        Pragma: 'no-cache',
-        Expires: '0',
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response
-        .text()
-        .catch(() => 'No error details available');
-      console.error(
-        `API Error (${response.status}): ${response.statusText}`,
-        JSON.stringify(errorText, null, 2)
-      );
-
-      if (response.status === 404) {
-        console.warn('API endpoint not found (404), using fallback data');
-        throw new Error('API endpoint not found');
-      }
-    }
-
-    const data = await response.json();
-    console.log(
-      'Successfully fetched user subscription:',
-      JSON.stringify(data, null, 2)
-    );
-
-    userSubscriptionCache.set(userId, {
-      subscription: data,
-      timestamp: now,
-    });
-
-    return data;
-  } catch (error) {
-    console.error(
-      'Error fetching user subscription:',
-      JSON.stringify(error, null, 2)
-    );
-
-    const fallbackSubscription = {
-      id: 1,
-      userId,
-      pricingPackageId: 1,
-      package: {
-        id: 1,
-        title: 'Starter',
-        type: 'starter',
-      },
-      startDate: new Date().toISOString(),
-      isActive: true,
-      enabledFeatures: [
-        'Dashboard',
-        'Products List',
-        'Add/Edit Product',
-        'Sales Reports',
-        'Inventory Management',
-        'Customer Management',
-      ],
-      additionalPackages: [],
-    };
-
-    console.log(
-      'Using fallback subscription due to error:',
-      JSON.stringify(fallbackSubscription, null, 2)
-    );
-
-    userSubscriptionCache.set(userId, {
-      subscription: fallbackSubscription,
-      timestamp: now,
-    });
-
-    return fallbackSubscription;
+const getPackagePrice = (packageType: string): number => {
+  switch (packageType.toLowerCase()) {
+    case 'premium plus':
+      return 149.99;
+    case 'basic':
+      return 29.99;
+    default:
+      return 0;
   }
 };
 
-const userFeaturesCache = new Map<
-  string,
-  { features: string[]; timestamp: number }
->();
-const CACHE_TTL = 5 * 60 * 1000;
+const meetsRequiredLevel = (
+  currentLevel: PackageLevel,
+  requiredLevel: PackageLevel
+): boolean => {
+  const levels: PackageLevel[] = ['Basic', 'PremiumPlus'];
+  const currentIdx = levels.indexOf(currentLevel);
+  const requiredIdx = levels.indexOf(requiredLevel);
+  return currentIdx >= requiredIdx;
+};
 
-const fetchUserFeatures = async (userId: string): Promise<string[]> => {
-  const now = Date.now();
-  const cachedData = userFeaturesCache.get(userId);
-  if (cachedData && now - cachedData.timestamp < CACHE_TTL) {
-    console.log(`Using cached features for user: ${userId}`);
-    return cachedData.features;
-  }
-
-  try {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`Fetching features for user: ${userId}`);
-    }
-
-    const useMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
-    if (useMockData) {
-      console.log(
-        'Using mock data directly due to NEXT_PUBLIC_USE_MOCK_DATA=true'
-      );
-      const mockFeatures = [
-        'Dashboard',
-        'Products List',
-        'Add/Edit Product',
-        'Sales Reports',
-        'Inventory Management',
-        'Customer Management',
-      ];
-
-      userFeaturesCache.set(userId, {
-        features: mockFeatures,
-        timestamp: now,
-      });
-
-      return mockFeatures;
-    }
-
-    console.log(
-      `Making API request to: /api/UserSubscription/user/${userId}/features`
-    );
-    const response = await fetch(
-      `/api/UserSubscription/user/${userId}/features`,
-      {
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorText = await response
-        .text()
-        .catch(() => 'No error details available');
-      console.error(
-        `API Error (${response.status}): ${response.statusText}`,
-        JSON.stringify(errorText, null, 2)
-      );
-
-      if (response.status === 404) {
-        console.warn('API endpoint not found (404), using fallback data');
-        throw new Error('API endpoint not found');
-      } else {
-        throw new Error(`Failed to fetch features: ${response.statusText}`);
-      }
-    }
-
-    const data = await response.json();
-    console.log(
-      'Successfully fetched user features:',
-      JSON.stringify(data, null, 2)
-    );
-
-    userFeaturesCache.set(userId, {
-      features: data,
-      timestamp: now,
-    });
-
-    return data;
-  } catch (error) {
-    console.error(
-      'Error fetching user features:',
-      JSON.stringify(error, null, 2)
-    );
-
-    const fallbackFeatures = [
-      'Dashboard',
-      'Products List',
-      'Add/Edit Product',
-      'Sales Reports',
-      'Inventory Management',
-      'Customer Management',
-    ];
-
-    console.log(
-      'Using fallback features due to error:',
-      JSON.stringify(fallbackFeatures, null, 2)
-    );
-
-    userFeaturesCache.set(userId, {
-      features: fallbackFeatures,
-      timestamp: now,
-    });
-
-    return fallbackFeatures;
-  }
+const getRequiredLevel = (price: number): PackageLevel => {
+  if (price >= 149.99) return 'PremiumPlus';
+  return 'Basic';
 };
 
 export const UserSubscriptionProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const { userId, isAuthenticated } = useKeycloakUser();
-  const [availableFeatures, setAvailableFeatures] = useState<string[]>([]);
+  const [error, setError] = useState<Error | null>(null);
 
   const {
-    data: subscription,
+    data: subscriptionData,
     isLoading,
-    error,
+    error: queryError,
     refetch,
-  } = useQuery<UserSubscription | null, Error>({
-    queryKey: ['userSubscription', userId],
-    queryFn: () => fetchUserSubscription(userId),
-    enabled: !!userId && isAuthenticated,
-    staleTime: 5 * 60 * 1000,
+  } = useQuery<Subscription | null>({
+    queryKey: ['userSubscription'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/subscription');
+        if (!response.ok) {
+          throw new Error('Failed to fetch subscription');
+        }
+        const data = await response.json();
+        return data;
+      } catch (err) {
+        setError(err as Error);
+        return null;
+      }
+    },
   });
 
-  const featuresLoadedRef = React.useRef(false);
+  const subscription = subscriptionData ?? null;
 
-  useEffect(() => {
-    if (featuresLoadedRef.current || !userId || !isAuthenticated) {
-      if (!userId || !isAuthenticated) {
-        console.log(
-          'User not authenticated or userId not available, skipping feature loading'
-        );
-      }
-      return;
+  const getCurrentPackageLevel = (): PackageLevel | null => {
+    if (!subscription) return null;
+    const packageType = subscription.package.type.toLowerCase();
+    return packageType === 'premium plus' ? 'PremiumPlus' : 'Basic';
+  };
+  const hasFeatureAccess = (featureName: string): boolean => {
+    if (!subscription) return false;
+
+    const currentLevel = getCurrentPackageLevel();
+    if (!currentLevel) return false;
+    if (currentLevel === 'PremiumPlus') {
+      return true;
     }
 
-    const loadFeatures = async () => {
-      try {
-        const features = await fetchUserFeatures(userId);
-        setAvailableFeatures(features);
+    if (subscription.features && subscription.features.includes(featureName)) {
+      return true;
+    }
 
-        featuresLoadedRef.current = true;
-      } catch (error) {
-        console.error(
-          'Failed to load user features:',
-          JSON.stringify(error, null, 2)
-        );
+    const findFeatureRequirements = () => {
+      for (const item of sidebarItems) {
+        if (item.label === featureName) {
+          if (!item.requiredPackage) return true;
+          const requiredLevel = getRequiredLevel(item.requiredPackage.minPrice);
+          return meetsRequiredLevel(currentLevel, requiredLevel);
+        }
 
-        const defaultFeatures = [
-          'Dashboard',
-          'Products List',
-          'Add/Edit Product',
-        ];
-        console.warn(
-          'Setting default features due to error:',
-          JSON.stringify(defaultFeatures, null, 2)
-        );
-        setAvailableFeatures(defaultFeatures);
+        if (item.subItems) {
+          const subItem = item.subItems.find(
+            (sub) => sub.label === featureName
+          );
+          if (subItem) {
+            if (item.requiredPackage) {
+              const parentRequiredLevel = getRequiredLevel(
+                item.requiredPackage.minPrice
+              );
+              if (!meetsRequiredLevel(currentLevel, parentRequiredLevel))
+                return false;
+            }
 
-        featuresLoadedRef.current = true;
+            if (!subItem.requiredPackage) return true;
+            const requiredLevel = getRequiredLevel(
+              subItem.requiredPackage.minPrice
+            );
+            return meetsRequiredLevel(currentLevel, requiredLevel);
+          }
+        }
       }
+      return false;
     };
 
-    loadFeatures();
-  }, [userId, isAuthenticated]);
-
-  const hasFeatureAccess = (featureName: string): boolean => {
-    return availableFeatures.includes(featureName);
+    return findFeatureRequirements();
   };
 
-  const updateFeaturesAfterPackageChange = async (userId: string) => {
+  const updateSubscription = async (newSubscription: Subscription) => {
     try {
-      featuresLoadedRef.current = false;
+      if (!newSubscription.package.type) {
+        throw new Error('Package type is required');
+      }
 
-      await refetch();
+      const subscriptionWithPrice = {
+        ...newSubscription,
+        package: {
+          ...newSubscription.package,
+          price:
+            newSubscription.package.price ||
+            getPackagePrice(newSubscription.package.type),
+        },
+      };
 
-      const features = await fetchUserFeatures(userId);
-      setAvailableFeatures(features);
-
-      featuresLoadedRef.current = true;
-    } catch (error) {
-      console.error('Error updating features:', JSON.stringify(error, null, 2));
-    }
-  };
-
-  const enableAdditionalPackage = async (packageId: number): Promise<void> => {
-    if (!userId) return;
-
-    try {
-      const response = await fetch(
-        `/api/UserSubscription/user/${userId}/enable-package/${packageId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await fetch('/api/subscription', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(subscriptionWithPrice),
+      });
 
       if (!response.ok) {
-        throw new Error(`Failed to enable package: ${response.statusText}`);
+        throw new Error('Failed to update subscription');
       }
 
-      await updateFeaturesAfterPackageChange(userId);
-    } catch (error) {
-      console.error(
-        'Error enabling additional package:',
-        JSON.stringify(error, null, 2)
+      localStorage.setItem(
+        'userSubscription',
+        JSON.stringify(subscriptionWithPrice)
       );
-      throw error;
+
+      window.location.reload();
+    } catch (err) {
+      setError(err as Error);
     }
   };
 
-  const disableAdditionalPackage = async (packageId: number): Promise<void> => {
-    if (!userId) return;
-
+  const refreshSubscription = async () => {
     try {
-      const response = await fetch(
-        `/api/UserSubscription/user/${userId}/disable-package/${packageId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Failed to disable package: ${response.statusText}`);
-      }
-
-      await updateFeaturesAfterPackageChange(userId);
-    } catch (error) {
-      console.error(
-        'Error disabling additional package:',
-        JSON.stringify(error, null, 2)
-      );
-      throw error;
+      await refetch();
+    } catch (err) {
+      setError(err as Error);
     }
   };
-
-  const refreshSubscription = useCallback(async () => {
-    if (userId) {
-      userSubscriptionCache.delete(userId);
-      userFeaturesCache.delete(userId);
-
-      featuresLoadedRef.current = false;
-
-      await refetch();
-
-      try {
-        const features = await fetchUserFeatures(userId);
-        setAvailableFeatures(features);
-        featuresLoadedRef.current = true;
-      } catch (error) {
-        console.error(
-          'Error refreshing features:',
-          JSON.stringify(error, null, 2)
-        );
-      }
-    }
-  }, [userId, refetch]);
 
   return (
     <UserSubscriptionContext.Provider
       value={{
-        subscription: subscription || null,
-        isLoading,
-        error,
-        availableFeatures,
+        subscription,
         hasFeatureAccess,
-        enableAdditionalPackage,
-        disableAdditionalPackage,
+        updateSubscription,
+        getCurrentPackageLevel,
         refreshSubscription,
+        isLoading,
+        error: error || queryError || null,
       }}
     >
       {children}
     </UserSubscriptionContext.Provider>
   );
+};
+
+export const useUserSubscription = () => {
+  const context = useContext(UserSubscriptionContext);
+  if (!context) {
+    throw new Error(
+      'useUserSubscription must be used within a UserSubscriptionProvider'
+    );
+  }
+  return context;
 };

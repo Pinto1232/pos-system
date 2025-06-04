@@ -11,8 +11,28 @@ import {
 } from 'react-icons/fa';
 import { TbReorder, TbTruckDelivery } from 'react-icons/tb';
 import { BiReceipt } from 'react-icons/bi';
+import { ElementType } from 'react';
 
-export const sidebarItems = [
+export interface SidebarItem {
+  label: string;
+  icon: ElementType;
+  expandable?: boolean;
+  requiredPackage?: {
+    minPrice: number;
+    name: string;
+    excludeFromPremiumPlus?: boolean;
+  };
+  subItems?: Array<{
+    label: string;
+    requiredPackage?: {
+      minPrice: number;
+      name: string;
+      excludeFromPremiumPlus?: boolean;
+    };
+  }>;
+}
+
+export const sidebarItems: SidebarItem[] = [
   {
     label: 'Dashboard',
     icon: HomeIcon,
@@ -25,6 +45,10 @@ export const sidebarItems = [
     label: 'Products & Inventory',
     icon: MdProductionQuantityLimits,
     expandable: true,
+    requiredPackage: {
+      minPrice: 149.99,
+      name: 'Premium Plus',
+    },
     subItems: [
       {
         label: 'Products List',
@@ -37,18 +61,34 @@ export const sidebarItems = [
       },
       {
         label: 'Stock Levels & Alerts',
+        requiredPackage: {
+          minPrice: 149.99,
+          name: 'Premium Plus',
+        },
       },
       {
         label: 'Low Stock Warnings',
+        requiredPackage: {
+          minPrice: 149.99,
+          name: 'Premium Plus',
+        },
       },
       {
         label: 'Bulk Import/Export',
+        requiredPackage: {
+          minPrice: 149.99,
+          name: 'Premium Plus',
+        },
       },
       {
         label: 'Inventory Adjustments',
       },
       {
         label: 'Product Expiry Tracking',
+        requiredPackage: {
+          minPrice: 149.99,
+          name: 'Premium Plus',
+        },
       },
     ],
   },
@@ -56,6 +96,10 @@ export const sidebarItems = [
     label: 'Sales',
     icon: FaCreditCard,
     expandable: true,
+    requiredPackage: {
+      minPrice: 29.99,
+      name: 'Basic',
+    },
     subItems: [
       {
         label: 'New Sale',
@@ -68,12 +112,24 @@ export const sidebarItems = [
       },
       {
         label: 'Returns & Refunds',
+        requiredPackage: {
+          minPrice: 49.99,
+          name: 'Professional',
+        },
       },
       {
         label: 'Discounts & Promotions',
+        requiredPackage: {
+          minPrice: 49.99,
+          name: 'Professional',
+        },
       },
       {
         label: 'Loyalty & Reward Points',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
     ],
   },
@@ -81,6 +137,10 @@ export const sidebarItems = [
     label: 'Orders',
     icon: TbReorder,
     expandable: true,
+    requiredPackage: {
+      minPrice: 29.99,
+      name: 'Basic',
+    },
     subItems: [
       {
         label: 'Pending Orders',
@@ -93,6 +153,10 @@ export const sidebarItems = [
       },
       {
         label: 'Pre-Orders',
+        requiredPackage: {
+          minPrice: 49.99,
+          name: 'Professional',
+        },
       },
     ],
   },
@@ -100,6 +164,10 @@ export const sidebarItems = [
     label: 'Customers',
     icon: RiCustomerService2Fill,
     expandable: true,
+    requiredPackage: {
+      minPrice: 29.99,
+      name: 'Basic',
+    },
     subItems: [
       {
         label: 'Customer List',
@@ -109,18 +177,34 @@ export const sidebarItems = [
       },
       {
         label: 'Customer Groups',
+        requiredPackage: {
+          minPrice: 49.99,
+          name: 'Professional',
+        },
       },
       {
         label: 'Customer Purchase History',
       },
       {
         label: 'Loyalty Program',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Customer Feedback & Reviews',
+        requiredPackage: {
+          minPrice: 49.99,
+          name: 'Professional',
+        },
       },
       {
         label: 'Debt & Credit Management',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
     ],
   },
@@ -128,6 +212,10 @@ export const sidebarItems = [
     label: 'Suppliers & Purchases',
     icon: TbTruckDelivery,
     expandable: true,
+    requiredPackage: {
+      minPrice: 49.99,
+      name: 'Professional',
+    },
     subItems: [
       {
         label: 'Supplier List',
@@ -140,12 +228,24 @@ export const sidebarItems = [
       },
       {
         label: 'Pending Deliveries',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Stock Replenishment Requests',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Supplier Payments & Invoices',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
     ],
   },
@@ -153,6 +253,10 @@ export const sidebarItems = [
     label: 'Employees & Cashiers',
     icon: FaUsers,
     expandable: true,
+    requiredPackage: {
+      minPrice: 49.99,
+      name: 'Professional',
+    },
     subItems: [
       {
         label: 'Employee List',
@@ -165,9 +269,17 @@ export const sidebarItems = [
       },
       {
         label: 'Shift Management',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Attendance Tracking',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Activity Logs',
@@ -178,6 +290,10 @@ export const sidebarItems = [
     label: 'Reports & Analytics',
     icon: FaChartLine,
     expandable: true,
+    requiredPackage: {
+      minPrice: 49.99,
+      name: 'Professional',
+    },
     subItems: [
       {
         label: 'Sales Reports',
@@ -187,18 +303,34 @@ export const sidebarItems = [
       },
       {
         label: 'Profit & Loss Report',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Stock Movement Report',
       },
       {
         label: 'Employee Performance Report',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Customer Purchase Trends Report',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Tax & Compliance Reports',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Payment Method Breakdown',
@@ -209,9 +341,13 @@ export const sidebarItems = [
     label: 'Payments',
     icon: FaMoneyBillWave,
     expandable: true,
+    requiredPackage: {
+      minPrice: 29.99,
+      name: 'Basic',
+    },
     subItems: [
       {
-        label: 'Accepted Payment Methods ',
+        label: 'Accepted Payment Methods',
       },
       {
         label: 'Transaction History',
@@ -221,9 +357,17 @@ export const sidebarItems = [
       },
       {
         label: 'Refund Processing',
+        requiredPackage: {
+          minPrice: 49.99,
+          name: 'Professional',
+        },
       },
       {
         label: 'Cash Management',
+        requiredPackage: {
+          minPrice: 49.99,
+          name: 'Professional',
+        },
       },
     ],
   },
@@ -231,12 +375,20 @@ export const sidebarItems = [
     label: 'Expenses & Accounting',
     icon: BiReceipt,
     expandable: true,
+    requiredPackage: {
+      minPrice: 49.99,
+      name: 'Professional',
+    },
     subItems: [
       {
         label: 'Expense Tracking',
       },
       {
         label: 'Recurring Expenses',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Cash Flow Overview',
@@ -249,6 +401,10 @@ export const sidebarItems = [
       },
       {
         label: 'Tax Calculations',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
     ],
   },
@@ -256,6 +412,10 @@ export const sidebarItems = [
     label: 'Promotions & Discounts',
     icon: BsMegaphone,
     expandable: true,
+    requiredPackage: {
+      minPrice: 49.99,
+      name: 'Professional',
+    },
     subItems: [
       {
         label: 'Create New Discount',
@@ -265,9 +425,17 @@ export const sidebarItems = [
       },
       {
         label: 'Coupon & Voucher Management',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
       {
         label: 'Seasonal & Flash Sales',
+        requiredPackage: {
+          minPrice: 99.99,
+          name: 'Enterprise',
+        },
       },
     ],
   },

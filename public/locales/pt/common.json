@@ -5,6 +5,17 @@
     "fullName": "Sistema de Ponto de Venda Pisval Tech",
     "marketingTagline": "Capacite Seu Negócio com Soluções de Ponto de Venda Rápidas, Seguras e Integradas"
   },
+  "about": {
+    "title": "Sobre Nós",
+    "intro": "Na Pisval Tech, somos dedicados a revolucionar a indústria do varejo através de soluções inovadoras de ponto de venda. Nossa jornada começou com uma visão simples: criar um sistema PDV que combina funcionalidade poderosa com design intuitivo.",
+    "mission": "Hoje, atendemos empresas de todos os tamanhos, ajudando-as a otimizar operações, melhorar experiências dos clientes e impulsionar o crescimento. Nossa equipe de especialistas apaixonados está comprometida com a melhoria contínua e serviço excepcional"
+  },
+  "hero": {
+    "changeForMore": "Mude para um Sistema de Ponto de Venda Rápido, Confiável e Inteligente",
+    "subheading": "Uma solução PDV tudo-em-um projetada para otimizar vendas, gerenciar estoque e fazer seu negócio crescer com facilidade",
+    "ctaPrimary": "Agendar Demo",
+    "ctaSecondary": "Conheça as Soluções"
+  },
   "home": {
     "chooseYourPlan": "Escolha Seu Plano",
     "planDescription": "Escolha o pacote perfeito que atenda às necessidades do seu negócio. Nossas opções de preços flexíveis são projetadas para escalar com seu crescimento."

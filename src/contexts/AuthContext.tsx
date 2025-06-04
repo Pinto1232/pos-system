@@ -12,7 +12,10 @@ import React, {
 import Keycloak from 'keycloak-js';
 import keycloakInstance, { authConfig } from '@/auth/keycloak';
 import { isKeycloakError } from '@/types/keycloak';
-import { validateAuthEnvVars } from '@/utils/envValidation';
+import {
+  validateAuthEnvVars,
+  EnvValidationResult,
+} from '@/utils/envValidation';
 import {
   runKeycloakDiagnostics,
   logDiagnostics,
@@ -30,17 +33,29 @@ const FALLBACK_CONFIG = {
   logoutRedirect: 'http://localhost:3000/login',
 };
 
-const getKeycloakConfig = () => {
+interface KeycloakConfig {
+  url: string;
+  realm: string;
+  clientId: string;
+  redirectUri: string;
+  loginRedirect: string;
+  logoutRedirect: string;
+  validation: EnvValidationResult;
+}
+
+const mapAuthConfigToKeycloakConfig = (
+  config: typeof authConfig
+): KeycloakConfig => {
   return {
-    url: authConfig.keycloakUrl,
-    realm: authConfig.realm,
-    clientId: authConfig.clientId,
-    redirectUri: authConfig.redirectUri,
+    url: config.keycloakUrl,
+    realm: config.realm,
+    clientId: config.clientId,
+    redirectUri: config.redirectUri,
     loginRedirect:
       process.env.NEXT_PUBLIC_LOGIN_REDIRECT ?? FALLBACK_CONFIG.loginRedirect,
     logoutRedirect:
       process.env.NEXT_PUBLIC_LOGOUT_REDIRECT ?? FALLBACK_CONFIG.logoutRedirect,
-    validation: authConfig.validation,
+    validation: config.validation,
   };
 };
 
@@ -155,12 +170,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+
   const keycloakRef = useRef<Keycloak>(keycloakInstance);
-
-  const configRef = useRef(getKeycloakConfig());
-
+  const configRef = useRef(mapAuthConfigToKeycloakConfig(authConfig));
   const initStartedRef = useRef(false);
-  const keycloakInitializedRef = useRef(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -387,7 +400,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [handleTokenRefresh]);
 
   const handleRealmCheckFailure = useCallback(
-    async (config: ReturnType<typeof getKeycloakConfig>) => {
+    async (config: KeycloakConfig) => {
       console.log('Running comprehensive Keycloak diagnostics...');
 
       try {
@@ -422,7 +435,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const checkRealmAccessibility = useCallback(
-    async (config: ReturnType<typeof getKeycloakConfig>) => {
+    async (config: KeycloakConfig) => {
       const realmCheckUrl = `${config.url}/realms/${config.realm}/.well-known/openid_configuration`;
       console.log('Checking Keycloak realm accessibility:', realmCheckUrl);
 
@@ -554,7 +567,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     console.log('Starting Keycloak initialization...');
-
     const config = configRef.current;
     console.log('Using Keycloak config:', JSON.stringify(config, null, 2));
 
@@ -571,33 +583,42 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         'isNewRegistration:',
         JSON.stringify(isNewRegistration, null, 2)
       );
-      const authenticated = await kc.init({
-        onLoad: onLoadOption,
-        redirectUri: window.location.origin + config.loginRedirect,
-        checkLoginIframe: false,
-        pkceMethod: 'S256',
-        responseMode: 'query',
-        enableLogging: true,
-        silentCheckSsoRedirectUri:
-          window.location.origin + '/silent-check-sso.html',
-        silentCheckSsoFallback: false,
-      });
 
-      if (isNewRegistration) {
-        localStorage.removeItem('newRegistration');
-      }
+      if (!kc.authenticated) {
+        const authenticated = await kc.init({
+          onLoad: onLoadOption,
+          redirectUri: window.location.origin + config.loginRedirect,
+          checkLoginIframe: false,
+          pkceMethod: 'S256',
+          responseMode: 'query',
+          enableLogging: true,
+          silentCheckSsoRedirectUri:
+            window.location.origin + '/silent-check-sso.html',
+          silentCheckSsoFallback: false,
+        });
 
-      console.log(
-        'Redirect URI:',
-        JSON.stringify(window.location.origin + '/', null, 2)
-      );
+        if (isNewRegistration) {
+          localStorage.removeItem('newRegistration');
+        }
 
-      if (authenticated) {
-        await handleSuccessfulAuthentication(kc, refreshTimeoutRef);
+        console.log(
+          'Redirect URI:',
+          JSON.stringify(window.location.origin + '/', null, 2)
+        );
+
+        if (authenticated) {
+          await handleSuccessfulAuthentication(kc, refreshTimeoutRef);
+        } else {
+          await handleUnauthenticatedState();
+        }
       } else {
-        await handleUnauthenticatedState();
+        console.log('Keycloak already authenticated, skipping initialization');
+        if (kc.token) {
+          setToken(kc.token);
+          setInitialized(true);
+        }
       }
-    } catch (err: unknown) {
+    } catch (err) {
       handleAuthenticationError(err);
     }
 
@@ -643,46 +664,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log(
           'Using mock token API due to NEXT_PUBLIC_SKIP_AUTH_API flag'
         );
-
-        const fetchMockToken = async () => {
-          try {
-            console.log('Making fetch request to /api/auth-token/mock-token');
-            const response = await fetch('/api/auth-token/mock-token', {
-              credentials: 'include',
-              headers: {
-                'Cache-Control': 'no-cache',
-                Pragma: 'no-cache',
-              },
-            });
-
-            if (!response.ok) {
-              throw new Error(
-                `Failed to get mock token: ${response.status} ${response.statusText}`
-              );
-            }
-
-            const data = await response.json();
-            console.log('Mock token received');
-
-            if (data.token) {
-              setToken(data.token);
-              localStorage.setItem('accessToken', data.token);
-              setInitialized(true);
-              console.log('Mock token set');
-            }
-          } catch (err) {
-            console.error(
-              'Error fetching mock token:',
-              JSON.stringify(err, null, 2)
-            );
-          }
-        };
-
-        fetchMockToken();
       } else {
         const fetchToken = async () => {
           try {
-            console.log('Making fetch request to /api/auth-token/get-token');
             const response = await fetch('/api/auth-token/get-token', {
               credentials: 'include',
               headers: {
@@ -691,11 +675,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
               },
             });
 
-            console.log(
-              'Token API response status:',
-              JSON.stringify(response.status, null, 2)
-            );
-
             if (!response.ok) {
               throw new Error(
                 `Failed to get token: ${response.status} ${response.statusText}`
@@ -703,48 +682,34 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
 
             const data = await response.json();
-            console.log(
-              'Token API response data:',
-              JSON.stringify(data, null, 2)
-            );
-
             if (data.token) {
               setToken(data.token);
               localStorage.setItem('accessToken', data.token);
               setInitialized(true);
               console.log('Token set from API');
               return true;
-            } else {
-              console.log(
-                'No token in API response, proceeding with Keycloak initialization'
-              );
             }
+            return false;
           } catch (err) {
             console.error(
               'Error fetching token:',
               JSON.stringify(err, null, 2)
             );
+            return false;
           }
-          return false;
         };
 
-        fetchToken();
-      }
+        fetchToken().then((tokenFetched) => {
+          if (!tokenFetched && !initStartedRef.current) {
+            console.log('Starting Keycloak initialization for the first time');
+            initStartedRef.current = true;
 
-      if (!keycloakInitializedRef.current) {
-        console.log('Starting Keycloak initialization for the first time');
-        keycloakInitializedRef.current = true;
-        initStartedRef.current = true;
-
-        const cleanupPromise = initializeAuth();
-
-        return () => {
-          cleanupPromise.then((cleanup) => cleanup());
-        };
-      } else {
-        console.log('Keycloak already initialized, skipping initialization');
-        initStartedRef.current = true;
-        setInitialized(true);
+            const cleanupPromise = initializeAuth();
+            return () => {
+              cleanupPromise.then((cleanup) => cleanup());
+            };
+          }
+        });
       }
     }
   }, [isMounted, initializeAuth]);

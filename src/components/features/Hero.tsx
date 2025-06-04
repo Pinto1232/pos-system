@@ -7,9 +7,9 @@ import styles from './Hero.module.css';
 
 interface HeroProps {
   heading: React.ReactNode;
-  subheading: string;
-  ctaPrimary: string;
-  ctaSecondary: string;
+  subheading: React.ReactNode;
+  ctaPrimary: React.ReactNode;
+  ctaSecondary: React.ReactNode;
   ladyImage: string;
 }
 
@@ -20,15 +20,17 @@ function Hero({
   ctaSecondary,
   ladyImage,
 }: HeroProps) {
-  const formattedSubheading = subheading
-    .split('\n\n')
-    .map((paragraph, index) => (
-      <React.Fragment key={index}>
-        {paragraph}
-        {index < subheading.split('\n\n').length - 1 && <br />}
-        {index < subheading.split('\n\n').length - 1 && <br />}
-      </React.Fragment>
-    ));
+  const formattedSubheading = React.isValidElement(subheading)
+    ? subheading
+    : String(subheading)
+        .split('\n\n')
+        .map((paragraph, index) => (
+          <React.Fragment key={index}>
+            {paragraph}
+            {index < String(subheading).split('\n\n').length - 1 && <br />}
+            {index < String(subheading).split('\n\n').length - 1 && <br />}
+          </React.Fragment>
+        ));
 
   return (
     <Box
@@ -37,7 +39,6 @@ function Hero({
         padding: { xs: '5px', sm: '10px' },
       }}
     >
-      {}
       <Box
         sx={{
           position: 'absolute',
@@ -55,22 +56,8 @@ function Hero({
       <Box
         sx={{
           position: 'absolute',
-          top: '20%',
-          right: '10%',
-          width: '14px',
-          height: '14px',
-          borderRadius: '50%',
-          background: 'rgba(255, 105, 180, 0.8)',
-          boxShadow: '0 0 10px rgba(255, 105, 180, 0.5)',
-          zIndex: 1,
-          animation: 'pulse 3s infinite',
-        }}
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: '15%',
-          left: '15%',
+          bottom: '20%',
+          right: '15%',
           width: '16px',
           height: '16px',
           borderRadius: '50%',
@@ -115,6 +102,8 @@ function Hero({
           }}
         >
           <Typography
+            variant="h1"
+            component="h1"
             sx={{
               color: '#000',
               fontSize: {
@@ -129,91 +118,39 @@ function Hero({
               whiteSpace: 'normal',
               wordBreak: 'break-word',
             }}
-            variant="h1"
           >
             {heading}
           </Typography>
-          <Typography
-            variant="subtitle1"
-            className={styles.heroSubheading}
-            sx={{
-              fontSize: {
-                xs: '0.875rem',
-                sm: '1rem',
-                md: '1.125rem',
-              },
-              textAlign: {
-                xs: 'center',
-                md: 'left',
-              },
-              maxWidth: {
-                xs: '100%',
-                md: '600px',
-              },
-            }}
-          >
+
+          <Typography className={styles.heroSubheading}>
             {formattedSubheading}
           </Typography>
 
-          <Box className={styles.heroButtons} sx={{ position: 'relative' }}>
+          <Box className={styles.heroButtons}>
             <Button
               variant="contained"
               className={styles.heroBtnPrimary}
               sx={{
-                fontSize: {
-                  xs: '0.875rem',
-                  sm: '1rem',
-                },
-                padding: {
-                  xs: '0.6rem 1.4rem',
-                  sm: '0.8rem 1.8rem',
+                textTransform: 'none',
+                '&:hover': {
+                  backgroundColor: '#2563eb !important',
                 },
               }}
             >
               {ctaPrimary}
             </Button>
             <Link
-              href="#"
-              underline="hover"
+              href="#solutions"
+              underline="none"
               className={styles.heroLinkSecondary}
               sx={{
-                fontSize: {
-                  xs: '0.875rem',
-                  sm: '1rem',
+                '&:hover': {
+                  color: '#2563eb !important',
                 },
-                marginLeft: {
-                  xs: '0',
-                  sm: '20px',
-                },
-                display: 'inline-flex',
-                alignItems: 'center',
               }}
             >
-              {ctaSecondary} &rarr;
+              {ctaSecondary}
             </Link>
-
-            {}
-            <Box
-              sx={{
-                position: 'absolute',
-                bottom: '-30px',
-                left: '25%',
-                width: '16px',
-                height: '16px',
-                borderRadius: '50%',
-                background: 'rgba(255, 165, 0, 0.8)',
-                boxShadow: '0 0 10px rgba(255, 165, 0, 0.5)',
-                zIndex: 1,
-                animation: 'pulse 4s infinite',
-                display: {
-                  xs: 'none',
-                  sm: 'none',
-                  md: 'block',
-                  lg: 'none',
-                  xl: 'none',
-                },
-              }}
-            />
           </Box>
         </Box>
 
@@ -221,31 +158,14 @@ function Hero({
           className={styles.heroImageSection}
           sx={{
             order: { xs: 0, md: 1 },
-            marginBottom: { xs: '1.5rem', md: 0 },
-            width: { xs: '100%', md: '50%' },
-            maxWidth: {
-              xs: '800px',
-              md: '600px',
-            },
-            margin: { xs: '0 auto', md: 0 },
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
           }}
         >
           <Image
             src={ladyImage}
-            alt="POS Devices"
+            alt="POS System"
+            width={500}
+            height={500}
             className={styles.heroLadyImage}
-            width={600}
-            height={600}
-            sizes="(max-width: 480px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 500px, 600px"
-            style={{
-              objectFit: 'contain',
-              width: '100%',
-              height: 'auto',
-              maxHeight: '600px',
-            }}
             priority
           />
         </Box>

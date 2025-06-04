@@ -51,6 +51,8 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
 
   const getDefaultLanguage = (): Language => {
     if (isBrowser) {
+      console.log('Checking language preferences...');
+
       const savedLanguage = localStorage.getItem('language');
       if (savedLanguage) {
         try {
@@ -59,6 +61,7 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
             (lang) => lang.code === parsed.code
           );
           if (exists) {
+            console.log('Using saved language:', parsed);
             return parsed as Language;
           }
         } catch (e) {
@@ -78,7 +81,10 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
         const langMatch = AVAILABLE_LANGUAGES.find(
           (lang) => lang.code === cookieLang
         );
-        if (langMatch) return langMatch;
+        if (langMatch) {
+          console.log('Using cookie language:', langMatch);
+          return langMatch;
+        }
       }
 
       try {
@@ -87,12 +93,16 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
         const baseMatch = AVAILABLE_LANGUAGES.find(
           (lang) => lang.code === baseCode
         );
-        if (baseMatch) return baseMatch;
+        if (baseMatch) {
+          console.log('Using browser language:', baseMatch);
+          return baseMatch;
+        }
       } catch (e) {
         console.error('Error detecting browser language:', e);
       }
     }
 
+    console.log('Using default language: en');
     return (
       AVAILABLE_LANGUAGES.find((lang) => lang.code === 'en') ||
       AVAILABLE_LANGUAGES[0]
@@ -104,27 +114,26 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
 
   const handleChangeLanguage = useCallback(
     (languageCode: string) => {
+      console.log('Attempting to change language to:', languageCode);
       const language = getLanguageByCode(languageCode);
       setCurrentLanguage(language);
 
       if (isBrowser) {
         try {
           localStorage.setItem('language', JSON.stringify(language));
-
           i18n.changeLanguage(languageCode);
-
-          console.log(`Language changed to ${languageCode}`);
 
           const loadTranslations = async () => {
             try {
               if (!i18n.hasResourceBundle(languageCode, 'common')) {
                 console.log(`Loading translations for ${languageCode}...`);
-
                 const response = await fetch(
                   `/locales/${languageCode}/common.json`
                 );
+
                 if (response.ok) {
                   const translations = await response.json();
+                  console.log(`Loaded translations:`, translations);
 
                   i18n.addResourceBundle(
                     languageCode,
@@ -133,19 +142,26 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
                     true,
                     true
                   );
-                  console.log(
-                    `Translations loaded for ${languageCode}:`,
-                    translations
+
+                  const currentBundle = i18n.getResourceBundle(
+                    languageCode,
+                    'common'
                   );
+                  console.log(`Current resource bundle:`, currentBundle);
 
                   setCurrentLanguage({ ...language });
                 } else {
                   console.error(
-                    `Failed to load translations for ${languageCode}`
+                    `Failed to load translations for ${languageCode}, status: ${response.status}`
                   );
                 }
               } else {
                 console.log(`Translations already loaded for ${languageCode}`);
+                const currentBundle = i18n.getResourceBundle(
+                  languageCode,
+                  'common'
+                );
+                console.log(`Current resource bundle:`, currentBundle);
               }
             } catch (error) {
               console.error(
@@ -158,8 +174,9 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
           loadTranslations();
 
           document.documentElement.lang = languageCode;
-
-          document.cookie = `i18next=${languageCode}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
+          document.cookie = `i18next=${languageCode}; path=/; max-age=${
+            60 * 60 * 24 * 365
+          }; SameSite=Lax`;
 
           const event = new CustomEvent('languageChanged', {
             detail: {

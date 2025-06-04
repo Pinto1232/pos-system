@@ -19,6 +19,18 @@ import {
 import PaymentErrorDisplay from './PaymentErrorDisplay';
 import styles from './StripePaymentForm.module.css';
 
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', (event) => {
+    if (event.reason?.message?.includes('r.stripe.com/b')) {
+      event.preventDefault();
+
+      console.debug(
+        'Stripe analytics endpoint blocked - this is not a critical error'
+      );
+    }
+  });
+}
+
 const getPublishableKey = () => {
   return process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
 };

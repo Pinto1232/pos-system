@@ -5,6 +5,15 @@
     "fullName": "Pisval Tech Point of Sale System",
     "marketingTagline": "Empower Your Business with Fast, Secure, and Seamless Point of Sale Solutions"
   },
+  "about": {
+    "title": "About Us",
+    "intro": "At Pisval Tech, we are dedicated to revolutionizing the retail industry through innovative point of sale solutions. Our journey began with a simple vision: to create a POS system that combines powerful functionality with intuitive design.",
+    "mission": "Today, we serve businesses of all sizes, helping them streamline operations, enhance customer experiences, and drive growth. Our team of passionate experts is committed to continuous improvement and exceptional service"
+  },
+  "hero": {
+    "changeForMore": "Change for a Fast, Reliable, and Smart Point of Sale System",
+    "subheading": "An all-in-one POS solution designed to streamline sales, manage inventory, and grow your business with ease"
+  },
   "home": {
     "chooseYourPlan": "Choose Your Plan",
     "planDescription": "Choose the perfect package that suits your business needs. Our flexible pricing options are designed to scale with your growth."

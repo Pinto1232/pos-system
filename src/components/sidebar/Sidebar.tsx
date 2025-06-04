@@ -612,8 +612,22 @@ const Sidebar: React.FC<SidebarProps> = ({
         </Box>
 
         <List>
+          {' '}
           {sidebarItems.map((item) =>
             item.expandable && item.subItems ? (
+              <SidebarItem
+                key={item.label}
+                item={item}
+                isActive={activeItemState === item.label}
+                isExpanded={!!expandedItems[item.label]}
+                iconColor={iconColor}
+                textColor={textColor}
+                onToggle={handleToggle}
+                onItemClick={handleItemClickInternal}
+                onSettingsClick={onSettingsClick}
+                isCollapsed={!isSmallScreen && !localDrawerOpen}
+              />
+            ) : item.label === 'Dashboard' ? (
               <SidebarItem
                 key={item.label}
                 item={item}
