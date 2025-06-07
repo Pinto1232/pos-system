@@ -3,6 +3,7 @@
 import React, { memo, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { TranslatedText } from '@/i18n';
 import styles from './FeaturesSlider.module.css';
 
 const HiOutlineCreditCard = dynamic(
@@ -22,24 +23,29 @@ const HiOutlineSquares2X2 = dynamic(
 
 interface FeatureItemProps {
   icon: React.ReactNode;
-  title: string;
-  description: string;
+  title: React.ReactNode;
+  description: React.ReactNode;
   link: string;
 }
 
 const FeatureItem = memo(
-  ({ icon, title, description, link }: FeatureItemProps) => (
-    <div className={styles.slideItem}>
-      <div className={styles.iconWrapper}>
-        <div className={styles.icon}>{icon}</div>
+  ({ icon, title, description, link }: FeatureItemProps) => {
+    return (
+      <div className={styles.slideItem}>
+        <div className={styles.iconWrapper}>
+          <div className={styles.icon}>{icon}</div>
+        </div>
+        <h3 className={styles.title}>{title}</h3>
+        <p className={styles.description}>{description}</p>
+        <Link href={link} className={styles.learnMore}>
+          <TranslatedText
+            i18nKey="common.learnMore"
+            defaultValue="Learn more"
+          />
+        </Link>
       </div>
-      <h3 className={styles.title}>{title}</h3>
-      <p className={styles.description}>{description}</p>
-      <Link href={link} className={styles.learnMore}>
-        Learn more
-      </Link>
-    </div>
-  )
+    );
+  }
 );
 
 FeatureItem.displayName = 'FeatureItem';
@@ -49,23 +55,50 @@ function FeaturesGrid() {
     () => [
       {
         icon: <HiOutlineCreditCard size={50} />,
-        title: 'Sales Management',
-        description:
-          'Streamline your transactions with an intuitive POS interface. Process sales, returns, and payments quickly and efficiently.',
+        title: (
+          <TranslatedText
+            i18nKey="salesManagement.title"
+            defaultValue="Sales Management"
+          />
+        ),
+        description: (
+          <TranslatedText
+            i18nKey="salesManagement.description"
+            defaultValue="Streamline your transactions with an intuitive POS interface. Process sales, returns, and payments quickly and efficiently."
+          />
+        ),
         link: '/features/sales-management',
       },
       {
         icon: <HiOutlineChartBar size={50} />,
-        title: 'Real-time Analytics',
-        description:
-          'Track your business performance with detailed reports on sales, inventory, and customer behavior. Make data-driven decisions instantly.',
+        title: (
+          <TranslatedText
+            i18nKey="realtimeAnalytics.title"
+            defaultValue="Real-time Analytics"
+          />
+        ),
+        description: (
+          <TranslatedText
+            i18nKey="realtimeAnalytics.description"
+            defaultValue="Track your business performance with detailed reports on sales, inventory, and customer behavior. Make data-driven decisions instantly."
+          />
+        ),
         link: '/features/analytics',
       },
       {
         icon: <HiOutlineSquares2X2 size={50} />,
-        title: 'Inventory Control',
-        description:
-          'Manage your stock levels effortlessly with automated tracking, reorder alerts, and multi-location inventory management.',
+        title: (
+          <TranslatedText
+            i18nKey="inventoryControl.title"
+            defaultValue="Inventory Control"
+          />
+        ),
+        description: (
+          <TranslatedText
+            i18nKey="inventoryControl.description"
+            defaultValue="Manage your stock levels effortlessly with automated tracking, reorder alerts, and multi-location inventory management."
+          />
+        ),
         link: '/features/inventory',
       },
     ],

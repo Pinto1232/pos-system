@@ -70,7 +70,11 @@ export interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps>({
   token: null,
-  login: async () => {},
+  login: async () => {
+    console.log(
+      'AuthContext: DEFAULT login function from createContext CALLED'
+    );
+  },
   logout: async () => {},
   authenticated: false,
   error: null,
@@ -309,85 +313,24 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const login = useCallback(async () => {
+    console.log('AuthContext: REAL LOGIN FUNCTION ENTERED - AuthContext.tsx');
+    console.log('AuthContext: login function CALLED');
     console.log('Login requested');
     try {
       if (typeof window !== 'undefined') {
-        const config = configRef.current;
-
-        const loginRedirect = window.location.origin + '/';
+        const loginRedirectUri = window.location.origin + '/';
         console.log(
-          'Using login redirect:',
-          JSON.stringify(loginRedirect, null, 2)
+          'Using login redirect URI for Keycloak:',
+          JSON.stringify(loginRedirectUri, null, 2)
         );
 
-        const username = sessionStorage.getItem('kc_username');
-        const password = sessionStorage.getItem('kc_password');
-
-        if (username && password) {
-          console.log('Using credentials from sessionStorage');
-
-          try {
-            const tokenUrl = `${config.url}/realms/${config.realm}/protocol/openid-connect/token`;
-            const formData = new URLSearchParams();
-            formData.append('grant_type', 'password');
-            formData.append('client_id', config.clientId);
-            formData.append('username', username);
-            formData.append('password', password);
-
-            console.log('Sending direct token request to Keycloak');
-
-            const response = await fetch(tokenUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-              body: formData,
-            });
-
-            if (response.ok) {
-              const data = await response.json();
-              console.log('Direct token request successful');
-
-              keycloakRef.current.token = data.access_token;
-              keycloakRef.current.refreshToken = data.refresh_token;
-              keycloakRef.current.idToken = data.id_token;
-
-              setToken(data.access_token);
-              localStorage.setItem('accessToken', data.access_token);
-              await setTokenCookie(data.access_token);
-
-              const refreshTime = calculateRefreshTime(data.access_token);
-              console.log(
-                `Scheduling token refresh in ${Math.round(refreshTime / 1000)} seconds`
-              );
-              setTimeout(() => {
-                handleTokenRefresh(keycloakRef.current);
-              }, refreshTime);
-
-              sessionStorage.removeItem('kc_username');
-              sessionStorage.removeItem('kc_password');
-
-              window.location.href = loginRedirect;
-              return;
-            } else {
-              console.error(
-                'Direct token request failed:',
-                JSON.stringify(response.status, null, 2)
-              );
-            }
-          } catch (tokenError) {
-            console.error(
-              'Error during direct token request:',
-              JSON.stringify(tokenError, null, 2)
-            );
-          }
-
-          sessionStorage.removeItem('kc_username');
-          sessionStorage.removeItem('kc_password');
-        }
-
+        console.log('AuthContext.login: Proceeding with redirect-based login.');
+        console.log('🔍 Inspecting keycloakRef.current before .login() call:');
+        console.log(`  Flow: ${keycloakRef.current.flow}`);
+        console.log(`  ResponseMode: ${keycloakRef.current.responseMode}`);
+        console.log(`  ResponseType: ${keycloakRef.current.responseType}`);
         await keycloakRef.current.login({
-          redirectUri: loginRedirect,
+          redirectUri: loginRedirectUri,
           prompt: 'login',
         });
       }
@@ -397,7 +340,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         err instanceof Error ? `Login failed: ${err.message}` : 'Login failed'
       );
     }
-  }, [handleTokenRefresh]);
+  }, []);
 
   const handleRealmCheckFailure = useCallback(
     async (config: KeycloakConfig) => {
@@ -585,6 +528,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       );
 
       if (!kc.authenticated) {
+        console.log('🔍 Inspecting Keycloak instance before init:');
+        console.log(`  kc.authServerUrl: ${kc.authServerUrl}`);
+        console.log(`  kc.realm: ${kc.realm}`);
+        console.log(`  kc.clientId: ${kc.clientId}`);
         const authenticated = await kc.init({
           onLoad: onLoadOption,
           redirectUri: window.location.origin + config.loginRedirect,
@@ -700,8 +647,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
 
         fetchToken().then((tokenFetched) => {
+          console.log(
+            `AuthContext: fetchToken completed. tokenFetched: ${tokenFetched}, initStartedRef.current: ${initStartedRef.current}`
+          );
           if (!tokenFetched && !initStartedRef.current) {
-            console.log('Starting Keycloak initialization for the first time');
+            console.log(
+              'AuthContext: Conditions met. Starting Keycloak initialization for the first time.'
+            );
             initStartedRef.current = true;
 
             const cleanupPromise = initializeAuth();
@@ -735,6 +687,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return null;
   }
 
+  console.log(
+    'AuthProvider LOG: Providing context. Type of login function:',
+    typeof contextValue.login
+  );
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );

@@ -37,6 +37,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
 import { useCustomization } from '@/contexts/CustomizationContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
+import { TranslatedText } from '@/i18n';
 
 const TIMER_STATE_KEY = 'testPeriodTimerState';
 const SELECTED_PACKAGE_KEY = 'testPeriodSelectedPackage';
@@ -362,7 +363,12 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
                   gap: '4px',
                 }}
               >
-                <span className={styles.timeLabel}>Test Period:</span>
+                <span className={styles.timeLabel}>
+                  <TranslatedText
+                    i18nKey="packages.testPeriod"
+                    defaultValue="Test Period:"
+                  />
+                </span>
                 <span
                   className={styles.timeValue}
                   style={{
@@ -375,7 +381,12 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
                 >
                   {formatTime(remainingTime)}
                 </span>
-                <span className={styles.timeRemaining}>remaining</span>
+                <span className={styles.timeRemaining}>
+                  <TranslatedText
+                    i18nKey="packages.remaining"
+                    defaultValue="remaining"
+                  />
+                </span>
               </Typography>
             </Box>
 

@@ -1,13 +1,6 @@
 'use client';
 
-import React, {
-  memo,
-  useState,
-  useEffect,
-  useContext,
-  useRef,
-  useCallback,
-} from 'react';
+import React, { memo, useState, useEffect, useContext } from 'react';
 import styles from './LoginForm.module.css';
 import {
   Box,
@@ -29,7 +22,6 @@ import { Button } from '../ui/button/Button';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { redirectToKeycloakRegistration } from '@/utils/authUtils';
 import { AuthContext } from '@/contexts/AuthContext';
-import keycloakInstance from '@/auth/keycloak';
 
 const LoginForm = memo(() => {
   const [email, setEmail] = useState('');
@@ -43,68 +35,6 @@ const LoginForm = memo(() => {
   const [loginStatus, setLoginStatus] = useState('');
   const { startLoading, stopLoading } = useSpinner();
   const { login, error: authError } = useContext(AuthContext);
-  const serviceCheckPerformedRef = useRef(false);
-
-  const checkKeycloakAvailability = useCallback(async () => {
-    if (!serviceCheckPerformedRef.current) {
-      serviceCheckPerformedRef.current = true;
-      try {
-        const wellKnownUrl = `${keycloakInstance.authServerUrl}/realms/${keycloakInstance.realm}/.well-known/openid-configuration`;
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-        try {
-          const response = await fetch(wellKnownUrl, {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-            },
-            signal: controller.signal,
-          });
-
-          clearTimeout(timeoutId);
-
-          if (!response.ok) {
-            throw new Error('Authentication service is not accessible');
-          }
-
-          const config = await response.json();
-          if (!config.authorization_endpoint) {
-            throw new Error('Invalid Keycloak configuration');
-          }
-
-          console.log('Keycloak is available and configured correctly');
-        } catch (fetchError: unknown) {
-          if (fetchError instanceof Error && fetchError.name === 'AbortError') {
-            throw new Error('Authentication service is not responding');
-          }
-          throw new Error(
-            fetchError instanceof Error
-              ? fetchError.message
-              : 'Authentication service is not available'
-          );
-        }
-      } catch (err) {
-        console.error('Keycloak availability check failed:', err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : 'Authentication service is temporarily unavailable. Please try again later.'
-        );
-        setSnackbarOpen(true);
-        stopLoading();
-      }
-    }
-  }, [stopLoading, setError, setSnackbarOpen]);
-
-  useEffect(() => {
-    if (!serviceCheckPerformedRef.current) {
-      checkKeycloakAvailability();
-    }
-    return () => {
-      serviceCheckPerformedRef.current = false;
-    };
-  }, [checkKeycloakAvailability]);
 
   useEffect(() => {
     if (authError) {
@@ -115,16 +45,15 @@ const LoginForm = memo(() => {
     }
   }, [authError, stopLoading]);
 
-  useEffect(() => {
-    checkKeycloakAvailability();
-  }, [checkKeycloakAvailability]);
-
   const handleLogin = async (e: React.FormEvent) => {
+    console.log('LoginForm: handleLogin CALLED');
     e.preventDefault();
 
     setError(null);
     setSnackbarOpen(false);
+    console.log('LoginForm: About to setLoginStatus to Authenticating...');
     setLoginStatus('Authenticating...');
+    console.log('LoginForm: setLoginStatus to Authenticating... DONE');
 
     const loginTimeout = setTimeout(() => {
       stopLoading();
@@ -138,19 +67,32 @@ const LoginForm = memo(() => {
     setIsFadingOut(true);
 
     try {
+      console.log(
+        `LoginForm: In try block. Email: "${email}", Password: "${password ? '******' : ''}"`
+      );
       if (!email || !password) {
+        console.log('LoginForm: Email or password empty, throwing error.');
         throw new Error('Please enter both email and password');
       }
 
       sessionStorage.setItem('kc_username', email);
       sessionStorage.setItem('kc_password', password);
 
-      await login().catch((error) => {
-        throw error;
-      });
-
+      console.log('LoginForm: typeof login is', typeof login);
+      console.log('LoginForm: PRE-AWAIT login()');
+      try {
+        await login();
+        console.log('LoginForm: POST-AWAIT login() - SUCCESS');
+      } catch (specificLoginError) {
+        console.error(
+          'LoginForm: ERROR during await login() call itself:',
+          specificLoginError
+        );
+        throw specificLoginError;
+      }
       clearTimeout(loginTimeout);
     } catch (err) {
+      console.log('LoginForm: In catch block.');
       clearTimeout(loginTimeout);
       console.error('Login failed:', err);
 

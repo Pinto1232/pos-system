@@ -31,11 +31,15 @@ export const TranslatedText: React.FC<TranslatedTextProps> = ({
 
   if (isBrowser) {
     try {
-      console.log(`Translating key: ${i18nKey}, default: ${defaultValue}`);
+      console.log(
+        `Translating key: ${i18nKey}, default: ${defaultValue}`,
+        values ? `with values:` : '',
+        values
+      );
       translatedText = t(i18nKey, {
-        ...values,
         defaultValue,
         ns: 'common',
+        ...values,
       });
 
       if (translatedText === i18nKey) {

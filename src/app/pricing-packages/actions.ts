@@ -39,7 +39,6 @@ export async function fetchPricingPackagesAction(
     }
 
     const data: PricingPackagesResponse = await response.json();
-
     return processPackages(data.data);
   } catch (error) {
     console.error(
@@ -110,14 +109,8 @@ function createPackageFromData(pkg: PackageData | null | undefined): Package {
   // Update valid types to include new package types
   const validType = packageTypes.includes(type) ? type : 'starter-plus';
 
-  let price = pkg.price || 0;
-  let multiCurrencyPrices = pkg.multiCurrencyPrices || '';
-
-  // Ensure custom-pro has the correct price
-  if (validType === 'custom-pro') {
-    price = 129.99;
-    multiCurrencyPrices = '{"ZAR": 2199.99, "EUR": 119.99, "GBP": 104.99}';
-  }
+  const price = pkg.price || 0;
+  const multiCurrencyPrices = pkg.multiCurrencyPrices || '';
 
   return {
     id: pkg.id || Date.now(),

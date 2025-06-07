@@ -11,7 +11,11 @@ export interface AuthContextProps {
 
 export const AuthContext = React.createContext<AuthContextProps>({
   token: 'mock-token',
-  login: async () => {},
+  login: async () => {
+    console.log(
+      'AuthContext: MOCK LOGIN FUNCTION EXECUTED - __mocks__/AuthContext.tsx'
+    );
+  },
   logout: async () => {},
   authenticated: true,
   error: null,
@@ -23,7 +27,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         token: 'mock-token',
-        login: async () => {},
+        login: async () => {
+          console.log(
+            'AuthContext: MOCK LOGIN FUNCTION EXECUTED (via Provider) - __mocks__/AuthContext.tsx'
+          );
+        },
         logout: async () => {},
         authenticated: true,
         error: null,

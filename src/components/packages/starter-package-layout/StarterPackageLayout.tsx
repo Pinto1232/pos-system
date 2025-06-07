@@ -18,6 +18,7 @@ import { useTestPeriod } from '@/contexts/TestPeriodContext';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { useSuccessModal } from '@/contexts/SuccessModalContext';
+import { TranslatedText } from '@/i18n';
 
 interface StarterPackageLayoutProps {
   selectedPackage: {
@@ -33,6 +34,31 @@ interface StarterPackageLayoutProps {
     multiCurrencyPrices?: string;
   };
 }
+
+
+const mapPackageType = (
+  type: string
+):
+  | 'starter-plus'
+  | 'growth-pro'
+  | 'enterprise-elite'
+  | 'custom-pro'
+  | 'premium-plus' => {
+  switch (type) {
+    case 'starter':
+      return 'starter-plus';
+    case 'growth':
+      return 'growth-pro';
+    case 'enterprise':
+      return 'enterprise-elite';
+    case 'custom':
+      return 'custom-pro';
+    case 'premium':
+      return 'premium-plus';
+    default:
+      return 'starter-plus';
+  }
+};
 
 const currencySymbols: Record<string, string> = {
   USD: '$',
@@ -80,7 +106,13 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
       message: 'Package selected successfully!',
       onConfirm: handleConfirmSuccessMessage,
       onReturn: handleReturnSuccessMessage,
-      selectedPackage: selectedPackage,
+      selectedPackage: {
+        id: selectedPackage.id,
+        title: selectedPackage.title,
+        type: mapPackageType(selectedPackage.type),
+        price: selectedPackage.price,
+        currency: selectedPackage.currency,
+      },
       currentCurrency: currentCurrency,
       formData: formData,
       calculatedPrice: displayPrice,
@@ -213,7 +245,11 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
                 </Box>
               )}
               <Typography variant="subtitle2" className={styles.testPeriod}>
-                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
+                <TranslatedText
+                  i18nKey="packages.testPeriod"
+                  defaultValue="Test Period:"
+                />{' '}
+                <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
             </Box>
           </Grid>
@@ -242,7 +278,11 @@ const StarterPackageLayout: React.FC<StarterPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period <b>{selectedPackage.testPeriodDays} days</b>
+                <TranslatedText
+                  i18nKey="packages.testPeriod"
+                  defaultValue="Test Period:"
+                />{' '}
+                <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
 
               <Button
