@@ -18,6 +18,7 @@ import LazyLoginForm from '@/components/login-form/LoginForm';
 import { useTestPeriod } from '@/contexts/TestPeriodContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { useSuccessModal } from '@/contexts/SuccessModalContext';
+import { TranslatedText } from '@/i18n';
 import { useCurrency, currencySymbols } from '@/contexts/CurrencyContext';
 
 interface GrowthPackageLayoutProps {
@@ -34,6 +35,31 @@ interface GrowthPackageLayoutProps {
     multiCurrencyPrices?: string;
   };
 }
+
+
+const mapPackageType = (
+  type: string
+):
+  | 'starter-plus'
+  | 'growth-pro'
+  | 'enterprise-elite'
+  | 'custom-pro'
+  | 'premium-plus' => {
+  switch (type) {
+    case 'starter':
+      return 'starter-plus';
+    case 'growth':
+      return 'growth-pro';
+    case 'enterprise':
+      return 'enterprise-elite';
+    case 'custom':
+      return 'custom-pro';
+    case 'premium':
+      return 'premium-plus';
+    default:
+      return 'starter-plus';
+  }
+};
 
 const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
   selectedPackage,
@@ -84,7 +110,13 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
       message: 'Package selected successfully!',
       onConfirm: handleConfirmSuccessMessage,
       onReturn: handleReturnSuccessMessage,
-      selectedPackage: selectedPackage,
+      selectedPackage: {
+        id: selectedPackage.id,
+        title: selectedPackage.title,
+        type: mapPackageType(selectedPackage.type),
+        price: selectedPackage.price,
+        currency: selectedPackage.currency,
+      },
       currentCurrency: currentCurrency,
       formData: formData,
       calculatedPrice: displayPrice,
@@ -217,7 +249,11 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
               )}
 
               <Typography variant="subtitle2" className={styles.testPeriod}>
-                Test Period: <b>{selectedPackage.testPeriodDays} days</b>
+                <TranslatedText
+                  i18nKey="packages.testPeriod"
+                  defaultValue="Test Period:"
+                />{' '}
+                <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
             </Box>
           </Grid>
@@ -246,7 +282,11 @@ const GrowthPackageLayout: React.FC<GrowthPackageLayoutProps> = ({
               </Typography>
 
               <Typography variant="body2" className={styles.summaryItem}>
-                Test Period <b>{selectedPackage.testPeriodDays} days</b>
+                <TranslatedText
+                  i18nKey="packages.testPeriod"
+                  defaultValue="Test Period:"
+                />{' '}
+                <b>{selectedPackage.testPeriodDays} days</b>
               </Typography>
 
               <Button

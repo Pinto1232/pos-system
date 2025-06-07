@@ -10,6 +10,45 @@
     "intro": "Chez Pisval Tech, nous nous consacrons à révolutionner l'industrie du commerce de détail grâce à des solutions innovantes de point de vente. Notre parcours a commencé avec une vision simple : créer un système TPV qui allie fonctionnalités puissantes et design intuitif.",
     "mission": "Aujourd'hui, nous servons des entreprises de toutes tailles, les aidant à optimiser leurs opérations, améliorer l'expérience client et stimuler leur croissance. Notre équipe d'experts passionnés s'engage à assurer une amélioration continue et un service exceptionnel"
   },
+  "salesManagement": {
+    "title": "Gestion des Ventes",
+    "description": "Rationalisez vos transactions avec une interface TPV intuitive. Traitez les ventes, les retours et les paiements rapidement et efficacement.",
+    "learnMore": "En savoir plus"
+  },
+  "realtimeAnalytics": {
+    "title": "Analyses en Temps Réel",
+    "description": "Suivez les performances de votre entreprise avec des rapports détaillés sur les ventes, l'inventaire et le comportement des clients. Prenez des décisions basées sur les données instantanément.",
+    "learnMore": "En savoir plus"
+  },
+  "inventoryControl": {
+    "title": "Contrôle des Stocks",
+    "description": "Gérez vos niveaux de stock sans effort avec un suivi automatisé, des alertes de réapprovisionnement et une gestion d'inventaire multi-sites.",
+    "learnMore": "En savoir plus"
+  },
+  "subscription": {
+    "title": "ABONNEZ-VOUS MAINTENANT",
+    "subtitle": "POUR LES MISES À JOUR ET OFFRES EXCLUSIVES !",
+    "placeholder": "Entrez votre email",
+    "button": "S'ABONNER"
+  },
+  "footer": {
+    "company": "Entreprise",
+    "home": "Accueil",
+    "services": "Nos Services",
+    "about": "À Propos de Nous",
+    "contact": "Contact",
+    "tel1": "Tél: +1 5263 2540 981",
+    "tel2": "Tél: +1 5263 5720 450",
+    "email1": "Email: info@info.com",
+    "email2": "Email: career@career.com",
+    "office": "Bureau du Cap",
+    "address1": "361 Avisco Green St,",
+    "address2": "Lovasa Avenue, Le Cap,",
+    "address3": "90251, US",
+    "followUs": "Suivez-nous sur",
+    "privacy": "Politique de Confidentialité",
+    "copyright": "© {{year}} Pisval Tech. Tous droits réservés."
+  },
   "hero": {
     "changeForMore": "Optez pour un Système de Point de Vente Rapide, Fiable et Intelligent",
     "subheading": "Une solution TPV tout-en-un conçue pour rationaliser les ventes, gérer les stocks et développer votre entreprise en toute simplicité"
@@ -36,7 +75,28 @@
     "purchasedPlan": "Forfait Acheté",
     "disable": "Désactiver",
     "enable": "Activer",
-    "upgrade": "Mettre à Niveau"
+    "upgrade": "Mettre à Niveau",
+    "titles": {
+      "starter-plus": "Débutant Plus",
+      "growth-pro": "Croissance Pro",
+      "custom-pro": "Personnalisé Pro",
+      "enterprise-elite": "Entreprise Elite",
+      "premium-plus": "Premium Plus"
+    },
+    "descriptions": {
+      "starter-plus": "Fonctionnalité TPV de base;Gestion d'inventaire;Support pour un magasin;Support par email;Rapports de base;Base de données clients;Analyses simples",
+      "growth-pro": "Tout dans Croissance;Prévision d'inventaire avancée;Programme de fidélité client amélioré;Outils d'automatisation marketing;Suivi des performances du personnel;Tableaux de bord personnalisables;Accès à l'application mobile",
+      "custom-pro": "Solutions sur mesure pour les besoins uniques de votre entreprise;Parfait pour les entreprises nécessitant des fonctionnalités TPV personnalisées;Construisez votre propre ensemble de fonctionnalités;Payez seulement pour ce dont vous avez besoin;Options d'évolutivité flexibles;Solutions spécifiques à l'industrie;Intégration personnalisée",
+      "enterprise-elite": "Solutions TPV complètes pour les grandes entreprises;Inclut toutes les fonctionnalités avancées et le support premium;Gestion multi-sites;Analyses de niveau entreprise;Intégrations API personnalisées;Options de marque blanche;Gestionnaire de compte dédié;Support prioritaire 24/7",
+      "premium-plus": "Package TPV tout-inclus avec fonctionnalités premium;Idéal pour les entreprises recherchant des solutions TPV haut de gamme;Analyses avancées alimentées par IA;Gestion prédictive d'inventaire;Intégration omnicanal;Support VIP;Révisions trimestrielles d'affaires;Rapports personnalisés"
+    },
+    "extraDescriptions": {
+      "starter-plus": "Parfait pour les petites entreprises recherchant des fonctionnalités essentielles",
+      "growth-pro": "Idéal pour les entreprises en croissance qui ont besoin de fonctionnalités avancées",
+      "custom-pro": "La flexibilité ultime avec des services de personnalisation professionnels",
+      "enterprise-elite": "Solution complète pour les grandes organisations avec des exigences complexes",
+      "premium-plus": "L'expérience TPV ultime avec des fonctionnalités de pointe et un support premium"
+    }
   },
   "navigation": {
     "dashboard": "Tableau de Bord",
@@ -134,7 +194,8 @@
     "show": "Afficher",
     "hide": "Masquer",
     "view": "Voir",
-    "details": "Détails"
+    "details": "Détails",
+    "learnMore": "En savoir plus"
   },
   "time": {
     "today": "Aujourd'hui",

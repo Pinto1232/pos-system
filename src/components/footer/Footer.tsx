@@ -6,10 +6,12 @@ import { Container, Typography, Box, Link, TextField } from '@mui/material';
 import SocialIcons from '@/components/ui/socialIcons/SocialIcons';
 import { Button } from '../ui/button/Button';
 import { useCustomization } from '@/contexts/CustomizationContext';
+import { TranslatedText, useTranslationContext } from '@/i18n';
 import eventBus, { UI_EVENTS } from '@/utils/eventBus';
 
 const Footer: React.FC = memo(() => {
   const { navbarColor } = useCustomization();
+  const { t } = useTranslationContext();
 
   const footerBoxRef = useRef<HTMLDivElement>(null);
   const footerElementRef = useRef<HTMLDivElement>(null);
@@ -94,9 +96,15 @@ const Footer: React.FC = memo(() => {
                 },
               }}
             >
-              SUBSCRIBE NOW
+              <TranslatedText
+                i18nKey="subscription.title"
+                defaultValue="SUBSCRIBE NOW"
+              />
               <br />
-              FOR UPDATES AND EXCLUSIVE OFFERS!
+              <TranslatedText
+                i18nKey="subscription.subtitle"
+                defaultValue="FOR UPDATES AND EXCLUSIVE OFFERS!"
+              />
             </Typography>
             <Box
               className={styles.inputBox}
@@ -110,7 +118,9 @@ const Footer: React.FC = memo(() => {
             >
               <TextField
                 variant="outlined"
-                placeholder="Enter your email"
+                placeholder={t('subscription.placeholder', {
+                  defaultValue: 'Enter your email',
+                })}
                 fullWidth
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -146,7 +156,12 @@ const Footer: React.FC = memo(() => {
                   },
                 }}
               />
-              <Button className={styles.sendButton}>SUBSCRIBE</Button>
+              <Button className={styles.sendButton}>
+                <TranslatedText
+                  i18nKey="subscription.button"
+                  defaultValue="SUBSCRIBE"
+                />
+              </Button>
             </Box>
           </Box>
 
@@ -186,7 +201,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                Company
+                <TranslatedText
+                  i18nKey="footer.company"
+                  defaultValue="Company"
+                />
               </Typography>
               <ul
                 className={styles.list}
@@ -196,22 +214,31 @@ const Footer: React.FC = memo(() => {
               >
                 <li>
                   <Link href="#" className={styles.link}>
-                    Home
+                    <TranslatedText i18nKey="footer.home" defaultValue="Home" />
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className={styles.link}>
-                    Our Services
+                    <TranslatedText
+                      i18nKey="footer.services"
+                      defaultValue="Our Services"
+                    />
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className={styles.link}>
-                    About Us
+                    <TranslatedText
+                      i18nKey="footer.about"
+                      defaultValue="About Us"
+                    />
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className={styles.link}>
-                    Contact
+                    <TranslatedText
+                      i18nKey="footer.contact"
+                      defaultValue="Contact"
+                    />
                   </Link>
                 </li>
               </ul>
@@ -229,7 +256,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                Contact
+                <TranslatedText
+                  i18nKey="footer.contact"
+                  defaultValue="Contact"
+                />
               </Typography>
               <Typography
                 className={styles.text}
@@ -237,7 +267,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                Tel: +1 5263 2540 981
+                <TranslatedText
+                  i18nKey="footer.tel1"
+                  defaultValue="Tel: +1 5263 2540 981"
+                />
               </Typography>
               <Typography
                 className={styles.text}
@@ -245,7 +278,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                Tel: +1 5263 5720 450
+                <TranslatedText
+                  i18nKey="footer.tel2"
+                  defaultValue="Tel: +1 5263 5720 450"
+                />
               </Typography>
               <Typography
                 className={styles.text}
@@ -253,7 +289,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                Email: info@info.com
+                <TranslatedText
+                  i18nKey="footer.email1"
+                  defaultValue="Email: info@info.com"
+                />
               </Typography>
               <Typography
                 className={styles.text}
@@ -261,7 +300,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                Email: career@career.com
+                <TranslatedText
+                  i18nKey="footer.email2"
+                  defaultValue="Email: career@career.com"
+                />
               </Typography>
             </Box>
 
@@ -277,7 +319,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                Cape Town Office
+                <TranslatedText
+                  i18nKey="footer.office"
+                  defaultValue="Cape Town Office"
+                />
               </Typography>
               <Typography
                 className={styles.text}
@@ -285,7 +330,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                361 Avisco Green St,
+                <TranslatedText
+                  i18nKey="footer.address1"
+                  defaultValue="361 Avisco Green St,"
+                />
               </Typography>
               <Typography
                 className={styles.text}
@@ -293,7 +341,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                Lovasa Avenue, Cape Town,
+                <TranslatedText
+                  i18nKey="footer.address2"
+                  defaultValue="Lovasa Avenue, Cape Town,"
+                />
               </Typography>
               <Typography
                 className={styles.text}
@@ -301,7 +352,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: { xs: 'center', sm: 'start' },
                 }}
               >
-                90251, US
+                <TranslatedText
+                  i18nKey="footer.address3"
+                  defaultValue="90251, US"
+                />
               </Typography>
             </Box>
 
@@ -322,7 +376,10 @@ const Footer: React.FC = memo(() => {
                   textAlign: 'center',
                 }}
               >
-                Follow Us On
+                <TranslatedText
+                  i18nKey="footer.followUs"
+                  defaultValue="Follow Us On"
+                />
               </Typography>
               <SocialIcons />
             </Box>
@@ -352,7 +409,10 @@ const Footer: React.FC = memo(() => {
                 },
               }}
             >
-              Privacy Policy
+              <TranslatedText
+                i18nKey="footer.privacy"
+                defaultValue="Privacy Policy"
+              />
             </Link>
             <Typography
               variant="body2"
@@ -369,7 +429,11 @@ const Footer: React.FC = memo(() => {
                 lineHeight: 1.4,
               }}
             >
-              © {new Date().getFullYear()} Pisval Tech. All rights reserved.
+              <TranslatedText
+                i18nKey="footer.copyright"
+                values={{ year: new Date().getFullYear() }}
+                defaultValue={`© ${new Date().getFullYear()} Pisval Tech. All rights reserved.`}
+              />
             </Typography>
           </Box>
         </Container>

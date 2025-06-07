@@ -10,6 +10,45 @@
     "intro": "Na Pisval Tech, somos dedicados a revolucionar a indústria do varejo através de soluções inovadoras de ponto de venda. Nossa jornada começou com uma visão simples: criar um sistema PDV que combina funcionalidade poderosa com design intuitivo.",
     "mission": "Hoje, atendemos empresas de todos os tamanhos, ajudando-as a otimizar operações, melhorar experiências dos clientes e impulsionar o crescimento. Nossa equipe de especialistas apaixonados está comprometida com a melhoria contínua e serviço excepcional"
   },
+  "salesManagement": {
+    "title": "Gestão de Vendas",
+    "description": "Otimize suas transações com uma interface PDV intuitiva. Processe vendas, devoluções e pagamentos de forma rápida e eficiente.",
+    "learnMore": "Saiba mais"
+  },
+  "realtimeAnalytics": {
+    "title": "Análises em Tempo Real",
+    "description": "Acompanhe o desempenho do seu negócio com relatórios detalhados sobre vendas, inventário e comportamento do cliente. Tome decisões baseadas em dados instantaneamente.",
+    "learnMore": "Saiba mais"
+  },
+  "inventoryControl": {
+    "title": "Controle de Inventário",
+    "description": "Gerencie seus níveis de estoque sem esforço com rastreamento automatizado, alertas de reposição e gerenciamento de inventário multi-localização.",
+    "learnMore": "Saiba mais"
+  },
+  "subscription": {
+    "title": "INSCREVA-SE AGORA",
+    "subtitle": "PARA ATUALIZAÇÕES E OFERTAS EXCLUSIVAS!",
+    "placeholder": "Digite seu email",
+    "button": "INSCREVER-SE"
+  },
+  "footer": {
+    "company": "Empresa",
+    "home": "Início",
+    "services": "Nossos Serviços",
+    "about": "Sobre Nós",
+    "contact": "Contato",
+    "tel1": "Tel: +1 5263 2540 981",
+    "tel2": "Tel: +1 5263 5720 450",
+    "email1": "Email: info@info.com",
+    "email2": "Email: career@career.com",
+    "office": "Escritório na Cidade do Cabo",
+    "address1": "361 Avisco Green St,",
+    "address2": "Lovasa Avenue, Cidade do Cabo,",
+    "address3": "90251, US",
+    "followUs": "Siga-nos",
+    "privacy": "Política de Privacidade",
+    "copyright": "© {{year}} Pisval Tech. Todos os direitos reservados."
+  },
   "hero": {
     "changeForMore": "Mude para um Sistema de Ponto de Venda Rápido, Confiável e Inteligente",
     "subheading": "Uma solução PDV tudo-em-um projetada para otimizar vendas, gerenciar estoque e fazer seu negócio crescer com facilidade",
@@ -157,7 +196,8 @@
     "show": "Mostrar",
     "hide": "Esconder",
     "view": "Visualizar",
-    "details": "Detalhes"
+    "details": "Detalhes",
+    "learnMore": "Saiba mais"
   },
   "time": {
     "today": "Hoje",

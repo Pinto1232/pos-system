@@ -10,6 +10,45 @@
     "intro": "En Pisval Tech, nos dedicamos a revolucionar la industria minorista a través de soluciones innovadoras de punto de venta. Nuestro viaje comenzó con una visión simple: crear un sistema POS que combine una funcionalidad potente con un diseño intuitivo.",
     "mission": "Hoy, atendemos a empresas de todos los tamaños, ayudándolas a optimizar operaciones, mejorar las experiencias de los clientes e impulsar el crecimiento. Nuestro equipo de expertos apasionados está comprometido con la mejora continua y el servicio excepcional"
   },
+  "salesManagement": {
+    "title": "Gestión de Ventas",
+    "description": "Optimice sus transacciones con una interfaz POS intuitiva. Procese ventas, devoluciones y pagos de manera rápida y eficiente.",
+    "learnMore": "Saber más"
+  },
+  "realtimeAnalytics": {
+    "title": "Análisis en Tiempo Real",
+    "description": "Rastree el rendimiento de su negocio con informes detallados sobre ventas, inventario y comportamiento del cliente. Tome decisiones basadas en datos al instante.",
+    "learnMore": "Saber más"
+  },
+  "inventoryControl": {
+    "title": "Control de Inventario",
+    "description": "Gestione sus niveles de stock sin esfuerzo con seguimiento automatizado, alertas de reorden y gestión de inventario multi-ubicación.",
+    "learnMore": "Saber más"
+  },
+  "subscription": {
+    "title": "SUSCRÍBETE AHORA",
+    "subtitle": "¡PARA ACTUALIZACIONES Y OFERTAS EXCLUSIVAS!",
+    "placeholder": "Ingresa tu correo electrónico",
+    "button": "SUSCRIBIRSE"
+  },
+  "footer": {
+    "company": "Compañía",
+    "home": "Inicio",
+    "services": "Nuestros Servicios",
+    "about": "Sobre Nosotros",
+    "contact": "Contacto",
+    "tel1": "Tel: +1 5263 2540 981",
+    "tel2": "Tel: +1 5263 5720 450",
+    "email1": "Correo: info@info.com",
+    "email2": "Correo: career@career.com",
+    "office": "Oficina de Ciudad del Cabo",
+    "address1": "361 Avisco Green St,",
+    "address2": "Lovasa Avenue, Ciudad del Cabo,",
+    "address3": "90251, EE. UU.",
+    "followUs": "Síguenos en",
+    "privacy": "Política de Privacidad",
+    "copyright": "© {{year}} Pisval Tech. Todos los derechos reservados."
+  },
   "hero": {
     "changeForMore": "Cambie a un Sistema de Punto de Venta Rápido, Confiable e Inteligente",
     "subheading": "Una solución POS todo en uno diseñada para agilizar las ventas, gestionar el inventario y hacer crecer su negocio con facilidad"
@@ -155,7 +194,8 @@
     "show": "Mostrar",
     "hide": "Ocultar",
     "view": "Ver",
-    "details": "Detalles"
+    "details": "Detalles",
+    "learnMore": "Saber más"
   },
   "time": {
     "today": "Hoy",
