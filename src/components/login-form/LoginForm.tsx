@@ -117,7 +117,6 @@ const LoginForm = memo(() => {
       stopLoading();
       setLoginStatus('');
 
-      // Clear stored credentials on error
       sessionStorage.removeItem('kc_username');
       sessionStorage.removeItem('kc_password');
     }
