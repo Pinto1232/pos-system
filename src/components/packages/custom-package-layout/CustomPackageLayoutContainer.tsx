@@ -34,17 +34,14 @@ interface CustomPackageLayoutContainerProps {
 const convertToTypesAddOn = (addOn: IndexAddOn): AddOn => {
   let features: string[] = [];
   if (typeof addOn.features === 'string') {
-    
     try {
       const parsed = JSON.parse(addOn.features);
       if (Array.isArray(parsed)) {
         features = parsed;
       } else {
-        
         features = [addOn.features];
       }
     } catch {
-      
       features = [addOn.features];
     }
   } else if (Array.isArray(addOn.features)) {
@@ -53,17 +50,14 @@ const convertToTypesAddOn = (addOn: IndexAddOn): AddOn => {
 
   let dependencies: string[] = [];
   if (typeof addOn.dependencies === 'string') {
-    
     try {
       const parsed = JSON.parse(addOn.dependencies);
       if (Array.isArray(parsed)) {
         dependencies = parsed;
       } else {
-        
         dependencies = [addOn.dependencies];
       }
     } catch {
-      
       dependencies = [addOn.dependencies];
     }
   } else if (Array.isArray(addOn.dependencies)) {
@@ -289,12 +283,7 @@ const CustomPackageLayoutContainer: React.FC<
       }
     }
     return true;
-  }, [
-    steps,
-    currentStep,
-    features,
-    selectedFeatures,
-  ]);
+  }, [steps, currentStep, features, selectedFeatures]);
 
   const handleNext = useCallback(() => {
     if (!validateCurrentStep()) return;

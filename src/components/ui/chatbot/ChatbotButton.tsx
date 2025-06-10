@@ -66,7 +66,6 @@ const ChatbotButton = () => {
     }
   }, [selectedPackage, isOpen]);
 
-  
   if (isCartOpen) {
     return null;
   }

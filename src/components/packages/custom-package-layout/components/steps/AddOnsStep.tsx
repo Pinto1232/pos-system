@@ -31,8 +31,8 @@ const AddOnsStep: React.FC = () => {
       }}
     >
       {}
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           mb: 4,
           position: 'relative',
           pb: 2,
@@ -44,62 +44,63 @@ const AddOnsStep: React.FC = () => {
             width: '60px',
             height: '3px',
             background: 'linear-gradient(90deg, #2563eb, #3b82f6)',
-            borderRadius: '2px'
-          }
+            borderRadius: '2px',
+          },
         }}
       >
-        <Typography 
-          variant="h5" 
+        <Typography
+          variant="h5"
           className={styles.sectionHeader}
           sx={{
             fontSize: { xs: '1.5rem', md: '1.75rem' },
             fontWeight: 700,
             color: '#1e293b',
             mb: 1.5,
-            letterSpacing: '-0.01em'
+            letterSpacing: '-0.01em',
           }}
         >
           Choose Add-Ons
         </Typography>
-        <Typography 
-          variant="body1" 
+        <Typography
+          variant="body1"
           className={styles.sectionDescription}
           sx={{
             fontSize: { xs: '0.95rem', md: '1rem' },
             color: '#64748b',
             lineHeight: 1.6,
-            maxWidth: '800px'
+            maxWidth: '800px',
           }}
         >
           Enhance your package with additional features and capabilities. Each
-          add-on is carefully designed to extend your system&apos;s functionality.
+          add-on is carefully designed to extend your system&apos;s
+          functionality.
         </Typography>
-        
+
         <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Chip 
-            icon={<FaPlus size={14} />} 
-            label={`${addOns.length} add-ons available`} 
+          <Chip
+            icon={<FaPlus size={14} />}
+            label={`${addOns.length} add-ons available`}
             size="small"
-            sx={{ 
-              bgcolor: 'rgba(37, 99, 235, 0.08)', 
+            sx={{
+              bgcolor: 'rgba(37, 99, 235, 0.08)',
               color: '#2563eb',
               fontWeight: 500,
               borderRadius: '6px',
-              '& .MuiChip-icon': { color: '#2563eb' }
+              '& .MuiChip-icon': { color: '#2563eb' },
             }}
           />
-          
+
           {selectedAddOns.length > 0 && (
-            <Chip 
-              icon={<FaCheckCircle size={14} />} 
-              label={`${selectedAddOns.length} selected`} 
+            <Chip
+              icon={<FaCheckCircle size={14} />}
+              label={`${selectedAddOns.length} selected`}
               size="small"
-              sx={{ 
-                bgcolor: 'rgba(16, 185, 129, 0.08)', 
+              sx={{
+                bgcolor: 'rgba(16, 185, 129, 0.08)',
                 color: '#10b981',
                 fontWeight: 500,
                 borderRadius: '6px',
-                '& .MuiChip-icon': { color: '#10b981' }
+                '& .MuiChip-icon': { color: '#10b981' },
               }}
             />
           )}

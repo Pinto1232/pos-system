@@ -71,10 +71,10 @@ const ReviewConfirmStep: React.FC = () => {
   return (
     <Box className={styles.featuresContainer}>
       <Box className={styles.sectionHeader} sx={{ mb: 4, textAlign: 'center' }}>
-        <Typography 
-          variant="h4" 
-          sx={{ 
-            fontWeight: 700, 
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 700,
             color: '#1e293b',
             mb: 1.5,
             background: 'linear-gradient(90deg, #1e293b, #334155)',
@@ -85,14 +85,14 @@ const ReviewConfirmStep: React.FC = () => {
         >
           Review & Confirm
         </Typography>
-        <Typography 
-          variant="body1" 
-          sx={{ 
-            color: '#64748b', 
-            maxWidth: '700px', 
+        <Typography
+          variant="body1"
+          sx={{
+            color: '#64748b',
+            maxWidth: '700px',
             mx: 'auto',
             lineHeight: 1.6,
-            fontSize: '1.05rem'
+            fontSize: '1.05rem',
           }}
         >
           Review your package configuration and confirm your selection
@@ -111,26 +111,27 @@ const ReviewConfirmStep: React.FC = () => {
         {}
         <Box>
           {}
-          <Card 
-            sx={{ 
+          <Card
+            sx={{
               mb: 4,
               borderRadius: '16px',
               overflow: 'hidden',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+              boxShadow:
+                '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
               border: '1px solid rgba(226, 232, 240, 0.8)',
             }}
           >
-            <Box 
-              sx={{ 
-                p: 2.5, 
-                backgroundColor: '#f8fafc', 
+            <Box
+              sx={{
+                p: 2.5,
+                backgroundColor: '#f8fafc',
                 borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box 
-                  sx={{ 
-                    color: '#2563eb', 
+                <Box
+                  sx={{
+                    color: '#2563eb',
                     fontSize: '1.25rem',
                     width: 40,
                     height: 40,
@@ -145,9 +146,9 @@ const ReviewConfirmStep: React.FC = () => {
                 >
                   <FaBox />
                 </Box>
-                <Typography 
-                  variant="h6" 
-                  sx={{ 
+                <Typography
+                  variant="h6"
+                  sx={{
                     fontWeight: 700,
                     color: '#1e293b',
                     fontSize: '1.1rem',
@@ -160,8 +161,8 @@ const ReviewConfirmStep: React.FC = () => {
             <CardContent sx={{ p: 3 }}>
               <Typography
                 variant="h5"
-                sx={{ 
-                  fontWeight: 700, 
+                sx={{
+                  fontWeight: 700,
                   color: '#1e293b',
                   mb: 2,
                   fontSize: '1.3rem',
@@ -169,10 +170,10 @@ const ReviewConfirmStep: React.FC = () => {
               >
                 {packageDetails.title}
               </Typography>
-              <Typography 
-                variant="body2" 
-                color="text.secondary" 
-                sx={{ 
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
                   mb: 3,
                   lineHeight: 1.6,
                   fontSize: '0.9rem',
@@ -192,7 +193,7 @@ const ReviewConfirmStep: React.FC = () => {
                   px: 1,
                   '& .MuiChip-label': {
                     px: 1,
-                  }
+                  },
                 }}
               />
             </CardContent>
@@ -200,26 +201,27 @@ const ReviewConfirmStep: React.FC = () => {
 
           {}
           {selectedFeatures.length > 0 && (
-            <Card 
-              sx={{ 
+            <Card
+              sx={{
                 mb: 4,
                 borderRadius: '16px',
                 overflow: 'hidden',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                boxShadow:
+                  '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                 border: '1px solid rgba(226, 232, 240, 0.8)',
               }}
             >
-              <Box 
-                sx={{ 
-                  p: 2.5, 
-                  backgroundColor: '#f8fafc', 
+              <Box
+                sx={{
+                  p: 2.5,
+                  backgroundColor: '#f8fafc',
                   borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Box 
-                    sx={{ 
-                      color: '#10b981', 
+                  <Box
+                    sx={{
+                      color: '#10b981',
                       fontSize: '1.25rem',
                       width: 40,
                       height: 40,
@@ -234,9 +236,9 @@ const ReviewConfirmStep: React.FC = () => {
                   >
                     <FaCog />
                   </Box>
-                  <Typography 
-                    variant="h6" 
-                    sx={{ 
+                  <Typography
+                    variant="h6"
+                    sx={{
                       fontWeight: 700,
                       color: '#1e293b',
                       fontSize: '1.1rem',
@@ -247,8 +249,8 @@ const ReviewConfirmStep: React.FC = () => {
                 </Box>
               </Box>
               <CardContent sx={{ p: 0 }}>
-                <List 
-                  sx={{ 
+                <List
+                  sx={{
                     py: 0,
                     '& .MuiListItem-root': {
                       borderBottom: '1px dashed rgba(226, 232, 240, 0.8)',
@@ -256,19 +258,19 @@ const ReviewConfirmStep: React.FC = () => {
                       px: 3,
                       '&:last-child': {
                         borderBottom: 'none',
-                      }
-                    }
+                      },
+                    },
                   }}
                 >
                   {selectedFeatures.map((feature) => (
                     <ListItem key={feature.id}>
-                      <ListItemIcon 
-                        sx={{ 
+                      <ListItemIcon
+                        sx={{
                           minWidth: 32,
                         }}
                       >
-                        <Box 
-                          sx={{ 
+                        <Box
+                          sx={{
                             width: 20,
                             height: 20,
                             borderRadius: '50%',
@@ -284,7 +286,7 @@ const ReviewConfirmStep: React.FC = () => {
                       <ListItemText
                         primary={feature.name}
                         secondary={feature.description}
-                        primaryTypographyProps={{ 
+                        primaryTypographyProps={{
                           fontWeight: 600,
                           color: '#1e293b',
                           fontSize: '0.9rem',
@@ -298,8 +300,8 @@ const ReviewConfirmStep: React.FC = () => {
                       />
                       <Typography
                         variant="body2"
-                        sx={{ 
-                          fontWeight: 700, 
+                        sx={{
+                          fontWeight: 700,
                           color: '#1e293b',
                           fontSize: '0.9rem',
                           ml: 2,
@@ -441,26 +443,27 @@ const ReviewConfirmStep: React.FC = () => {
 
         {}
         <Box>
-          <Card 
-            sx={{ 
-              position: 'sticky', 
+          <Card
+            sx={{
+              position: 'sticky',
               top: 20,
               borderRadius: '16px',
               overflow: 'hidden',
-              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+              boxShadow:
+                '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
               border: '1px solid rgba(226, 232, 240, 0.8)',
             }}
           >
-            <Box 
-              sx={{ 
-                p: 2.5, 
-                backgroundColor: '#f8fafc', 
+            <Box
+              sx={{
+                p: 2.5,
+                backgroundColor: '#f8fafc',
                 borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
               }}
             >
-              <Typography 
-                variant="h6" 
-                sx={{ 
+              <Typography
+                variant="h6"
+                sx={{
                   fontWeight: 700,
                   color: '#1e293b',
                   fontSize: '1.1rem',
@@ -468,9 +471,9 @@ const ReviewConfirmStep: React.FC = () => {
                   alignItems: 'center',
                 }}
               >
-                <Box 
-                  component="span" 
-                  sx={{ 
+                <Box
+                  component="span"
+                  sx={{
                     mr: 1.5,
                     display: 'flex',
                     alignItems: 'center',
@@ -491,20 +494,20 @@ const ReviewConfirmStep: React.FC = () => {
             <CardContent sx={{ p: 0 }}>
               {}
               {selectedPlanIndex !== null && (
-                <Box 
-                  sx={{ 
+                <Box
+                  sx={{
                     mb: 3,
                     p: 2,
-                    mx: 3, 
+                    mx: 3,
                     backgroundColor: 'rgba(248, 250, 252, 0.8)',
                     borderRadius: '10px',
                     border: '1px solid rgba(226, 232, 240, 0.8)',
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                    <Box 
-                      sx={{ 
-                        color: '#2563eb', 
+                    <Box
+                      sx={{
+                        color: '#2563eb',
                         fontSize: '1rem',
                         width: 32,
                         height: 32,
@@ -519,9 +522,9 @@ const ReviewConfirmStep: React.FC = () => {
                     >
                       <FaCalendarAlt />
                     </Box>
-                    <Typography 
-                      variant="subtitle2" 
-                      sx={{ 
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
                         fontWeight: 700,
                         color: '#1e293b',
                         fontSize: '0.9rem',
@@ -530,11 +533,18 @@ const ReviewConfirmStep: React.FC = () => {
                       Billing Plan
                     </Typography>
                   </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pl: 5 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      pl: 5,
+                    }}
+                  >
                     {paymentPlansLoading ? (
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           color: '#64748b',
                           fontSize: '0.85rem',
                         }}
@@ -543,9 +553,9 @@ const ReviewConfirmStep: React.FC = () => {
                       </Typography>
                     ) : (
                       <>
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
+                        <Typography
+                          variant="body2"
+                          sx={{
                             color: '#64748b',
                             fontSize: '0.85rem',
                           }}
@@ -582,21 +592,21 @@ const ReviewConfirmStep: React.FC = () => {
 
               {}
               {selectedSupportIndex !== null && (
-                <Box 
-                  sx={{ 
+                <Box
+                  sx={{
                     mb: 3,
                     p: 2,
-                    mx: 0, 
+                    mx: 0,
                     backgroundColor: 'rgba(248, 250, 252, 0.8)',
-                    borderRadius: '0', 
+                    borderRadius: '0',
                     border: '1px solid rgba(226, 232, 240, 0.8)',
-                    width: '100%', 
+                    width: '100%',
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                    <Box 
-                      sx={{ 
-                        color: '#10b981', 
+                    <Box
+                      sx={{
+                        color: '#10b981',
                         fontSize: '1rem',
                         width: 32,
                         height: 32,
@@ -611,9 +621,9 @@ const ReviewConfirmStep: React.FC = () => {
                     >
                       <FaHeadset />
                     </Box>
-                    <Typography 
-                      variant="subtitle2" 
-                      sx={{ 
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
                         fontWeight: 700,
                         color: '#1e293b',
                         fontSize: '0.9rem',
@@ -622,9 +632,9 @@ const ReviewConfirmStep: React.FC = () => {
                       Support Level
                     </Typography>
                   </Box>
-                  <Typography 
-                    variant="body2" 
-                    sx={{ 
+                  <Typography
+                    variant="body2"
+                    sx={{
                       color: '#64748b',
                       fontSize: '0.85rem',
                       pl: 5,
@@ -635,19 +645,19 @@ const ReviewConfirmStep: React.FC = () => {
                 </Box>
               )}
 
-              <Box 
-                sx={{ 
-                  p: 2.5, 
-                  mx: 3, 
+              <Box
+                sx={{
+                  p: 2.5,
+                  mx: 3,
                   backgroundColor: 'rgba(248, 250, 252, 0.8)',
                   borderRadius: '10px',
                   border: '1px solid rgba(226, 232, 240, 0.8)',
                   mb: 3,
                 }}
               >
-                <Typography 
-                  variant="subtitle2" 
-                  sx={{ 
+                <Typography
+                  variant="subtitle2"
+                  sx={{
                     fontWeight: 700,
                     color: '#1e293b',
                     fontSize: '0.9rem',
@@ -665,18 +675,18 @@ const ReviewConfirmStep: React.FC = () => {
                       alignItems: 'center',
                     }}
                   >
-                    <Typography 
-                      variant="body2" 
-                      sx={{ 
+                    <Typography
+                      variant="body2"
+                      sx={{
                         color: '#64748b',
                         fontSize: '0.85rem',
                       }}
                     >
                       Base Package:
                     </Typography>
-                    <Typography 
-                      variant="body2" 
-                      sx={{ 
+                    <Typography
+                      variant="body2"
+                      sx={{
                         fontWeight: 600,
                         color: '#1e293b',
                         fontSize: '0.85rem',
@@ -694,18 +704,18 @@ const ReviewConfirmStep: React.FC = () => {
                         alignItems: 'center',
                       }}
                     >
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           color: '#64748b',
                           fontSize: '0.85rem',
                         }}
                       >
                         Add-ons:
                       </Typography>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           fontWeight: 600,
                           color: '#1e293b',
                           fontSize: '0.85rem',
@@ -734,18 +744,18 @@ const ReviewConfirmStep: React.FC = () => {
                         alignItems: 'center',
                       }}
                     >
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           color: '#64748b',
                           fontSize: '0.85rem',
                         }}
                       >
                         Core Features:
                       </Typography>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           fontWeight: 600,
                           color: '#1e293b',
                           fontSize: '0.85rem',
@@ -771,24 +781,27 @@ const ReviewConfirmStep: React.FC = () => {
                         alignItems: 'center',
                       }}
                     >
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           color: '#64748b',
                           fontSize: '0.85rem',
                         }}
                       >
                         Support:
                       </Typography>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           fontWeight: 600,
                           color: '#1e293b',
                           fontSize: '0.85rem',
                         }}
                       >
-                        {formatPrice(selectedCurrency, pricingState.supportPrice)}
+                        {formatPrice(
+                          selectedCurrency,
+                          pricingState.supportPrice
+                        )}
                       </Typography>
                     </Box>
                   )}
@@ -802,9 +815,9 @@ const ReviewConfirmStep: React.FC = () => {
                         color: '#10b981',
                       }}
                     >
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           fontSize: '0.85rem',
                           display: 'flex',
                           alignItems: 'center',
@@ -814,9 +827,9 @@ const ReviewConfirmStep: React.FC = () => {
                         <FaCheck size={10} />
                         Plan Discount:
                       </Typography>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
+                      <Typography
+                        variant="body2"
+                        sx={{
                           fontWeight: 600,
                           fontSize: '0.85rem',
                         }}
@@ -836,18 +849,18 @@ const ReviewConfirmStep: React.FC = () => {
               </Box>
 
               <Box
-                sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
                   mb: 4,
-                  px: 3, 
+                  px: 3,
                 }}
               >
-                <Typography 
-                  variant="subtitle1" 
-                  sx={{ 
-                    fontWeight: 700, 
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    fontWeight: 700,
                     color: '#1e293b',
                     fontSize: '1rem',
                   }}
@@ -856,8 +869,8 @@ const ReviewConfirmStep: React.FC = () => {
                 </Typography>
                 <Typography
                   variant="h5"
-                  sx={{ 
-                    fontWeight: 800, 
+                  sx={{
+                    fontWeight: 800,
                     color: '#2563eb',
                     background: 'linear-gradient(90deg, #2563eb, #3b82f6)',
                     WebkitBackgroundClip: 'text',
@@ -871,30 +884,31 @@ const ReviewConfirmStep: React.FC = () => {
 
               <Button
                 variant="contained"
-                size="medium" 
+                size="medium"
                 onClick={handleSave}
                 disabled={loading}
                 sx={{
-                  mx: 3, 
-                  width: 'auto', 
-                  maxWidth: '200px', 
-                  display: 'block', 
+                  mx: 3,
+                  width: 'auto',
+                  maxWidth: '200px',
+                  display: 'block',
                   marginLeft: 'auto',
                   marginRight: 'auto',
                   backgroundColor: '#2563eb',
                   '&:hover': {
                     backgroundColor: '#1d4ed8',
                   },
-                  py: 1.25, 
-                  px: 4, 
+                  py: 1.25,
+                  px: 4,
                   fontWeight: 700,
-                  fontSize: '0.9rem', 
-                  borderRadius: '8px', 
-                  boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1)',
+                  fontSize: '0.9rem',
+                  borderRadius: '8px',
+                  boxShadow:
+                    '0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1)',
                   transition: 'all 0.2s ease',
                   '&:active': {
                     transform: 'translateY(1px)',
-                  }
+                  },
                 }}
               >
                 {loading ? (
@@ -910,11 +924,11 @@ const ReviewConfirmStep: React.FC = () => {
               <Typography
                 variant="caption"
                 color="text.secondary"
-                sx={{ 
-                  display: 'block', 
-                  textAlign: 'center', 
+                sx={{
+                  display: 'block',
+                  textAlign: 'center',
                   mt: 2.5,
-                  mx: 3, 
+                  mx: 3,
                   fontSize: '0.75rem',
                   color: '#64748b',
                 }}

@@ -114,7 +114,9 @@ const FeatureToggle: React.FC<FeatureToggleProps> = ({
             border: isSelected ? 'none' : '1px solid rgba(37, 99, 235, 0.15)',
             boxShadow: isSelected ? '0 2px 5px rgba(37, 99, 235, 0.2)' : 'none',
             '&:hover': {
-              backgroundColor: isSelected ? '#1d4ed8' : 'rgba(37, 99, 235, 0.12)',
+              backgroundColor: isSelected
+                ? '#1d4ed8'
+                : 'rgba(37, 99, 235, 0.12)',
             },
           }}
         />

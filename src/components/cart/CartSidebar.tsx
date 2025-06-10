@@ -124,8 +124,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
   const { setCartOpen } = useCartUI();
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
-  
-  
+
   useEffect(() => {
     setCartOpen(open);
   }, [open, setCartOpen]);

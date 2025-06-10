@@ -18,18 +18,27 @@ export const mockFetchCustomization = async (
       }
 
       const savedNavbarColor = localStorage.getItem('navbarColor');
-      if (savedNavbarColor) {
+      const savedSidebarColor = localStorage.getItem('sidebarColor');
+
+      if (savedNavbarColor || savedSidebarColor) {
         console.log(
-          'Found saved navbar color in localStorage:',
-          JSON.stringify(savedNavbarColor, null, 2)
+          'Found saved colors in localStorage:',
+          JSON.stringify(
+            {
+              navbarColor: savedNavbarColor,
+              sidebarColor: savedSidebarColor,
+            },
+            null,
+            2
+          )
         );
 
         return {
           id: 1,
           userId,
-          sidebarColor: '#173A79',
+          sidebarColor: savedSidebarColor || '#173A79',
           logoUrl: '/Pisval_Logo.jpg',
-          navbarColor: savedNavbarColor,
+          navbarColor: savedNavbarColor || '#000000',
           taxSettings: createDefaultTaxSettings(),
           regionalSettings: createDefaultRegionalSettings(),
         };
@@ -141,6 +150,11 @@ export const mockUpdateCustomization = async (
       'No navbar color provided in customization data, using default'
     );
     customization.navbarColor = '#000000';
+  } else {
+    console.log(
+      'Using provided navbar color:',
+      JSON.stringify(customization.navbarColor, null, 2)
+    );
   }
 
   await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -150,10 +164,23 @@ export const mockUpdateCustomization = async (
       localStorage.setItem(STORAGE_KEY, JSON.stringify(customization));
       console.log('Customization saved successfully to localStorage');
 
-      localStorage.setItem('navbarColor', customization.navbarColor);
+      const validatedNavbarColor = customization.navbarColor.startsWith('#')
+        ? customization.navbarColor
+        : `#${customization.navbarColor}`;
+
+      customization.navbarColor = validatedNavbarColor;
+
+      localStorage.setItem('navbarColor', validatedNavbarColor);
+
       console.log(
         'Navbar color saved separately for persistence:',
-        JSON.stringify(customization.navbarColor, null, 2)
+        JSON.stringify(validatedNavbarColor, null, 2)
+      );
+
+      const savedNavbarColor = localStorage.getItem('navbarColor');
+      console.log(
+        'Verification in mock - Navbar color in localStorage:',
+        savedNavbarColor
       );
     } catch (error) {
       console.error(

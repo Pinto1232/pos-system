@@ -2,14 +2,19 @@
 
 import React from 'react';
 import { Box, Typography, Card, CardContent, Chip, Stack } from '@mui/material';
-import { FaCheck, FaCalendarAlt, FaCalendarCheck, FaShieldAlt, FaRegClock } from 'react-icons/fa';
+import {
+  FaCheck,
+  FaCalendarAlt,
+  FaCalendarCheck,
+  FaShieldAlt,
+  FaRegClock,
+} from 'react-icons/fa';
 import styles from '../../CustomPackageLayout.module.css';
 import { usePackageContext } from '../../context/PackageContext';
 import NavigationButtons from '../shared/NavigationButtons';
 import type { PaymentPlan } from '@/app/api/payment-plans/route';
 
 const PaymentPlanStep: React.FC = () => {
-  
   const {
     basePrice,
     pricingState,
@@ -27,7 +32,11 @@ const PaymentPlanStep: React.FC = () => {
 
   const getIconForPlan = (planName: string) => {
     if (planName.toLowerCase().includes('monthly')) return <FaCalendarAlt />;
-    if (planName.toLowerCase().includes('annual') || planName.toLowerCase().includes('yearly')) return <FaCalendarCheck />;
+    if (
+      planName.toLowerCase().includes('annual') ||
+      planName.toLowerCase().includes('yearly')
+    )
+      return <FaCalendarCheck />;
     if (planName.toLowerCase().includes('quarterly')) return <FaRegClock />;
     return <FaCalendarCheck />;
   };
@@ -48,10 +57,10 @@ const PaymentPlanStep: React.FC = () => {
   return (
     <Box className={styles.featuresContainer}>
       <Box className={styles.sectionHeader} sx={{ mb: 4, textAlign: 'center' }}>
-        <Typography 
-          variant="h4" 
-          sx={{ 
-            fontWeight: 700, 
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 700,
             color: '#1e293b',
             mb: 1.5,
             background: 'linear-gradient(90deg, #1e293b, #334155)',
@@ -62,17 +71,18 @@ const PaymentPlanStep: React.FC = () => {
         >
           Select Your Payment Plan
         </Typography>
-        <Typography 
-          variant="body1" 
-          sx={{ 
-            color: '#64748b', 
-            maxWidth: '700px', 
+        <Typography
+          variant="body1"
+          sx={{
+            color: '#64748b',
+            maxWidth: '700px',
             mx: 'auto',
             lineHeight: 1.6,
-            fontSize: '1.05rem'
+            fontSize: '1.05rem',
           }}
         >
-          Choose the billing cycle that works best for your business. Longer commitments offer greater savings.
+          Choose the billing cycle that works best for your business. Longer
+          commitments offer greater savings.
         </Typography>
       </Box>
 
@@ -87,8 +97,25 @@ const PaymentPlanStep: React.FC = () => {
         }}
       >
         {paymentPlansLoading ? (
-          <Box sx={{ gridColumn: '1 / -1', textAlign: 'center', py: 6, bgcolor: 'rgba(248, 250, 252, 0.8)', borderRadius: 3 }}>
-            <Typography variant="h6" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+          <Box
+            sx={{
+              gridColumn: '1 / -1',
+              textAlign: 'center',
+              py: 6,
+              bgcolor: 'rgba(248, 250, 252, 0.8)',
+              borderRadius: 3,
+            }}
+          >
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 2,
+              }}
+            >
               <span className="loading-pulse"></span>
               Loading payment plans...
             </Typography>
@@ -114,17 +141,20 @@ const PaymentPlanStep: React.FC = () => {
                   borderRadius: '16px',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   transform: isSelected ? 'translateY(-8px)' : 'none',
-                  backgroundColor: isSelected ? 'rgba(248, 250, 252, 0.8)' : 'white',
+                  backgroundColor: isSelected
+                    ? 'rgba(248, 250, 252, 0.8)'
+                    : 'white',
                   overflow: 'hidden',
-                  boxShadow: isSelected 
+                  boxShadow: isSelected
                     ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
                     : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                   '&:hover': {
                     transform: 'translateY(-8px)',
-                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                    boxShadow:
+                      '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
                     borderColor: isSelected ? '#2563eb' : '#94a3b8',
                   },
-                  
+
                   maxWidth: '100%',
                 }}
                 onClick={() => handlePlanSelect(plan.id)}
@@ -166,19 +196,24 @@ const PaymentPlanStep: React.FC = () => {
                 )}
 
                 <CardContent sx={{ p: 0 }}>
-                  <Box 
-                    sx={{ 
-                      p: { xs: 1.5, md: 2 }, 
+                  <Box
+                    sx={{
+                      p: { xs: 1.5, md: 2 },
                       pb: { xs: 1, md: 1.5 },
                       position: 'relative',
                       zIndex: 1,
                       borderBottom: '1px dashed rgba(226, 232, 240, 0.8)',
                     }}
                   >
-                    <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 1.5 }}>
-                      <Box 
-                        sx={{ 
-                          color: '#2563eb', 
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={1.5}
+                      sx={{ mb: 1.5 }}
+                    >
+                      <Box
+                        sx={{
+                          color: '#2563eb',
                           fontSize: '1rem',
                           width: { xs: 32, md: 36 },
                           height: { xs: 32, md: 36 },
@@ -195,19 +230,19 @@ const PaymentPlanStep: React.FC = () => {
                       <Box sx={{ flex: 1 }}>
                         <Typography
                           variant="h6"
-                          sx={{ 
-                            fontWeight: 700, 
+                          sx={{
+                            fontWeight: 700,
                             mb: 0.25,
                             color: '#1e293b',
-                            fontSize: { xs: '0.95rem', md: '1.1rem' }
+                            fontSize: { xs: '0.95rem', md: '1.1rem' },
                           }}
                         >
                           {plan.name}
                         </Typography>
-                        <Typography 
-                          variant="body2" 
+                        <Typography
+                          variant="body2"
                           color="text.secondary"
-                          sx={{ 
+                          sx={{
                             fontSize: '0.75rem',
                             lineHeight: 1.4,
                           }}
@@ -236,8 +271,8 @@ const PaymentPlanStep: React.FC = () => {
                       )}
                     </Stack>
 
-                    <Box 
-                      sx={{ 
+                    <Box
+                      sx={{
                         mb: 1.5,
                         p: { xs: 1.5, md: 2 },
                         backgroundColor: 'rgba(248, 250, 252, 0.8)',
@@ -248,12 +283,12 @@ const PaymentPlanStep: React.FC = () => {
                     >
                       <Typography
                         variant="h4"
-                        sx={{ 
-                          fontWeight: 800, 
+                        sx={{
+                          fontWeight: 800,
                           color: '#1e293b',
                           lineHeight: 1.1,
                           letterSpacing: '-0.02em',
-                          fontSize: { xs: '1.4rem', md: '1.6rem' }
+                          fontSize: { xs: '1.4rem', md: '1.6rem' },
                         }}
                       >
                         {formatPrice(selectedCurrency, planPrice)}
@@ -261,11 +296,11 @@ const PaymentPlanStep: React.FC = () => {
                           component="span"
                           variant="body2"
                           color="text.secondary"
-                          sx={{ 
+                          sx={{
                             ml: 0.5,
                             fontWeight: 500,
                             verticalAlign: 'middle',
-                            fontSize: { xs: '0.7rem', md: '0.8rem' }
+                            fontSize: { xs: '0.7rem', md: '0.8rem' },
                           }}
                         >
                           / {plan.period}
@@ -273,7 +308,15 @@ const PaymentPlanStep: React.FC = () => {
                       </Typography>
 
                       {plan.discountPercentage > 0 && (
-                        <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                        <Box
+                          sx={{
+                            mt: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 0.5,
+                          }}
+                        >
                           {plan.discountLabel && (
                             <Chip
                               label={plan.discountLabel}
@@ -289,9 +332,9 @@ const PaymentPlanStep: React.FC = () => {
                               }}
                             />
                           )}
-                          <Stack 
-                            direction="row" 
-                            spacing={0.5} 
+                          <Stack
+                            direction="row"
+                            spacing={0.5}
                             alignItems="center"
                             sx={{
                               color: '#10b981',
@@ -300,8 +343,13 @@ const PaymentPlanStep: React.FC = () => {
                             }}
                           >
                             <FaShieldAlt size={10} />
-                            <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.65rem' }}>
-                              Save {formatPrice(selectedCurrency, monthlySavings)} per month
+                            <Typography
+                              variant="caption"
+                              sx={{ fontWeight: 600, fontSize: '0.65rem' }}
+                            >
+                              Save{' '}
+                              {formatPrice(selectedCurrency, monthlySavings)}{' '}
+                              per month
                             </Typography>
                           </Stack>
                         </Box>
@@ -310,17 +358,28 @@ const PaymentPlanStep: React.FC = () => {
                   </Box>
 
                   <Box
-                    sx={{ 
+                    sx={{
                       p: { xs: 1.5, md: 2 },
                       pt: { xs: 1, md: 1.5 },
                     }}
                   >
                     <Stack spacing={1}>
-                      <Stack direction="row" spacing={1} alignItems="flex-start">
-                        <FaCheck size={10} style={{ color: '#10b981', marginTop: '3px', flexShrink: 0 }} />
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="flex-start"
+                      >
+                        <FaCheck
+                          size={10}
+                          style={{
+                            color: '#10b981',
+                            marginTop: '3px',
+                            flexShrink: 0,
+                          }}
+                        />
                         <Typography
                           variant="body2"
-                          sx={{ 
+                          sx={{
                             color: '#475569',
                             fontSize: '0.75rem',
                           }}
@@ -328,12 +387,23 @@ const PaymentPlanStep: React.FC = () => {
                           Billed every {plan.period}
                         </Typography>
                       </Stack>
-                      
-                      <Stack direction="row" spacing={1} alignItems="flex-start">
-                        <FaCheck size={10} style={{ color: '#10b981', marginTop: '3px', flexShrink: 0 }} />
+
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="flex-start"
+                      >
+                        <FaCheck
+                          size={10}
+                          style={{
+                            color: '#10b981',
+                            marginTop: '3px',
+                            flexShrink: 0,
+                          }}
+                        />
                         <Typography
                           variant="body2"
-                          sx={{ 
+                          sx={{
                             color: '#475569',
                             fontSize: '0.75rem',
                           }}
@@ -341,12 +411,23 @@ const PaymentPlanStep: React.FC = () => {
                           Cancel anytime
                         </Typography>
                       </Stack>
-                      
-                      <Stack direction="row" spacing={1} alignItems="flex-start">
-                        <FaCheck size={10} style={{ color: '#10b981', marginTop: '3px', flexShrink: 0 }} />
+
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="flex-start"
+                      >
+                        <FaCheck
+                          size={10}
+                          style={{
+                            color: '#10b981',
+                            marginTop: '3px',
+                            flexShrink: 0,
+                          }}
+                        />
                         <Typography
                           variant="body2"
-                          sx={{ 
+                          sx={{
                             color: '#475569',
                             fontSize: '0.75rem',
                           }}
@@ -354,18 +435,30 @@ const PaymentPlanStep: React.FC = () => {
                           Full feature access
                         </Typography>
                       </Stack>
-                      
+
                       {plan.discountPercentage > 0 && (
-                        <Stack direction="row" spacing={1} alignItems="flex-start">
-                          <FaCheck size={10} style={{ color: '#10b981', marginTop: '3px', flexShrink: 0 }} />
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          alignItems="flex-start"
+                        >
+                          <FaCheck
+                            size={10}
+                            style={{
+                              color: '#10b981',
+                              marginTop: '3px',
+                              flexShrink: 0,
+                            }}
+                          />
                           <Typography
                             variant="body2"
-                            sx={{ 
+                            sx={{
                               color: '#475569',
                               fontSize: '0.75rem',
                             }}
                           >
-                            {Math.round(plan.discountPercentage * 100)}% discount applied
+                            {Math.round(plan.discountPercentage * 100)}%
+                            discount applied
                           </Typography>
                         </Stack>
                       )}
@@ -376,30 +469,39 @@ const PaymentPlanStep: React.FC = () => {
             );
           })
         ) : (
-          <Box 
-            sx={{ 
-              gridColumn: '1 / -1', 
-              textAlign: 'center', 
-              py: 6, 
+          <Box
+            sx={{
+              gridColumn: '1 / -1',
+              textAlign: 'center',
+              py: 6,
               px: 3,
-              bgcolor: 'rgba(254, 242, 242, 0.6)', 
+              bgcolor: 'rgba(254, 242, 242, 0.6)',
               borderRadius: 3,
               border: '1px solid rgba(252, 165, 165, 0.2)',
             }}
           >
-            <Typography variant="h6" color="error" sx={{ mb: 1, fontWeight: 600 }}>
+            <Typography
+              variant="h6"
+              color="error"
+              sx={{ mb: 1, fontWeight: 600 }}
+            >
               No payment plans available
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ maxWidth: '500px', mx: 'auto' }}>
-              Please try refreshing the page or contact support if the issue persists.
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ maxWidth: '500px', mx: 'auto' }}
+            >
+              Please try refreshing the page or contact support if the issue
+              persists.
             </Typography>
           </Box>
         )}
       </Box>
 
-      <Card 
-        sx={{ 
-          mb: 3, 
+      <Card
+        sx={{
+          mb: 3,
           borderRadius: '12px',
           overflow: 'hidden',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
@@ -407,45 +509,101 @@ const PaymentPlanStep: React.FC = () => {
           width: '100%',
         }}
       >
-        <Box 
-          sx={{ 
-            p: 1.5, 
-            backgroundColor: '#f8fafc', 
+        <Box
+          sx={{
+            p: 1.5,
+            backgroundColor: '#f8fafc',
             borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
           }}
         >
-          <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '0.95rem' }}>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 700, color: '#1e293b', fontSize: '0.95rem' }}
+          >
             Billing Summary
           </Typography>
         </Box>
-        
+
         <CardContent sx={{ p: 2 }}>
           <Stack spacing={1.5}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.75rem' }}>Base Package:</Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600, color: '#1e293b', fontSize: '0.75rem' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{ color: '#64748b', fontSize: '0.75rem' }}
+              >
+                Base Package:
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 600, color: '#1e293b', fontSize: '0.75rem' }}
+              >
                 {formatPrice(selectedCurrency, basePrice)}
               </Typography>
             </Box>
-            
+
             {pricingState.totalFeaturePrice > 0 && (
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.75rem' }}>Features & Add-ons:</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 600, color: '#1e293b', fontSize: '0.75rem' }}>
-                  {formatPrice(selectedCurrency, pricingState.totalFeaturePrice)}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#64748b', fontSize: '0.75rem' }}
+                >
+                  Features & Add-ons:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 600,
+                    color: '#1e293b',
+                    fontSize: '0.75rem',
+                  }}
+                >
+                  {formatPrice(
+                    selectedCurrency,
+                    pricingState.totalFeaturePrice
+                  )}
                 </Typography>
               </Box>
             )}
-            
+
             {pricingState.supportPrice > 0 && (
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="body2" sx={{ color: '#64748b', fontSize: '0.75rem' }}>Support:</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 600, color: '#1e293b', fontSize: '0.75rem' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{ color: '#64748b', fontSize: '0.75rem' }}
+                >
+                  Support:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 600,
+                    color: '#1e293b',
+                    fontSize: '0.75rem',
+                  }}
+                >
                   {formatPrice(selectedCurrency, pricingState.supportPrice)}
                 </Typography>
               </Box>
             )}
-            
+
             {pricingState.planDiscount > 0 && (
               <Box
                 sx={{
@@ -455,8 +613,13 @@ const PaymentPlanStep: React.FC = () => {
                   color: '#10b981',
                 }}
               >
-                <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>Plan Discount:</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.75rem' }}>
+                <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>
+                  Plan Discount:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ fontWeight: 600, fontSize: '0.75rem' }}
+                >
                   -
                   {formatPrice(
                     selectedCurrency,
@@ -468,7 +631,7 @@ const PaymentPlanStep: React.FC = () => {
                 </Typography>
               </Box>
             )}
-            
+
             <Box
               sx={{
                 display: 'flex',
@@ -479,13 +642,16 @@ const PaymentPlanStep: React.FC = () => {
                 borderTop: '1px solid rgba(226, 232, 240, 0.8)',
               }}
             >
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1e293b', fontSize: '0.9rem' }}>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontWeight: 700, color: '#1e293b', fontSize: '0.9rem' }}
+              >
                 Total:
               </Typography>
-              <Typography 
-                variant="subtitle1" 
-                sx={{ 
-                  fontWeight: 800, 
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 800,
                   color: '#2563eb',
                   background: 'linear-gradient(90deg, #2563eb, #3b82f6)',
                   WebkitBackgroundClip: 'text',
@@ -509,7 +675,7 @@ const PaymentPlanStep: React.FC = () => {
         nextLabel="Continue"
         backLabel="Back"
       />
-      
+
       <style jsx global>{`
         .loading-pulse {
           display: inline-block;

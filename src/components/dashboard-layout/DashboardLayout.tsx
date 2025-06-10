@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { Box } from '@mui/material';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Navbar from '@/components/sidebar/Navbar';
@@ -58,218 +58,234 @@ interface DashboardLayoutProps {
   children?: React.ReactNode;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({
-  isDrawerOpen,
-  onDrawerToggle,
-  backgroundColor,
-  textColor = '#fff',
-  iconColor = '#fff',
-  navbarBgColor,
-}) => {
-  const { userInfo, isLoading: isUserLoading } = useKeycloakUser();
+const DashboardLayout: React.FC<DashboardLayoutProps> = memo(
+  ({
+    isDrawerOpen,
+    onDrawerToggle,
+    backgroundColor,
+    textColor = '#fff',
+    iconColor = '#fff',
+    navbarBgColor,
+  }) => {
+    const { userInfo, isLoading: isUserLoading } = useKeycloakUser();
 
-  const userId = userInfo?.sub || 'current-user';
+    const userId = userInfo?.sub || 'current-user';
 
-  console.log(
-    'Current authenticated user:',
-    JSON.stringify(userInfo?.name || 'Unknown', null, 2)
-  );
-  console.log(
-    'Using user ID for customization:',
-    JSON.stringify(userId, null, 2)
-  );
-
-  const { data, isSuccess } = useQuery<UserCustomization, Error>({
-    queryKey: ['userCustomization', userId],
-    queryFn: () => fetchCustomization(userId),
-
-    enabled: !isUserLoading,
-  });
-
-  const [customization, setCustomization] = useState<UserCustomization | null>(
-    null
-  );
-  const [openSettingsModal, setOpenSettingsModal] = useState(false);
-  const [initialSettingsTab, setInitialSettingsTab] =
-    useState('General Settings');
-  const [activeSection, setActiveSection] = useState(() => {
-    try {
-      const savedActiveItem = localStorage.getItem('sidebarActiveItem');
-      return savedActiveItem || 'Dashboard';
-    } catch (error) {
-      console.error(
-        'Error reading active section from localStorage:',
-        JSON.stringify(error, null, 2)
-      );
-      return 'Dashboard';
-    }
-  });
-
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'sidebarActiveItem' && e.newValue) {
-        setActiveSection(e.newValue);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isSuccess && data) {
-      console.log(
-        'Dashboard received customization data:',
-        JSON.stringify(data, null, 2)
-      );
-      console.log(
-        'Tax settings in dashboard:',
-        JSON.stringify(data.taxSettings, null, 2)
-      );
-      setCustomization(data);
-    }
-  }, [isSuccess, data]);
-
-  useEffect(() => {
-    const handleOpenSettingsModal = (event: CustomEvent) => {
-      if (event.detail?.initialTab) {
-        setInitialSettingsTab(event.detail.initialTab);
-      }
-      setOpenSettingsModal(true);
-    };
-
-    window.addEventListener(
-      'openSettingsModal',
-      handleOpenSettingsModal as EventListener
+    console.log(
+      'Current authenticated user:',
+      JSON.stringify(userInfo?.name || 'Unknown', null, 2)
+    );
+    console.log(
+      'Using user ID for customization:',
+      JSON.stringify(userId, null, 2)
     );
 
-    return () => {
-      window.removeEventListener(
+    const { data, isSuccess } = useQuery<UserCustomization, Error>({
+      queryKey: ['userCustomization', userId],
+      queryFn: () => fetchCustomization(userId),
+
+      enabled: !isUserLoading,
+    });
+
+    const [customization, setCustomization] =
+      useState<UserCustomization | null>(null);
+    const [openSettingsModal, setOpenSettingsModal] = useState(false);
+    const [initialSettingsTab, setInitialSettingsTab] =
+      useState('General Settings');
+    const [activeSection, setActiveSection] = useState(() => {
+      try {
+        const savedActiveItem = localStorage.getItem('sidebarActiveItem');
+        return savedActiveItem || 'Dashboard';
+      } catch (error) {
+        console.error(
+          'Error reading active section from localStorage:',
+          JSON.stringify(error, null, 2)
+        );
+        return 'Dashboard';
+      }
+    });
+
+    useEffect(() => {
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'sidebarActiveItem' && e.newValue) {
+          setActiveSection(e.newValue);
+        }
+      };
+
+      window.addEventListener('storage', handleStorageChange);
+
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+      };
+    }, []);
+
+    useEffect(() => {
+      if (isSuccess && data) {
+        console.log(
+          'Dashboard received customization data:',
+          JSON.stringify(data, null, 2)
+        );
+        console.log(
+          'Tax settings in dashboard:',
+          JSON.stringify(data.taxSettings, null, 2)
+        );
+        setCustomization(data);
+      }
+    }, [isSuccess, data]);
+
+    useEffect(() => {
+      const handleOpenSettingsModal = (event: CustomEvent) => {
+        if (event.detail?.initialTab) {
+          setInitialSettingsTab(event.detail.initialTab);
+        }
+        setOpenSettingsModal(true);
+      };
+
+      window.addEventListener(
         'openSettingsModal',
         handleOpenSettingsModal as EventListener
       );
-    };
-  }, []);
 
-  const handleSettingsClick = () => {
-    setOpenSettingsModal(true);
-  };
+      return () => {
+        window.removeEventListener(
+          'openSettingsModal',
+          handleOpenSettingsModal as EventListener
+        );
+      };
+    }, []);
 
-  const handleCloseSettings = () => {
-    setOpenSettingsModal(false);
-  };
+    const handleSettingsClick = useCallback(() => {
+      setOpenSettingsModal(true);
+    }, []);
 
-  const sidebarBackground =
-    customization?.sidebarColor || backgroundColor || '#173A79';
-  const logoUrl = customization?.logoUrl || '/Pisval_Logo.jpg';
-  const navbarBg = customization?.navbarColor || navbarBgColor || '#000000';
+    const handleCloseSettings = useCallback(() => {
+      setOpenSettingsModal(false);
+    }, []);
 
-  const handleCustomizationUpdated = (updated: UserCustomization) => {
-    console.log(
-      'Customization updated in dashboard:',
-      JSON.stringify(updated, null, 2)
+    const sidebarBackground = useMemo(
+      () => customization?.sidebarColor || backgroundColor || '#173A79',
+      [customization?.sidebarColor, backgroundColor]
     );
-    console.log(
-      'Updated tax settings:',
-      JSON.stringify(updated.taxSettings, null, 2)
-    );
-    setCustomization(updated);
-  };
 
-  return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: {
-          xs: '1fr',
-          sm: isDrawerOpen ? '320px 1fr' : '80px 1fr',
-        },
-        gridTemplateRows: '1fr',
-        minHeight: '100vh',
-        bgcolor: '#F3F4F6',
-        transition: 'grid-template-columns 0.3s ease',
-      }}
-    >
-      {}
+    const logoUrl = useMemo(
+      () => customization?.logoUrl || '/Pisval_Logo.jpg',
+      [customization?.logoUrl]
+    );
+
+    const navbarBg = useMemo(
+      () => customization?.navbarColor || navbarBgColor || '#000000',
+      [customization?.navbarColor, navbarBgColor]
+    );
+
+    const handleCustomizationUpdated = useCallback(
+      (updated: UserCustomization) => {
+        console.log(
+          'Customization updated in dashboard:',
+          JSON.stringify(updated, null, 2)
+        );
+        console.log(
+          'Updated tax settings:',
+          JSON.stringify(updated.taxSettings, null, 2)
+        );
+        setCustomization(updated);
+      },
+      []
+    );
+
+    return (
       <Box
         sx={{
-          gridColumn: '1 / 2',
-          gridRow: '1 / 2',
-          position: 'sticky',
-          top: 0,
-          height: '100vh',
-          zIndex: 1200,
-        }}
-      >
-        <Sidebar
-          drawerWidth={320}
-          isDrawerOpen={isDrawerOpen}
-          onDrawerToggle={onDrawerToggle}
-          backgroundColor={sidebarBackground}
-          textColor={textColor}
-          iconColor={iconColor}
-          onSettingsClick={handleSettingsClick}
-          onSectionSelect={(section) => {
-            setActiveSection(section);
-            localStorage.setItem('sidebarActiveItem', section);
-          }}
-          handleItemClick={(item) => {
-            console.log(`Item clicked: ${item}`);
-            setActiveSection(item);
-            localStorage.setItem('sidebarActiveItem', item);
-          }}
-          logoUrl={logoUrl}
-        />
-      </Box>
-
-      {}
-      <Box
-        component="main"
-        sx={{
-          gridColumn: {
-            xs: '1 / 2',
-            sm: '2 / 3',
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: isDrawerOpen ? '320px 1fr' : '80px 1fr',
           },
-          gridRow: '1 / 2',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          width: '100%',
-          height: '100vh',
+          gridTemplateRows: '1fr',
+          minHeight: '100vh',
+          bgcolor: '#F3F4F6',
+          transition: 'grid-template-columns 0.3s ease',
         }}
       >
-        <Navbar
-          drawerWidth={isDrawerOpen ? 320 : 80}
-          onDrawerToggle={onDrawerToggle}
-          backgroundColor={navbarBg}
-        />
-
+        {}
         <Box
           sx={{
-            flexGrow: 1,
-            overflow: 'auto',
-            pt: 8,
-            pb: 2,
-            px: { xs: 1, sm: 2 },
-            boxSizing: 'border-box',
-            width: '100%',
+            gridColumn: '1 / 2',
+            gridRow: '1 / 2',
+            position: 'sticky',
+            top: 0,
+            height: '100vh',
+            zIndex: 1200,
           }}
         >
-          <DashboardMainContainer activeSection={activeSection} />
+          <Sidebar
+            drawerWidth={320}
+            isDrawerOpen={isDrawerOpen}
+            onDrawerToggle={onDrawerToggle}
+            backgroundColor={sidebarBackground}
+            textColor={textColor}
+            iconColor={iconColor}
+            onSettingsClick={handleSettingsClick}
+            onSectionSelect={(section) => {
+              setActiveSection(section);
+              localStorage.setItem('sidebarActiveItem', section);
+            }}
+            handleItemClick={(item) => {
+              console.log(`Item clicked: ${item}`);
+              setActiveSection(item);
+              localStorage.setItem('sidebarActiveItem', item);
+            }}
+            logoUrl={logoUrl}
+          />
         </Box>
+
+        {}
+        <Box
+          component="main"
+          sx={{
+            gridColumn: {
+              xs: '1 / 2',
+              sm: '2 / 3',
+            },
+            gridRow: '1 / 2',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            width: '100%',
+            height: '100vh',
+          }}
+        >
+          <Navbar
+            drawerWidth={isDrawerOpen ? 320 : 80}
+            onDrawerToggle={onDrawerToggle}
+            backgroundColor={navbarBg}
+          />
+
+          <Box
+            sx={{
+              flexGrow: 1,
+              overflow: 'auto',
+              pt: 8,
+              pb: 2,
+              px: { xs: 1, sm: 2 },
+              boxSizing: 'border-box',
+              width: '100%',
+            }}
+          >
+            <DashboardMainContainer activeSection={activeSection} />
+          </Box>
+        </Box>
+        <SettingsModal
+          open={openSettingsModal}
+          onClose={handleCloseSettings}
+          userId={userId}
+          onCustomizationUpdated={handleCustomizationUpdated}
+          initialSetting={initialSettingsTab}
+        />
       </Box>
-      <SettingsModal
-        open={openSettingsModal}
-        onClose={handleCloseSettings}
-        userId={userId}
-        onCustomizationUpdated={handleCustomizationUpdated}
-        initialSetting={initialSettingsTab}
-      />
-    </Box>
-  );
-};
+    );
+  }
+);
+
+DashboardLayout.displayName = 'DashboardLayout';
 
 export default DashboardLayout;

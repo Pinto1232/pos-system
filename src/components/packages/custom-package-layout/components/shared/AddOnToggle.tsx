@@ -14,8 +14,13 @@ import {
   getSelectableItemProps,
 } from '../../utils/accessibilityUtils';
 
-
-const ListItem = ({ text, type = 'feature' }: { text: string; type?: 'feature' | 'dependency' }) => (
+const ListItem = ({
+  text,
+  type = 'feature',
+}: {
+  text: string;
+  type?: 'feature' | 'dependency';
+}) => (
   <Box
     component="li"
     sx={{
@@ -65,7 +70,6 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
   currency,
   formatPrice,
 }) => {
-  
   const sanitizeAddOnName = React.useCallback((name: string) => {
     return name.replace(/[^a-zA-Z0-9 ]/g, '');
   }, []);
@@ -102,22 +106,30 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
   const features = React.useMemo(() => {
     if (!addOn.features) return [];
     if (Array.isArray(addOn.features)) {
-      return addOn.features.filter(feature => feature && feature.trim() !== '');
+      return addOn.features.filter(
+        (feature) => feature && feature.trim() !== ''
+      );
     }
 
     try {
       // Cast to string to ensure TypeScript knows we're working with a string
       const featuresAsString = addOn.features as unknown as string;
       const parsedFeatures = JSON.parse(featuresAsString);
-      return Array.isArray(parsedFeatures) 
-        ? parsedFeatures.filter(feature => feature && feature.trim() !== '') 
+      return Array.isArray(parsedFeatures)
+        ? parsedFeatures.filter((feature) => feature && feature.trim() !== '')
         : [];
     } catch {
       // If it's a string but not valid JSON, try to split by commas
-      
+
       const featuresAsString = addOn.features as unknown as string;
-      if (typeof featuresAsString === 'string' && featuresAsString.trim() !== '') {
-        return featuresAsString.split(',').map(f => f.trim()).filter(f => f !== '');
+      if (
+        typeof featuresAsString === 'string' &&
+        featuresAsString.trim() !== ''
+      ) {
+        return featuresAsString
+          .split(',')
+          .map((f) => f.trim())
+          .filter((f) => f !== '');
       }
       return [];
     }
@@ -126,22 +138,28 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
   const dependencies = React.useMemo(() => {
     if (!addOn.dependencies) return [];
     if (Array.isArray(addOn.dependencies)) {
-      return addOn.dependencies.filter(dep => dep && dep.trim() !== '');
+      return addOn.dependencies.filter((dep) => dep && dep.trim() !== '');
     }
 
     try {
       // Cast to string to ensure TypeScript knows we're working with a string
       const dependenciesAsString = addOn.dependencies as unknown as string;
       const parsedDeps = JSON.parse(dependenciesAsString);
-      return Array.isArray(parsedDeps) 
-        ? parsedDeps.filter(dep => dep && dep.trim() !== '') 
+      return Array.isArray(parsedDeps)
+        ? parsedDeps.filter((dep) => dep && dep.trim() !== '')
         : [];
     } catch {
       // If it's a string but not valid JSON, try to split by commas
-      
+
       const dependenciesAsString = addOn.dependencies as unknown as string;
-      if (typeof dependenciesAsString === 'string' && dependenciesAsString.trim() !== '') {
-        return dependenciesAsString.split(',').map(d => d.trim()).filter(d => d !== '');
+      if (
+        typeof dependenciesAsString === 'string' &&
+        dependenciesAsString.trim() !== ''
+      ) {
+        return dependenciesAsString
+          .split(',')
+          .map((d) => d.trim())
+          .filter((d) => d !== '');
       }
       return [];
     }
@@ -152,7 +170,14 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
       isSelected,
       `Add-on: ${sanitizeAddOnName(addOn.name)}, Price: ${formatPrice(currency, addOnPrice)}`
     );
-  }, [isSelected, addOn.name, formatPrice, currency, addOnPrice, sanitizeAddOnName]);
+  }, [
+    isSelected,
+    addOn.name,
+    formatPrice,
+    currency,
+    addOnPrice,
+    sanitizeAddOnName,
+  ]);
 
   return (
     <Paper
@@ -165,7 +190,7 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
           : '1px solid rgba(226, 232, 240, 0.8)',
         borderRadius: '12px',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: isSelected 
+        boxShadow: isSelected
           ? '0 8px 20px rgba(37, 99, 235, 0.12)'
           : '0 2px 10px rgba(0, 0, 0, 0.04)',
         cursor: 'pointer',
@@ -186,11 +211,12 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
             left: 0,
             width: '100%',
             height: '100%',
-            background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, transparent 100%)',
+            background:
+              'linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, transparent 100%)',
             borderRadius: '10px',
             pointerEvents: 'none',
-          }
-        })
+          },
+        }),
       }}
       onClick={handleToggle}
       onKeyDown={(e) => handleKeyboardAction(e, handleToggle)}
@@ -228,7 +254,9 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
           display: 'flex',
           flexDirection: 'column',
           gap: 1.5,
-          borderBottom: isSelected ? '1px dashed rgba(37, 99, 235, 0.2)' : 'none',
+          borderBottom: isSelected
+            ? '1px dashed rgba(37, 99, 235, 0.2)'
+            : 'none',
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -238,7 +266,9 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
                 width: '40px',
                 height: '40px',
                 borderRadius: '8px',
-                backgroundColor: isSelected ? 'rgba(37, 99, 235, 0.1)' : 'rgba(226, 232, 240, 0.5)',
+                backgroundColor: isSelected
+                  ? 'rgba(37, 99, 235, 0.1)'
+                  : 'rgba(226, 232, 240, 0.5)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -279,21 +309,32 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
           {addOn.description}
         </Typography>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mt: 1,
+          }}
+        >
           <Chip
             label={formatPrice(currency, addOnPrice)}
             size="medium"
             sx={{
               fontWeight: 700,
               color: isSelected ? 'white' : '#2563eb',
-              backgroundColor: isSelected ? '#2563eb' : 'rgba(37, 99, 235, 0.08)',
+              backgroundColor: isSelected
+                ? '#2563eb'
+                : 'rgba(37, 99, 235, 0.08)',
               padding: '0 8px',
               height: '28px',
               borderRadius: '6px',
               fontSize: '0.85rem',
               transition: 'all 0.2s ease',
               border: isSelected ? 'none' : '1px solid rgba(37, 99, 235, 0.15)',
-              boxShadow: isSelected ? '0 2px 5px rgba(37, 99, 235, 0.2)' : 'none',
+              boxShadow: isSelected
+                ? '0 2px 5px rgba(37, 99, 235, 0.2)'
+                : 'none',
             }}
           />
           <Box
@@ -388,15 +429,24 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
                   <>
                     <ListItem text="RESTful API endpoints" type="feature" />
                     <ListItem text="OAuth authentication" type="feature" />
-                    <ListItem text="Comprehensive documentation" type="feature" />
-                    <ListItem text="Rate limits up to 10,000 requests/day" type="feature" />
+                    <ListItem
+                      text="Comprehensive documentation"
+                      type="feature"
+                    />
+                    <ListItem
+                      text="Rate limits up to 10,000 requests/day"
+                      type="feature"
+                    />
                     <ListItem text="Webhook support" type="feature" />
                   </>
                 )}
                 {sanitizeAddOnName(addOn.name) === 'Custom Branding' && (
                   <>
                     <ListItem text="Custom logo" type="feature" />
-                    <ListItem text="Color scheme customization" type="feature" />
+                    <ListItem
+                      text="Color scheme customization"
+                      type="feature"
+                    />
                     <ListItem text="Receipt customization" type="feature" />
                     <ListItem text="Email template branding" type="feature" />
                     <ListItem text="Custom domain" type="feature" />
@@ -420,7 +470,13 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
                     <ListItem text="Custom field mapping" type="feature" />
                   </>
                 )}
-                {!['Advanced Analytics', 'API Access', 'Custom Branding', '247 Support', 'Data Migration'].includes(sanitizeAddOnName(addOn.name)) && (
+                {![
+                  'Advanced Analytics',
+                  'API Access',
+                  'Custom Branding',
+                  '247 Support',
+                  'Data Migration',
+                ].includes(sanitizeAddOnName(addOn.name)) && (
                   <Typography
                     variant="body2"
                     sx={{
@@ -513,7 +569,13 @@ const AddOnToggle: React.FC<AddOnToggleProps> = ({
                     <ListItem text="ETL Tools" type="dependency" />
                   </>
                 )}
-                {!['Advanced Analytics', 'API Access', 'Custom Branding', '247 Support', 'Data Migration'].includes(sanitizeAddOnName(addOn.name)) && (
+                {![
+                  'Advanced Analytics',
+                  'API Access',
+                  'Custom Branding',
+                  '247 Support',
+                  'Data Migration',
+                ].includes(sanitizeAddOnName(addOn.name)) && (
                   <Typography
                     variant="body2"
                     sx={{

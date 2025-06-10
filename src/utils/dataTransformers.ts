@@ -72,8 +72,8 @@ export function transformBackendAddOnToFrontend(
         : undefined,
     category: backendAddOn.category || undefined,
     isActive: backendAddOn.isActive,
-    features: features, 
-    dependencies: dependencies, 
+    features: features,
+    dependencies: dependencies,
     icon: backendAddOn.icon || undefined,
   };
 }
