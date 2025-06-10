@@ -15,6 +15,7 @@ import { useCurrency } from '@/contexts/CurrencyContext';
 import { usePackageDataPreloader } from '@/hooks/usePackageDataPreloader';
 import { TranslatedText } from '@/i18n';
 import { useTranslationContext } from '@/i18n';
+import TierBadge from '@/components/tier/TierBadge';
 
 interface PricingPackageProps {
   packageData: {
@@ -25,9 +26,19 @@ interface PricingPackageProps {
     extraDescription: string;
     price: number;
     testPeriodDays: number;
-    type: string;
+    type:
+      | 'starter-plus'
+      | 'growth-pro'
+      | 'enterprise-elite'
+      | 'custom-pro'
+      | 'premium-plus';
     currency?: string;
     multiCurrencyPrices?: string;
+
+    tierId?: number;
+    tierLevel?: number;
+    tierName?: string;
+    tierDescription?: string;
   };
   onBuyNow: () => void;
 }
@@ -131,6 +142,16 @@ const PricingPackageCard: React.FC<PricingPackageProps> = memo(
               defaultValue={packageData.title}
             />
           </h2>
+          {packageData.tierLevel && packageData.tierName && (
+            <div style={{ marginTop: '8px' }}>
+              <TierBadge
+                tierLevel={packageData.tierLevel}
+                tierName={packageData.tierName}
+                tierDescription={packageData.tierDescription}
+                size="small"
+              />
+            </div>
+          )}
         </CardHeader>
 
         <CardContent className={styles.content}>

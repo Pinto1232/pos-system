@@ -14,10 +14,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import { useChatbot } from '@/contexts/ChatbotContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import { useCartUI } from '@/contexts/CartUIContext';
 
 const ChatbotButton = () => {
   const { toggleChatbot, isOpen } = useChatbot();
   const { selectedPackage } = usePackageSelection();
+  const { isCartOpen } = useCartUI();
   const [showNotification, setShowNotification] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const showTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -63,6 +65,10 @@ const ChatbotButton = () => {
       setShowNotification(false);
     }
   }, [selectedPackage, isOpen]);
+
+  if (isCartOpen) {
+    return null;
+  }
 
   return (
     <Fade in={isVisible} timeout={500}>

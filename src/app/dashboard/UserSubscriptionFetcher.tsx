@@ -49,8 +49,13 @@ export async function fetchUserSubscriptionData(
       pricingPackageId: 1,
       package: {
         id: 1,
-        title: 'Starter',
-        type: 'starter',
+        title: 'Starter Plus',
+        type: 'starter-plus',
+        tierId: 1,
+        tierLevel: 1,
+        tierName: 'Starter Plus',
+        tierDescription:
+          'Essential features for small businesses starting their POS journey',
       },
       startDate: new Date().toISOString(),
       isActive: true,

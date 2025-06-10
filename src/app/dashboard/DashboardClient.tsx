@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, memo } from 'react';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import DashboardContainer from '@/components/dashboard-layout/DashboardContainer';
@@ -16,52 +16,52 @@ interface DashboardClientProps {
   initialDashboardData?: DashboardSummary | null;
 }
 
-const DashboardClient: React.FC<DashboardClientProps> = ({
-  initialSubscriptionData,
-  initialDashboardData,
-}) => {
-  const queryClient = useQueryClient();
-  const { stopLoading } = useSpinner();
-  const { isInitialized } = useContext(AuthContext);
+const DashboardClient: React.FC<DashboardClientProps> = memo(
+  ({ initialSubscriptionData, initialDashboardData }) => {
+    const queryClient = useQueryClient();
+    const { stopLoading } = useSpinner();
+    const { isInitialized } = useContext(AuthContext);
 
-  const [, setAuthStatus] = useState({
-    isChecking: true,
-    isAuthorized: false,
-    errorMessage: '',
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [paymentStatus, setPaymentStatus] = useState({
-    isChecking: true,
-    isPaid: initialSubscriptionData?.isActive || false,
-    errorMessage: '',
-  });
-
-  // Use useMemo to read from sessionStorage only once during initial render
-  // const isFromPayment = useMemo(() => {
-  //   if (typeof window === 'undefined') return false;
-
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    console.log(
-      '⚠️ WARNING: Client-side authentication check is temporarily disabled for development'
-    );
-    console.log('⚠️ This should be re-enabled before deploying to production');
-
-    setAuthStatus({
-      isChecking: false,
-      isAuthorized: true,
+    const [, setAuthStatus] = useState({
+      isChecking: true,
+      isAuthorized: false,
       errorMessage: '',
     });
 
-    setPaymentStatus({
-      isChecking: false,
-      isPaid: true,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [paymentStatus, setPaymentStatus] = useState({
+      isChecking: true,
+      isPaid: initialSubscriptionData?.isActive || false,
       errorMessage: '',
     });
 
-    /* ORIGINAL AUTHENTICATION CODE - COMMENTED OUT TEMPORARILY
+    // Use useMemo to read from sessionStorage only once during initial render
+    // const isFromPayment = useMemo(() => {
+    //   if (typeof window === 'undefined') return false;
+
+    useEffect(() => {
+      if (!isInitialized) return;
+
+      console.log(
+        '⚠️ WARNING: Client-side authentication check is temporarily disabled for development'
+      );
+      console.log(
+        '⚠️ This should be re-enabled before deploying to production'
+      );
+
+      setAuthStatus({
+        isChecking: false,
+        isAuthorized: true,
+        errorMessage: '',
+      });
+
+      setPaymentStatus({
+        isChecking: false,
+        isPaid: true,
+        errorMessage: '',
+      });
+
+      /* ORIGINAL AUTHENTICATION CODE - COMMENTED OUT TEMPORARILY
     // Handle payment success case
     if (isFromPayment) {
       setAuthStatus({
@@ -233,106 +233,109 @@ const DashboardClient: React.FC<DashboardClientProps> = ({
 
     processAuth();
     */
-  }, [isInitialized, setAuthStatus, setPaymentStatus]);
+    }, [isInitialized, setAuthStatus, setPaymentStatus]);
 
-  // Initialize dashboard data in React Query cache
-  useEffect(() => {
-    if (initialDashboardData) {
-      queryClient.setQueryData(['dashboardSummary'], initialDashboardData);
-    }
-
-    if (initialSubscriptionData) {
-      queryClient.setQueryData(
-        ['userSubscription', initialSubscriptionData.userId],
-        initialSubscriptionData
-      );
-    }
-  }, [initialDashboardData, initialSubscriptionData, queryClient]);
-
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    const isFreshLogin =
-      typeof window !== 'undefined' &&
-      sessionStorage.getItem('freshLogin') === 'true';
-
-    const skipLoading =
-      typeof window !== 'undefined' &&
-      sessionStorage.getItem('skipDashboardLoading') === 'true';
-
-    const isMainDashboard =
-      typeof window !== 'undefined' &&
-      (window.location.pathname === '/dashboard' ||
-        window.location.pathname === '/');
-
-    if (skipLoading) {
-      if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('skipDashboardLoading');
-      }
-      stopLoading();
-      return;
-    }
-
-    if (isFreshLogin) {
-      if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('freshLogin');
+    // Initialize dashboard data in React Query cache
+    useEffect(() => {
+      if (initialDashboardData) {
+        queryClient.setQueryData(['dashboardSummary'], initialDashboardData);
       }
 
-      if (!isMainDashboard) {
+      if (initialSubscriptionData) {
+        queryClient.setQueryData(
+          ['userSubscription', initialSubscriptionData.userId],
+          initialSubscriptionData
+        );
+      }
+    }, [initialDashboardData, initialSubscriptionData, queryClient]);
+
+    useEffect(() => {
+      if (!isInitialized) return;
+
+      const isFreshLogin =
+        typeof window !== 'undefined' &&
+        sessionStorage.getItem('freshLogin') === 'true';
+
+      const skipLoading =
+        typeof window !== 'undefined' &&
+        sessionStorage.getItem('skipDashboardLoading') === 'true';
+
+      const isMainDashboard =
+        typeof window !== 'undefined' &&
+        (window.location.pathname === '/dashboard' ||
+          window.location.pathname === '/');
+
+      if (skipLoading) {
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('skipDashboardLoading');
+        }
+        stopLoading();
+        return;
+      }
+
+      if (isFreshLogin) {
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('freshLogin');
+        }
+
+        if (!isMainDashboard) {
+          const loadingTimeout = setTimeout(() => {
+            stopLoading();
+          }, 3000);
+          return () => clearTimeout(loadingTimeout);
+        }
+      }
+
+      if (isMainDashboard) {
+        stopLoading();
+      } else {
         const loadingTimeout = setTimeout(() => {
           stopLoading();
-        }, 3000);
+        }, 100);
         return () => clearTimeout(loadingTimeout);
       }
-    }
+    }, [isInitialized, stopLoading]);
 
-    if (isMainDashboard) {
-      stopLoading();
-    } else {
-      const loadingTimeout = setTimeout(() => {
-        stopLoading();
-      }, 100);
-      return () => clearTimeout(loadingTimeout);
-    }
-  }, [isInitialized, stopLoading]);
+    console.log(
+      '⚠️ WARNING: Dashboard rendering check is temporarily disabled for development'
+    );
 
-  console.log(
-    '⚠️ WARNING: Dashboard rendering check is temporarily disabled for development'
-  );
+    if (!isInitialized) {
+      const currentPath =
+        typeof window !== 'undefined' ? window.location.pathname : '';
 
-  if (!isInitialized) {
-    const currentPath =
-      typeof window !== 'undefined' ? window.location.pathname : '';
+      // Determine if we're on the home page or a non-dashboard page
+      const isHomePage =
+        currentPath === '/' || !currentPath.includes('/dashboard');
 
-    // Determine if we're on the home page or a non-dashboard page
-    const isHomePage =
-      currentPath === '/' || !currentPath.includes('/dashboard');
+      const isDashboardSubPage =
+        currentPath.includes('/dashboard') && currentPath !== '/dashboard';
 
-    const isDashboardSubPage =
-      currentPath.includes('/dashboard') && currentPath !== '/dashboard';
+      if (isHomePage) {
+        return null;
+      }
 
-    if (isHomePage) {
+      if (isDashboardSubPage) {
+        return (
+          <div
+            style={{
+              position: 'relative',
+              minHeight: '100px',
+              overflow: 'hidden',
+            }}
+          >
+            <DashboardLoading />
+          </div>
+        );
+      }
+
       return null;
     }
 
-    if (isDashboardSubPage) {
-      return (
-        <div
-          style={{
-            position: 'relative',
-            minHeight: '100px',
-            overflow: 'hidden',
-          }}
-        >
-          <DashboardLoading />
-        </div>
-      );
-    }
-
-    return null;
+    return <DashboardContainer />;
   }
+);
 
-  return <DashboardContainer />;
-};
+DashboardClient.displayName = 'DashboardClient';
 
 export default DashboardClient;

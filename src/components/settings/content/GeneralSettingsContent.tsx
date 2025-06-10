@@ -328,9 +328,29 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                 </Box>
                 <TextField
                   value={sidebarColor}
-                  onChange={(e) => setSidebarColor(e.target.value)}
+                  onChange={(e) => {
+                    const newColor = e.target.value;
+                    console.log('Sidebar TextField input:', newColor);
+
+                    if (
+                      newColor.match(/^#([0-9A-F]{3}){1,2}$/i) ||
+                      newColor.match(/^([0-9A-F]{3}){1,2}$/i)
+                    ) {
+                      setSidebarColor(
+                        newColor.startsWith('#') ? newColor : `#${newColor}`
+                      );
+                    } else if (newColor === '' || newColor === '#') {
+                      setSidebarColor('#');
+                    } else {
+                      setSidebarColor(newColor);
+                    }
+                  }}
                   size="small"
                   sx={{ width: '140px' }}
+                  placeholder="#173A79"
+                  inputProps={{
+                    maxLength: 7,
+                  }}
                 />
                 {showSidebarColorPicker && (
                   <Box
@@ -363,9 +383,14 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                     >
                       <SketchPicker
                         color={sidebarColor}
-                        onChange={(color: ColorResult) =>
-                          setSidebarColor(color.hex)
-                        }
+                        onChange={(color: ColorResult) => {
+                          console.log(
+                            'Sidebar color picker selected:',
+                            color.hex
+                          );
+                          setSidebarColor(color.hex);
+                        }}
+                        disableAlpha={true}
                       />
                     </Box>
                   </Box>
@@ -431,9 +456,29 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                 </Box>
                 <TextField
                   value={navbarColor}
-                  onChange={(e) => setNavbarColor(e.target.value)}
+                  onChange={(e) => {
+                    const newColor = e.target.value;
+                    console.log('TextField input:', newColor);
+
+                    if (
+                      newColor.match(/^#([0-9A-F]{3}){1,2}$/i) ||
+                      newColor.match(/^([0-9A-F]{3}){1,2}$/i)
+                    ) {
+                      setNavbarColor(
+                        newColor.startsWith('#') ? newColor : `#${newColor}`
+                      );
+                    } else if (newColor === '' || newColor === '#') {
+                      setNavbarColor('#');
+                    } else {
+                      setNavbarColor(newColor);
+                    }
+                  }}
                   size="small"
                   sx={{ width: '140px' }}
+                  placeholder="#000000"
+                  inputProps={{
+                    maxLength: 7,
+                  }}
                 />
                 {showNavbarColorPicker && (
                   <Box
@@ -466,9 +511,11 @@ const GeneralSettingsContent: React.FC<GeneralSettingsContentProps> = ({
                     >
                       <SketchPicker
                         color={navbarColor}
-                        onChange={(color: ColorResult) =>
-                          setNavbarColor(color.hex)
-                        }
+                        onChange={(color: ColorResult) => {
+                          console.log('Color picker selected:', color.hex);
+                          setNavbarColor(color.hex);
+                        }}
+                        disableAlpha={true}
                       />
                     </Box>
                   </Box>

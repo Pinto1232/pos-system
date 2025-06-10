@@ -9,14 +9,15 @@ import {
   mockFetchCustomization,
   mockUpdateCustomization,
 } from '@/api/mockUserCustomization';
-import { useUserSubscription } from '@/contexts/UserSubscriptionContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import { useTierAccess } from '@/hooks/useTierAccess';
 import SettingsModalPresentation from './SettingsModalPresentation';
 import {
   UserCustomization,
   TaxSettings,
   RegionalSettings,
   SettingsModalProps,
+  Package,
 } from '../types/settingsTypes';
 
 const DEFAULT_SIDEBAR_COLOR = '#173A79';
@@ -397,7 +398,17 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       setRegionalSettings(defaultRegionalSettings);
 
       if (typeof window !== 'undefined') {
+        const savedSidebarColor = localStorage.getItem('sidebarColor');
         const savedNavbarColor = localStorage.getItem('navbarColor');
+
+        if (savedSidebarColor) {
+          console.log(
+            'Found saved sidebar color in localStorage:',
+            JSON.stringify(savedSidebarColor, null, 2)
+          );
+          setSidebarColor(savedSidebarColor);
+        }
+
         if (savedNavbarColor) {
           console.log(
             'Found saved navbar color in localStorage:',
@@ -408,14 +419,30 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       }
 
       if (data) {
-        if (data.sidebarColor) setSidebarColor(data.sidebarColor);
+        if (data.sidebarColor) {
+          console.log(
+            'Setting sidebar color from API data:',
+            JSON.stringify(data.sidebarColor, null, 2)
+          );
+          setSidebarColor(data.sidebarColor);
+
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('sidebarColor', data.sidebarColor);
+          }
+        }
+
         if (data.navbarColor) {
           console.log(
             'Setting navbar color from API data:',
             JSON.stringify(data.navbarColor, null, 2)
           );
           setNavbarColor(data.navbarColor);
+
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('navbarColor', data.navbarColor);
+          }
         }
+
         if (data.logoUrl) setLogoPreview(data.logoUrl);
 
         if (data.taxSettings) {
@@ -482,11 +509,24 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
   const handleSave = () => {
     setIsSaving(true);
 
+    const validatedSidebarColor = sidebarColor.startsWith('#')
+      ? sidebarColor
+      : `#${sidebarColor}`;
+    const validatedNavbarColor = navbarColor.startsWith('#')
+      ? navbarColor
+      : `#${navbarColor}`;
+
+    console.log('Validated sidebar color before save:', validatedSidebarColor);
+    console.log('Validated navbar color before save:', validatedNavbarColor);
+
+    setSidebarColor(validatedSidebarColor);
+    setNavbarColor(validatedNavbarColor);
+
     const dataToSave: UserCustomization = {
       id: data?.id || 0,
       userId,
-      sidebarColor,
-      navbarColor,
+      sidebarColor: validatedSidebarColor,
+      navbarColor: validatedNavbarColor,
       logoUrl: logoPreview,
       taxSettings: taxSettings,
       regionalSettings: regionalSettings,
@@ -504,6 +544,14 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       'Regional settings being saved:',
       JSON.stringify(regionalSettings, null, 2)
     );
+    console.log(
+      'Sidebar Color being saved:',
+      JSON.stringify(sidebarColor, null, 2)
+    );
+    console.log(
+      'Navbar Color being saved:',
+      JSON.stringify(navbarColor, null, 2)
+    );
 
     console.log(
       'SettingsModal: Applying changes immediately to UI with data:',
@@ -512,20 +560,48 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     onCustomizationUpdated(dataToSave);
 
     console.log(
-      'SettingsModal: Emitting customization update event with navbarColor:',
-      JSON.stringify(navbarColor, null, 2)
+      'SettingsModal: Emitting customization update event with colors:',
+      JSON.stringify(
+        {
+          sidebarColor: validatedSidebarColor,
+          navbarColor: validatedNavbarColor,
+        },
+        null,
+        2
+      )
     );
     eventBus.emit(UI_EVENTS.CUSTOMIZATION_UPDATED, {
-      navbarColor,
-      sidebarColor,
+      navbarColor: validatedNavbarColor,
+      sidebarColor: validatedSidebarColor,
       logoUrl: logoPreview,
     });
 
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem('userCustomization', JSON.stringify(dataToSave));
+
+        localStorage.setItem('sidebarColor', validatedSidebarColor);
+        localStorage.setItem('navbarColor', validatedNavbarColor);
+
         console.log(
           'SettingsModal: Saved customization data directly to localStorage'
+        );
+        console.log(
+          'SettingsModal: Saved colors to localStorage:',
+          JSON.stringify(
+            {
+              sidebarColor: validatedSidebarColor,
+              navbarColor: validatedNavbarColor,
+            },
+            null,
+            2
+          )
+        );
+
+        const savedNavbarColor = localStorage.getItem('navbarColor');
+        console.log(
+          'Verification - Navbar color in localStorage:',
+          savedNavbarColor
         );
       } catch (error) {
         console.error(
@@ -536,6 +612,18 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     }
 
     try {
+      console.log(
+        'Saving sidebar and navbar colors to database:',
+        JSON.stringify(
+          {
+            sidebarColor: validatedSidebarColor,
+            navbarColor: validatedNavbarColor,
+          },
+          null,
+          2
+        )
+      );
+
       updateCustomizationMutation.mutate(dataToSave, {
         onSuccess: (updatedData) => {
           console.log(
@@ -543,7 +631,44 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             JSON.stringify(updatedData, null, 2)
           );
 
-          onCustomizationUpdated(updatedData as UserCustomization);
+          const savedData = updatedData as UserCustomization;
+          console.log(
+            'Saved sidebar color:',
+            JSON.stringify(savedData.sidebarColor, null, 2)
+          );
+          console.log(
+            'Saved navbar color:',
+            JSON.stringify(savedData.navbarColor, null, 2)
+          );
+
+          onCustomizationUpdated(savedData);
+
+          if (typeof window !== 'undefined') {
+            const confirmedSidebarColor = savedData.sidebarColor.startsWith('#')
+              ? savedData.sidebarColor
+              : `#${savedData.sidebarColor}`;
+
+            const confirmedNavbarColor = savedData.navbarColor.startsWith('#')
+              ? savedData.navbarColor
+              : `#${savedData.navbarColor}`;
+
+            setSidebarColor(confirmedSidebarColor);
+            setNavbarColor(confirmedNavbarColor);
+
+            localStorage.setItem('sidebarColor', confirmedSidebarColor);
+            localStorage.setItem('navbarColor', confirmedNavbarColor);
+
+            console.log('Confirmed colors saved to localStorage:', {
+              sidebarColor: confirmedSidebarColor,
+              navbarColor: confirmedNavbarColor,
+            });
+
+            const savedNavbarColor = localStorage.getItem('navbarColor');
+            console.log(
+              'Verification after API success - Navbar color in localStorage:',
+              savedNavbarColor
+            );
+          }
 
           queryClient.invalidateQueries({
             queryKey: ['userCustomization', userId],
@@ -571,7 +696,48 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
               JSON.stringify(updatedData, null, 2)
             );
 
-            onCustomizationUpdated(updatedData);
+            const savedData = updatedData as UserCustomization;
+            console.log(
+              'Mock saved sidebar color:',
+              JSON.stringify(savedData.sidebarColor, null, 2)
+            );
+            console.log(
+              'Mock saved navbar color:',
+              JSON.stringify(savedData.navbarColor, null, 2)
+            );
+
+            const confirmedSidebarColor = savedData.sidebarColor.startsWith('#')
+              ? savedData.sidebarColor
+              : `#${savedData.sidebarColor}`;
+
+            const confirmedNavbarColor = savedData.navbarColor.startsWith('#')
+              ? savedData.navbarColor
+              : `#${savedData.navbarColor}`;
+
+            setSidebarColor(confirmedSidebarColor);
+            setNavbarColor(confirmedNavbarColor);
+
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('sidebarColor', confirmedSidebarColor);
+              localStorage.setItem('navbarColor', confirmedNavbarColor);
+
+              console.log('Mock confirmed colors saved to localStorage:', {
+                sidebarColor: confirmedSidebarColor,
+                navbarColor: confirmedNavbarColor,
+              });
+
+              const savedNavbarColor = localStorage.getItem('navbarColor');
+              console.log(
+                'Verification after mock - Navbar color in localStorage:',
+                savedNavbarColor
+              );
+            }
+
+            onCustomizationUpdated({
+              ...updatedData,
+              sidebarColor: confirmedSidebarColor,
+              navbarColor: confirmedNavbarColor,
+            });
 
             queryClient.invalidateQueries({
               queryKey: ['userCustomization', userId],
@@ -601,7 +767,48 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           JSON.stringify(updatedData, null, 2)
         );
 
-        onCustomizationUpdated(updatedData);
+        const savedData = updatedData as UserCustomization;
+        console.log(
+          'Mock saved sidebar color (catch):',
+          JSON.stringify(savedData.sidebarColor, null, 2)
+        );
+        console.log(
+          'Mock saved navbar color (catch):',
+          JSON.stringify(savedData.navbarColor, null, 2)
+        );
+
+        const confirmedSidebarColor = savedData.sidebarColor.startsWith('#')
+          ? savedData.sidebarColor
+          : `#${savedData.sidebarColor}`;
+
+        const confirmedNavbarColor = savedData.navbarColor.startsWith('#')
+          ? savedData.navbarColor
+          : `#${savedData.navbarColor}`;
+
+        setSidebarColor(confirmedSidebarColor);
+        setNavbarColor(confirmedNavbarColor);
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('sidebarColor', confirmedSidebarColor);
+          localStorage.setItem('navbarColor', confirmedNavbarColor);
+
+          console.log('Catch block: Confirmed colors saved to localStorage:', {
+            sidebarColor: confirmedSidebarColor,
+            navbarColor: confirmedNavbarColor,
+          });
+
+          const savedNavbarColor = localStorage.getItem('navbarColor');
+          console.log(
+            'Verification in catch block - Navbar color in localStorage:',
+            savedNavbarColor
+          );
+        }
+
+        onCustomizationUpdated({
+          ...updatedData,
+          sidebarColor: confirmedSidebarColor,
+          navbarColor: confirmedNavbarColor,
+        });
 
         queryClient.invalidateQueries({
           queryKey: ['userCustomization', userId],
@@ -626,14 +833,48 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     setLogoPreview(DEFAULT_LOGO_URL);
     setTaxSettings(DEFAULT_TAX_SETTINGS);
     setRegionalSettings(DEFAULT_REGIONAL_SETTINGS);
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sidebarColor', DEFAULT_SIDEBAR_COLOR);
+      localStorage.setItem('navbarColor', DEFAULT_NAVBAR_COLOR);
+
+      const savedCustomization = localStorage.getItem('userCustomization');
+      if (savedCustomization) {
+        try {
+          const customization = JSON.parse(savedCustomization);
+          customization.sidebarColor = DEFAULT_SIDEBAR_COLOR;
+          customization.navbarColor = DEFAULT_NAVBAR_COLOR;
+          localStorage.setItem(
+            'userCustomization',
+            JSON.stringify(customization)
+          );
+        } catch (error) {
+          console.error(
+            'Error updating userCustomization in localStorage:',
+            error
+          );
+        }
+      }
+    }
   };
 
-  const {
-    enableAdditionalPackage: enablePackage,
-    disableAdditionalPackage: disablePackage,
-  } = useUserSubscription();
-
   const { selectPackage: selectPackageInContext } = usePackageSelection();
+
+  const { subscriptionData } = useTierAccess();
+
+  const enablePackageImpl = useCallback(
+    async (packageId: number): Promise<void> => {
+      console.log(`Enabling package ${packageId}`);
+    },
+    []
+  );
+
+  const disablePackageImpl = useCallback(
+    async (packageId: number): Promise<void> => {
+      console.log(`Disabling package ${packageId}`);
+    },
+    []
+  );
 
   const enableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingProcessedRef = useRef<number | null>(null);
@@ -641,20 +882,36 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
   const disableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingDisabledRef = useRef<number | null>(null);
 
-  interface Package {
-    id: number;
-    title: string;
-    description: string;
-    icon: string;
-    extraDescription: string;
-    price: number;
-    testPeriodDays: number;
-    type: string;
-    currency?: string;
-    multiCurrencyPrices?: string;
-  }
-
   const { getSavedPackage } = usePackageSelection();
+
+  const transformPackage = (apiPackage: Record<string, unknown>): Package => {
+    const validTypes: Package['type'][] = [
+      'starter-plus',
+      'growth-pro',
+      'enterprise-elite',
+      'custom-pro',
+      'premium-plus',
+    ];
+    const type = String(apiPackage.type || '').toLowerCase();
+    const validType = validTypes.includes(type as Package['type'])
+      ? (type as Package['type'])
+      : 'starter-plus';
+
+    return {
+      id: Number(apiPackage.id) || 0,
+      title: String(apiPackage.title || ''),
+      description: String(apiPackage.description || ''),
+      icon: String(apiPackage.icon || ''),
+      extraDescription: String(apiPackage.extraDescription || ''),
+      price: Number(apiPackage.price) || 0,
+      testPeriodDays: Number(apiPackage.testPeriodDays) || 14,
+      type: validType,
+      currency: apiPackage.currency ? String(apiPackage.currency) : undefined,
+      multiCurrencyPrices: apiPackage.multiCurrencyPrices
+        ? String(apiPackage.multiCurrencyPrices)
+        : undefined,
+    };
+  };
 
   const {
     data: packages,
@@ -691,6 +948,10 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           console.log(
             `[SETTINGS MODAL] Retrieved ${data.data.length} packages from API`
           );
+          console.log(
+            '[SETTINGS MODAL] Package titles:',
+            data.data.map((p: Package) => p.title)
+          );
 
           const logLimit = Math.min(data.data.length, 3);
           for (let i = 0; i < logLimit; i++) {
@@ -707,10 +968,17 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           }
 
           const uniquePackages = data.data.filter(
-            (pkg: Package, index: number, self: Package[]) =>
-              index === self.findIndex((p: Package) => p.title === pkg.title)
+            (
+              pkg: Record<string, unknown>,
+              index: number,
+              self: Record<string, unknown>[]
+            ) =>
+              index ===
+              self.findIndex(
+                (p: Record<string, unknown>) => p.title === pkg.title
+              )
           );
-          return uniquePackages;
+          return uniquePackages.map(transformPackage);
         }
 
         if (Array.isArray(data)) {
@@ -732,10 +1000,13 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             );
           }
 
-          return data;
+          return data.map(transformPackage);
         }
 
         console.warn('No valid package data found, using fallback data');
+        console.log(
+          '[SETTINGS MODAL] Using fallback packages - should have 5 packages'
+        );
 
         return [
           {
@@ -905,43 +1176,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     retryDelay: 1000,
   });
 
-  interface Subscription {
-    id: number;
-    userId: string;
-    pricingPackageId: number;
-    package: {
-      id: number;
-      title: string;
-      type: string;
-    };
-    startDate: string;
-    isActive: boolean;
-    enabledFeatures: string[];
-    additionalPackages: number[];
-  }
-
-  const subscription: Subscription = {
-    id: 1,
-    userId: userId,
-    pricingPackageId: 1,
-    package: {
-      id: 1,
-      title: 'Starter',
-      type: 'starter',
-    },
-    startDate: new Date().toISOString(),
-    isActive: true,
-    enabledFeatures: [
-      'Dashboard',
-      'Products List',
-      'Add/Edit Product',
-      'Sales Reports',
-      'Inventory Management',
-      'Customer Management',
-    ],
-    additionalPackages: [],
-  };
-
   const enableAdditionalPackage = useCallback(
     async (packageId: number) => {
       if (
@@ -960,7 +1194,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       packageBeingProcessedRef.current = packageId;
 
       try {
-        await enablePackage(packageId);
+        await enablePackageImpl(packageId);
 
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         if (selectedPkg) {
@@ -1042,7 +1276,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         packageBeingProcessedRef.current = null;
       }
     },
-    [enablePackage, packages, selectPackageInContext]
+    [enablePackageImpl, packages, selectPackageInContext]
   );
 
   const disableAdditionalPackage = useCallback(
@@ -1063,7 +1297,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       packageBeingDisabledRef.current = packageId;
 
       try {
-        await disablePackage(packageId);
+        await disablePackageImpl(packageId);
 
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
@@ -1098,7 +1332,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         }, resetDelay);
       }
     },
-    [disablePackage, packages]
+    [disablePackageImpl, packages]
   );
 
   const lastProcessedEventRef = useRef<number>(0);
@@ -1293,7 +1527,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       isPackagesLoading={isPackagesLoading}
       packagesError={packagesError}
       refetchPackages={refetchPackages}
-      subscription={subscription}
+      subscription={null}
       availableFeatures={availableFeatures}
       enableAdditionalPackage={enableAdditionalPackage}
       disableAdditionalPackage={disableAdditionalPackage}
@@ -1309,6 +1543,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       snackbarSeverity={snackbarSeverity}
       changeHistory={changeHistory}
       isSaving={isSaving}
+      subscriptionData={subscriptionData}
     />
   );
 };

@@ -9,7 +9,6 @@ interface ValidationResult {
   translatedKeys: number;
 }
 
-
 const REQUIRED_FOOTER_KEYS = [
   'subscription.title',
   'subscription.subtitle',
@@ -32,9 +31,6 @@ const REQUIRED_FOOTER_KEYS = [
   'footer.privacy',
   'footer.copyright',
 ];
-
-
-
 
 export function validateTranslationKeys(
   translations: any,
@@ -70,9 +66,6 @@ export function validateTranslationKeys(
   };
 }
 
-
-
-
 export async function validateLanguageTranslations(
   languageCode: string
 ): Promise<ValidationResult> {
@@ -96,16 +89,13 @@ export async function validateLanguageTranslations(
     return {
       language: language?.name || languageCode,
       code: languageCode,
-      missingKeys: REQUIRED_FOOTER_KEYS, 
+      missingKeys: REQUIRED_FOOTER_KEYS,
       isValid: false,
       totalKeys: REQUIRED_FOOTER_KEYS.length,
       translatedKeys: 0,
     };
   }
 }
-
-
-
 
 export async function validateAllLanguageTranslations(): Promise<
   ValidationResult[]
@@ -119,9 +109,6 @@ export async function validateAllLanguageTranslations(): Promise<
 
   return results;
 }
-
-
-
 
 export function generateValidationReport(results: ValidationResult[]): string {
   let report = '=== Footer Translation Validation Report ===\n\n';

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Drawer,
   Box,
@@ -18,6 +18,7 @@ import { HiShoppingCart } from 'react-icons/hi';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
+import { useCartUI } from '@/contexts/CartUIContext';
 import CheckoutModal from '@/components/payment/CheckoutModal';
 
 interface CartSidebarProps {
@@ -120,8 +121,13 @@ const formatPrice = (amount: number) => {
 const CartSidebar: React.FC<CartSidebarProps> = ({ open, onClose }) => {
   const router = useRouter();
   const { cartItems, removeFromCart } = useCart();
+  const { setCartOpen } = useCartUI();
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+
+  useEffect(() => {
+    setCartOpen(open);
+  }, [open, setCartOpen]);
 
   const modalCustomStyles = {
     width: '1000px',

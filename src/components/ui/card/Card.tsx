@@ -3,14 +3,20 @@
 import React, { memo, Suspense } from 'react';
 import styles from './Card.module.css';
 
-interface CardProps {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   className?: string;
 }
 
-export const Card: React.FC<CardProps> = memo(({ children, className }) => {
-  return <div className={`${styles.card} ${className}`}>{children}</div>;
-});
+export const Card: React.FC<CardProps> = memo(
+  ({ children, className, ...props }) => {
+    return (
+      <div className={`${styles.card} ${className}`} {...props}>
+        {children}
+      </div>
+    );
+  }
+);
 Card.displayName = 'Card';
 
 interface CardHeaderProps {

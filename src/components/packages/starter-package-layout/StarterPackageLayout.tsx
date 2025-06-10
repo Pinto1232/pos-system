@@ -35,7 +35,6 @@ interface StarterPackageLayoutProps {
   };
 }
 
-
 const mapPackageType = (
   type: string
 ):

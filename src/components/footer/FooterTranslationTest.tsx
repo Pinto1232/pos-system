@@ -25,7 +25,6 @@ const FooterTranslationTest: React.FC = () => {
   const [testResults, setTestResults] = useState<LanguageTestResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  
   const footerKeys = [
     'subscription.title',
     'subscription.subtitle',
@@ -59,10 +58,8 @@ const FooterTranslationTest: React.FC = () => {
       throw new Error(`Language ${languageCode} not found`);
     }
 
-    
     changeLanguage(languageCode);
 
-    
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const results: TranslationTestResult[] = [];
@@ -72,7 +69,6 @@ const FooterTranslationTest: React.FC = () => {
       let translation: string;
 
       if (key === 'footer.copyright') {
-        
         translation = t(key, {
           defaultValue,
           year: new Date().getFullYear(),
@@ -137,14 +133,13 @@ const FooterTranslationTest: React.FC = () => {
   };
 
   useEffect(() => {
-    
     testCurrentLanguage();
   }, []);
 
   const getStatusColor = (successRate: number) => {
-    if (successRate === 100) return '#4caf50'; 
-    if (successRate >= 80) return '#ff9800'; 
-    return '#f44336'; 
+    if (successRate === 100) return '#4caf50';
+    if (successRate >= 80) return '#ff9800';
+    return '#f44336';
   };
 
   const getStatusText = (successRate: number) => {

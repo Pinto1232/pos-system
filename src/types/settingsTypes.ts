@@ -62,7 +62,12 @@ export interface Package {
   extraDescription: string;
   price: number;
   testPeriodDays: number;
-  type: string;
+  type:
+    | 'starter-plus'
+    | 'growth-pro'
+    | 'enterprise-elite'
+    | 'custom-pro'
+    | 'premium-plus';
   currency?: string;
   multiCurrencyPrices?: string;
 }
@@ -74,7 +79,12 @@ export interface Subscription {
   package?: {
     id: number;
     title: string;
-    type: string;
+    type:
+      | 'starter-plus'
+      | 'growth-pro'
+      | 'enterprise-elite'
+      | 'custom-pro'
+      | 'premium-plus';
   };
   startDate: string;
   endDate?: string;
@@ -128,7 +138,7 @@ export interface SettingsModalPresentationProps {
   isPackagesLoading?: boolean;
   packagesError?: Error | null;
   refetchPackages?: () => void;
-  subscription: Subscription;
+  subscription: Subscription | null;
   availableFeatures: string[];
   enableAdditionalPackage: (packageId: number) => Promise<void>;
   disableAdditionalPackage: (packageId: number) => Promise<void>;
@@ -149,6 +159,29 @@ export interface SettingsModalPresentationProps {
     newValue: unknown;
   }[];
   isSaving?: boolean;
+  subscriptionData?: {
+    id: number;
+    userId: string;
+    pricingPackageId: number;
+    package?: {
+      id: number;
+      title: string;
+      type:
+        | 'starter-plus'
+        | 'growth-pro'
+        | 'enterprise-elite'
+        | 'custom-pro'
+        | 'premium-plus';
+      tierId?: number;
+      tierLevel?: number;
+      tierName?: string;
+      tierDescription?: string;
+    };
+    startDate: string;
+    isActive: boolean;
+    enabledFeatures: string[];
+    additionalPackages: number[];
+  } | null;
 }
 
 export const settingsItems: SettingsItem[] = [
@@ -177,6 +210,11 @@ export const settingsItems: SettingsItem[] = [
   {
     label: 'Package Management',
     tooltip: 'Manage your subscription packages and enable additional features',
+  },
+  {
+    label: 'Subscription & Tier Management',
+    tooltip:
+      'View your current subscription tier, available features, and upgrade options',
   },
   {
     label: 'Email & Notification Settings',

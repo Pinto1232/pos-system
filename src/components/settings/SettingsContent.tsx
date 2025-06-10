@@ -11,9 +11,14 @@ import SystemBackupContent from './content/SystemBackupContent';
 import ApiIntegrationsContent from './content/ApiIntegrationsContent';
 import CacheManagementContent from './content/CacheManagementContent';
 import ChangeHistoryContent from './content/ChangeHistoryContent';
-import { TaxSettings, RegionalSettings } from '../../types/settingsTypes';
-
-import type { Package, Subscription } from './content/PackageManagementContent';
+import TierManagementContent from './content/TierManagementContent';
+import {
+  TaxSettings,
+  RegionalSettings,
+  Package,
+  Subscription,
+} from '../../types/settingsTypes';
+import { UserSubscriptionData } from '@/app/dashboard/types';
 
 interface SettingsContentProps {
   isLoading: boolean;
@@ -40,7 +45,7 @@ interface SettingsContentProps {
   isPackagesLoading?: boolean;
   packagesError?: Error | null;
   refetchPackages?: () => void;
-  subscription: Subscription;
+  subscription: Subscription | null;
   availableFeatures: string[];
   enableAdditionalPackage: (packageId: number) => Promise<void>;
   disableAdditionalPackage: (packageId: number) => Promise<void>;
@@ -56,6 +61,7 @@ interface SettingsContentProps {
     oldValue: unknown;
     newValue: unknown;
   }[];
+  subscriptionData?: UserSubscriptionData | null;
 }
 
 const SettingsContent: React.FC<SettingsContentProps> = ({
@@ -94,6 +100,7 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
   prefetchImportantData,
   setPrefetchImportantData,
   changeHistory,
+  subscriptionData,
 }) => {
   const renderSettingContent = () => {
     switch (selectedSetting) {
@@ -149,6 +156,8 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
             disableAdditionalPackage={disableAdditionalPackage}
           />
         );
+      case 'Subscription & Tier Management':
+        return <TierManagementContent subscriptionData={subscriptionData} />;
       case 'Email & Notification Settings':
         return <EmailSettingsContent />;
       case 'System Backup & Restore':

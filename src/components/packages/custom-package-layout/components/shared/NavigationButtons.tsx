@@ -41,56 +41,60 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   showSaveButton = false,
 }) => {
   return (
-    <div className={styles.packageDetailsControls}>
-      {showBackButton && (
-        <Button
-          className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
-          variant="outlined"
-          onClick={onBack}
-          disabled={isBackDisabled || isBackLoading}
-          aria-label={backLabel}
-          onKeyDown={(e) => handleKeyboardAction(e, onBack || (() => {}))}
-          tabIndex={0}
-        >
-          {isBackLoading ? <CircularProgress size={20} /> : backLabel}
-        </Button>
-      )}
+    <div className={styles.packageDetailsControls} style={{ width: '100%' }}>
+      <div>
+        {showBackButton && (
+          <Button
+            className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonBack}`}
+            variant="outlined"
+            onClick={onBack}
+            disabled={isBackDisabled || isBackLoading}
+            aria-label={backLabel}
+            onKeyDown={(e) => handleKeyboardAction(e, onBack || (() => {}))}
+            tabIndex={0}
+          >
+            {isBackLoading ? <CircularProgress size={20} /> : backLabel}
+          </Button>
+        )}
+      </div>
 
-      {showNextButton && (
-        <Button
-          className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
-          variant="contained"
-          onClick={onNext}
-          disabled={isNextDisabled || isNextLoading}
-          aria-label={nextLabel}
-          onKeyDown={(e) => handleKeyboardAction(e, onNext || (() => {}))}
-          tabIndex={0}
-        >
-          {isNextLoading ? (
-            <CircularProgress size={20} sx={{ color: 'white' }} />
-          ) : (
-            nextLabel
-          )}
-        </Button>
-      )}
+      <div>
+        {showNextButton && (
+          <Button
+            className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
+            variant="contained"
+            onClick={onNext}
+            disabled={isNextDisabled || isNextLoading}
+            aria-label={nextLabel}
+            onKeyDown={(e) => handleKeyboardAction(e, onNext || (() => {}))}
+            tabIndex={0}
+          >
+            {isNextLoading ? (
+              <CircularProgress size={20} sx={{ color: 'white' }} />
+            ) : (
+              nextLabel
+            )}
+          </Button>
+        )}
 
-      {showSaveButton && (
-        <Button
-          className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
-          variant="contained"
-          onClick={onSave}
-          disabled={isSaveDisabled || isSaveLoading}
-          aria-label={saveLabel}
-          onKeyDown={(e) => handleKeyboardAction(e, onSave || (() => {}))}
-          tabIndex={0}
-        >
-          {isSaveLoading ? (
-            <CircularProgress size={20} sx={{ color: 'white' }} />
-          ) : (
-            saveLabel
-          )}
-        </Button>
-      )}
+        {showSaveButton && (
+          <Button
+            className={`${styles.packageDetailsButton} ${styles.packageDetailsButtonContinue}`}
+            variant="contained"
+            onClick={onSave}
+            disabled={isSaveDisabled || isSaveLoading}
+            aria-label={saveLabel}
+            onKeyDown={(e) => handleKeyboardAction(e, onSave || (() => {}))}
+            tabIndex={0}
+          >
+            {isSaveLoading ? (
+              <CircularProgress size={20} sx={{ color: 'white' }} />
+            ) : (
+              saveLabel
+            )}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

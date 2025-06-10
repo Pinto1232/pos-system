@@ -36,7 +36,6 @@ interface EnterprisePackageLayoutProps {
   };
 }
 
-
 const mapPackageType = (
   type: string
 ):

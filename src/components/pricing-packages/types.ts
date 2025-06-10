@@ -11,6 +11,11 @@ export type PricePackages = {
     packageType?: string;
     currency?: string;
     multiCurrencyPrices?: string;
+
+    tierId?: number;
+    tierLevel?: number;
+    tierName?: string;
+    tierDescription?: string;
   }>;
   pageSize: number;
   pageNumber: number;
