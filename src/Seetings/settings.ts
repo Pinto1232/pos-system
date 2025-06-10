@@ -30,6 +30,14 @@ export interface SidebarItem {
       excludeFromPremiumPlus?: boolean;
     };
   }>;
+
+  hasAccess?: boolean;
+  isLocked?: boolean;
+  requiredUpgrade?: {
+    minPrice: number;
+    name: string;
+    excludeFromPremiumPlus?: boolean;
+  };
 }
 
 export const sidebarItems: SidebarItem[] = [

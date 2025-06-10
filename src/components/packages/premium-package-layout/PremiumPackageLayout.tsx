@@ -36,7 +36,6 @@ interface PremiumPackageLayoutProps {
   };
 }
 
-
 const mapPackageType = (
   type: string
 ):

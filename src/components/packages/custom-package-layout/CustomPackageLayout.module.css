@@ -744,7 +744,7 @@
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding-top: 1rem;
   border-top: 1px solid #f0f0f0;
 }
@@ -961,6 +961,70 @@
 
   .sectionDescription {
     font-size: 0.9rem !important;
+  }
+}
+
+.sectionHeader {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin-bottom: 1rem !important;
+  letter-spacing: -0.01em !important;
+  position: relative !important;
+}
+
+.sectionDescription {
+  font-size: 1rem !important;
+  color: #64748b !important;
+  line-height: 1.6 !important;
+  margin-bottom: 1.5rem !important;
+  max-width: 800px !important;
+}
+
+@media (max-width: 768px) {
+  .sectionHeader {
+    font-size: 1.5rem !important;
+  }
+  
+  .sectionDescription {
+    font-size: 0.95rem !important;
+  }
+}
+
+/* Feature card animations */
+@keyframes featureCardHover {
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  }
+  100% {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@keyframes featureCardSelect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Pulse animation for selected features */
+@keyframes pulseBorder {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(37, 99, 235, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
   }
 }
 

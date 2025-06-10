@@ -81,6 +81,7 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
   snackbarSeverity,
   changeHistory,
   isSaving = false,
+  subscriptionData,
 }) => {
   return (
     <>
@@ -210,6 +211,7 @@ const SettingsModalPresentation: React.FC<SettingsModalPresentationProps> = ({
             prefetchImportantData={prefetchImportantData}
             setPrefetchImportantData={setPrefetchImportantData}
             changeHistory={changeHistory}
+            subscriptionData={subscriptionData}
           />
         </DialogContent>
 

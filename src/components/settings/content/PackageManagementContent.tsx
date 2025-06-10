@@ -29,34 +29,14 @@ import {
 import { Button } from '@/components/ui/button/Button';
 import iconMap from '@/utils/icons';
 import { TranslatedText } from '@/i18n';
-
-export interface Package {
-  id: number;
-  title: string;
-  description: string;
-  icon: string;
-  extraDescription: string;
-  price: number;
-  testPeriodDays: number;
-  type: string;
-  currency?: string;
-  multiCurrencyPrices?: string;
-}
-
-export interface Subscription {
-  pricingPackageId: number;
-  package?: {
-    title: string;
-  };
-  additionalPackages?: number[];
-}
+import { Package, Subscription } from '@/types/settingsTypes';
 
 interface PackageManagementContentProps {
   packages: Package[] | undefined;
   isLoading?: boolean;
   error?: Error | null;
   refetchPackages?: () => void;
-  subscription: Subscription;
+  subscription: Subscription | null;
   availableFeatures?: string[];
   enableAdditionalPackage: (packageId: number) => Promise<void>;
   disableAdditionalPackage: (packageId: number) => Promise<void>;
@@ -613,29 +593,29 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
         setLastEnabledPackageId(packageId);
 
         if (selectedPkg) {
-          let normalizedType = 'starter';
+          let normalizedType:
+            | 'starter-plus'
+            | 'growth-pro'
+            | 'enterprise-elite'
+            | 'custom-pro'
+            | 'premium-plus' = 'starter-plus';
           if (selectedPkg.type) {
             if (selectedPkg.type.includes('custom')) {
-              normalizedType = 'custom';
+              normalizedType = 'custom-pro';
             } else if (selectedPkg.type.includes('starter')) {
-              normalizedType = 'starter';
+              normalizedType = 'starter-plus';
             } else if (selectedPkg.type.includes('growth')) {
-              normalizedType = 'growth';
+              normalizedType = 'growth-pro';
             } else if (selectedPkg.type.includes('enterprise')) {
-              normalizedType = 'enterprise';
+              normalizedType = 'enterprise-elite';
             } else if (selectedPkg.type.includes('premium')) {
-              normalizedType = 'premium';
+              normalizedType = 'premium-plus';
             }
           }
 
           const packageForSelection = {
             ...selectedPkg,
-            type: normalizedType as
-              | 'custom'
-              | 'starter'
-              | 'growth'
-              | 'enterprise'
-              | 'premium',
+            type: normalizedType,
           };
 
           const selectionDelay = isCustomPackage ? 800 : 200;
@@ -974,6 +954,22 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
       )}
 
       <div className={styles.container}>
+        {}
+        <Box
+          sx={{
+            mb: 2,
+            p: 1,
+            bgcolor: 'grey.100',
+            borderRadius: 1,
+            fontSize: '0.75rem',
+          }}
+        >
+          <Typography variant="caption">
+            Debug: Total packages={packages?.length || 0}, Packages:{' '}
+            {packages?.map((p: Package) => p.title).join(', ') || 'None'}
+          </Typography>
+        </Box>
+
         {packages
           .filter((pkg) =>
             [
@@ -1139,7 +1135,7 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
                     >
                       {isProcessing ? (
                         <CircularProgress size={24} color="inherit" />
-                      ) : pkg.id > subscription?.pricingPackageId ? (
+                      ) : pkg.id > (subscription?.pricingPackageId ?? 0) ? (
                         <TranslatedText
                           i18nKey="packages.upgrade"
                           defaultValue="Upgrade"

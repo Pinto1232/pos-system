@@ -34,14 +34,38 @@ interface CustomPackageLayoutContainerProps {
 const convertToTypesAddOn = (addOn: IndexAddOn): AddOn => {
   let features: string[] = [];
   if (typeof addOn.features === 'string') {
-    features = [addOn.features];
+    
+    try {
+      const parsed = JSON.parse(addOn.features);
+      if (Array.isArray(parsed)) {
+        features = parsed;
+      } else {
+        
+        features = [addOn.features];
+      }
+    } catch {
+      
+      features = [addOn.features];
+    }
   } else if (Array.isArray(addOn.features)) {
     features = addOn.features;
   }
 
   let dependencies: string[] = [];
   if (typeof addOn.dependencies === 'string') {
-    dependencies = [addOn.dependencies];
+    
+    try {
+      const parsed = JSON.parse(addOn.dependencies);
+      if (Array.isArray(parsed)) {
+        dependencies = parsed;
+      } else {
+        
+        dependencies = [addOn.dependencies];
+      }
+    } catch {
+      
+      dependencies = [addOn.dependencies];
+    }
   } else if (Array.isArray(addOn.dependencies)) {
     dependencies = addOn.dependencies;
   }
@@ -120,7 +144,6 @@ const CustomPackageLayoutContainer: React.FC<
       'Package Details',
       'Select Core Features',
       'Choose Add-Ons',
-      'Configure Usage',
       'Select Payment Plan',
       'Choose Support Level',
       'Review & Confirm',
@@ -265,26 +288,12 @@ const CustomPackageLayoutContainer: React.FC<
         return false;
       }
     }
-    if (currentLabel === 'Configure Usage') {
-      for (const usage of usagePricing) {
-        const value = usageQuantities[usage.id] ?? usage.defaultValue;
-        if (value < usage.minValue || value > usage.maxValue) {
-          setSnackbarMessage(
-            `For ${usage.name}, please enter a value between ${usage.minValue} and ${usage.maxValue}.`
-          );
-          setSnackbarOpen(true);
-          return false;
-        }
-      }
-    }
     return true;
   }, [
     steps,
     currentStep,
     features,
     selectedFeatures,
-    usageQuantities,
-    usagePricing,
   ]);
 
   const handleNext = useCallback(() => {

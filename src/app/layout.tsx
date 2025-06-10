@@ -3,6 +3,7 @@ import { LoginFormProvider } from '@/contexts/LoginFormContext';
 import './globals.css';
 import Layout from '@/layouts/Layout';
 import { CartProvider } from '@/contexts/CartContext';
+import { CartUIProvider } from '@/contexts/CartUIContext';
 import DataPrefetcher from '@/components/cache/DataPrefetcher';
 
 import LazyLoadInitializer from '@/components/performance/LazyLoadInitializer';
@@ -39,14 +40,16 @@ export default function RootLayout({
       </head>
       <body>
         <CartProvider>
-          <LoginFormProvider>
-            <Providers>
-              <DataPrefetcher />
-              <Layout>{children}</Layout>
-              <LazyLoadInitializer />
-              <PerformanceMonitor />
-            </Providers>
-          </LoginFormProvider>
+          <CartUIProvider>
+            <LoginFormProvider>
+              <Providers>
+                <DataPrefetcher />
+                <Layout>{children}</Layout>
+                <LazyLoadInitializer />
+                <PerformanceMonitor />
+              </Providers>
+            </LoginFormProvider>
+          </CartUIProvider>
         </CartProvider>
       </body>
     </html>

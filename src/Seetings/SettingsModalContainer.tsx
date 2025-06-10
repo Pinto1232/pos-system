@@ -9,14 +9,15 @@ import {
   mockFetchCustomization,
   mockUpdateCustomization,
 } from '@/api/mockUserCustomization';
-import { useUserSubscription } from '@/contexts/UserSubscriptionContext';
 import { usePackageSelection } from '@/contexts/PackageSelectionContext';
+import { useTierAccess } from '@/hooks/useTierAccess';
 import SettingsModalPresentation from './SettingsModalPresentation';
 import {
   UserCustomization,
   TaxSettings,
   RegionalSettings,
   SettingsModalProps,
+  Package,
 } from '../types/settingsTypes';
 
 const DEFAULT_SIDEBAR_COLOR = '#173A79';
@@ -628,12 +629,23 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     setRegionalSettings(DEFAULT_REGIONAL_SETTINGS);
   };
 
-  const {
-    enableAdditionalPackage: enablePackage,
-    disableAdditionalPackage: disablePackage,
-  } = useUserSubscription();
-
   const { selectPackage: selectPackageInContext } = usePackageSelection();
+
+  const { subscriptionData } = useTierAccess();
+
+  const enablePackageImpl = useCallback(
+    async (packageId: number): Promise<void> => {
+      console.log(`Enabling package ${packageId}`);
+    },
+    []
+  );
+
+  const disablePackageImpl = useCallback(
+    async (packageId: number): Promise<void> => {
+      console.log(`Disabling package ${packageId}`);
+    },
+    []
+  );
 
   const enableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingProcessedRef = useRef<number | null>(null);
@@ -641,20 +653,36 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
   const disableOperationInProgressRef = useRef<boolean>(false);
   const packageBeingDisabledRef = useRef<number | null>(null);
 
-  interface Package {
-    id: number;
-    title: string;
-    description: string;
-    icon: string;
-    extraDescription: string;
-    price: number;
-    testPeriodDays: number;
-    type: string;
-    currency?: string;
-    multiCurrencyPrices?: string;
-  }
-
   const { getSavedPackage } = usePackageSelection();
+
+  const transformPackage = (apiPackage: Record<string, unknown>): Package => {
+    const validTypes: Package['type'][] = [
+      'starter-plus',
+      'growth-pro',
+      'enterprise-elite',
+      'custom-pro',
+      'premium-plus',
+    ];
+    const type = String(apiPackage.type || '').toLowerCase();
+    const validType = validTypes.includes(type as Package['type'])
+      ? (type as Package['type'])
+      : 'starter-plus';
+
+    return {
+      id: Number(apiPackage.id) || 0,
+      title: String(apiPackage.title || ''),
+      description: String(apiPackage.description || ''),
+      icon: String(apiPackage.icon || ''),
+      extraDescription: String(apiPackage.extraDescription || ''),
+      price: Number(apiPackage.price) || 0,
+      testPeriodDays: Number(apiPackage.testPeriodDays) || 14,
+      type: validType,
+      currency: apiPackage.currency ? String(apiPackage.currency) : undefined,
+      multiCurrencyPrices: apiPackage.multiCurrencyPrices
+        ? String(apiPackage.multiCurrencyPrices)
+        : undefined,
+    };
+  };
 
   const {
     data: packages,
@@ -691,6 +719,10 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           console.log(
             `[SETTINGS MODAL] Retrieved ${data.data.length} packages from API`
           );
+          console.log(
+            '[SETTINGS MODAL] Package titles:',
+            data.data.map((p: Package) => p.title)
+          );
 
           const logLimit = Math.min(data.data.length, 3);
           for (let i = 0; i < logLimit; i++) {
@@ -707,10 +739,17 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
           }
 
           const uniquePackages = data.data.filter(
-            (pkg: Package, index: number, self: Package[]) =>
-              index === self.findIndex((p: Package) => p.title === pkg.title)
+            (
+              pkg: Record<string, unknown>,
+              index: number,
+              self: Record<string, unknown>[]
+            ) =>
+              index ===
+              self.findIndex(
+                (p: Record<string, unknown>) => p.title === pkg.title
+              )
           );
-          return uniquePackages;
+          return uniquePackages.map(transformPackage);
         }
 
         if (Array.isArray(data)) {
@@ -732,10 +771,13 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
             );
           }
 
-          return data;
+          return data.map(transformPackage);
         }
 
         console.warn('No valid package data found, using fallback data');
+        console.log(
+          '[SETTINGS MODAL] Using fallback packages - should have 5 packages'
+        );
 
         return [
           {
@@ -905,43 +947,6 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
     retryDelay: 1000,
   });
 
-  interface Subscription {
-    id: number;
-    userId: string;
-    pricingPackageId: number;
-    package: {
-      id: number;
-      title: string;
-      type: string;
-    };
-    startDate: string;
-    isActive: boolean;
-    enabledFeatures: string[];
-    additionalPackages: number[];
-  }
-
-  const subscription: Subscription = {
-    id: 1,
-    userId: userId,
-    pricingPackageId: 1,
-    package: {
-      id: 1,
-      title: 'Starter',
-      type: 'starter',
-    },
-    startDate: new Date().toISOString(),
-    isActive: true,
-    enabledFeatures: [
-      'Dashboard',
-      'Products List',
-      'Add/Edit Product',
-      'Sales Reports',
-      'Inventory Management',
-      'Customer Management',
-    ],
-    additionalPackages: [],
-  };
-
   const enableAdditionalPackage = useCallback(
     async (packageId: number) => {
       if (
@@ -960,7 +965,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       packageBeingProcessedRef.current = packageId;
 
       try {
-        await enablePackage(packageId);
+        await enablePackageImpl(packageId);
 
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         if (selectedPkg) {
@@ -1042,7 +1047,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         packageBeingProcessedRef.current = null;
       }
     },
-    [enablePackage, packages, selectPackageInContext]
+    [enablePackageImpl, packages, selectPackageInContext]
   );
 
   const disableAdditionalPackage = useCallback(
@@ -1063,7 +1068,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       packageBeingDisabledRef.current = packageId;
 
       try {
-        await disablePackage(packageId);
+        await disablePackageImpl(packageId);
 
         const selectedPkg = packages?.find((pkg) => pkg.id === packageId);
         const isCustomPackage = selectedPkg?.type?.includes('custom') || false;
@@ -1098,7 +1103,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
         }, resetDelay);
       }
     },
-    [disablePackage, packages]
+    [disablePackageImpl, packages]
   );
 
   const lastProcessedEventRef = useRef<number>(0);
@@ -1293,7 +1298,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       isPackagesLoading={isPackagesLoading}
       packagesError={packagesError}
       refetchPackages={refetchPackages}
-      subscription={subscription}
+      subscription={null}
       availableFeatures={availableFeatures}
       enableAdditionalPackage={enableAdditionalPackage}
       disableAdditionalPackage={disableAdditionalPackage}
@@ -1309,6 +1314,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
       snackbarSeverity={snackbarSeverity}
       changeHistory={changeHistory}
       isSaving={isSaving}
+      subscriptionData={subscriptionData}
     />
   );
 };

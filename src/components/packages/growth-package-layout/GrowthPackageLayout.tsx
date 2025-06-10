@@ -36,7 +36,6 @@ interface GrowthPackageLayoutProps {
   };
 }
 
-
 const mapPackageType = (
   type: string
 ):

@@ -92,6 +92,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
             >
               Dashboard
             </Typography>
+
             <Box sx={{ mb: isMobile ? 2 : 3 }}>
               <Suspense
                 fallback={<Skeleton variant="rectangular" height={60} />}

@@ -5,7 +5,17 @@ export interface UserSubscriptionData {
   package?: {
     id: number;
     title: string;
-    type: string;
+    type:
+      | 'starter-plus'
+      | 'growth-pro'
+      | 'enterprise-elite'
+      | 'custom-pro'
+      | 'premium-plus';
+
+    tierId?: number;
+    tierLevel?: number;
+    tierName?: string;
+    tierDescription?: string;
   };
   startDate: string;
   isActive: boolean;
