@@ -10,6 +10,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import { SubItemsProps } from './types';
 import SubItemFeatureGuard from './SubItemFeatureGuard';
+import { useTranslation } from 'react-i18next';
 
 const SubItems: React.FC<SubItemsProps> = ({
   parentLabel,
@@ -19,6 +20,7 @@ const SubItems: React.FC<SubItemsProps> = ({
   onItemClick,
   activeItem,
 }) => {
+  const { t } = useTranslation();
   const [activeSubItem, setActiveSubItem] = React.useState<string>(() => {
     try {
       const savedActiveItem = localStorage.getItem('sidebarActiveItem');
@@ -147,7 +149,11 @@ const SubItems: React.FC<SubItemsProps> = ({
                 />
               </ListItemIcon>
               <ListItemText
-                primary={subItem.label}
+                primary={
+                  subItem.translationKey
+                    ? t(subItem.translationKey)
+                    : subItem.label
+                }
                 sx={{
                   color:
                     activeSubItem === subItem.label

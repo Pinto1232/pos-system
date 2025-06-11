@@ -113,16 +113,26 @@
     "register": "Registrar",
     "home": "Início"
   },
+  "navbar": {
+    "inventory": "Inventário",
+    "category": "Categoria",
+    "brand": "Marca",
+    "discount": "Desconto",
+    "stock": "Estoque",
+    "pos": "PDV",
+    "reports": "Relatórios"
+  },
   "dashboard": {
     "title": "Painel",
-    "welcome": "Bem-vindo de volta",
+    "welcome": "Bem-vindo",
     "summary": "Resumo",
     "todaySales": "Vendas de Hoje",
     "monthlySales": "Vendas Mensais",
     "topProducts": "Produtos Principais",
     "recentTransactions": "Transações Recentes",
     "inventory": "Status do Inventário",
-    "lowStock": "Itens com Estoque Baixo"
+    "lowStock": "Itens com Estoque Baixo",
+    "loginRequired": "Por favor, faça login para visualizar o painel"
   },
   "products": {
     "title": "Produtos",
@@ -136,7 +146,19 @@
     "description": "Descrição",
     "image": "Imagem",
     "actions": "Ações",
-    "search": "Buscar produtos"
+    "search": "Buscar produtos",
+    "productsAndInventory": "Produtos & Inventário",
+    "productsList": "Lista de Produtos",
+    "addEditProduct": "Adicionar/Editar Produto",
+    "productCategories": "Categorias de Produtos",
+    "productExpiryTracking": "Rastreamento de Validade de Produtos"
+  },
+  "inventory": {
+    "title": "Inventário",
+    "stockLevelsAndAlerts": "Níveis de Estoque & Alertas",
+    "lowStockWarnings": "Avisos de Estoque Baixo",
+    "bulkImportExport": "Importação/Exportação em Massa",
+    "inventoryAdjustments": "Ajustes de Inventário"
   },
   "settings": {
     "title": "Configurações",
@@ -151,7 +173,8 @@
     "backup": "Backup e Restauração",
     "currentSubscription": "Assinatura Atual",
     "packageManagement": "Gerenciamento de Pacotes",
-    "systemBackup": "Backup e Restauração do Sistema"
+    "systemBackup": "Backup e Restauração do Sistema",
+    "currencyRegional": "Configurações de Moeda e Regionais"
   },
   "auth": {
     "email": "Email",
@@ -163,7 +186,11 @@
     "noAccount": "Não tem uma conta?",
     "hasAccount": "Já tem uma conta?",
     "resetPassword": "Redefinir Senha",
-    "resetPasswordButton": "Enviar Link de Redefinição"
+    "resetPasswordButton": "Enviar Link de Redefinição",
+    "welcomeBack": "Bem-vindo",
+    "enterCredentials": "Por favor, insira suas credenciais para acessar sua conta",
+    "authenticating": "Autenticando...",
+    "togglePasswordVisibility": "Alternar visibilidade da senha"
   },
   "common": {
     "save": "Salvar",
@@ -197,7 +224,9 @@
     "hide": "Esconder",
     "view": "Visualizar",
     "details": "Detalhes",
-    "learnMore": "Saiba mais"
+    "learnMore": "Saiba mais",
+    "profile": "Meu Perfil",
+    "online": "Online"
   },
   "time": {
     "today": "Hoje",

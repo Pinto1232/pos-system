@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -7,10 +7,15 @@ import {
   MenuItem,
   Chip,
   IconButton,
+  Tooltip,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { RegionalSettings } from '../../../types/settingsTypes';
+import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../../../contexts/CurrencyContext';
 
 interface RegionalSettingsContentProps {
   regionalSettings: RegionalSettings;
@@ -21,44 +26,328 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
   regionalSettings,
   setRegionalSettings,
 }) => {
-  const [newCurrency, setNewCurrency] = React.useState('');
+  const { t: translate } = useTranslation();
+  const [newCurrency, setNewCurrency] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const {
+    setCurrency,
+    currency: currentCurrency,
+    currencySymbol,
+  } = useCurrency();
 
   const handleAddCurrency = () => {
     if (
       newCurrency &&
       !regionalSettings.supportedCurrencies.includes(newCurrency)
     ) {
-      setRegionalSettings({
+      const updatedCurrencies = [
+        ...regionalSettings.supportedCurrencies,
+        newCurrency,
+      ];
+
+      const updatedSettings = {
         ...regionalSettings,
-        supportedCurrencies: [
-          ...regionalSettings.supportedCurrencies,
-          newCurrency,
-        ],
-      });
+        supportedCurrencies: updatedCurrencies,
+      };
+
+      // If this is the first currency being added, also set it as default
+      if (updatedCurrencies.length === 1) {
+        updatedSettings.defaultCurrency = newCurrency;
+
+        // Also update the system currency
+        setCurrency(newCurrency);
+
+        // Show notification
+        setSnackbarMessage(
+          `Currency ${newCurrency} added and set as system currency`
+        );
+        setSnackbarOpen(true);
+      } else {
+        // Just show added notification
+        setSnackbarMessage(
+          `Currency ${newCurrency} added to supported currencies`
+        );
+        setSnackbarOpen(true);
+      }
+
+      // Update state
+      setRegionalSettings(updatedSettings);
+
+      // Save to localStorage for persistence
+      if (typeof window !== 'undefined') {
+        try {
+          const savedCustomization = localStorage.getItem('userCustomization');
+          if (savedCustomization) {
+            try {
+              const customization = JSON.parse(savedCustomization);
+
+              if (!customization.regionalSettings) {
+                customization.regionalSettings = {};
+              }
+
+              customization.regionalSettings = {
+                ...customization.regionalSettings,
+                ...updatedSettings,
+                supportedCurrencies: updatedCurrencies,
+              };
+
+              if (updatedCurrencies.length === 1) {
+                customization.regionalSettings.defaultCurrency = newCurrency;
+              }
+
+              localStorage.setItem(
+                'userCustomization',
+                JSON.stringify(customization)
+              );
+              console.log(
+                'Saved updated currency settings to localStorage:',
+                updatedCurrencies
+              );
+
+              localStorage.setItem(
+                'preferredCurrency',
+                customization.regionalSettings.defaultCurrency
+              );
+            } catch (parseError) {
+              console.error('Error parsing userCustomization:', parseError);
+
+              const newCustomization = {
+                regionalSettings: updatedSettings,
+              };
+              localStorage.setItem(
+                'userCustomization',
+                JSON.stringify(newCustomization)
+              );
+              localStorage.setItem(
+                'preferredCurrency',
+                updatedSettings.defaultCurrency
+              );
+            }
+          } else {
+            const newCustomization = {
+              regionalSettings: updatedSettings,
+            };
+            localStorage.setItem(
+              'userCustomization',
+              JSON.stringify(newCustomization)
+            );
+            localStorage.setItem(
+              'preferredCurrency',
+              updatedSettings.defaultCurrency
+            );
+            console.log(
+              'Created new userCustomization with regional settings in localStorage'
+            );
+          }
+
+          localStorage.setItem(
+            'regionalSettings',
+            JSON.stringify(updatedSettings)
+          );
+        } catch (error) {
+          console.error(
+            'Error saving currency settings to localStorage:',
+            error
+          );
+        }
+      }
+
       setNewCurrency('');
     }
   };
 
   const handleRemoveCurrency = (currency: string) => {
-    setRegionalSettings({
+    // Don't allow removing the current system currency
+    if (currency === currentCurrency) {
+      setSnackbarMessage(
+        `Cannot remove ${currency} as it's currently in use by the system`
+      );
+      setSnackbarOpen(true);
+      return;
+    }
+
+    const updatedCurrencies = regionalSettings.supportedCurrencies.filter(
+      (c) => c !== currency
+    );
+
+    const newDefaultCurrency =
+      regionalSettings.defaultCurrency === currency
+        ? updatedCurrencies[0] || 'USD'
+        : regionalSettings.defaultCurrency;
+
+    const updatedSettings = {
       ...regionalSettings,
-      supportedCurrencies: regionalSettings.supportedCurrencies.filter(
-        (c) => c !== currency
-      ),
-      // If removing the default currency, set a new default
-      defaultCurrency:
-        regionalSettings.defaultCurrency === currency
-          ? regionalSettings.supportedCurrencies.filter(
-              (c) => c !== currency
-            )[0] || 'USD'
-          : regionalSettings.defaultCurrency,
-    });
+      supportedCurrencies: updatedCurrencies,
+      defaultCurrency: newDefaultCurrency,
+    };
+
+    setRegionalSettings(updatedSettings);
+
+    if (regionalSettings.defaultCurrency === currency) {
+      setCurrency(newDefaultCurrency);
+    }
+
+    if (typeof window !== 'undefined') {
+      try {
+        const savedCustomization = localStorage.getItem('userCustomization');
+        if (savedCustomization) {
+          try {
+            const customization = JSON.parse(savedCustomization);
+
+            if (!customization.regionalSettings) {
+              customization.regionalSettings = {};
+            }
+
+            customization.regionalSettings = {
+              ...customization.regionalSettings,
+              ...updatedSettings,
+              supportedCurrencies: updatedCurrencies,
+              defaultCurrency: newDefaultCurrency,
+            };
+
+            localStorage.setItem(
+              'userCustomization',
+              JSON.stringify(customization)
+            );
+            console.log(
+              'Saved updated currency settings to localStorage after removal:',
+              updatedCurrencies
+            );
+
+            localStorage.setItem('preferredCurrency', newDefaultCurrency);
+          } catch (parseError) {
+            console.error(
+              'Error parsing userCustomization during removal:',
+              parseError
+            );
+
+            const newCustomization = {
+              regionalSettings: updatedSettings,
+            };
+            localStorage.setItem(
+              'userCustomization',
+              JSON.stringify(newCustomization)
+            );
+            localStorage.setItem('preferredCurrency', newDefaultCurrency);
+          }
+        } else {
+          const newCustomization = {
+            regionalSettings: updatedSettings,
+          };
+          localStorage.setItem(
+            'userCustomization',
+            JSON.stringify(newCustomization)
+          );
+          localStorage.setItem('preferredCurrency', newDefaultCurrency);
+          console.log(
+            'Created new userCustomization with regional settings in localStorage after removal'
+          );
+        }
+
+        localStorage.setItem(
+          'regionalSettings',
+          JSON.stringify(updatedSettings)
+        );
+      } catch (error) {
+        console.error(
+          'Error saving currency settings to localStorage after removal:',
+          error
+        );
+      }
+    }
+
+    setSnackbarMessage(
+      `Currency ${currency} removed from supported currencies`
+    );
+    setSnackbarOpen(true);
+  };
+
+  const handleSelectCurrency = (currency: string) => {
+    const updatedSettings = {
+      ...regionalSettings,
+      defaultCurrency: currency,
+    };
+
+    setRegionalSettings(updatedSettings);
+
+    setCurrency(currency);
+
+    if (typeof window !== 'undefined') {
+      try {
+        const savedCustomization = localStorage.getItem('userCustomization');
+        if (savedCustomization) {
+          try {
+            const customization = JSON.parse(savedCustomization);
+
+            if (!customization.regionalSettings) {
+              customization.regionalSettings = {};
+            }
+
+            customization.regionalSettings = updatedSettings;
+            customization.regionalSettings.defaultCurrency = currency;
+
+            localStorage.setItem(
+              'userCustomization',
+              JSON.stringify(customization)
+            );
+            console.log(
+              'Saved updated currency settings to localStorage after selection:',
+              currency
+            );
+
+            localStorage.setItem('preferredCurrency', currency);
+          } catch (parseError) {
+            console.error(
+              'Error parsing userCustomization during selection:',
+              parseError
+            );
+
+            const newCustomization = {
+              regionalSettings: updatedSettings,
+            };
+            localStorage.setItem(
+              'userCustomization',
+              JSON.stringify(newCustomization)
+            );
+            localStorage.setItem('preferredCurrency', currency);
+          }
+        } else {
+          const newCustomization = {
+            regionalSettings: updatedSettings,
+          };
+          localStorage.setItem(
+            'userCustomization',
+            JSON.stringify(newCustomization)
+          );
+          localStorage.setItem('preferredCurrency', currency);
+          console.log(
+            'Created new userCustomization with regional settings in localStorage after selection'
+          );
+        }
+
+        localStorage.setItem(
+          'regionalSettings',
+          JSON.stringify(updatedSettings)
+        );
+      } catch (error) {
+        console.error(
+          'Error saving currency settings to localStorage after selection:',
+          error
+        );
+      }
+    }
+
+    setSnackbarMessage(
+      `System currency changed to ${currency} (${currencySymbol}). All prices will now be displayed in ${currency}.`
+    );
+    setSnackbarOpen(true);
   };
 
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h6" gutterBottom>
-        Currency & Regional Settings
+        {translate('settings.currencyRegional')}
       </Typography>
       <Box
         sx={{
@@ -112,32 +401,49 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
             }}
           >
             {regionalSettings.supportedCurrencies.map((currency) => (
-              <Chip
+              <Tooltip
                 key={currency}
-                label={currency}
-                onDelete={() => handleRemoveCurrency(currency)}
-                color={
-                  regionalSettings.defaultCurrency === currency
-                    ? 'primary'
-                    : 'default'
-                }
-                deleteIcon={
-                  regionalSettings.defaultCurrency === currency ||
-                  regionalSettings.supportedCurrencies.length <=
-                    1 ? undefined : (
-                    <CloseIcon />
-                  )
-                }
-                onDoubleClick={() =>
-                  setRegionalSettings({
-                    ...regionalSettings,
-                    defaultCurrency: currency,
-                  })
-                }
-                sx={{
-                  borderRadius: 1,
-                }}
-              />
+                title={`Click to set ${currency} as system currency`}
+                placement="top"
+              >
+                <Chip
+                  label={currency}
+                  onDelete={() => handleRemoveCurrency(currency)}
+                  color={
+                    currentCurrency === currency
+                      ? 'success'
+                      : regionalSettings.defaultCurrency === currency
+                        ? 'primary'
+                        : 'default'
+                  }
+                  deleteIcon={
+                    regionalSettings.defaultCurrency === currency ||
+                    regionalSettings.supportedCurrencies.length <=
+                      1 ? undefined : (
+                      <CloseIcon />
+                    )
+                  }
+                  onClick={() => handleSelectCurrency(currency)}
+                  sx={{
+                    borderRadius: 1,
+                    cursor: 'pointer',
+                    fontWeight:
+                      currentCurrency === currency ? 'bold' : 'normal',
+                    border:
+                      currentCurrency === currency
+                        ? '1px solid #2e7d32'
+                        : 'none',
+                    '&:hover': {
+                      backgroundColor:
+                        currentCurrency === currency
+                          ? '#e8f5e9'
+                          : regionalSettings.defaultCurrency === currency
+                            ? '#e3f2fd'
+                            : '#f5f5f5',
+                    },
+                  }}
+                />
+              </Tooltip>
             ))}
           </Box>
           <Box
@@ -149,18 +455,33 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
           >
             <TextField
               value={newCurrency}
-              onChange={(e) => setNewCurrency(e.target.value)}
+              onChange={(e) => setNewCurrency(e.target.value.toUpperCase())}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleAddCurrency();
+                }
+              }}
               size="small"
-              placeholder="Add currency (e.g. USD)"
+              placeholder="Add currency (e.g. USD, EU)"
+              helperText="Enter 2 or 3-letter currency code (e.g. USD, EU)"
               sx={{ flex: 1 }}
+              inputProps={{
+                maxLength: 3,
+                style: { textTransform: 'uppercase' },
+              }}
+              error={newCurrency.length > 0 && newCurrency.length < 2}
             />
-            <IconButton
-              color="primary"
-              onClick={handleAddCurrency}
-              disabled={!newCurrency.trim()}
-            >
-              <AddIcon />
-            </IconButton>
+            <Tooltip title="Add currency to system">
+              <span>
+                <IconButton
+                  color="primary"
+                  onClick={handleAddCurrency}
+                  disabled={!newCurrency.trim() || newCurrency.length < 2}
+                >
+                  <AddIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </Box>
         </Box>
 
@@ -398,6 +719,22 @@ const RegionalSettingsContent: React.FC<RegionalSettingsContentProps> = ({
           </Button>
         </Box>
       </Box>
+
+      {}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={5000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

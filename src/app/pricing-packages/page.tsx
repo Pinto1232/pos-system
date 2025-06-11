@@ -78,7 +78,7 @@ export default async function PricingPackagesPage() {
   try {
     const packages = await fetchPricingPackagesAction();
 
-    const sortedPackages = sortPackagesAction(packages);
+    const sortedPackages = await sortPackagesAction(packages);
 
     return (
       <Suspense fallback={<PricingPackagesLoading />}>

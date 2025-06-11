@@ -16,10 +16,7 @@ import { CurrencyProvider } from '@/contexts/CurrencyContext';
 import { UserSubscriptionProvider } from '@/contexts/UserSubscriptionContext';
 import { TranslationProvider } from '@/i18n';
 
-const isBrowser = typeof window !== 'undefined';
-if (isBrowser) {
-  import('@/i18n/i18n');
-}
+import '@/i18n/i18n';
 
 const defaultQueryOptions: DefaultOptions = {
   queries: {

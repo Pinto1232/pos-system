@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AVAILABLE_LANGUAGES, getLanguageByCode } from './i18n';
+import i18n, { AVAILABLE_LANGUAGES, getLanguageByCode } from './i18n';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -47,7 +47,7 @@ interface TranslationProviderProps {
 export const TranslationProvider: React.FC<TranslationProviderProps> = ({
   children,
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const getDefaultLanguage = (): Language => {
     if (isBrowser) {
@@ -112,97 +112,108 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
   const [currentLanguage, setCurrentLanguage] =
     useState<Language>(getDefaultLanguage());
 
-  const handleChangeLanguage = useCallback(
-    (languageCode: string) => {
-      console.log('Attempting to change language to:', languageCode);
-      const language = getLanguageByCode(languageCode);
-      setCurrentLanguage(language);
+  const handleChangeLanguage = useCallback((languageCode: string) => {
+    console.log('Attempting to change language to:', languageCode);
+    const language = getLanguageByCode(languageCode);
+    setCurrentLanguage(language);
 
-      if (isBrowser) {
-        try {
-          localStorage.setItem('language', JSON.stringify(language));
-          i18n.changeLanguage(languageCode);
+    if (isBrowser) {
+      try {
+        localStorage.setItem('language', JSON.stringify(language));
+        i18n.changeLanguage(languageCode);
 
-          const loadTranslations = async () => {
-            try {
-              if (!i18n.hasResourceBundle(languageCode, 'common')) {
-                console.log(`Loading translations for ${languageCode}...`);
-                const response = await fetch(
-                  `/locales/${languageCode}/common.json`
+        const loadTranslations = async () => {
+          try {
+            if (!i18n.hasResourceBundle(languageCode, 'common')) {
+              console.log(`Loading translations for ${languageCode}...`);
+              const response = await fetch(
+                `/locales/${languageCode}/common.json`
+              );
+
+              if (response.ok) {
+                const translations = await response.json();
+                console.log(`Loaded translations:`, translations);
+
+                i18n.addResourceBundle(
+                  languageCode,
+                  'common',
+                  translations,
+                  true,
+                  true
                 );
 
-                if (response.ok) {
-                  const translations = await response.json();
-                  console.log(`Loaded translations:`, translations);
-
-                  i18n.addResourceBundle(
-                    languageCode,
-                    'common',
-                    translations,
-                    true,
-                    true
-                  );
-
-                  const currentBundle = i18n.getResourceBundle(
-                    languageCode,
-                    'common'
-                  );
-                  console.log(`Current resource bundle:`, currentBundle);
-
-                  setCurrentLanguage({ ...language });
-                } else {
-                  console.error(
-                    `Failed to load translations for ${languageCode}, status: ${response.status}`
-                  );
-                }
-              } else {
-                console.log(`Translations already loaded for ${languageCode}`);
                 const currentBundle = i18n.getResourceBundle(
                   languageCode,
                   'common'
                 );
                 console.log(`Current resource bundle:`, currentBundle);
+
+                setCurrentLanguage({ ...language });
+              } else {
+                console.error(
+                  `Failed to load translations for ${languageCode}, status: ${response.status}`
+                );
               }
-            } catch (error) {
-              console.error(
-                `Error loading translations for ${languageCode}:`,
-                error
+            } else {
+              console.log(`Translations already loaded for ${languageCode}`);
+              const currentBundle = i18n.getResourceBundle(
+                languageCode,
+                'common'
               );
+              console.log(`Current resource bundle:`, currentBundle);
             }
-          };
+          } catch (error) {
+            console.error(
+              `Error loading translations for ${languageCode}:`,
+              error
+            );
+          }
+        };
 
-          loadTranslations();
+        loadTranslations();
 
-          document.documentElement.lang = languageCode;
-          document.cookie = `i18next=${languageCode}; path=/; max-age=${
-            60 * 60 * 24 * 365
-          }; SameSite=Lax`;
+        document.documentElement.lang = languageCode;
+        document.cookie = `i18next=${languageCode}; path=/; max-age=${
+          60 * 60 * 24 * 365
+        }; SameSite=Lax`;
 
-          const event = new CustomEvent('languageChanged', {
-            detail: {
-              language: languageCode,
-              region: language.region,
-            },
-          });
-          window.dispatchEvent(event);
-        } catch (error) {
-          console.error(`Error changing language to ${languageCode}:`, error);
-        }
+        const event = new CustomEvent('languageChanged', {
+          detail: {
+            language: languageCode,
+            region: language.region,
+          },
+        });
+        window.dispatchEvent(event);
+      } catch (error) {
+        console.error(`Error changing language to ${languageCode}:`, error);
       }
-    },
-    [i18n]
-  );
+    }
+  }, []);
 
   useEffect(() => {
     if (isBrowser) {
+      console.log(
+        'TranslationProvider: Initial language code:',
+        currentLanguage.code
+      );
       handleChangeLanguage(currentLanguage.code);
 
-      console.log(
-        'Current language resources:',
-        i18n.getResourceBundle(currentLanguage.code, 'common')
-      );
+      setTimeout(() => {
+        const resources = i18n.getResourceBundle(
+          currentLanguage.code,
+          'common'
+        );
+        console.log(
+          'TranslationProvider: Current language resources:',
+          resources
+        );
+
+        if (resources && Object.keys(resources).length > 0) {
+          setCurrentLanguage((prev) => ({ ...prev }));
+        }
+      }, 500);
     }
-  }, [currentLanguage.code, handleChangeLanguage, i18n]);
+  }, [currentLanguage.code, handleChangeLanguage]);
 
   const contextValue: TranslationContextType = {
     currentLanguage,

@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { SettingsItem } from '../../types/settingsTypes';
+import { useTranslation } from 'react-i18next';
 
 interface SettingsNavigationProps {
   selectedSetting: string;
@@ -26,6 +27,7 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
   setSearchQuery,
   settingsItems,
 }) => {
+  const { t: translator } = useTranslation();
   return (
     <Box
       sx={{
@@ -120,7 +122,11 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
                 }}
               >
                 <ListItemText
-                  primary={item.label}
+                  primary={
+                    item.label.startsWith('settings.')
+                      ? translator(item.label)
+                      : item.label
+                  }
                   primaryTypographyProps={{
                     fontWeight:
                       selectedSetting === item.label ? 'bold' : 'normal',
