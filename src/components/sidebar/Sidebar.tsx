@@ -20,6 +20,7 @@ import useKeycloakUser from '@/hooks/useKeycloakUser';
 import { useCustomization } from '@/contexts/CustomizationContext';
 import { useUserSubscription } from '@/contexts/UserSubscriptionContext';
 import eventBus, { UI_EVENTS } from '@/utils/eventBus';
+import { useTranslation } from 'react-i18next';
 
 const Sidebar: React.FC<SidebarProps> = ({
   drawerWidth,
@@ -37,6 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { userInfo, isLoading: isUserLoading } = useKeycloakUser();
   const { sidebarColor, logoUrl: contextLogoUrl } = useCustomization();
   const { refreshSubscription } = useUserSubscription();
+  const { t } = useTranslation();
 
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -602,7 +604,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                         fontWeight: 600,
                       }}
                     >
-                      Online
+                      {t('common.online')}
                     </Box>
                   </Box>
                 )}

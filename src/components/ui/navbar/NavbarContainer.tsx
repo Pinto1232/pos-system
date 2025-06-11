@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Navbar } from '@/components/ui/navbar/Navbar';
+import { HomeNavbar } from '@/components/ui/navbar/HomeNavbar';
 import Drawer from '@mui/material/Drawer';
 import { Box } from '@mui/material';
 
@@ -14,7 +14,7 @@ const NavbarContainer: React.FC = () => {
 
   return (
     <Box component="nav" role="navigation">
-      <Navbar
+      <HomeNavbar
         title="Pisval Tech"
         menuItems={['Home', 'About', 'Contact']}
         isDrawerOpen={isDrawerOpen}

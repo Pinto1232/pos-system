@@ -16,10 +16,13 @@ import {
   Box,
   Typography,
   Badge,
+  Collapse,
 } from '@mui/material';
 import {
   AccessTime as TimeIcon,
   Login as LoginIcon,
+  Menu as MenuIcon,
+  KeyboardArrowDown,
 } from '@mui/icons-material';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useLoginForm } from '@/contexts/LoginFormContext';
@@ -38,6 +41,8 @@ import { useRouter } from 'next/navigation';
 import { useCustomization } from '@/contexts/CustomizationContext';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { TranslatedText } from '@/i18n';
+import MegaMenu, { MegaMenuItem } from '@/components/mega-menu';
+import { megaMenuItems } from '@/Seetings/settings';
 
 const TIMER_STATE_KEY = 'testPeriodTimerState';
 const SELECTED_PACKAGE_KEY = 'testPeriodSelectedPackage';
@@ -51,7 +56,7 @@ export interface NavbarProps {
   toggleDrawer?: (open: boolean) => () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
+const HomeNavbar: React.FC<NavbarProps> = memo(({ title }) => {
   const router = useRouter();
   const { toggleSidebar } = useSidebar();
   const { toggleLoginForm } = useLoginForm();
@@ -59,9 +64,12 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
   const { selectedPackage } = usePackageSelection();
   const [remainingTime, setRemainingTime] = useState<number>(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { cartCount } = useCart();
   const { navbarColor } = useCustomization();
   const { startLoading } = useSpinner();
+
+  const menuItems = useMemo(() => megaMenuItems, []);
 
   const lastSelectedPackageIdRef = useRef<number | null>(null);
 
@@ -251,6 +259,18 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
     router.push('/');
   };
 
+  const handleMenuItemClick = (item: MegaMenuItem) => {
+    if (item.link) {
+      startLoading({ timeout: 2000 });
+      router.push(item.link);
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen((prev) => !prev);
+  };
+
   useEffect(() => {
     if (appBarRef.current) {
       appBarRef.current.style.backgroundColor = navbarColor;
@@ -304,8 +324,11 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
                   xs: '0',
                   sm: '4px',
                 },
+                display: { xs: 'flex', lg: 'none' },
               }}
-            ></IconButton>
+            >
+              <MenuIcon />
+            </IconButton>
 
             <Box
               onClick={handleLogoClick}
@@ -313,6 +336,7 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
                 display: 'flex',
                 alignItems: 'center',
                 cursor: 'pointer',
+                marginRight: { xs: 1, sm: 2 },
               }}
             >
               <Image
@@ -336,10 +360,20 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
                     sm: '1.1rem',
                     md: '1.25rem',
                   },
+                  display: { xs: 'none', sm: 'block' },
                 }}
               >
                 {title}
               </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: { xs: 'none', lg: 'block' },
+                flexGrow: 1,
+              }}
+            >
+              <MegaMenu items={menuItems} onItemClick={handleMenuItemClick} />
             </Box>
           </Box>
 
@@ -350,6 +384,69 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
               gap: { xs: 0.5, sm: 1, md: 2 },
             }}
           >
+            {}
+            <Box
+              sx={{
+                display: { xs: 'block', lg: 'none' },
+                marginRight: 1,
+              }}
+            >
+              <IconButton
+                color="inherit"
+                onClick={toggleMobileMenu}
+                sx={{
+                  padding: {
+                    xs: '8px',
+                    sm: '10px',
+                  },
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 500,
+                    marginRight: '4px',
+                    display: { xs: 'none', sm: 'block' },
+                  }}
+                >
+                  Menu
+                </Typography>
+                <KeyboardArrowDown
+                  sx={{
+                    transform: isMobileMenuOpen
+                      ? 'rotate(180deg)'
+                      : 'rotate(0)',
+                    transition: 'transform 0.3s ease',
+                  }}
+                />
+              </IconButton>
+
+              {}
+              <Collapse
+                in={isMobileMenuOpen}
+                timeout="auto"
+                unmountOnExit
+                sx={{
+                  position: 'absolute',
+                  top: { xs: '56px', sm: '64px' },
+                  left: 0,
+                  right: 0,
+                  zIndex: 1200,
+                  backgroundColor: 'white',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  maxHeight: 'calc(100vh - 64px)',
+                  overflowY: 'auto',
+                }}
+              >
+                <Box sx={{ p: 2 }}>
+                  <MegaMenu
+                    items={menuItems}
+                    onItemClick={handleMenuItemClick}
+                  />
+                </Box>
+              </Collapse>
+            </Box>
+
             <Box className={styles.testPeriodBox}>
               <TimeIcon className={styles.icon} />
               <Typography
@@ -447,12 +544,12 @@ const Navbar: React.FC<NavbarProps> = memo(({ title }) => {
   );
 });
 
-Navbar.displayName = 'Navbar';
-export { Navbar };
+HomeNavbar.displayName = 'Navbar';
+export { HomeNavbar };
 
 const LazyNavbar: React.FC<NavbarProps> = (props) => (
   <Suspense fallback={<div>Loading...</div>}>
-    <Navbar {...props} />
+    <HomeNavbar {...props} />
   </Suspense>
 );
 

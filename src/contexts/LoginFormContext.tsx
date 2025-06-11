@@ -10,6 +10,7 @@ import React, {
 import LoginForm from '@/components/login-form/LoginForm';
 import { Dialog, DialogContent } from '@mui/material';
 import { SpinnerProvider } from '@/contexts/SpinnerContext';
+import { TranslationProvider } from '@/i18n';
 
 interface LoginFormContextProps {
   toggleLoginForm: () => void;
@@ -82,9 +83,11 @@ export const LoginFormProvider: React.FC<{
             backgroundColor: '#ffffff',
           }}
         >
-          <SpinnerProvider>
-            <LoginForm onClose={toggleLoginForm} />
-          </SpinnerProvider>
+          <TranslationProvider>
+            <SpinnerProvider>
+              <LoginForm onClose={toggleLoginForm} />
+            </SpinnerProvider>
+          </TranslationProvider>
         </DialogContent>
       </Dialog>
     </LoginFormContext.Provider>

@@ -26,16 +26,37 @@ import PricingPackageCard from '@/components/pricing-packages/PricingPackageCard
 import styles from '@/components/pricing-packages/PricingPackages.module.css';
 
 const adaptPackage = (pkg: ApiPackage): ContextPackage => {
+  let mappedType:
+    | 'starter-plus'
+    | 'growth-pro'
+    | 'enterprise-elite'
+    | 'custom-pro'
+    | 'premium-plus';
+
+  switch (pkg.type.toLowerCase()) {
+    case 'starter':
+      mappedType = 'starter-plus';
+      break;
+    case 'growth':
+      mappedType = 'growth-pro';
+      break;
+    case 'enterprise':
+      mappedType = 'enterprise-elite';
+      break;
+    case 'custom':
+      mappedType = 'custom-pro';
+      break;
+    case 'premium':
+      mappedType = 'premium-plus';
+      break;
+    default:
+      mappedType = 'starter-plus';
+  }
+
   return {
     ...pkg,
     id: typeof pkg.id === 'string' ? parseInt(pkg.id, 10) : pkg.id,
-
-    type: pkg.type.toLowerCase() as
-      | 'custom'
-      | 'starter'
-      | 'growth'
-      | 'enterprise'
-      | 'premium',
+    type: mappedType,
   };
 };
 

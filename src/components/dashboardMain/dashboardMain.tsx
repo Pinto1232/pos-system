@@ -13,6 +13,7 @@ import styles from './dashboardMain.module.css';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import NotFound from '@/app/404';
 import FeatureGuard from '../feature-access/FeatureGuard';
+import { useTranslation } from 'react-i18next';
 
 const ProductTableContainer = lazy(
   () => import('../productTable/ProductTableContainer')
@@ -45,6 +46,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
   const { stopLoading } = useSpinner();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
 
   const [isDataLoaded, setIsDataLoaded] = useState(
     activeSection === 'Dashboard'
@@ -90,7 +92,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
                 px: isMobile ? 1 : 2,
               }}
             >
-              Dashboard
+              {t('navigation.dashboard')}
             </Typography>
 
             <Box sx={{ mb: isMobile ? 2 : 3 }}>
@@ -133,7 +135,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
         break;
       case 'Products List':
         sectionToRender = (
-          <FeatureGuard featureName="Products List">
+          <FeatureGuard featureName={t('products.productsList')}>
             <Box
               sx={{
                 width: '100%',
@@ -149,7 +151,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
         break;
       case 'Add/Edit Product':
         sectionToRender = (
-          <FeatureGuard featureName="Add/Edit Product">
+          <FeatureGuard featureName={t('products.addEditProduct')}>
             <Box
               sx={{
                 width: '100%',
@@ -165,7 +167,7 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
         break;
       case 'Pricing Packages':
         sectionToRender = (
-          <FeatureGuard featureName="Pricing Packages">
+          <FeatureGuard featureName={t('sidebar.pricingPackages')}>
             <Box
               sx={{
                 width: '100%',
@@ -197,13 +199,13 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
     }
 
     return sectionToRender;
-  }, [activeSection, isMobile]);
+  }, [activeSection, isMobile, t]);
 
   if (!authenticated) {
     return (
       <Box>
         <Typography variant="h4" gutterBottom>
-          Please log in to view the dashboard
+          {t('dashboard.loginRequired', 'Please log in to view the dashboard')}
         </Typography>
       </Box>
     );

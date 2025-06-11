@@ -21,6 +21,8 @@ import SettingsModal from '@/Seetings/SettingsModal';
 import eventBus, { UI_EVENTS } from '@/utils/eventBus';
 import { useCustomization } from '@/contexts/CustomizationContext';
 import NotificationDropdown from '@/components/notifications/NotificationDropdown';
+import LanguageDropdown from '@/components/language/LanguageDropdown';
+import { useTranslation } from 'react-i18next';
 
 interface NavbarProps {
   drawerWidth: number;
@@ -36,6 +38,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { navbarColor, updateCustomization } = useCustomization();
+  const { t } = useTranslation();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -157,7 +160,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                     fontSize: isMobile ? '0.875rem' : '1rem',
                   }}
                 >
-                  {link.label}
+                  {link.translationKey ? t(link.translationKey) : link.label}
                 </Typography>
               </Link>
             ))}
@@ -172,6 +175,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
               justifyContent: 'center',
             }}
           >
+            <LanguageDropdown />
             <NotificationDropdown />
             <Box
               sx={{
@@ -219,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                   },
                 }}
               >
-                Profile
+                {t('common.profile')}
               </Typography>
             </Box>
             <Menu
@@ -320,7 +324,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                     fontSize: '0.95rem',
                   }}
                 >
-                  My Profile
+                  {t('common.profile')}
                 </Typography>
               </MenuItem>
 
@@ -366,7 +370,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                     fontSize: '0.95rem',
                   }}
                 >
-                  Settings
+                  {t('settings.title')}
                 </Typography>
               </MenuItem>
 
@@ -452,7 +456,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
                         fontSize: '0.95rem',
                       }}
                     >
-                      Logout
+                      {t('navigation.logout')}
                     </Typography>
                   </>
                 )}

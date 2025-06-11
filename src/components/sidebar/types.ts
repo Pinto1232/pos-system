@@ -2,11 +2,13 @@ import { ElementType } from 'react';
 
 export interface SubItem {
   label: string;
+  translationKey?: string;
   path?: string;
 }
 
 export interface SidebarItemType {
   label: string;
+  translationKey?: string;
   icon: ElementType;
   path?: string;
   expandable?: boolean;

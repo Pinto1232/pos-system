@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useUpdateCustomization } from '@/api/axiosClient';
 import eventBus, { UI_EVENTS } from '@/utils/eventBus';
 import { fetchAvailableCurrencies } from '@/api/currencyApi';
@@ -115,6 +116,7 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
   onCustomizationUpdated,
   initialSetting = 'General Settings',
 }) => {
+  const { t: translator } = useTranslation();
   const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery<UserCustomization, Error>({
     queryKey: ['userCustomization', userId],
@@ -129,7 +131,12 @@ const SettingsModalContainer: React.FC<SettingsModalProps> = ({
   const [logoPreview, setLogoPreview] = useState('');
   const [showSidebarColorPicker, setShowSidebarColorPicker] = useState(false);
   const [showNavbarColorPicker, setShowNavbarColorPicker] = useState(false);
-  const [selectedSetting, setSelectedSetting] = useState(initialSetting);
+  // Use translator to handle any translated initial settings
+  const [selectedSetting, setSelectedSetting] = useState(
+    initialSetting === 'settings.currencyRegional'
+      ? translator('settings.currencyRegional')
+      : initialSetting
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [changeHistory, setChangeHistory] = useState<
     {

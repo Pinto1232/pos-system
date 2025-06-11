@@ -5,6 +5,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import { SidebarItemProps } from './types';
 import SubItems from './SubItems';
+import { useTranslation } from 'react-i18next';
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
   item,
@@ -17,6 +18,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   onSettingsClick,
   isCollapsed = false,
 }) => {
+  const { t } = useTranslation();
   const handleClick = () => {
     if (item.label === 'Settings' && onSettingsClick) {
       const queryClient = window.queryClient;
@@ -100,7 +102,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       {!isCollapsed && (
         <>
           <ListItemText
-            primary={item.label}
+            primary={item.translationKey ? t(item.translationKey) : item.label}
             sx={{
               color: isActive ? '#fff' : textColor,
               opacity: 1,
@@ -155,7 +157,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     <>
       {isCollapsed ? (
         <Tooltip
-          title={item.label}
+          title={item.translationKey ? t(item.translationKey) : item.label}
           placement="right"
           arrow
           enterDelay={500}

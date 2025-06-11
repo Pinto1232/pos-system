@@ -111,6 +111,15 @@
     "register": "S'inscrire",
     "home": "Accueil"
   },
+  "navbar": {
+    "inventory": "Inventaire",
+    "category": "Catégorie",
+    "brand": "Marque",
+    "discount": "Remise",
+    "stock": "Stock",
+    "pos": "PDV",
+    "reports": "Rapports"
+  },
   "dashboard": {
     "title": "Tableau de Bord",
     "welcome": "Bienvenue à nouveau",
@@ -120,7 +129,8 @@
     "topProducts": "Produits Principaux",
     "recentTransactions": "Transactions Récentes",
     "inventory": "État de l'Inventaire",
-    "lowStock": "Articles à Faible Stock"
+    "lowStock": "Articles à Faible Stock",
+    "loginRequired": "Veuillez vous connecter pour voir le tableau de bord"
   },
   "products": {
     "title": "Produits",
@@ -134,7 +144,19 @@
     "description": "Description",
     "image": "Image",
     "actions": "Actions",
-    "search": "Rechercher des produits"
+    "search": "Rechercher des produits",
+    "productsAndInventory": "Produits & Inventaire",
+    "productsList": "Liste des Produits",
+    "addEditProduct": "Ajouter/Modifier un Produit",
+    "productCategories": "Catégories de Produits",
+    "productExpiryTracking": "Suivi d'Expiration des Produits"
+  },
+  "inventory": {
+    "title": "Inventaire",
+    "stockLevelsAndAlerts": "Niveaux de Stock & Alertes",
+    "lowStockWarnings": "Avertissements de Stock Faible",
+    "bulkImportExport": "Importation/Exportation en Masse",
+    "inventoryAdjustments": "Ajustements d'Inventaire"
   },
   "settings": {
     "title": "Paramètres",
@@ -149,7 +171,8 @@
     "backup": "Sauvegarde et Restauration",
     "currentSubscription": "Abonnement Actuel",
     "packageManagement": "Gestion des Forfaits",
-    "systemBackup": "Sauvegarde et Restauration du Système"
+    "systemBackup": "Sauvegarde et Restauration du Système",
+    "currencyRegional": "Paramètres de Devise et Régionaux"
   },
   "auth": {
     "email": "Email",
@@ -161,7 +184,11 @@
     "noAccount": "Vous n'avez pas de compte?",
     "hasAccount": "Vous avez déjà un compte?",
     "resetPassword": "Réinitialiser le Mot de Passe",
-    "resetPasswordButton": "Envoyer le Lien de Réinitialisation"
+    "resetPasswordButton": "Envoyer le Lien de Réinitialisation",
+    "welcomeBack": "Bienvenue à Nouveau",
+    "enterCredentials": "Veuillez saisir vos identifiants pour accéder à votre compte",
+    "authenticating": "Authentification...",
+    "togglePasswordVisibility": "Afficher/masquer le mot de passe"
   },
   "common": {
     "save": "Enregistrer",
@@ -195,7 +222,9 @@
     "hide": "Masquer",
     "view": "Voir",
     "details": "Détails",
-    "learnMore": "En savoir plus"
+    "learnMore": "En savoir plus",
+    "profile": "Mon Profil",
+    "online": "En ligne"
   },
   "time": {
     "today": "Aujourd'hui",

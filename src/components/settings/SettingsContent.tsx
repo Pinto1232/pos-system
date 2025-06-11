@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import GeneralSettingsContent from './content/GeneralSettingsContent';
 import TaxSettingsContent from './content/TaxSettingsContent';
 import RegionalSettingsContent from './content/RegionalSettingsContent';
@@ -102,8 +103,15 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
   changeHistory,
   subscriptionData,
 }) => {
+  const { t: translate } = useTranslation();
   const renderSettingContent = () => {
-    switch (selectedSetting) {
+    const normalizedSetting =
+      selectedSetting === translate('settings.currencyRegional') ||
+      selectedSetting === 'Currency & Regional Settings'
+        ? 'Currency & Regional Settings'
+        : selectedSetting;
+
+    switch (normalizedSetting) {
       case 'General Settings':
         return (
           <GeneralSettingsContent

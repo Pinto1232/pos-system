@@ -111,6 +111,15 @@
     "register": "Registrarse",
     "home": "Inicio"
   },
+  "navbar": {
+    "inventory": "Inventario",
+    "category": "Categoría",
+    "brand": "Marca",
+    "discount": "Descuento",
+    "stock": "Stock",
+    "pos": "TPV",
+    "reports": "Informes"
+  },
   "dashboard": {
     "title": "Panel",
     "welcome": "Bienvenido de nuevo",
@@ -120,7 +129,8 @@
     "topProducts": "Productos Principales",
     "recentTransactions": "Transacciones Recientes",
     "inventory": "Estado del Inventario",
-    "lowStock": "Artículos con Poco Stock"
+    "lowStock": "Artículos con Poco Stock",
+    "loginRequired": "Por favor, inicie sesión para ver el panel"
   },
   "products": {
     "title": "Productos",
@@ -134,7 +144,19 @@
     "description": "Descripción",
     "image": "Imagen",
     "actions": "Acciones",
-    "search": "Buscar productos"
+    "search": "Buscar productos",
+    "productsAndInventory": "Productos & Inventario",
+    "productsList": "Lista de Productos",
+    "addEditProduct": "Añadir/Editar Producto",
+    "productCategories": "Categorías de Productos",
+    "productExpiryTracking": "Seguimiento de Caducidad de Productos"
+  },
+  "inventory": {
+    "title": "Inventario",
+    "stockLevelsAndAlerts": "Niveles de Stock & Alertas",
+    "lowStockWarnings": "Avisos de Stock Bajo",
+    "bulkImportExport": "Importación/Exportación Masiva",
+    "inventoryAdjustments": "Ajustes de Inventario"
   },
   "settings": {
     "title": "Configuración",
@@ -149,7 +171,8 @@
     "backup": "Copia de Seguridad y Restauración",
     "currentSubscription": "Suscripción Actual",
     "packageManagement": "Gestión de Paquetes",
-    "systemBackup": "Copia de Seguridad y Restauración del Sistema"
+    "systemBackup": "Copia de Seguridad y Restauración del Sistema",
+    "currencyRegional": "Configuración de Moneda y Regional"
   },
   "auth": {
     "email": "Correo Electrónico",
@@ -161,7 +184,11 @@
     "noAccount": "¿No tiene una cuenta?",
     "hasAccount": "¿Ya tiene una cuenta?",
     "resetPassword": "Restablecer Contraseña",
-    "resetPasswordButton": "Enviar Enlace de Restablecimiento"
+    "resetPasswordButton": "Enviar Enlace de Restablecimiento",
+    "welcomeBack": "Bienvenido de Nuevo",
+    "enterCredentials": "Por favor, ingrese sus credenciales para acceder a su cuenta",
+    "authenticating": "Autenticando...",
+    "togglePasswordVisibility": "Alternar visibilidad de la contraseña"
   },
   "common": {
     "save": "Guardar",
@@ -195,7 +222,9 @@
     "hide": "Ocultar",
     "view": "Ver",
     "details": "Detalles",
-    "learnMore": "Saber más"
+    "learnMore": "Saber más",
+    "profile": "Mi Perfil",
+    "online": "En línea"
   },
   "time": {
     "today": "Hoy",
