@@ -112,6 +112,9 @@ export const sidebarItems: SidebarItem[] = [
           name: 'Premium Plus',
         },
       },
+      {
+        label: 'Real-Time Stock Demo',
+      },
     ],
   },
   {
@@ -704,6 +707,22 @@ export const megaMenuItems: MegaMenuItem[] = [
             title: 'Adjustments',
             link: '/inventory/adjustments',
             description: 'Make inventory corrections',
+          },
+        ],
+      },
+      {
+        id: 'inventory-demos',
+        title: 'Demo Features',
+        items: [
+          {
+            id: 'real-time-stock',
+            title: 'Real-Time Stock Management',
+            link: '/dashboard/stock-demo',
+            description: 'Interactive demo of real-time stock features',
+            badge: {
+              text: 'Demo',
+              color: 'info',
+            },
           },
         ],
       },

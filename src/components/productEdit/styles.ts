@@ -159,6 +159,12 @@ export const ProductTable = styled(Box)({
   overflowX: 'auto',
   position: 'relative',
   zIndex: 1,
+
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
+  scrollbarWidth: 'none',
+  msOverflowStyle: 'none',
   '& .MuiDataGrid-root': {
     border: 'none',
     backgroundColor: '#fff',
@@ -166,6 +172,11 @@ export const ProductTable = styled(Box)({
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
     maxWidth: '100%',
     overflowX: 'auto',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+    scrollbarWidth: 'none',
+    msOverflowStyle: 'none',
   },
   '& .MuiDataGrid-columnHeaders': {
     backgroundColor: '#fff',
@@ -229,20 +240,10 @@ export const ProductTable = styled(Box)({
   },
   '& .MuiDataGrid-virtualScroller': {
     '&::-webkit-scrollbar': {
-      width: '8px',
-      height: '8px',
+      display: 'none',
     },
-    '&::-webkit-scrollbar-track': {
-      background: '#f1f1f1',
-      borderRadius: '4px',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      background: '#c1c1c1',
-      borderRadius: '4px',
-      '&:hover': {
-        background: '#a8a8a8',
-      },
-    },
+    scrollbarWidth: 'none',
+    msOverflowStyle: 'none',
   },
   '& .MuiDataGrid-footerContainer': {
     borderTop: '1px solid #E0E0E0',

@@ -252,6 +252,7 @@
     "welcomeBack": "Welcome Back",
     "enterCredentials": "Please enter your credentials to access your account",
     "authenticating": "Authenticating...",
+    "redirectingToLogin": "Redirecting to secure login...",
     "togglePasswordVisibility": "Toggle password visibility"
   },
   "common": {
@@ -300,6 +301,46 @@
     "thisYear": "This Year",
     "lastYear": "Last Year",
     "custom": "Custom"
+  },
+  "bulkImportExport": {
+    "title": "Bulk Import/Export",
+    "import": {
+      "title": "Import Products",
+      "description": "Upload a CSV or Excel file to import products in bulk"
+    },
+    "export": {
+      "title": "Export Products",
+      "description": "Export your products data in various formats",
+      "button": "Export Products",
+      "configureTitle": "Configure Export",
+      "format": "Format",
+      "category": "Category",
+      "dateRange": "Date Range",
+      "allCategories": "All Categories",
+      "allTime": "All Time",
+      "last30Days": "Last 30 Days",
+      "last90Days": "Last 90 Days",
+      "customRange": "Custom Range",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "start": "Start Export"
+    },
+    "downloadTemplate": "Download Template",
+    "selectFile": "Select File to Import",
+    "importing": "Importing...",
+    "exporting": "Exporting...",
+    "complete": "Complete",
+    "info": {
+      "title": "Important Information",
+      "import": "Import Guidelines:",
+      "export": "Export Options:",
+      "supportedFormats": "Supported formats: CSV, XLSX, XLS",
+      "maxFileSize": "Maximum file size: 10MB",
+      "duplicateHandling": "Duplicates will be skipped",
+      "exportFormats": "Available formats: CSV, Excel, JSON",
+      "filterOptions": "Filter by category and date range",
+      "includeImages": "Images are exported as URLs"
+    }
   },
   "errors": {
     "required": "This field is required",

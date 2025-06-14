@@ -954,22 +954,6 @@ const PackageManagementContent: React.FC<PackageManagementContentProps> = ({
       )}
 
       <div className={styles.container}>
-        {}
-        <Box
-          sx={{
-            mb: 2,
-            p: 1,
-            bgcolor: 'grey.100',
-            borderRadius: 1,
-            fontSize: '0.75rem',
-          }}
-        >
-          <Typography variant="caption">
-            Debug: Total packages={packages?.length || 0}, Packages:{' '}
-            {packages?.map((p: Package) => p.title).join(', ') || 'None'}
-          </Typography>
-        </Box>
-
         {packages
           .filter((pkg) =>
             [

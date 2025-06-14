@@ -92,7 +92,27 @@ export const UserSubscriptionProvider: React.FC<{
     return packageType === 'premium plus' ? 'PremiumPlus' : 'Basic';
   };
   const hasFeatureAccess = (featureName: string): boolean => {
-    if (!subscription) return false;
+    if (isLoading) return false;
+
+    if (!subscription) {
+      const findFeatureRequirements = () => {
+        for (const item of sidebarItems) {
+          if (item.label === featureName) {
+            return !item.requiredPackage;
+          }
+          if (item.subItems) {
+            const subItem = item.subItems.find(
+              (sub) => sub.label === featureName
+            );
+            if (subItem) {
+              return !subItem.requiredPackage && !item.requiredPackage;
+            }
+          }
+        }
+        return false;
+      };
+      return findFeatureRequirements();
+    }
 
     const currentLevel = getCurrentPackageLevel();
     if (!currentLevel) return false;

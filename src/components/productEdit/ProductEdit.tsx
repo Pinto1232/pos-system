@@ -29,6 +29,10 @@ import { getColorStyles } from '@/utils/colorUtils';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+import StockSummary from '@/components/productTable/components/StockSummary';
+import StockWarning from '@/components/productTable/components/StockWarning';
+import { getStockLevel } from '@/utils/stockManagement';
+
 const ProductEdit: React.FC<ProductEditProps> = ({
   products,
   onAddItem,
@@ -40,6 +44,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
   subTotal,
   discount,
   onDeleteItem,
+  showStockWarnings = true,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [viewingProduct, setViewingProduct] = React.useState<Product | null>(
@@ -120,11 +125,18 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       barcode: data.barcode || `BC-${Date.now()}`,
       sku: data.sku || `SKU-${Date.now()}`,
       price: typeof data.price === 'number' ? data.price : 0,
+      stock: typeof data.stock === 'number' ? data.stock : 0,
       status: Boolean(data.status),
       rating: typeof data.rating === 'number' ? data.rating : 0,
       createdAt: data.createdAt || new Date().toISOString(),
       image: imagePath,
       statusProduct: Boolean(data.status) ? 'Active' : 'Inactive',
+
+      salesCount: typeof data.salesCount === 'number' ? data.salesCount : 0,
+      returnCount: typeof data.returnCount === 'number' ? data.returnCount : 0,
+      lastSoldDate: data.lastSoldDate || null,
+      totalRevenue:
+        typeof data.totalRevenue === 'number' ? data.totalRevenue : 0,
     };
 
     console.log(
@@ -172,36 +184,47 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       headerName: 'Icon',
       width: 70,
       renderCell: (params) => (
-        <Avatar
-          src={params.value || '/placeholder-image.png'}
-          alt={params.row.productName}
+        <Box
           sx={{
-            width: 36,
-            height: 36,
-            borderRadius: '4px',
-            border: '1px solid #f0f0f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%',
           }}
-          variant="rounded"
-        />
+        >
+          <Avatar
+            src={params.value || '/placeholder-image.png'}
+            alt={params.row.productName || 'Product'}
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: '6px',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
+              backgroundColor: '#F8FAFC',
+            }}
+            variant="rounded"
+          />
+        </Box>
       ),
       sortable: false,
       disableColumnMenu: true,
+      align: 'center',
+      headerAlign: 'center',
     },
     {
       field: 'productName',
       headerName: 'Product Name',
       flex: 1.8,
-      minWidth: 160,
+      minWidth: 180,
       renderCell: (params) => (
         <Stack
-          direction="row"
-          spacing={1}
-          alignItems="center"
+          direction="column"
+          spacing={0.5}
           sx={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
             width: '100%',
+            py: 0.5,
           }}
         >
           <Typography
@@ -210,28 +233,36 @@ const ProductEdit: React.FC<ProductEditProps> = ({
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-              fontWeight: 500,
+              fontWeight: 600,
+              color: '#1E293B',
+              fontSize: '0.875rem',
+              lineHeight: 1.3,
+              maxWidth: '100%',
             }}
+            title={params.value || 'Unnamed Product'}
           >
-            {params.value}
+            {params.value || 'Unnamed Product'}
           </Typography>
           {params.row.color && (
             <Chip
               label={params.row.color}
               size="small"
               sx={{
-                height: 20,
-                minWidth: 60,
-                padding: '2px 4px',
-                fontSize: '0.7rem',
+                height: 18,
+                maxWidth: 'fit-content',
+                fontSize: '0.65rem',
                 fontWeight: 500,
                 bgcolor: getColorStyles(params.row.color).bg,
                 color: getColorStyles(params.row.color).text,
-                border: '1px solid #e2e8f0',
-                flexShrink: 0,
+                border: '1px solid #E2E8F0',
+                borderRadius: '4px',
+                '& .MuiChip-label': {
+                  px: 0.75,
+                  py: 0,
+                },
                 '@media (max-width: 768px)': {
-                  minWidth: 40,
-                  fontSize: '0.65rem',
+                  fontSize: '0.6rem',
+                  height: 16,
                 },
               }}
             />
@@ -243,7 +274,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'sku',
       headerName: 'SKU',
       flex: 0.8,
-      minWidth: 90,
+      minWidth: 100,
       renderCell: (params) => (
         <Typography
           variant="body2"
@@ -252,7 +283,12 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
             width: '100%',
+            color: params.value ? '#475569' : '#94A3B8',
+            fontWeight: params.value ? 500 : 400,
+            fontSize: '0.8rem',
+            fontFamily: 'monospace',
           }}
+          title={params.value || 'No SKU'}
         >
           {params.value || '-'}
         </Typography>
@@ -262,7 +298,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'barcode',
       headerName: 'ID Code',
       flex: 0.8,
-      minWidth: 90,
+      minWidth: 100,
       renderCell: (params) => (
         <Typography
           variant="body2"
@@ -271,7 +307,12 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
             width: '100%',
+            color: params.value ? '#475569' : '#94A3B8',
+            fontWeight: params.value ? 500 : 400,
+            fontSize: '0.8rem',
+            fontFamily: 'monospace',
           }}
+          title={params.value || 'No ID Code'}
         >
           {params.value || '-'}
         </Typography>
@@ -281,22 +322,191 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'price',
       headerName: 'Price',
       flex: 0.8,
-      minWidth: 80,
+      minWidth: 90,
       type: 'number',
-      align: 'left',
-      headerAlign: 'left',
+      align: 'right',
+      headerAlign: 'right',
       renderCell: (params) => {
         const price = params.row.price !== undefined ? params.row.price : 0;
+        const isZero = price === 0;
         return (
-          <Typography
-            variant="body2"
+          <Box
             sx={{
-              fontWeight: 500,
-              color: '#1E2A3B',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              width: '100%',
             }}
           >
-            R{Number(price).toFixed(2)}
-          </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 600,
+                color: isZero ? '#94A3B8' : '#059669',
+                fontSize: '0.875rem',
+                fontFamily: 'monospace',
+              }}
+            >
+              R{Number(price).toFixed(2)}
+            </Typography>
+            {isZero && (
+              <Typography
+                variant="caption"
+                sx={{
+                  color: '#94A3B8',
+                  fontSize: '0.65rem',
+                }}
+              >
+                No price set
+              </Typography>
+            )}
+          </Box>
+        );
+      },
+    },
+    {
+      field: 'stock',
+      headerName: 'Stock',
+      flex: 0.9,
+      minWidth: 110,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => {
+        const stock = params.row.stock || 0;
+        const stockLevel = getStockLevel(stock);
+        const isOutOfStock = stockLevel.level === 'out_of_stock';
+        const isLowStock = stockLevel.level === 'low_stock';
+
+        return (
+          <Stack
+            direction="column"
+            spacing={0.5}
+            alignItems="center"
+            sx={{ py: 0.5 }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 700,
+                color: isOutOfStock
+                  ? '#DC2626'
+                  : isLowStock
+                    ? '#D97706'
+                    : '#059669',
+                fontSize: '0.875rem',
+                fontFamily: 'monospace',
+                textAlign: 'center',
+              }}
+            >
+              {stock} units
+            </Typography>
+            {showStockWarnings && (
+              <StockWarning
+                stockLevel={stockLevel}
+                variant="chip"
+                size="small"
+              />
+            )}
+          </Stack>
+        );
+      },
+    },
+    {
+      field: 'salesCount',
+      headerName: 'Sales Count',
+      flex: 0.8,
+      minWidth: 100,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => {
+        const salesCount = params.row.salesCount || 0;
+        const returnCount = params.row.returnCount || 0;
+        const returnRate =
+          salesCount > 0
+            ? ((returnCount / salesCount) * 100).toFixed(1)
+            : '0.0';
+
+        return (
+          <Stack
+            direction="column"
+            spacing={0.5}
+            alignItems="center"
+            sx={{ py: 0.5 }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 700,
+                color:
+                  salesCount > 50
+                    ? '#059669'
+                    : salesCount > 10
+                      ? '#D97706'
+                      : '#6B7280',
+                fontSize: '0.875rem',
+                fontFamily: 'monospace',
+                textAlign: 'center',
+              }}
+            >
+              {salesCount} sales
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                fontSize: '0.65rem',
+                color: '#94A3B8',
+                textAlign: 'center',
+              }}
+            >
+              {returnCount} returns ({returnRate}%)
+            </Typography>
+          </Stack>
+        );
+      },
+    },
+    {
+      field: 'lastSoldDate',
+      headerName: 'Last Sold',
+      flex: 1,
+      minWidth: 110,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => {
+        const lastSoldDate = params.row.lastSoldDate;
+
+        return (
+          <Stack direction="column" spacing={0.25} alignItems="center">
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                color: lastSoldDate ? '#475569' : '#94A3B8',
+              }}
+            >
+              {lastSoldDate
+                ? new Date(lastSoldDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })
+                : 'Never sold'}
+            </Typography>
+            {lastSoldDate && (
+              <Typography
+                variant="caption"
+                sx={{
+                  fontSize: '0.65rem',
+                  color: '#94A3B8',
+                }}
+              >
+                {new Date(lastSoldDate).toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </Typography>
+            )}
+          </Stack>
         );
       },
     },
@@ -304,94 +514,173 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       field: 'statusProduct',
       headerName: 'Status',
       flex: 0.9,
-      minWidth: 100,
-      renderCell: (params) => (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Switch
-            checked={params.value === 'Active'}
-            onChange={(e) => {
-              const updatedProduct = {
-                ...params.row,
-                statusProduct: e.target.checked ? 'Active' : 'Inactive',
-                status: e.target.checked,
-              };
-              onUpdateItem(updatedProduct);
-              updateProduct(updatedProduct);
-            }}
-            color="primary"
-            size="small"
-            sx={{
-              '& .MuiSwitch-switchBase.Mui-checked': {
-                color: '#52B788',
-                '&:hover': {
-                  backgroundColor: 'rgba(82, 183, 136, 0.08)',
-                },
-              },
-              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                backgroundColor: '#52B788',
-              },
-            }}
-          />
-          <Typography
-            variant="body2"
-            sx={{
-              ml: 0.5,
-              fontSize: '0.75rem',
-              color: params.value === 'Active' ? '#52B788' : '#9e9e9e',
-              '@media (max-width: 768px)': {
-                display: 'none',
-              },
-            }}
+      minWidth: 110,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => {
+        const isActive = params.value === 'Active';
+        return (
+          <Stack
+            direction="column"
+            spacing={0.5}
+            alignItems="center"
+            sx={{ py: 0.5 }}
           >
-            {params.value}
-          </Typography>
-        </Box>
-      ),
+            <Switch
+              checked={isActive}
+              onChange={(e) => {
+                const updatedProduct = {
+                  ...params.row,
+                  statusProduct: e.target.checked ? 'Active' : 'Inactive',
+                  status: e.target.checked,
+                };
+                onUpdateItem(updatedProduct);
+                updateProduct(updatedProduct);
+              }}
+              color="primary"
+              size="small"
+              sx={{
+                '& .MuiSwitch-switchBase.Mui-checked': {
+                  color: '#059669',
+                  '&:hover': {
+                    backgroundColor: 'rgba(5, 150, 105, 0.08)',
+                  },
+                },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                  backgroundColor: '#059669',
+                },
+                '& .MuiSwitch-track': {
+                  backgroundColor: isActive ? '#059669' : '#E5E7EB',
+                },
+              }}
+            />
+            <Typography
+              variant="caption"
+              sx={{
+                fontSize: '0.7rem',
+                fontWeight: 500,
+                color: isActive ? '#059669' : '#6B7280',
+                textAlign: 'center',
+                '@media (max-width: 768px)': {
+                  display: 'none',
+                },
+              }}
+            >
+              {params.value}
+            </Typography>
+          </Stack>
+        );
+      },
     },
     {
       field: 'rating',
       headerName: 'Rating',
-      flex: 0.6,
-      minWidth: 70,
+      flex: 0.7,
+      minWidth: 80,
       type: 'number',
-      align: 'left',
-      headerAlign: 'left',
-      renderCell: (params) => (
-        <Typography
-          variant="body2"
-          sx={{
-            fontWeight: 500,
-          }}
-        >
-          {params.value || '0'}
-        </Typography>
-      ),
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => {
+        const rating = params.value || 0;
+        const stars = Math.round(rating);
+
+        return (
+          <Stack direction="column" spacing={0.5} alignItems="center">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Box
+                  key={star}
+                  sx={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: '50%',
+                    backgroundColor: star <= stars ? '#F59E0B' : '#E5E7EB',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: '8px',
+                      color: star <= stars ? 'white' : '#9CA3AF',
+                      lineHeight: 1,
+                    }}
+                  >
+                    ★
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+            <Typography
+              variant="caption"
+              sx={{
+                fontSize: '0.7rem',
+                color: '#6B7280',
+                fontWeight: 500,
+              }}
+            >
+              {rating.toFixed(1)}
+            </Typography>
+          </Stack>
+        );
+      },
     },
     {
       field: 'createdAt',
       headerName: 'Created At',
-      flex: 0.9,
-      minWidth: 110,
+      flex: 1,
+      minWidth: 120,
+      align: 'center',
+      headerAlign: 'center',
       renderCell: (params) => {
         try {
           const date = new Date(params.row.createdAt);
+          const isValidDate = !isNaN(date.getTime());
+
           return (
-            <Typography variant="body2">
-              {date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              })}
-            </Typography>
+            <Stack direction="column" spacing={0.25} alignItems="center">
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: '0.8rem',
+                  fontWeight: 500,
+                  color: isValidDate ? '#475569' : '#94A3B8',
+                }}
+              >
+                {isValidDate
+                  ? date.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })
+                  : 'Invalid Date'}
+              </Typography>
+              {isValidDate && (
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontSize: '0.65rem',
+                    color: '#94A3B8',
+                  }}
+                >
+                  {date.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </Typography>
+              )}
+            </Stack>
           );
         } catch {
           return (
-            <Typography variant="body2">
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: '0.8rem',
+                color: '#94A3B8',
+              }}
+            >
               {params.row.createdAt || '-'}
             </Typography>
           );
@@ -401,58 +690,77 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     {
       field: 'actions',
       headerName: 'Actions',
-      flex: 0.8,
-      minWidth: 110,
+      flex: 0.9,
+      minWidth: 120,
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
+      align: 'center',
+      headerAlign: 'center',
       renderCell: (params) => (
         <Box
           sx={{
             display: 'flex',
             gap: 0.5,
             justifyContent: 'center',
+            alignItems: 'center',
             width: '100%',
+            py: 0.5,
           }}
         >
           <IconButton
             size="small"
-            color="primary"
             sx={{
-              padding: '4px',
+              padding: '6px',
+              backgroundColor: 'rgba(59, 130, 246, 0.08)',
+              color: '#3B82F6',
+              borderRadius: '6px',
               '&:hover': {
-                backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                transform: 'scale(1.05)',
               },
+              transition: 'all 0.2s ease',
             }}
             onClick={() => handleViewProduct(params.row)}
+            title="View Product"
           >
-            <VisibilityIcon fontSize="small" />
+            <VisibilityIcon sx={{ fontSize: 16 }} />
           </IconButton>
           <IconButton
             size="small"
-            color="primary"
             sx={{
-              padding: '4px',
+              padding: '6px',
+              backgroundColor: 'rgba(5, 150, 105, 0.08)',
+              color: '#059669',
+              borderRadius: '6px',
               '&:hover': {
-                backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                backgroundColor: 'rgba(5, 150, 105, 0.15)',
+                transform: 'scale(1.05)',
               },
+              transition: 'all 0.2s ease',
             }}
             onClick={() => handleEditProduct(params.row)}
+            title="Edit Product"
           >
-            <EditIcon fontSize="small" />
+            <EditIcon sx={{ fontSize: 16 }} />
           </IconButton>
           <IconButton
             size="small"
-            color="error"
             sx={{
-              padding: '4px',
+              padding: '6px',
+              backgroundColor: 'rgba(220, 38, 38, 0.08)',
+              color: '#DC2626',
+              borderRadius: '6px',
               '&:hover': {
-                backgroundColor: 'rgba(211, 47, 47, 0.08)',
+                backgroundColor: 'rgba(220, 38, 38, 0.15)',
+                transform: 'scale(1.05)',
               },
+              transition: 'all 0.2s ease',
             }}
             onClick={() => onDeleteItem(params.row.id)}
+            title="Delete Product"
           >
-            <DeleteIcon fontSize="small" />
+            <DeleteIcon sx={{ fontSize: 16 }} />
           </IconButton>
         </Box>
       ),
@@ -503,13 +811,18 @@ const ProductEdit: React.FC<ProductEditProps> = ({
     doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 65);
 
     const tableData = products.map((product) => [
-      product.productName,
+      product.productName || 'Unnamed Product',
       product.sku || '-',
       product.barcode || '-',
       `R${(product.price || 0).toFixed(2)}`,
+      `${product.stock || 0} units`,
       product.status ? 'Active' : 'Inactive',
-      product.rating?.toString() || '-',
-      new Date(product.createdAt || new Date()).toLocaleDateString(),
+      product.rating ? `${product.rating.toFixed(1)} ★` : '-',
+      new Date(product.createdAt || new Date()).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      }),
     ]);
 
     autoTable(doc, {
@@ -520,6 +833,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
           'SKU',
           'ID Code',
           'Price',
+          'Stock',
           'Status',
           'Rating',
           'Created At',
@@ -542,15 +856,16 @@ const ProductEdit: React.FC<ProductEditProps> = ({
       },
       columnStyles: {
         0: {
-          cellWidth: 50,
+          cellWidth: 45,
           overflow: 'linebreak',
         },
-        1: { cellWidth: 25 },
-        2: { cellWidth: 25 },
-        3: { cellWidth: 20 },
-        4: { cellWidth: 20 },
-        5: { cellWidth: 15 },
-        6: { cellWidth: 25 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 18 },
+        4: { cellWidth: 18 },
+        5: { cellWidth: 18 },
+        6: { cellWidth: 15 },
+        7: { cellWidth: 22 },
       },
       margin: { left: 10, right: 10 },
       tableWidth: 'auto',
@@ -613,6 +928,13 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             </S.HeaderWrapper>
           </S.HeaderSection>
 
+          {}
+          {showStockWarnings && (
+            <Box sx={{ mb: 2 }}>
+              <StockSummary products={products} />
+            </Box>
+          )}
+
           <S.TableHeaderRow>
             <S.CheckboxCell>
               <Checkbox size="small" />
@@ -622,6 +944,7 @@ const ProductEdit: React.FC<ProductEditProps> = ({
             <S.StandardCell>SKU</S.StandardCell>
             <S.StandardCell>ID Code</S.StandardCell>
             <S.StandardCell>Price</S.StandardCell>
+            <S.StandardCell>Stock</S.StandardCell>
             <S.StandardCell>Status</S.StandardCell>
             <S.StandardCell>Rating</S.StandardCell>
             <S.StandardCell>Created At</S.StandardCell>
@@ -666,44 +989,113 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                   height: 'auto',
                   border: 'none',
                   borderRadius: '12px',
-                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.04)',
+                  boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.06)',
                   position: 'relative',
                   zIndex: 1,
+                  backgroundColor: '#FFFFFF',
+                  overflow: 'hidden',
+
+                  '&::-webkit-scrollbar': {
+                    display: 'none',
+                  },
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
                   '& .MuiDataGrid-main': {
                     width: '100%',
                     overflow: 'auto',
+                    '&::-webkit-scrollbar': {
+                      display: 'none',
+                    },
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
                   },
                   '& .MuiDataGrid-columnHeaders': {
-                    backgroundColor: '#f8f9fa',
-                    borderBottom: '1px solid #E0E0E0',
+                    backgroundColor: '#F8FAFC',
+                    borderBottom: '2px solid #E2E8F0',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: '#475569',
+                    '& .MuiDataGrid-columnHeader': {
+                      padding: '16px 12px',
+                      '&:focus': {
+                        outline: 'none',
+                      },
+                      '&:focus-within': {
+                        outline: 'none',
+                      },
+                    },
+                    '& .MuiDataGrid-columnHeaderTitle': {
+                      fontWeight: 600,
+                      fontSize: '0.875rem',
+                    },
                   },
                   '& .MuiDataGrid-cell': {
-                    borderBottom: '1px solid #E0E0E0',
+                    borderBottom: '1px solid #F1F5F9',
+                    padding: '12px 12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    '&:focus': {
+                      outline: 'none',
+                    },
+                    '&:focus-within': {
+                      outline: 'none',
+                    },
+                  },
+                  '& .MuiDataGrid-row': {
+                    '&:hover': {
+                      backgroundColor: '#F8FAFC',
+                      '& .MuiDataGrid-cell': {
+                        borderBottomColor: '#E2E8F0',
+                      },
+                    },
+                    '&.Mui-selected': {
+                      backgroundColor: 'rgba(59, 130, 246, 0.04)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                      },
+                    },
                   },
                   '& .MuiDataGrid-virtualScroller': {
                     overflow: 'auto',
                     '&::-webkit-scrollbar': {
-                      width: '8px',
-                      height: '8px',
+                      display: 'none',
                     },
-                    '&::-webkit-scrollbar-track': {
-                      background: '#f1f1f1',
-                      borderRadius: '4px',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                  },
+                  '& .MuiDataGrid-virtualScrollerContent': {
+                    '&::-webkit-scrollbar': {
+                      display: 'none',
                     },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: '#c1c1c1',
-                      borderRadius: '4px',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                  },
+                  '& .MuiDataGrid-virtualScrollerRenderZone': {
+                    '&::-webkit-scrollbar': {
+                      display: 'none',
                     },
-                    '&::-webkit-scrollbar-thumb:hover': {
-                      background: '#a8a8a8',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                  },
+                  '& .MuiCheckbox-root': {
+                    color: '#CBD5E1',
+                    '&.Mui-checked': {
+                      color: '#3B82F6',
+                    },
+                    '&:hover': {
+                      backgroundColor: 'rgba(59, 130, 246, 0.08)',
                     },
                   },
                   '@media (max-width: 768px)': {
                     '& .MuiDataGrid-columnHeaders': {
-                      fontSize: '0.8rem',
+                      fontSize: '0.75rem',
+                      '& .MuiDataGrid-columnHeaderTitle': {
+                        fontSize: '0.75rem',
+                      },
                     },
                     '& .MuiDataGrid-cell': {
-                      fontSize: '0.8rem',
+                      fontSize: '0.75rem',
+                      padding: '8px 6px',
                     },
                   },
                 }}
@@ -714,11 +1106,12 @@ const ProductEdit: React.FC<ProductEditProps> = ({
                 }}
                 rowSelectionModel={selectedRows}
                 disableColumnMenu
-                rowHeight={60}
-                columnHeaderHeight={56}
+                rowHeight={70}
+                columnHeaderHeight={60}
                 getRowId={(row) => row.id}
                 density="standard"
                 disableColumnFilter
+                disableRowSelectionOnClick={false}
                 slotProps={{
                   basePopper: {
                     sx: {

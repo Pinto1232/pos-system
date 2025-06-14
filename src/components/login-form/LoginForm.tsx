@@ -1,6 +1,13 @@
 'use client';
 
-import React, { memo, useState, useEffect, useContext } from 'react';
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useMemo,
+} from 'react';
 import styles from './LoginForm.module.css';
 import {
   Box,
@@ -28,7 +35,21 @@ interface LoginFormProps {
   onClose?: () => void;
 }
 
+const arePropsEqual = (
+  prevProps: LoginFormProps,
+  nextProps: LoginFormProps
+) => {
+  return prevProps.onClose === nextProps.onClose;
+};
+
 const LoginForm = memo(({ onClose }: LoginFormProps) => {
+  const renderCount = React.useRef(0);
+  renderCount.current += 1;
+  console.log(
+    `🔄 LoginForm render #${renderCount.current} at:`,
+    new Date().toISOString()
+  );
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -43,31 +64,41 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
   const { login, error: authError } = useContext(AuthContext);
   const { t, currentLanguage } = useTranslationContext();
 
-  // Debug translations and check if they're loaded
+  // Memoize translation keys to check if translations are loaded
+  const translationKeys = useMemo(
+    () => [
+      'auth.welcomeBack',
+      'auth.enterCredentials',
+      'auth.email',
+      'auth.password',
+    ],
+    []
+  );
+
+  const areTranslationsLoaded = useMemo(() => {
+    return translationKeys.every((key) => {
+      const translation = t(key);
+      return (
+        translation && translation !== key && !translation.includes('auth.')
+      );
+    });
+  }, [translationKeys, t]);
+
   useEffect(() => {
-    console.log('LoginForm: Current language:', currentLanguage);
-    const translationTest = {
-      welcomeBack: t('auth.welcomeBack'),
-      enterCredentials: t('auth.enterCredentials'),
-      email: t('auth.email'),
-      password: t('auth.password'),
-    };
-    console.log('LoginForm: Translation test:', translationTest);
-
-    const areTranslationsLoaded = Object.values(translationTest).every(
-      (value) => value && !value.includes('auth.')
-    );
+    console.log('LoginForm: Current language:', currentLanguage?.code);
     console.log('LoginForm: Translations loaded:', areTranslationsLoaded);
-    setTranslationsLoaded(areTranslationsLoaded);
 
-    if (!areTranslationsLoaded) {
+    if (areTranslationsLoaded !== translationsLoaded) {
+      setTranslationsLoaded(areTranslationsLoaded);
+    }
+
+    if (!areTranslationsLoaded && currentLanguage?.code) {
       console.log('LoginForm: Attempting to reload translations');
 
       fetch(`/locales/${currentLanguage.code}/common.json`)
         .then((response) => response.json())
         .then((data) => {
           console.log('LoginForm: Manually loaded translations:', data);
-
           setTranslationsLoaded(true);
         })
         .catch((err) => {
@@ -77,7 +108,7 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
           );
         });
     }
-  }, [t, currentLanguage]);
+  }, [areTranslationsLoaded, translationsLoaded, currentLanguage?.code]);
 
   useEffect(() => {
     if (authError) {
@@ -88,87 +119,135 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
     }
   }, [authError, stopLoading]);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    console.log('LoginForm: handleLogin CALLED');
-    e.preventDefault();
+  const handleLogin = useCallback(
+    async (e: React.FormEvent) => {
+      console.log('LoginForm: handleLogin CALLED');
+      e.preventDefault();
 
-    setError(null);
-    setSnackbarOpen(false);
-    console.log('LoginForm: About to setLoginStatus to Authenticating...');
-    setLoginStatus(t('auth.authenticating'));
-    console.log('LoginForm: setLoginStatus to Authenticating... DONE');
+      setError(null);
+      setSnackbarOpen(false);
+      console.log('LoginForm: About to setLoginStatus to Redirecting...');
+      setLoginStatus(t('auth.redirectingToLogin'));
+      console.log('LoginForm: setLoginStatus to Redirecting... DONE');
 
-    const loginTimeout = setTimeout(() => {
-      stopLoading();
-      setError(t('errors.loginTimeout'));
-      setSnackbarOpen(true);
-      setLoginStatus('');
-      setIsFadingOut(false);
-    }, 20000);
+      startLoading();
+      setIsFadingOut(true);
 
-    startLoading();
-    setIsFadingOut(true);
+      let redirectTimeout: NodeJS.Timeout | undefined;
 
-    try {
-      console.log(
-        `LoginForm: In try block. Email: "${email}", Password: "${password ? '******' : ''}"`
-      );
-      if (!email || !password) {
-        console.log('LoginForm: Email or password empty, throwing error.');
-        throw new Error(t('errors.emailPasswordRequired'));
-      }
-
-      sessionStorage.setItem('kc_username', email);
-      sessionStorage.setItem('kc_password', password);
-
-      console.log('LoginForm: typeof login is', typeof login);
-      console.log('LoginForm: PRE-AWAIT login()');
       try {
-        await login();
-        console.log('LoginForm: POST-AWAIT login() - SUCCESS');
-
-        if (onClose) {
-          onClose();
-        }
-      } catch (specificLoginError) {
-        console.error(
-          'LoginForm: ERROR during await login() call itself:',
-          specificLoginError
+        console.log(
+          `LoginForm: In try block. Email: "${email}", Password: "${password ? '******' : ''}"`
         );
-        throw specificLoginError;
-      }
-      clearTimeout(loginTimeout);
-    } catch (err) {
-      console.log('LoginForm: In catch block.');
-      clearTimeout(loginTimeout);
-      console.error('Login failed:', err);
-
-      let errorMessage = t('errors.loginFailed');
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      } else if (typeof err === 'object' && err && 'error' in err) {
-        const keycloakError = err as {
-          error: string;
-          error_description?: string;
-        };
-        if (keycloakError.error === 'invalid_grant') {
-          errorMessage = t('errors.invalidCredentials');
-        } else if (keycloakError.error_description) {
-          errorMessage = keycloakError.error_description;
+        if (!email || !password) {
+          console.log('LoginForm: Email or password empty, throwing error.');
+          throw new Error(t('errors.emailPasswordRequired'));
         }
+
+        sessionStorage.setItem('kc_username', email);
+        sessionStorage.setItem('kc_password', password);
+
+        console.log('LoginForm: Initiating redirect-based authentication...');
+        console.log('LoginForm: About to call login() function');
+
+        redirectTimeout = setTimeout(() => {
+          console.log('LoginForm: Redirect timeout - closing modal');
+          console.error(
+            '❌ REDIRECT TIMEOUT: The redirect to Keycloak did not happen within 3 seconds'
+          );
+          console.error('This usually means:');
+          console.error('1. Keycloak server is not running');
+          console.error('2. Keycloak configuration is incorrect');
+          console.error('3. Network connectivity issues');
+
+          setError(
+            'Authentication redirect failed. Please check if the authentication server is running.'
+          );
+          setSnackbarOpen(true);
+          setIsFadingOut(false);
+          stopLoading();
+          setLoginStatus('');
+
+          if (onClose) {
+            onClose();
+          }
+        }, 5000); // Increased to 5 seconds to give more time
+
+        // Note: This will redirect the entire page to Keycloak
+        // The modal will disappear because of the page redirect
+        console.log('LoginForm: Calling await login()...');
+        await login();
+        console.log(
+          'LoginForm: login() completed without redirect (unexpected)'
+        );
+
+        // Clear timeout if we reach here (shouldn't happen in normal redirect flow)
+        clearTimeout(redirectTimeout);
+        console.log('LoginForm: This should not be reached in redirect flow');
+      } catch (err) {
+        if (redirectTimeout) {
+          clearTimeout(redirectTimeout);
+        }
+        console.log('LoginForm: In catch block.');
+        console.error('Login failed:', err);
+
+        let errorMessage = t('errors.loginFailed');
+        if (err instanceof Error) {
+          errorMessage = err.message;
+        } else if (typeof err === 'object' && err && 'error' in err) {
+          const keycloakError = err as {
+            error: string;
+            error_description?: string;
+          };
+          if (keycloakError.error === 'invalid_grant') {
+            errorMessage = t('errors.invalidCredentials');
+          } else if (keycloakError.error_description) {
+            errorMessage = keycloakError.error_description;
+          }
+        }
+
+        setError(errorMessage);
+        setSnackbarOpen(true);
+        setIsFadingOut(false);
+        stopLoading();
+        setLoginStatus('');
+
+        // Clear stored credentials on error
+        sessionStorage.removeItem('kc_username');
+        sessionStorage.removeItem('kc_password');
       }
+    },
+    [email, password, t, startLoading, stopLoading, login, onClose]
+  );
 
-      setError(errorMessage);
-      setSnackbarOpen(true);
-      setIsFadingOut(false);
-      stopLoading();
-      setLoginStatus('');
+  const handleEmailChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setEmail(e.target.value);
+    },
+    []
+  );
 
-      // Clear stored credentials on error
-      sessionStorage.removeItem('kc_username');
-      sessionStorage.removeItem('kc_password');
-    }
-  };
+  const handlePasswordChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(e.target.value);
+    },
+    []
+  );
+
+  const handleTogglePassword = useCallback(() => {
+    setShowPassword((prev) => !prev);
+  }, []);
+
+  const handleRememberMeChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setRememberMe(e.target.checked);
+    },
+    []
+  );
+
+  const handleSnackbarClose = useCallback(() => {
+    setSnackbarOpen(false);
+  }, []);
 
   return (
     <>
@@ -178,14 +257,20 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100%',
+            height: '400px',
             flexDirection: 'column',
             p: 3,
           }}
         >
           <CircularProgress size={40} />
           <Typography variant="body1" sx={{ mt: 2 }}>
-            Loading...
+            Loading translations...
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+            Current language: {currentLanguage?.code || 'unknown'}
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+            If this takes too long, there may be a translation loading issue.
           </Typography>
         </Box>
       ) : (
@@ -224,7 +309,7 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
                 label={t('auth.email')}
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 variant="outlined"
                 margin="normal"
                 required
@@ -257,7 +342,7 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
                 label={t('auth.password')}
                 type={showPassword ? 'text' : 'password'}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
                 variant="outlined"
                 margin="normal"
                 required
@@ -287,7 +372,7 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
+                        onClick={handleTogglePassword}
                         edge="end"
                         aria-label={t('auth.togglePasswordVisibility')}
                       >
@@ -306,7 +391,7 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
                 control={
                   <Checkbox
                     checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
+                    onChange={handleRememberMeChange}
                     color="primary"
                   />
                 }
@@ -338,7 +423,7 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
           <Snackbar
             open={snackbarOpen}
             autoHideDuration={6000}
-            onClose={() => setSnackbarOpen(false)}
+            onClose={handleSnackbarClose}
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'center',
@@ -346,7 +431,7 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
             className={styles.snackbar}
           >
             <Alert
-              onClose={() => setSnackbarOpen(false)}
+              onClose={handleSnackbarClose}
               severity={
                 error?.toLowerCase().includes('server') ? 'warning' : 'error'
               }
@@ -384,7 +469,7 @@ const LoginForm = memo(({ onClose }: LoginFormProps) => {
       )}
     </>
   );
-});
+}, arePropsEqual);
 
 LoginForm.displayName = 'LoginForm';
 

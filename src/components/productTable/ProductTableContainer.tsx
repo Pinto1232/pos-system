@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useMemo, lazy, Suspense } from 'react';
+import React, { useState, useMemo, lazy, Suspense, useEffect } from 'react';
 import ProductTable from './ProductTable';
 import { useProductContext } from '@/contexts/ProductContext';
 import { Product } from '../productEdit/types';
+import { ProductCategory } from '../productCategories/types';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -20,8 +21,30 @@ const ProductTableContainer: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [ratingFilter, setRatingFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [salesFilter, setSalesFilter] = useState('All');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(8);
+  const [categories, setCategories] = useState<ProductCategory[]>([]);
+
+  useEffect(() => {
+    const storedCategories = localStorage.getItem('productCategories');
+    if (storedCategories) {
+      try {
+        setCategories(JSON.parse(storedCategories));
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    }
+  }, []);
+
+  const categoryNames = useMemo(() => {
+    const activeCategories = categories.filter(
+      (cat) => cat.isActive && !cat.parentId
+    );
+    return ['All', ...activeCategories.map((cat) => cat.name)];
+  }, [categories]);
+
+  console.log('Available categories:', categoryNames);
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
@@ -39,7 +62,11 @@ const ProductTableContainer: React.FC = () => {
     }
 
     if (categoryFilter !== 'All') {
-      filtered = filtered.filter((product) => product.color === categoryFilter);
+      filtered = filtered.filter(
+        (product) =>
+          product.category === categoryFilter ||
+          product.color === categoryFilter
+      );
     }
 
     if (ratingFilter !== 'All') {
@@ -80,6 +107,34 @@ const ProductTableContainer: React.FC = () => {
       }
     }
 
+    if (salesFilter !== 'All') {
+      const salesCount = (product: Product) => product.salesCount || 0;
+      const returnCount = (product: Product) => product.returnCount || 0;
+
+      switch (salesFilter) {
+        case 'Best Selling':
+          filtered = filtered.filter((product) => salesCount(product) >= 50);
+          break;
+        case 'Most Returned':
+          filtered = filtered.filter((product) => {
+            const sales = salesCount(product);
+            const returns = returnCount(product);
+            const returnRate = sales > 0 ? (returns / sales) * 100 : 0;
+            return returnRate >= 20;
+          });
+          break;
+        case 'Never Sold':
+          filtered = filtered.filter((product) => salesCount(product) === 0);
+          break;
+        case 'Low Sales':
+          filtered = filtered.filter((product) => {
+            const sales = salesCount(product);
+            return sales > 0 && sales < 10;
+          });
+          break;
+      }
+    }
+
     return filtered;
   }, [
     products,
@@ -88,6 +143,7 @@ const ProductTableContainer: React.FC = () => {
     ratingFilter,
     statusFilter,
     priceFilter,
+    salesFilter,
   ]);
 
   const paginatedProducts = useMemo(() => {
@@ -121,6 +177,26 @@ const ProductTableContainer: React.FC = () => {
       color: product.color || 'N/A',
       statusProduct: product.status ? 'Active' : 'Inactive',
       image: product.image || '/placeholder-image.png',
+
+      salesCount:
+        typeof product.salesCount === 'number'
+          ? product.salesCount
+          : Math.floor(Math.random() * 100),
+      returnCount:
+        typeof product.returnCount === 'number'
+          ? product.returnCount
+          : Math.floor(Math.random() * 10),
+      lastSoldDate:
+        product.lastSoldDate ||
+        (Math.random() > 0.3
+          ? new Date(
+              Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+            ).toISOString()
+          : null),
+      totalRevenue:
+        typeof product.totalRevenue === 'number'
+          ? product.totalRevenue
+          : (product.salesCount || 0) * (product.price || 0),
     } as Product;
 
     console.log(
@@ -172,6 +248,11 @@ const ProductTableContainer: React.FC = () => {
     setPage(0);
   };
 
+  const handleSalesChange = (event: SelectChangeEvent) => {
+    setSalesFilter(event.target.value);
+    setPage(0);
+  };
+
   const handleStatusToggle = (product: Product) => {
     const updatedProduct = {
       ...product,
@@ -220,6 +301,7 @@ const ProductTableContainer: React.FC = () => {
     setRatingFilter('All');
     setStatusFilter('All');
     setPriceFilter('All');
+    setSalesFilter('All');
     setPage(0);
   };
 
@@ -239,9 +321,12 @@ const ProductTableContainer: React.FC = () => {
       product.barcode,
       product.sku || '-',
       `R${product.price.toFixed(2)}`,
+      `${product.salesCount || 0}`,
+      product.lastSoldDate
+        ? new Date(product.lastSoldDate).toLocaleDateString()
+        : 'Never sold',
       product.status ? 'In Stock' : 'Out of Stock',
       product.rating.toString(),
-      product.color || 'N/A',
       new Date(product.createdAt).toLocaleDateString(),
     ]);
 
@@ -253,9 +338,10 @@ const ProductTableContainer: React.FC = () => {
           'ID Code',
           'SKU',
           'Price',
+          'Sales Count',
+          'Last Sold',
           'Status',
           'Rating',
-          'Color',
           'Created At',
         ],
       ],
@@ -276,16 +362,17 @@ const ProductTableContainer: React.FC = () => {
       },
       columnStyles: {
         0: {
-          cellWidth: 50,
+          cellWidth: 40,
           overflow: 'linebreak',
         },
-        1: { cellWidth: 25 },
-        2: { cellWidth: 25 },
-        3: { cellWidth: 20 },
-        4: { cellWidth: 20 },
-        5: { cellWidth: 15 },
-        6: { cellWidth: 20 },
-        7: { cellWidth: 25 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 18 },
+        4: { cellWidth: 18 },
+        5: { cellWidth: 22 },
+        6: { cellWidth: 18 },
+        7: { cellWidth: 15 },
+        8: { cellWidth: 22 },
       },
       margin: { left: 10, right: 10 },
       tableWidth: 'auto',
@@ -347,6 +434,7 @@ const ProductTableContainer: React.FC = () => {
           ratingFilter={ratingFilter}
           statusFilter={statusFilter}
           priceFilter={priceFilter}
+          salesFilter={salesFilter}
           onView={handleView}
           onCloseModal={handleCloseModal}
           onPriceChange={handlePriceChange}
@@ -354,6 +442,7 @@ const ProductTableContainer: React.FC = () => {
           onCategoryChange={handleCategoryChange}
           onRatingChange={handleRatingChange}
           onStatusChange={handleStatusChange}
+          onSalesChange={handleSalesChange}
           onStatusToggle={handleStatusToggle}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}

@@ -14,6 +14,7 @@ import { useSpinner } from '@/contexts/SpinnerContext';
 import NotFound from '@/app/404';
 import FeatureGuard from '../feature-access/FeatureGuard';
 import { useTranslation } from 'react-i18next';
+import RealTimeStockDemo from '../demo/RealTimeStockDemo';
 
 const ProductTableContainer = lazy(
   () => import('../productTable/ProductTableContainer')
@@ -35,6 +36,30 @@ const SalesContainer = lazy(() => import('../sales/containers/SalesContainer'));
 
 const PricingPackagesClient = lazy(
   () => import('@/app/pricing-packages/PricingPackagesClient')
+);
+
+const ProductCategoriesContainer = lazy(
+  () => import('../productCategories/ProductCategoriesContainer')
+);
+
+const StockLevelsAlertsContainer = lazy(
+  () => import('../stockManagement/StockLevelsAlertsContainer')
+);
+
+const LowStockWarnings = lazy(
+  () => import('../stockManagement/LowStockWarnings')
+);
+
+const BulkImportExportContainer = lazy(
+  () => import('../bulkImportExport/BulkImportExportContainer')
+);
+
+const ProductExpiryTrackingContainer = lazy(
+  () => import('../productExpiry/ProductExpiryTrackingContainer')
+);
+
+const InventoryAdjustmentsContainer = lazy(
+  () => import('../inventoryAdjustments/InventoryAdjustmentsContainer')
 );
 
 interface DashboardMainProps {
@@ -95,37 +120,56 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
               {t('navigation.dashboard')}
             </Typography>
 
-            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+            <Box sx={{ mb: isMobile ? 2 : 3, width: '100%' }}>
               <Suspense
-                fallback={<Skeleton variant="rectangular" height={60} />}
+                fallback={
+                  <Skeleton variant="rectangular" height={60} width="100%" />
+                }
               >
                 <SearchBarContainer />
               </Suspense>
             </Box>
-            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+            <Box sx={{ mb: isMobile ? 2 : 3, width: '100%' }}>
               <Suspense
-                fallback={<Skeleton variant="rectangular" height={300} />}
+                fallback={
+                  <Skeleton variant="rectangular" height={300} width="100%" />
+                }
               >
                 <SalesContainer />
               </Suspense>
             </Box>
-            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+            <Box sx={{ mb: isMobile ? 2 : 3, width: '100%' }}>
               <Suspense
-                fallback={<Skeleton variant="rectangular" height={200} />}
+                fallback={
+                  <Skeleton variant="rectangular" height={200} width="100%" />
+                }
               >
                 <AnalyticsCardContainer />
               </Suspense>
             </Box>
-            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+            <Box sx={{ mb: isMobile ? 2 : 3, width: '100%' }}>
               <Suspense
-                fallback={<Skeleton variant="rectangular" height={200} />}
+                fallback={
+                  <Skeleton variant="rectangular" height={300} width="100%" />
+                }
+              >
+                <LowStockWarnings />
+              </Suspense>
+            </Box>
+            <Box sx={{ mb: isMobile ? 2 : 3, width: '100%' }}>
+              <Suspense
+                fallback={
+                  <Skeleton variant="rectangular" height={200} width="100%" />
+                }
               >
                 <FullOverviewContainer />
               </Suspense>
             </Box>
-            <Box sx={{ mb: isMobile ? 2 : 3 }}>
+            <Box sx={{ mb: isMobile ? 2 : 3, width: '100%' }}>
               <Suspense
-                fallback={<Skeleton variant="rectangular" height={400} />}
+                fallback={
+                  <Skeleton variant="rectangular" height={400} width="100%" />
+                }
               >
                 <SaleTableContainer />
               </Suspense>
@@ -189,6 +233,284 @@ const DashboardMain: React.FC<DashboardMainProps> = ({ activeSection }) => {
                 }
               >
                 <PricingPackagesClient initialPackages={[]} />
+              </Suspense>
+            </Box>
+          </FeatureGuard>
+        );
+        break;
+      case 'Product Categories':
+        sectionToRender = (
+          <FeatureGuard featureName={t('sidebar.productCategories')}>
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                px: isMobile ? 1 : 2,
+              }}
+            >
+              <Suspense
+                fallback={
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      py: 4,
+                    }}
+                  >
+                    <Skeleton variant="rectangular" height={400} />
+                  </Box>
+                }
+              >
+                <ProductCategoriesContainer />
+              </Suspense>
+            </Box>
+          </FeatureGuard>
+        );
+        break;
+      case 'Stock Levels & Alerts':
+        sectionToRender = (
+          <FeatureGuard
+            featureName={t(
+              'sidebar.stockLevelsAlerts',
+              'Stock Levels & Alerts'
+            )}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                px: isMobile ? 1 : 2,
+              }}
+            >
+              <Suspense
+                fallback={
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      py: 4,
+                      px: 2,
+                    }}
+                  >
+                    <Skeleton
+                      variant="text"
+                      width="60%"
+                      height={60}
+                      sx={{ mb: 2, mx: 'auto' }}
+                    />
+                    <Skeleton
+                      variant="rectangular"
+                      width="100%"
+                      height={200}
+                      sx={{ mb: 2 }}
+                    />
+                    <Skeleton variant="rectangular" width="100%" height={400} />
+                  </Box>
+                }
+              >
+                <StockLevelsAlertsContainer />
+              </Suspense>
+            </Box>
+          </FeatureGuard>
+        );
+        break;
+
+      case 'Low Stock Warnings':
+        sectionToRender = (
+          <FeatureGuard
+            featureName={t('stock.lowStockWarnings', 'Low Stock Warnings')}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                px: isMobile ? 1 : 2,
+              }}
+            >
+              <Suspense
+                fallback={
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      py: 4,
+                      px: 2,
+                    }}
+                  >
+                    <Skeleton
+                      variant="text"
+                      width="60%"
+                      height={60}
+                      sx={{ mb: 2, mx: 'auto' }}
+                    />
+                    <Skeleton
+                      variant="rectangular"
+                      width="100%"
+                      height={300}
+                      sx={{ mb: 2 }}
+                    />
+                    <Skeleton variant="rectangular" width="100%" height={200} />
+                  </Box>
+                }
+              >
+                <LowStockWarnings
+                  showTitle={true}
+                  compact={false}
+                  maxItems={50}
+                />
+              </Suspense>
+            </Box>
+          </FeatureGuard>
+        );
+        break;
+
+      case 'Real-Time Stock Demo':
+        sectionToRender = (
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: '100%',
+              overflow: 'hidden',
+              px: isMobile ? 1 : 2,
+            }}
+          >
+            <RealTimeStockDemo key="real-time-stock-demo" />
+          </Box>
+        );
+        break;
+      case 'Bulk Import/Export':
+        sectionToRender = (
+          <FeatureGuard
+            featureName={t('sidebar.bulkImportExport', 'Bulk Import/Export')}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                px: isMobile ? 1 : 2,
+              }}
+            >
+              <Suspense
+                fallback={
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      py: 4,
+                      px: 2,
+                    }}
+                  >
+                    <Skeleton
+                      variant="text"
+                      width="60%"
+                      height={60}
+                      sx={{ mb: 2, mx: 'auto' }}
+                    />
+                    <Skeleton
+                      variant="rectangular"
+                      width="100%"
+                      height={300}
+                      sx={{ mb: 2 }}
+                    />
+                    <Skeleton variant="rectangular" width="100%" height={400} />
+                  </Box>
+                }
+              >
+                <BulkImportExportContainer />
+              </Suspense>
+            </Box>
+          </FeatureGuard>
+        );
+        break;
+      case 'Product Expiry Tracking':
+        sectionToRender = (
+          <FeatureGuard
+            featureName={t(
+              'inventory.productExpiryTracking',
+              'Product Expiry Tracking'
+            )}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                px: isMobile ? 1 : 2,
+              }}
+            >
+              <Suspense
+                fallback={
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      py: 4,
+                      px: 2,
+                    }}
+                  >
+                    <Skeleton
+                      variant="text"
+                      width="60%"
+                      height={60}
+                      sx={{ mb: 2, mx: 'auto' }}
+                    />
+                    <Skeleton
+                      variant="rectangular"
+                      width="100%"
+                      height={300}
+                      sx={{ mb: 2 }}
+                    />
+                    <Skeleton variant="rectangular" width="100%" height={400} />
+                  </Box>
+                }
+              >
+                <ProductExpiryTrackingContainer />
+              </Suspense>
+            </Box>
+          </FeatureGuard>
+        );
+        break;
+      case 'Inventory Adjustments':
+        sectionToRender = (
+          <FeatureGuard
+            featureName={t(
+              'inventory.inventoryAdjustments',
+              'Inventory Adjustments'
+            )}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                px: isMobile ? 1 : 2,
+              }}
+            >
+              <Suspense
+                fallback={
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      py: 4,
+                      px: 2,
+                    }}
+                  >
+                    <Skeleton
+                      variant="text"
+                      width="60%"
+                      height={60}
+                      sx={{ mb: 2, mx: 'auto' }}
+                    />
+                    <Skeleton
+                      variant="rectangular"
+                      width="100%"
+                      height={300}
+                      sx={{ mb: 2 }}
+                    />
+                    <Skeleton variant="rectangular" width="100%" height={400} />
+                  </Box>
+                }
+              >
+                <InventoryAdjustmentsContainer />
               </Suspense>
             </Box>
           </FeatureGuard>

@@ -23,31 +23,43 @@ export const filtersWrapperStyles: SxProps<Theme> = {
   p: { xs: 2, sm: 3 },
   boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
   border: '1px solid #e2e8f0',
+  position: 'relative',
+
+  transition: 'margin-left 0.3s ease',
 };
 
 export const filtersContainerStyles: SxProps<Theme> = {
   display: 'flex',
   flexDirection: { xs: 'column', sm: 'row' },
-  justifyContent: 'space-between',
-  gap: { xs: 2, sm: 3 },
-  alignItems: { xs: 'stretch', sm: 'center' },
+  justifyContent: { xs: 'flex-start', sm: 'space-between' },
+  gap: { xs: 2, sm: 2, md: 3 },
+  alignItems: { xs: 'stretch', sm: 'flex-start', md: 'center' },
   flexWrap: 'wrap',
+  width: '100%',
 };
 
 export const filtersBoxStyles: SxProps<Theme> = {
   display: 'flex',
   flexDirection: { xs: 'column', sm: 'row' },
-  gap: { xs: 2, sm: 3 },
-  alignItems: { xs: 'stretch', sm: 'center' },
+  gap: { xs: 2, sm: 2, md: 3 },
+  alignItems: { xs: 'stretch', sm: 'flex-start', md: 'center' },
   flexWrap: 'wrap',
   flex: 1,
   minWidth: { xs: '100%', sm: 'auto' },
+  position: 'relative',
+  '& > *': {
+    position: 'relative',
+  },
+
+  justifyContent: { sm: 'flex-start' },
+  width: '100%',
 };
 
 export const searchFieldStyles: SxProps<Theme> = {
   '& .MuiOutlinedInput-root': {
     height: { xs: 36, sm: 40 },
     backgroundColor: 'white',
+    cursor: 'pointer',
     '& fieldset': {
       borderColor: '#e2e8f0',
     },
@@ -58,30 +70,48 @@ export const searchFieldStyles: SxProps<Theme> = {
       borderColor: '#3b82f6',
     },
     '& .MuiInputBase-input': {
-      py: { xs: 1, sm: 1.5 },
-      px: 0.5,
+      py: { xs: 0.75, sm: 1, md: 1.5 },
+      px: { xs: 0.5, sm: 0.75 },
       fontSize: { xs: '0.7rem', sm: '0.75rem' },
+      cursor: 'text',
+      '&::placeholder': {
+        opacity: 0.7,
+        color: '#64748b',
+      },
     },
     '& .MuiInputLabel-root': {
       fontSize: { xs: '0.7rem', sm: '0.75rem' },
     },
     '& .MuiInputAdornment-root': {
-      marginRight: -0.5,
+      marginRight: { xs: -0.5, sm: 0 },
+      marginLeft: { xs: 0.5, sm: 0.75 },
       '& .MuiSvgIcon-root': {
         fontSize: { xs: '1rem', sm: '1.25rem' },
       },
     },
   },
   width: '100%',
-  maxWidth: { xs: '100%', sm: 300 },
+  maxWidth: { xs: '100%', sm: '100%', md: 300 },
+  minWidth: { xs: '100%', sm: 150 },
 };
 
 export const selectStyles: SxProps<Theme> = {
-  minWidth: { xs: '100%', sm: 200 },
+  minWidth: { xs: '100%', sm: 150, md: 180 },
   backgroundColor: 'white',
+  position: 'relative',
+  cursor: 'pointer',
   '& .MuiSelect-select': {
     fontSize: { xs: '0.7rem', sm: '0.75rem' },
-    py: { xs: 1, sm: 1.5 },
+    py: { xs: 0.75, sm: 1, md: 1.5 },
+    px: { xs: 1, sm: 1.5 },
+    cursor: 'pointer',
+
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    minHeight: { xs: '1.4375em', sm: '1.4375em' },
+    display: 'flex',
+    alignItems: 'center',
   },
   '& .MuiInputLabel-root': {
     fontSize: { xs: '0.7rem', sm: '0.75rem' },
@@ -95,29 +125,65 @@ export const selectStyles: SxProps<Theme> = {
   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
     borderColor: '#3b82f6',
   },
+
+  '& .MuiSelect-icon': {
+    pointerEvents: 'none',
+    color: '#64748b',
+    right: { xs: 4, sm: 7 },
+    fontSize: { xs: '1.25rem', sm: '1.5rem' },
+  },
+  '& .MuiTouchRipple-root': {
+    color: '#3b82f6',
+  },
+  '&.MuiOutlinedInput-root': {
+    height: { xs: 36, sm: 40 },
+    '&.Mui-focused': {
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#3b82f6',
+        borderWidth: 1,
+      },
+    },
+  },
+
+  width: '100%',
+  height: '100%',
 };
 
 export const inputLabelStyles: SxProps<Theme> = {
   '&.Mui-focused': { color: '#3b82f6' },
-  '&.MuiInputLabel-shrink': { color: '#3b82f6' },
   color: '#64748b',
   fontSize: { xs: '0.7rem', sm: '0.75rem' },
+  cursor: 'pointer',
+
+  transform: 'translate(14px, 12px) scale(1)',
+  '&.MuiInputLabel-shrink': {
+    transform: 'translate(14px, -9px) scale(0.75)',
+    color: '#3b82f6',
+  },
+
+  backgroundColor: 'rgba(255, 255, 255, 0.7)',
+  padding: '0 4px',
 };
 
 export const actionsBoxStyles: SxProps<Theme> = {
   display: 'flex',
-  flexDirection: { xs: 'column', sm: 'row' },
-  gap: 1,
-  alignItems: 'stretch',
+  flexDirection: { xs: 'row', sm: 'row' },
+  gap: { xs: 1, sm: 2 },
+  alignItems: 'center',
+  justifyContent: { xs: 'flex-end', sm: 'flex-end' },
   width: { xs: '100%', sm: 'auto' },
   mt: { xs: 2, sm: 0 },
+  flexWrap: 'nowrap',
+  minWidth: { xs: 'auto', sm: 'auto' },
 };
 
 export const resetButtonStyles: SxProps<Theme> = {
   color: '#173a79',
   border: '1px solid #173a79',
   borderRadius: '8px',
-  p: { xs: 1, sm: 1.5 },
+  p: { xs: 0.75, sm: 1, md: 1.5 },
+  minWidth: { xs: 36, sm: 40 },
+  height: { xs: 36, sm: 40 },
   fontSize: { xs: '0.7rem', sm: '0.75rem' },
   transition: 'all 0.2s ease-in-out',
   '&:hover': {
@@ -125,17 +191,25 @@ export const resetButtonStyles: SxProps<Theme> = {
     transform: 'rotate(180deg)',
     borderColor: '#1e4b9e',
   },
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 };
 
 export const exportButtonStyles: SxProps<Theme> = {
   bgcolor: '#173a79',
   color: 'white',
-  px: { xs: 2, sm: 3 },
-  py: { xs: 1, sm: 1.5 },
+  px: { xs: 1.5, sm: 2, md: 3 },
+  py: { xs: 0.75, sm: 1, md: 1.5 },
   fontSize: { xs: '0.7rem', sm: '0.75rem' },
   borderRadius: '6px',
+  minHeight: { xs: 36, sm: 40 },
+  whiteSpace: 'nowrap',
   '&:hover': {
     bgcolor: '#1e4b9e',
+  },
+  '& .MuiButton-startIcon': {
+    marginRight: { xs: 0.5, sm: 1 },
   },
 };
 
@@ -144,8 +218,13 @@ export const tableCellStyles: SxProps<Theme> = {
   color: '#1E2A3B',
   fontSize: { xs: '0.75rem', sm: '0.875rem' },
   py: { xs: 1.5, sm: 2 },
-  px: { xs: 1.5, sm: 2.5 },
+  px: { xs: 1, sm: 1.5, md: 2 },
   borderBottom: '1px solid #E0E0E0',
+  whiteSpace: 'nowrap',
+  position: 'sticky',
+  top: 0,
+  backgroundColor: '#f8f9fa',
+  zIndex: 10,
 };
 
 export const productImageStyles: SxProps<Theme> = {

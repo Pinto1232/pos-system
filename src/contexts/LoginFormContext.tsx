@@ -34,13 +34,15 @@ export const LoginFormProvider: React.FC<{
   const [open, setOpen] = useState(false);
 
   const toggleLoginForm = useCallback(() => {
-    console.log(
-      'toggleLoginForm called, current state:',
-      JSON.stringify(open, null, 2)
-    );
-    setOpen((prev) => !prev);
-    console.log('toggleLoginForm new state:', JSON.stringify(!open, null, 2));
-  }, [open]);
+    setOpen((prev) => {
+      console.log(
+        'toggleLoginForm called, current state:',
+        JSON.stringify(prev, null, 2)
+      );
+      console.log('toggleLoginForm new state:', JSON.stringify(!prev, null, 2));
+      return !prev;
+    });
+  }, []);
 
   const contextValue = useMemo(
     () => ({

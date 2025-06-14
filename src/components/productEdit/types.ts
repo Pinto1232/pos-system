@@ -13,6 +13,38 @@ export interface Product {
   sales?: number;
   discount?: number;
   statusProduct?: string;
+  category?: string;
+  categoryId?: number;
+  subcategory?: string;
+  subcategoryId?: number;
+
+  salesCount?: number;
+  returnCount?: number;
+  lastSoldDate?: string | null;
+  totalRevenue?: number;
+
+  minStockThreshold?: number;
+  maxStockThreshold?: number;
+  reorderPoint?: number;
+  reorderQuantity?: number;
+  costPrice?: number;
+  supplierInfo?: {
+    name: string;
+    contactEmail?: string;
+    contactPhone?: string;
+    leadTimeDays?: number;
+  };
+  stockLocation?: {
+    warehouse?: string;
+    aisle?: string;
+    shelf?: string;
+  };
+  stockMetrics?: {
+    avgDailySales?: number;
+    salesVelocity?: number;
+    lastRestockDate?: string;
+    daysUntilOutOfStock?: number;
+  };
 }
 
 export interface ProductEditProps {
@@ -33,4 +65,5 @@ export interface ProductEditProps {
   discount: number;
   total: number;
   itemNo: number;
+  showStockWarnings?: boolean;
 }

@@ -65,9 +65,49 @@ const AfterAuth = () => {
   }, [router]);
 
   return (
-    <div className="auth-processing">
-      <div className="spinner"></div>
-      <p>{status}</p>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        padding: '20px',
+        backgroundColor: '#f5f5f5',
+        fontFamily: 'Arial, sans-serif',
+      }}
+    >
+      <div
+        style={{
+          width: '50px',
+          height: '50px',
+          border: '4px solid #e3e3e3',
+          borderTop: '4px solid #3498db',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+          marginBottom: '20px',
+        }}
+      ></div>
+      <p
+        style={{
+          fontSize: '18px',
+          color: '#333',
+          textAlign: 'center',
+          margin: '0',
+        }}
+      >
+        {status}
+      </p>
+      <style jsx>{`
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
     </div>
   );
 };

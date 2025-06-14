@@ -1,4 +1,5 @@
 import React from 'react';
+import FeatureGuard from './common/FeatureGuard';
 import { SidebarFeatureGuard } from './SidebarFeatureGuard';
 import { SidebarItem as SidebarItemType } from '../Seetings/settings';
 
@@ -16,16 +17,18 @@ export const SidebarWrapper: React.FC<SidebarWrapperProps> = ({
     isSubItem: boolean = false
   ) => {
     const subItems = item.subItems?.map((subItem) => (
-      <SidebarFeatureGuard
+      <FeatureGuard
         key={`${item.label}-${subItem.label}`}
         featureName={subItem.label}
-        parentFeature={item.label}
+        mode="overlay"
+        size="small"
+        tooltipPlacement="right"
       >
         {renderItem(
           { ...subItem, icon: item.icon, expandable: false } as SidebarItemType,
           true
         )}
-      </SidebarFeatureGuard>
+      </FeatureGuard>
     ));
 
     const content = renderItem(item, isSubItem);

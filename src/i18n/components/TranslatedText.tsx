@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo, useMemo, useRef } from 'react';
 import { useTranslationContext } from '../TranslationProvider';
 
 const isBrowser = typeof window !== 'undefined';
@@ -17,52 +17,96 @@ interface TranslatedTextProps {
   as?: React.ElementType;
 }
 
-export const TranslatedText: React.FC<TranslatedTextProps> = ({
-  i18nKey,
-  values,
-  defaultValue,
-  className,
-  style,
-  as: Component = 'span',
-}) => {
-  const { t } = useTranslationContext();
+const arePropsEqual = (
+  prevProps: TranslatedTextProps,
+  nextProps: TranslatedTextProps
+) => {
+  return (
+    prevProps.i18nKey === nextProps.i18nKey &&
+    prevProps.defaultValue === nextProps.defaultValue &&
+    prevProps.className === nextProps.className &&
+    prevProps.as === nextProps.as &&
+    JSON.stringify(prevProps.values) === JSON.stringify(nextProps.values) &&
+    JSON.stringify(prevProps.style) === JSON.stringify(nextProps.style)
+  );
+};
 
-  let translatedText;
+export const TranslatedText: React.FC<TranslatedTextProps> = memo(
+  ({
+    i18nKey,
+    values,
+    defaultValue,
+    className,
+    style,
+    as: Component = 'span',
+  }) => {
+    const { t } = useTranslationContext();
 
-  if (isBrowser) {
-    try {
-      console.log(
-        `Translating key: ${i18nKey}, default: ${defaultValue}`,
-        values ? `with values:` : '',
-        values
-      );
-      translatedText = t(i18nKey, {
+    const renderCount = useRef(0);
+    if (process.env.NODE_ENV === 'development') {
+      renderCount.current += 1;
+      if (renderCount.current > 3) {
+        console.warn(
+          `⚠️  TranslatedText re-rendered ${renderCount.current} times for key: ${i18nKey}`
+        );
+      }
+    }
+
+    const translationOptions = useMemo(
+      () => ({
         defaultValue,
         ns: 'common',
         ...values,
-      });
+      }),
+      [defaultValue, values]
+    );
 
-      if (translatedText === i18nKey) {
-        console.warn(
-          `Translation key "${i18nKey}" not found, using default value`
-        );
-        translatedText = defaultValue || i18nKey;
-      } else {
-        console.log(`Translated text for ${i18nKey}:`, translatedText);
+    const translatedText = useMemo(() => {
+      if (!isBrowser) {
+        return defaultValue || i18nKey;
       }
-    } catch (error) {
-      console.error(`Translation error for key ${i18nKey}:`, error);
-      translatedText = defaultValue || i18nKey;
-    }
-  } else {
-    translatedText = defaultValue || i18nKey;
-  }
 
-  return (
-    <Component className={className} style={style}>
-      {translatedText}
-    </Component>
-  );
-};
+      try {
+        if (process.env.NODE_ENV === 'development') {
+          console.log(
+            `Translating key: ${i18nKey}, default: ${defaultValue}`,
+            values ? `with values:` : '',
+            values
+          );
+        }
+
+        const result = t(i18nKey, translationOptions);
+
+        if (result === i18nKey) {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn(
+              `Translation key "${i18nKey}" not found, using default value`
+            );
+          }
+          return defaultValue || i18nKey;
+        } else {
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`Translated text for ${i18nKey}:`, result);
+          }
+          return result;
+        }
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(`Translation error for key ${i18nKey}:`, error);
+        }
+        return defaultValue || i18nKey;
+      }
+    }, [i18nKey, translationOptions, t, defaultValue, values]);
+
+    return (
+      <Component className={className} style={style}>
+        {translatedText}
+      </Component>
+    );
+  },
+  arePropsEqual
+);
+
+TranslatedText.displayName = 'TranslatedText';
 
 export default TranslatedText;

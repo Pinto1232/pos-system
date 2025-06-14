@@ -6,6 +6,14 @@ import ChevronRight from '@mui/icons-material/ChevronRight';
 import { SidebarItemProps } from './types';
 import SubItems from './SubItems';
 import { useTranslation } from 'react-i18next';
+import { useUserSubscription } from '@/contexts/UserSubscriptionContext';
+import FeatureGuard from '@/components/common/FeatureGuard';
+import {
+  getListItemStyles,
+  getListItemIconStyles,
+  getListItemTextStyles,
+  getChevronRightStyles,
+} from './sharedStyles';
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
   item,
@@ -19,6 +27,11 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   isCollapsed = false,
 }) => {
   const { t } = useTranslation();
+  const { hasFeatureAccess } = useUserSubscription();
+
+  const requiresAccess =
+    item.requiresFeatureAccess !== false && item.label !== 'Dashboard';
+  const hasAccess = !requiresAccess || hasFeatureAccess(item.label);
   const handleClick = () => {
     if (item.label === 'Settings' && onSettingsClick) {
       const queryClient = window.queryClient;
@@ -62,39 +75,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     <ListItem
       onClick={handleClick}
       sx={{
-        cursor: 'pointer',
-        backgroundColor: isActive ? 'rgba(52, 211, 153, 0.9)' : 'inherit',
-        '&:hover': {
-          backgroundColor: isActive
-            ? 'rgba(52, 211, 153, 0.95)'
-            : 'rgba(255, 255, 255, 0.1)',
-          transform: 'translateX(4px)',
-          boxShadow: isActive ? '0 4px 12px rgba(52, 211, 153, 0.25)' : 'none',
-        },
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        ...getListItemStyles(isActive),
         justifyContent: isCollapsed ? 'center' : 'flex-start',
-        py: 1.5,
-        borderRadius: '12px',
-        margin: '4px 8px',
-        boxShadow: isActive ? '0 2px 8px rgba(52, 211, 153, 0.2)' : 'none',
       }}
     >
       <ListItemIcon
-        sx={{
-          color: isActive ? '#fff' : iconColor,
-          minWidth: isCollapsed ? 0 : '36px',
-          mr: isCollapsed ? 0 : 2,
-          justifyContent: 'center',
-          '& > *': {
-            width: '24px',
-            height: '24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'transform 0.3s ease',
-            transform: isActive ? 'scale(1.1)' : 'scale(1)',
-          },
-        }}
+        sx={getListItemIconStyles(isActive, iconColor, isCollapsed)}
       >
         <item.icon />
       </ListItemIcon>
@@ -103,35 +89,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <>
           <ListItemText
             primary={item.translationKey ? t(item.translationKey) : item.label}
-            sx={{
-              color: isActive ? '#fff' : textColor,
-              opacity: 1,
-              transition: 'all 0.3s ease',
-              '& .MuiTypography-root': {
-                fontWeight: isActive ? 600 : 400,
-                fontSize: '0.95rem',
-              },
-            }}
+            sx={getListItemTextStyles(isActive, textColor)}
           />
-          {isActive && (
-            <ChevronRight
-              sx={{
-                color: '#fff',
-                animation: 'pulseRight 1.5s infinite ease-in-out',
-                '@keyframes pulseRight': {
-                  '0%': {
-                    transform: 'translateX(0)',
-                  },
-                  '50%': {
-                    transform: 'translateX(3px)',
-                  },
-                  '100%': {
-                    transform: 'translateX(0)',
-                  },
-                },
-              }}
-            />
-          )}
+          {isActive && <ChevronRight sx={getChevronRightStyles()} />}
           {item.expandable &&
             (isExpanded ? (
               <ExpandLess
@@ -153,7 +113,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     </ListItem>
   );
 
-  return (
+  const sidebarContent = (
     <>
       {isCollapsed ? (
         <Tooltip
@@ -193,6 +153,21 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       )}
     </>
   );
+
+  if (requiresAccess && !hasAccess) {
+    return (
+      <FeatureGuard
+        featureName={item.label}
+        mode="overlay"
+        size="medium"
+        tooltipPlacement="right"
+      >
+        {sidebarContent}
+      </FeatureGuard>
+    );
+  }
+
+  return sidebarContent;
 };
 
 export default SidebarItem;

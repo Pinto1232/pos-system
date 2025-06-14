@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Drawer,
   Box,
-  List,
   Typography,
   useMediaQuery,
   useTheme,
@@ -14,8 +13,7 @@ import Image from 'next/image';
 import { sidebarItems } from '@/Seetings/settings';
 import { useSpinner } from '@/contexts/SpinnerContext';
 import { SidebarProps } from './types';
-import SidebarItem from './SidebarItem';
-import SidebarFeatureGuard from './SidebarFeatureGuard';
+import SidebarRenderer from './SidebarRenderer';
 import useKeycloakUser from '@/hooks/useKeycloakUser';
 import { useCustomization } from '@/contexts/CustomizationContext';
 import { useUserSubscription } from '@/contexts/UserSubscriptionContext';
@@ -262,6 +260,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       'Product Categories',
       'Stock Levels & Alerts',
       'Low Stock Warnings',
+      'Real-Time Stock Demo',
       'Bulk Import/Export',
       'Inventory Adjustments',
       'Product Expiry Tracking',
@@ -353,7 +352,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           width: !isSmallScreen && !localDrawerOpen ? 80 : drawerWidth,
           flexShrink: 0,
           transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 1200,
           position: 'fixed',
           height: '100%',
           '@keyframes pulse': {
@@ -613,53 +611,17 @@ const Sidebar: React.FC<SidebarProps> = ({
           )}
         </Box>
 
-        <List>
-          {' '}
-          {sidebarItems.map((item) =>
-            item.expandable && item.subItems ? (
-              <SidebarItem
-                key={item.label}
-                item={item}
-                isActive={activeItemState === item.label}
-                isExpanded={!!expandedItems[item.label]}
-                iconColor={iconColor}
-                textColor={textColor}
-                onToggle={handleToggle}
-                onItemClick={handleItemClickInternal}
-                onSettingsClick={onSettingsClick}
-                isCollapsed={!isSmallScreen && !localDrawerOpen}
-              />
-            ) : item.label === 'Dashboard' ? (
-              <SidebarItem
-                key={item.label}
-                item={item}
-                isActive={activeItemState === item.label}
-                isExpanded={!!expandedItems[item.label]}
-                iconColor={iconColor}
-                textColor={textColor}
-                onToggle={handleToggle}
-                onItemClick={handleItemClickInternal}
-                onSettingsClick={onSettingsClick}
-                isCollapsed={!isSmallScreen && !localDrawerOpen}
-              />
-            ) : (
-              <SidebarFeatureGuard key={item.label} featureName={item.label}>
-                <SidebarItem
-                  key={item.label}
-                  item={item}
-                  isActive={activeItemState === item.label}
-                  isExpanded={!!expandedItems[item.label]}
-                  iconColor={iconColor}
-                  textColor={textColor}
-                  onToggle={handleToggle}
-                  onItemClick={handleItemClickInternal}
-                  onSettingsClick={onSettingsClick}
-                  isCollapsed={!isSmallScreen && !localDrawerOpen}
-                />
-              </SidebarFeatureGuard>
-            )
-          )}
-        </List>
+        <SidebarRenderer
+          items={sidebarItems}
+          activeItem={activeItemState}
+          expandedItems={expandedItems}
+          iconColor={iconColor}
+          textColor={textColor}
+          isCollapsed={!isSmallScreen && !localDrawerOpen}
+          onToggle={handleToggle}
+          onItemClick={handleItemClickInternal}
+          onSettingsClick={onSettingsClick}
+        />
       </Drawer>
     </>
   );

@@ -237,6 +237,46 @@
     "lastYear": "Año Pasado",
     "custom": "Personalizado"
   },
+  "bulkImportExport": {
+    "title": "Importación/Exportación Masiva",
+    "import": {
+      "title": "Importar Productos",
+      "description": "Carga un archivo CSV o Excel para importar productos de forma masiva"
+    },
+    "export": {
+      "title": "Exportar Productos",
+      "description": "Exporta los datos de tus productos en varios formatos",
+      "button": "Exportar Productos",
+      "configureTitle": "Configurar Exportación",
+      "format": "Formato",
+      "category": "Categoría",
+      "dateRange": "Rango de Fechas",
+      "allCategories": "Todas las Categorías",
+      "allTime": "Todo el Tiempo",
+      "last30Days": "Últimos 30 Días",
+      "last90Days": "Últimos 90 Días",
+      "customRange": "Rango Personalizado",
+      "startDate": "Fecha de Inicio",
+      "endDate": "Fecha de Fin",
+      "start": "Iniciar Exportación"
+    },
+    "downloadTemplate": "Descargar Plantilla",
+    "selectFile": "Seleccionar Archivo para Importar",
+    "importing": "Importando...",
+    "exporting": "Exportando...",
+    "complete": "Completo",
+    "info": {
+      "title": "Información Importante",
+      "import": "Pautas de Importación:",
+      "export": "Opciones de Exportación:",
+      "supportedFormats": "Formatos soportados: CSV, XLSX, XLS",
+      "maxFileSize": "Tamaño máximo de archivo: 10MB",
+      "duplicateHandling": "Los duplicados serán omitidos",
+      "exportFormats": "Formatos disponibles: CSV, Excel, JSON",
+      "filterOptions": "Filtrar por categoría y rango de fechas",
+      "includeImages": "Las imágenes se exportan como URLs"
+    }
+  },
   "errors": {
     "required": "Este campo es obligatorio",
     "invalidEmail": "Dirección de correo electrónico inválida",

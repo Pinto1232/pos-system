@@ -30,6 +30,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getColorStyles } from '@/utils/colorUtils';
+import { getStockLevel } from '@/utils/stockManagement';
+import StockWarning from '@/components/productTable/components/StockWarning';
 
 const StyledDialog = styled(Dialog)({
   '& .MuiDialog-paper': {
@@ -384,6 +386,7 @@ interface FormData {
   idCode: string;
   sku: string;
   price: string;
+  stock: string;
   statusProduct: string;
   rating: string;
   image: string;
@@ -428,6 +431,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
       idCode: '',
       sku: '',
       price: '',
+      stock: '',
       statusProduct: 'Active',
       rating: '',
       image: '',
@@ -453,6 +457,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
     setFormData({
       ...defaultFormData,
       color: defaultFormData.color || 'Black',
+      stock: defaultFormData.stock || '',
     });
     setPreviewImage(null);
   }, [defaultFormData]);
@@ -480,6 +485,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
         idCode: product.barcode || '',
         sku: product.sku || '',
         price: product.price?.toString() || '',
+        stock: product.stock?.toString() || '',
         statusProduct: product.status ? 'Active' : 'Inactive',
         rating: product.rating?.toString() || '',
         image: product.image || '',
@@ -695,6 +701,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
       barcode: formData.idCode || `BC-${Date.now()}`,
       sku: formData.sku || `SKU-${Date.now()}`,
       price: parseFloat(formData.price) || 0,
+      stock: parseFloat(formData.stock) || 0,
       status: formData.statusProduct === 'Active',
       rating: parseFloat(formData.rating) || 0,
       image: imagePath || '/placeholder-image.png',
@@ -750,7 +757,11 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
         fullWidth
       >
         <StyledDialogTitle id="product-dialog">
-          {mode === 'view' ? 'View Product' : 'Add New Product'}
+          {mode === 'view'
+            ? 'View Product'
+            : mode === 'edit'
+              ? 'Edit Product'
+              : 'Add New Product'}
         </StyledDialogTitle>
         <StyledDialogContent>
           <ImageSection>
@@ -1121,6 +1132,34 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 />
               </FormField>
               <FormField>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <TextField
+                    fullWidth
+                    label="Stock"
+                    placeholder="0"
+                    type="number"
+                    value={formData.stock}
+                    onChange={handleTextChange('stock')}
+                    variant="outlined"
+                    inputProps={{
+                      min: 0,
+                      step: 1,
+                    }}
+                    disabled={mode === 'view'}
+                  />
+                  {formData.stock && !isNaN(Number(formData.stock)) && (
+                    <StockWarning
+                      stockLevel={getStockLevel(Number(formData.stock))}
+                      variant="chip"
+                      size="small"
+                    />
+                  )}
+                </Box>
+              </FormField>
+            </FormRow>
+
+            <FormRow>
+              <FormField>
                 <TextField
                   fullWidth
                   label="Rating"
@@ -1136,6 +1175,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
                   disabled={mode === 'view'}
                 />
               </FormField>
+              <FormField>{}</FormField>
             </FormRow>
 
             <FormRow>

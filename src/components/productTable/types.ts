@@ -18,6 +18,7 @@ export interface ProductTableProps {
   ratingFilter: string;
   statusFilter: string;
   priceFilter: string;
+  salesFilter: string;
   onView: (product: Product) => void;
   onCloseModal: () => void;
   onPriceChange: (event: SelectChangeEvent) => void;
@@ -25,9 +26,13 @@ export interface ProductTableProps {
   onCategoryChange: (event: SelectChangeEvent) => void;
   onRatingChange: (event: SelectChangeEvent) => void;
   onStatusChange: (event: SelectChangeEvent) => void;
+  onSalesChange: (event: SelectChangeEvent) => void;
   onStatusToggle: (product: Product) => void;
   onPageChange: (event: unknown, newPage: number) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onResetFilters: () => void;
   onExportPDF: () => void;
+  onDeleteProduct?: (product: Product) => Promise<void>;
+  onAddToCart?: (product: Product, quantity: number) => void;
+  showStockWarnings?: boolean;
 }

@@ -22,6 +22,7 @@ import eventBus, { UI_EVENTS } from '@/utils/eventBus';
 import { useCustomization } from '@/contexts/CustomizationContext';
 import NotificationDropdown from '@/components/notifications/NotificationDropdown';
 import LanguageDropdown from '@/components/language/LanguageDropdown';
+import UserProfileModal from '@/components/profile/UserProfileModal';
 import { useTranslation } from 'react-i18next';
 
 interface NavbarProps {
@@ -33,6 +34,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { isLoggingOut, logout } = useLogout();
   const open = Boolean(anchorEl);
   const theme = useTheme();
@@ -55,6 +57,11 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
 
   const handleSettingsClick = () => {
     setIsSettingsOpen(true);
+    handleClose();
+  };
+
+  const handleProfileClick = () => {
+    setIsProfileOpen(true);
     handleClose();
   };
 
@@ -98,7 +105,6 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
           transition:
             'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease',
           border: 'none',
-          zIndex: 1050,
           backgroundColor: navbarColor,
           boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
         }}
@@ -283,7 +289,7 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
               }}
             >
               <MenuItem
-                onClick={handleClose}
+                onClick={handleProfileClick}
                 sx={{
                   borderRadius: '8px',
                   padding: '10px 16px',
@@ -470,6 +476,10 @@ const Navbar: React.FC<NavbarProps> = ({ drawerWidth, onDrawerToggle }) => {
         onClose={() => setIsSettingsOpen(false)}
         userId="current-user"
         onCustomizationUpdated={updateCustomization}
+      />
+      <UserProfileModal
+        open={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
       />
     </>
   );

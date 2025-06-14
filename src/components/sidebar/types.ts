@@ -4,6 +4,7 @@ export interface SubItem {
   label: string;
   translationKey?: string;
   path?: string;
+  requiresFeatureAccess?: boolean;
 }
 
 export interface SidebarItemType {
@@ -13,6 +14,7 @@ export interface SidebarItemType {
   path?: string;
   expandable?: boolean;
   subItems?: SubItem[];
+  requiresFeatureAccess?: boolean;
 }
 
 export interface MenuToggleButtonProps {
