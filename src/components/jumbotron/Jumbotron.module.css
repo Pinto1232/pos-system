@@ -3,12 +3,14 @@
   background-size: cover;
   background-position: center;
   position: relative;
-  min-height: 300px;
+  height: 500px; /* Default height */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 80px 20px;
   overflow: hidden;
+  /* Ensure consistent aspect ratio */
+  container-type: inline-size;
 }
 
 .overlay {
@@ -152,10 +154,20 @@
   }
 }
 
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 /* Media Queries for Responsive Design */
 @media (max-width: 1024px) {
   .jumbotronContainer {
-    min-height: 400px;
+    height: 400px;
   }
 
   .content {
@@ -173,7 +185,7 @@
 
 @media (max-width: 768px) {
   .jumbotronContainer {
-    min-height: 350px;
+    height: 350px;
     padding: 60px 15px;
   }
 
@@ -192,7 +204,7 @@
 
 @media (max-width: 480px) {
   .jumbotronContainer {
-    min-height: 300px;
+    height: 300px;
     padding: 40px 10px;
   }
 
@@ -207,4 +219,13 @@
   .subheading {
     font-size: 1.1rem;
   }
+}
+
+/* Optimizations for reduced layout shift */
+.jumbotronContainer[data-loading='true'] {
+  background-color: #f0f0f0;
+}
+
+.jumbotronContainer[data-loading='false'] {
+  background-color: transparent;
 }
