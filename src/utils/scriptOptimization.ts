@@ -47,9 +47,11 @@ export function loadScript(
       resolve(script);
     };
 
-    script.onerror = (error) => {
-      if (onError) onError(error as unknown as Error);
-      reject(error);
+    script.onerror = () => {
+      const errorMessage = `Failed to load script: ${src}`;
+      const scriptError = new Error(errorMessage);
+      if (onError) onError(scriptError);
+      reject(scriptError);
     };
 
     const { strategy = 'afterInteractive' } = options;

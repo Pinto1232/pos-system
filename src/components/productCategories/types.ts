@@ -1,24 +1,79 @@
 export interface ProductCategory {
-  id: number;
+  categoryId: number;
   name: string;
   description: string;
-  color: string;
+  parentCategoryId?: number | null;
+  parentCategoryName?: string;
+  slug: string;
+  code?: string;
+  imageUrl?: string;
   icon?: string;
-  parentId?: number | null;
+  color?: string;
+  isVisible: boolean;
   isActive: boolean;
+  level: number;
+  displayOrder: number;
+  productCount: number;
+  childCategoryCount: number;
+  fullPath: string;
   createdAt: string;
   updatedAt: string;
-  productCount: number;
   subcategories?: ProductCategory[];
 }
 
 export interface ProductCategoryFormData {
   name: string;
   description: string;
-  color: string;
+  parentCategoryId?: number | null;
+  imageUrl?: string;
   icon?: string;
-  parentId?: number | null;
+  color?: string;
+  isVisible: boolean;
   isActive: boolean;
+  displayOrder: number;
+  storeId?: number;
+}
+
+export interface CategoryTreeNode {
+  categoryId: number;
+  name: string;
+  description: string;
+  slug: string;
+  code?: string;
+  imageUrl?: string;
+  icon?: string;
+  color?: string;
+  isVisible: boolean;
+  isActive: boolean;
+  level: number;
+  displayOrder: number;
+  productCount: number;
+  fullPath: string;
+  children: CategoryTreeNode[];
+}
+
+export interface CategoryHierarchy {
+  categoryId: number;
+  name: string;
+  parentCategoryId?: number | null;
+  level: number;
+  fullPath: string;
+  hasChildren: boolean;
+  isExpanded: boolean;
+}
+
+export interface CategoryMoveData {
+  categoryId: number;
+  newParentCategoryId?: number | null;
+  newDisplayOrder: number;
+}
+
+export interface CategoryBulkUpdate {
+  categoryIds: number[];
+  isVisible?: boolean;
+  isActive?: boolean;
+  color?: string;
+  newParentCategoryId?: number | null;
 }
 
 export interface ProductCategoriesProps {

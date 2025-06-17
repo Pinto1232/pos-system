@@ -70,7 +70,7 @@ const BestDealCard: React.FC<BestDealCardProps> = ({
                   color: 'rgba(255,255,255,0.9)',
                   letterSpacing: '1.5px',
                   fontWeight: 700,
-                  fontSize: '0.75rem',
+                  fontSize: '0.65rem',
                   textTransform: 'uppercase',
                 }}
               >
@@ -96,9 +96,9 @@ const BestDealCard: React.FC<BestDealCardProps> = ({
                 color: 'white',
                 mb: 2,
                 fontSize: {
-                  xs: '2rem',
-                  sm: '2.25rem',
-                  md: '2.5rem',
+                  xs: '1.25rem',
+                  sm: '1.5rem',
+                  md: '1.75rem',
                 },
                 textShadow: '0 2px 10px rgba(0,0,0,0.3)',
                 letterSpacing: '-0.02em',

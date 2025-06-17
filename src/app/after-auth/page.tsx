@@ -73,31 +73,70 @@ const AfterAuth = () => {
         justifyContent: 'center',
         minHeight: '100vh',
         padding: '20px',
-        backgroundColor: '#f5f5f5',
         fontFamily: 'Arial, sans-serif',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
+      {}
       <div
         style={{
-          width: '50px',
-          height: '50px',
-          border: '4px solid #e3e3e3',
-          borderTop: '4px solid #3498db',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite',
-          marginBottom: '20px',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 1,
         }}
       ></div>
-      <p
+      <div
         style={{
-          fontSize: '18px',
-          color: '#333',
-          textAlign: 'center',
-          margin: '0',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 2,
+        }}
+      ></div>
+
+      {}
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 3,
+          borderRadius: '20px',
+          padding: '30px 40px',
+          backdropFilter: 'blur(15px)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
-        {status}
-      </p>
+        <div
+          style={{
+            width: '60px',
+            height: '60px',
+            border: '4px solid rgba(255,255,255,0.4)',
+            borderTop: '4px solid #ffffff',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            marginBottom: '25px',
+          }}
+        ></div>
+        <p
+          style={{
+            fontSize: '22px',
+            color: '#000',
+            textAlign: 'center',
+            margin: '0',
+            fontWeight: '600',
+            letterSpacing: '0.5px',
+          }}
+        >
+          {status}
+        </p>
+      </div>
       <style jsx>{`
         @keyframes spin {
           0% {

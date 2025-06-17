@@ -40,21 +40,52 @@ const AuthWrapper = ({ children }: AuthWrapperProps) => {
           justifyContent: 'center',
           minHeight: '100vh',
           gap: 2,
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 1,
+          },
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 2,
+          },
         }}
       >
-        <Typography
-          variant="h5"
-          component="div"
+        <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            fontWeight: 500,
-            color: 'text.primary',
+            position: 'relative',
+            zIndex: 3,
+            borderRadius: '15px',
+            padding: '20px 30px',
+            backdropFilter: 'blur(10px)',
           }}
         >
-          Initializing authentication
-          <LoadingDots />
-        </Typography>
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              fontWeight: 600,
+              color: '#000',
+              letterSpacing: '0.5px',
+            }}
+          >
+            Initializing authentication
+            <LoadingDots />
+          </Typography>
+        </Box>
       </Box>
     );
   }

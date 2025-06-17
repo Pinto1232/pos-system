@@ -78,24 +78,37 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [selectedCategory, setSelectedCategory] =
     useState<ProductCategory | null>(null);
+  const [formErrors, setFormErrors] = useState<{
+    name?: string;
+    description?: string;
+    color?: string;
+    displayOrder?: string;
+  }>({});
 
   const [formData, setFormData] = useState<ProductCategoryFormData>({
     name: '',
     description: '',
-    color: '#2196F3',
+    parentCategoryId: null,
+    imageUrl: '',
     icon: '',
-    parentId: null,
+    color: '#2196F3',
+    isVisible: true,
     isActive: true,
+    displayOrder: 0,
+    storeId: undefined,
   });
 
   const filteredCategories = useMemo(() => {
-    let filtered = categories.filter((cat) => !cat.parentId); // Only show main categories
+    let filtered = categories.filter((cat) => !cat.parentCategoryId);
 
     if (searchQuery) {
       filtered = filtered.filter(
         (cat) =>
           cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cat.description.toLowerCase().includes(searchQuery.toLowerCase())
+          cat.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          cat.fullPath.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (cat.code &&
+            cat.code.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
 
@@ -105,7 +118,12 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
       );
     }
 
-    return filtered;
+    return filtered.sort((a, b) => {
+      if (a.level !== b.level) return a.level - b.level;
+      if (a.displayOrder !== b.displayOrder)
+        return a.displayOrder - b.displayOrder;
+      return a.name.localeCompare(b.name);
+    });
   }, [categories, searchQuery, statusFilter]);
 
   const categoryStats = useMemo(() => {
@@ -120,13 +138,55 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
     return { total, active, inactive, totalProducts };
   }, [categories]);
 
+  const validateForm = (): boolean => {
+    const errors: typeof formErrors = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'Category name is required';
+    } else if (formData.name.trim().length < 2) {
+      errors.name = 'Category name must be at least 2 characters long';
+    } else if (formData.name.trim().length > 100) {
+      errors.name = 'Category name cannot exceed 100 characters';
+    }
+
+    if (formData.description.trim().length > 500) {
+      errors.description = 'Description cannot exceed 500 characters';
+    }
+
+    if (
+      formData.color &&
+      !/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(formData.color)
+    ) {
+      errors.color = 'Color must be a valid hex color code';
+    }
+
+    if (formData.displayOrder < 0) {
+      errors.displayOrder = 'Display order cannot be negative';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = () => {
-    if (!formData.name.trim()) return;
+    if (!validateForm()) {
+      return;
+    }
+
+    const submitData: ProductCategoryFormData = {
+      ...formData,
+      name: formData.name.trim(),
+      description: formData.description.trim() || '',
+      color: formData.color || '#2196F3',
+      displayOrder: formData.displayOrder || 0,
+    };
+
+    console.log('Submitting category data:', submitData);
 
     if (editingCategory) {
-      onUpdateCategory(editingCategory.id, formData);
+      onUpdateCategory(editingCategory.categoryId, submitData);
     } else {
-      onAddCategory(formData);
+      onAddCategory(submitData);
     }
 
     handleClose();
@@ -135,13 +195,18 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
   const handleClose = () => {
     setOpen(false);
     setEditingCategory(null);
+    setFormErrors({});
     setFormData({
       name: '',
       description: '',
-      color: '#2196F3',
+      parentCategoryId: null,
+      imageUrl: '',
       icon: '',
-      parentId: null,
+      color: '#2196F3',
+      isVisible: true,
       isActive: true,
+      displayOrder: 0,
+      storeId: undefined,
     });
   };
 
@@ -150,10 +215,14 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
     setFormData({
       name: category.name,
       description: category.description,
-      color: category.color,
+      parentCategoryId: category.parentCategoryId,
+      imageUrl: category.imageUrl || '',
       icon: category.icon || '',
-      parentId: category.parentId,
+      color: category.color || '#2196F3',
+      isVisible: category.isVisible,
       isActive: category.isActive,
+      displayOrder: category.displayOrder,
+      storeId: undefined,
     });
     setOpen(true);
     setMenuAnchor(null);
@@ -174,14 +243,14 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 
   const handleDelete = () => {
     if (selectedCategory) {
-      onDeleteCategory(selectedCategory.id);
+      onDeleteCategory(selectedCategory.categoryId);
     }
     handleMenuClose();
   };
 
   const handleToggleStatus = () => {
     if (selectedCategory) {
-      onToggleStatus(selectedCategory.id);
+      onToggleStatus(selectedCategory.categoryId);
     }
     handleMenuClose();
   };
@@ -386,7 +455,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
               xs={12}
               sm={6}
               md={viewMode === 'grid' ? 4 : 12}
-              key={category.id}
+              key={`category-${category.categoryId || index}`}
             >
               <Grow in timeout={300 + index * 100}>
                 <Card
@@ -419,15 +488,46 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
                             {category.icon ? category.icon : <CategoryIcon />}
                           </Avatar>
                           <Box>
-                            <Typography variant="h6" noWrap>
-                              {category.name}
-                            </Typography>
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={1}
+                            >
+                              <Typography variant="h6" noWrap>
+                                {category.name}
+                              </Typography>
+                              {category.code && (
+                                <Chip
+                                  label={category.code}
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ fontSize: '0.7rem', height: '20px' }}
+                                />
+                              )}
+                            </Stack>
                             <Typography variant="body2" color="text.secondary">
-                              {category.productCount} products
+                              {category.productCount} products •{' '}
+                              {category.childCategoryCount} subcategories
                             </Typography>
+                            {category.parentCategoryName && (
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                Under: {category.parentCategoryName}
+                              </Typography>
+                            )}
                           </Box>
                         </Stack>
                         <Stack direction="row" alignItems="center" spacing={1}>
+                          {!category.isVisible && (
+                            <Chip
+                              label="Hidden"
+                              color="warning"
+                              size="small"
+                              icon={<VisibilityOffIcon />}
+                            />
+                          )}
                           <Chip
                             label={category.isActive ? 'Active' : 'Inactive'}
                             color={category.isActive ? 'success' : 'error'}
@@ -448,16 +548,17 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
                         </Typography>
                       )}
 
-                      {category.subcategories &&
-                        category.subcategories.length > 0 && (
-                          <Box>
-                            <Typography variant="subtitle2" gutterBottom>
-                              Subcategories:
-                            </Typography>
-                            <Stack direction="row" spacing={1} flexWrap="wrap">
-                              {category.subcategories.slice(0, 3).map((sub) => (
+                      {(category.subcategories || []).length > 0 && (
+                        <Box>
+                          <Typography variant="subtitle2" gutterBottom>
+                            Subcategories:
+                          </Typography>
+                          <Stack direction="row" spacing={1} flexWrap="wrap">
+                            {(category.subcategories || [])
+                              .slice(0, 3)
+                              .map((sub, subIndex) => (
                                 <Chip
-                                  key={sub.id}
+                                  key={`sub-${sub.categoryId || subIndex}`}
                                   label={sub.name}
                                   size="small"
                                   variant="outlined"
@@ -467,16 +568,16 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
                                   }}
                                 />
                               ))}
-                              {category.subcategories.length > 3 && (
-                                <Chip
-                                  label={`+${category.subcategories.length - 3} more`}
-                                  size="small"
-                                  variant="outlined"
-                                />
-                              )}
-                            </Stack>
-                          </Box>
-                        )}
+                            {(category.subcategories || []).length > 3 && (
+                              <Chip
+                                label={`+${(category.subcategories || []).length - 3} more`}
+                                size="small"
+                                variant="outlined"
+                              />
+                            )}
+                          </Stack>
+                        </Box>
+                      )}
 
                       <Divider />
 
@@ -505,7 +606,9 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
                           >
                             <IconButton
                               size="small"
-                              onClick={() => onToggleStatus(category.id)}
+                              onClick={() =>
+                                onToggleStatus(category.categoryId)
+                              }
                               color={category.isActive ? 'error' : 'success'}
                             >
                               {category.isActive ? (
@@ -577,21 +680,34 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
             <TextField
               label="Category Name"
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              onChange={(e) => {
+                setFormData({ ...formData, name: e.target.value });
+                if (formErrors.name) {
+                  setFormErrors({ ...formErrors, name: undefined });
+                }
+              }}
               fullWidth
               required
+              error={!!formErrors.name}
+              helperText={formErrors.name}
             />
             <TextField
               label="Description"
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              onChange={(e) => {
+                setFormData({ ...formData, description: e.target.value });
+                if (formErrors.description) {
+                  setFormErrors({ ...formErrors, description: undefined });
+                }
+              }}
               fullWidth
               multiline
               rows={3}
+              error={!!formErrors.description}
+              helperText={
+                formErrors.description ||
+                `${formData.description.length}/500 characters`
+              }
             />
             <Grid container spacing={2}>
               <Grid item xs={6}>
@@ -637,11 +753,13 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
             <FormControl fullWidth>
               <InputLabel>Parent Category</InputLabel>
               <Select
-                value={formData.parentId || ''}
+                value={formData.parentCategoryId || ''}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    parentId: e.target.value ? Number(e.target.value) : null,
+                    parentCategoryId: e.target.value
+                      ? Number(e.target.value)
+                      : null,
                   })
                 }
                 label="Parent Category"
@@ -649,15 +767,68 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
                 <MenuItem value="">None (Main Category)</MenuItem>
                 {categories
                   .filter(
-                    (cat) => !cat.parentId && cat.id !== editingCategory?.id
+                    (cat) =>
+                      !cat.parentCategoryId &&
+                      cat.categoryId !== editingCategory?.categoryId
                   )
                   .map((cat) => (
-                    <MenuItem key={cat.id} value={cat.id}>
+                    <MenuItem key={cat.categoryId} value={cat.categoryId}>
                       {cat.name}
                     </MenuItem>
                   ))}
               </Select>
             </FormControl>
+            <TextField
+              label="Category Image URL"
+              value={formData.imageUrl}
+              onChange={(e) =>
+                setFormData({ ...formData, imageUrl: e.target.value })
+              }
+              fullWidth
+              placeholder="https://example.com/image.jpg"
+              helperText="URL to category image/thumbnail"
+            />
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  label="Display Order"
+                  type="number"
+                  value={formData.displayOrder}
+                  onChange={(e) => {
+                    setFormData({
+                      ...formData,
+                      displayOrder: parseInt(e.target.value) || 0,
+                    });
+                    if (formErrors.displayOrder) {
+                      setFormErrors({ ...formErrors, displayOrder: undefined });
+                    }
+                  }}
+                  fullWidth
+                  error={!!formErrors.displayOrder}
+                  helperText={
+                    formErrors.displayOrder || 'Order within the same level'
+                  }
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Box sx={{ pt: 2 }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={formData.isVisible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            isVisible: e.target.checked,
+                          })
+                        }
+                      />
+                    }
+                    label="Visible in POS"
+                  />
+                </Box>
+              </Grid>
+            </Grid>
             <FormControlLabel
               control={
                 <Switch

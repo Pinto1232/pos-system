@@ -85,6 +85,7 @@ export async function POST(request: Request) {
     }
 
     const cookieStore = await cookies();
+
     cookieStore.set({
       name: 'auth_token',
       value: token,
@@ -92,8 +93,12 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       path: '/',
-
       maxAge: 60 * 60 * 24,
+
+      ...(process.env.NODE_ENV === 'production' &&
+        process.env.COOKIE_DOMAIN && {
+          domain: process.env.COOKIE_DOMAIN,
+        }),
     });
 
     console.log('Token cookie set successfully');

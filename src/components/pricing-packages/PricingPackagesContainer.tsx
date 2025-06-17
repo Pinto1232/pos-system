@@ -391,6 +391,7 @@ const PricingPackagesContainer: React.FC<PricingPackagesContainerProps> = ({
 
   useEffect(() => {
     if (data && data.data && Array.isArray(data.data)) {
+      console.log('Package data cached successfully');
       console.log(
         '📦 [HOME PAGE] Retrieved Pricing Packages:',
         JSON.stringify(data, null, 2)

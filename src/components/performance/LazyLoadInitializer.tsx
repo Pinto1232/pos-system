@@ -39,8 +39,14 @@ export default function LazyLoadInitializer() {
       console.warn('Font optimization error:', error);
     }
 
-    setTimeout(() => {
-      loadScriptsInParallel([
+    setTimeout(async () => {
+      const scriptsToLoad: {
+        src: string;
+        options: {
+          strategy: 'lazyOnload' | 'beforeInteractive' | 'afterInteractive';
+          id: string;
+        };
+      }[] = [
         {
           src: '/scripts/analytics.js',
           options: {
@@ -55,13 +61,40 @@ export default function LazyLoadInitializer() {
             id: 'feedback-script',
           },
         },
-      ])
-        .then(() => {
-          console.log('Non-critical scripts loaded successfully');
-        })
-        .catch((error) => {
-          console.error('Error loading non-critical scripts:', error);
-        });
+      ];
+
+      
+      const availableScripts: typeof scriptsToLoad = [];
+      for (const script of scriptsToLoad) {
+        try {
+          const response = await fetch(script.src, { method: 'HEAD' });
+          if (response.ok) {
+            availableScripts.push(script);
+          }
+        } catch {
+          console.debug(`Script not available: ${script.src}`);
+        }
+      }
+
+      if (availableScripts.length > 0) {
+        loadScriptsInParallel(availableScripts)
+          .then((loadedScripts) => {
+            console.log(
+              `Successfully loaded ${loadedScripts.length} non-critical scripts`
+            );
+          })
+          .catch((error) => {
+            console.warn(
+              'Some non-critical scripts failed to load. This is not critical for app functionality.',
+              {
+                error: error.message || error,
+                scriptsAttempted: availableScripts.map((s) => s.src),
+              }
+            );
+          });
+      } else {
+        console.debug('No non-critical scripts found to load');
+      }
     }, 3000);
 
     return () => {};

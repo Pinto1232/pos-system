@@ -73,7 +73,7 @@ const WinRateCard: React.FC<WinRateCardProps> = ({
               color: '#f59e0b',
               letterSpacing: '1.5px',
               fontWeight: 700,
-              fontSize: '0.75rem',
+              fontSize: '0.65rem',
               textTransform: 'uppercase',
             }}
           >
@@ -104,9 +104,9 @@ const WinRateCard: React.FC<WinRateCardProps> = ({
                 mt: 1,
                 mb: 2,
                 fontSize: {
-                  xs: '2rem',
-                  sm: '2.25rem',
-                  md: '2.5rem',
+                  xs: '1.25rem',
+                  sm: '1.5rem',
+                  md: '1.75rem',
                 },
                 letterSpacing: '-0.02em',
               }}

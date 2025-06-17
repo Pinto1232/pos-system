@@ -121,7 +121,7 @@ const FullOverviewContainer: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box>
       <Box
         sx={{
           background: 'linear-gradient(145deg, #ffffff, #f8f9fa)',
